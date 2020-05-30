@@ -6,14 +6,13 @@ import StarRating from 'react-native-star-rating';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { getMedicineOrderDetails, upDateOrderData, getOrderUserReviews, getOrderTracking } from '../../../providers/pharmacy/pharmacy.action';
+import { getMedicineOrderDetails, upDateOrderData, getOrderTracking } from '../../../providers/pharmacy/pharmacy.action';
 import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
 import { OrderInsertReview } from '../MedicineInfo/medInsertReview'
-import AwesomeAlert from 'react-native-awesome-alerts';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import ImageZoom from 'react-native-image-pan-zoom';
 
@@ -35,41 +34,42 @@ class OrderDetails extends Component {
             paymentDetails: {},
             isLoading: true,
             modalVisible: false,
-            reviewData: [],
+       
             statusSlap: []
         }
     }
     async componentDidMount() {
         const { navigation } = this.props;
-        console.log('=============================================')
-        console.log(navigation.state)
-        this.medicineOrderDetails();
+     
+        let orderId = this.props.navigation.getParam('serviceId') || null
+        let getOderSlap=true
+        this.medicineOrderDetails(orderId,getOderSlap);
         this.getUserReport()
     }
 
 
 
-    async medicineOrderDetails() {
+    async medicineOrderDetails(orderId,getOderSlap) {
         try {
             this.setState({ isLoading: true });
-            let orderId = this.props.navigation.getParam('serviceId') || null
+           
             let userId = await AsyncStorage.getItem('userId')
             let result = await getMedicineOrderDetails(orderId);
-            console.log('orderDetails======================= info')
-            console.log(JSON.stringify(result))
+            console.log('orderInfo====================')
+            console.log(result)
             if (result) {
                 this.setState({ orderDetails: result });
+                if(getOderSlap){
                 let statusSlap = await getOrderTracking(result.orderNumber)
-                console.log('hi========')
-                console.log(JSON.stringify(result))
+               
+               
                 if (statusSlap) {
                     this.setState({ statusSlap })
                 }
+            }
                 if (result.status === 'DELIVERED' && result.is_review_added === undefined) {
                     await this.setState({ modalVisible: true })
-                } else {
-                    this.getUserReviews(orderId)
-                }
+                } 
                 this.getPaymentInfo(result.paymentId)
             }
             this.setState({ isLoading: false });
@@ -101,25 +101,29 @@ class OrderDetails extends Component {
 
 
     getAddress(address) {
-        if (address.pickup_or_delivery_address) {
-            let temp = address.pickup_or_delivery_address.address;
+        if (address.delivery_address) {
+            let temp = address.delivery_address.address;
+            if(temp){
             return `${temp.no_and_street || ''},${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
+            }else{
+                return null  
+            }
         } else {
             return null
         }
     }
     getName(name) {
-        if (name.pickup_or_delivery_address) {
-            let temp = name.pickup_or_delivery_address;
+        if (name.delivery_address) {
+            let temp = name.delivery_address;
             return `${temp.full_name || ''}`
         } else {
             return null
         }
     }
     getMobile(number) {
-        if (number.pickup_or_delivery_address) {
-            let temp = number.pickup_or_delivery_address;
-            return `${temp.mobile_number || ''}`
+        if (number.delivery_address) {
+            let temp = number.delivery_address;
+            return `${temp.mobile_no || ''}`
         } else {
             return null
         }
@@ -163,22 +167,24 @@ class OrderDetails extends Component {
             console.log(e)
         }
     }
-    async cancelOreder(statusUpdateReason) {
+    async cancelOreder(reasonForCancelComment,reasonForCancel) {
 
         const { orderDetails } = this.state
 
         let userId = await AsyncStorage.getItem('userId');
         let reqData = {
-            user_id: userId,
-            order_id: orderDetails._id,
-            status_update_reason: statusUpdateReason,
-            status: "CANCELED",
-            status_by: "USER"
+        
+            orderNumber: orderDetails.orderNumber,
+            reasonForCancel: reasonForCancel,
+            commentForCancel: reasonForCancelComment,
+            userId: userId
         }
-        let result = await upDateOrderData(orderDetails._id, reqData)
 
-        if (result.success === true) {
-            this.medicineOrderDetails()
+        let result = await upDateOrderData(reqData)
+          
+        if (result) {
+            let getOrderSlap=true;
+            this.medicineOrderDetails(orderDetails.id,getOrderSlap)
         } else {
             Toast.show({
                 text: 'order not canceled',
@@ -186,15 +192,10 @@ class OrderDetails extends Component {
                 type: 'warning'
             })
         }
-        this.setState({ isCancel: false })
+      
 
     }
-    _onPressReject = () => {
-        this.setState({ isCancel: false })
-    };
-    _onPressAccept = () => {
-        this.cancelOreder()
-    };
+  
     async backNavigation() {
         const { navigation } = this.props;
         if (navigation.state.params) {
@@ -202,37 +203,19 @@ class OrderDetails extends Component {
                 this.getUserReport();  // Reload the Reported issues when they reload
             }
             if (navigation.state.params.hasUpdateCancelService) {
-                this.cancelOreder(navigation.state.params.statusUpdateReason)
+                this.cancelOreder(navigation.state.params.reasonForCancelComment,navigation.state.params.reasonForCancel)
             }
         };
     }
-    getUserReviews = async (orderId) => {
-        try {
-            let userId = await AsyncStorage.getItem('userId');
-            let resultReview = await getOrderUserReviews(userId, orderId);
-            console.log('getReview===================')
-            console.log(JSON.stringify(resultReview))
-
-            if (resultReview.success) {
-                this.setState({ reviewData: resultReview.data });
-            }
-
-        }
-        catch (e) {
-            console.error(e);
-        }
-
-
-    }
+  
 
     async  getvisble(val) {
         try {
-            console.log('come review=============')
-            console.log(JSON.stringify(val))
+          
             await this.setState({ isLoading: true, modalVisible: false })
             if (val.reviewUpdated === true) {
-
-                this.getUserReviews(this.state.orderDetails._id)
+               let getOderSlap=false;
+                this.medicineOrderDetails(this.state.orderDetails.id,getOderSlap)
             }
         } catch (e) {
             console.log(e)
@@ -249,7 +232,7 @@ class OrderDetails extends Component {
     }
     render() {
         const { navigation } = this.props;
-        const { isLoading, orderDetails, paymentDetails, reportData, isCancel, reviewData } = this.state;
+        const { isLoading, orderDetails, paymentDetails, reportData, isCancel } = this.state;
 
         return (
             <Container style={styles.container}>
@@ -258,27 +241,7 @@ class OrderDetails extends Component {
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
 
-                    <AwesomeAlert
-                        show={isCancel}
-                        showProgress={false}
-                        title={`are you sure cancel this order `}
-                        closeOnTouchOutside={false}
-                        closeOnHardwareBackPress={true}
-                        showCancelButton={true}
-                        showConfirmButton={true}
-                        cancelText="Reject"
-                        confirmText="Accept"
-                        cancelButtonColor="red"
-                        confirmButtonColor="green"
-                        onCancelPressed={this._onPressReject}
-                        onConfirmPressed={this._onPressAccept}
-
-                        alertContainerStyle={{ zIndex: 1 }}
-                        titleStyle={{ fontSize: 21 }}
-                        cancelButtonTextStyle={{ fontSize: 18 }}
-                        confirmButtonTextStyle={{ fontSize: 18 }}
-                    />
-                    <Spinner
+                                     <Spinner
                         visible={isLoading}
                     />
 
@@ -384,7 +347,7 @@ class OrderDetails extends Component {
                                             />
                                         </Col>
                                         <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
-                                            <Text style={styles.nameText}>{item.description}</Text>
+                                            <Text style={styles.nameText}>{item.productName}</Text>
                                             {/* {orderDetails.is_order_type_recommentation === true ?
                                                 <Text style={styles.pharText}>{'mediflic pharmacy'}</Text> :
                                                 orderDetails.is_order_type_prescription === true && orderDetails.status !== 'PENDING' ?
@@ -457,7 +420,21 @@ class OrderDetails extends Component {
                                     CANCEL ORDER
                         </Text>
                             </TouchableOpacity>
-                        </View> : null}
+                        </View> : orderDetails.status === "CANCELLED" ?
+                        <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+
+                            <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>{orderDetails.reasonForCancel}</Text>
+                            <Row>
+                                <Col size={9}>
+                                    <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{orderDetails.commentForCancel|| ' '}</Text>
+
+                                </Col>
+                                <Col size={1}>
+                                    
+                                </Col>
+                            </Row>
+                        
+                    </View>:null}
                     <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Medicine order Report</Text>
 
                     {reportData != null ?
@@ -493,19 +470,19 @@ class OrderDetails extends Component {
                             </TouchableOpacity>
                         </View>
                     }
-                    {(orderDetails.status == 'DELIVERED' && reviewData.length !== 0) || reviewData.length !== 0 ?
+                    {(orderDetails.status === 'DELIVERED' && orderDetails.rating !== null) || orderDetails.rating !== null ?
                         <View>
                             <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Review</Text>
 
                             <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                 disabled={false}
                                 maxStars={5}
-                                rating={reviewData[0] && reviewData[0].overall_rating}
+                                rating={orderDetails.rating }
                             />
-                            <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
+                            <Text note style={styles.subTextInner1}>{orderDetails.reviewComment || ''}</Text>
                         </View>
                         :
-                        (orderDetails.status === 'DELIVERED' && reviewData.length === 0) ?
+                        (orderDetails.status === 'DELIVERED' && orderDetails.rating === null) ?
                             <View>
                                 <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Add Review</Text>
 
@@ -534,7 +511,7 @@ class OrderDetails extends Component {
 
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Delivery mode</Text>
-                            <Text style={styles.rightText}>{orderDetails.deliveryType===0? 'Home delivery':'store pickup'}</Text>
+                            <Text style={styles.rightText}>{orderDetails.deliveryType === 0 ? 'Home delivery' : 'store pickup'}</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Ordered On</Text>
@@ -548,7 +525,7 @@ class OrderDetails extends Component {
 
                         </View>
                         {
-                            orderDetails.delivery_option === 'HOME_DELIVERY' && orderDetails.delivery_boy_details !== undefined ?
+                            orderDetails.deliveryType === 0 && orderDetails.delivery_boy_details !== undefined ?
                                 <View style={{ marginTop: 10, paddingBottom: 10 }}>
                                     <Text style={styles.innerText}>delivey boy Details</Text>
                                     <Text style={styles.addressText}> ref_no -{orderDetails.delivery_boy_details.delivery_boy_ref_no}</Text>

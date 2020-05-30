@@ -256,7 +256,7 @@ export default class BookAppointmentPaymentUpdate {
                 // delivery_charges: orderData.delivery_charges || ' ',
                 // delivery_tax: orderData.delivery_tax || '',
                 deliveryType: orderData.deliveryType,
-                deliveryDetail: orderData.deliveryDetail,
+                delivery_address: orderData.delivery_address,
                 // is_order_type_recommentation: orderData.is_order_type_recommentation,
                 // is_order_type_prescription: orderData.is_order_type_prescription,
                 // recommentation_pharmacy_data: orderData.recommentation_pharmacy_data || [],

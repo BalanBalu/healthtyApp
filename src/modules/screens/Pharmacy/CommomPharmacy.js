@@ -269,7 +269,7 @@ export const statusBar = {
     checked: true,
     color: 'green'
   },
-  "CANCELED":
+  "CANCELLED":
   {
     status: 'Canceled the order',
     checked: true,

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, getSuggestionMedicines,getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, quantityPriceSort } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable } from '../CommomPharmacy';
 import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';

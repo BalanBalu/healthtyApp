@@ -64,17 +64,23 @@ class MedicineSearchList extends Component {
                 medicineResultData.map(ele => {
                     prodcuctIds.push(ele.id)
                 })
-
+                let productData=this.state.data.concat(medicineResultData);
+                let prodcutAvailableData=this.state.medicineDataAvailable;
                 let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
+    
+                if(availableResult){
+                    prodcutAvailableData=prodcutAvailableData.concat(availableResult);
+                }
               
                 this.setState({
-                    data: medicineResultData, medicineDataAvailable: availableResult
+                    data: productData, medicineDataAvailable: prodcutAvailableData
                 });
-            } else {
-                this.setState({
-                    data: [],
-                });
-            }
+            } 
+            // else {
+            //     this.setState({
+            //         data: [],
+            //     });
+            // }
         }
         catch (e) {
             console.log(e)
@@ -87,14 +93,17 @@ class MedicineSearchList extends Component {
 
         
             if (medicineResultData) {
-                let data=this.state.data.concat(medicineResultData)
+                let data=this.state.data.concat(medicineResultData);
+                let  medicineDataAvailable=this.state.medicineDataAvailable
                 let prodcuctIds = []
                 medicineResultData.map(ele => {
                     prodcuctIds.push(ele.id)
                 })
-
+               
                 let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
-               let  medicineDataAvailable=this.state.medicineDataAvailable.cancat(availableResult)
+                if(availableResult){
+               let  medicineDataAvailable=medicineDataAvailable.concat(availableResult)
+                }
 
                 this.setState({
                     data, medicineDataAvailable
