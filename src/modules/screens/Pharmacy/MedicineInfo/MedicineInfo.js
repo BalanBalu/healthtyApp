@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
+import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount, getAvailableStockForListOfProducts ,updateTopSearchedItems} from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
@@ -84,6 +84,7 @@ class MedicineInfo extends Component {
             let prodcuctIds = []
             let medicineId = this.props.navigation.getParam('medicineId');
             prodcuctIds.push(medicineId)
+            updateTopSearchedItems(medicineId)
             // let pharmacyId = this.props.navigation.getParam('pharmacyId');
             let [result, availableResult] = await new Promise.all([
                 getProductDetailById(medicineId),
@@ -288,7 +289,7 @@ class MedicineInfo extends Component {
 
                             </Row>
                             {/* <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text> */}
-                            {medicineData.medInfo !== undefined && medicineData.medInfo.medicine_images !== undefined && medicineData.medInfo.medicine_images.length !== 0 ?
+                            {medicineData.productImages !== undefined && medicineData.productImages!== null && medicineData.productImages.length !== 0 ?
                                 <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
                                     <ImageZoom cropWidth={200}
                                         cropHeight={200}
@@ -305,7 +306,7 @@ class MedicineInfo extends Component {
                                             index={medicineData.medInfo.medicine_images.length - 1}
                                             contentContainerStyle={{ flexGrow: 1, }}
                                             autoplayLoop
-                                            data={medicineData.medInfo.medicine_images}
+                                            data={medicineData.productImages}
                                             renderItem={({ item }) =>
                                                 <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: medicineData.medInfo.medicine_name })}>
                                                     <Image

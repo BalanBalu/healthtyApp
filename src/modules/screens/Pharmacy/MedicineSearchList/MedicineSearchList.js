@@ -272,7 +272,7 @@ class MedicineSearchList extends Component {
                                                         <Col size={4}>
                                                             <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderMedicineImage(item.medInfo), title: item.description })}>
 
-                                                                <Image source={renderMedicineImage(item.medInfo)}
+                                                                <Image source={renderMedicineImage(item.productImages)}
 
                                                                     style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                             </TouchableOpacity>

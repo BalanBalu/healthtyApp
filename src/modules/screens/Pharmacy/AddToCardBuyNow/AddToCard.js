@@ -8,7 +8,9 @@ import {
 } from 'native-base';
 import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import{ updateTopSearchedItems} from '../../../providers/pharmacy/pharmacy.action'
+
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 
 
@@ -27,7 +29,7 @@ export class AddToCard extends Component {
     async componentDidMount() {
         let data = this.props.data;
 
-
+        updateTopSearchedItems(data.id)
         console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
         if (data.userAddedMedicineQuantity) {
@@ -140,7 +142,7 @@ export class AddToCard extends Component {
                                 <Text style={{ color: '#7227C7', fontSize: 16, fontWeight: '500' }}>{data.selectedType || ''}</Text>
                                 <Row style={{ marginTop: 5 }}>
                                     <Col size={4}>
-                                        <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                        <Image source={renderMedicineImage(data.productImages)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                     </Col>
                                     <Col size={6} style={{ marginTop: -5 }}>
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>

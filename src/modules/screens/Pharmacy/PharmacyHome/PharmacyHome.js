@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, getSuggestionMedicines,getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
+import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy,getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable } from '../CommomPharmacy';
@@ -78,8 +78,8 @@ class PharmacyHome extends Component {
         try {
             userId = await AsyncStorage.getItem('userId')
            
-            let result = await getSuggestionMedicines('dolo')
-
+            let result = await searchRecentItemsByPharmacy(10)
+                console.log(JSON.stringify(result))
           
 
             if (result) {
@@ -323,7 +323,7 @@ class PharmacyHome extends Component {
 
                                                     <Row>
                                                         <Col size={9} style={{ alignItems: 'center' }}>
-                                                            <Image source={renderMedicineImage(item.medInfo)}
+                                                            <Image source={renderMedicineImage(item.productImages)}
                                                                 style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                         </Col>
                                                         {item.discount !== undefined && item.discount !== null ?

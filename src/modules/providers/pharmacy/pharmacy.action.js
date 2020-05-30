@@ -17,6 +17,22 @@ export async function getSuggestionMedicines(keyword, data, isLoading = true) {
     }
   }
 }
+
+
+export async function searchRecentItemsByPharmacy(limit) {
+  try {
+    let endPoint = '/products/top-search-product?l='+limit;
+    let response = await inventoryGetService(endPoint);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 export async function getMedicinesSearchList(keyword, pagination, isLoading = true) {
   try {
     console.log(typeof keyword)
@@ -261,6 +277,22 @@ export async function createMedicineOrder(data) {
     console.log(JSON.stringify(response))
     let respData = response.data;
     return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function updateTopSearchedItems(pid) {
+  try {
+    let endPoint = `/products/top-search-product/${pid}`;
+    console.log(endPoint)
+    let response = await inventoryPutService(endPoint, data);
+    
+  
   } catch (e) {
     return {
       message: 'exception' + e,
