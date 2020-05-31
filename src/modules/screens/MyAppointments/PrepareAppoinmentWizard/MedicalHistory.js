@@ -66,9 +66,8 @@ class MedicalHistory extends PureComponent {
                 reason_for_visit: {
                     description: reason_description,
                     any_other_concerns: any_other_concerns,
-                    has_skip_general_health_info: false
-
-                }
+                },
+                has_skip_general_health_info: false
             }
             this.setState({ isLoading: true })
             this.addgeneralHealthInfo()

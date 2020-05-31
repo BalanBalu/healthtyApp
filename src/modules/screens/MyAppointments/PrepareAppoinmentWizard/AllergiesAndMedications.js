@@ -36,14 +36,18 @@ class AllergiesAndMedications extends PureComponent {
                 }]
         }
     }
-    skippingButton = async (hasSkip = true) => {
+    skippingButton = async () => {
         try {
+            debugger
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_allergies_and_Medications: hasSkip
+                has_skip_allergies_and_medications:false
             }
-            let result = await prepareAppointmentUpdate(appointmentId, data);
+            debugger
+            let result = await prepareAppointmentUpdate(appointmentId,data);
+            debugger
+        
             if (result.success) {
                 Toast.show({
                     text: result.message,
@@ -59,6 +63,7 @@ class AllergiesAndMedications extends PureComponent {
     }
     addAllergiesAndMedications = async () => {
         try {
+            debugger
             const { appointmentId, alergicDetails, medicineTakingDetails } = this.state
             let userId = await AsyncStorage.getItem('userId');
 
@@ -66,19 +71,21 @@ class AllergiesAndMedications extends PureComponent {
                 having_any_allergies: alergicDetails,
                 taking_medications: medicineTakingDetails
             }
-
+            debugger
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
-
+            debugger
+            debugger
             if (response.success) {
                 Toast.show({
                     text: response.message,
                     type: "success",
                     duration: 3000,
                 })
-                this.skippingButton(false);
+                this.skippingButton();
                 this.props.navigation.navigate('FamilyMedicalConditions', { AppointmentId: appointmentId });
             }
+            
         }
         catch (e) {
             console.log(e)
@@ -317,7 +324,7 @@ class AllergiesAndMedications extends PureComponent {
                             <View style={{ width: '40%', }}>
                                 <TouchableOpacity style={styles.skipButton}
                                     onPress={() => {
-                                        prepareAppointmentUpdate(this.state.appointmentId, { has_skip_allergies_and_Medications: true });
+                                        prepareAppointmentUpdate(this.state.appointmentId, { has_skip_allergies_and_medications: true });
                                         this.props.navigation.navigate('FamilyMedicalConditions', { AppointmentId: this.state.appointmentId });
 
                                     }}>
