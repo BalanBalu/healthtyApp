@@ -80,7 +80,7 @@ class Reminder extends Component {
       let endDate;
       if (ele.reminder_type === 'onlyonce') {
         let endDateTemp = formatDate(ele.medicine_take_start_date, "dddd,MMMM DD-YYYY");
-        if ((dateData == endDateTemp && ele.active == true)) {
+        if ((dateData == endDateTemp && date <= startDate && ele.active == true)) {
           return true;
         }
       }
@@ -233,7 +233,6 @@ class Reminder extends Component {
                 iconContainer={{ flex: 0.1 }}
                 datesBlacklist={datesBlackList}
               />
-              <Text style={{ color: '#7F49C3', textAlign: 'center', marginTop: 2, fontFamily: 'OpenSans', fontWeight: "500" }}>Today</Text>
             </View>
 
 
