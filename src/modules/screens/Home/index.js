@@ -26,10 +26,6 @@ import NotifService from '../../../setup/NotifService';
 import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
-import { getUserAppointments, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
-import { getName, getAllEducation, getAllSpecialist } from '../../common'
-import { formatDate, addTimeUnit, getAllId } from "../../../setup/helpers";
-import moment from 'moment';
 import NextAppoinmentPreparation from './nextAppoinmentPreparation'
 class Home extends Component {
 
@@ -596,7 +592,9 @@ class Home extends Component {
                                     </Row>
                                 </TouchableOpacity>
                             </Card>
-                            <NextAppoinmentPreparation />
+                            <NextAppoinmentPreparation 
+                            navigation={this.props.navigation}
+                            />
                         </View>
 
 

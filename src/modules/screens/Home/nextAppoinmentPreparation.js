@@ -7,6 +7,8 @@ import { getUserAppointments, getMultipleDoctorDetails } from "../../providers/b
 import { getName, getAllEducation, getAllSpecialist } from '../../common'
 import { formatDate, addTimeUnit, getAllId } from "../../../setup/helpers";
 import moment from 'moment';
+import { NavigationEvents } from 'react-navigation'
+
 class NextAppoinmentPreparation extends PureComponent {
     constructor(props) {
         super(props)
@@ -127,7 +129,7 @@ class NextAppoinmentPreparation extends PureComponent {
     };
     render() {
         const { AppoinmentData, updatedDate, AppointmentId, doctorInfo } = this.state
-
+        const { navigation} = this.props;
         return (
 
             <View>
@@ -143,7 +145,7 @@ class NextAppoinmentPreparation extends PureComponent {
                     </Left>
                 </Row>
                 <Card style={{ marginTop: 10 }}>
-                    <TouchableOpacity onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: AppointmentId, DoctorData: AppoinmentData, Data: doctorInfo }) }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate('PrepareAppointmentWizard', { AppointmentId: AppointmentId, DoctorData: AppoinmentData, Data: doctorInfo }) }}>
                         <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "#8EC63F", }}>
                             <Col style={{ width: '90%', justifyContent: 'center' }}>
                                 <Text style={{
