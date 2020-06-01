@@ -4,7 +4,6 @@ import { logout } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
-
 import { getReferalPoints, getCurrentVersion } from '../../providers/profile/profile.action';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE } from '../../../setup/config';
@@ -27,8 +26,7 @@ import NotifService from '../../../setup/NotifService';
 import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
-
-
+import NextAppoinmentPreparation from './nextAppoinmentPreparation'
 class Home extends Component {
 
     locationUpdatedCount = 0;
@@ -38,7 +36,11 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            categryCount: 0
+            categryCount: 0,
+            AppoinmentData: [],
+            updatedDate: '',
+            AppointmentId: '',
+            doctorInfo: {}
         };
     }
 
@@ -366,6 +368,9 @@ class Home extends Component {
         CallKeepService.displayIncomingCall('12345', 'Doctor');
     };
 
+
+
+
     render() {
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
 
@@ -387,22 +392,22 @@ class Home extends Component {
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
-                        <Row style={styles.SearchRow}>
-                            <Col size={0.9} style={styles.SearchStyle}>
-                                <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-                            </Col>
-                            <Col size={8.1} style={{ justifyContent: 'center', }}>
-                                <Input
-                                    onFocus={() => { this.props.navigation.navigate("RenderSuggestionList")}}
-                                    placeholder="Search for Symptoms/Services,etc"
-                                    style={styles.inputfield}
-                                    placeholderTextColor="#e2e2e2"
-                                    editable={true}
-                                    underlineColorAndroid="transparent"
-                                />
-                            </Col>
-                        </Row>
-                   
+                    <Row style={styles.SearchRow}>
+                        <Col size={0.9} style={styles.SearchStyle}>
+                            <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
+                        </Col>
+                        <Col size={8.1} style={{ justifyContent: 'center', }}>
+                            <Input
+                                onFocus={() => { this.props.navigation.navigate("RenderSuggestionList") }}
+                                placeholder="Search for Symptoms/Services,etc"
+                                style={styles.inputfield}
+                                placeholderTextColor="#e2e2e2"
+                                editable={true}
+                                underlineColorAndroid="transparent"
+                            />
+                        </Col>
+                    </Row>
+
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '33%', }}>
                             <TouchableOpacity onPress={() =>
@@ -587,7 +592,14 @@ class Home extends Component {
                                     </Row>
                                 </TouchableOpacity>
                             </Card>
+                            <NextAppoinmentPreparation 
+                            navigation={this.props.navigation}
+                            />
                         </View>
+
+
+
+
                     </View>
 
                 </Content>
