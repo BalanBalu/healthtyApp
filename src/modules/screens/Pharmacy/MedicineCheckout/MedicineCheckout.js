@@ -164,6 +164,7 @@ class MedicineCheckout extends Component {
                 medicineOrderData.push({
                     // description: String(ele.description),
                     discountedAmount: Number(ele.discountedAmount) || Number(ele.price),
+                    productName:getMedicineName(ele),
                     productId: ele.productDetails ? String(ele.productDetails.productId) : String(ele.id),
                     quantity: Number(ele.userAddedMedicineQuantity),
                     tax: 0,
@@ -187,28 +188,31 @@ class MedicineCheckout extends Component {
                 // delivery_option: itemSelected,
                 // delivery_charges: deliveryDetails !== null ? deliveryDetails.delivery_charges : 0,
                 // delivery_tax: deliveryDetails !== null ? deliveryDetails.delivery_tax : 0,
-                deliveryDetail: {
-                    address1: selectedAddress.address.no_and_street,
-                    address2: selectedAddress.address.address_line_1,
-                    altContactNo: mobile_no || '',
-                    area: selectedAddress.address.district,
-                    city: selectedAddress.address.city,
-                    contactName: selectedAddress.full_name,
-                    contactNo: selectedAddress.mobile_no || '',
-                    country: selectedAddress.address.country,
-                    mobile_number: selectedAddress.mobile_no || mobile_no || BASIC_DEFAULT.mobile_no,
+                delivery_address: {
+                    // address:{
+                    // no_and_street: selectedAddress.address.no_and_street,
+                    // district: selectedAddress.address.district,
+                    // city: selectedAddress.address.city,
+                    // address2: selectedAddress.address.address_line_1,
+                    // },
+                    // altContactNo: mobile_no || '',
+                   
+                    // contactName: selectedAddress.full_name,
+                    // contactNo: selectedAddress.mobile_no || '',
+                    // country: selectedAddress.address.country,
+                    mobile_no: selectedAddress.mobile_no || mobile_no || BASIC_DEFAULT.mobile_no,
                     full_name: selectedAddress.full_name || selectedAddress.name || full_name,
-                    // coordinates: selectedAddress.coordinates,
-                    // type: selectedAddress.type,
-                    // address: {
-                    //     no_and_street: selectedAddress.address.no_and_street || ' ',
-                    //     address_line_1: selectedAddress.address.address_line_1,
-                    //     district: selectedAddress.address.district,
-                    //     city: selectedAddress.address.city,
-                    //     state: selectedAddress.address.state,
-                    //     country: selectedAddress.address.country,
-                    //     pin_code: selectedAddress.address.pin_code
-                    // }
+                    coordinates: selectedAddress.coordinates,
+                     type: selectedAddress.type,
+                    address: {
+                        no_and_street: selectedAddress.address.no_and_street || ' ',
+                        address_line_1: selectedAddress.address.address_line_1,
+                        district: selectedAddress.address.district,
+                        city: selectedAddress.address.city,
+                        state: selectedAddress.address.state,
+                        country: selectedAddress.address.country,
+                        pin_code: selectedAddress.address.pin_code
+                    }
                 },
             }
         }
@@ -500,11 +504,11 @@ class MedicineCheckout extends Component {
 
 
                                 {itemSelected === 1 && pharmacyInfo !== null ?
-                                    <View>
+                                    <View style={{ padding: 10}}>
                                         {/* <Col style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                             
                                         </Col> */}
-                                        <Row>
+                                        <Row >
                                             <Col size={5}>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
                                             </Col>

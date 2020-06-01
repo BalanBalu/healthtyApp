@@ -8,7 +8,9 @@ import {
 } from 'native-base';
 import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import{ updateTopSearchedItems} from '../../../providers/pharmacy/pharmacy.action'
+
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 
 
@@ -27,7 +29,7 @@ export class AddToCard extends Component {
     async componentDidMount() {
         let data = this.props.data;
 
-
+       
         console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
         if (data.userAddedMedicineQuantity) {
@@ -41,6 +43,7 @@ export class AddToCard extends Component {
             this.productQuantityOperator(data, 'add')
         }
         this.setState({ data })
+        updateTopSearchedItems(data.id)
 
     }
     async productQuantityOperator(item, operator) {
@@ -140,7 +143,7 @@ export class AddToCard extends Component {
                                 <Text style={{ color: '#7227C7', fontSize: 16, fontWeight: '500' }}>{data.selectedType || ''}</Text>
                                 <Row style={{ marginTop: 5 }}>
                                     <Col size={4}>
-                                        <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                        <Image source={renderMedicineImage(data.productImages)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                     </Col>
                                     <Col size={6} style={{ marginTop: -5 }}>
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>
@@ -176,15 +179,14 @@ export class AddToCard extends Component {
                                         </Col>
                                     </Row> : null}
                                 {/* api did not ready so condition use in reverse  */}
-                                {(data.productDetails && data.productDetails.available === 0) || data.productDetails !== null ?
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center', backgroundColor: '#E6E6E6', }}>Out of stock</Text> :
-                                    <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, height: 30, paddingTop: 2, backgroundColor: '#4e85e9', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
 
-                                        <Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, }} />
-                                        <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 5, marginBottom: 5, textAlign: 'center' }}>{data.selectedType}</Text>
+                                <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, height: 30, paddingTop: 2, backgroundColor: '#4e85e9', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
 
-                                    </TouchableOpacity>
-                                }
+                                    <Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, }} />
+                                    <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 5, marginBottom: 5, textAlign: 'center' }}>{data.selectedType}</Text>
+
+                                </TouchableOpacity>
+
                             </Col>
 
                         </Row>

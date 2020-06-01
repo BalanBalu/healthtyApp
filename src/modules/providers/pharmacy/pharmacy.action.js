@@ -17,10 +17,26 @@ export async function getSuggestionMedicines(keyword, data, isLoading = true) {
     }
   }
 }
+
+
+export async function searchRecentItemsByPharmacy(limit) {
+  try {
+    let endPoint = '/products/top-search-product?l='+limit;
+    let response = await inventoryGetService(endPoint);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 export async function getMedicinesSearchList(keyword, pagination, isLoading = true) {
   try {
     console.log(typeof keyword)
-    let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + 0 + '&c=' + 5;
+    let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + pagination + '&c=' + 10;
     console.log(endPoint);
 
     let response = await inventoryGetService(endPoint);
@@ -177,7 +193,22 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
+export async function deletePrescriptionByUserId(userId) {
+  try {
 
+    let endPoint = '/medicine_orders/prescription/user/'+userId
+    console.log(endPoint);
+    let response = await deleteService(endPoint);
+    console.log(JSON.stringify(response.data))
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 
 
@@ -246,6 +277,22 @@ export async function createMedicineOrder(data) {
     console.log(JSON.stringify(response))
     let respData = response.data;
     return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function updateTopSearchedItems(pid) {
+  try {
+    let endPoint = `/products/top-search-product/${pid}`;
+    console.log(endPoint)
+    let response = await inventoryPutService(endPoint, data);
+    
+  
   } catch (e) {
     return {
       message: 'exception' + e,
@@ -356,10 +403,10 @@ export async function getmedicineAvailableStatus(data, isLoading = true) {
   }
 }
 
-export async function upDateOrderData(orderId, data) {
+export async function upDateOrderData(data) {
   try {
-    let endPoint = '/medicine_orders/order/user/' + orderId;
-    let response = await putService(endPoint, data);
+    let endPoint = '/transaction/cancel-order';
+    let response = await inventoryPutService(endPoint, data);
 
     let respData = response.data;
     console.log('updateData====================================')
@@ -424,8 +471,8 @@ export async function getOrderUserReviews(user_id, order_id) {
 }
 export async function InsertOrderReviews(user_id, data) {
   try {
-    let endPoint = '/medicine_orders/user/' + user_id + '/order_review'
-    let response = await postService(endPoint, data);
+    let endPoint = '/transaction/review'
+    let response = await inventoryPutService(endPoint, data);
     let respData = response.data;
     return respData;
 

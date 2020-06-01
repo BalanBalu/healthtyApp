@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, getSuggestionMedicines,getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
+import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy,getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, quantityPriceSort } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable } from '../CommomPharmacy';
 import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
@@ -63,6 +63,7 @@ class PharmacyHome extends Component {
                     cartData = JSON.parse(cart)
 
                 }
+                setCartItemCountOnNavigation(this.props.navigation);
                 await this.setState({ cartItems: cartData })
             }
         }
@@ -78,8 +79,8 @@ class PharmacyHome extends Component {
         try {
             userId = await AsyncStorage.getItem('userId')
            
-            let result = await getSuggestionMedicines('dolo')
-
+            let result = await searchRecentItemsByPharmacy(10)
+                console.log(JSON.stringify(result))
           
 
             if (result) {
@@ -319,11 +320,11 @@ class PharmacyHome extends Component {
                                                     medicineId: item.id,
                                                     medicineData: item
                                                 })}>
-                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
+                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%',borderRadius: 2.5,}}>
 
                                                     <Row>
                                                         <Col size={9} style={{ alignItems: 'center' }}>
-                                                            <Image source={renderMedicineImage(item.medInfo)}
+                                                            <Image source={renderMedicineImage(item.productImages)}
                                                                 style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                         </Col>
                                                         {item.discount !== undefined && item.discount !== null ?
@@ -405,7 +406,7 @@ class PharmacyHome extends Component {
                                     horizontal={true}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) =>
-                                        <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210 }}>
+                                        <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210,borderRadius: 2.5, }}>
 
                                             <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
                                                 <Col size={5}>

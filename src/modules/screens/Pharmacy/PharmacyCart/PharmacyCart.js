@@ -196,7 +196,7 @@ class PharmacyCart extends Component {
                                 renderItem={({ item, index }) =>
                                     <Row style={{ justifyContent: 'center', paddingBottom: 5 }}>
                                         <Col size={2} style={{ justifyContent: 'center' }}>
-                                            <Image source={renderMedicineImage(item)}
+                                            <Image source={renderMedicineImage(item.productImages)}
                                                 style={{ height: 100, width: 70, margin: 5 }} />
                                             {item.is_outofStack !== undefined && item.is_outofStack === true ?
                                                 <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center', backgroundColor: '#E6E6E6', marginTop: -40, marginLeft: 5 }}>Out of stock</Text> : null}

@@ -74,13 +74,19 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
 
 export function renderMedicineImage(data) {
-  console.log(data)
+ 
   let source = require('../../../../assets/images/paracetamol.jpg')
-  if (data) {
-    if (data.medicine_images) {
-      if (data.medicine_images[0]) {
-        console.log(data.medicine_images[0].imageURL)
-        source = { uri: data.medicine_images[0].imageURL }
+
+  if (data!==null&&data!==undefined) {
+
+    if (Array.isArray(data) && data.length !== 0) {
+      let defaultImage = data.find(ele => {
+        return ele.isDefault === true
+      })
+      if (defaultImage) {
+        source = { uri: defaultImage.imageURL }
+      } else {
+        source = { uri: data[0].imageURL }
       }
     }
   }
@@ -209,17 +215,17 @@ export function getMedicineName(data) {
 
 }
 
-export function getIsAvailable(data,availableData) {
-  let isAvailable=false
-  let item=availableData.find(ele=>{
-    return ele.productId===data.id
+export function getIsAvailable(data, availableData) {
+  let isAvailable = false
+  let item = availableData.find(ele => {
+    return ele.productId === data.id
   })
-  if(item!==undefined){
-    if(item.available>1){
-      isAvailable=true
+  if (item !== undefined) {
+    if (item.available > 1) {
+      isAvailable = true
     }
   }
-return isAvailable
+  return isAvailable
 }
 export function getMedicineWeightUnit(weight, unit) {
   let medicineWeightUnit = ' '
@@ -269,7 +275,7 @@ export const statusBar = {
     checked: true,
     color: 'green'
   },
-  "CANCELED":
+  "CANCELLED":
   {
     status: 'Canceled the order',
     checked: true,
@@ -312,12 +318,12 @@ export const statusBar = {
     color: 'green'
   },
   "undefined":
-    {
-      status: 'status  mismatching undefined',
-      checked: true,
-      color: 'red'
-    },
-  
+  {
+    status: 'status  mismatching undefined',
+    checked: true,
+    color: 'red'
+  },
+
 }
 
 

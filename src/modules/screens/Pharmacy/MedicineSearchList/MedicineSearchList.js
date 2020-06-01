@@ -23,7 +23,7 @@ class MedicineSearchList extends Component {
             isBuyNow: false,
             selectedMedcine: {},
             medicineName: '',
-            pagination: 1,
+            pagination: 0,
         }
     }
     async  componentDidMount() {
@@ -48,15 +48,15 @@ class MedicineSearchList extends Component {
             await this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
         }
         else {
-            await this.MedicineSearchList(medicineName)
+            await this.MedicineSearchList(medicineName,this.state.pagination)
         }
         this.setState({ isLoading: false, medicineName })
 
     }
-    MedicineSearchList = async (enteredText) => {
+    MedicineSearchList = async (enteredText,pagination) => {
         try {
 
-            let medicineResultData = await getMedicinesSearchList(enteredText, this.state.pagination);
+            let medicineResultData = await getMedicinesSearchList(enteredText, pagination);
             console.log('MedicineSearchList')
 
             if (medicineResultData) {
@@ -64,17 +64,23 @@ class MedicineSearchList extends Component {
                 medicineResultData.map(ele => {
                     prodcuctIds.push(ele.id)
                 })
-
+                let productData=this.state.data.concat(medicineResultData);
+                let prodcutAvailableData=this.state.medicineDataAvailable;
                 let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
+    
+                if(availableResult){
+                    prodcutAvailableData=prodcutAvailableData.concat(availableResult);
+                }
               
                 this.setState({
-                    data: medicineResultData, medicineDataAvailable: availableResult
+                    data: productData, medicineDataAvailable: prodcutAvailableData
                 });
-            } else {
-                this.setState({
-                    data: [],
-                });
-            }
+            } 
+            // else {
+            //     this.setState({
+            //         data: [],
+            //     });
+            // }
         }
         catch (e) {
             console.log(e)
@@ -87,14 +93,17 @@ class MedicineSearchList extends Component {
 
         
             if (medicineResultData) {
-                let data=this.state.data.concat(medicineResultData)
+                let data=this.state.data.concat(medicineResultData);
+                let  medicineDataAvailable=this.state.medicineDataAvailable
                 let prodcuctIds = []
                 medicineResultData.map(ele => {
                     prodcuctIds.push(ele.id)
                 })
-
+               
                 let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
-               let  medicineDataAvailable=this.state.medicineDataAvailable.cancat(availableResult)
+                if(availableResult){
+               let  medicineDataAvailable=medicineDataAvailable.concat(availableResult)
+                }
 
                 this.setState({
                     data, medicineDataAvailable
@@ -194,7 +203,7 @@ class MedicineSearchList extends Component {
             await this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
         }
         else {
-            await this.MedicineSearchList(this.state.medicineName,this.state.pagination + 1)
+            await this.MedicineSearchList(this.state.medicineName,pagination)
         }
 
     }
@@ -243,7 +252,7 @@ class MedicineSearchList extends Component {
                                 <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}> No medicine were found</Text> :
                                 <View>
                                     <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}>Showing all results for <Text style={{ fontStyle: 'italic', fontSize: 12.5, color: '#7227C7' }}>{medicineName}</Text></Text>
-                                    <View>
+                                    <View style={{marginBottom:20}}>
                                         <FlatList
                                             data={data}
                                             extraData={this.state}
@@ -251,7 +260,7 @@ class MedicineSearchList extends Component {
                                             onEndReached={this.handleLoadMore}
                                             onEndReachedThreshold={8}
                                             renderItem={({ item }) =>
-                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
+                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 2.5, }}>
                                                     <Row onPress={() =>
                                                         this.props.navigation.navigate('MedicineInfo', {
                                                             medicineId: item.id,
@@ -263,7 +272,7 @@ class MedicineSearchList extends Component {
                                                         <Col size={4}>
                                                             <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderMedicineImage(item.medInfo), title: item.description })}>
 
-                                                                <Image source={renderMedicineImage(item.medInfo)}
+                                                                <Image source={renderMedicineImage(item.productImages)}
 
                                                                     style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                             </TouchableOpacity>
@@ -275,7 +284,7 @@ class MedicineSearchList extends Component {
                                                                 <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
                                                                 <Row>
                                                                     <Col size={5} style={{ flexDirection: 'row' }}>
-                                                                        <Text style={{ fontSize: 8, marginLeft: -3, marginTop: 5, color: "#ff4e42" }}>{'MRP'}</Text>
+                                                                        <Text style={{ fontSize: 8,marginTop: 5, color: "#ff4e42" }}>{'MRP'}</Text>
                                                                         {item.discount !== undefined && item.discount !== null ?
                                                                             <Row>
                                                                                 <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: 5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price || ''}</Text>
