@@ -102,7 +102,7 @@ import HospitalizationAndSurgeries from '../../modules/screens/MyAppointments/Pr
 import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/SocialHistory'
 import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
-
+import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
 
 const AuthRoutes = {
   login: {
@@ -206,6 +206,12 @@ const HomeStack = createStackNavigator({
       title: 'Refer and Earn'
     }
   },
+  NextAppoinmentPreparation: {
+    screen: NextAppoinmentPreparation,
+    navigationOptions: {
+      title: 'Next Appoinment Preparation'
+    }
+  },
   // ================Categories  ===============
   Locations: {
     screen: Locations,
@@ -279,7 +285,7 @@ const HomeStack = createStackNavigator({
       title: "Appointment info"
     }
   },
- 
+
   "EmrDetails": {
     screen: EmrDetails,
     navigationOptions: {
