@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
-import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders,getReminderData} from '../../providers/reminder/reminder.action.js';
+import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders, getReminderData } from '../../providers/reminder/reminder.action.js';
 import { IS_ANDROID, IS_IOS } from '../../../setup/config';
 const POSSIBLE_PAGE_CONTENT = {
   MEDICINE_CONTENT: 'MEDCINE_CONTENT',
@@ -62,8 +62,8 @@ class AddReminder extends Component {
   componentDidMount() {
     debugger
     const { reminder: { reminderResponse: { data, } } } = this.props;
-   // console.log('data props from compom did mount', JSON.stringify(data));
-    
+    // console.log('data props from compom did mount', JSON.stringify(data));
+
     debugger
   }
   SearchKeyWordFunction = async (enteredText) => {
@@ -99,32 +99,52 @@ class AddReminder extends Component {
   }
   handleTimePicker = async (date) => {
     try {
-      debugger
-      const { reminder: { reminderResponse: { data, } } } = this.props;
-     debugger
-let formateByPickedTime=formatDate(date,"hh:mm a");
-//console.log('propssssss  data==[====>',JSON.stringify(data))
-           
-debugger
-data.map(item=>{
-  debugger
-  let checkGivenTime=item.medicine_take_times.some(ele => formatDate(ele.medicine_take_time, 'hh:mm a') === formatDate(date, 'hh:mm a')&& item.medicine_name==this.state.medicine_name)
-  debugger
-  if(checkGivenTime){
-  this.setState({ isTimePickerVisible: true })
-  Toast.show({
-    text: 'Time already exists',
-    type: 'dangers',
-    duration: 3000,
-  })
-  return false;
-}
 
-})
-this.setState({ medicine_take_times: date,timePlaceholder: true, isTimePickerVisible: false})
-this.insertReminderData();
 
-        
+
+
+      let temp = this.medicineTakeTimes || []
+      await this.setState({ timePlaceholder: true, isTimePickerVisible: false })
+
+
+
+      if (!temp.some(ele => formatDate(ele.medicine_take_time, 'hh:mm a') === formatDate(date, 'hh:mm a'))) {
+        temp.push({
+          id: this.medicineTakeTimes.length + 1,
+          medicine_take_time: date
+        })
+
+
+
+        this.medicineTakeTimes = temp
+        await this.setState({ isTimePickerVisible: false })
+      } else {
+        this.setState({ isTimePickerVisible: true })
+        Toast.show({
+          text: 'Time already exists',
+          type: 'dangers',
+          duration: 3000,
+        })
+        return false;
+      }
+
+
+
+
+
+
+
+
+
+
+      const lastIndexOfitem = this.medicineTakeTimes.slice(-1)[0]
+      const RecentylyPickedTime = lastIndexOfitem.medicine_take_time
+
+      this.setState({ RecentylyPickedTime });
+
+      this.insertReminderData();
+
+
       debugger
     } catch (error) {
       console.log(error);
@@ -197,10 +217,7 @@ this.insertReminderData();
 
       } else {
         debugger
-        this.medicineTakeTimes.push({
-          id: this.medicineTakeTimes.length + 1,
-          medicine_take_time: this.state.medicine_take_times
-        });
+
         debugger
         this.setState({ previewdisplay: true });
       }
@@ -217,6 +234,7 @@ this.insertReminderData();
     temp.splice(index, 1)
     this.medicineTakeTimes = temp;
     this.setState({ refreshCount: this.state.refreshCount + 1 })
+
   }
 
   AddReminderDatas = async () => {
@@ -239,6 +257,11 @@ this.insertReminderData();
       else {
         debugger
         let userId = await AsyncStorage.getItem('userId');
+        //  this.medicineTakeTimes.push({
+        //   id: this.medicineTakeTimes.length + 1,
+        //   medicine_take_time: this.state.medicine_take_times
+        // });
+
         let data = {
           medicine_name: this.state.medicine_name,
           medicine_form: this.state.medicine_form,
@@ -259,6 +282,7 @@ this.insertReminderData();
         }
         debugger
         let result = await addReminderdata(userId, data)
+
         debugger
 
 
@@ -555,7 +579,9 @@ this.insertReminderData();
                             <Icon name='ios-clock' style={styles.tocuhIcon} />
                             {
                               this.state.timePlaceholder ?
-                                <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_times, 'HH:mm A')}</Text> :
+                                <View>
+                                  <Text style={styles.startenddatetext}>{formatDate(this.state.RecentylyPickedTime, 'HH:mm A')}</Text>
+                                </View> :
                                 <Text style={styles.startenddatetext}>Select time </Text>
                             }
                             <DateTimePicker
