@@ -80,10 +80,16 @@ class FamilyMedicalConditions extends PureComponent {
 
     onAddNewfamilyCondition = async () => {
         const { familyCondition, refreshCount } = this.state;
-
+        const getLastItemInFamilyCondition = familyCondition.slice(-1)[0];
+        if (getLastItemInFamilyCondition != undefined) {
+            if (!getLastItemInFamilyCondition.person_name || !getLastItemInFamilyCondition.family_person_who) {
+                debugger
+                return false
+            }
+        }
         familyCondition.push({
-            allergic_name: null,
-            reaction: null
+            person_name: null,
+            family_person_who: null
         });
         await this.setState({ familyCondition, refreshCount: refreshCount + 1 })
     }
@@ -120,7 +126,7 @@ class FamilyMedicalConditions extends PureComponent {
                             <View>
                                 <Form>
                                     <FlatList
-                                        style={{ flex: 1 }}
+                                        containerstyle={{ flex: 1 }}
                                         data={familyCondition}
                                         extraData={familyCondition}
                                         renderItem={({ item, index }) => {

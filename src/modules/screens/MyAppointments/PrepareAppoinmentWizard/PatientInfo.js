@@ -22,7 +22,7 @@ class PatientInfo extends PureComponent {
         this.state = {
             user_name: first_name,
             mobile_no: secondary_mobile,
-            date_of_birth: formatDate(dob,'DD/MM/YYYY'),
+            date_of_birth: formatDate(dob,'YYYY/MM/DD'),
             gender: gender,
             marital_status: marital_status,
             selectedBloodGroup: blood_group,
@@ -68,7 +68,7 @@ class PatientInfo extends PureComponent {
                 blood_group: selectedBloodGroup,
                 marital_status: marital_status
             }
-
+        
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
             console.log(response);
