@@ -498,3 +498,64 @@ export async function removePrescriptionImage(prescriptionData, userId) {
     }
   }
 }
+
+
+//cart
+export async function createCart(data) {
+  try {
+
+    let endPoint = '/cart'
+    let response = await inventoryPutService(endPoint,data);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function  deleteCartByIds(cardIds) {
+  try {
+  
+   
+    let endPoint = '/cart?ids='+cardIds
+    let response = await inventoryDeleteService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getCartListByUserId( userId) {
+  try {
+    let endPoint = `/cart/user/${userId}`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function deleteCartById(userId) {
+  try {
+   
+  
+    let endPoint = `/cart/${userId}`
+    let response = await inventoryDeleteService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+

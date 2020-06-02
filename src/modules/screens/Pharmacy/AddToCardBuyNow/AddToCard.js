@@ -85,6 +85,23 @@ export class AddToCard extends Component {
             }
             let cartItems = []
             let userId = await AsyncStorage.getItem('userId')
+            let reqData={
+                    userId: userId,
+                    type: "CART",
+                    "item": {
+                      "productId": "string",
+                      "productName": "string",
+                      "quantity": 0,
+                      "unitPrice": 0,
+                      "totalPrice": 0,
+                      "tax": 0,
+                      "discountedAmount": 0,
+                      "image": "string"
+                    }
+                   
+                  
+            }
+          
             let cart = await AsyncStorage.getItem('cartItems-' + userId);
 
             if (cart != null) {
