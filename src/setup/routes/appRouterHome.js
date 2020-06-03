@@ -62,7 +62,7 @@ import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchLis
 import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/ChosePharmacyList'
 
 
-import { Badge } from '../../../src/modules/common'
+import { Badge,onPopupEvent } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import LocationDetail from '../../modules/screens/Home/LocationDetail';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
@@ -103,7 +103,7 @@ import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmen
 import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
-
+ import PopupMenu from './popUpMenu'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -176,17 +176,21 @@ const HomeStack = createStackNavigator({
         <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
             <View>
-              <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+              <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
               {navigation.getParam('notificationBadgeCount') != null ?
                 <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
                 : null}
               {/* <Badge /> */}
             </View>
+
             {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
               <View>
                 <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
               </View>
             </TouchableOpacity> */}
+          </TouchableOpacity>
+          <TouchableOpacity style={{ marginRight: 2.5,paddingLeft:5,paddingRight:5}}>
+          <PopupMenu actions={['Edit','Remove','Language setting']}   onPress={onPopupEvent} navigation={navigation}/>
           </TouchableOpacity>
 
 
@@ -210,6 +214,12 @@ const HomeStack = createStackNavigator({
     screen: NextAppoinmentPreparation,
     navigationOptions: {
       title: 'Next Appoinment Preparation'
+    }
+  },
+  PopupMenu :{
+    screen: PopupMenu,
+    navigationOptions: {
+      title: 'PopupMenu'
     }
   },
   // ================Categories  ===============

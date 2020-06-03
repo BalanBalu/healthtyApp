@@ -364,3 +364,9 @@ export const reportStatusValue = {
         return true
     }
 }
+
+export const  onPopupEvent = (eventName, index,navigation) => {
+    if (eventName !== 'itemSelected') return
+    if (index === 0) this.onEdit()
+    else this.onRemove()
+  }
