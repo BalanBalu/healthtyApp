@@ -8,7 +8,7 @@ import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
 import { getAddress } from '../../../common';
-import { getMedicineName } from '../CommomPharmacy';
+import { getMedicineNameByProductName } from '../CommomPharmacy';
 import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { getPurcharseRecomentation } from '../../../providers/pharmacy/pharmacy.action'
@@ -153,25 +153,25 @@ class MedicineCheckout extends Component {
             })
             return false;
         }
-        let medicinceNames = '';
+        // let medicinceNames = '';
         let medicineOrderData = [];
         let amount = 0;
         if (isPrescription !== true) {
             amount = medicineDetails.map(ele => {
-                if (medicinceNames.length < 100) {
-                    medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), '
-                }
-                medicineOrderData.push({
-                    // description: String(ele.description),
-                    discountedAmount: Number(ele.discountedAmount) || Number(ele.price),
-                    productName:getMedicineName(ele),
-                    productId: ele.productDetails ? String(ele.productDetails.productId) : String(ele.id),
-                    quantity: Number(ele.userAddedMedicineQuantity),
-                    tax: 0,
-                    totalPrice: Number(ele.userAddedTotalMedicineAmount),
-                    unitPrice: Number(ele.price)
-                })
-                return ele.userAddedTotalMedicineAmount
+                // if (medicinceNames.length < 100) {
+                //     medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), '
+                // }
+                medicineOrderData.push(
+                 ele.item
+                    // discountedAmount: Number(ele.discountedAmount) || Number(ele.price),
+                    // productName:getMedicineName(ele),
+                    // productId: ele.productDetails ? String(ele.productDetails.productId) : String(ele.id),
+                    // quantity: Number(ele.userAddedMedicineQuantity),
+                    // tax: 0,
+                    // totalPrice: Number(ele.userAddedTotalMedicineAmount),
+                    // unitPrice: Number(ele.price)
+                )
+                return ele.item.totalPrice
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
         }
@@ -263,8 +263,8 @@ class MedicineCheckout extends Component {
             paymentPageRequestData.bookSlotDetails.recommentation_pharmacy_data = recommentation_pharmacy_data
             paymentPageRequestData.bookSlotDetails.medicineDetails = medicineOrderData
         }
-
-        console.log(paymentPageRequestData)
+       console.log('hi payment')
+        console.log(paymentPageRequestData.bookSlotDetails.medicineDetails )
         if (navigationToPayment === true) {
             paymentPageRequestData.orderOption = this.props.navigation.getParam('orderOption') || null
             this.props.navigation.navigate('paymentPage', paymentPageRequestData)
@@ -280,15 +280,9 @@ class MedicineCheckout extends Component {
             let recommentationData = [];
 
             let amount = this.state.medicineDetails.map(ele => {
-                medicineOrderData.push({
-                    medicine_id: ele.medicine_id,
-                    quantity: Number(ele.userAddedMedicineQuantity),
-                    medicine_weight: Number(ele.medicine_weight),
-                    medicine_weight_unit: ele.medicine_weight_unit,
+            
 
-                })
-
-                return ele.userAddedTotalMedicineAmount
+                return ele.item.totalPrice
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
             if (medicineOrderData.length !== 0) {
@@ -537,15 +531,15 @@ class MedicineCheckout extends Component {
                                                 renderItem={({ item }) =>
                                                     <Row style={{ marginTop: 10 }}>
                                                         <Col size={8}>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{getMedicineName(item) + ' -'}
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{getMedicineNameByProductName(item) + ' -'}
                                                                 {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '400' }}>
                                                                 {item.pharmacy_name}  */}
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(X' + item.userAddedMedicineQuantity + ')'}</Text> </Text>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(X' + item.item.quantity + ')'}</Text> </Text>
                                                             {/* </Text> */}
                                                         </Col>
                                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + item.userAddedTotalMedicineAmount || ''} </Text>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + item.item.totalPrice || ''} </Text>
 
                                                         </Col>
                                                     </Row>

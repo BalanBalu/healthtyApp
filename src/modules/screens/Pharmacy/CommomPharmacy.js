@@ -200,6 +200,19 @@ function deg2rad(deg) {
   return deg * (Math.PI / 180)
 }
 
+export function getMedicineNameByProductName(data) {
+  let medicineName = ' '
+  if (!data&&!data.item) {
+    return medicineName
+  }
+  if (data&&data.item) {
+    medicineName = `${(data.item.productName)}`;
+    return medicineName
+  }
+  else {
+    return medicineName
+  }
+}
 export function getMedicineName(data) {
   let medicineName = ' '
   if (!data) {
@@ -336,5 +349,24 @@ export function getName(data) {
     }
   }
   return name
+
+}
+
+export function getselectedCartData(data, selected, cartData ) {
+  let temp
+
+       
+  
+              if (cartData !== undefined) {
+           
+                  temp ={ 
+                    cartData:cartData,
+                    ...data
+                  }
+              } else {
+                  temp = data
+              }
+              temp.selectedType = selected;
+              return temp
 
 }
