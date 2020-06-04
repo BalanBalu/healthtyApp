@@ -31,9 +31,12 @@ class PharmacyCart extends Component {
                 this.setState({ cartItems: [], isLoading: false });
             } else {
                 this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
-                console.log("cartItems", this.state.cartItems)
+             
             }
+            console.log('cart===========')
+            console.log("cartItems", this.state.cartItems)
         }
+      
         catch (e) {
             console.log(e);
         }
@@ -41,14 +44,22 @@ class PharmacyCart extends Component {
             this.setState({ isLoading: false });
         }
     }
-
+    unitOfPrice(data){
+        if(data&&data.item){
+            let unitPrice=Number(data.item.totalPrice)/Number(data.item.quantity)
+            return unitPrice
+        }
+    }
+ 
     async productQuantityOperator(item, operator, index) {
         // let userId = await AsyncStorage.getItem('userId')
-        let offeredAmount = medicineRateAfterOffer(item);
-        let result = await ProductIncrementDecreMent(item.userAddedMedicineQuantity, offeredAmount, operator)
+        // let offeredAmount = medicineRateAfterOffer(item);
+        let offeredAmount = this.unitOfPrice(item);
+        let result = await ProductIncrementDecreMent(item.item.quantity, offeredAmount, operator)
         let temp = item;
-        temp.userAddedTotalMedicineAmount = result.totalAmount || 0,
-            temp.userAddedMedicineQuantity = result.quantity || 0
+        
+        temp.item.totalPrice = result.totalAmount || 0,
+            temp.item.quantity = result.quantity || 0
         let cartItems = this.state.cartItems
         cartItems[index] == temp
         this.setState({ cartItems })
@@ -244,9 +255,9 @@ class PharmacyCart extends Component {
                                                     {item.item.discountedAmount !== undefined&& item.item.discountedAmount!==0&&item.item.discountedAmount!==null?
                                                         <Row>
                                                             <Text style={{ fontSize: 9.5, marginTop: 30, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.item.unitPrice}</Text>
-                                                            <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.discountedAmount}</Text>
+                                                            <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.unitPrice-item.item.discountedAmount}</Text>
                                                         </Row>
-                                                        : <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.totalPrice}</Text>}
+                                                        : <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.unitPrice}</Text>}
                                                 </Col>
                                                 <Col size={3}>
                                                     <Row style={{ marginTop: 30, }}>

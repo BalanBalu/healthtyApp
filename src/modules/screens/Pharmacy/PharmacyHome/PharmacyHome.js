@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable,getselectedCartData } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable, getselectedCartData } from '../CommomPharmacy';
 import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
@@ -139,8 +139,8 @@ class PharmacyHome extends Component {
     }
     async selectedItems(data, selected, cartData) {
         try {
-           let selectedData= getselectedCartData(data, selected, cartData )
-       
+            let selectedData = getselectedCartData(data, selected, cartData)
+
             await this.setState({ selectedMedcine: selectedData })
 
         } catch (e) {
@@ -330,8 +330,8 @@ class PharmacyHome extends Component {
                                                                         width: 45, height: 45, alignItems: 'flex-end'
                                                                     }}
                                                                 />
-                                                                <Text style={styles.offerText}>{medicineRateAfterOffer(item)}</Text>
-                                                                <Text style={styles.offText}>{item.discount.type === 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
+                                                                <Text style={styles.offerText}>{item.discount.value}</Text>
+                                                                <Text style={styles.offText}>{item.discount.type === 'PERCENT' ? "OFF" : "Rs"}</Text>
                                                             </Col> : null}
                                                     </Row>
 

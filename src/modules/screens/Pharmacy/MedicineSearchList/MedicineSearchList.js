@@ -57,8 +57,8 @@ class MedicineSearchList extends Component {
         try {
 
             let medicineResultData = await getMedicinesSearchList(enteredText, pagination);
-            console.log('MedicineSearchList')
-
+            console.log('MedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchList')
+              console.log(JSON.stringify(medicineResultData))
             if (medicineResultData) {
                 let prodcuctIds = []
                 medicineResultData.map(ele => {
