@@ -132,9 +132,9 @@ async getBasicData() {
 
 
           
-        <View style={{marginTop:10}}>
+        <View style={{marginTop:10,marginLeft:2}}>
             <ListItem avatar style={{marginTop:-15}}>
-              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:22,
+              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',
             }}/>
             <Body style={{borderBottomWidth:0,}}>
             <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
