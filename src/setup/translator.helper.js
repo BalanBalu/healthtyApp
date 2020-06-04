@@ -6,7 +6,8 @@ import { I18nManager } from 'react-native';
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
   en: () => require("./translations/en.json"),
-  ta: () => require("./translations/ta.json")
+  ta: () => require("./translations/ta.json"),
+  ma: ()=> require("./translations/ma.json")
 };
 
 const translate = memoize(

@@ -1,4 +1,20 @@
 {
     "hello": "வணக்கம்",
-    "Pharmacy": "மருந்தகம்"
+    "Pharmacy": "மருந்தகம்",
+    "Chat and Video":"அரட்டை மற்றும் வீடியோ",
+    "Consult doctors through chat or video":"அரட்டை அல்லது வீடியோ மூலம் மருத்துவர்களை அணுகவும்",
+    "Get medicines delivered to home":"மருந்துகளை வீட்டிற்கு வழங்குங்கள்",
+    "Blood donors":"இரத்த தானம் செய்பவர்கள்",
+    "Find Available blood donors":"கிடைக்கக்கூடிய இரத்த தானம் செய்பவர்களைக் கண்டறியவும்",
+    "Medicine Reminder":"மருந்து நினைவூட்டல்",
+    "Book Lab tests":"புத்தக ஆய்வக சோதனைகள்",
+    "Categories":"வகைகள்",
+    "View All":"அனைத்தையும் காட்டு",
+    "Refer and Earn!":"பார்க்கவும் சம்பாதிக்கவும்!"
+
+
+
+
+
+    
 }

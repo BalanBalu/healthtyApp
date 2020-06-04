@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { View, UIManager, findNodeHandle, TouchableOpacity } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import PropTypes from 'prop-types'
 
 const ICON_SIZE = 24
@@ -38,8 +38,8 @@ export default class PopupMenu extends PureComponent {
     return (
       <View>
         <TouchableOpacity onPress={this.onPress}>
-          <Icon
-            name='more-vert'
+          <FontAwesome
+            name='language'
             size={ICON_SIZE}
             color={'#fff'}
             ref={this.onRef} />

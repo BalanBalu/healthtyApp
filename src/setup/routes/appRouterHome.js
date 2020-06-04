@@ -189,8 +189,8 @@ const HomeStack = createStackNavigator({
               </View>
             </TouchableOpacity> */}
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginRight: 2.5,paddingLeft:5,paddingRight:5}}>
-          <PopupMenu actions={['Edit','Remove','Language setting']}   onPress={onPopupEvent} navigation={navigation}/>
+          <TouchableOpacity style={{ marginRight: 5,paddingLeft:5,paddingRight:5}}>
+          <PopupMenu actions={['English','Tamil','Malayalam','Hindi','Telugu']}   onPress={onPopupEvent} navigation={navigation}/>
           </TouchableOpacity>
 
 

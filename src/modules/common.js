@@ -3,6 +3,8 @@ import { View, Text, AsyncStorage, Platform } from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
+import { setI18nConfig  } from '../setup/translator.helper';
+
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
@@ -367,6 +369,15 @@ export const reportStatusValue = {
 
 export const  onPopupEvent = (eventName, index,navigation) => {
     if (eventName !== 'itemSelected') return
-    if (index === 0) this.onEdit()
-    else this.onRemove()
+    if (index === 0) {
+        setI18nConfig('en')
+    }
+    else if (index === 1)
+    {
+        setI18nConfig('ta')
+    }
+    else if (index === 2)
+    {
+        setI18nConfig('ma')
+    }
   }
