@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, FooterTab, Card, Footer, Item, Icon, Input, Toast, Form, Right, Left,Radio,CheckBox } from 'native-base';
+import { Container, Content, Text, Button, FooterTab, Card, Footer, Item, Icon, Input, Toast, Form, Right, Left, Radio, CheckBox } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, View, AsyncStorage, TextInput } from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -9,6 +9,7 @@ import Razorpay from 'react-native-customui';
 import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_POINTS } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { getReferalPoints } from '../../providers/profile/profile.action';
+import { deleteCartByIds } from '../../providers/pharmacy/pharmacy.action'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
 import { connect } from 'react-redux';
@@ -288,6 +289,18 @@ class PaymentPage extends Component {
                 this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
                 const orderOption = this.props.navigation.getParam('orderOption') || null
                 if (orderOption === 'pharmacyCart') {
+                    let cart = await AsyncStorage.getItem('cartItems-' + this.userId) || []
+                    if (cart.length != 0) {
+                        let cartData = JSON.parse(cart)
+                        let cartIds = []
+                        cartData.forEach(ele => {
+                            cartIds.push(ele.id)
+                        })
+                         deleteCartByIds(cartIds)
+                        
+
+                    }
+
                     await AsyncStorage.removeItem('cartItems-' + this.userId);
                 }
                 Toast.show({
@@ -314,7 +327,7 @@ class PaymentPage extends Component {
                     duration: 3000
                 })
             }
-        } 
+        }
         else {
             if (serviceType === SERVICE_TYPES.PHARMACY) {
                 this.props.navigation.navigate('Home');
@@ -545,13 +558,13 @@ class PaymentPage extends Component {
                             </Row>
                             <Row style={{ paddingLeft: 5, alignItems: 'center', marginTop: 10 }}>
 
-                                
-                                 <CheckBox style={{borderRadius:5}}
-                                             status={this.state.creditPointsApplied ? true : false}
-                                               checked={this.state.creditPointsApplied}
-                                               onPress={() => this.setPaymentByCreditApplied()}
-                                               />
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%' ,marginLeft:20}}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+
+                                <CheckBox style={{ borderRadius: 5 }}
+                                    status={this.state.creditPointsApplied ? true : false}
+                                    checked={this.state.creditPointsApplied}
+                                    onPress={() => this.setPaymentByCreditApplied()}
+                                />
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
                             </Row>
                         </Grid> : null}
 
@@ -595,18 +608,18 @@ class PaymentPage extends Component {
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 40, marginLeft: 15 }}>SAVED CARDS</Text>
                     </Row> : null}
 
-                        <Grid>
-                            <View style={{ marginTop: 10, justifyContent: 'center' }}>
-                                {savedCards.map(element => {
-                                    return this.renderSavedCards(element)
-                                })}
-                            </View>
-                        </Grid>
+                    <Grid>
+                        <View style={{ marginTop: 10, justifyContent: 'center' }}>
+                            {savedCards.map(element => {
+                                return this.renderSavedCards(element)
+                            })}
+                        </View>
+                    </Grid>
                     <Row style={{ marginBottom: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }}>
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Payment Options</Text>
                     </Row>
-                
-                        {/* <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', paddingLeft: 15, paddingBottom: 15, paddingRight: 15, marginLeft: 10, marginRight: 10 }}>
+
+                    {/* <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', paddingLeft: 15, paddingBottom: 15, paddingRight: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
                                 <TouchableOpacity onPress={() => this.setState({ paymentOption: 'CREDIT_CARD' })} style={{ flexDirection: 'row' }}>
                                     <RadioButton value="CREDIT_CARD" />
@@ -617,76 +630,76 @@ class PaymentPage extends Component {
                         </Row>
                         {this.state.paymentOption === "CREDIT_CARD" ? this.renderCreditDebitCard('Credit') : null} */}
 
-                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                            <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'DEBIT_CARD', selectedSavedCardId: null })} style={{ flexDirection: 'row',alignItems:'center', }}>
-                                    <Radio 
+                    <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
+                        <Col style={{ width: '90%', }}>
+                            <TouchableOpacity onPress={() => this.setState({ paymentOption: 'DEBIT_CARD', selectedSavedCardId: null })} style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                <Radio
                                     standardStyle={true}
-                                    selected={this.state.paymentOption === "DEBIT_CARD" ? true : false} 
-                                    onPress={()=>   this.setState({ paymentOption: "DEBIT_CARD", selectedSavedCardId: null })} />
-                                    <Text style={{  fontFamily: 'OpenSans', fontSize: 14,marginLeft:10}}>Debit/Credit Card</Text>
-                                </TouchableOpacity>
-                            </Col>
-                        </Row>
+                                    selected={this.state.paymentOption === "DEBIT_CARD" ? true : false}
+                                    onPress={() => this.setState({ paymentOption: "DEBIT_CARD", selectedSavedCardId: null })} />
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginLeft: 10 }}>Debit/Credit Card</Text>
+                            </TouchableOpacity>
+                        </Col>
+                    </Row>
 
-                        {this.state.paymentOption === "DEBIT_CARD" ? this.renderCreditDebitCard('Debit') : null}
+                    {this.state.paymentOption === "DEBIT_CARD" ? this.renderCreditDebitCard('Debit') : null}
 
-                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                            <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'NET_BANKING', selectedSavedCardId: null })} style={{ flexDirection: 'row',alignItems:'center',}}>
-                                    <Radio 
+                    <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
+                        <Col style={{ width: '90%', }}>
+                            <TouchableOpacity onPress={() => this.setState({ paymentOption: 'NET_BANKING', selectedSavedCardId: null })} style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                <Radio
                                     standardStyle={true}
-                                    selected={this.state.paymentOption === "NET_BANKING" ? true : false} 
-                                    onPress={()=>   this.setState({ paymentOption: "NET_BANKING", selectedSavedCardId: null })} />
-                                    <Text
-                                        //onPress={()=> this.setState({ paymentOption : 'NET_BANKING' })}
-                                        style={{ fontFamily: 'OpenSans', fontSize: 14 ,marginLeft:10}}>Net Banking</Text>
-                                </TouchableOpacity>
-                            </Col>
-                        </Row>
-                        {this.state.paymentOption === "NET_BANKING" ? this.renderNetBanking() : null}
+                                    selected={this.state.paymentOption === "NET_BANKING" ? true : false}
+                                    onPress={() => this.setState({ paymentOption: "NET_BANKING", selectedSavedCardId: null })} />
+                                <Text
+                                    //onPress={()=> this.setState({ paymentOption : 'NET_BANKING' })}
+                                    style={{ fontFamily: 'OpenSans', fontSize: 14, marginLeft: 10 }}>Net Banking</Text>
+                            </TouchableOpacity>
+                        </Col>
+                    </Row>
+                    {this.state.paymentOption === "NET_BANKING" ? this.renderNetBanking() : null}
 
-                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                            <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'UPI', selectedSavedCardId: null })} style={{ flexDirection: 'row',alignItems:'center', }}>
-                                   
-                                    <Radio 
+                    <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
+                        <Col style={{ width: '90%', }}>
+                            <TouchableOpacity onPress={() => this.setState({ paymentOption: 'UPI', selectedSavedCardId: null })} style={{ flexDirection: 'row', alignItems: 'center', }}>
+
+                                <Radio
                                     standardStyle={true}
-                                    selected={this.state.paymentOption === "UPI" ? true : false} 
-                                    onPress={()=>   this.setState({ paymentOption: "UPI", selectedSavedCardId: null })} />
-                                    <Text
-                                        //onPress={()=> this.setState({ paymentOption : 'UPI' })}
-                                        style={{  fontFamily: 'OpenSans', fontSize: 14,marginLeft:10 }}>UPI</Text>
-                                </TouchableOpacity>
-                            </Col>
-                        </Row>
-                        {this.state.paymentOption === "UPI" ? this.renderUPI() : null}
+                                    selected={this.state.paymentOption === "UPI" ? true : false}
+                                    onPress={() => this.setState({ paymentOption: "UPI", selectedSavedCardId: null })} />
+                                <Text
+                                    //onPress={()=> this.setState({ paymentOption : 'UPI' })}
+                                    style={{ fontFamily: 'OpenSans', fontSize: 14, marginLeft: 10 }}>UPI</Text>
+                            </TouchableOpacity>
+                        </Col>
+                    </Row>
+                    {this.state.paymentOption === "UPI" ? this.renderUPI() : null}
 
 
 
-                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
+                    <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
 
-                            <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'WALLET', selectedSavedCardId: null })} style={{ flexDirection: 'row',alignItems:'center',}}>
-                            
-                                    <Radio 
+                        <Col style={{ width: '90%', }}>
+                            <TouchableOpacity onPress={() => this.setState({ paymentOption: 'WALLET', selectedSavedCardId: null })} style={{ flexDirection: 'row', alignItems: 'center', }}>
+
+                                <Radio
                                     standardStyle={true}
-                                    selected={this.state.paymentOption === "WALLET" ? true : false} 
-                                    onPress={()=>   this.setState({ paymentOption: "WALLET", selectedSavedCardId: null })} />
-                                    <Text
-                                        //onPress={()=> this.setState({ paymentOption : 'WALLET' })}
-                                        style={{  fontFamily: 'OpenSans', fontSize: 13,marginLeft:10 }}>Wallet</Text>
-                                </TouchableOpacity>
-                            </Col>
+                                    selected={this.state.paymentOption === "WALLET" ? true : false}
+                                    onPress={() => this.setState({ paymentOption: "WALLET", selectedSavedCardId: null })} />
+                                <Text
+                                    //onPress={()=> this.setState({ paymentOption : 'WALLET' })}
+                                    style={{ fontFamily: 'OpenSans', fontSize: 13, marginLeft: 10 }}>Wallet</Text>
+                            </TouchableOpacity>
+                        </Col>
 
-                            {/* <Col style={{ width: '20%' }}>
+                        {/* <Col style={{ width: '20%' }}>
                                 <Text style={{ marginTop: 8, fontSize: 16, fontFamily: 'OpenSans', fontWeight: 'bold', color: 'red', marginLeft: 10 }}>{'\u20B9'}1000</Text>
                             </Col> */}
 
 
-                        </Row>
-                        {this.state.paymentOption === "WALLET" ? this.renderWallet() : null}
-                
+                    </Row>
+                    {this.state.paymentOption === "WALLET" ? this.renderWallet() : null}
+
 
 
                 </Content>
@@ -789,12 +802,12 @@ class PaymentPage extends Component {
                                 <Row>
                                     <Col>
                                         <Row>
-                                             <CheckBox style={{borderRadius:5}}
-                                               status={this.state.saveCardCheckbox ? true : false}
-                                               checked={this.state.saveCardCheckbox}
-                                               onPress={() => this.setState({ saveCardCheckbox: !this.state.saveCardCheckbox })}
-                                               />
-                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans' ,marginLeft:20}}>Save card for faster transaction</Text>
+                                            <CheckBox style={{ borderRadius: 5 }}
+                                                status={this.state.saveCardCheckbox ? true : false}
+                                                checked={this.state.saveCardCheckbox}
+                                                onPress={() => this.setState({ saveCardCheckbox: !this.state.saveCardCheckbox })}
+                                            />
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', marginLeft: 20 }}>Save card for faster transaction</Text>
                                         </Row>
                                     </Col>
                                 </Row>
@@ -963,16 +976,16 @@ class PaymentPage extends Component {
         return (
             <View key={valueOfCreditCard.card_id}>
                 <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                       <Col style={{ width: '10%',marginTop:5}}>
-                       <Radio 
-                                    standardStyle={true}
-                                    status={valueOfCreditCard.card_id === this.state.selectedSavedCardId && this.state.paymentOption === null ? true : false}
-                                    selected={this.state.selectedSavedCardId === valueOfCreditCard.card_id ? true : false} 
-                                    onPress={()=> this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null })}
-                                  />
-                       </Col>      
-                             
-                    <Col style={{ width: '90%', marginLeft: 5,justifyContent:'center'}}>
+                    <Col style={{ width: '10%', marginTop: 5 }}>
+                        <Radio
+                            standardStyle={true}
+                            status={valueOfCreditCard.card_id === this.state.selectedSavedCardId && this.state.paymentOption === null ? true : false}
+                            selected={this.state.selectedSavedCardId === valueOfCreditCard.card_id ? true : false}
+                            onPress={() => this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null })}
+                        />
+                    </Col>
+
+                    <Col style={{ width: '90%', marginLeft: 5, justifyContent: 'center' }}>
                         <Row>
                             {/* <Text style={{ color: '#000', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15, marginTop: 8, }}
                             >SBI</Text> */}

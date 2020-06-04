@@ -8,7 +8,7 @@ import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableH
 import Spinner from "../../../../components/Spinner";
 import { NavigationEvents } from 'react-navigation';
 import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage,getIsAvailable } from '../CommomPharmacy'
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage,getIsAvailable,getselectedCartData } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
@@ -57,8 +57,8 @@ class MedicineSearchList extends Component {
         try {
 
             let medicineResultData = await getMedicinesSearchList(enteredText, pagination);
-            console.log('MedicineSearchList')
-
+            console.log('MedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchList')
+              console.log(JSON.stringify(medicineResultData))
             if (medicineResultData) {
                 let prodcuctIds = []
                 medicineResultData.map(ele => {
@@ -101,8 +101,10 @@ class MedicineSearchList extends Component {
                 })
                
                 let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
+  
                 if(availableResult){
-               let  medicineDataAvailable=medicineDataAvailable.concat(availableResult)
+                   
+                 medicineDataAvailable=medicineDataAvailable.concat(availableResult)
                 }
 
                 this.setState({
@@ -118,16 +120,10 @@ class MedicineSearchList extends Component {
             console.log(e)
         }
     }
-    async selectedItems(data, selected, index) {
+    async selectedItems(data, selected, cartData) {
         try {
-            let temp = data;
-            temp.selectedType = selected;
-            if (index !== undefined) {
-                let cardItems = this.state.cartItems;
-                temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
-                temp.index = index
-            }
-            await this.setState({ selectedMedcine: temp, isBuyNow: true })
+            let selectedData= getselectedCartData(data, selected, cartData )
+            await this.setState({ selectedMedcine: selectedData, isBuyNow: true })
 
 
         } catch (e) {
@@ -293,7 +289,7 @@ class MedicineSearchList extends Component {
                                                                             <Text style={{ fontSize: 13, marginTop: 5, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {item.price}</Text>
                                                                         }
                                                                     </Col>
-                                                                    {cartItems.length === 0 || cartItems.findIndex(ele => ele.id == item.id) === -1 ?
+                                                                    {cartItems.length === 0 || cartItems.findIndex(ele => ele.item.productId == item.id) === -1 ?
                                                                         <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                             <Row>
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
@@ -309,12 +305,12 @@ class MedicineSearchList extends Component {
                                                                         <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                             <Row>
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
-                                                                                    onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.findIndex(ele => ele.id === item.id))} >
+                                                                                    onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.find(ele => ele.item.productId === item.id))} >
                                                                                     {/* onPress={() =>  this.props.navigation.navigate("PharmacyCart")} > */}
                                                                                     <Row style={{ alignItems: 'center' }}>
                                                                                         <Text>{item.medicine_id}</Text>
                                                                                         <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                                        <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.id === item.id)].userAddedMedicineQuantity}</Text>
+                                                                                        <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added ' + cartItems[cartItems.findIndex(ele =>ele.item.productId === item.id)].item.quantity}</Text>
                                                                                     </Row>
                                                                                 </TouchableOpacity>
                                                                             </Row>

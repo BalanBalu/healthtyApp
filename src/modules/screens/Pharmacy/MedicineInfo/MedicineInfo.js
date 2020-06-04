@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount, getAvailableStockForListOfProducts ,updateTopSearchedItems} from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable,getselectedCartData } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -58,7 +58,7 @@ class MedicineInfo extends Component {
     }
 
     async componentDidMount() {
-        medicineId = this.props.navigation.getParam('medicineId');
+       let  medicineId = this.props.navigation.getParam('medicineId');
         let pharmacyId = this.props.navigation.getParam('pharmacyId');
         this.setState({ isLoading: true });
         await new Promise.all([
@@ -142,16 +142,12 @@ class MedicineInfo extends Component {
         }
 
     }
-    async selectedItems(data, selected, index) {
+    async selectedItems(data, selected, cartData) {
         try {
-            let temp = data
-            temp.selectedType = selected;
-            if (index !== undefined) {
-                let cardItems = this.state.cartItems;
-                temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
-                temp.index = index
-            }
-            await this.setState({ selectedMedcine: temp })
+           
+            let selectedData= getselectedCartData(data, selected, cartData )
+         
+            await this.setState({ selectedMedcine: selectedData })
 
         } catch (e) {
             console.log(e)
@@ -254,6 +250,7 @@ class MedicineInfo extends Component {
                     cartData = JSON.parse(cart)
 
                 }
+                setCartItemCountOnNavigation(this.props.navigation);
                 await this.setState({ cartItems: cartData })
             }
         }
@@ -342,7 +339,7 @@ class MedicineInfo extends Component {
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={5}>
 
-                                    {cartItems.length == 0 || cartItems.findIndex(ele => ele.id == medicineData.id) === -1 ?
+                                    {cartItems.length == 0 || cartItems.findIndex(ele => ele.item.productId== medicineData.id) === -1 ?
                                         <Row style={{ alignItems: 'flex-end' }}>
                                             <TouchableOpacity style={styles.addCartTouch}
                                                 onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart') }} >
@@ -354,10 +351,10 @@ class MedicineInfo extends Component {
                                         </Row> :
                                         <Row style={{ alignItems: 'flex-end' }}>
                                             <TouchableOpacity style={styles.addCartTouch}
-                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart', cartItems.findIndex(ele => ele.id == medicineData.id)) }} >
+                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart', cartItems.find(ele => ele.item.productId == medicineData.id)) }} >
 
                                                 <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
-                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.id == medicineData.id)].userAddedMedicineQuantity}</Text>
+                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.item.productId== medicineData.id)].item.quantity}</Text>
 
                                             </TouchableOpacity>
                                         </Row>

@@ -9,7 +9,8 @@ import {
 import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
-import{ updateTopSearchedItems} from '../../../providers/pharmacy/pharmacy.action'
+import { createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action'
+import { updateTopSearchedItems } from '../../../providers/pharmacy/pharmacy.action'
 
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 
@@ -29,11 +30,11 @@ export class AddToCard extends Component {
     async componentDidMount() {
         let data = this.props.data;
 
-       
+
         console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
-        if (data.userAddedMedicineQuantity) {
-            let userAddedMedicineQuantity = data.userAddedMedicineQuantity || 1
+        if (data.cartData&&data.cartData.item) {
+            let userAddedMedicineQuantity = data.cartData.item.quantity || 1
             let discountedValue = medicineRateAfterOffer(data);
             let userAddedTotalMedicineAmount = Number(Number(userAddedMedicineQuantity * discountedValue).toFixed(2))
 
@@ -75,8 +76,18 @@ export class AddToCard extends Component {
         const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
         let temp = [];
         temp = data
+
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
+        let item= {
+            discountedAmount: temp.discount ? Number(temp.discount.value) : Number(temp.price),
+            productName: getMedicineName(temp),
+            productId: String(temp.id),
+            quantity: Number(temp.userAddedMedicineQuantity),
+            tax: 0,
+            totalPrice: Number(temp.userAddedTotalMedicineAmount),
+            unitPrice: Number(temp.price)
+        }
         if (data.selectedType === 'Add to Cart') {
             const isLoggedIn = await hasLoggedIn(this.props);
             if (!isLoggedIn) {
@@ -85,20 +96,22 @@ export class AddToCard extends Component {
             }
             let cartItems = []
             let userId = await AsyncStorage.getItem('userId')
-            let cart = await AsyncStorage.getItem('cartItems-' + userId);
-
-            if (cart != null) {
-                cartItems = JSON.parse(cart);
+            let reqData = {
+                userId: userId,
+                type: "CART",
+                item:item
             }
-            if (temp.index != undefined) {
-                let index = temp.index
-                delete temp.index
-                cartItems.splice(index, 1, temp)
-            } else {
-                cartItems.push(temp);
+            if (temp.cartData&&temp.cartData.id) {
+                reqData.id = temp.cartData.id
             }
-            let count = cartItems.length;
-            console.log("count", count)
+            let AddCartResult = await createCart(reqData)
+            if (AddCartResult) {
+                let result = await getCartListByUserId(userId)
+                cartItems = result;
+                console.log(JSON.stringify(result))
+              
+            }
+          
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
 
             this.props.popupVisible({
@@ -109,6 +122,7 @@ export class AddToCard extends Component {
             })
         }
         else if (data.selectedType === 'Buy Now') {
+            temp.item=item
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: true,

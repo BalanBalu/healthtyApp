@@ -17,18 +17,21 @@ export function medicineRateAfterOffer(item) {
   }
   if (item.discount.type) {
 
-    if (item.discount.type === 'Percentage') {
+    if (item.discount.type === 'PERCENT') {
       let divided = (parseInt(item.discount.value) / 100) * parseInt(item.price)
       amount = parseInt(item.price) - divided
       return amount
     } else if (item.discount.type === 'Amount') {
       amount = parseInt(item.price) - parseInt(item.discount.value);
       return amount
+    }else if (item.discount.type === 'AMOUNT') {
+      amount = parseInt(item.price) - parseInt(item.discount.value);
+      return amount
     }
   }
-  else {
+
     return amount
-  }
+  
 
 }
 
@@ -200,6 +203,19 @@ function deg2rad(deg) {
   return deg * (Math.PI / 180)
 }
 
+export function getMedicineNameByProductName(data) {
+  let medicineName = ' '
+  if (!data&&!data.item) {
+    return medicineName
+  }
+  if (data&&data.item) {
+    medicineName = `${(data.item.productName)}`;
+    return medicineName
+  }
+  else {
+    return medicineName
+  }
+}
 export function getMedicineName(data) {
   let medicineName = ' '
   if (!data) {
@@ -323,6 +339,37 @@ export const statusBar = {
     checked: true,
     color: 'red'
   },
+  "ADD_TO_CART" :  {
+    status: 'order is cart',
+    checked: true,
+    color: 'red'
+  },
+	"REMOVE_FROM_CART" :  {
+    status: 'order is remove fromthe cart ',
+    checked: true,
+    color: 'red'
+  },
+"CONFIRM_ORDER": {
+  status: 'confirm the order',
+  checked: true,
+  color: 'red'
+},
+
+"RETURNED": {
+  status: 'order is returned',
+  checked: true,
+  color: 'red'
+}, 
+	"EXCHANGED": {
+    status: 'order is exchanged',
+    checked: true,
+    color: 'red'
+  },
+"PACKED": {
+  status: 'order is packed',
+  checked: true,
+  color: 'green'
+},
 
 }
 
@@ -336,5 +383,24 @@ export function getName(data) {
     }
   }
   return name
+
+}
+
+export function getselectedCartData(data, selected, cartData ) {
+  let temp
+
+       
+  
+              if (cartData !== undefined) {
+           
+                  temp ={ 
+                    cartData:cartData,
+                    ...data
+                  }
+              } else {
+                  temp = data
+              }
+              temp.selectedType = selected;
+              return temp
 
 }
