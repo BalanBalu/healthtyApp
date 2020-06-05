@@ -38,10 +38,10 @@ const SELECTED_EXPERIENCE_START_END_YEARS = {
 let currentDoctorOrder = 'ASC';
 const SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW = 2;
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
-
+const SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL=10;
 class DoctorList extends Component {
     docListDataArry = [];
-    searchedDoctorIdsArray = [];
+    // searchedDoctorIdsArray = [];
     availableSlotsDataMap = new Map();
     availabilitySlotsDatesArry = [];
     docInfoAndAvailableSlotsMapByDoctorIdHostpitalId = new Map();
@@ -69,17 +69,33 @@ class DoctorList extends Component {
                 renderRefreshCount: 1,
                 refreshCountOnDateFL: 1,
                 isSlotsLoading: false,
+                isLoadingMoreData:false,
 
             }
+                            this.paginationCount=0
+
     }
 
     componentNavigationMount = async () => { }   //   Need to Check filter Page implementation also
     async componentDidMount() {
+        try {
+            this.setState({ isLoading: true });
         const userId = await AsyncStorage.getItem('userId');
         this.searchByDoctorDetails();
         if (userId) {
             //     this.getFavoriteCounts4PatByUserId(userId);
             this.setState({ isLoggedIn: true })
+        }
+         } catch (error) {
+          this.setState({ isLoading: false });
+ Toast.show({
+                text: 'Something Went Wrong' + Ex,
+                duration: 3000,
+                type: "danger"
+            })
+        }
+        finally{
+            this.setState({ isLoading: false });
         }
     }
     // getFavoriteCounts4PatByUserId = (userId) => {
@@ -98,28 +114,30 @@ class DoctorList extends Component {
     searchByDoctorDetails = async () => {
         try {
             // //debugger
-            this.setState({ isLoading: true });
+            // this.setState({ isLoading: true });
             const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
             const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
-            const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch);
-            //debugger
+            const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.paginationCount,SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL);
+            debugger
             console.log('docListResponse====>', JSON.stringify(docListResponse));
             if (docListResponse.success) {
-                // //debugger
+                this.paginationCount=this.paginationCount+5;
+              const searchedDoctorIdsArray=[];
+                //debugger
                 const docListData = docListResponse.data || [];
                 docListData.map(item => {
                     const doctorIdHostpitalId = item.doctor_id + '-' + item.hospitalInfo.hospital_id;
-                    if (!this.searchedDoctorIdsArray.includes(item.doctor_id)) {
-                        this.searchedDoctorIdsArray.push(item.doctor_id)
+                    if (!searchedDoctorIdsArray.includes(item.doctor_id)) {
+                        searchedDoctorIdsArray.push(item.doctor_id)
                     }
                     item.doctorIdHostpitalId = doctorIdHostpitalId;
                     this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
                 })
-                //debugger
+                debugger
                 const [activeDoctorsSponsorDetails, docsFavoriteDetails, docsReviewDetails] = await Promise.all([
-                    serviceOfGetTotalActiveSponsorDetails4Doctors(this.searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
-                    ServiceOfGetDoctorFavoriteListCount4Pat(this.searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
-                    serviceOfGetTotalReviewsCount4Doctors(this.searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
+                    serviceOfGetTotalActiveSponsorDetails4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
+                    ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
+                    serviceOfGetTotalReviewsCount4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
                 ]);
                 const activeDoctorsSponsorData = activeDoctorsSponsorDetails.data;
                 if (activeDoctorsSponsorData) {
@@ -143,9 +161,11 @@ class DoctorList extends Component {
                     });
                     this.updateDocSponsorViewersCountByUser(sponsorIdsArray);
                 }
+                debugger
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
                 doctorInfoList.sort(sortByPrimeDoctors);
                 console.log('doctorInfoList========>', JSON.stringify(doctorInfoList));
+                debugger
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
@@ -164,9 +184,9 @@ class DoctorList extends Component {
                 type: "danger"
             })
         }
-        finally {
-            this.setState({ isLoading: false })
-        }
+        // finally {
+        //     // this.setState({ isLoading: false })
+        // }
     }
     updateDocSponsorViewersCountByUser = async (sponsorIds) => {
         try {
@@ -372,7 +392,35 @@ class DoctorList extends Component {
         this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
     }
 
-
+   navigateToFilters() {
+        this.props.navigation.navigate('Filters')
+    }
+  renderFooterComponent() {
+    return (
+      <View style={{
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  }}>
+        {this.state.isLoadingMoreData ? (
+          <ActivityIndicator color="black" style={{ margin: 10 }} />
+        ) : null}
+      </View>
+    );
+  }
+loadMoreData=()=>{
+    try {
+        alert('calling loadMoreData====>')
+        this.setState({isLoadingMoreData:true});
+        this.searchByDoctorDetails();
+    } catch (error) {
+        this.setState({isLoadingMoreData:false})
+    }
+    finally{
+this.setState({isLoadingMoreData:false})
+    }
+}
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, filteredDoctorData } } = this.props;
         const { isLoading } = this.state;
@@ -424,10 +472,17 @@ class DoctorList extends Component {
                                     <FlatList
                                         data={doctorInfoListAndSlotsData}
                                         extraData={this.state.renderRefreshCount}
-                                        keyExtractor={(item, index) => index.toString()}
+                //                                      onScrollEndDrag={() => alert(" *********end")}
+                //   onScrollBeginDrag={() => alert(" *******start")}
+              onEndReached={this.loadMoreData}
+                                            onEndReachedThreshold={1}
                                         renderItem={({ item, index }) =>
                                             item.isDoctorIdHostpitalIdSponsored === true ? null : this.renderDoctorCard(item, index)
-                                        } />
+                                        } 
+                                       keyExtractor={(item, index) => index.toString()}
+                                                   ListFooterComponent={this.renderFooterComponent()}
+
+/>
                                 </View>}
                         </View>
                     </Content>
