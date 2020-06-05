@@ -16,7 +16,8 @@ class NextAppoinmentPreparation extends PureComponent {
             AppoinmentData: [],
             updatedDate: '',
             AppointmentId: '',
-            doctorInfo: {}
+            doctorInfo: {},
+            isLoading: false
         }
 
     }
@@ -131,8 +132,9 @@ class NextAppoinmentPreparation extends PureComponent {
         const { AppoinmentData, updatedDate, AppointmentId, doctorInfo } = this.state
         const { navigation} = this.props;
         return (
-
             <View>
+                 {AppoinmentData.length != 0 ? 
+                 <View>
                 <Row style={{ marginTop: 10, marginBottom: 5 }}>
                     <Left>
                         <Text style={{
@@ -179,9 +181,10 @@ class NextAppoinmentPreparation extends PureComponent {
                             )} />
                     </TouchableOpacity>
                 </Card>
+                </View>:
+                null
+                }
             </View>
-
-
         )
     }
 }
