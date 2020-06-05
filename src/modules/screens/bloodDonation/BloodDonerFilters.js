@@ -21,9 +21,9 @@ class BloodDonerFilters extends Component {
       stateSelect: null,
       citySelect: null,
       districtSelect: null,
-      bloodgroupbutton:false
+      bloodgroupbutton: false
     }
-  this.filterData = [];
+    this.filterData = [];
   }
 
   async componentDidMount() {
@@ -61,10 +61,10 @@ class BloodDonerFilters extends Component {
       let result = await bloodDonationFilter(data);
       if (result.success) {
         result.data.bloodGroupList.unshift("None")
-      result.data.stateList.unshift("None")
-      result.data.countryList.unshift("None")
-      result.data.cityList.unshift("None")
-      result.data.districtList.unshift("None")
+        result.data.stateList.unshift("None")
+        result.data.countryList.unshift("None")
+        result.data.cityList.unshift("None")
+        result.data.districtList.unshift("None")
         if (bloodSelect == null) {
           this.setState({
             bloodList: result.data.bloodGroupList
@@ -119,8 +119,8 @@ class BloodDonerFilters extends Component {
 
       this.filterData.splice(bloodlist, 1)
     }
-    if(value != "None"){
-    this.filterData.push(object);
+    if (value != "None") {
+      this.filterData.push(object);
     }
 
     if (type == 'blood_group') {
@@ -219,7 +219,26 @@ class BloodDonerFilters extends Component {
         this.filterData.splice(bloodlist, 1)
       }
     }
-    await this.getBlooddonationfilterList(this.filterData);
+
+    let position = this.filterData
+    position.map((t) => {
+      if (t.type === "blood_group") {
+        this.setState({ selectedOne: "COUNTRY" })
+      }
+      else if (t.type === "address.address.country") {
+        this.setState({ selectedOne: "STATE" })
+      }
+      else if (t.type === "address.address.state") {
+        this.setState({ selectedOne: "DISTRICT" })
+      }
+      else if (t.type === "address.address.district") {
+        this.setState({ selectedOne: "CITY" })
+      }
+
+    })
+
+
+    await this.getBlooddonationfilterList(position);
 
   }
 
@@ -227,7 +246,7 @@ class BloodDonerFilters extends Component {
     let user = [],
       doctor = [];
     let result = await bloodDonationList(this.filterData);
-    
+
     if (result.success) {
       user = result.data.userList
       doctor = result.data.doctorList
@@ -238,11 +257,8 @@ class BloodDonerFilters extends Component {
       })
     }
     this.props.navigation.navigate('Blood Donors', {
-      filteredData:user,filerCount: this.filterData.length
+      filteredData: user, filerCount: this.filterData.length
     })
-
-
-
   }
 
 
@@ -266,24 +282,22 @@ class BloodDonerFilters extends Component {
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item, index }) =>
                         <ListItem>
-                         
-
-                            <TouchableOpacity
-                              onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
-                              style={{ flexDirection: 'row' }}>
-                              <Left>
-                                <Text style={styles.subText}>{item}</Text>
-                              </Left>
-                              <Right>
-                              <Radio  
+                          <TouchableOpacity
+                            onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
+                            style={{ flexDirection: 'row' }}>
+                            <Left>
+                              <Text style={styles.subText}>{item}</Text>
+                            </Left>
+                            <Right>
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
-                                selected={this.state.bloodSelect === item ? true : false} 
-                                />
-                              
-                              </Right>
-                            </TouchableOpacity>
-                      
+                                selected={this.state.bloodSelect === item ? true : false}
+                              />
+
+                            </Right>
+                          </TouchableOpacity>
+
                         </ListItem>
                       } />
                   </View> : null}
@@ -305,11 +319,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <Radio  
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.country')}
-                                selected={this.state.countrySelect === item ? true : false} 
-                                />
+                                selected={this.state.countrySelect === item ? true : false}
+                              />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -332,12 +346,12 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              
-                              <Radio  
+
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.state')}
-                                selected={this.state.stateSelect === item ? true : false} 
-                                />
+                                selected={this.state.stateSelect === item ? true : false}
+                              />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -361,11 +375,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <Radio  
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.district')}
-                                selected={this.state.districtSelect === item ? true : false} 
-                                />
+                                selected={this.state.districtSelect === item ? true : false}
+                              />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -392,11 +406,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <Radio  
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.city')}
-                                selected={this.state.citySelect === item ? true : false} 
-                                />
+                                selected={this.state.citySelect === item ? true : false}
+                              />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
