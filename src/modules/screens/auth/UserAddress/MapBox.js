@@ -300,7 +300,7 @@ export default class MapBox extends React.Component {
                     })
                     this.props.navigation.navigate('Profile');
                 } else if (this.state.navigationOption) {
-                    this.props.navigation.navigate(navigationOption);
+                    this.props.navigation.navigate(this.state.navigationOption,{hasReloadAddress:true});
 
                 }
                 else {
