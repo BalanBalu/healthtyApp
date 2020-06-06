@@ -43,6 +43,9 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
   let totalAmount = price;
   let threshold_message = null;
   let threshold_limit = threshold_limits || itemQuantity + 1
+  if(threshold_limits){
+    threshold_limit = threshold_limits || itemQuantity + 1
+  }
   if (operation === "add") {
 
     if (itemQuantity < threshold_limit) {
