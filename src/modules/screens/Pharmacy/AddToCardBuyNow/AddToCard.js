@@ -49,7 +49,7 @@ export class AddToCard extends Component {
     }
     async productQuantityOperator(item, operator) {
         let discountedValue = medicineRateAfterOffer(item)
-        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, discountedValue, operator, item.threshold_limit)
+        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, discountedValue, operator, item.maxThreashold)
         let userAddedTotalMedicineAmount = result.totalAmount || 0;
         let userAddedMedicineQuantity = result.quantity || 0;
         let threshold_message = result.threshold_message || null;
