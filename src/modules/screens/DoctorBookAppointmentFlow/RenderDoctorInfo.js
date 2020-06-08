@@ -47,7 +47,7 @@ export default class RenderDoctorInfo extends PureComponent {
                         </Row>
                         <Row style={{ marginLeft: 55, }}>
                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, }}>
-                                {item.hospitalInfo.hospital.name + ' - ' + item.hospitalInfo.hospital.location.address.city}
+                                {item.hospitalInfo && item.hospitalInfo.hospital.name + ' - ' + item.hospitalInfo && item.hospitalInfo.hospital.location && item.hospitalInfo.hospital.location.address.city}
                             </Text>
                         </Row>
                     </Col>

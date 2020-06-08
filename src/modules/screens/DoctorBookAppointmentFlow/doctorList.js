@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
 import {
     SET_SINGLE_DOCTOR_ITEM_DATA,
     SET_FILTERED_DOCTOR_DATA,
@@ -38,7 +38,7 @@ const SELECTED_EXPERIENCE_START_END_YEARS = {
 let currentDoctorOrder = 'ASC';
 const SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW = 2;
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
-const SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL=10;
+const SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL = 10;
 class DoctorList extends Component {
     docListDataArry = [];
     // searchedDoctorIdsArray = [];
@@ -69,32 +69,38 @@ class DoctorList extends Component {
                 renderRefreshCount: 1,
                 refreshCountOnDateFL: 1,
                 isSlotsLoading: false,
-                isLoadingMoreData:false,
+                isLoadingMoreData: false,
+                // onEndReachedCalledDuringMomentum: true,
+
 
             }
-                            this.paginationCount=0
+        this.paginationCount = 0,
+            this.onEndReachedCalledDuringMomentum = true
+
 
     }
 
     componentNavigationMount = async () => { }   //   Need to Check filter Page implementation also
     async componentDidMount() {
         try {
+            console.log('calling componentDidMount');
+
             this.setState({ isLoading: true });
-        const userId = await AsyncStorage.getItem('userId');
-        this.searchByDoctorDetails();
-        if (userId) {
-            //     this.getFavoriteCounts4PatByUserId(userId);
-            this.setState({ isLoggedIn: true })
-        }
-         } catch (error) {
-          this.setState({ isLoading: false });
- Toast.show({
+            const userId = await AsyncStorage.getItem('userId');
+            this.searchByDoctorDetails();
+            if (userId) {
+                //     this.getFavoriteCounts4PatByUserId(userId);
+                this.setState({ isLoggedIn: true })
+            }
+        } catch (error) {
+            this.setState({ isLoading: false });
+            Toast.show({
                 text: 'Something Went Wrong' + Ex,
                 duration: 3000,
                 type: "danger"
             })
         }
-        finally{
+        finally {
             this.setState({ isLoading: false });
         }
     }
@@ -113,16 +119,19 @@ class DoctorList extends Component {
     // }
     searchByDoctorDetails = async () => {
         try {
+
+            console.log("calling Api====>", this.paginationCount);
+
             // //debugger
             // this.setState({ isLoading: true });
             const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
             const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
-            const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.paginationCount,SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL);
+            const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.paginationCount, SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL);
             debugger
-            console.log('docListResponse====>', JSON.stringify(docListResponse));
+            // console.log('docListResponse====>', JSON.stringify(docListResponse));
             if (docListResponse.success) {
-                this.paginationCount=this.paginationCount+5;
-              const searchedDoctorIdsArray=[];
+                this.paginationCount = this.paginationCount + 5;
+                const searchedDoctorIdsArray = [];
                 //debugger
                 const docListData = docListResponse.data || [];
                 docListData.map(item => {
@@ -164,7 +173,7 @@ class DoctorList extends Component {
                 debugger
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
                 doctorInfoList.sort(sortByPrimeDoctors);
-                console.log('doctorInfoList========>', JSON.stringify(doctorInfoList));
+                // console.log('doctorInfoList========>', JSON.stringify(doctorInfoList));
                 debugger
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
@@ -300,9 +309,8 @@ class DoctorList extends Component {
                 const doctorIdFromItem = item.doctor_id;
                 const hospitalIdFromItem = item.hospitalInfo && item.hospitalInfo.hospital_id;
                 if (setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem)) {  //Execute condition  when Doctor Id is repeated;
-                    console.log('setDoctorIdHostpitalIdsArrayMap.has(docId)====>', setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem));
+                    // console.log('setDoctorIdHostpitalIdsArrayMap.has(docId)====>', setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem));
                     let baCupDocHospitalIdsObj = setDoctorIdHostpitalIdsArrayMap.get(doctorIdFromItem);
-                    console.log('baCupDocHospitalIdsObj====>', baCupDocHospitalIdsObj);
                     const obj = {
                         doctorId: doctorIdFromItem,
                         hospitalIds: [...baCupDocHospitalIdsObj.hospitalIds, hospitalIdFromItem]
@@ -317,13 +325,13 @@ class DoctorList extends Component {
                 }
             })
             const reqData4Availability = Array.from(setDoctorIdHostpitalIdsArrayMap.values()) || [];
-            console.log('reqData4Availability=====>', reqData4Availability);
+            // console.log('reqData4Availability=====>', reqData4Availability);
             const reqStartAndEndDates = {
                 startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchDoctorAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            console.log('resultSlotsData======>', JSON.stringify(resultSlotsData));
+            // console.log('resultSlotsData======>', JSON.stringify(resultSlotsData));
             debugger
             if (resultSlotsData.success) {
                 const availabilitySlotsData = resultSlotsData.data;
@@ -354,7 +362,7 @@ class DoctorList extends Component {
             }
             this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(item.doctorIdHostpitalId, finalDocAndAvailabilityObj)
         });
-        console.log('Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values())===>', JSON.stringify(Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values())));
+        // console.log('Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values())===>', JSON.stringify(Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values())));
         //debugger
     }
 
@@ -392,38 +400,46 @@ class DoctorList extends Component {
         this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
     }
 
-   navigateToFilters() {
+    navigateToFilters() {
         this.props.navigation.navigate('Filters')
     }
-  renderFooterComponent() {
-    return (
-      <View style={{
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  }}>
-        {this.state.isLoadingMoreData ? (
-          <ActivityIndicator color="black" style={{ margin: 10 }} />
-        ) : null}
-      </View>
-    );
-  }
-loadMoreData=()=>{
-    try {
-        alert('calling loadMoreData====>')
-        this.setState({isLoadingMoreData:true});
-        this.searchByDoctorDetails();
-    } catch (error) {
-        this.setState({isLoadingMoreData:false})
+    renderFooterComponent = () => {
+        console.log('calling renderFooterComponent-=======>');
+
+        return (
+
+            this.state.isLoadingMoreData ?
+
+                <View style={{
+                    padding: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                }}>
+                    <ActivityIndicator color="black" style={{ margin: 10 }} />
+
+                </View>
+                : null
+        );
     }
-    finally{
-this.setState({isLoadingMoreData:false})
+    loadMoreData = () => {
+        try {
+            alert('calling loadMoreData====>')
+            this.setState({ isLoadingMoreData: true });
+            this.searchByDoctorDetails();
+        } catch (error) {
+            this.setState({ isLoadingMoreData: false })
+        }
+        finally {
+            this.setState({ isLoadingMoreData: false })
+        }
     }
-}
+
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, filteredDoctorData } } = this.props;
         const { isLoading } = this.state;
+        const { height } = Dimensions.get('window');
+
         return (
             <Container style={styles.container}>
                 <NavigationEvents
@@ -472,17 +488,24 @@ this.setState({isLoadingMoreData:false})
                                     <FlatList
                                         data={doctorInfoListAndSlotsData}
                                         extraData={this.state.renderRefreshCount}
-                //                                      onScrollEndDrag={() => alert(" *********end")}
-                //   onScrollBeginDrag={() => alert(" *******start")}
-              onEndReached={this.loadMoreData}
-                                            onEndReachedThreshold={1}
+
+                                        // initialNumToRender={5}
+                                        // onEndReachedThreshold={0.5}
+                                        onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+                                        onEndReached={() => {
+                                            if (!this.onEndReachedCalledDuringMomentum) {
+                                                this.loadMoreData();    // LOAD MORE DATA
+                                                this.onEndReachedCalledDuringMomentum = true;
+                                            }
+                                        }}
+                                        onEndReachedThreshold={Platform.OS === 'ios' ? 0 : Dimensions.get('window').height / 2}
                                         renderItem={({ item, index }) =>
                                             item.isDoctorIdHostpitalIdSponsored === true ? null : this.renderDoctorCard(item, index)
-                                        } 
-                                       keyExtractor={(item, index) => index.toString()}
-                                                   ListFooterComponent={this.renderFooterComponent()}
+                                        }
+                                        keyExtractor={(item, index) => index.toString()}
+                                    // ListFooterComponent={this.renderFooterComponent}
 
-/>
+                                    />
                                 </View>}
                         </View>
                     </Content>

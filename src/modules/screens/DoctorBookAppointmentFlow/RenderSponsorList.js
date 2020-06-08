@@ -37,7 +37,7 @@ export default class RenderSponsorList extends PureComponent {
                                 <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, fontWeight: 'bold' }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
 
                                 <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: 5, fontSize: 11, color: '#808080' }}>
-                                    {item.hospitalInfo.hospital.name + ' - ' + item.hospitalInfo.hospital.location.address.city}
+                                    {item.hospitalInfo && item.hospitalInfo.hospital.name + ' - ' + item.hospitalInfo && item.hospitalInfo.hospital.location && item.hospitalInfo.hospital.location.address.city}
                                 </Text>
                                 <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, fontWeight: 'bold', color: '#808080' }}>Experience: {getDoctorExperience(item.calculatedExperience)} </Text>
                             </Col>
