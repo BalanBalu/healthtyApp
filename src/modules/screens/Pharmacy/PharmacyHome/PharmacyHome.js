@@ -199,7 +199,7 @@ class PharmacyHome extends Component {
                 />
                 <View style={{ backgroundColor: '#7F49C3', padding: 5, paddingBottom: 10, height: 45 }}>
                     <Grid>
-                        <Col size={6}>
+                        <Col size={10}>
                             <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
                                 <Input
                                     placeholder='Search for Medicines and Health Products...     '
@@ -210,24 +210,10 @@ class PharmacyHome extends Component {
                                     // onKeyPress={(evet) => this.navigatePress(evet)}
                                     returnKeyType={'go'}
                                     multiline={false} />
-
                                 <TouchableOpacity style={{ alignItems: 'flex-end' }}>
                                     <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
                                 </TouchableOpacity>
                             </Item>
-
-                        </Col>
-                        <Col size={4} style={{ marginLeft: 5 }}>
-                            <TouchableOpacity style={{ backgroundColor: '#fff', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('UploadPrescription')}>
-                                <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Col size={1.5} style={{ alignItems: 'center' }}>
-                                        <Icon name='ios-share' style={{ fontSize: 15, color: 'grey', }} />
-                                    </Col>
-                                    <Col size={8.5} style={{ alignItems: 'flex-start' }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#000' }}>Upload Prescription</Text>
-                                    </Col>
-                                </Row>
-                            </TouchableOpacity>
                         </Col>
                     </Grid>
                 </View>
@@ -279,21 +265,41 @@ class PharmacyHome extends Component {
                         </View>
 
                         <View style={{ borderColor: 'gray', borderWidth: 1, marginTop: 10, marginLeft: 5, backgroundColor: '#fff' }}>
-
-
                             <Image
                                 source={flatBannerOffer}
                                 style={{
                                     width: 235, height: 120, alignItems: 'center'
                                 }}
                             />
-
-
                         </View>
                     </ScrollView>
-
-
-
+                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10 }}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('UploadPrescription')}>
+                            <View style={styles.uploadStyles}>
+                                <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                        <Text style={styles.uploadText}>Upload your prescription and get your order quickly </Text>
+                                        <Row style={{ alignItems: 'center', }}>
+                                            <TouchableOpacity style={styles.uploadTouchable} onPress={() => this.props.navigation.navigate('UploadPrescription')}>
+                                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
+                                                    UPLOAD PRESCRIPTION
+                                                </Text>
+                                                <Icon name='ios-arrow-forward' style={{ marginLeft: 5, color: '#fff', fontSize: 15 }} />
+                                            </TouchableOpacity>
+                                        </Row>
+                                    </Col>
+                                    <Col size={2.5} >
+                                        <Image
+                                            source={require('../../../../../assets/images/PresciptionUploadImage.png')}
+                                            style={{
+                                                width: 80, height: 80, alignItems: 'center'
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <View style={{ marginTop: 10, marginLeft: 5, marginRight: 10 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#4c4c4c', marginBottom: 10, marginLeft: 5 }}>Popular Medicines</Text>
                         <View>
@@ -442,7 +448,7 @@ class PharmacyHome extends Component {
                         </ScrollView>
 
                     </View>
-                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10 }}>
+                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10, borderRadius: 5 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#4c4c4c' }}>Here is What you do!</Text>
                         <View style={{ backgroundColor: '#fff', marginTop: 5 }}>
                             <Image
@@ -639,5 +645,32 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#fff',
         marginLeft: 2
+    },
+    uploadStyles:{
+        backgroundColor: '#fff', 
+        marginTop: 5, 
+        width: '100%', 
+        paddingBottom: 5, 
+        paddingTop: 5, 
+        paddingLeft: 10, 
+        borderRadius: 5
+    },
+    uploadText:{
+        fontSize: 10, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginTop: 5, 
+        lineHeight: 20 
+    },
+    uploadTouchable:{
+        backgroundColor: '#7F49C3', 
+        paddingRight: 10, 
+        paddingBottom: 4,
+         paddingTop: 4, 
+         paddingLeft: 10, 
+         flexDirection: 'row', 
+         justifyContent: 'center', 
+         borderRadius: 5,
+         marginRight: 10, 
     }
 });
