@@ -120,19 +120,19 @@ class DoctorList extends Component {
     searchByDoctorDetails = async () => {
         try {
 
-            console.log("calling Api====>", this.paginationCount);
+            // console.log("calling Api====>", this.paginationCount);
 
             // //debugger
             // this.setState({ isLoading: true });
             const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
             const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
             const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.paginationCount, SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL);
-            debugger
+            // debugger
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
             if (docListResponse.success) {
                 this.paginationCount = this.paginationCount + 5;
                 const searchedDoctorIdsArray = [];
-                //debugger
+                ////debugger
                 const docListData = docListResponse.data || [];
                 docListData.map(item => {
                     const doctorIdHostpitalId = item.doctor_id + '-' + item.hospitalInfo.hospital_id;
@@ -142,7 +142,7 @@ class DoctorList extends Component {
                     item.doctorIdHostpitalId = doctorIdHostpitalId;
                     this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
                 })
-                debugger
+                //debugger
                 const [activeDoctorsSponsorDetails, docsFavoriteDetails, docsReviewDetails] = await Promise.all([
                     serviceOfGetTotalActiveSponsorDetails4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
                     ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -170,11 +170,11 @@ class DoctorList extends Component {
                     });
                     this.updateDocSponsorViewersCountByUser(sponsorIdsArray);
                 }
-                debugger
+                //debugger
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
                 doctorInfoList.sort(sortByPrimeDoctors);
                 // console.log('doctorInfoList========>', JSON.stringify(doctorInfoList));
-                debugger
+                //debugger
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
@@ -300,10 +300,10 @@ class DoctorList extends Component {
     /* get Doctor  Availability Slots service */
     getDoctorAvailabilitySlots = async (doctorIdHostpitalId, startDateByMoment, endDateByMoment, indexOfItem) => {
         try {
-            debugger
+            //debugger
             this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
             const orderedDataFromWholeData = this.getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService(indexOfItem) // get 5 Or LessThan 5 of doctorIdHostpitalIds in order wise using index of given input of doctorInfoListAndSlotsData
-            debugger
+            //debugger
             const setDoctorIdHostpitalIdsArrayMap = new Map();
             orderedDataFromWholeData.map((item) => {
                 const doctorIdFromItem = item.doctor_id;
@@ -332,7 +332,7 @@ class DoctorList extends Component {
             }
             const resultSlotsData = await fetchDoctorAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
             // console.log('resultSlotsData======>', JSON.stringify(resultSlotsData));
-            debugger
+            //debugger
             if (resultSlotsData.success) {
                 const availabilitySlotsData = resultSlotsData.data;
                 if (availabilitySlotsData.length != 0) {
@@ -345,14 +345,14 @@ class DoctorList extends Component {
                     // this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
                 }
             }
-            debugger
+            //debugger
         } catch (ex) {
             console.log('Ex getting on getAvailabilitySlots service======', ex.message);
         }
     }
     /*  Set Doctor Availability Slots data by doctorIdHostpitalIds   */
     setDoctorAvailabilitySlotsDataByDocAndHospitalIds = (SourceOfSlotsDataArray) => {
-        //debugger
+        ////debugger
         SourceOfSlotsDataArray.map((item) => {
             const baCupOfDocInfo = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(item.doctorIdHostpitalId);
             const finalSlotsDataObj = { ...baCupOfDocInfo.slotData, ...item.slotData } // Merge the Previous weeks and On change the Next week slots data
@@ -363,7 +363,7 @@ class DoctorList extends Component {
             this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(item.doctorIdHostpitalId, finalDocAndAvailabilityObj)
         });
         // console.log('Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values())===>', JSON.stringify(Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values())));
-        //debugger
+        ////debugger
     }
 
 
@@ -404,12 +404,9 @@ class DoctorList extends Component {
         this.props.navigation.navigate('Filters')
     }
     renderFooterComponent = () => {
-        console.log('calling renderFooterComponent-=======>');
-
+        // console.log('calling renderFooterComponent-=======>');
         return (
-
             this.state.isLoadingMoreData ?
-
                 <View style={{
                     padding: 10,
                     justifyContent: 'center',
@@ -417,7 +414,6 @@ class DoctorList extends Component {
                     flexDirection: 'row',
                 }}>
                     <ActivityIndicator color="black" style={{ margin: 10 }} />
-
                 </View>
                 : null
         );
@@ -426,6 +422,8 @@ class DoctorList extends Component {
         try {
             alert('calling loadMoreData====>')
             this.setState({ isLoadingMoreData: true });
+            console.log('calling load more', this.paginationCount + 5);
+
             this.searchByDoctorDetails();
         } catch (error) {
             this.setState({ isLoadingMoreData: false })
@@ -438,84 +436,98 @@ class DoctorList extends Component {
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, filteredDoctorData } } = this.props;
         const { isLoading } = this.state;
-        const { height } = Dimensions.get('window');
+        const { height, width } = Dimensions.get('window');
 
         return (
             <Container style={styles.container}>
                 <NavigationEvents
                     onWillFocus={payload => { this.componentNavigationMount() }}
                 />
-                {isLoading ? <Loader style='list' /> :
-                    <Content>
-                        <View>
-                            <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
-                                <Row>
-                                    <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
-                                        <Col size={1.1} >
-                                            <Icon name='ios-arrow-down' style={{ color: 'gray', fontSize: 20, marginTop: 10 }} />
-                                        </Col>
-                                        <Col size={8.9} style={{ justifyContent: 'center' }}>
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
-                                        </Col>
-                                    </Col>
-                                    <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 0.3 }} onPress={() => this.navigateToFilters()}>
-                                        <Col size={1.1} style={{ marginLeft: 10 }}>
-                                            <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25, marginTop: 5 }} />
-                                        </Col>
-                                        <Col size={8.9} style={{ justifyContent: 'center' }}>
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%', textAlign: 'center' }}>Filters </Text>
-                                        </Col>
+                <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
+                    <Row style={{ height: 35, alignItems: 'center' }}>
+                        <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+                            <Col size={2.0} >
+                                <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
+                            </Col>
+                            <Col size={8.0} style={{ justifyContent: 'center' }}>
+                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
+                            </Col>
+                        </Col>
+                        <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 1, justifyContent: 'center' }} onPress={() => this.navigateToFilters()}>
 
-                                    </Col>
-                                </Row>
-                            </Card>
+                            <Col size={8.0} style={{ justifyContent: 'center' }}>
+                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
+                            </Col>
+                            <Col size={2.0} style={{ marginLeft: 5 }}>
+                                <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25 }} />
+                            </Col>
+                        </Col>
+                    </Row>
+                </Card>
+                {isLoading ? <Loader style='list' /> :
+                    <ScrollView>
+                        <View>
                             {doctorInfoListAndSlotsData.length === 0 ? <RenderListNotFound text={' No Doctor list found!'} />
                                 :
                                 <View>
-                                    <View style={{ borderBottomColor: '#B6B6B6', borderBottomWidth: 0.5, paddingBottom: 8 }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
-                                        <ScrollView horizontal={true} style={{ marginTop: 8 }}>
-                                            <FlatList
-                                                horizontal
-                                                data={doctorInfoListAndSlotsData || []}
-                                                extraData={this.state.renderRefreshCount}
-                                                keyExtractor={(item, index) => index.toString()}
-                                                renderItem={({ item }) =>
-                                                    item.isDoctorIdHostpitalIdSponsored === true ? this.renderDoctorSponsorListCards(item) : null
-                                                } />
-                                        </ScrollView>
-                                    </View>
+                                    {/* <View style={{ borderBottomColor: '#B6B6B6', borderBottomWidth: 0.5, paddingBottom: 8 }}> */}
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
+
                                     <FlatList
-                                        data={doctorInfoListAndSlotsData}
+                                        horizontal
+                                        data={doctorInfoListAndSlotsData || []}
                                         extraData={this.state.renderRefreshCount}
-
-                                        // initialNumToRender={5}
-                                        // onEndReachedThreshold={0.5}
-                                        onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
-                                        onEndReached={() => {
-                                            if (!this.onEndReachedCalledDuringMomentum) {
-                                                this.loadMoreData();    // LOAD MORE DATA
-                                                this.onEndReachedCalledDuringMomentum = true;
-                                            }
-                                        }}
-                                        onEndReachedThreshold={Platform.OS === 'ios' ? 0 : Dimensions.get('window').height / 2}
-                                        renderItem={({ item, index }) =>
-                                            item.isDoctorIdHostpitalIdSponsored === true ? null : this.renderDoctorCard(item, index)
-                                        }
                                         keyExtractor={(item, index) => index.toString()}
-                                    // ListFooterComponent={this.renderFooterComponent}
+                                        renderItem={({ item }) =>
+                                            item.isDoctorIdHostpitalIdSponsored === true ? this.renderDoctorSponsorListCards(item) : null
+                                        } />
 
-                                    />
+                                    {/* </View> */}
+                                    <ScrollView style={{ flex: 1 }}
+                                        contentContainerStyle={{ flex: 1 }}>
+
+                                        <FlatList
+                                            data={doctorInfoListAndSlotsData}
+                                            extraData={this.state.renderRefreshCount}
+
+                                            // onEndReachedThreshold={Platform.OS === 'ios' ? 0 : alert(JSON.stringify(Dimensions.get('window'))), Dimensions.get('window')}
+
+                                            // onMomentumScrollBegin={() => this.onMomentumScrollBegin}
+                                            onEndReached={() => {
+                                                console.log('calling onEndReached===>')
+                                                debugger
+                                                // if (!this.onEndReachedCalledDuringMomentum) {
+                                                this.loadMoreData();    // LOAD MORE DATA
+                                                // this.onEndReachedCalledDuringMomentum = true;
+                                                // }
+                                                debugger
+                                            }}
+                                            onEndReachedThreshold={0.5}
+
+                                            renderItem={({ item, index }) =>
+                                                item.isDoctorIdHostpitalIdSponsored === true ? null : this.renderDoctorCard(item, index)
+                                            }
+                                            keyExtractor={(item, index) => index.toString()}
+                                            ListFooterComponent={this.renderFooterComponent}
+
+                                        />
+                                    </ScrollView>
                                 </View>}
+
                         </View>
-                    </Content>
+                    </ScrollView>
+
                 }
-            </Container >
+
+            </Container>
         )
     }
-
-
-
+    onMomentumScrollBegin = () => {
+        debugger
+        // alert('call onMomentumScrollBegin')
+        this.onEndReachedCalledDuringMomentum = false;
+        debugger
+    }
 
     renderDoctorSponsorListCards(item) {
         const { currentDate } = this.state;

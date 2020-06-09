@@ -50,13 +50,13 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
 
 
 
-export const searchByDocDetailsService = async (locationDataFromSearch, inputKeywordFromSearch,skipCount,limit) => {
+export const searchByDocDetailsService = async (locationDataFromSearch, inputKeywordFromSearch, skipCount, limit) => {
     try {
-            const endPoint = `V2/doctor/search/search/${inputKeywordFromSearch}?skip=${skipCount}&limit=${limit}`;
-            debugger
+        const endPoint = `V2/doctor/search/search/${inputKeywordFromSearch}?skip=${skipCount}&limit=${limit}`;
+        // debugger
         // const endPoint = 'V2/doctor/search/search/' + inputKeywordFromSearch;
         const response = await postService(endPoint, locationDataFromSearch);
-        debugger
+        // debugger
         const respData = response.data;
         return respData;
     } catch (ex) {
