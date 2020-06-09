@@ -833,11 +833,12 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         width: '100%',
-        height:70,
+        height:80,
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems:'center'
     },
     mainText: {
         fontSize: 10,
