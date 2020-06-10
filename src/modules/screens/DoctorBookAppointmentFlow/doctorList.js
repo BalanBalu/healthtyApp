@@ -27,7 +27,7 @@ import RenderDoctorInfo from './RenderDoctorInfo';
 import RenderDatesList from './RenderDateList'
 import RenderSlots from './RenderSlots'
 import RenderSponsorList from './RenderSponsorList';
-
+import Spinner from '../../../components/Spinner'
 let conditionFromFilterPage;
 const SELECTED_EXPERIENCE_START_END_YEARS = {
     10: { start: 0, end: 10 },
@@ -59,7 +59,6 @@ class DoctorList extends Component {
                 isLoading: true,
                 isAvailabilityLoading: false,
                 filterBySelectedAvailabilityDateCount: 0,
-                filterData: null,
                 yearOfExperience: '',
                 sliderPageIndex: 0,
                 sliderPageIndexesByDoctorIds: {},
@@ -70,7 +69,7 @@ class DoctorList extends Component {
                 refreshCountOnDateFL: 1,
                 isSlotsLoading: false,
                 isLoadingMoreData: false,
-                // onEndReachedCalledDuringMomentum: true,
+                doctorInfoListAndSlotsData1: []
 
 
             }
@@ -117,11 +116,125 @@ class DoctorList extends Component {
     //         }
     //     }
     // }
+
+    render() {
+        const { bookAppointmentData: { doctorInfoListAndSlotsData, filteredDoctorData } } = this.props;
+        const { isLoading, doctorInfoListAndSlotsData1
+        } = this.state;
+        const { height, width } = Dimensions.get('window');
+
+        return (
+            <Container style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={payload => { this.componentNavigationMount() }}
+                />
+                <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
+                    <Row style={{ height: 35, alignItems: 'center' }}>
+                        <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+                            <Col size={2.0} >
+                                <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
+                            </Col>
+                            <Col size={8.0} style={{ justifyContent: 'center' }}>
+                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
+                            </Col>
+                        </Col>
+                        <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 1, justifyContent: 'center' }} onPress={() => this.navigateToFilters()}>
+
+                            <Col size={8.0} style={{ justifyContent: 'center' }}>
+                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
+                            </Col>
+                            <Col size={2.0} style={{ marginLeft: 5 }}>
+                                <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25 }} />
+                            </Col>
+                        </Col>
+                    </Row>
+                </Card>
+                {isLoading ? <Loader style='list' /> : null}
+                <ScrollView
+                    style={{ flex: 1 }}
+                    contentContainerStyle={{ flex: 1 }}
+                >
+                    <View>
+                        {doctorInfoListAndSlotsData.length === 0 ? <RenderListNotFound text={' No Doctor list found!'} />
+                            :
+                            <View>
+                                <View style={{ borderBottomColor: '#B6B6B6', borderBottomWidth: 0.5, paddingBottom: 8 }}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
+                                </View>
+                                {/* 
+                                <FlatList
+                                    horizontal
+                                    data={doctorInfoListAndSlotsData || []}
+                                    // style={{ flex: 1 }}
+                                    // extraData={this.state.renderRefreshCount}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) =>
+                                        item.isDoctorIdHostpitalIdSponsored === true ? this.renderDoctorSponsorListCards(item) : null
+                                    } />
+ */}
+
+                                <FlatList
+                                    data={doctorInfoListAndSlotsData}
+                                    // extraData={this.state.renderRefreshCount}
+                                    onMomentumScrollBegin={() => {
+                                        this.onEndReachedCalledDuringMomentum = false;
+                                    }}
+                                    onEndReachedThreshold={0.5}
+                                    onEndReached={() => {
+                                        console.log('calling onEndReached===>',
+                                            this.onEndReachedCalledDuringMomentum)
+                                        this.loadMoreData();
+                                        // if (!this.onEndReachedCalledDuringMomentum) {
+                                        //     alert('calling scroll begin===>' +
+                                        //         this.onEndReachedCalledDuringMomentum);
+                                        //     this.loadMoreData();    // LOAD MORE DATA
+                                        //     this.onEndReachedCalledDuringMomentum = true;
+                                        // }
+                                    }}
+
+                                    renderItem={({ item, index }) =>
+                                        item.isDoctorIdHostpitalIdSponsored === true ? null : this.renderDoctorCard(item, index)
+                                    }
+                                    keyExtractor={(item, index) => index.toString()}
+                                // ListFooterComponent={this.renderFooterComponent}
+                                />
+                            </View>}
+                    </View>
+                    {/* {
+                        this.state.isLoadingMoreData ? null :
+                            <View>
+                                <ActivityIndicator
+                                    animating={true}
+                                    size="large"
+                                    color='green'
+                                />
+                            </View>
+                    } */}
+                </ScrollView>
+            </Container>
+        )
+    }
+    loadMoreData = () => {
+        try {
+            alert('calling loadMoreData====>')
+            this.setState({ isLoadingMoreData: true });
+            // console.log('calling load more', this.paginationCount + 4);
+
+            this.searchByDoctorDetails();
+            this.setState({ isLoadingMoreData: false })
+
+        } catch (error) {
+            // this.setState({ isLoadingMoreData: false })
+        }
+        finally {
+            // this.setState({ isLoadingMoreData: false })
+        }
+    }
+
+
     searchByDoctorDetails = async () => {
         try {
-
-            // console.log("calling Api====>", this.paginationCount);
-
+            console.log("calling Api pagination COUNT====>", this.paginationCount);
             // //debugger
             // this.setState({ isLoading: true });
             const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
@@ -130,7 +243,7 @@ class DoctorList extends Component {
             // debugger
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
             if (docListResponse.success) {
-                this.paginationCount = this.paginationCount + 5;
+                this.paginationCount = this.paginationCount + 4;
                 const searchedDoctorIdsArray = [];
                 ////debugger
                 const docListData = docListResponse.data || [];
@@ -172,20 +285,22 @@ class DoctorList extends Component {
                 }
                 //debugger
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
-                doctorInfoList.sort(sortByPrimeDoctors);
+                // doctorInfoList.sort(sortByPrimeDoctors);
                 // console.log('doctorInfoList========>', JSON.stringify(doctorInfoList));
                 //debugger
+                // this.setState({ doctorInfoListAndSlotsData1: doctorInfoList })
+
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
                 })
             }
-            else {
-                store.dispatch({
-                    type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-                    data: []
-                })
-            }
+            // else {
+            //     store.dispatch({
+            //         type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+            //         data: []
+            //     })
+            // }
         } catch (Ex) {
             Toast.show({
                 text: 'Something Went Wrong' + Ex,
@@ -403,131 +518,8 @@ class DoctorList extends Component {
     navigateToFilters() {
         this.props.navigation.navigate('Filters')
     }
-    renderFooterComponent = () => {
-        // console.log('calling renderFooterComponent-=======>');
-        return (
-            this.state.isLoadingMoreData ?
-                <View style={{
-                    padding: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                }}>
-                    <ActivityIndicator color="black" style={{ margin: 10 }} />
-                </View>
-                : null
-        );
-    }
-    loadMoreData = () => {
-        try {
-            alert('calling loadMoreData====>')
-            this.setState({ isLoadingMoreData: true });
-            console.log('calling load more', this.paginationCount + 5);
 
-            this.searchByDoctorDetails();
-        } catch (error) {
-            this.setState({ isLoadingMoreData: false })
-        }
-        finally {
-            this.setState({ isLoadingMoreData: false })
-        }
-    }
 
-    render() {
-        const { bookAppointmentData: { doctorInfoListAndSlotsData, filteredDoctorData } } = this.props;
-        const { isLoading } = this.state;
-        const { height, width } = Dimensions.get('window');
-
-        return (
-            <Container style={styles.container}>
-                <NavigationEvents
-                    onWillFocus={payload => { this.componentNavigationMount() }}
-                />
-                <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
-                    <Row style={{ height: 35, alignItems: 'center' }}>
-                        <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
-                            <Col size={2.0} >
-                                <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
-                            </Col>
-                            <Col size={8.0} style={{ justifyContent: 'center' }}>
-                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
-                            </Col>
-                        </Col>
-                        <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 1, justifyContent: 'center' }} onPress={() => this.navigateToFilters()}>
-
-                            <Col size={8.0} style={{ justifyContent: 'center' }}>
-                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
-                            </Col>
-                            <Col size={2.0} style={{ marginLeft: 5 }}>
-                                <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25 }} />
-                            </Col>
-                        </Col>
-                    </Row>
-                </Card>
-                {isLoading ? <Loader style='list' /> :
-                    <ScrollView>
-                        <View>
-                            {doctorInfoListAndSlotsData.length === 0 ? <RenderListNotFound text={' No Doctor list found!'} />
-                                :
-                                <View>
-                                    {/* <View style={{ borderBottomColor: '#B6B6B6', borderBottomWidth: 0.5, paddingBottom: 8 }}> */}
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
-
-                                    <FlatList
-                                        horizontal
-                                        data={doctorInfoListAndSlotsData || []}
-                                        extraData={this.state.renderRefreshCount}
-                                        keyExtractor={(item, index) => index.toString()}
-                                        renderItem={({ item }) =>
-                                            item.isDoctorIdHostpitalIdSponsored === true ? this.renderDoctorSponsorListCards(item) : null
-                                        } />
-
-                                    {/* </View> */}
-                                    <ScrollView style={{ flex: 1 }}
-                                        contentContainerStyle={{ flex: 1 }}>
-
-                                        <FlatList
-                                            data={doctorInfoListAndSlotsData}
-                                            extraData={this.state.renderRefreshCount}
-
-                                            // onEndReachedThreshold={Platform.OS === 'ios' ? 0 : alert(JSON.stringify(Dimensions.get('window'))), Dimensions.get('window')}
-
-                                            // onMomentumScrollBegin={() => this.onMomentumScrollBegin}
-                                            onEndReached={() => {
-                                                console.log('calling onEndReached===>')
-                                                debugger
-                                                // if (!this.onEndReachedCalledDuringMomentum) {
-                                                this.loadMoreData();    // LOAD MORE DATA
-                                                // this.onEndReachedCalledDuringMomentum = true;
-                                                // }
-                                                debugger
-                                            }}
-                                            onEndReachedThreshold={0.5}
-
-                                            renderItem={({ item, index }) =>
-                                                item.isDoctorIdHostpitalIdSponsored === true ? null : this.renderDoctorCard(item, index)
-                                            }
-                                            keyExtractor={(item, index) => index.toString()}
-                                            ListFooterComponent={this.renderFooterComponent}
-
-                                        />
-                                    </ScrollView>
-                                </View>}
-
-                        </View>
-                    </ScrollView>
-
-                }
-
-            </Container>
-        )
-    }
-    onMomentumScrollBegin = () => {
-        debugger
-        // alert('call onMomentumScrollBegin')
-        this.onEndReachedCalledDuringMomentum = false;
-        debugger
-    }
 
     renderDoctorSponsorListCards(item) {
         const { currentDate } = this.state;
