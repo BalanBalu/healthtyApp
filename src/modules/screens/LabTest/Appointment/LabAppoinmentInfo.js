@@ -35,7 +35,8 @@ class LabAppointmentInfo extends Component {
     const upcomingTap = navigation.getParam('selectedIndex');
 
     if (appointmentData == undefined) {
-      let appointmentId = navigation.getParam('appointmentId')
+      let appointmentId = navigation.getParam('serviceId')
+      console.log("appointmentId", appointmentId)
       await this.setState({ appointmentId })
       await new Promise.all([
         this.getAppointmentById(appointmentId),
