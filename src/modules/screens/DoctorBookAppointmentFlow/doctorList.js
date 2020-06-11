@@ -38,7 +38,7 @@ const SELECTED_EXPERIENCE_START_END_YEARS = {
 let currentDoctorOrder = 'ASC';
 const SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW = 2;
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
-const SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL = 10;
+const SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL = 5;
 class DoctorList extends Component {
     docListDataArry = [];
     // searchedDoctorIdsArray = [];
@@ -48,7 +48,7 @@ class DoctorList extends Component {
     selectedDateObjOfDoctorIds = {};
     selectedSlotByDoctorIdsObj = {};
     selectedSlotItemByDoctorIds = {};
-    showNoOfPrimeDocsCountOnSwiperListView = SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW;
+    showNoOfPrimeDoctorsListOnSwiperListViewArray = [];
     constructor(props) {
         super(props)
         conditionFromFilterPage = null,  // for check FilterPage Values
@@ -69,14 +69,11 @@ class DoctorList extends Component {
                 refreshCountOnDateFL: 1,
                 isSlotsLoading: false,
                 isLoadingMoreData: false,
-                doctorInfoListAndSlotsData1: []
-
-
+                doctorInfoListAndSlotsData1: [],
             }
         this.paginationCount = 0,
             this.onEndReachedCalledDuringMomentum = true
-
-
+        this.isRenderedSponsoredList = false;
     }
 
     componentNavigationMount = async () => { }   //   Need to Check filter Page implementation also
@@ -122,7 +119,6 @@ class DoctorList extends Component {
         const { isLoading, doctorInfoListAndSlotsData1
         } = this.state;
         const { height, width } = Dimensions.get('window');
-
         return (
             <Container style={styles.container}>
                 <NavigationEvents
@@ -150,10 +146,7 @@ class DoctorList extends Component {
                     </Row>
                 </Card>
                 {isLoading ? <Loader style='list' /> : null}
-                <ScrollView
-                    style={{ flex: 1 }}
-                    contentContainerStyle={{ flex: 1 }}
-                >
+                <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}   >
                     <View>
                         {doctorInfoListAndSlotsData.length === 0 ? <RenderListNotFound text={' No Doctor list found!'} />
                             :
@@ -161,23 +154,11 @@ class DoctorList extends Component {
                                 <View style={{ borderBottomColor: '#B6B6B6', borderBottomWidth: 0.5, paddingBottom: 8 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
                                 </View>
-                                {/* 
-                                <FlatList
-                                    horizontal
-                                    data={doctorInfoListAndSlotsData || []}
-                                    // style={{ flex: 1 }}
-                                    // extraData={this.state.renderRefreshCount}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item }) =>
-                                        item.isDoctorIdHostpitalIdSponsored === true ? this.renderDoctorSponsorListCards(item) : null
-                                    } />
- */}
-
                                 <FlatList
                                     data={doctorInfoListAndSlotsData}
                                     // extraData={this.state.renderRefreshCount}
                                     onMomentumScrollBegin={() => {
-                                        this.onEndReachedCalledDuringMomentum = false;
+                                        this.onEndReachedCalledWhenScrollBegin = false;
                                     }}
                                     onEndReachedThreshold={0.5}
                                     onEndReached={() => {
@@ -191,17 +172,14 @@ class DoctorList extends Component {
                                         //     this.onEndReachedCalledDuringMomentum = true;
                                         // }
                                     }}
-
-                                    renderItem={({ item, index }) =>
-                                        item.isDoctorIdHostpitalIdSponsored === true ? null : this.renderDoctorCard(item, index)
-                                    }
+                                    renderItem={this.renderMainItem}
                                     keyExtractor={(item, index) => index.toString()}
                                 // ListFooterComponent={this.renderFooterComponent}
                                 />
                             </View>}
                     </View>
                     {/* {
-                        this.state.isLoadingMoreData ? null :
+                        this.state.isLoadingMoreData === true ? null :
                             <View>
                                 <ActivityIndicator
                                     animating={true}
@@ -214,12 +192,40 @@ class DoctorList extends Component {
             </Container>
         )
     }
+
+
+    renderMainItem = ({ item, index }) => {
+        // const { height, width } = Dimensions.get('window');
+        // console.log('renderMainItem item data====.', JSON.stringify(item));
+        // console.log('renderMainItem item INDEX====.', JSON.stringify(index));
+        debugger
+        /* Render Prime Doctor Cards   */
+        if (item.isDoctorIdHostpitalIdSponsored === true && this.isRenderedSponsoredList === false) {
+            debugger
+            return (
+                <View >
+                    <FlatList
+                        horizontal={true}
+                        data={this.showNoOfPrimeDoctorsListOnSwiperListViewArray}
+                        renderItem={({ item, index }) => { return this.renderDoctorSponsorListCards(item, index) }}
+                    //   renderItem={({ item, index }) => {        return <View style={{ width, height: 100 }}><Text style={{ fontSize: 30 }}>Sponsor</Text></View>
+                    // }}
+                    />
+                </View>
+            );
+        }
+        debugger
+        /*  Render Normal Doctor cards   */
+        if (item.isDoctorIdHostpitalIdSponsored !== true) {
+            debugger
+            return this.renderDoctorCard(item, index);
+            // return <View style={{ width, height: 100 }}><Text style={{ fontSize: 30 }}> Doctor</Text></View>
+        }
+    }
     loadMoreData = () => {
         try {
             alert('calling loadMoreData====>')
             this.setState({ isLoadingMoreData: true });
-            // console.log('calling load more', this.paginationCount + 4);
-
             this.searchByDoctorDetails();
             this.setState({ isLoadingMoreData: false })
 
@@ -231,21 +237,18 @@ class DoctorList extends Component {
         }
     }
 
-
     searchByDoctorDetails = async () => {
         try {
             console.log("calling Api pagination COUNT====>", this.paginationCount);
             // //debugger
-            // this.setState({ isLoading: true });
             const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
             const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
             const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.paginationCount, SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL);
             // debugger
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
             if (docListResponse.success) {
-                this.paginationCount = this.paginationCount + 4;
+                this.paginationCount = this.paginationCount + 5;
                 const searchedDoctorIdsArray = [];
-                ////debugger
                 const docListData = docListResponse.data || [];
                 docListData.map(item => {
                     const doctorIdHostpitalId = item.doctor_id + '-' + item.hospitalInfo.hospital_id;
@@ -264,17 +267,17 @@ class DoctorList extends Component {
                 const activeDoctorsSponsorData = activeDoctorsSponsorDetails.data;
                 if (activeDoctorsSponsorData) {
                     const sponsorIdsArray = [];
-                    let incrementPrimeDoctorsCountToShow = 0;
                     activeDoctorsSponsorData.map((sponsorItem) => {
                         sponsorIdsArray.push(sponsorItem._id);
                         const hospitalId = sponsorItem.location[0] && sponsorItem.location[0].hospital_id;
                         const doctorIdHostpitalId = sponsorItem.doctor_id + '-' + hospitalId;
                         if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.has(doctorIdHostpitalId)) {
                             const baCupDocHospitalIdItemObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId)
-                            if (incrementPrimeDoctorsCountToShow < this.showNoOfPrimeDocsCountOnSwiperListView) {
+                            if (this.showNoOfPrimeDoctorsListOnSwiperListViewArray.length < SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW) {
+                                // if (incrementPrimeDoctorsCountToShow < SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW) {
                                 baCupDocHospitalIdItemObj.isDoctorIdHostpitalIdSponsored = true;
+                                this.showNoOfPrimeDoctorsListOnSwiperListViewArray.push(baCupDocHospitalIdItemObj)
                                 this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, baCupDocHospitalIdItemObj)
-                                incrementPrimeDoctorsCountToShow += 1;
                             } else {
                                 baCupDocHospitalIdItemObj.isPrimeDoctorOnNormalCardView = true;
                                 this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, baCupDocHospitalIdItemObj)
@@ -522,6 +525,7 @@ class DoctorList extends Component {
 
 
     renderDoctorSponsorListCards(item) {
+        this.isRenderedSponsoredList = true;
         const { currentDate } = this.state;
         const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
         const { fee, feeWithoutOffer } = this.getFeesBySelectedSlot(item.slotData && item.slotData[this.selectedDateObjOfDoctorIds[item.doctorIdHostpitalId] || currentDate], item.slotData, item.doctorIdHostpitalId)
