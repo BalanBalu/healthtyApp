@@ -38,7 +38,7 @@ const SELECTED_EXPERIENCE_START_END_YEARS = {
 let currentDoctorOrder = 'ASC';
 const SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW = 2;
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
-const SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL = 5;
+const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 5;
 class DoctorList extends Component {
     docListDataArry = [];
     // searchedDoctorIdsArray = [];
@@ -51,36 +51,33 @@ class DoctorList extends Component {
     showNoOfPrimeDoctorsListOnSwiperListViewArray = [];
     constructor(props) {
         super(props)
+        this.state = {
+            selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
+            currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
+            nextAvailableSlotDate: '',
+            isAvailabilityLoading: false,
+            filterBySelectedAvailabilityDateCount: 0,
+            yearOfExperience: '',
+            expandedDoctorIdHospitalsToShowSlotsData: [],
+            showedFeeByDoctorIds: {},
+            isLoggedIn: false,
+            renderRefreshCount: 1,
+            refreshCountOnDateFL: 1,
+            isLoading: true,
+            isSlotsLoading: false,
+            isLoadingMoreData: false,
+            doctorInfoListAndSlotsData1: [],
+        }
         conditionFromFilterPage = null,  // for check FilterPage Values
-            this.state = {
-                selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
-                currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
-                nextAvailableSlotDate: '',
-                isLoading: true,
-                isAvailabilityLoading: false,
-                filterBySelectedAvailabilityDateCount: 0,
-                yearOfExperience: '',
-                sliderPageIndex: 0,
-                sliderPageIndexesByDoctorIds: {},
-                expandedDoctorIdHospitalsToShowSlotsData: [],
-                showedFeeByDoctorIds: {},
-                isLoggedIn: false,
-                renderRefreshCount: 1,
-                refreshCountOnDateFL: 1,
-                isSlotsLoading: false,
-                isLoadingMoreData: false,
-                doctorInfoListAndSlotsData1: [],
-            }
-        this.paginationCount = 0,
+            this.incrementPaginationCount = 0,
             this.onEndReachedCalledDuringMomentum = true
-        this.isRenderedSponsoredList = false;
+        this.isRenderedPrimeDocsOnSwiperListView = false;
     }
 
     componentNavigationMount = async () => { }   //   Need to Check filter Page implementation also
     async componentDidMount() {
         try {
             console.log('calling componentDidMount');
-
             this.setState({ isLoading: true });
             const userId = await AsyncStorage.getItem('userId');
             this.searchByDoctorDetails();
@@ -157,10 +154,10 @@ class DoctorList extends Component {
                                 <FlatList
                                     data={doctorInfoListAndSlotsData}
                                     // extraData={this.state.renderRefreshCount}
-                                    onMomentumScrollBegin={() => {
-                                        this.onEndReachedCalledWhenScrollBegin = false;
-                                    }}
+                                    onMomentumScrollBegin={() => { this.onEndReachedCalledWhenScrollBegin = false }}
                                     onEndReachedThreshold={0.5}
+                                    // onEndReachedThreshold={doctorInfoListAndSlotsData.length < 5 ? 0.5 : 2}
+                                    // initialNumToRender={10}
                                     onEndReached={() => {
                                         console.log('calling onEndReached===>',
                                             this.onEndReachedCalledDuringMomentum)
@@ -200,7 +197,7 @@ class DoctorList extends Component {
         // console.log('renderMainItem item INDEX====.', JSON.stringify(index));
         debugger
         /* Render Prime Doctor Cards   */
-        if (item.isDoctorIdHostpitalIdSponsored === true && this.isRenderedSponsoredList === false) {
+        if (item.isDoctorIdHostpitalIdSponsored === true && this.isRenderedPrimeDocsOnSwiperListView === false) {
             debugger
             return (
                 <View >
@@ -224,13 +221,14 @@ class DoctorList extends Component {
     }
     loadMoreData = () => {
         try {
-            alert('calling loadMoreData====>')
+            // alert('calling loadMoreData====>')
             this.setState({ isLoadingMoreData: true });
             this.searchByDoctorDetails();
+            this.isRenderedPrimeDocsOnSwiperListView = false
             this.setState({ isLoadingMoreData: false })
 
         } catch (error) {
-            // this.setState({ isLoadingMoreData: false })
+            console.log("Ex is getting on load more dcotor ist data", error.message);
         }
         finally {
             // this.setState({ isLoadingMoreData: false })
@@ -239,15 +237,15 @@ class DoctorList extends Component {
 
     searchByDoctorDetails = async () => {
         try {
-            console.log("calling Api pagination COUNT====>", this.paginationCount);
+            console.log("calling Api pagination COUNT====>", this.incrementPaginationCount);
             // //debugger
             const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
             const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
-            const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.paginationCount, SHOW_NO_OF_DOCTOR_LIST_CARDS_FROM_API_CALL);
+            const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
             // debugger
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
             if (docListResponse.success) {
-                this.paginationCount = this.paginationCount + 5;
+                this.incrementPaginationCount = this.incrementPaginationCount + 5;
                 const searchedDoctorIdsArray = [];
                 const docListData = docListResponse.data || [];
                 docListData.map(item => {
@@ -274,7 +272,6 @@ class DoctorList extends Component {
                         if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.has(doctorIdHostpitalId)) {
                             const baCupDocHospitalIdItemObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId)
                             if (this.showNoOfPrimeDoctorsListOnSwiperListViewArray.length < SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW) {
-                                // if (incrementPrimeDoctorsCountToShow < SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW) {
                                 baCupDocHospitalIdItemObj.isDoctorIdHostpitalIdSponsored = true;
                                 this.showNoOfPrimeDoctorsListOnSwiperListViewArray.push(baCupDocHospitalIdItemObj)
                                 this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, baCupDocHospitalIdItemObj)
@@ -298,12 +295,6 @@ class DoctorList extends Component {
                     data: doctorInfoList
                 })
             }
-            // else {
-            //     store.dispatch({
-            //         type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-            //         data: []
-            //     })
-            // }
         } catch (Ex) {
             Toast.show({
                 text: 'Something Went Wrong' + Ex,
@@ -311,9 +302,6 @@ class DoctorList extends Component {
                 type: "danger"
             })
         }
-        // finally {
-        //     // this.setState({ isLoading: false })
-        // }
     }
     updateDocSponsorViewersCountByUser = async (sponsorIds) => {
         try {
@@ -525,7 +513,7 @@ class DoctorList extends Component {
 
 
     renderDoctorSponsorListCards(item) {
-        this.isRenderedSponsoredList = true;
+        this.isRenderedPrimeDocsOnSwiperListView = true;
         const { currentDate } = this.state;
         const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
         const { fee, feeWithoutOffer } = this.getFeesBySelectedSlot(item.slotData && item.slotData[this.selectedDateObjOfDoctorIds[item.doctorIdHostpitalId] || currentDate], item.slotData, item.doctorIdHostpitalId)
