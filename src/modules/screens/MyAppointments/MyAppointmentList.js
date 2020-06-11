@@ -295,7 +295,6 @@ class MyAppoinmentList extends Component {
 		const {
 			data, selectedIndex, isLoading } = this.state;
 
-
 		return (
 			<View style={styles.container}>
 				<NavigationEvents
@@ -483,7 +482,7 @@ class MyAppoinmentList extends Component {
 																				<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																					<Text style={styles.bookAgain1}>
 																						Book Again
-																		</Text>
+																		           </Text>
 																				</Button>
 																			</Right>
 																		</Row>

@@ -279,10 +279,19 @@ class AppointmentDetails extends Component {
     this.setState({ proposedVisible: false })
   }
 
+	navigateToBookAppointmentPage() {
+const {data} = this.state
+     let doctorId = data.doctor_id;
+    // alert(doctorId)
+		this.props.navigation.navigate('Book Appointment', {
+			doctorId: doctorId,
+			fetchAvailabiltySlots: true
+		})
+	}
 
   render() {
-    const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails,appointmentId } = this.state;
-
+    const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
+    // alert(this.state.selectedTab)
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -439,14 +448,25 @@ class AppointmentDetails extends Component {
                 </Row>
               </TouchableOpacity>
             </Row>:null} */}
-
-            <Row style={styles.rowStyle}>
-              <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId,DoctorData: doctorData ,Data : data.doctorInfo}) }}>
-                <Row>
-                <Text style={styles.touchableText1}>Appointment Preparation</Text>
-                </Row>
-              </TouchableOpacity>
-            </Row>
+                {selectedTab != 1 ?
+                  <Row style={styles.rowStyle}>
+                    <Col size={6}>
+                    <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
+                     
+                        <Text style={styles.touchableText1}>Appointment Preparation</Text>
+                     
+                    </TouchableOpacity>
+                    </Col>
+                    <Col size={4} style={{marginLeft:5}}>
+                    <TouchableOpacity style={styles.appoinmentPrepareStyle2}   onPress={() => this.navigateToBookAppointmentPage()} testID='navigateBookingPage'>
+                    <Text style={styles.touchableText1}>	Book Again</Text>
+																				</TouchableOpacity>
+                    </Col>
+                 
+                  
+                  </Row>
+                  : null
+                }
                 <View style={{ marginTop: 10 }}>
                   {data.appointment_status === 'CANCELED' || data.appointment_status === 'PROPOSED_NEW_TIME' ? data.status_update_reason != undefined &&
                     <View style={styles.rowSubText1}>
@@ -556,20 +576,20 @@ class AppointmentDetails extends Component {
                         <Text note style={styles.subTextInner1}>{doctorData.language && doctorData.language.toString()}</Text>
                       </Col>
                     </Row> : null}
-                    {data.is_emr_recorded !==undefined ?
+                  {data.is_emr_recorded !== undefined ?
                     <Row style={styles.rowSubText}>
-                    <Col style={{ width: '8%', paddingTop: 5 }}>
-                      <Icon name="ios-document" style={{ fontSize: 20, }} />
-                    </Col>
-                    <Col style={{ width: '92%', paddingTop: 5 }}>
-                      <Text style={styles.innerSubText}>EMR Report</Text>
-                   
+                      <Col style={{ width: '8%', paddingTop: 5 }}>
+                        <Icon name="ios-document" style={{ fontSize: 20, }} />
+                      </Col>
+                      <Col style={{ width: '92%', paddingTop: 5 }}>
+                        <Text style={styles.innerSubText}>EMR Report</Text>
+
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('EmrDetails', { appointmentId: data._id}) }}>
+                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('EmrDetails', { appointmentId: data._id }) }}>
                             <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You get EMR from doctor more details click here"</Text>
                             <Row>
                               <Col size={9}>
-                                
+
 
                               </Col>
                               <Col size={1}>
@@ -577,10 +597,10 @@ class AppointmentDetails extends Component {
                               </Col>
                             </Row>
                           </TouchableOpacity>
-                        </View> 
-                      
-                    </Col>
-                  </Row>:null}
+                        </View>
+
+                      </Col>
+                    </Row> : null}
                   <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
                       <Icon name="ios-document" style={{ fontSize: 20, }} />
@@ -909,7 +929,9 @@ const styles = StyleSheet.create({
   rowStyle: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 10,
+    marginLeft:5,
+    marginRight:5
   },
   touchableStyle: {
     borderColor: '#4765FF',
@@ -930,15 +952,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#fff',
-    marginLeft: 5
+    textAlign:'center'
   },
-  appoinmentPrepareStyle:{
-    backgroundColor:'#8EC63F',
-    paddingTop:10,
-    paddingBottom:10,
-    paddingRight:20,
-    paddingLeft:20,
-    borderRadius:5
+  appoinmentPrepareStyle: {
+    backgroundColor: '#8EC63F',
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingRight: 10,
+    paddingLeft: 10,
+    borderRadius: 5
   },
   rowSubText: {
     marginLeft: 10,
@@ -1204,6 +1226,30 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#7558e5',
     // marginBottom: 5
+  },
+  bookAgain1: {
+		fontSize: 13,
+		fontFamily: 'OpenSans',
+		fontWeight: 'bold'
+  },
+  bookingButton: {
+		marginTop: 10,
+		backgroundColor: "#775DA3",
+		marginRight: 1,
+		borderRadius: 10,
+		width: "auto",
+		height: 30,
+		color: "white",
+		fontSize: 12,
+		textAlign: "center"
+  },
+  appoinmentPrepareStyle2: {
+    backgroundColor: "#775DA3",
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingRight: 10,
+    paddingLeft: 10,
+    borderRadius: 5
   },
 
 
