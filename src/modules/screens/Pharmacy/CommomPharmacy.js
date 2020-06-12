@@ -24,26 +24,60 @@ export function medicineRateAfterOffer(item) {
     } else if (item.discount.type === 'Amount') {
       amount = parseInt(item.price) - parseInt(item.discount.value);
       return amount
-    }else if (item.discount.type === 'AMOUNT') {
+    } else if (item.discount.type === 'AMOUNT') {
       amount = parseInt(item.price) - parseInt(item.discount.value);
       return amount
     }
   }
 
-    return amount
-  
+  return amount
+
 
 }
+
+export function medicineDiscountedAmount(item) {
+
+
+  let amount = 0
+  if (item === undefined || item === null) {
+    
+    return amount
+  }
+  if (item.discount === undefined || item.discount === null) {
+
+  
+    return amount
+  }
+  if (item.discount.type) {
+
+    if (item.discount.type === 'PERCENT') {
+      let divided = (parseInt(item.discount.value) / 100) * parseInt(item.price)
+      amount = divided
+      return amount
+    } else if (item.discount.type === 'Amount') {
+      amount = parseInt(item.discount.value);
+      return amount
+    } else if (item.discount.type === 'AMOUNT') {
+      amount = parseInt(item.discount.value);
+      return amount
+    }
+  }
+
+  return amount
+
+
+}
+
 
 
 export async function ProductIncrementDecreMent(quantity, price, operation, threshold_limits) {
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
 
-  let totalAmount = price;
+  let totalAmount = price * quantity;
   let threshold_message = null;
   let threshold_limit = threshold_limits || itemQuantity + 1
-  if(threshold_limits){
+  if (threshold_limits) {
     threshold_limit = threshold_limits || itemQuantity + 1
   }
   if (operation === "add") {
@@ -80,10 +114,10 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
 
 export function renderMedicineImage(data) {
- 
+
   let source = require('../../../../assets/images/paracetamol.jpg')
 
-  if (data!==null&&data!==undefined) {
+  if (data !== null && data !== undefined) {
 
     if (Array.isArray(data) && data.length !== 0) {
       let defaultImage = data.find(ele => {
@@ -208,10 +242,10 @@ function deg2rad(deg) {
 
 export function getMedicineNameByProductName(data) {
   let medicineName = ' '
-  if (!data&&!data.item) {
+  if (!data && !data.item) {
     return medicineName
   }
-  if (data&&data.item) {
+  if (data && data.item) {
     medicineName = `${(data.item.productName)}`;
     return medicineName
   }
@@ -342,37 +376,37 @@ export const statusBar = {
     checked: true,
     color: 'red'
   },
-  "ADD_TO_CART" :  {
+  "ADD_TO_CART": {
     status: 'order is cart',
     checked: true,
     color: 'red'
   },
-	"REMOVE_FROM_CART" :  {
+  "REMOVE_FROM_CART": {
     status: 'order is remove fromthe cart ',
     checked: true,
     color: 'red'
   },
-"CONFIRM_ORDER": {
-  status: 'confirm the order',
-  checked: true,
-  color: 'red'
-},
+  "CONFIRM_ORDER": {
+    status: 'confirm the order',
+    checked: true,
+    color: 'red'
+  },
 
-"RETURNED": {
-  status: 'order is returned',
-  checked: true,
-  color: 'red'
-}, 
-	"EXCHANGED": {
+  "RETURNED": {
+    status: 'order is returned',
+    checked: true,
+    color: 'red'
+  },
+  "EXCHANGED": {
     status: 'order is exchanged',
     checked: true,
     color: 'red'
   },
-"PACKED": {
-  status: 'order is packed',
-  checked: true,
-  color: 'green'
-},
+  "PACKED": {
+    status: 'order is packed',
+    checked: true,
+    color: 'green'
+  },
 
 }
 
@@ -389,21 +423,21 @@ export function getName(data) {
 
 }
 
-export function getselectedCartData(data, selected, cartData ) {
+export function getselectedCartData(data, selected, cartData) {
   let temp
 
-       
-  
-              if (cartData !== undefined) {
-           
-                  temp ={ 
-                    cartData:cartData,
-                    ...data
-                  }
-              } else {
-                  temp = data
-              }
-              temp.selectedType = selected;
-              return temp
+
+
+  if (cartData !== undefined) {
+
+    temp = {
+      cartData: cartData,
+      ...data
+    }
+  } else {
+    temp = data
+  }
+  temp.selectedType = selected;
+  return temp
 
 }
