@@ -6,7 +6,7 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon, Picker
 } from 'native-base';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage,medicineDiscountedAmount } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
 import { createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action'
@@ -80,7 +80,7 @@ export class AddToCard extends Component {
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
         let item= {
-            discountedAmount: temp.discount ? Number(temp.discount.value) : Number(temp.price),
+            discountedAmount: temp.discount ? medicineDiscountedAmount(temp) : 0,
             productName: getMedicineName(temp),
             productId: String(temp.id),
             quantity: Number(temp.userAddedMedicineQuantity),
