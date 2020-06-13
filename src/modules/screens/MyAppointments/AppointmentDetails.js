@@ -8,7 +8,7 @@ import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native'
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation, getappointmentDetails } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff, statusValue } from '../../../setup/helpers';
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
@@ -39,6 +39,7 @@ class AppointmentDetails extends Component {
       paymentDetails: {},
       modalVisible: false,
       proposedVisible: false,
+      appoinmentData: []
 
 
     }
@@ -88,6 +89,7 @@ class AppointmentDetails extends Component {
     }
 
     await this.setState({ isLoading: false })
+    this.getUserProfile();
   }
 
   /* Get Doctor Details */
@@ -279,19 +281,42 @@ class AppointmentDetails extends Component {
     this.setState({ proposedVisible: false })
   }
 
-	navigateToBookAppointmentPage() {
-const {data} = this.state
-     let doctorId = data.doctor_id;
+  navigateToBookAppointmentPage() {
+    const { data } = this.state
+    let doctorId = data.doctor_id;
     // alert(doctorId)
-		this.props.navigation.navigate('Book Appointment', {
-			doctorId: doctorId,
-			fetchAvailabiltySlots: true
-		})
-	}
+    this.props.navigation.navigate('Book Appointment', {
+      doctorId: doctorId,
+      fetchAvailabiltySlots: true
+    })
+  }
+
+
+
+
+  getUserProfile = async () => {
+    try {
+      // const {data} = this.state
+      let result = await getappointmentDetails(this.state.appointmentId, prepareAppointment = 1);
+      const resultData = result.data
+      if (result) {
+        this.setState({ appoinmentData: resultData[0] });
+        console.log(JSON.stringify(this.state.appoinmentData))
+        // alert(JSON.stringify(this.state.appoinmentData))
+
+      }
+    }
+    catch (e) {
+      console.log(e);
+    }
+    finally {
+      this.setState({ isLoading: false });
+    }
+  }
 
   render() {
-    const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
-    // alert(this.state.selectedTab)
+    const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId, appoinmentData } = this.state;
+
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -448,25 +473,39 @@ const {data} = this.state
                 </Row>
               </TouchableOpacity>
             </Row>:null} */}
-                {selectedTab != 1 ?
-                  <Row style={styles.rowStyle}>
+
+                <Row style={styles.rowStyle}>
+                  {data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' ?
                     <Col size={6}>
-                    <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
-                     
-                        <Text style={styles.touchableText1}>Appointment Preparation</Text>
-                     
+
+                      {appoinmentData.agreed_for_send_forms != true ?
+                        <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
+
+                          <Text style={styles.touchableText1}>Appointment Preparation</Text>
+
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('BasicInfo', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
+                          <Row>
+                            <Text style={styles.touchableText1}>Appointment Preparation</Text>
+                          </Row>
+                        </TouchableOpacity>
+                      }
+
+
+
+                    </Col>
+                    : null
+                  }
+                  <Col size={4} style={{ marginLeft: 5 }}>
+                    <TouchableOpacity style={styles.appoinmentPrepareStyle2} onPress={() => this.navigateToBookAppointmentPage()} testID='navigateBookingPage'>
+                      <Text style={styles.touchableText1}>	Book Again</Text>
                     </TouchableOpacity>
-                    </Col>
-                    <Col size={4} style={{marginLeft:5}}>
-                    <TouchableOpacity style={styles.appoinmentPrepareStyle2}   onPress={() => this.navigateToBookAppointmentPage()} testID='navigateBookingPage'>
-                    <Text style={styles.touchableText1}>	Book Again</Text>
-																				</TouchableOpacity>
-                    </Col>
-                 
-                  
-                  </Row>
-                  : null
-                }
+                  </Col>
+
+
+                </Row>
+
                 <View style={{ marginTop: 10 }}>
                   {data.appointment_status === 'CANCELED' || data.appointment_status === 'PROPOSED_NEW_TIME' ? data.status_update_reason != undefined &&
                     <View style={styles.rowSubText1}>
@@ -930,8 +969,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    marginLeft:5,
-    marginRight:5
+    marginLeft: 5,
+    marginRight: 5
   },
   touchableStyle: {
     borderColor: '#4765FF',
@@ -952,7 +991,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#fff',
-    textAlign:'center'
+    textAlign: 'center'
   },
   appoinmentPrepareStyle: {
     backgroundColor: '#8EC63F',
@@ -1228,20 +1267,20 @@ const styles = StyleSheet.create({
     // marginBottom: 5
   },
   bookAgain1: {
-		fontSize: 13,
-		fontFamily: 'OpenSans',
-		fontWeight: 'bold'
+    fontSize: 13,
+    fontFamily: 'OpenSans',
+    fontWeight: 'bold'
   },
   bookingButton: {
-		marginTop: 10,
-		backgroundColor: "#775DA3",
-		marginRight: 1,
-		borderRadius: 10,
-		width: "auto",
-		height: 30,
-		color: "white",
-		fontSize: 12,
-		textAlign: "center"
+    marginTop: 10,
+    backgroundColor: "#775DA3",
+    marginRight: 1,
+    borderRadius: 10,
+    width: "auto",
+    height: 30,
+    color: "white",
+    fontSize: 12,
+    textAlign: "center"
   },
   appoinmentPrepareStyle2: {
     backgroundColor: "#775DA3",

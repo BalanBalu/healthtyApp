@@ -538,3 +538,20 @@ export async function fetchEmrData(appointmentId) {
     }
   }
 }
+export const getappointmentDetails = async (appointmentId, prepareAppointment) => {
+  try {
+    let endPoint = 'appointment/' + appointmentId  
+    if(prepareAppointment)
+    {
+      endPoint = endPoint +  '?prepareAppointment=1'
+    }
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
