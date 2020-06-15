@@ -182,7 +182,7 @@ class Reminder extends Component {
     const renderTimeList = (timeList) => {
       return timeList.map((item) => {
         return (
-          <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'HH:mm A')}</Text>
+          <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'hh:mm a')}</Text>
         )
       })
     }
