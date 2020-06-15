@@ -70,6 +70,7 @@ class SocialHistory extends PureComponent {
                 }
             }
             this.setState({ isLoading: true })
+            if(sexuallyActive !=undefined && drinkAlcohol !=undefined && smoke !=undefined && recreational_drugs !=undefined && physically_or_verbally !=undefined && selectnumber !=undefined  && exercise !=undefined){
             let response = await userFiledsUpdate(userId, data)
             if (response.success) {
                 Toast.show({
@@ -80,6 +81,13 @@ class SocialHistory extends PureComponent {
                 this.skippingButton(false);
                 this.props.navigation.navigate('PrepareAppointmentLastStep', { AppointmentId: appointmentId });
             }
+        }else{
+            Toast.show({
+                text: 'kindly fill all the fields',
+                type: "danger",
+                duration: 3000,
+            })  
+        }
         }
         catch (e) {
             console.log(e)

@@ -73,6 +73,7 @@ class AllergiesAndMedications extends PureComponent {
             }
             debugger
             this.setState({ isLoading: true })
+            if(data.having_any_allergies[0].allergy_name != null && data.having_any_allergies[0].allergy_reaction != null && data.taking_medications[0].medicine_name != null && data.taking_medications[0].medicine_dosage != null){
             let response = await userFiledsUpdate(userId, data)
             debugger
             debugger
@@ -85,6 +86,14 @@ class AllergiesAndMedications extends PureComponent {
                 this.skippingButton();
                 this.props.navigation.navigate('FamilyMedicalConditions', { AppointmentId: appointmentId });
             }
+        }else{
+            Toast.show({
+                text: 'kindly fill all the fields',
+                type: "danger",
+                duration: 3000,
+            })  
+
+        }
             
         }
         catch (e) {

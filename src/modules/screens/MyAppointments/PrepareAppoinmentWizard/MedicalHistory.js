@@ -36,17 +36,23 @@ class MedicalHistory extends PureComponent {
             let data = {
                 general_health_info: radioButton,
             }
-
+            
 
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
-            if (response.success) {
+            if (response.success && data.general_health_info != undefined) {
                 Toast.show({
                     text: response.message,
                     type: "success",
                     duration: 3000,
                 })
                 this.props.navigation.navigate('PhysicianInfo', { AppointmentId: appointmentId });
+            }else{
+                Toast.show({
+                    text: 'Kindly fill all the fields',
+                    type: 'danger',
+                    duration: 3000
+                  });
             }
         }
         catch (e) {
@@ -72,7 +78,7 @@ class MedicalHistory extends PureComponent {
             this.setState({ isLoading: true })
             this.addgeneralHealthInfo()
             let response = await prepareAppointmentUpdate(appointmentId, data)
-            if (response.success) {
+            if (response.success && data.description != undefined) {
                 Toast.show({
                     text: response.message,
                     type: "success",

@@ -47,6 +47,12 @@ class PatientInfo extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
+            }else{
+                Toast.show({
+                    text: 'kindly fill all the fields',
+                    type: "danger",
+                    duration: 3000,
+                })  
             }
 
         }
@@ -70,6 +76,7 @@ class PatientInfo extends PureComponent {
             }
         
             this.setState({ isLoading: true })
+            if(user_name != undefined && mobile_no != undefined && date_of_birth != undefined && selectedBloodGroup != undefined  && marital_status != undefined  && gender != undefined){
             let response = await userFiledsUpdate(userId, data)
             console.log(response);
             if (response.success) {
@@ -82,6 +89,13 @@ class PatientInfo extends PureComponent {
                 this.skippingButton(false)
                 this.props.navigation.navigate('AllergiesAndMedications', { AppointmentId: appointmentId });
             }
+        }else{
+            Toast.show({
+                text: 'kindly fill all the fields',
+                type: "danger",
+                duration: 3000,
+            })  
+        }
         }
         catch (e) {
             console.log(e)
