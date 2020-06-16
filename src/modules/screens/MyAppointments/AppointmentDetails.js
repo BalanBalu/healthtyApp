@@ -475,7 +475,7 @@ class AppointmentDetails extends Component {
             </Row>:null} */}
 
                 <Row style={styles.rowStyle}>
-                  {data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' ?
+                  {data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME'?
                     <Col size={6}>
 
                       {appoinmentData.agreed_for_send_forms != true ?
