@@ -102,6 +102,7 @@ class Locations extends PureComponent {
                                 <FlatList
                                     data={popularLocations}
                                     extraData={popularLocations}
+                                   
                                     renderItem={({ item }) => (
                                         <ListItem
                                             button
@@ -115,7 +116,8 @@ class Locations extends PureComponent {
                                             </Right>
                                         </ListItem>
 
-                                    )} />
+                                    )} 
+                                    keyExtractor={(item, index) => index.toString()}/>
                             </List>
                             <List>
                                 <ListItem itemDivider>
@@ -142,7 +144,9 @@ class Locations extends PureComponent {
                                         </ListItem>
 
 
-                                    )} />
+                                    )} 
+                                    keyExtractor={(item, index) => index.toString()}
+                                    />
                             </List>
                         </View>
                     </View>

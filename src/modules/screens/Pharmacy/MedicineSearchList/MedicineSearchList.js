@@ -8,7 +8,7 @@ import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableH
 import Spinner from "../../../../components/Spinner";
 import { NavigationEvents } from 'react-navigation';
 import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage,getIsAvailable } from '../CommomPharmacy'
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage,getIsAvailable,getselectedCartData } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
@@ -23,7 +23,7 @@ class MedicineSearchList extends Component {
             isBuyNow: false,
             selectedMedcine: {},
             medicineName: '',
-            pagination: 1,
+            pagination: 0,
         }
     }
     async  componentDidMount() {
@@ -48,33 +48,39 @@ class MedicineSearchList extends Component {
             await this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
         }
         else {
-            await this.MedicineSearchList(medicineName)
+            await this.MedicineSearchList(medicineName,this.state.pagination)
         }
         this.setState({ isLoading: false, medicineName })
 
     }
-    MedicineSearchList = async (enteredText) => {
+    MedicineSearchList = async (enteredText,pagination) => {
         try {
 
-            let medicineResultData = await getMedicinesSearchList(enteredText, this.state.pagination);
-            console.log('MedicineSearchList')
-
+            let medicineResultData = await getMedicinesSearchList(enteredText, pagination);
+            console.log('MedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchList')
+              console.log(JSON.stringify(medicineResultData))
             if (medicineResultData) {
                 let prodcuctIds = []
                 medicineResultData.map(ele => {
                     prodcuctIds.push(ele.id)
                 })
-
+                let productData=this.state.data.concat(medicineResultData);
+                let prodcutAvailableData=this.state.medicineDataAvailable;
                 let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
+    
+                if(availableResult){
+                    prodcutAvailableData=prodcutAvailableData.concat(availableResult);
+                }
               
                 this.setState({
-                    data: medicineResultData, medicineDataAvailable: availableResult
+                    data: productData, medicineDataAvailable: prodcutAvailableData
                 });
-            } else {
-                this.setState({
-                    data: [],
-                });
-            }
+            } 
+            // else {
+            //     this.setState({
+            //         data: [],
+            //     });
+            // }
         }
         catch (e) {
             console.log(e)
@@ -87,14 +93,19 @@ class MedicineSearchList extends Component {
 
         
             if (medicineResultData) {
-                let data=this.state.data.concat(medicineResultData)
+                let data=this.state.data.concat(medicineResultData);
+                let  medicineDataAvailable=this.state.medicineDataAvailable
                 let prodcuctIds = []
                 medicineResultData.map(ele => {
                     prodcuctIds.push(ele.id)
                 })
-
+               
                 let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
-               let  medicineDataAvailable=this.state.medicineDataAvailable.cancat(availableResult)
+  
+                if(availableResult){
+                   
+                 medicineDataAvailable=medicineDataAvailable.concat(availableResult)
+                }
 
                 this.setState({
                     data, medicineDataAvailable
@@ -109,16 +120,10 @@ class MedicineSearchList extends Component {
             console.log(e)
         }
     }
-    async selectedItems(data, selected, index) {
+    async selectedItems(data, selected, cartData) {
         try {
-            let temp = data;
-            temp.selectedType = selected;
-            if (index !== undefined) {
-                let cardItems = this.state.cartItems;
-                temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
-                temp.index = index
-            }
-            await this.setState({ selectedMedcine: temp, isBuyNow: true })
+            let selectedData= getselectedCartData(data, selected, cartData )
+            await this.setState({ selectedMedcine: selectedData, isBuyNow: true })
 
 
         } catch (e) {
@@ -194,7 +199,7 @@ class MedicineSearchList extends Component {
             await this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
         }
         else {
-            await this.MedicineSearchList(this.state.medicineName,this.state.pagination + 1)
+            await this.MedicineSearchList(this.state.medicineName,pagination)
         }
 
     }
@@ -243,7 +248,7 @@ class MedicineSearchList extends Component {
                                 <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}> No medicine were found</Text> :
                                 <View>
                                     <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}>Showing all results for <Text style={{ fontStyle: 'italic', fontSize: 12.5, color: '#7227C7' }}>{medicineName}</Text></Text>
-                                    <View>
+                                    <View style={{marginBottom:20}}>
                                         <FlatList
                                             data={data}
                                             extraData={this.state}
@@ -251,7 +256,7 @@ class MedicineSearchList extends Component {
                                             onEndReached={this.handleLoadMore}
                                             onEndReachedThreshold={8}
                                             renderItem={({ item }) =>
-                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
+                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 2.5, }}>
                                                     <Row onPress={() =>
                                                         this.props.navigation.navigate('MedicineInfo', {
                                                             medicineId: item.id,
@@ -263,7 +268,7 @@ class MedicineSearchList extends Component {
                                                         <Col size={4}>
                                                             <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderMedicineImage(item.medInfo), title: item.description })}>
 
-                                                                <Image source={renderMedicineImage(item.medInfo)}
+                                                                <Image source={renderMedicineImage(item.productImages)}
 
                                                                     style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                             </TouchableOpacity>
@@ -275,7 +280,7 @@ class MedicineSearchList extends Component {
                                                                 <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
                                                                 <Row>
                                                                     <Col size={5} style={{ flexDirection: 'row' }}>
-                                                                        <Text style={{ fontSize: 8, marginLeft: -3, marginTop: 5, color: "#ff4e42" }}>{'MRP'}</Text>
+                                                                        <Text style={{ fontSize: 8,marginTop: 5, color: "#ff4e42" }}>{'MRP'}</Text>
                                                                         {item.discount !== undefined && item.discount !== null ?
                                                                             <Row>
                                                                                 <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: 5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price || ''}</Text>
@@ -284,7 +289,7 @@ class MedicineSearchList extends Component {
                                                                             <Text style={{ fontSize: 13, marginTop: 5, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {item.price}</Text>
                                                                         }
                                                                     </Col>
-                                                                    {cartItems.length === 0 || cartItems.findIndex(ele => ele.id == item.id) === -1 ?
+                                                                    {cartItems.length === 0 || cartItems.findIndex(ele => ele.item.productId == item.id) === -1 ?
                                                                         <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                             <Row>
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
@@ -300,12 +305,12 @@ class MedicineSearchList extends Component {
                                                                         <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                             <Row>
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
-                                                                                    onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.findIndex(ele => ele.id === item.id))} >
+                                                                                    onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.find(ele => ele.item.productId === item.id))} >
                                                                                     {/* onPress={() =>  this.props.navigation.navigate("PharmacyCart")} > */}
                                                                                     <Row style={{ alignItems: 'center' }}>
                                                                                         <Text>{item.medicine_id}</Text>
                                                                                         <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                                        <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.id === item.id)].userAddedMedicineQuantity}</Text>
+                                                                                        <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added ' + cartItems[cartItems.findIndex(ele =>ele.item.productId === item.id)].item.quantity}</Text>
                                                                                     </Row>
                                                                                 </TouchableOpacity>
                                                                             </Row>

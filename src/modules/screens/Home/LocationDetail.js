@@ -16,6 +16,8 @@ class LocationDetail extends PureComponent {
         this.fetchPopularCityAreas(navigation.getParam('cityData'))
     }
     async fetchPopularCityAreas(cityData) {
+        debugger
+        console.log(cityData);
        let  navigationOption=this.props.navigation.getParam('navigationOption')||null;
        
         let result;
@@ -26,14 +28,15 @@ class LocationDetail extends PureComponent {
              });
              this.setState({navigationOption:navigationOption}) 
 
-        }else{
-     result = await getLocations({
-         fromPinCode: cityData.from_pincode, 
-         toPinCode: cityData.to_pincode
-      });
-      this.setState({navigationOption:'Home'}) 
+        } else {
+            result = await getLocations({
+                fromPinCode: cityData.from_pincode, 
+                toPinCode: cityData.to_pincode
+            });
+            this.setState({navigationOption:'Home'}) 
+            console.log(result);
     }
-      
+     
       if (result.success) {
         const asscendingResult = this.asscendingSort(result.data)
         this.setState({ locations:  asscendingResult });
@@ -81,7 +84,9 @@ class LocationDetail extends PureComponent {
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.location}</Text>
                                 </ListItem>
                             </List>
-                        )} />
+                        )} 
+                        keyExtractor={(item, index) => index.toString()}
+                        />
                 </View>
 
             </Container>

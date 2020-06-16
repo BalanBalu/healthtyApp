@@ -6,9 +6,12 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon, Picker
 } from 'native-base';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage,medicineDiscountedAmount } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import { createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action'
+import { updateTopSearchedItems } from '../../../providers/pharmacy/pharmacy.action'
+
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 
 
@@ -30,8 +33,8 @@ export class AddToCard extends Component {
 
         console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
-        if (data.userAddedMedicineQuantity) {
-            let userAddedMedicineQuantity = data.userAddedMedicineQuantity || 1
+        if (data.cartData&&data.cartData.item) {
+            let userAddedMedicineQuantity = data.cartData.item.quantity || 1
             let discountedValue = medicineRateAfterOffer(data);
             let userAddedTotalMedicineAmount = Number(Number(userAddedMedicineQuantity * discountedValue).toFixed(2))
 
@@ -41,11 +44,12 @@ export class AddToCard extends Component {
             this.productQuantityOperator(data, 'add')
         }
         this.setState({ data })
+        updateTopSearchedItems(data.id)
 
     }
     async productQuantityOperator(item, operator) {
         let discountedValue = medicineRateAfterOffer(item)
-        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, discountedValue, operator, item.threshold_limit)
+        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, discountedValue, operator, item.maxThreashold)
         let userAddedTotalMedicineAmount = result.totalAmount || 0;
         let userAddedMedicineQuantity = result.quantity || 0;
         let threshold_message = result.threshold_message || null;
@@ -72,8 +76,18 @@ export class AddToCard extends Component {
         const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
         let temp = [];
         temp = data
+
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
+        let item= {
+            discountedAmount: temp.discount ? medicineDiscountedAmount(temp) : 0,
+            productName: getMedicineName(temp),
+            productId: String(temp.id),
+            quantity: Number(temp.userAddedMedicineQuantity),
+            tax: 0,
+            totalPrice: Number(temp.userAddedTotalMedicineAmount),
+            unitPrice: Number(temp.price)
+        }
         if (data.selectedType === 'Add to Cart') {
             const isLoggedIn = await hasLoggedIn(this.props);
             if (!isLoggedIn) {
@@ -82,20 +96,22 @@ export class AddToCard extends Component {
             }
             let cartItems = []
             let userId = await AsyncStorage.getItem('userId')
-            let cart = await AsyncStorage.getItem('cartItems-' + userId);
-
-            if (cart != null) {
-                cartItems = JSON.parse(cart);
+            let reqData = {
+                userId: userId,
+                type: "CART",
+                item:item
             }
-            if (temp.index != undefined) {
-                let index = temp.index
-                delete temp.index
-                cartItems.splice(index, 1, temp)
-            } else {
-                cartItems.push(temp);
+            if (temp.cartData&&temp.cartData.id) {
+                reqData.id = temp.cartData.id
             }
-            let count = cartItems.length;
-            console.log("count", count)
+            let AddCartResult = await createCart(reqData)
+            if (AddCartResult) {
+                let result = await getCartListByUserId(userId)
+                cartItems = result;
+                console.log(JSON.stringify(result))
+              
+            }
+          
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
 
             this.props.popupVisible({
@@ -106,6 +122,7 @@ export class AddToCard extends Component {
             })
         }
         else if (data.selectedType === 'Buy Now') {
+            temp.item=item
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: true,
@@ -140,7 +157,7 @@ export class AddToCard extends Component {
                                 <Text style={{ color: '#7227C7', fontSize: 16, fontWeight: '500' }}>{data.selectedType || ''}</Text>
                                 <Row style={{ marginTop: 5 }}>
                                     <Col size={4}>
-                                        <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                        <Image source={renderMedicineImage(data.productImages)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                     </Col>
                                     <Col size={6} style={{ marginTop: -5 }}>
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>
@@ -176,15 +193,14 @@ export class AddToCard extends Component {
                                         </Col>
                                     </Row> : null}
                                 {/* api did not ready so condition use in reverse  */}
-                                {(data.productDetails && data.productDetails.available === 0) || data.productDetails !== null ?
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center', backgroundColor: '#E6E6E6', }}>Out of stock</Text> :
-                                    <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, height: 30, paddingTop: 2, backgroundColor: '#4e85e9', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
 
-                                        <Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, }} />
-                                        <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 5, marginBottom: 5, textAlign: 'center' }}>{data.selectedType}</Text>
+                                <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, height: 30, paddingTop: 2, backgroundColor: '#4e85e9', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
 
-                                    </TouchableOpacity>
-                                }
+                                    <Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, }} />
+                                    <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 5, marginBottom: 5, textAlign: 'center' }}>{data.selectedType}</Text>
+
+                                </TouchableOpacity>
+
                             </Col>
 
                         </Row>

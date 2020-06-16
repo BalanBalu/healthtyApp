@@ -384,9 +384,12 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
         return (
             <Row style={styles.RowStyle}>
                 <Col style={{ width: '20%' }}>
-                    <Thumbnail source={renderDoctorImage(item)}
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })} >
+                <Thumbnail source={renderDoctorImage(item)}
                             style={{ width: 60, height: 60, position: 'relative', borderRadius: 60 / 2 }}
-                    />
+                    />   
+                        	</TouchableOpacity>
+                   
                     <View style={styles.circle} />
                         {isPremium === true ? 
                             <Thumbnail source={require('../../../../../../assets/images/viplogo.png')}
@@ -465,7 +468,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
                                         <Row style={{ marginTop: 5 ,  width: '100%'}}>
                                             <Button disabled style={{height: 30,   borderRadius: 10, backgroundColor: '#6e5c7b' }}>
                                             <Icon name="ios-videocam" style={ { color: '#FFFFFF', fontSize: 15 }} />
-                                            <Text style={{ marginLeft: -20, fontSize: 10 }}>Available on {this.getNextAvailabiltyData(item)}</Text>
+                                            <Text style={{ marginLeft: -20, fontSize: 10 }}>next Available on {this.getNextAvailabiltyData(item)}</Text>
                                             {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                                             </Button>
                                         </Row> : null }

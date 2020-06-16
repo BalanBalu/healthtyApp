@@ -47,38 +47,9 @@ class LabConfirmation extends Component {
             return
         }
         const packageDetails = navigation.getParam('packageDetails') || {};
-        console.log("packageDetails", packageDetails)
         if (packageDetails != undefined) {
             this.setState({ packageDetails })
         }
-        /* let packageDetails = {
-             "lab_id": "5e7d9676ebd1650d14355677",
-             "lab_test_categories_id": "5e78d0c127490f934d10de70",
-             "lab_test_descriptiion": "genral",
-             "fee": 1000,
-             "lab_name": "ARROW",
-             "category_name": "Allergy Profile",
-             "extra_charges": 50,
-             "appointment_starttime": "2020-04-30T18:00:00.000Z",
-             "appointment_endtime": "2020-04-30T18:30:00.000Z",
-             "mobile_no": "98076540211",
-             "location": {
-                 "coordinates": [
-                     13.104802,
-                     80.208888
-                 ],
-                 "type": "Point",
-                 "address": {
-                     "no_and_street": "1",
-                     "address_line_1": "Villivakkam",
-                     "district": "Chennai",
-                     "city": "Chennai",
-                     "state": "Tamil Nadu",
-                     "country": "India",
-                     "pin_code": "60010"
-                 }
-             },
-         } */
         this.setState({ packageDetails })
         await this.getUserProfile();
     }
@@ -110,7 +81,6 @@ class LabConfirmation extends Component {
             let fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
-            console.log("result", result)
             let patientAddress = [], patientDetails = [];
 
             this.defaultPatientDetails = {
@@ -139,7 +109,6 @@ class LabConfirmation extends Component {
                 patientAddress.unshift(userAddressData);
             }
             await this.setState({ patientAddress, data: result })
-            console.log("patient Address ", this.state.patientAddress)
             console.log("data", this.defaultPatientDetails)
             // this.onChangeSelf()
 
@@ -157,13 +126,16 @@ class LabConfirmation extends Component {
         this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType: addressType })
     }
     onChangeSelf = async () => {
-        if (this.state.selfChecked == true) {
+        console.log("Start:::", this.state.patientDetails.length);
+        if (this.state.selfChecked == true && patientDetails.length==0) {
             patientDetails.unshift(this.defaultPatientDetails)
         }
         else if (this.state.selfChecked == false) {
             this.state.patientDetails.shift(this.defaultPatientDetails)
         }
         this.setState({ patientDetails })
+        console.log("self:::", this.state.patientDetails);
+        
     }
 
     onChangeCheckBox = async () => {

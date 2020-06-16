@@ -67,6 +67,9 @@ class LabCategories extends PureComponent {
   filterCategories(searchValue) {
     console.log("this.mainLabData", this.mainLabData);
     const { labData } = this.state;
+    if (searchValue === searchValue.replace(/^[^*|\":<>[\]{}`\\()'; @& $]+$/)) {
+      return [];
+    }
     if (!searchValue) {
       this.setState({ searchValue, data: labData });
     } else {
