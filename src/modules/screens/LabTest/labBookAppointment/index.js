@@ -191,7 +191,7 @@ class LabBookAppointment extends Component {
     
     let packageDetails = {
       lab_id: labInfo.lab_id,
-      lab_test_categories_id: labCatInfo._id,
+      lab_test_categories_id: labCatInfo.lab_test_categories_id,
       lab_test_description: labCatInfo.category_discription || 'null',
       fee: labCatInfo.price || 0,
       extra_charges: labInfo.extra_charges || 0,
@@ -202,6 +202,8 @@ class LabBookAppointment extends Component {
       appointment_endtime: selectedSlotItem.slotEndDateAndTime,
       location: labInfo.location
     }
+    console.log("packageDetails", packageDetails);
+    
     this.props.navigation.navigate('labConfirmation', { packageDetails })
   }
   /* Update Favorites for LabTest by UserId  */
