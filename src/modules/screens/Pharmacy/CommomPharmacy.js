@@ -132,12 +132,41 @@ export function renderMedicineImage(data) {
   }
   return (source)
 }
+export function CartMedicineImage(data) {
+
+  let source = null
+
+  if (data !== null && data !== undefined) {
+
+    if (Array.isArray(data) && data.length !== 0) {
+      let defaultImage = data.find(ele => {
+        return ele.isDefault === true
+      })
+      if (defaultImage) {
+        source =  defaultImage.imageURL 
+      } else {
+        source = data[0].imageURL 
+      }
+    }
+  }
+  return (source)
+}
 export function renderMedicineImageAnimation(data) {
 
 
   let source = require('../../../../assets/images/paracetamol.jpg')
   if (data) {
     source = { uri: data.imageURL }
+  }
+  return (source)
+}
+
+export function renderMedicineImageByimageUrl(data) {
+
+
+  let source = require('../../../../assets/images/paracetamol.jpg')
+  if (data&&data.image) {
+    source = { uri: data.image }
   }
   return (source)
 }
