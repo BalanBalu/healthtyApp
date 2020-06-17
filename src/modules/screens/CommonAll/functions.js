@@ -1,5 +1,5 @@
 
-import { getUnixTimeStamp } from '../../../setup/helpers';
+import { getUnixTimeStamp, dateDiff, getMoment } from '../../../setup/helpers';
 
 function getUserGenderAndAge(data) {
     let genderAndAge = '';
@@ -54,11 +54,22 @@ function sortByPrimeDoctors(a, b) {
         return 1;
     }
 }
-
+const calculateDoctorUpdatedExperience = (experience) => {
+    const updatedDate = getMoment(experience.updated_date);
+    let getDocExpInMonthsByUpToDate = dateDiff(updatedDate, getMoment(new Date()), 'months');
+    let expInMonthsByUpdated = (experience.year * 12) + experience.month
+    let expInMonths = getDocExpInMonthsByUpToDate + expInMonthsByUpdated;
+    return {
+        month: expInMonths % 12,
+        year: parseInt(expInMonths / 12),
+        isPrivate: experience.isPrivate
+    };
+}
 export {
     getUserGenderAndAge,
     enumerateStartToEndDates,
     sortByStartTime,
     reducer,
-    sortByPrimeDoctors
+    sortByPrimeDoctors,
+    calculateDoctorUpdatedExperience
 }

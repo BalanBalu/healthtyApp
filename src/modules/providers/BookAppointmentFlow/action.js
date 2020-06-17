@@ -49,6 +49,23 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
 }
 
 
+export const filterByDocDetailsService = async (filteredReqData) => {
+    try {
+        debugger
+        const endPoint = 'V2/doctor/filterDoctorDetails';
+        debugger
+        const response = await postService(endPoint, filteredReqData);
+        debugger
+        const respData = response.data;
+        return respData;
+    } catch (ex) {
+        return {
+            success: false,
+            message: `Error Occurred on :${ex.message}`
+        }
+    }
+}
+
 
 export const searchByDocDetailsService = async (locationDataFromSearch, inputKeywordFromSearch, skipCount, limit) => {
     try {

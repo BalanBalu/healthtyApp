@@ -14,6 +14,7 @@ import {
     fetchDoctorAvailabilitySlotsService,
     serviceOfGetTotalActiveSponsorDetails4Doctors,
     serviceOfUpdateDocSponsorViewCountByUser,
+    filterByDocDetailsService
 } from '../../providers/BookAppointmentFlow/action';
 import { formatDate, addMoment, addTimeUnit, getMoment } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
@@ -22,26 +23,18 @@ import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 import { store } from '../../../setup/store';
 import { RenderListNotFound, RenderNoSlotsAvailable } from '../CommonAll/components';
-import { enumerateStartToEndDates, sortByPrimeDoctors } from '../CommonAll/functions';
+import { enumerateStartToEndDates, calculateDoctorUpdatedExperience, sortByPrimeDoctors } from '../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
 import RenderDatesList from './RenderDateList'
 import RenderSlots from './RenderSlots'
 import RenderSponsorList from './RenderSponsorList';
-import Spinner from '../../../components/Spinner'
-let conditionFromFilterPage;
-const SELECTED_EXPERIENCE_START_END_YEARS = {
-    10: { start: 0, end: 10 },
-    20: { start: 10, end: 20 },
-    30: { start: 20, end: 30 },
-    40: { start: 40, end: 100 }
-}
+
 let currentDoctorOrder = 'ASC';
 const SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW = 2;
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 5;
 class DoctorList extends Component {
     docListDataArry = [];
-    // searchedDoctorIdsArray = [];
     availableSlotsDataMap = new Map();
     availabilitySlotsDatesArry = [];
     docInfoAndAvailableSlotsMapByDoctorIdHostpitalId = new Map();
@@ -68,16 +61,137 @@ class DoctorList extends Component {
             isLoadingMoreData: false,
             doctorInfoListAndSlotsData1: [],
         }
-        conditionFromFilterPage = null,  // for check FilterPage Values
-            this.incrementPaginationCount = 0,
+        this.conditionFromFilterPage = false,  // for check FilterPage Values
+            this.selectedDataFromFilterPage = null;
+        this.incrementPaginationCount = 0,
             this.onEndReachedCalledDuringMomentum = true
         this.isRenderedPrimeDocsOnSwiperListView = false;
     }
+    navigateToFilters() {
+        this.props.navigation.navigate("Filter Doctor Info", {
+            filterData: this.selectedDataFromFilterPage,
+        })
+    }
+    componentNavigationMount = async () => {
+        try {
+            debugger
+            const { navigation } = this.props;
+            this.selectedDataFromFilterPage = navigation.getParam('filterData');
+            console.log(' componentNavigationMount selectedDataFromFilterPage===>====>', this.selectedDataFromFilterPage);
+            debugger
+            if (this.selectedDataFromFilterPage) {
+                debugger
+                this.conditionFromFilterPage = navigation.getParam('conditionFromFilterPage');
+                if (this.conditionFromFilterPage) {
+                    this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.clear();
+                    debugger
+                    this.setState({ isLoading: true });
+                    this.searchByDoctorDetails();
+                    this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+                    debugger
+                }
+            }
+            debugger
+        }
+        catch (Ex) {
+            console.log('Ex is getting on Filter by Doctor details ===>', Ex.message);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
 
-    componentNavigationMount = async () => { }   //   Need to Check filter Page implementation also
+    }
+
+    searchByDoctorDetails = async () => {
+        try {
+            console.log("calling Api pagination COUNT====>", this.incrementPaginationCount);
+            debugger
+            const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
+            const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
+            let docListResponse;
+            if (this.conditionFromFilterPage) {
+                debugger
+                this.selectedDataFromFilterPage.locationData = locationDataFromSearch;
+                console.log('  this.selectedDataFromFilterPage====>', this.selectedDataFromFilterPage);
+                docListResponse = await filterByDocDetailsService(this.selectedDataFromFilterPage);
+                debugger
+            }
+            else {
+                docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
+            }
+            debugger
+            // console.log('docListResponse====>', JSON.stringify(docListResponse));
+            if (docListResponse.success) {
+                debugger
+                this.incrementPaginationCount = this.incrementPaginationCount + 5;
+                const searchedDoctorIdsArray = [];
+                const docListData = docListResponse.data || [];
+                docListData.map(item => {
+                    debugger
+                    const doctorIdHostpitalId = item.doctor_id + '-' + item.hospitalInfo.hospital_id;
+                    /** calculate Doctor Experience using  Updated  data   **/
+                    if (!this.conditionFromFilterPage) {
+                        debugger
+                        item.calculatedExperience = calculateDoctorUpdatedExperience(item.experience);
+                        debugger
+                    }
+                    debugger
+                    if (!searchedDoctorIdsArray.includes(item.doctor_id)) {
+                        searchedDoctorIdsArray.push(item.doctor_id)
+                    }
+                    item.doctorIdHostpitalId = doctorIdHostpitalId;
+                    this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
+                })
+                debugger
+                const [activeDoctorsSponsorDetails, docsFavoriteDetails, docsReviewDetails] = await Promise.all([
+                    serviceOfGetTotalActiveSponsorDetails4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
+                    ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
+                    serviceOfGetTotalReviewsCount4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
+                ]);
+                const activeDoctorsSponsorData = activeDoctorsSponsorDetails.data;
+                if (activeDoctorsSponsorData) {
+                    const sponsorIdsArray = [];
+                    activeDoctorsSponsorData.map((sponsorItem) => {
+                        sponsorIdsArray.push(sponsorItem._id);
+                        const hospitalId = sponsorItem.location[0] && sponsorItem.location[0].hospital_id;
+                        const doctorIdHostpitalId = sponsorItem.doctor_id + '-' + hospitalId;
+                        if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.has(doctorIdHostpitalId)) {
+                            const baCupDocHospitalIdItemObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId)
+                            if (this.showNoOfPrimeDoctorsListOnSwiperListViewArray.length < SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW) {
+                                baCupDocHospitalIdItemObj.isDoctorIdHostpitalIdSponsored = true;
+                                this.showNoOfPrimeDoctorsListOnSwiperListViewArray.push(baCupDocHospitalIdItemObj)
+                                this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, baCupDocHospitalIdItemObj)
+                            } else {
+                                baCupDocHospitalIdItemObj.isPrimeDoctorOnNormalCardView = true;
+                                this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, baCupDocHospitalIdItemObj)
+                            }
+                        }
+                    });
+                    this.updateDocSponsorViewersCountByUser(sponsorIdsArray);
+                }
+                //debugger
+                let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
+                debugger
+                // doctorInfoList.sort(sortByPrimeDoctors);
+                // console.log('doctorInfoList========>', JSON.stringify(doctorInfoList));
+                //debugger
+                // this.setState({ doctorInfoListAndSlotsData1: doctorInfoList })
+                store.dispatch({
+                    type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+                    data: doctorInfoList
+                })
+            }
+        } catch (Ex) {
+            Toast.show({
+                text: 'Something Went Wrong' + Ex,
+                duration: 3000,
+                type: "danger"
+            })
+        }
+    }
+
     async componentDidMount() {
         try {
-            console.log('calling componentDidMount');
             this.setState({ isLoading: true });
             const userId = await AsyncStorage.getItem('userId');
             this.searchByDoctorDetails();
@@ -161,7 +275,9 @@ class DoctorList extends Component {
                                     onEndReached={() => {
                                         console.log('calling onEndReached===>',
                                             this.onEndReachedCalledDuringMomentum)
-                                        this.loadMoreData();
+                                        if (!this.conditionFromFilterPage) {
+                                            this.loadMoreData();
+                                        }
                                         // if (!this.onEndReachedCalledDuringMomentum) {
                                         //     alert('calling scroll begin===>' +
                                         //         this.onEndReachedCalledDuringMomentum);
@@ -192,31 +308,22 @@ class DoctorList extends Component {
 
 
     renderMainItem = ({ item, index }) => {
-        // const { height, width } = Dimensions.get('window');
-        // console.log('renderMainItem item data====.', JSON.stringify(item));
-        // console.log('renderMainItem item INDEX====.', JSON.stringify(index));
-        debugger
         /* Render Prime Doctor Cards   */
         if (item.isDoctorIdHostpitalIdSponsored === true && this.isRenderedPrimeDocsOnSwiperListView === false) {
-            debugger
+            //debugger
             return (
                 <View >
                     <FlatList
                         horizontal={true}
                         data={this.showNoOfPrimeDoctorsListOnSwiperListViewArray}
                         renderItem={({ item, index }) => { return this.renderDoctorSponsorListCards(item, index) }}
-                    //   renderItem={({ item, index }) => {        return <View style={{ width, height: 100 }}><Text style={{ fontSize: 30 }}>Sponsor</Text></View>
-                    // }}
                     />
                 </View>
             );
         }
-        debugger
         /*  Render Normal Doctor cards   */
         if (item.isDoctorIdHostpitalIdSponsored !== true) {
-            debugger
             return this.renderDoctorCard(item, index);
-            // return <View style={{ width, height: 100 }}><Text style={{ fontSize: 30 }}> Doctor</Text></View>
         }
     }
     loadMoreData = () => {
@@ -232,75 +339,6 @@ class DoctorList extends Component {
         }
         finally {
             // this.setState({ isLoadingMoreData: false })
-        }
-    }
-
-    searchByDoctorDetails = async () => {
-        try {
-            console.log("calling Api pagination COUNT====>", this.incrementPaginationCount);
-            // //debugger
-            const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
-            const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
-            const docListResponse = await searchByDocDetailsService(locationDataFromSearch, inputKeywordFromSearch, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
-            // debugger
-            // console.log('docListResponse====>', JSON.stringify(docListResponse));
-            if (docListResponse.success) {
-                this.incrementPaginationCount = this.incrementPaginationCount + 5;
-                const searchedDoctorIdsArray = [];
-                const docListData = docListResponse.data || [];
-                docListData.map(item => {
-                    const doctorIdHostpitalId = item.doctor_id + '-' + item.hospitalInfo.hospital_id;
-                    if (!searchedDoctorIdsArray.includes(item.doctor_id)) {
-                        searchedDoctorIdsArray.push(item.doctor_id)
-                    }
-                    item.doctorIdHostpitalId = doctorIdHostpitalId;
-                    this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
-                })
-                //debugger
-                const [activeDoctorsSponsorDetails, docsFavoriteDetails, docsReviewDetails] = await Promise.all([
-                    serviceOfGetTotalActiveSponsorDetails4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
-                    ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
-                    serviceOfGetTotalReviewsCount4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
-                ]);
-                const activeDoctorsSponsorData = activeDoctorsSponsorDetails.data;
-                if (activeDoctorsSponsorData) {
-                    const sponsorIdsArray = [];
-                    activeDoctorsSponsorData.map((sponsorItem) => {
-                        sponsorIdsArray.push(sponsorItem._id);
-                        const hospitalId = sponsorItem.location[0] && sponsorItem.location[0].hospital_id;
-                        const doctorIdHostpitalId = sponsorItem.doctor_id + '-' + hospitalId;
-                        if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.has(doctorIdHostpitalId)) {
-                            const baCupDocHospitalIdItemObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId)
-                            if (this.showNoOfPrimeDoctorsListOnSwiperListViewArray.length < SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW) {
-                                baCupDocHospitalIdItemObj.isDoctorIdHostpitalIdSponsored = true;
-                                this.showNoOfPrimeDoctorsListOnSwiperListViewArray.push(baCupDocHospitalIdItemObj)
-                                this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, baCupDocHospitalIdItemObj)
-                            } else {
-                                baCupDocHospitalIdItemObj.isPrimeDoctorOnNormalCardView = true;
-                                this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, baCupDocHospitalIdItemObj)
-                            }
-                        }
-                    });
-                    this.updateDocSponsorViewersCountByUser(sponsorIdsArray);
-                }
-                //debugger
-                let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
-                // doctorInfoList.sort(sortByPrimeDoctors);
-                // console.log('doctorInfoList========>', JSON.stringify(doctorInfoList));
-                //debugger
-                // this.setState({ doctorInfoListAndSlotsData1: doctorInfoList })
-
-                store.dispatch({
-                    type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-                    data: doctorInfoList
-                })
-            }
-        } catch (Ex) {
-            Toast.show({
-                text: 'Something Went Wrong' + Ex,
-                duration: 3000,
-                type: "danger"
-            })
         }
     }
     updateDocSponsorViewersCountByUser = async (sponsorIds) => {
@@ -415,7 +453,6 @@ class DoctorList extends Component {
                 const doctorIdFromItem = item.doctor_id;
                 const hospitalIdFromItem = item.hospitalInfo && item.hospitalInfo.hospital_id;
                 if (setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem)) {  //Execute condition  when Doctor Id is repeated;
-                    // console.log('setDoctorIdHostpitalIdsArrayMap.has(docId)====>', setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem));
                     let baCupDocHospitalIdsObj = setDoctorIdHostpitalIdsArrayMap.get(doctorIdFromItem);
                     const obj = {
                         doctorId: doctorIdFromItem,
@@ -431,14 +468,11 @@ class DoctorList extends Component {
                 }
             })
             const reqData4Availability = Array.from(setDoctorIdHostpitalIdsArrayMap.values()) || [];
-            // console.log('reqData4Availability=====>', reqData4Availability);
             const reqStartAndEndDates = {
                 startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchDoctorAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            // console.log('resultSlotsData======>', JSON.stringify(resultSlotsData));
-            //debugger
             if (resultSlotsData.success) {
                 const availabilitySlotsData = resultSlotsData.data;
                 if (availabilitySlotsData.length != 0) {
@@ -451,14 +485,12 @@ class DoctorList extends Component {
                     // this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
                 }
             }
-            //debugger
         } catch (ex) {
             console.log('Ex getting on getAvailabilitySlots service======', ex.message);
         }
     }
     /*  Set Doctor Availability Slots data by doctorIdHostpitalIds   */
     setDoctorAvailabilitySlotsDataByDocAndHospitalIds = (SourceOfSlotsDataArray) => {
-        ////debugger
         SourceOfSlotsDataArray.map((item) => {
             const baCupOfDocInfo = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(item.doctorIdHostpitalId);
             const finalSlotsDataObj = { ...baCupOfDocInfo.slotData, ...item.slotData } // Merge the Previous weeks and On change the Next week slots data
@@ -468,8 +500,6 @@ class DoctorList extends Component {
             }
             this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(item.doctorIdHostpitalId, finalDocAndAvailabilityObj)
         });
-        // console.log('Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values())===>', JSON.stringify(Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values())));
-        ////debugger
     }
 
 
@@ -504,10 +534,6 @@ class DoctorList extends Component {
             currentDoctorOrder = 'ASC';
         }
         this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
-    }
-
-    navigateToFilters() {
-        this.props.navigation.navigate('Filters')
     }
 
 
