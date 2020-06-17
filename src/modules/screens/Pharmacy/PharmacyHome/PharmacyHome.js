@@ -52,10 +52,12 @@ class PharmacyHome extends Component {
     }
 
     async backNavigation(payload) {
-        let hascartReload = await AsyncStorage.getItem('hasCartReload')
-
+        try{
+            let hascartReload = await AsyncStorage.getItem('hasCartReload')
+  
         if (hascartReload === 'true') {
             await AsyncStorage.removeItem('hasCartReload');
+            
             if (userId) {
                 let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
                 let cartData = []
@@ -66,13 +68,18 @@ class PharmacyHome extends Component {
                 setCartItemCountOnNavigation(this.props.navigation);
                 // console.log(JSON.stringify(cartData[]))
                 await this.setState({ cartItems: cartData })
+                await AsyncStorage.removeItem('hasCartReload');
             }
         }
-        // if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
+       
+        if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
 
-        //     this.getMedicineList();
-        //     this.getNearByPharmacyList();
-        // }
+            // this.getMedicineList();
+            // this.getNearByPharmacyList();
+        }
+    }catch(e){
+        console.log(e)
+    }
     }
 
     /*Get medicine list*/
@@ -127,7 +134,7 @@ class PharmacyHome extends Component {
 
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
 
-
+  
             if (result.success) {
                 this.setState({ pharmacyData: result.data })
             }
@@ -347,6 +354,8 @@ class PharmacyHome extends Component {
                                                         {item.discount !== undefined && item.discount !== null ?
                                                             <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item)}</Text> : null}
                                                     </Row>
+                                                    {getIsAvailable(item,this.state.medicineDataAvailable) === false ?
+                                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
 
                                                     <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
                                                         {cartItems.length == 0 || cartItems.findIndex(ele => ele.item.productId == item.id) === -1 ?
@@ -377,8 +386,10 @@ class PharmacyHome extends Component {
                                                             />
                                                             : null}
                                                     </Row>
+                                        }
                                                 </Col>
                                             </Row>
+                                                        
                                         } />
                                 }
                             </Row>

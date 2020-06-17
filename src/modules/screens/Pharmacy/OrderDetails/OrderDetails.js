@@ -7,7 +7,7 @@ import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
 import { getMedicineOrderDetails, upDateOrderData, getOrderTracking } from '../../../providers/pharmacy/pharmacy.action';
-import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName } from '../CommomPharmacy';
+import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName,renderMedicineImageByimageUrl } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
@@ -340,7 +340,7 @@ class OrderDetails extends Component {
                                     <Row style={styles.rowStyle}>
                                         <Col size={2}>
                                             <Image
-                                                source={renderMedicineImage(item.medInfo)}
+                                                source={renderMedicineImageByimageUrl(item)}
                                                 style={{
                                                     width: 60, height: 60, alignItems: 'center'
                                                 }}

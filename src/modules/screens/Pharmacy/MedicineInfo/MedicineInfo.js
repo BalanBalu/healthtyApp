@@ -148,6 +148,9 @@ class MedicineInfo extends Component {
         try {
 
             let selectedData = getselectedCartData(data, selected, cartData)
+            console.log('selectedDataselectedDataselectedData')
+            console.log(JSON.stringify(selectedData))
+            
 
             await this.setState({ selectedMedcine: selectedData })
 
@@ -181,6 +184,7 @@ class MedicineInfo extends Component {
                     }
                 }
                 this.setState({ isAddToCart: false })
+                     await AsyncStorage.setItem('hasCartReload', 'true')
             }
             else {
                 this.setState({ isAddToCart: false, isBuyNow: false })
@@ -217,12 +221,12 @@ class MedicineInfo extends Component {
     }
 
 
-    addToCart = async () => {
-        let temp = await AsyncStorage.getItem('userId')
-        let userId = JSON.stringify(temp);
-        let cart = this.state.medicineData;
-        await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cart))
-    }
+    /* addToCart = async () => {
+         let temp = await AsyncStorage.getItem('userId')
+         let userId = JSON.stringify(temp);
+         let cart = this.state.medicineData;
+         await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cart))
+     }*/
     saveMoney() {
         const { medicineData } = this.state;
 
@@ -244,7 +248,8 @@ class MedicineInfo extends Component {
         let hascartReload = await AsyncStorage.getItem('hasCartReload')
 
         if (hascartReload === 'true') {
-            await AsyncStorage.removeItem('hasCartReload');
+              await AsyncStorage.removeItem('hasCartReload');
+        
             if (userId) {
                 let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
                 let cartData = []
@@ -268,9 +273,9 @@ class MedicineInfo extends Component {
                     onWillFocus={payload => { this.backNavigation(payload) }}
                 />
                 <Content style={{ padding: 10, flex: 1 }}>
-                    {this.state.isLoading ? <Spinner color='blue'
+                    <Spinner color='blue'
                         visible={this.state.isLoading}
-                    /> : 
+                    />
                     <View style={{ paddingBottom: 20 }}>
 
                         <View>
@@ -337,30 +342,27 @@ class MedicineInfo extends Component {
                             </Row >
 
                         </View>
-                        {medicineData.productDetails && medicineData.productDetails.available === 0 ? null :
+                        {this.state.productAvailable.length !== 0 && getIsAvailable(medicineData, this.state.productAvailable) === false ?
+
+                        < Row style={{ marginTop: 10 }}>
+                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text>
+                        </Row>:
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={5}>
 
-                                    {cartItems.length == 0 || cartItems.findIndex(ele => ele.item.productId == medicineData.id) === -1 ?
-                                        <Row style={{ alignItems: 'flex-end' }}>
-                                            <TouchableOpacity style={styles.addCartTouch}
-                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart') }} >
+                                    <Row style={{ alignItems: 'flex-end' }}>
+                                        <TouchableOpacity style={styles.addCartTouch}
+                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart', cartItems.find(ele => ele.item.productId == medicineData.id)) }} >
 
-                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
-                                                <Text style={styles.addCartText}>Add to Cart</Text>
+                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
 
-                                            </TouchableOpacity>
-                                        </Row> :
-                                        <Row style={{ alignItems: 'flex-end' }}>
-                                            <TouchableOpacity style={styles.addCartTouch}
-                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart', cartItems.find(ele => ele.item.productId == medicineData.id)) }} >
+                                            {cartItems.length == 0 || cartItems.findIndex(ele => ele.item.productId == medicineData.id) === -1 ?
+                                                <Text style={styles.addCartText}>Add to Cart</Text> :
+                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.item.productId == medicineData.id)].item.quantity}</Text>}
 
-                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
-                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.item.productId == medicineData.id)].item.quantity}</Text>
+                                        </TouchableOpacity>
+                                    </Row>
 
-                                            </TouchableOpacity>
-                                        </Row>
-                                    }
                                 </Col>
                                 <Col size={5}>
                                     <Row>
@@ -370,214 +372,210 @@ class MedicineInfo extends Component {
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
-                            </Row>
-                        }
-                        {/* give this text instead of two button in case of out of stock */}
-                        {getIsAvailable(medicineData, this.state.productAvailable) === false ?
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text> : null}
+                            </Row> }
 
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
-                            <AddToCard
-                                navigation={this.props.navigation}
-                                data={this.state.selectedMedcine}
-                                popupVisible={(data) => this.getVisible(data)}
-                            />
-                            : null}
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={styles.desText}>Medicine Details</Text>
-                            {medicineData.description ?
-                                <Text style={styles.mainText}>{medicineData.description}</Text>
-                                : <Text style={styles.mainText}>N/A</Text>}
-                            {this.state.enlargeContent == true ?
-                                <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
-                                    <Text style={styles.showText}>Show more</Text>
-                                </TouchableOpacity> : null}
+                        <AddToCard
+                            navigation={this.props.navigation}
+                            data={this.state.selectedMedcine}
+                            popupVisible={(data) => this.getVisible(data)}
+                        />
+                        : null}
+                    <View style={{ marginTop: 10 }}>
+                        <Text style={styles.desText}>Medicine Details</Text>
+                        {medicineData.description ?
+                            <Text style={styles.mainText}>{medicineData.description}</Text>
+                            : <Text style={styles.mainText}>N/A</Text>}
+                        {this.state.enlargeContent == true ?
+                            <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
+                                <Text style={styles.showText}>Show more</Text>
+                            </TouchableOpacity> : null}
 
 
-                            <View>
-                                {medicineData.medicine_unit ?
-                                    <View style={{ marginTop: 10 }}>
-                                        <Text style={styles.desText}>Medicine Dosage</Text>
+                        <View>
+                            {medicineData.medicine_unit ?
+                                <View style={{ marginTop: 10 }}>
+                                    <Text style={styles.desText}>Medicine Dosage</Text>
 
-                                        <Text style={styles.mainText}>{medicineData.medicine_unit}</Text>
-                                    </View>
-                                    : null}
-                                {medicineData.directionToUse !== null ?
-                                    <View style={{ marginTop: 10 }}>
-                                        <Text style={styles.desText}>Directions To Use </Text>
+                                    <Text style={styles.mainText}>{medicineData.medicine_unit}</Text>
+                                </View>
+                                : null}
+                            {medicineData.directionToUse !== null ?
+                                <View style={{ marginTop: 10 }}>
+                                    <Text style={styles.desText}>Directions To Use </Text>
 
-                                        <Text style={styles.mainText}>{medicineData.directionToUse}</Text>
+                                    <Text style={styles.mainText}>{medicineData.directionToUse}</Text>
 
-                                    </View> : null}
-                                {medicineData.ingridients ?
-                                    <View style={{ marginTop: 10 }}>
-                                        <Text style={styles.desText}>Key Ingredients</Text>
+                                </View> : null}
+                            {medicineData.ingridients ?
+                                <View style={{ marginTop: 10 }}>
+                                    <Text style={styles.desText}>Key Ingredients</Text>
 
-                                        <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {medicineData.ingridients}</Text> :
+                                    <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {medicineData.ingridients}</Text> :
 
 
-
-                                    </View> : null}
-                                {medicineData.sideEffect ?
-                                    <View style={{ marginTop: 10 }}>
-                                        <Text style={styles.desText}>Side effects</Text>
-
-                                        <Text style={styles.mainText}>{medicineData.sideEffect}</Text>
 
                                     </View> : null}
+                            {medicineData.sideEffect ?
+                                <View style={{ marginTop: 10 }}>
+                                    <Text style={styles.desText}>Side effects</Text>
 
-                            </View>
+                                    <Text style={styles.mainText}>{medicineData.sideEffect}</Text>
+
+                                </View> : null}
 
                         </View>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={styles.desText}>Rating and Reviews</Text>
-                            <Row style={styles.borderView}>
-                                <Col size={3}>
-                                    {reviewCount != '' ?
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                            <Icon name="ios-star" style={{ color: '#8dc63f', fontSize: 25 }} />
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#8dc63f', fontWeight: '500', marginLeft: 5 }}>{(reviewCount.average_rating).toFixed(1)}</Text>
-                                        </View> : null}
-                                    {reviewCount != '' ?
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{reviewCount.total_rating + ' Ratings &' + reviewCount.count + ' Reviews'}</Text> :
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{'0 Ratings & 0 Reviews'}</Text>}
 
-                                </Col>
-                                <Col size={7} style={{ borderLeftColor: '#909090', borderLeftWidth: 0.3, paddingLeft: 10 }}>
-                                    <Row style={{ marginTop: 1 }}>
-                                        <Col size={1} style={{ flexDirection: 'row' }}>
-                                            <Icon name="ios-star" style={{ color: '#8dc63f', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
-                                            <Text style={styles.ratingCountFive}>5</Text>
-                                        </Col>
-                                        <Col size={7.5}>
-                                            <TouchableOpacity style={styles.touchRating5}>
+                    </View>
+                    <View style={{ marginTop: 10 }}>
+                        <Text style={styles.desText}>Rating and Reviews</Text>
+                        <Row style={styles.borderView}>
+                            <Col size={3}>
+                                {reviewCount != '' ?
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Icon name="ios-star" style={{ color: '#8dc63f', fontSize: 25 }} />
+                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#8dc63f', fontWeight: '500', marginLeft: 5 }}>{(reviewCount.average_rating).toFixed(1)}</Text>
+                                    </View> : null}
+                                {reviewCount != '' ?
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{reviewCount.total_rating + ' Ratings &' + reviewCount.count + ' Reviews'}</Text> :
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{'0 Ratings & 0 Reviews'}</Text>}
 
-                                            </TouchableOpacity>
-                                        </Col>
-                                        <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.five_star ? Math.round(finalRating.five_star) : 0}%</Text>
-                                        </Col>
-                                    </Row>
-                                    <Row style={{ marginTop: 1 }}>
-                                        <Col size={1} style={{ flexDirection: 'row' }}>
-                                            <Icon name="ios-star" style={{ color: '#C4FB72', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
-                                            <Text style={styles.ratingCountfour}>4</Text>
-                                        </Col>
-                                        <Col size={7.5}>
-                                            <TouchableOpacity style={styles.touchRating4}>
-
-                                            </TouchableOpacity>
-                                        </Col>
-                                        <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? Math.round(finalRating.four_star) : 0}%</Text>
-                                        </Col>
-                                    </Row>
-                                    <Row style={{ marginTop: 1 }}>
-                                        <Col size={1} style={{ flexDirection: 'row' }}>
-                                            <Icon name="ios-star" style={{ color: '#F9D841', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
-                                            <Text style={styles.ratingCountThree}>3</Text>
-                                        </Col>
-                                        <Col size={7.5}>
-                                            <TouchableOpacity style={styles.touchRating3}>
-
-                                            </TouchableOpacity>
-                                        </Col>
-                                        <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.three_star ? Math.round(finalRating.three_star) : 0}%</Text>
-                                        </Col>
-                                    </Row>
-                                    <Row style={{ marginTop: 1 }}>
-                                        <Col size={1} style={{ flexDirection: 'row' }}>
-                                            <Icon name="ios-star" style={{ color: '#F69603', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
-                                            <Text style={styles.ratingCountTwo}>2</Text>
-                                        </Col>
-                                        <Col size={7.5}>
-                                            <TouchableOpacity style={styles.touchRating2}>
-
-                                            </TouchableOpacity>
-                                        </Col>
-                                        <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.two_star ? Math.round(finalRating.two_star) : 0}%</Text>
-                                        </Col>
-                                    </Row>
-                                    <Row style={{ marginTop: 1 }}>
-                                        <Col size={1} style={{ flexDirection: 'row' }}>
-                                            <Icon name="ios-star" style={{ color: '#F03434', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
-                                            <Text style={styles.ratingCountOne}>1</Text>
-                                        </Col>
-                                        <Col size={7.5}>
-                                            <TouchableOpacity style={styles.touchRating1}>
-
-                                            </TouchableOpacity>
-                                        </Col>
-                                        <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.one_star ? Math.round(finalRating.one_star) : 0}%</Text>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </View>
-                        {reviewData.length !== 0 ?
-                            <FlatList
-                                data={reviewData}
-                                keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item }) =>
-                                    <View style={styles.borderView}>
-                                        <Row>
-                                            <Col size={5} style={{ flexDirection: 'row' }}>
-                                                <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
-                                                <View style={styles.viewRating}>
-                                                    <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
-                                                    <Text style={styles.ratingText}>{item.rating}</Text>
-
-                                                </View>
-                                            </Col>
-                                            <Col size={5}>
-                                                <Text style={styles.dateText}>{this.relativeTimeView(item.review_date)}</Text>
-                                            </Col>
-                                        </Row>
-                                        <Text style={styles.contentText}>{item.comments}</Text>
-                                    </View>
-                                } /> :
-                            <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>No Reviews Were found</Text>}
-
-                        {reviewData.length > 3 ?
-
-                            <Row style={{ marginTop: 10 }}>
-                                <Col size={6}>
-                                </Col>
-                                <Col size={4} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                    <Row>
-                                        <TouchableOpacity style={styles.viewTouch} onPress={() => this.props.navigation.navigate('ViewAllReviews', { medicineId: medicineId })}>
-                                            <Text style={styles.ViewText}>View All Reviews</Text>
-                                            <Icon name="ios-arrow-round-forward" style={{ fontSize: 16, color: '#4e85e9', marginLeft: 2 }} />
+                            </Col>
+                            <Col size={7} style={{ borderLeftColor: '#909090', borderLeftWidth: 0.3, paddingLeft: 10 }}>
+                                <Row style={{ marginTop: 1 }}>
+                                    <Col size={1} style={{ flexDirection: 'row' }}>
+                                        <Icon name="ios-star" style={{ color: '#8dc63f', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
+                                        <Text style={styles.ratingCountFive}>5</Text>
+                                    </Col>
+                                    <Col size={7.5}>
+                                        <TouchableOpacity style={styles.touchRating5}>
 
                                         </TouchableOpacity>
+                                    </Col>
+                                    <Col size={1.5}>
+                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.five_star ? Math.round(finalRating.five_star) : 0}%</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 1 }}>
+                                    <Col size={1} style={{ flexDirection: 'row' }}>
+                                        <Icon name="ios-star" style={{ color: '#C4FB72', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
+                                        <Text style={styles.ratingCountfour}>4</Text>
+                                    </Col>
+                                    <Col size={7.5}>
+                                        <TouchableOpacity style={styles.touchRating4}>
+
+                                        </TouchableOpacity>
+                                    </Col>
+                                    <Col size={1.5}>
+                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? Math.round(finalRating.four_star) : 0}%</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 1 }}>
+                                    <Col size={1} style={{ flexDirection: 'row' }}>
+                                        <Icon name="ios-star" style={{ color: '#F9D841', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
+                                        <Text style={styles.ratingCountThree}>3</Text>
+                                    </Col>
+                                    <Col size={7.5}>
+                                        <TouchableOpacity style={styles.touchRating3}>
+
+                                        </TouchableOpacity>
+                                    </Col>
+                                    <Col size={1.5}>
+                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.three_star ? Math.round(finalRating.three_star) : 0}%</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 1 }}>
+                                    <Col size={1} style={{ flexDirection: 'row' }}>
+                                        <Icon name="ios-star" style={{ color: '#F69603', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
+                                        <Text style={styles.ratingCountTwo}>2</Text>
+                                    </Col>
+                                    <Col size={7.5}>
+                                        <TouchableOpacity style={styles.touchRating2}>
+
+                                        </TouchableOpacity>
+                                    </Col>
+                                    <Col size={1.5}>
+                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.two_star ? Math.round(finalRating.two_star) : 0}%</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 1 }}>
+                                    <Col size={1} style={{ flexDirection: 'row' }}>
+                                        <Icon name="ios-star" style={{ color: '#F03434', fontSize: 10, marginLeft: 5, marginTop: 1 }} />
+                                        <Text style={styles.ratingCountOne}>1</Text>
+                                    </Col>
+                                    <Col size={7.5}>
+                                        <TouchableOpacity style={styles.touchRating1}>
+
+                                        </TouchableOpacity>
+                                    </Col>
+                                    <Col size={1.5}>
+                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.one_star ? Math.round(finalRating.one_star) : 0}%</Text>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </View>
+                    {reviewData.length !== 0 ?
+                        <FlatList
+                            data={reviewData}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item }) =>
+                                <View style={styles.borderView}>
+                                    <Row>
+                                        <Col size={5} style={{ flexDirection: 'row' }}>
+                                            <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
+                                            <View style={styles.viewRating}>
+                                                <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
+                                                <Text style={styles.ratingText}>{item.rating}</Text>
+
+                                            </View>
+                                        </Col>
+                                        <Col size={5}>
+                                            <Text style={styles.dateText}>{this.relativeTimeView(item.review_date)}</Text>
+                                        </Col>
                                     </Row>
-                                </Col>
-                            </Row> : null}
-                        {reviewData.length !== 0 && reviewData.findIndex(ele => String(ele.userInfo.user_id) === String(userId)) === -1 ?
-                            <View>
-                                <Row style={{ marginTop: 10 }}>
-                                    <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
-                                        onPress={() => { this.insertReview(), this.setState({ isReviewInsert: true }) }}>
-                                        <Row style={{ alignItems: 'center' }}>
-                                            <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Add Reviews</Text>
-                                        </Row>
+                                    <Text style={styles.contentText}>{item.comments}</Text>
+                                </View>
+                            } /> :
+                        <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>No Reviews Were found</Text>}
+
+                    {reviewData.length > 3 ?
+
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={6}>
+                            </Col>
+                            <Col size={4} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                <Row>
+                                    <TouchableOpacity style={styles.viewTouch} onPress={() => this.props.navigation.navigate('ViewAllReviews', { medicineId: medicineId })}>
+                                        <Text style={styles.ViewText}>View All Reviews</Text>
+                                        <Icon name="ios-arrow-round-forward" style={{ fontSize: 16, color: '#4e85e9', marginLeft: 2 }} />
+
                                     </TouchableOpacity>
                                 </Row>
-                            </View> : null}
-                        {this.state.isReviewInsert == true ?
-                            <MedInsertReview
-                                data={this.state.insertReviewData}
-                                popupVisible={(data) => this.getMedicineReviewVisible(data)}
+                            </Col>
+                        </Row> : null}
+                    {reviewData.length !== 0 && reviewData.findIndex(ele => String(ele.userInfo.user_id) === String(userId)) === -1 ?
+                        <View>
+                            <Row style={{ marginTop: 10 }}>
+                                <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
+                                    onPress={() => { this.insertReview(), this.setState({ isReviewInsert: true }) }}>
+                                    <Row style={{ alignItems: 'center' }}>
+                                        <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Add Reviews</Text>
+                                    </Row>
+                                </TouchableOpacity>
+                            </Row>
+                        </View> : null}
+                    {this.state.isReviewInsert == true ?
+                        <MedInsertReview
+                            data={this.state.insertReviewData}
+                            popupVisible={(data) => this.getMedicineReviewVisible(data)}
 
-                            />
-                            : null}
+                        />
+                        : null}
                     </View>
-    }
+
                 </Content>
-            </Container>
+            </Container >
         );
     }
 }
