@@ -284,7 +284,6 @@ class AppointmentDetails extends Component {
   navigateToBookAppointmentPage() {
     const { data } = this.state
     let doctorId = data.doctor_id;
-    // alert(doctorId)
     this.props.navigation.navigate('Book Appointment', {
       doctorId: doctorId,
       fetchAvailabiltySlots: true
@@ -302,7 +301,6 @@ class AppointmentDetails extends Component {
       if (result) {
         this.setState({ appoinmentData: resultData[0] });
         console.log(JSON.stringify(this.state.appoinmentData))
-        // alert(JSON.stringify(this.state.appoinmentData))
 
       }
     }
