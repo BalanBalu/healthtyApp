@@ -234,6 +234,7 @@ class labSearchList extends Component {
 
     onPressToContinue4PaymentReview(labData, selectedSlotItem) {   // navigate to next further process
         const { labInfo, labCatInfo } = labData;
+        console.log("labCatInfo", labCatInfo)
         if (!selectedSlotItem) {
             Toast.show({
                 text: 'Please Select a Slot to continue booking',
@@ -244,7 +245,7 @@ class labSearchList extends Component {
         }
         let packageDetails = {
             lab_id: labInfo.lab_id,
-            lab_test_categories_id: labCatInfo._id,
+            lab_test_categories_id: labCatInfo.lab_test_categories_id,
             lab_test_description: labCatInfo.category_discription || 'null',
             fee: labCatInfo.price || 0,
             extra_charges: labInfo.extra_charges || 0,
