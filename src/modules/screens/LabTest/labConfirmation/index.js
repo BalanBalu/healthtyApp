@@ -197,6 +197,7 @@ class LabConfirmation extends Component {
     proceedToLabTestAppointment = async (paymentMode) => {
         let { patientDetails, packageDetails, selectedAddress, itemSelected,errMsg } = this.state
         try {
+            console.log("errMsg",errMsg)
             if (patientDetails.length == 0) {
                 Toast.show({
                     text: 'Kindly select or add patient details',
@@ -205,7 +206,7 @@ class LabConfirmation extends Component {
                 })
                 return false;
             }
-            if (errMsg !== ''){
+            if (errMsg){
                 Toast.show({
                     text: 'Kindly fill other patient details',
                     type: "warning",
