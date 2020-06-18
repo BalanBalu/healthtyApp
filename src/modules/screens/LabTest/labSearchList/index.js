@@ -67,11 +67,12 @@ class labSearchList extends Component {
             this.setState({ isLoading: true });
             const inputDataBySearch = this.props.navigation.getParam('inputDataFromLabCat');
             const labListResponse = await searchByLabDetailsService(inputDataBySearch);
-            // console.log('labListResponse====>', JSON.stringify(labListResponse));
+            console.log('labListResponse====>', labListResponse);
             if (labListResponse.success) {
                 const labListData = labListResponse.data;
                 this.totalLabIdsArryBySearched = labListData.map(item => String(item.labInfo.lab_id));
                 await this.setState({ labListData });
+                console.log("labListData", this.state.labListData)
                 this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
                 this.getTotalReviewsCount4LabTest(this.totalLabIdsArryBySearched);
 
@@ -288,7 +289,7 @@ class labSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: '80%' }}>
                                         <Row style={{ marginLeft: 55, }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.labInfo.lab_name}</Text>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.labInfo.lab_name+' '+item.labInfo.location_code}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
                                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{(item.labCatInfo.categoryInfo && item.labCatInfo.categoryInfo.category_name ) + ' - '}</Text>
