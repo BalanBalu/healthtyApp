@@ -276,8 +276,10 @@ class MedicineSearchList extends Component {
                                                             </TouchableOpacity>
                                                         </Col>
                                                         <Col size={12.5}>
+                                                            <Row>
                                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(item)}</Text>
-                                                            {/* <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + item.pharmacyInfo.name}</Text> */}
+                                                            {item.h1Product&&<Text style={{ color: 'red', fontFamily: 'OpenSans', fontSize: 8, marginTop: 5  }}>{'* Prescription'}</Text> }
+                                                            </Row>
                                                             {getIsAvailable(item, this.state.medicineDataAvailable) === false ?
                                                                 <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
                                                                 <Row>
