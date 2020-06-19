@@ -1,4 +1,4 @@
-import { postService, getService, putService} from '../../../setup/services/httpservices';
+import { postService, getService, putService } from '../../../setup/services/httpservices';
 
 export const SET_BOOK_APP_SLOT_DATA = 'BOOK_APP/SLOTDATA';
 export const SET_BOOK_APP_DOCTOR_DATA = 'BOOK_APP/DOCTORDATA';
@@ -6,7 +6,7 @@ export const SET_SELECTED_DATE = 'BOOK_APP/SELECTED_DATE';
 export const SET_SINGLE_DOCTOR_DATA = 'BOOK_APP/SINGLE_DOCTOR_DATA';
 export const SET_PATIENT_WISH_LIST_DOC_IDS = 'BOOK/PATIENT_WISH_LIST_DOC_IDS';
 export const SET_FAVORITE_DOCTOR_COUNT_BY_IDS = 'BOOK/FAVORITE_DOCTOR_COUNT_BY_IDS';
-export const SET_DOCTORS_RATING_BY_IDS = 'BOOK/DOCTORS_RATING_BY_IDS'; 
+export const SET_DOCTORS_RATING_BY_IDS = 'BOOK/DOCTORS_RATING_BY_IDS';
 export const SET_FILTERED_DOCTOR_DATA = 'BOOK/FILTERED_DOCTOR_DATA';
 export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 import { store } from '../../../setup/store';
@@ -15,10 +15,10 @@ import { store } from '../../../setup/store';
 /*  get All Sponsors data details from Sponsors collection*/
 export const getAllDoctorsActiveSponsorDetails = async (doctorIds) => {
   try {
-    let endPoint = 'sponsor/withoutAuth/'+ doctorIds+'?active_sponsor=true';
+    let endPoint = 'sponsor/withoutAuth/' + doctorIds + '?active_sponsor=true';
     let response = await getService(endPoint);
     let respData = response.data;
-    
+
 
     return respData;
   } catch (e) {
@@ -34,10 +34,10 @@ export const getAllDoctorsActiveSponsorDetails = async (doctorIds) => {
 /* Update Sponsor Viewers Counts */
 export async function updateSponsorViewCount(userId, sponsorIds) {
   try {
-    let endPoint =  'updateSponsorViewers/' + userId
+    let endPoint = 'updateSponsorViewers/' + userId
     let response = await putService(endPoint, sponsorIds);
     let respData = response.data;
-// console.log('respData'+JSON.stringify(respData))
+    // console.log('respData'+JSON.stringify(respData))
     return respData;
   } catch (e) {
     return {
@@ -131,9 +131,9 @@ export async function addReview(userId, insertUserReviews, isLoading = true) {
 
 export async function fetchAvailabilitySlots(doctorIds, dateFilter, patientGender) {
   try {
-    let endPoint = 'doctors/' + 'availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
-    if(patientGender)   endPoint + '&gender='+ patientGender;
-    
+    let endPoint = 'doctors/' + 'availabilitySlots?startDate=' + dateFilter.startDate + '&endDate=' + dateFilter.endDate;
+    if (patientGender) endPoint + '&gender=' + patientGender;
+
     let response = await postService(endPoint, doctorIds);
     let respData = response.data;
     return respData;
@@ -165,26 +165,26 @@ export async function viewUserReviews(type, id, limit) {
 export async function getDoctorsReviewsCount(doctorIds) {
   try {
     let endPoint = 'user/reviewsCount/' + doctorIds;
-    
+
     let response = await getService(endPoint);
-     
+
     let resultReview = response.data;
     if (resultReview.success) {
-      const { bookappointment: { reviewsByDoctorIds } }  = store.getState(); 
+      const { bookappointment: { reviewsByDoctorIds } } = store.getState();
       for (i = 0; i < resultReview.data.length; i++) {
         reviewsByDoctorIds[resultReview.data[i]._id] = resultReview.data[i];
       }
       store.dispatch({
         type: SET_DOCTORS_RATING_BY_IDS,
-        data : reviewsByDoctorIds
+        data: reviewsByDoctorIds
       })
-  }
-  
+    }
+
     return resultReview;
 
 
   } catch (e) {
-    
+
     return {
       message: 'exception' + e,
       success: false
@@ -214,9 +214,14 @@ export const appointment = async (userId, filters, isLoading = true) => {
 export const getUserAppointments = async (userId, filters) => {
   try {
     let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
-    if(filters.on_going_appointment) {
-      endPoint += '&on_going_appointment=1' 
+    if (filters.on_going_appointment) {
+      endPoint += '&on_going_appointment=1'
     }
+alert(filters.limit)
+    if (filters.limit) {
+      endPoint = endPoint + '&skip=' + filters.skip + '&limit=' + filters.limit + '&sort=' + filters.sort;
+    }
+
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -282,7 +287,7 @@ export const getMultipleDoctorDetailsV2 = async (doctorIds, fields, isLoading = 
 
 /* Get Appointment details */
 
-export async function appointmentDetails( appointmentId, isLoading = true) {
+export async function appointmentDetails(appointmentId, isLoading = true) {
   try {
     let endPoint = 'appointment/' + appointmentId
     let response = await getService(endPoint);
@@ -300,7 +305,7 @@ export async function appointmentDetails( appointmentId, isLoading = true) {
 
 export async function appointmentStatusUpdate(doctorId, appointmentId, requestData, isLoading = true) {
   try {
-    let endPoint =  'appointment/' + appointmentId
+    let endPoint = 'appointment/' + appointmentId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
 
@@ -326,12 +331,12 @@ export const getPatientWishList = async (userId) => {
     if (result.success) {
       let wishListDoctorsIds = [];
       result.data.forEach(element => {
-          wishListDoctorsIds.push(element.doctorInfo.doctor_id)
+        wishListDoctorsIds.push(element.doctorInfo.doctor_id)
       })
       console.log(wishListDoctorsIds);
       store.dispatch({
-          type: SET_PATIENT_WISH_LIST_DOC_IDS,
-          data: wishListDoctorsIds
+        type: SET_PATIENT_WISH_LIST_DOC_IDS,
+        data: wishListDoctorsIds
       })
     }
     return result;
@@ -347,27 +352,27 @@ export const getPatientWishList = async (userId) => {
 export const getDoctorFaviouteList = async (doctorId) => {
   try {
     let endPoint = 'doctor/wishList/' + doctorId;
-    
+
     let response = await getService(endPoint);
     let resultFavList = response.data;
-        favouriteListCountByDoctorIds = {};  
-        if (resultFavList.success) {
-           
-             for (i = 0; i < resultFavList.data.length; i++) {
-                 doctorId = resultFavList.data[i].wishList.doctor_id;
-                
-                 if(favouriteListCountByDoctorIds[doctorId]) {
-                    favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1
-                 } else {
-                    favouriteListCountByDoctorIds[doctorId] = 1;
-                 }
-             }
-             console.log(favouriteListCountByDoctorIds);
-             store.dispatch({
-                type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
-                data: favouriteListCountByDoctorIds
-             })
+    favouriteListCountByDoctorIds = {};
+    if (resultFavList.success) {
+
+      for (i = 0; i < resultFavList.data.length; i++) {
+        doctorId = resultFavList.data[i].wishList.doctor_id;
+
+        if (favouriteListCountByDoctorIds[doctorId]) {
+          favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1
+        } else {
+          favouriteListCountByDoctorIds[doctorId] = 1;
         }
+      }
+      console.log(favouriteListCountByDoctorIds);
+      store.dispatch({
+        type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+        data: favouriteListCountByDoctorIds
+      })
+    }
 
     return resultFavList;
   } catch (e) {
@@ -381,45 +386,45 @@ export const getDoctorFaviouteList = async (doctorId) => {
 
 export const addToWishListDoctor = async (doctorId, userId) => {
   try {
-     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } =  store.getState(); 
-     let result = null;
-     console.log(patientWishListsDoctorIds);
+    const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = store.getState();
+    let result = null;
+    console.log(patientWishListsDoctorIds);
     let requestData = {
-       active: !patientWishListsDoctorIds.includes(doctorId)
+      active: !patientWishListsDoctorIds.includes(doctorId)
     };
-    
-    if(userId) {
-       result = await insertDoctorsWishList(userId, doctorId, requestData);
+
+    if (userId) {
+      result = await insertDoctorsWishList(userId, doctorId, requestData);
       //   console.log('result'+JSON.stringify(result));
       if (result.success) {
-          if(requestData.active) {
-            if(favouriteListCountByDoctorIds[doctorId]) {
-                  favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1;
-            } else {
-              favouriteListCountByDoctorIds[doctorId] = 1
-            }
-            patientWishListsDoctorIds.push(doctorId)
+        if (requestData.active) {
+          if (favouriteListCountByDoctorIds[doctorId]) {
+            favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1;
           } else {
-              if(favouriteListCountByDoctorIds[doctorId]) {
-                  favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] - 1;
-              } else {
-                  favouriteListCountByDoctorIds[doctorId] = 0;    
-              }
-              let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
-              patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
+            favouriteListCountByDoctorIds[doctorId] = 1
           }
-          store.dispatch({
-              type: SET_PATIENT_WISH_LIST_DOC_IDS,
-              data: patientWishListsDoctorIds
-          })
-          store.dispatch({
-              type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
-              data: favouriteListCountByDoctorIds
-          })
-     }
+          patientWishListsDoctorIds.push(doctorId)
+        } else {
+          if (favouriteListCountByDoctorIds[doctorId]) {
+            favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] - 1;
+          } else {
+            favouriteListCountByDoctorIds[doctorId] = 0;
+          }
+          let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
+          patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
+        }
+        store.dispatch({
+          type: SET_PATIENT_WISH_LIST_DOC_IDS,
+          data: patientWishListsDoctorIds
+        })
+        store.dispatch({
+          type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+          data: favouriteListCountByDoctorIds
+        })
+      }
       return result;
-   }
-}
+    }
+  }
   catch (e) {
     console.log(e);
   }
@@ -439,23 +444,23 @@ export async function insertDoctorsWishList(userId, doctorId, requestData) {
     }
   }
 }
- 
+
 export async function getLocations(reqQueryFromAndToPinCodes) {
-    try {
-  
-      let endPoint = 'hospital/locations'
-      if(reqQueryFromAndToPinCodes) {
-        endPoint = endPoint +'?fromPinCode=' + reqQueryFromAndToPinCodes.fromPinCode + '&toPinCode=' + reqQueryFromAndToPinCodes.toPinCode
-      }
-      let response = await getService(endPoint);
-      let respData = response.data;
-      return respData;
-    } catch (e) {
-      return {
-        message: 'exception' + e,
-        success: false
-      }
+  try {
+
+    let endPoint = 'hospital/locations'
+    if (reqQueryFromAndToPinCodes) {
+      endPoint = endPoint + '?fromPinCode=' + reqQueryFromAndToPinCodes.fromPinCode + '&toPinCode=' + reqQueryFromAndToPinCodes.toPinCode
     }
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
 }
 
 
@@ -464,8 +469,8 @@ export async function getPharmacyLocations(reqQueryFromAndToPinCodes) {
   try {
 
     let endPoint = 'pharmacies/locations'
-    if(reqQueryFromAndToPinCodes) {
-      endPoint = endPoint +'?fromPinCode=' + reqQueryFromAndToPinCodes.fromPinCode + '&toPinCode=' + reqQueryFromAndToPinCodes.toPinCode
+    if (reqQueryFromAndToPinCodes) {
+      endPoint = endPoint + '?fromPinCode=' + reqQueryFromAndToPinCodes.fromPinCode + '&toPinCode=' + reqQueryFromAndToPinCodes.toPinCode
     }
     let response = await getService(endPoint);
     let respData = response.data;
@@ -481,36 +486,36 @@ export async function getPharmacyLocations(reqQueryFromAndToPinCodes) {
 
 
 export const getPaymentInfomation = async (paymentId) => {
-  try{    
-        
-    let endPoint =  '/payment/' + paymentId;  
-  
+  try {
+
+    let endPoint = '/payment/' + paymentId;
+
     let response = await getService(endPoint);
-    
+
     let respData = response.data;
-    
-      if(respData.error || respData.success == false) {         
-        return{
-          success: respData.success,
-          message: respData.error,
-        }
-      } else {            
-         
-        return respData;  
-               
-      }
-      
-  } catch (e){       
-     
+
+    if (respData.error || respData.success == false) {
       return {
-        success : false,
-        message: 'Exception Occured'+e
-      }; 
+        success: respData.success,
+        message: respData.error,
+      }
+    } else {
+
+      return respData;
+
+    }
+
+  } catch (e) {
+
+    return {
+      success: false,
+      message: 'Exception Occured' + e
+    };
   }
 }
 export async function prepareAppointmentUpdate(appointmentId, requestData) {
   try {
-    let endPoint =  'prepare/appointment/' + appointmentId
+    let endPoint = 'prepare/appointment/' + appointmentId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
     return respData;
@@ -527,7 +532,7 @@ export async function prepareAppointmentUpdate(appointmentId, requestData) {
 export async function fetchEmrData(appointmentId) {
   try {
 
-    let endPoint = '/appointments/electrical_medical_records/'+appointmentId
+    let endPoint = '/appointments/electrical_medical_records/' + appointmentId
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
