@@ -217,7 +217,7 @@ export const getUserAppointments = async (userId, filters) => {
     if (filters.on_going_appointment) {
       endPoint += '&on_going_appointment=1'
     }
-alert(filters.limit)
+
     if (filters.limit) {
       endPoint = endPoint + '&skip=' + filters.skip + '&limit=' + filters.limit + '&sort=' + filters.sort;
     }
