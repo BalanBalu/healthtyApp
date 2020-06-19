@@ -8,7 +8,7 @@ import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native'
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation, getappointmentDetails } from '../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff, statusValue } from '../../../setup/helpers';
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
@@ -39,7 +39,6 @@ class AppointmentDetails extends Component {
       paymentDetails: {},
       modalVisible: false,
       proposedVisible: false,
-      appoinmentData: []
 
 
     }
@@ -89,7 +88,6 @@ class AppointmentDetails extends Component {
     }
 
     await this.setState({ isLoading: false })
-    this.getUserProfile();
   }
 
   /* Get Doctor Details */
@@ -293,27 +291,10 @@ class AppointmentDetails extends Component {
 
 
 
-  getUserProfile = async () => {
-    try {
-      // const {data} = this.state
-      let result = await getappointmentDetails(this.state.appointmentId, prepareAppointment = 1);
-      const resultData = result.data
-      if (result) {
-        this.setState({ appoinmentData: resultData[0] });
-        console.log(JSON.stringify(this.state.appoinmentData))
 
-      }
-    }
-    catch (e) {
-      console.log(e);
-    }
-    finally {
-      this.setState({ isLoading: false });
-    }
-  }
 
   render() {
-    const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId, appoinmentData } = this.state;
+    const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
 
     return (
       <Container style={styles.container}>
@@ -475,23 +456,11 @@ class AppointmentDetails extends Component {
                 <Row style={styles.rowStyle}>
                   {data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME'?
                     <Col size={6}>
-
-                      {appoinmentData.agreed_for_send_forms != true ?
                         <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
 
                           <Text style={styles.touchableText1}>Appointment Preparation</Text>
 
                         </TouchableOpacity>
-                        :
-                        <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('BasicInfo', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
-                          <Row>
-                            <Text style={styles.touchableText1}>Appointment Preparation</Text>
-                          </Row>
-                        </TouchableOpacity>
-                      }
-
-
-
                     </Col>
                     : null
                   }
