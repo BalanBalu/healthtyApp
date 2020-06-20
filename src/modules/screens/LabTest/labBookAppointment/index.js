@@ -173,7 +173,7 @@ class LabBookAppointment extends Component {
       <RenderLabLocation
         number={labInfo.lab_id}
         locationData={labInfo.location}
-        name={labInfo.lab_name}
+        name={labInfo.lab_name + " " + labInfo.location_code}
       /> : null
   }
   onPressContinueForPaymentReview(labData, selectedSlotItem) {
@@ -191,7 +191,7 @@ class LabBookAppointment extends Component {
 
     let packageDetails = {
       lab_id: labInfo.lab_id,
-      lab_test_categories_id: labCatInfo._id,
+      lab_test_categories_id: labCatInfo.lab_test_categories_id,
       lab_test_description: labCatInfo.category_discription || 'null',
       fee: labCatInfo.price || 0,
       extra_charges: labInfo.extra_charges || 0,
@@ -202,6 +202,8 @@ class LabBookAppointment extends Component {
       appointment_endtime: selectedSlotItem.slotEndDateAndTime,
       location: labInfo.location
     }
+    console.log("packageDetails", packageDetails);
+
     this.props.navigation.navigate('labConfirmation', { packageDetails })
   }
   /* Update Favorites for LabTest by UserId  */
@@ -228,7 +230,7 @@ class LabBookAppointment extends Component {
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Col size={9}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{labInfo && labInfo.lab_name}</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(labInfo && labInfo.lab_name) + ' ' + (labInfo && labInfo.location_code)}</Text>
                         <Row>
                           <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.categoryInfo && labCatInfo.categoryInfo.category_name}</Text>
                           <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{' - '}</Text>
