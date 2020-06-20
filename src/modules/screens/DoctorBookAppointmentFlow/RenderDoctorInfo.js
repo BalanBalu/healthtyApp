@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
@@ -6,14 +6,17 @@ import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount }
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../common';
 const vipLogo = require('../../../../assets/images/viplogo.png')
 
-export default class RenderDoctorInfo extends PureComponent {
+export default class RenderDoctorInfo extends Component {
     constructor(props) {
         super(props)
     }
     // shouldComponentUpdate(nextProps, nextState) {
-    //     // if (nextProps !== this.props) {
-    //     //     return true
-    //     // }
+    //     debugger
+
+    //     if (this.props.item.doctorIdHostpitalId == nextProps.item.doctorIdHostpitalId && this.props.docInfoData.fee == nextProps.docInfoData.fee && this.props.docInfoData.feeWithoutOffer == nextProps.docInfoData.feeWithoutOffer) {
+    //         return false
+    //     }
+    //     return true
     // }
     getDistance(distanceInMeter) {
         if (!isNaN(distanceInMeter)) {
@@ -29,7 +32,10 @@ export default class RenderDoctorInfo extends PureComponent {
     }
 
     render() {
+        console.log('Rendering Doc Info====>');
+        // debugger
         const { item, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList, onPressGoToBookAppointmentPage } = this.props;
+        // debugger
         return (
             <View>
                 <Row onPress={() => onPressGoToBookAppointmentPage(item)}>

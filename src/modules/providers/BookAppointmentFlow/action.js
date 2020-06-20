@@ -29,6 +29,24 @@ export const serviceOfGetTotalActiveSponsorDetails4Doctors = async (doctorIds) =
 }
 
 
+/*  get Fee and Next day availability slots for doctors */
+export const serviceOfGetNextDayAVailabilityAndFeeDetails4Doctors = async (doctorIds) => {
+    try {
+        const endPoint = 'V2/nextDayAvailableSlotsDates/' + doctorIds;
+        const response = await getService(endPoint);
+        const respData = response.data;
+        return respData;
+    } catch (Ex) {
+        console.log('Ex is getting on fetch Doctor Fee and Next Day availability details====>', Ex)
+        return {
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on fetch Fee and Next Day availability details : ${Ex}`
+        }
+    }
+}
+
 
 /* Update Sponsor Viewers Counts */
 export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorIds) {
@@ -51,11 +69,8 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
 
 export const filterByDocDetailsService = async (filteredReqData) => {
     try {
-        debugger
         const endPoint = 'V2/doctor/filterDoctorDetails';
-        debugger
         const response = await postService(endPoint, filteredReqData);
-        debugger
         const respData = response.data;
         return respData;
     } catch (ex) {
@@ -70,10 +85,8 @@ export const filterByDocDetailsService = async (filteredReqData) => {
 export const searchByDocDetailsService = async (locationDataFromSearch, inputKeywordFromSearch, skipCount, limit) => {
     try {
         const endPoint = `V2/doctor/search/search/${inputKeywordFromSearch}?skip=${skipCount}&limit=${limit}`;
-        // debugger
         // const endPoint = 'V2/doctor/search/search/' + inputKeywordFromSearch;
         const response = await postService(endPoint, locationDataFromSearch);
-        // debugger
         const respData = response.data;
         return respData;
     } catch (ex) {

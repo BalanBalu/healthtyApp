@@ -15,12 +15,14 @@ export default class RenderSlots extends Component {
     //     return nextProps.shouldUpdate !== this.props.shouldUpdate;
     // }
     render() {
+        debugger
         const { slotDetails: { slotData, selectedSlotIndex, doctorIdHostpitalId }, onSlotItemPress, selectedDateObjOfDoctorIds, selectedSlotItemByDoctorIds } = this.props;
         const { width } = Dimensions.get('screen');
         const itemWidth = (width) / 4;
+        debugger
         return <FlatList
             numColumns={4}
-            extraData={[selectedDateObjOfDoctorIds, selectedSlotItemByDoctorIds]}
+            // extraData={[selectedDateObjOfDoctorIds, selectedSlotItemByDoctorIds]}
             data={slotData.sort(sortByStartTime)}
             renderItem={({ item, index }) => {
                 return (
