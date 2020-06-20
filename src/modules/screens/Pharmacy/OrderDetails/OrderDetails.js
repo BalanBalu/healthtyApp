@@ -502,7 +502,7 @@ class OrderDetails extends Component {
 
 
                     <View style={styles.mainView}>
-                        <Text style={styles.orderText}>OrderDetails</Text>
+                        <Text style={styles.orderText}>Order Details</Text>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Payment</Text>
                             <Text style={styles.rightText}>{paymentDetails.payment_method || 0}</Text>

@@ -347,7 +347,7 @@ export const statusBar = {
 
   "PENDING":
   {
-    status: 'Ordered and Approved',
+    status: 'Ordered',
     checked: true,
     color: 'red'
   },
