@@ -25,17 +25,17 @@ export default class RenderDatesList extends Component {
         return false
     }
     render() {
-        const { indexOfItem, availabilitySlotsDatesArry, selectedDateObjOfDoctorIds, onDateChanged, callSlotsServiceWhenOnEndReached, selectedSlotItemByDoctorIds, selectedDate, slotData, doctorIdHostpitalId } = this.props;
+        const { indexOfItem, weekWiseDatesList, selectedDate4DocIdHostpitalIdToStoreInObj, onDateChanged, callSlotsServiceWhenOnEndReached, selectedSlotItem4DocIdHostpitalIdToStoreInObj, selectedDate, slotData, doctorIdHostpitalId } = this.props;
         if (slotData === undefined || !Object.keys(slotData)) {
             return null;
         }
         return <View>
             <FlatList
                 horizontal={true}
-                data={availabilitySlotsDatesArry}
-                extraData={[selectedDateObjOfDoctorIds, selectedSlotItemByDoctorIds]}
+                data={weekWiseDatesList}
+                extraData={[selectedDate4DocIdHostpitalIdToStoreInObj, selectedSlotItem4DocIdHostpitalIdToStoreInObj]}
                 onEndReachedThreshold={1}
-                onEndReached={({ distanceFromEnd }) => { callSlotsServiceWhenOnEndReached(doctorIdHostpitalId, availabilitySlotsDatesArry, indexOfItem) }}
+                onEndReached={({ distanceFromEnd }) => { callSlotsServiceWhenOnEndReached(doctorIdHostpitalId, weekWiseDatesList, indexOfItem) }}
                 renderItem={({ item }) => {
                     return (
                         <View>
