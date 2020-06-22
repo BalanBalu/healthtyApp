@@ -70,8 +70,11 @@ class SocialHistory extends PureComponent {
                 }
             }
             this.setState({ isLoading: true })
-            if(sexuallyActive !=undefined && drinkAlcohol !=undefined && smoke !=undefined && recreational_drugs !=undefined && physically_or_verbally !=undefined && selectnumber !=undefined  && exercise !=undefined){
-            let response = await userFiledsUpdate(userId, data)
+            if(sexuallyActive !=undefined || drinkAlcohol !=undefined || smoke !=undefined || recreational_drugs !=undefined || physically_or_verbally !=undefined || selectnumber !=null  || exercise !=undefined){
+             
+                let response = await userFiledsUpdate(userId, data)
+       
+         
             if (response.success) {
                 Toast.show({
                     text: response.message,
@@ -83,7 +86,7 @@ class SocialHistory extends PureComponent {
             }
         }else{
             Toast.show({
-                text: 'kindly fill all the fields',
+                text: 'Kindly fill atleast one of the  field',
                 type: "danger",
                 duration: 3000,
             })  

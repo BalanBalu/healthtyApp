@@ -76,7 +76,8 @@ class PatientInfo extends PureComponent {
             }
         
             this.setState({ isLoading: true })
-            if(user_name != undefined && mobile_no != undefined && date_of_birth != undefined && selectedBloodGroup != undefined  && marital_status != undefined  && gender != undefined){
+           
+            if(data.first_name != "" || data.dob  != "" || data.secondary_mobile  != "" || data.gender != undefined  || data.blood_group != undefined  || data.marital_status != undefined){
             let response = await userFiledsUpdate(userId, data)
             console.log(response);
             if (response.success) {
@@ -91,7 +92,7 @@ class PatientInfo extends PureComponent {
             }
         }else{
             Toast.show({
-                text: 'kindly fill all the fields',
+                text: 'Kindly fill atleast one of the  field',
                 type: "danger",
                 duration: 3000,
             })  

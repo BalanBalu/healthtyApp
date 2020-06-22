@@ -71,7 +71,7 @@ class FamilyMedicalConditions extends PureComponent {
             }
         }else{
             Toast.show({
-                text: 'kindly fill all the fields',
+                text: 'kindly fill  the fields',
                 type: "danger",
                 duration: 3000,
             })  

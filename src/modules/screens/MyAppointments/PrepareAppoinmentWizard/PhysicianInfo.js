@@ -63,9 +63,11 @@ class PhysicianInfo extends PureComponent {
             }
 
             this.setState({ isLoading: true })
+            if( data.primary_care_physician_info.physician_name != undefined || data.primary_care_physician_info.hospital_name != undefined || data.primary_care_physician_info.mobile_no != undefined ){
+
             let response = await userFiledsUpdate(userId, data)
             console.log(JSON.stringify(response))
-            if (response.success && data.primary_care_physician_info.physician_name != undefined && data.primary_care_physician_info.hospital_name != undefined && data.primary_care_physician_info.mobile_no != undefined) {
+            if (response.success) {
                 Toast.show({
                     text: response.message,
                     type: "success",
@@ -73,14 +75,16 @@ class PhysicianInfo extends PureComponent {
                 })
                 this.skippingButton(false);
                 this.props.navigation.navigate('PastMedicalConditions', { AppointmentId: appointmentId });
-            }else{
-                Toast.show({
-                    text: 'Kindly fill all the fields',
-                    type: 'danger',
-                    duration: 3000
-                  });
-
             }
+        }
+        else{
+            Toast.show({
+                text: 'Kindly fill atleast one of the  field',
+                type: 'danger',
+                duration: 3000
+              });
+
+        }
         }
         catch (e) {
             console.log(e)
