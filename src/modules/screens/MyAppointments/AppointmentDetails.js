@@ -4,7 +4,7 @@ import {
   Thumbnail, Body, Icon, Toast, View, CardItem
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity, Modal,FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
@@ -282,6 +282,7 @@ class AppointmentDetails extends Component {
 
   render() {
     const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails,appointmentId } = this.state;
+     const patientDetails = [{ name: 'Marie Curie', Age: 26, gender: 'Female' },{ name: 'Johnson', Age: 26, gender: 'Male' }]
 
     return (
       <Container style={styles.container}>
@@ -482,6 +483,68 @@ class AppointmentDetails extends Component {
                         </Row>
                       }
                     </View> : null}
+
+                    <Row style={styles.rowSubText}>
+                    <Col style={{ width: '8%', paddingTop: 5 }}>
+                      <Icon name="ios-home" style={{ fontSize: 20, }} />
+                    </Col>
+                    <Col style={{ width: '92%', paddingTop: 5 }}>
+                      <Text style={styles.innerSubText}>Patient Family Members</Text>
+
+                      <FlatList
+                 data={patientDetails}
+                 renderItem={({ item,index }) =>
+                    <View >
+                      <Row style={{ marginTop: 8,}}>
+                        <Col size={8}>
+                          <Row>
+                          <Col size={.5}>
+                    <Text style={styles.commonText}>{index + 1}</Text>
+                            </Col>
+                            <Col size={2}>
+                              <Text style={styles.commonText}>Name</Text>
+                            </Col>
+                            <Col size={.5}>
+                              <Text style={styles.commonText}>-</Text>
+                            </Col>
+                            <Col size={7.5}>
+                              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{item.name}</Text>
+
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+
+                      <Row>
+                        <Col size={10}>
+                          <Row>
+                          <Col size={.5}>
+                             
+                            </Col>
+                            <Col size={2}>
+                              <Text style={styles.commonText}>Age</Text>
+                            </Col>
+                            <Col size={.5}>
+                              <Text style={styles.commonText}>-</Text>
+                            </Col>
+                            <Col size={7.5}>
+                              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{(item.Age) + ' - ' + (item.gender)}</Text>
+
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                    </View>
+                  } />
+
+
+
+                    </Col>
+                  </Row>
+
+
+
+
                   <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
                       <Icon name="ios-medkit" style={{ fontSize: 20, }} />
@@ -1204,6 +1267,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#7558e5',
     // marginBottom: 5
+  },
+  commonText: {
+    fontFamily: 'OpenSans',
+    fontSize: 12,
+    color: '#4c4c4c',
+    fontWeight: '500'
   },
 
 

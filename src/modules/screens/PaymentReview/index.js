@@ -6,10 +6,12 @@ import { StyleSheet, AsyncStorage, View, TextInput, TouchableOpacity, FlatList }
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import { renderDoctorImage, getDoctorEducation, getAllSpecialist } from '../../common';
+import { renderDoctorImage, getDoctorEducation, getAllSpecialist,getUserGenderAndAge } from '../../common';
 import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
-
+import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { dateDiff } from '../../../setup/helpers';
+let patientDetails= []
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
@@ -24,6 +26,8 @@ export default class PaymentReview extends Component {
       gender: 'M',
       full_name: '',
       age: '',
+      defaultPatientDetails: [],
+     
 
 
     }
@@ -40,6 +44,7 @@ export default class PaymentReview extends Component {
 
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
     await this.setState({ bookSlotDetails: bookSlotDetails });
+    await this.getUserProfile();
   }
   async confirmProceedPayment() {
     let { diseaseDescription } = this.state.bookSlotDetails;
@@ -102,9 +107,95 @@ export default class PaymentReview extends Component {
     this.setState({ isLoading: false, spinnerText: ' ' });
   }
 
+
+
+  getUserProfile = async () => {
+    try {
+      let fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+      let userId = await AsyncStorage.getItem('userId');
+      let result = await fetchUserProfile(userId, fields);
+      let patientAddress = [], patientDetails = [];
+     
+
+      this.defaultPatientDetails = {
+          type: 'self',
+          full_name: result.first_name + " " + result.last_name,
+          gender: result.gender,
+          age: parseInt(dateDiff(result.dob, new Date(), 'years'))
+      }
+
+    
+  }
+  catch (e) {
+      console.log(e);
+  }
+  finally {
+      this.setState({ isLoading: false });
+  }
+}
+
+
+onChangeSelf = async () => {
+  console.log("Start:::", this.state.patientDetails.length);
+  if (this.state.selfChecked == true && this.state.patientDetails.length==0) {
+      this.state.patientDetails.unshift(this.defaultPatientDetails)
+  }
+  else if (this.state.selfChecked == false) {
+      this.state.patientDetails.shift(this.defaultPatientDetails)
+  }
+ this.setState({patientDetails:this.state.patientDetails})
+  console.log("self:::", this.state.patientDetails);
+  
+}
+
+
+addPatientData = async () => {
+  if (!this.state.name || !this.state.age || !this.state.gender) {
+      this.setState({ errMsg: '* Kindly fill all the fields' })
+  } else {
+      let temp;
+      this.setState({ errMsg: '' })
+      temp = this.state.patientDetails;
+
+      temp.push({
+          type: 'others',
+          full_name: this.state.name,
+          age: parseInt(this.state.age),
+          gender: this.state.gender
+      });
+      await this.setState({ patientDetails: temp, updateButton: false });
+      await this.setState({ name: null, age: null, gender: null });
+
+  }
+}
+onChangeCheckBox = async () => {
+  if (this.state.othersChecked == true) {
+      this.addPatientData()
+  }
+  if (this.state.othersChecked == false) {
+      this.state.patientDetails.map(ele => {
+          if (ele.type == 'others') {
+              this.state.patientDetails.pop(this.state.patientDetails)
+          }
+      })
+   this.setState({ errMsg:'' })
+
+  }
+  await this.setState({ patientDetails })
+}
+
+removePatientData(item, index) {
+  let temp = this.state.patientDetails
+  temp.splice(index, 1);
+  this.setState({ patientDetails: temp });
+}
+
+
   render() {
-    const { bookSlotDetails, isLoading, spinnerText, othersChecked, name, age, gender } = this.state;
-    const patientDetails = [{ name: 'Marie Curie', Age: 26, gender: 'Female' }]
+    const { bookSlotDetails, isLoading, spinnerText, othersChecked, name, age, gender,patientDetails } = this.state;
+    // const patientDetails = [{ name: 'Marie Curie', Age: 26, gender: 'Female' }]
+    // alert(JSON.stringify( this.state.defaultPatientDetails))
+   
     return (
 
       <Container>
@@ -181,9 +272,8 @@ export default class PaymentReview extends Component {
                         <Row style={{ alignItems: 'center' }}>
 
                           <CheckBox style={{ borderRadius: 5 }}
-
                             checked={this.state.selfChecked}
-                            onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }) }}
+                            onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }),this.onChangeSelf() }}
                           />
                           <Text style={styles.firstCheckBox}>Self</Text>
                         </Row>
@@ -193,7 +283,7 @@ export default class PaymentReview extends Component {
                           <CheckBox style={{ borderRadius: 5 }}
 
                             checked={this.state.othersChecked}
-                            onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }) }}
+                            onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }),this.onChangeCheckBox() }}
                           />
                           <Text style={styles.firstCheckBox}>Others</Text>
                         </Row>
@@ -288,8 +378,10 @@ export default class PaymentReview extends Component {
               <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
                 <Text style={styles.subHead}>Patient Details</Text>
                 <FlatList
-                  data={patientDetails}
-                  renderItem={({ item, index }) =>
+                 data={patientDetails}
+                 extraData={patientDetails}
+                 keyExtractor={(item, index) => index.toString()}
+                 renderItem={({ item, index }) =>
                     <View>
                       <Row style={{ marginTop: 10, }}>
                         <Col size={8}>
@@ -301,7 +393,7 @@ export default class PaymentReview extends Component {
                               <Text style={styles.commonText}>-</Text>
                             </Col>
                             <Col size={7}>
-                              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{item.name}</Text>
+                              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{item.full_name}</Text>
 
                             </Col>
                           </Row>
@@ -323,7 +415,7 @@ export default class PaymentReview extends Component {
                               <Text style={styles.commonText}>-</Text>
                             </Col>
                             <Col size={7.5}>
-                              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(item.Age) + ' - ' + (item.gender)}</Text>
+                              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
 
                             </Col>
                           </Row>
