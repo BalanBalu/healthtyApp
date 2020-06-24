@@ -173,7 +173,7 @@ class MedicineCheckout extends Component {
         }
         if (isH1Product === true) {
         this.setState({isH1Product:isH1Product})
-            return
+            return false
 
         }
         // let medicinceNames = '';
@@ -429,11 +429,11 @@ class MedicineCheckout extends Component {
                 compressImageMaxHeight: 480,
                 freeStyleCropEnabled: true,
             }).then(image => {
-                this.setState({ selectOptionPoopup: false });
+                this.setState({ isH1Product: false });
                 console.log(image);
                 this.uploadImageToServer(image);
             }).catch(ex => {
-                this.setState({ selectOptionPoopup: false });
+                this.setState({ isH1Product: false });
                 console.log(ex);
             });
         } else {
@@ -448,10 +448,10 @@ class MedicineCheckout extends Component {
             }).then(image => {
                 console.log(image);
 
-                this.setState({ selectOptionPoopup: false });
+                this.setState({ isH1Product: false });
                 this.uploadImageToServer(image);
             }).catch(ex => {
-                this.setState({ selectOptionPoopup: false });
+                this.setState({ isH1Product: false });
                 console.log(ex);
             });
         }
