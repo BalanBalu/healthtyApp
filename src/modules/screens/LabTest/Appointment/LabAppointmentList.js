@@ -131,7 +131,7 @@ class LabAppointmentList extends Component {
                 result.sort(function (firstDateValue, secondDateValue) {
                     return firstDateValue.appointment_starttime < secondDateValue.appointment_starttime ? -1 : 0
                 })
-               await this.setState({
+                this.setState({
                     pastData: result,
                     data: result,
                     isLoading: false
@@ -152,9 +152,11 @@ class LabAppointmentList extends Component {
 
     handleIndexChange = async (index) => {
         let data = []
-        this.setState({
+       await this.setState({
             selectedIndex: index,
         });
+        console.log("selectedIndex", this.state.selectedIndex);
+        
         if (index === 0) {
             if (this.state.upComingData.length == 0) {
                 await this.upCommingAppointment()
@@ -162,7 +164,7 @@ class LabAppointmentList extends Component {
                 data = this.state.upComingData
             }
 
-        } else {
+        } else if (index === 1) {
             if (this.state.pastData.length == 0) {
                 await this.pastAppointment()
                 data = this.state.pastData
@@ -172,7 +174,7 @@ class LabAppointmentList extends Component {
             }
         }
 
-       await this.setState({
+        await this.setState({
             ...this.state,
             data
 
@@ -301,7 +303,8 @@ class LabAppointmentList extends Component {
                                                         </Row>
 
                                                         <Row style={{ borderBottomWidth: 0 }}>
-                                                            <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>
+                                                            {item.appointment_status == 'DRAFT' ? null :
+                                                                <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>}
                                                         </Row>
 
                                                         <Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
