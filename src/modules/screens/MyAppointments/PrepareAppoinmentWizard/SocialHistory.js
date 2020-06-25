@@ -69,11 +69,11 @@ class SocialHistory extends PureComponent {
                     exercise: exercise
                 }
             }
+           
             this.setState({ isLoading: true })
             if(sexuallyActive !=undefined || drinkAlcohol !=undefined || smoke !=undefined || recreational_drugs !=undefined || physically_or_verbally !=undefined || selectnumber !=null  || exercise !=undefined){
              
                 let response = await userFiledsUpdate(userId, data)
-       
          
             if (response.success) {
                 Toast.show({
