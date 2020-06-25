@@ -264,6 +264,9 @@ export default class BookAppointmentPaymentUpdate {
             if (orderData.is_order_type_recommentation === false) {
                 delete requestData.recommentation_pharmacy_data
             }
+            if(orderData.pharmacyId){
+                requestData.pharmacyId=orderData.pharmacyId
+            }
             let resultData = await createMedicineOrder(requestData);
             console.log('resultData create order result==================')
             console.log(resultData)
