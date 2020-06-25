@@ -10,7 +10,8 @@ import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../setup/helpers";
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
-import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById } from "../../../providers/lab/lab.action"
+import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById, getUserReviews } from "../../../providers/lab/lab.action"
+import InsertReview from '../Reviews/insertReviews';
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
@@ -23,7 +24,9 @@ class LabAppointmentInfo extends Component {
       reviewData: [],
       reportData: null,
       isLoading: true,
-      appointmentId:''
+      appointmentId:'',
+      modalVisible: false,
+
     }
   }
 
@@ -40,11 +43,14 @@ class LabAppointmentInfo extends Component {
       await this.setState({ appointmentId })
       await new Promise.all([
         this.getAppointmentById(appointmentId),
+        this.getUserReviews(),
       ])
     }
     else {
-      await this.setState({ data: appointmentData, upcomingTap })
-      this.getLapTestPaymentInfo(appointmentData.payment_id)
+      await this.setState({ data: appointmentData, upcomingTap, appointmentId: appointmentData._id })
+      this.getLapTestPaymentInfo(appointmentData.payment_id),
+      this.getUserReviews()
+
     }
   }
 
@@ -90,8 +96,33 @@ class LabAppointmentInfo extends Component {
     }
   }
 
+  getUserReviews = async () => {
+    try {
+      let reviewResult = await getUserReviews('appointment', this.state.appointmentId)
+      console.log("reviewResult", reviewResult)
+      if (reviewResult.success) {
+        this.setState({ reviewData: reviewResult.data });
+      }
 
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
 
+  navigateAddReview() {
+    this.setState({
+      modalVisible: true
+    });
+
+  }
+
+  async getvisble(val) {
+    this.setState({ modalVisible: false });
+    if (val.updatedVisible == true) {
+      this.getUserReviews()
+    }
+  }
   async  navigateCancelAppoointment() {
     try {
       this.props.navigation.navigate('LabCancelAppointment', { appointmentData: this.state.data })
@@ -172,7 +203,7 @@ class LabAppointmentInfo extends Component {
   }
 
   render() {
-    const { data, upcomingTap, paymentData, reportData } = this.state
+    const { data, upcomingTap, paymentData, reportData, reviewData } = this.state
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -403,6 +434,42 @@ class LabAppointmentInfo extends Component {
                   </Col>
                 </Row>
 
+                {(data.appointment_status == 'COMPLETED' && reviewData.length !== 0) || reviewData.length !== 0 ?
+                  <Row style={styles.rowSubText}>
+                    <Col style={{ width: '8%', paddingTop: 5 }}>
+                      <Icon name="ios-medkit" style={{ fontSize: 20, }} />
+                    </Col>
+                    <Col style={{ width: '92%', paddingTop: 5 }}>
+                      <Text style={styles.innerSubText}>Review</Text>
+
+                      <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                        disabled={false}
+                        maxStars={5}
+                        rating={reviewData[0] && reviewData[0].overall_rating}
+                      />
+                      <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
+                    </Col>
+                  </Row> :
+                  (data.appointment_status == 'COMPLETED' && reviewData.length == 0) ?
+                    <Row style={styles.rowSubText}>
+                      <Col style={{ width: '8%', paddingTop: 5 }}>
+                        <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
+
+                      </Col>
+                      <Col style={{ width: '92%', paddingTop: 5 }}>
+                        <Text style={styles.innerSubText}>Add Feedback</Text>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                          <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+
+                            <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
+                            <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                          </TouchableOpacity>
+                        </View>
+                      </Col>
+                    </Row> : null
+                }
+
+
                 <Row style={styles.rowStyles}>
                   <Col style={{ width: '8%', paddingTop: 5 }}>
                     <Icon name="ios-cash" style={{ fontSize: 18, }} />
@@ -458,6 +525,20 @@ class LabAppointmentInfo extends Component {
                     </Row>
                   </Col>
                 </Row>
+              </View>
+              <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  containerStyle={{ justifyContent: 'flex-end' }}
+                  visible={this.state.modalVisible}
+                >
+                  <InsertReview
+                    data={this.state.data}
+                    popupVisible={(data) => this.getvisble(data)}
+                  >
+                  </InsertReview>
+                </Modal>
               </View>
             </Grid>
           </View>
