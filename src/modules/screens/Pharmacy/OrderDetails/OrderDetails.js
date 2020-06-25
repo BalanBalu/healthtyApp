@@ -518,7 +518,7 @@ class OrderDetails extends Component {
                             <Text style={styles.rightText}>{formatDate(orderDetails.created_date, 'Do MMM,YYYY')}</Text>
                         </View>
                         <View style={{ marginTop: 10, paddingBottom: 10 }}>
-                            <Text style={styles.innerText}>Customer Details</Text>
+                            <Text style={styles.innerText}>Delivery Details</Text>
                             <Text style={styles.nameTextss}>{this.getName(orderDetails)}</Text>
                             <Text style={styles.addressText}>{this.getAddress(orderDetails)}</Text>
                             <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
