@@ -639,7 +639,7 @@ getMinVideoChatConsultFee(item) {
                 <Row style={{marginLeft:10,marginRight:10,justifyContent:'center',alignItems:"center",marginTop:10,marginBottom:5}}>
                 {availabilityForVideo  === true ?
                 <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
-                    <TouchableOpacity style={{flexDirection:'row'}}>
+                    <TouchableOpacity style={{flexDirection:'row'}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
                       <Icon name="ios-videocam" style={{fontSize:25,color:'#7F49C3'}}/>
                       <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:3}}>Video</Text>
                     </TouchableOpacity>
@@ -647,7 +647,7 @@ getMinVideoChatConsultFee(item) {
                   : null}
                       {availabilityForChat === true ?
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
-                  <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}}>
+                  <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}} onPress={() => this.props.navigation.navigate("My Chats")}>
                       <Icon name="ios-chatboxes" style={{fontSize:25,color:'#7F49C3'}} />
                       <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:2}}>Chat</Text>
                     </TouchableOpacity>
