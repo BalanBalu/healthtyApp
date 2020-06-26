@@ -42,6 +42,7 @@ class OrderDetails extends Component {
         const { navigation } = this.props;
      
         let orderId = this.props.navigation.getParam('serviceId') || null
+  
         let getOderSlap=true
         this.medicineOrderDetails(orderId,getOderSlap);
         this.getUserReport()
@@ -85,6 +86,7 @@ class OrderDetails extends Component {
             const userId = await AsyncStorage.getItem('userId');
             let orderId = this.props.navigation.getParam('serviceId') || null
             let resultReport = await getUserRepportDetails('MEDICINE_ORDER', userId, orderId);
+            // alert(JSON.stringify(resultReport))
 
             if (resultReport.success) {
 
@@ -457,7 +459,7 @@ class OrderDetails extends Component {
                             <TouchableOpacity
                                 onPress={() => {
                                     this.props.navigation.push('ReportIssue', {
-                                        issueFor: { serviceType: 'MEDICINE_ORDER', reportedId: orderDetails._id, status: orderDetails.status },
+                                        issueFor: { serviceType: 'MEDICINE_ORDER', reportedId: orderDetails.id, status: orderDetails.status },
                                         prevState: this.props.navigation.state
                                     })
                                 }}
