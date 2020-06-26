@@ -80,40 +80,7 @@ class AllergiesAndMedications extends PureComponent {
                 duration: 3000,
             })  
             }
-            if(alergicDetails[0]['allergy_name'] !=null||alergicDetails[0]['allergy_reaction']!=null){
-                Toast.show({
-                    text: 'Please fill  Medicines detais too',
-                    type: "danger",
-                    duration: 3000,
-                })  
-                if(alergicDetails[0]['allergy_name'] ==null ||alergicDetails[0]['allergy_reaction']==null){
-                    Toast.show({
-                        text: 'Please fill respective alergicDetails fields',
-                        type: "danger",
-                        duration: 3000,
-                    })  
-                return 
-                }
-            }      
-            if(medicineTakingDetails[0]['medicine_name'] !=null||medicineTakingDetails[0]['medicine_dosage']!=null){
-               
-                if(medicineTakingDetails[0]['medicine_name'] ==null ||medicineTakingDetails[0]['medicine_dosage']==null){
-                    Toast.show({
-                        text: 'Please fill respective Medicine Detail fields',
-                        type: "danger",
-                        duration: 3000,
-                    })  
-                return 
-                }
-                Toast.show({
-                    text: 'Please fill  Allergic details too',
-                    type: "danger",
-                    duration: 3000,
-                })  
-            }      
             let response = await userFiledsUpdate(userId, data)
-            
-            
             if (response.success) {
                 Toast.show({
                     text: response.message,
