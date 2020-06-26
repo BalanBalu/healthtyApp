@@ -38,15 +38,15 @@ class AllergiesAndMedications extends PureComponent {
     }
     skippingButton = async () => {
         try {
-            debugger
+            
             const { appointmentId } = this.state
 
             let data = {
                 has_skip_allergies_and_medications:false
             }
-            debugger
+            
             let result = await prepareAppointmentUpdate(appointmentId,data);
-            debugger
+            
         
             if (result.success) {
                 Toast.show({
@@ -63,7 +63,7 @@ class AllergiesAndMedications extends PureComponent {
     }
     addAllergiesAndMedications = async () => {
         try {
-            debugger
+            
             const { appointmentId, alergicDetails, medicineTakingDetails } = this.state
             let userId = await AsyncStorage.getItem('userId');
 
@@ -71,18 +71,49 @@ class AllergiesAndMedications extends PureComponent {
                 having_any_allergies: alergicDetails,
                 taking_medications: medicineTakingDetails
             }
-            debugger
+            
             this.setState({ isLoading: true })
             if(alergicDetails[0]['allergy_name']==null&&alergicDetails[0]['allergy_reaction']==null&& medicineTakingDetails[0]['medicine_name']==null&&medicineTakingDetails[0]['medicine_dosage']==null){
                Toast.show({
-                text: 'Kindly fill  the  field',
+                text: 'Please fill  the  field',
                 type: "danger",
                 duration: 3000,
             })  
             }
+            if(alergicDetails[0]['allergy_name'] !=null||alergicDetails[0]['allergy_reaction']!=null){
+                Toast.show({
+                    text: 'Please fill  Medicines detais too',
+                    type: "danger",
+                    duration: 3000,
+                })  
+                if(alergicDetails[0]['allergy_name'] ==null ||alergicDetails[0]['allergy_reaction']==null){
+                    Toast.show({
+                        text: 'Please fill respective alergicDetails fields',
+                        type: "danger",
+                        duration: 3000,
+                    })  
+                return 
+                }
+            }      
+            if(medicineTakingDetails[0]['medicine_name'] !=null||medicineTakingDetails[0]['medicine_dosage']!=null){
+               
+                if(medicineTakingDetails[0]['medicine_name'] ==null ||medicineTakingDetails[0]['medicine_dosage']==null){
+                    Toast.show({
+                        text: 'Please fill respective Medicine Detail fields',
+                        type: "danger",
+                        duration: 3000,
+                    })  
+                return 
+                }
+                Toast.show({
+                    text: 'Please fill  Allergic details too',
+                    type: "danger",
+                    duration: 3000,
+                })  
+            }      
             let response = await userFiledsUpdate(userId, data)
-            debugger
-            debugger
+            
+            
             if (response.success) {
                 Toast.show({
                     text: response.message,
@@ -103,24 +134,24 @@ class AllergiesAndMedications extends PureComponent {
         }
     }
     onAddNewAlergics = async () => {
-        debugger
+        
         const { alergicDetails, refreshCount } = this.state;
         const getLastItemInAllergicArry = alergicDetails.slice(-1)[0];
-        debugger
+        
         if (getLastItemInAllergicArry != undefined) {
             if (!getLastItemInAllergicArry.allergy_name || !getLastItemInAllergicArry.allergy_reaction) {
-                debugger
+                
                 return false
             }
         }
-        debugger
+        
         alergicDetails.push({
             allergy_name: null,
             allergy_reaction: null
         });
-        debugger
+        
         await this.setState({ alergicDetails, refreshCount: refreshCount + 1 })
-        debugger
+        
     }
 
     deleteTable(index) {
@@ -136,7 +167,7 @@ class AllergiesAndMedications extends PureComponent {
 
         if (getLastItemInMedicineTakingDetails != undefined) {
             if (!getLastItemInMedicineTakingDetails.medicine_name || !getLastItemInMedicineTakingDetails.medicine_dosage) {
-                debugger
+                
 
                 return false
             }
@@ -154,7 +185,6 @@ class AllergiesAndMedications extends PureComponent {
     }
     render() {
         const { alergicDetails, medicineTakingDetails } = this.state
-
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>

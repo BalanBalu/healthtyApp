@@ -36,7 +36,7 @@ class MedicalHistory extends PureComponent {
             let data = {
                 general_health_info: radioButton,
             }
-            
+
 
             this.setState({ isLoading: true })
     
@@ -47,7 +47,7 @@ class MedicalHistory extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.props.navigation.navigate('PhysicianInfo');
+                this.props.navigation.navigate('PhysicianInfo', { AppointmentId: this.state.appointmentId });
             }
         }
         
@@ -86,12 +86,12 @@ class MedicalHistory extends PureComponent {
                     duration: 3000,
                 })
 
-                this.props.navigation.navigate('PhysicianInfo');
+                this.props.navigation.navigate('PhysicianInfo', { AppointmentId: this.state.appointmentId });
             }
         }
         else{
             Toast.show({
-                text: 'Kindly fill atleast one of the  field',
+                text: 'Please fill atleast one of the  field',
                 type: 'danger',
                 duration: 3000
               });

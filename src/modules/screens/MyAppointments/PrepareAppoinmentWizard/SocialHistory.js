@@ -69,7 +69,6 @@ class SocialHistory extends PureComponent {
                     exercise: exercise
                 }
             }
-           
             this.setState({ isLoading: true })
             if(sexuallyActive !=undefined || drinkAlcohol !=undefined || smoke !=undefined || recreational_drugs !=undefined || physically_or_verbally !=undefined || selectnumber !=null  || exercise !=undefined){
              
@@ -86,7 +85,7 @@ class SocialHistory extends PureComponent {
             }
         }else{
             Toast.show({
-                text: 'Kindly fill atleast one of the  field',
+                text: 'Please fill  the  fields',
                 type: "danger",
                 duration: 3000,
             })  
@@ -101,6 +100,7 @@ class SocialHistory extends PureComponent {
     }
     render() {
         const { selectnumber } = this.state
+
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>

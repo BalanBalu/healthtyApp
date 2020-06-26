@@ -79,7 +79,7 @@ class PhysicianInfo extends PureComponent {
         }
         else{
             Toast.show({
-                text: 'Kindly fill atleast one of the  field',
+                text: 'Please fill atleast one of the  field',
                 type: 'danger',
                 duration: 3000
               });
