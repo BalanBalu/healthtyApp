@@ -6,7 +6,7 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon, Picker
 } from 'native-base';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage, medicineDiscountedAmount, CartMedicineImage } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
 import { createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action'
@@ -33,7 +33,7 @@ export class AddToCard extends Component {
 
         console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
-        if (data.cartData&&data.cartData.item) {
+        if (data.cartData && data.cartData.item) {
             let userAddedMedicineQuantity = data.cartData.item.quantity || 1
             let discountedValue = medicineRateAfterOffer(data);
             let userAddedTotalMedicineAmount = Number(Number(userAddedMedicineQuantity * discountedValue).toFixed(2))
@@ -79,14 +79,22 @@ export class AddToCard extends Component {
 
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
-        let item= {
-            discountedAmount: temp.discount ? Number(temp.discount.value) : Number(temp.price),
+
+        let item = {
+            discountedAmount: temp.discount ? medicineDiscountedAmount(temp) : 0,
             productName: getMedicineName(temp),
             productId: String(temp.id),
             quantity: Number(temp.userAddedMedicineQuantity),
             tax: 0,
             totalPrice: Number(temp.userAddedTotalMedicineAmount),
-            unitPrice: Number(temp.price)
+            unitPrice: Number(temp.price),
+            image: CartMedicineImage(temp.productImages)
+        }
+        if (temp.maxThreashold) {
+            item.maxThreashold = temp.maxThreashold
+        }
+        if (temp.h1Product) {
+            item.isH1Product = temp.h1Product
         }
         if (data.selectedType === 'Add to Cart') {
             const isLoggedIn = await hasLoggedIn(this.props);
@@ -95,34 +103,44 @@ export class AddToCard extends Component {
                 return
             }
             let cartItems = []
+            let isCartUpdated = true
             let userId = await AsyncStorage.getItem('userId')
             let reqData = {
                 userId: userId,
                 type: "CART",
-                item:item
+                item: item
             }
-            if (temp.cartData&&temp.cartData.id) {
+            if (temp.cartData && temp.cartData.id) {
                 reqData.id = temp.cartData.id
+            } if (temp.cartData && temp.cartData.item.quantity === temp.userAddedMedicineQuantity) {
+                isCartUpdated = false
             }
-            let AddCartResult = await createCart(reqData)
-            if (AddCartResult) {
-                let result = await getCartListByUserId(userId)
-                cartItems = result;
-                console.log(JSON.stringify(result))
-              
-            }
-          
-            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
+            if (isCartUpdated === true) {
+                let AddCartResult = await createCart(reqData)
+                if (AddCartResult) {
+                    let result = await getCartListByUserId(userId)
+                    cartItems = result;
+                    console.log(JSON.stringify(result))
 
-            this.props.popupVisible({
-                visible: false,
-                updatedVisible: false,
-                isNavigateCart: true,
-                medicineData: temp
-            })
+                }
+
+                await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
+
+                this.props.popupVisible({
+                    visible: false,
+                    updatedVisible: false,
+                    isNavigateCart: true,
+                    medicineData: temp
+                })
+            } else {
+                this.props.popupVisible({
+                    visible: false,
+                    updatedVisible: false
+                })
+            }
         }
         else if (data.selectedType === 'Buy Now') {
-            temp.item=item
+            temp.item = item
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: true,

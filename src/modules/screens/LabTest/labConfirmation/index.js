@@ -148,6 +148,8 @@ class LabConfirmation extends Component {
                     this.state.patientDetails.pop(this.state.patientDetails)
                 }
             })
+         this.setState({ errMsg:'' })
+
         }
         await this.setState({ patientDetails })
     }
@@ -193,19 +195,28 @@ class LabConfirmation extends Component {
 
 
     proceedToLabTestAppointment = async (paymentMode) => {
-        let { patientDetails, packageDetails, selectedAddress, itemSelected } = this.state
+        let { patientDetails, packageDetails, selectedAddress, itemSelected,errMsg } = this.state
         try {
+            console.log("errMsg",errMsg)
             if (patientDetails.length == 0) {
                 Toast.show({
-                    text: 'kindly select or add patient details',
+                    text: 'Kindly select or add patient details',
                     type: 'warning',
                     duration: 3000
                 })
                 return false;
             }
+            if (errMsg){
+                Toast.show({
+                    text: 'Kindly fill other patient details',
+                    type: "warning",
+                    duration: 3000
+                });
+                return false;
+           }
             if (itemSelected === 'TEST_AT_HOME' && selectedAddress == null) {
                 Toast.show({
-                    text: 'kindly chosse Address',
+                    text: 'Kindly chosse Address',
                     type: 'warning',
                     duration: 3000
                 })
@@ -213,7 +224,7 @@ class LabConfirmation extends Component {
             } else {
                 selectedAddress = packageDetails.location;
             }
-            console.log("address", selectedAddress)
+            
             let patientData = [];
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })

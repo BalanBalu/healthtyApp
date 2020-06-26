@@ -3,7 +3,7 @@ import {
     Container, Content, Text, Icon, View, Card, Thumbnail, Item, Button, Footer
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, Platform, ScrollView } from 'react-native';
+import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, Platform, ScrollView,ActivityIndicator } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
 import { statusBar } from '../CommomPharmacy'
@@ -96,7 +96,23 @@ class MyOrdersList extends Component {
         }
 
     }
+    renderFooter() {
+        return (
+        //Footer View with Load More button
+          <View style={styles.footer}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={this.loadMoreData}
+            
+              style={styles.loadMoreBtn}>
+             {this.state.footerLoading?
+            
+                <ActivityIndicator color="blue"  style={styles.btnText} />:null}
 
+            </TouchableOpacity>
+          </View>
+        );
+      }
 
     render() {
         const { data, isLoading } = this.state;
@@ -154,6 +170,8 @@ class MyOrdersList extends Component {
                                 onEndReached={() => this.handleLoadMore()}
                                 onEndReachedThreshold={0.5}
                                 onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+                                ListFooterComponent={this.renderFooter.bind(this)}
+                               
                                 renderItem={({ item, index }) =>
                                     <TouchableOpacity
                                         testID="orderDetailsNavigation"
@@ -229,13 +247,7 @@ class MyOrdersList extends Component {
 
 
                         </View>}
-                    <View >
-                        <Spinner
-
-                            color='blue'
-                            visible={this.state.footerLoading}
-                        />
-                    </View>
+                  
                 {/* </Content> */}
                 </ScrollView>
                 {/* <Footer style={
@@ -261,6 +273,18 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10, marginTop: 5
     },
+    footer: {
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+      },
+      btnText: {
+        color: 'blue',
+        fontSize: 15,
+        textAlign: 'center',
+      },
+
 
     buytext: {
         fontSize: 12,

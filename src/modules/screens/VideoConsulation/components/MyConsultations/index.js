@@ -81,12 +81,26 @@ class VideoConsultaions extends Component {
             videoConsulationData: videoConsulationData
         })
     }
-    
+	
+	
+	navigateToBookAppointmentPage(item) {
+
+		let doctorId = item.doctorInfo.doctor_id;
+		this.props.navigation.navigate('Book Appointment', {
+			doctorId: doctorId,
+
+
+			
+			  fetchAvailabiltySlots: true
+		})
+	}
+
     renderConsultaions(item, index) {
 		const { chat: { loggedIntoConnectyCube } } = this.props;
+
         return (
             <Card style={styles.mainCard}>
-                <Grid>
+                <Grid onPress={() => this.navigateToBookAppointmentPage(item)}>
                 <Row>
 					<Right>
 					  <Text style={styles.dateText}>{formatDate(item.consulting_date, 'DD, MMM YYYY hh:mm a')} </Text>
@@ -96,7 +110,9 @@ class VideoConsultaions extends Component {
                   <Col style={{ width: '80%' }}>  
 					<Row style={{ marginBottom : 15 }}>
                         <Col size={3}>
+						<TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item.doctorInfo), title: 'Profile photo' })} >
 						    <Thumbnail circular source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
+							</TouchableOpacity>
 						</Col>
                         <Col size={7}>
                             <Text style={styles.docNameText}>{getName(item.doctorInfo)} </Text>
@@ -132,7 +148,8 @@ class VideoConsultaions extends Component {
         )
     }
     render() {
-        const { isLoading, consultaionData } = this.state; 
+		const { isLoading, consultaionData } = this.state; 
+		// alert(JSON.stringify(consultaionData))
         return (
             <Container style={styles.container}>
                 <Content style={{ padding: 10 }}>

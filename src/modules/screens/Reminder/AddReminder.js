@@ -54,7 +54,7 @@ class AddReminder extends Component {
       medicineSugesstionArray: null,
       setShowSuggestions: false,
       refreshCount: 1,
-      currentTime: moment().format('h:mm a').toUpperCase()
+      currentDate:  moment().startOf('day').toDate()
     }
     debugger
     this.callmedicinesearchService = debounce(this.callmedicinesearchService, 500);
@@ -99,23 +99,13 @@ class AddReminder extends Component {
   }
   handleTimePicker = async (date) => {
     try {
-
-
-
-
       let temp = this.medicineTakeTimes || []
       await this.setState({ timePlaceholder: true, isTimePickerVisible: false })
-
-
-
       if (!temp.some(ele => formatDate(ele.medicine_take_time, 'hh:mm a') === formatDate(date, 'hh:mm a'))) {
         temp.push({
           id: this.medicineTakeTimes.length + 1,
           medicine_take_time: date
         })
-
-
-
         this.medicineTakeTimes = temp
         await this.setState({ isTimePickerVisible: false })
       } else {
@@ -127,15 +117,6 @@ class AddReminder extends Component {
         })
         return false;
       }
-
-
-
-
-
-
-
-
-
 
       const lastIndexOfitem = this.medicineTakeTimes.slice(-1)[0]
       const RecentylyPickedTime = lastIndexOfitem.medicine_take_time
@@ -319,17 +300,39 @@ class AddReminder extends Component {
   }
 
   callNextButtonEvent() {
+    const {currentDate,medicine_take_end_date,medicine_take_start_date} = this.state
     this.setState({ pageContent: false })
+    let currentDay = formatDate(currentDate, "dddd,MMMM DD-YYYY")
+    let endDay = formatDate(medicine_take_end_date, "dddd,MMMM DD-YYYY")
+    let startDay = formatDate(medicine_take_start_date, "dddd,MMMM DD-YYYY")
 
-    if (this.state.medicine_take_end_date < this.state.medicine_take_start_date) {
+
+    
+
+    if(this.state.medicinePeriod === "everyday"){
+    if ( this.state.medicine_take_end_date < this.state.medicine_take_start_date ) {
       Toast.show({
-        text: 'Kindly make endtime greater than starttime and  select a time to schedule your reminderTime slots',
+        text: 'Kindly make end date greater than start date and  select a time to schedule your reminderTime slots',
+        type: 'danger',
+        duration: 5000
+      });
+      this.setState({ pageContent: true })
+    }
+    if(endDay === currentDay){
+      Toast.show({
+        text: 'Kindly   select  end day to  schedule your reminderTime slots',
         type: 'danger',
         duration: 5000
       });
       this.setState({ pageContent: true })
     }
   }
+ if(this.state.medicinePeriod === "onlyonce"){
+  this.setState({ pageContent: false })
+ }
+}
+  
+  
 
 
 
@@ -564,8 +567,6 @@ class AddReminder extends Component {
 
 
               {this.state.pageContent === false ?
-
-                this.state.medicine_take_end_date < this.state.medicine_take_start_date ? null :
                   <View
                     pointerEvents={this.state.pageContent == false ? "auto" : "none"} style={this.state.pageContent == true ? styles.datetimedisabletext : styles.datetimeenabletext}
                     style={{ marginBottom: 10, marginTop: 10 }}>
@@ -580,7 +581,7 @@ class AddReminder extends Component {
                             {
                               this.state.timePlaceholder ?
                                 <View>
-                                  <Text style={styles.startenddatetext}>{formatDate(this.state.RecentylyPickedTime, 'HH:mm A')}</Text>
+                                  <Text style={styles.startenddatetext}>{formatDate(this.state.RecentylyPickedTime, 'hh:mm a')}</Text>
                                 </View> :
                                 <Text style={styles.startenddatetext}>Select time </Text>
                             }
@@ -641,7 +642,7 @@ class AddReminder extends Component {
                                 renderItem={({ item, index }) => (
                                   <Row>
                                     <Col size={7}>
-                                      <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'HH:mm A')}</Text>
+                                      <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'hh:mm a')}</Text>
                                     </Col>
                                     <Col size={3}>
                                       <Icon onPress={() => this.delete(index)} name={IS_IOS ? 'ios-close-circle' : 'md-close-circle'}
