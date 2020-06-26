@@ -458,35 +458,20 @@ class BookAppoinment extends Component {
   async callVideAndChat(doctorIds) {
     this.setState({ isLoading: true })
     let availablityMap = new Map()
+    let availabilityForVideo = false;
+    let availabilityForChat = false;
     let [ availableDocsVideo, availableDocsChat ] = await Promise.all([
         this.getDoctorAvailableDoctorData([this.state.doctorId]).catch(ex => { console.log(ex);return [] } ),
         this.getDoctorAvailableDoctorDataChat([this.state.doctorId]).catch(ex => { console.log(ex); return [] }),
     ])
     console.log('availableDocsChat==>,', availableDocsChat);
     availableDocsVideo.forEach(doc => {
-        doc.availableForVideo = true;
-        availablityMap.set(doc.doctor_id, doc);
+        availabilityForVideo = true;
     });
     availableDocsChat.forEach(docChat => {
-        docChat.availableForChat = true;
-        if (availablityMap.has(docChat.doctor_id)) {
-            let docData = availablityMap.get(docChat.doctor_id);
-            docData.availableForChat = true;
-            docData.chat_service_config = docChat.chat_service_config;
-            availablityMap.set(docChat.doctor_id, docData);
-        } else {
-            availablityMap.set(docChat.doctor_id, docChat);
-        }
+       availabilityForChat = true;
     })
-    const sorted = Array.from(availablityMap.values()).sort((eleA,eleB ) => {
-        const eleAVa = this.getMinVideoChatConsultFee(eleA);
-        const eleBVa = this.getMinVideoChatConsultFee(eleB);
-        return eleAVa - eleBVa;
-    })
-   
-
-    this.setState({ availableVideoDoctors: sorted, isLoading: false})
-    //  console.log(JSON.stringify(this.state.availableVideoDoctors))
+    this.setState({ availabilityForVideo, availabilityForChat, isLoading: false})
 }
 
 
@@ -576,7 +561,7 @@ getMinVideoChatConsultFee(item) {
   render() {
 
     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
-    const { doctorData, isLoading, selectedDate, selectedSlotItem, pressTab, isLoggedIn, servicesByCategories, categoryShownObj, isLoadedUserReview, reviewData, isReviewLoading ,availableVideoDoctors} = this.state;
+    const { doctorData, isLoading, selectedDate, selectedSlotItem, pressTab, isLoggedIn, servicesByCategories, categoryShownObj, isLoadedUserReview, reviewData, isReviewLoading ,availabilityForVideo, availabilityForChat } = this.state;
 
     return (
       <Container style={styles.container}>
@@ -652,7 +637,7 @@ getMinVideoChatConsultFee(item) {
                   </Col>
                 </Row>
                 <Row style={{marginLeft:10,marginRight:10,justifyContent:'center',alignItems:"center",marginTop:10,marginBottom:5}}>
-                {availableVideoDoctors[0] && availableVideoDoctors[0].availableForVideo === true ?
+                {availabilityForVideo  === true ?
                 <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                     <TouchableOpacity style={{flexDirection:'row'}}>
                       <Icon name="ios-videocam" style={{fontSize:25,color:'#7F49C3'}}/>
@@ -660,7 +645,7 @@ getMinVideoChatConsultFee(item) {
                     </TouchableOpacity>
                   </Col> 
                   : null}
-                      {availableVideoDoctors[0] && availableVideoDoctors[0].availableForChat === true ?
+                      {availabilityForChat === true ?
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}}>
                       <Icon name="ios-chatboxes" style={{fontSize:25,color:'#7F49C3'}} />
