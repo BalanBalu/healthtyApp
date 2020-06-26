@@ -135,9 +135,9 @@ export async function insertReviews(userId, insertUserReviews) {
 }
 
 
-export async function getUserReviews(userId) {
+export async function getUserReviews(type,Id) {
     try {
-        let endPoint = 'lab-test/user/' + userId;
+        let endPoint = 'lab-test/user/'+type+'/' + Id;
         console.log("endPoint", endPoint)
         let response = await getService(endPoint);
         let respData = response.data;

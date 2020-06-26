@@ -3,7 +3,7 @@ import { Container, Content, Text, Toast, Button, Card, Input, Left, Right, Icon
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { getUserAppointments, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
+import { getUserAppointments, getMultipleDoctorDetails,getappointmentDetails } from "../../providers/bookappointment/bookappointment.action";
 import { getName, getAllEducation, getAllSpecialist } from '../../common'
 import { formatDate, addTimeUnit, getAllId } from "../../../setup/helpers";
 import moment from 'moment';
@@ -16,13 +16,16 @@ class NextAppoinmentPreparation extends PureComponent {
             AppoinmentData: [],
             updatedDate: '',
             AppointmentId: '',
-            doctorInfo: {}
+            doctorInfo: {},
+            isLoading: false,
+            appointmentDetails: []
         }
 
     }
     async componentDidMount() {
         try {
             await this.upCommingNextAppointment()
+             this.getUserProfile();
         } catch (ex) {
             console.log(ex)
         }
@@ -127,12 +130,40 @@ class NextAppoinmentPreparation extends PureComponent {
             this.setState({ isLoading: false });
         }
     };
+
+
+
+    getUserProfile = async () => {
+        try {
+          // const {data} = this.state
+          let result = await getappointmentDetails(this.state.AppointmentId, prepareAppointment = 1);
+          const resultData = result.data
+         
+          if (result) {
+            this.setState({ appointmentDetails: resultData[0] });
+         
+    
+          }
+        }
+        catch (e) {
+          console.log(e);
+        }
+        finally {
+          this.setState({ isLoading: false });
+        }
+      }
+
+
+
+
+
     render() {
-        const { AppoinmentData, updatedDate, AppointmentId, doctorInfo } = this.state
+        const { AppoinmentData, updatedDate, AppointmentId, doctorInfo,appointmentDetails } = this.state
         const { navigation} = this.props;
         return (
-
             <View>
+                 {AppoinmentData.length != 0 ? 
+                 <View>
                 <Row style={{ marginTop: 10, marginBottom: 5 }}>
                     <Left>
                         <Text style={{
@@ -145,6 +176,7 @@ class NextAppoinmentPreparation extends PureComponent {
                     </Left>
                 </Row>
                 <Card style={{ marginTop: 10 }}>
+                {appointmentDetails.agreed_for_send_forms != true ?
                     <TouchableOpacity onPress={() => { navigation.navigate('PrepareAppointmentWizard', { AppointmentId: AppointmentId, DoctorData: AppoinmentData, Data: doctorInfo }) }}>
                         <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "#8EC63F", }}>
                             <Col style={{ width: '90%', justifyContent: 'center' }}>
@@ -174,14 +206,52 @@ class NextAppoinmentPreparation extends PureComponent {
                                             marginRight: 15,
                                             fontWeight: '500',
                                         }}>You  have  an  Appointment   with   {(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}  and  is  scheduled  at {formatDate(item.appointmentResult.appointment_starttime, "hh:mm a")}.Please  prepare  for  the  Appointment</Text>
+                                      
                                     </Col>
                                 </Row>
                             )} />
                     </TouchableOpacity>
+                    :
+                    <TouchableOpacity>
+                    <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "#8EC63F", }}>
+                        <Col style={{ width: '90%', justifyContent: 'center' }}>
+                            <Text style={{
+                                color: '#fff',
+                                fontSize: 14,
+                                lineHeight: 20,
+                                marginLeft: 15,
+                                fontWeight: '500',
+                            }}>Your Appointment Schedule</Text>
+                        </Col>
+                        <Col style={{ width: '10%', justifyContent: 'center' }}>
+                            <Icon name="ios-information-circle-outline" style={{ color: '#fff', fontSize: 25 }} />
+                        </Col>
+                    </Row>
+                    <FlatList
+                        data={AppoinmentData}
+                        extraData={AppoinmentData}
+                        renderItem={({ item, index }) => (
+                            <Row style={{ width: '100%', overflow: 'hidden', backgroundColor: "#fff", marginBottom: 10, marginTop: 10 }}>
+                                <Col style={{ width: '100%', justifyContent: 'center', }}>
+                                    <Text style={{
+                                        color: 'gray',
+                                        fontSize: 14,
+                                        lineHeight: 20,
+                                        marginLeft: 15,
+                                        marginRight: 15,
+                                        fontWeight: '500',
+                                    }}>You  have  an  Appointment   with   {(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}  and  is  scheduled  at {formatDate(item.appointmentResult.appointment_starttime, "hh:mm a")}.Get ready for your Appointment</Text>
+                                
+                                </Col>
+                            </Row>
+                        )} />
+                </TouchableOpacity>
+    }
                 </Card>
+                </View>:
+                null
+                }
             </View>
-
-
         )
     }
 }

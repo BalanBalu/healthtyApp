@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon } from 'native-base';
+import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon,Right } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform,Modal } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
+import ImagePicker from 'react-native-image-crop-picker';
+import { uploadMultiPart } from '../../../../setup/services/httpservices'
 import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/profile.action';
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
 import { getAddress } from '../../../common';
-import { getMedicineName } from '../CommomPharmacy';
-import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
+import { getMedicineNameByProductName } from '../CommomPharmacy';
+import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER ,IS_IOS} from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { getPurcharseRecomentation } from '../../../providers/pharmacy/pharmacy.action'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import { connect } from 'react-redux'
 class MedicineCheckout extends Component {
     constructor(props) {
@@ -33,7 +36,9 @@ class MedicineCheckout extends Component {
             isPrescription: false,
             isPharmacyRecomentation: false,
             recommentationData: [],
-            prescriptionDetails: null
+            prescriptionDetails: null,
+            isH1Product:false,
+            h1ProductData:[],
 
 
 
@@ -134,9 +139,11 @@ class MedicineCheckout extends Component {
 
     onProceedToPayment(navigationToPayment) {
         // debugger
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails, pharmacyInfo } = this.state;
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails, pharmacyInfo,h1ProductData } = this.state;
         console.log('medicineDetailsmedicineDetailsmedicineDetailsmedicineDetailsmedicineDetails')
         console.log(JSON.stringify(medicineDetails))
+         let isH1Product=false
+        
         if (medicineDetails.length === 0 && isPrescription === false) {
             Toast.show({
                 text: 'No Medicines Added to Checkout',
@@ -153,25 +160,41 @@ class MedicineCheckout extends Component {
             })
             return false;
         }
-        let medicinceNames = '';
+        medicineDetails.map(element => {
+            if (element.item.isH1Product === true && isH1Product === false) {
+                isH1Product = true
+
+            }
+
+          
+        })
+        if(h1ProductData.length!==0){
+            isH1Product = false
+        }
+        if (isH1Product === true) {
+        this.setState({isH1Product:isH1Product})
+            return
+
+        }
+        // let medicinceNames = '';
         let medicineOrderData = [];
         let amount = 0;
         if (isPrescription !== true) {
             amount = medicineDetails.map(ele => {
-                if (medicinceNames.length < 100) {
-                    medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), '
-                }
-                medicineOrderData.push({
-                    // description: String(ele.description),
-                    discountedAmount: Number(ele.discountedAmount) || Number(ele.price),
-                    productName:getMedicineName(ele),
-                    productId: ele.productDetails ? String(ele.productDetails.productId) : String(ele.id),
-                    quantity: Number(ele.userAddedMedicineQuantity),
-                    tax: 0,
-                    totalPrice: Number(ele.userAddedTotalMedicineAmount),
-                    unitPrice: Number(ele.price)
-                })
-                return ele.userAddedTotalMedicineAmount
+                // if (medicinceNames.length < 100) {
+                //     medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), '
+                // }
+                medicineOrderData.push(
+                 ele.item
+                    // discountedAmount: Number(ele.discountedAmount) || Number(ele.price),
+                    // productName:getMedicineName(ele),
+                    // productId: ele.productDetails ? String(ele.productDetails.productId) : String(ele.id),
+                    // quantity: Number(ele.userAddedMedicineQuantity),
+                    // tax: 0,
+                    // totalPrice: Number(ele.userAddedTotalMedicineAmount),
+                    // unitPrice: Number(ele.price)
+                )
+                return ele.item.totalPrice
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
         }
@@ -185,21 +208,11 @@ class MedicineCheckout extends Component {
                 medicineDetails: medicineOrderData,
                 totalAmount: amount,
                 deliveryType: itemSelected,
-                // delivery_option: itemSelected,
+               
                 // delivery_charges: deliveryDetails !== null ? deliveryDetails.delivery_charges : 0,
                 // delivery_tax: deliveryDetails !== null ? deliveryDetails.delivery_tax : 0,
                 delivery_address: {
-                    // address:{
-                    // no_and_street: selectedAddress.address.no_and_street,
-                    // district: selectedAddress.address.district,
-                    // city: selectedAddress.address.city,
-                    // address2: selectedAddress.address.address_line_1,
-                    // },
-                    // altContactNo: mobile_no || '',
-                   
-                    // contactName: selectedAddress.full_name,
-                    // contactNo: selectedAddress.mobile_no || '',
-                    // country: selectedAddress.address.country,
+                  
                     mobile_no: selectedAddress.mobile_no || mobile_no || BASIC_DEFAULT.mobile_no,
                     full_name: selectedAddress.full_name || selectedAddress.name || full_name,
                     coordinates: selectedAddress.coordinates,
@@ -249,6 +262,9 @@ class MedicineCheckout extends Component {
                 paymentPageRequestData.amount = recommentationData[0].medicine_total_amount + deliveryDetails.delivery_charges + deliveryDetails.delivery_tax
 
             }
+            if(h1ProductData.length!==0){
+                paymentPageRequestData.bookSlotDetails.h1ItemPrescriptions=h1ProductData
+            }
 
             paymentPageRequestData.bookSlotDetails.fee = recommentationData[0].medicine_total_amount;
 
@@ -263,8 +279,7 @@ class MedicineCheckout extends Component {
             paymentPageRequestData.bookSlotDetails.recommentation_pharmacy_data = recommentation_pharmacy_data
             paymentPageRequestData.bookSlotDetails.medicineDetails = medicineOrderData
         }
-
-        console.log(paymentPageRequestData)
+      
         if (navigationToPayment === true) {
             paymentPageRequestData.orderOption = this.props.navigation.getParam('orderOption') || null
             this.props.navigation.navigate('paymentPage', paymentPageRequestData)
@@ -280,15 +295,9 @@ class MedicineCheckout extends Component {
             let recommentationData = [];
 
             let amount = this.state.medicineDetails.map(ele => {
-                medicineOrderData.push({
-                    medicine_id: ele.medicine_id,
-                    quantity: Number(ele.userAddedMedicineQuantity),
-                    medicine_weight: Number(ele.medicine_weight),
-                    medicine_weight_unit: ele.medicine_weight_unit,
+            
 
-                })
-
-                return ele.userAddedTotalMedicineAmount
+                return ele.item.totalPrice
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
             if (medicineOrderData.length !== 0) {
@@ -388,7 +397,7 @@ class MedicineCheckout extends Component {
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', orderRequestData.bookSlotDetails, orderRequestData.service_type, userId, 'cash');
-        console.log('Order Booking Response ');
+        
 
         if (response.success) {
             if (this.props.navigation.getParam('orderOption') === 'pharmacyCart') {
@@ -409,8 +418,118 @@ class MedicineCheckout extends Component {
         }
         this.setState({ isLoading: false, spinnerText: ' ' });
     }
+    uploadProfilePicture(type) {
+        if (type == "Camera") {
+            ImagePicker.openCamera({
+                cropping: true,
+                width: 500,
+                height: 500,
+                // cropperCircleOverlay: true,
+                compressImageMaxWidth: 640,
+                compressImageMaxHeight: 480,
+                freeStyleCropEnabled: true,
+            }).then(image => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(image);
+                this.uploadImageToServer(image);
+            }).catch(ex => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(ex);
+            });
+        } else {
+            ImagePicker.openPicker({
+                // multiple: true,
+                width: 300,
+                height: 400,
+                cropping: true,
+                // cropperCircleOverlay: true,
+                freeStyleCropEnabled: true,
+                avoidEmptySpaceAroundImage: true,
+            }).then(image => {
+                console.log(image);
+
+                this.setState({ selectOptionPoopup: false });
+                this.uploadImageToServer(image);
+            }).catch(ex => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(ex);
+            });
+        }
+    }
+
+    /*Save Image to Database*/
+    uploadImageToServer = async (imagePath) => {
+
+        try {
+            const userId = await AsyncStorage.getItem('userId');
+            var formData = new FormData();
+            console.log(imagePath)
+            if (Array.isArray(imagePath) && imagePath.length != 0) {
+                imagePath.map((ele) => {
+                    formData.append("prescription", {
+                        uri: ele.path,
+                        type: 'image/jpeg',
+                        name: 'photo.jpg'
+                    });
+                });
+            } else {
+                formData.append("medicine", {
+                    uri: imagePath.path,
+                    type: 'image/jpeg',
+                    name: 'photo.jpg'
+                });
+            }
+            debugger
+            let endPoint = `/images/upload`
+            console.log(endPoint + 'endpoint');
+            var res = await uploadMultiPart(endPoint, formData);
+
+
+            const response = res.data;
+            if (response.success) {
+             let temp=this.state.h1ProductData;
+           let data=  temp.concat(response.data)
+             
+             await this.setState({h1ProductData:data,isH1Product:false})
+           
+                Toast.show({
+                    text: 'Prescription Uploaded Successfully',
+                    duration: 3000,
+                    type: 'success'
+                });
+
+
+
+            } else {
+                Toast.show({
+                    text: 'Problem Uploading Profile Picture',
+                    duration: 3000,
+                    type: 'danger'
+                });
+
+            }
+
+
+        } catch (e) {
+            Toast.show({
+                text: 'Problem Uploading Profile Picture' + e,
+                duration: 3000,
+                type: 'danger'
+            });
+            console.log(e);
+        }
+    }
+    
+  delete(index) {
+    console.log('Deliting...');
+    let temp = this.state.h1ProductData;
+    temp.splice(index, 1)
+    this.setState({ h1ProductData:temp})
+
+  }
+
     render() {
-        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, recommentationData, isPharmacyRecomentation, prescriptionDetails } = this.state
+        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, recommentationData, isPharmacyRecomentation, prescriptionDetails,isH1Product ,h1ProductData} = this.state
 
 
         return (
@@ -537,19 +656,20 @@ class MedicineCheckout extends Component {
                                                 renderItem={({ item }) =>
                                                     <Row style={{ marginTop: 10 }}>
                                                         <Col size={8}>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{getMedicineName(item) + ' -'}
-                                                                {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '400' }}>
-                                                                {item.pharmacy_name}  */}
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(X' + item.userAddedMedicineQuantity + ')'}</Text> </Text>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{getMedicineNameByProductName(item) + ' -'}
+                                                                {item.item.isH1Product&&<Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '400',color:'red' }}>
+                                                                {'*prescription'}</Text> }
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(X' + item.item.quantity + ')'}</Text> </Text>
                                                             {/* </Text> */}
                                                         </Col>
                                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + item.userAddedTotalMedicineAmount || ''} </Text>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + item.item.totalPrice || ''} </Text>
 
                                                         </Col>
                                                     </Row>
-                                                } /> : <Row style={{ marginTop: 10 }}>
+                                                } /> 
+                                                : <Row style={{ marginTop: 10 }}>
                                                 <Col size={8}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>No orders Available</Text>
                                                 </Col>
@@ -616,6 +736,101 @@ class MedicineCheckout extends Component {
                                 }
                             </View> : <Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a', marginTop: "40%", marginLeft: 55, alignContent: 'center' }}>No orders Available</Text>
                     }
+                    {h1ProductData.length!==0?
+                    <View>
+                    <FlatList
+                    data={this.state.h1ProductData}
+                    extraData={this.state.h1ProductData}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item,index }) =>
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={8}>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{item.file_name}
+
+                                 </Text> 
+                            </Col>
+                            
+                            <Col size={3}>
+                                      <Icon onPress={() => this.delete(index)} name={IS_IOS ? 'ios-close-circle' : 'md-close-circle'}
+                                        style={{ color: 'red', fontSize: 15 }} />
+                                    </Col>          
+                        </Row>
+                    } /> 
+                    <Button transparent onPress={() => this.setState({isH1Product:true})}>
+                    <Icon name='add' style={{ color: 'gray' }} />
+                    <Text uppercase={false} style={styles.customText}>Add More Prescription</Text>
+                </Button>
+                </View>
+                    :null
+
+                    }
+
+                     <AwesomeAlert
+          show={false}
+          showProgress={false}
+          title={`you have choose a prescription mentory product kindly upload prescription`}
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={true}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Reject"
+          confirmText="Accept"
+          cancelButtonColor="red"
+          confirmButtonColor="green"
+          onCancelPressed={this._onPressReject}
+          onConfirmPressed={this._onPressAccept}
+          onDismiss={this.hideInomingCallModal}
+          alertContainerStyle={{zIndex: 1}}
+          titleStyle={{fontSize: 21}}
+          cancelButtonTextStyle={{fontSize: 18}}
+          confirmButtonTextStyle={{fontSize: 18}}
+        />
+<Modal
+                            visible={isH1Product}
+                            transparent={true}
+                            animationType={'fade'}
+                        >
+                            <View style={{
+                                flex: 1,
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: 'rgba(0,0,0,0.5)'
+                            }}>
+                                <View style={{
+                                    width: '80%',
+                                    backgroundColor: '#fff',
+                                    borderColor: 'gray',
+                                    borderWidth: 3,
+                                    padding: 25,
+                                    borderRadius: 5
+                                }}>
+
+
+                                    <Text style={{ fontSize: 22, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> you have choose a prescription mentory product kindly upload prescription  </Text>
+                                    {/* </Item> */}
+
+                                    <Button transparent style={{ paddingTop: 5, paddingBottom: 5, marginTop: 20 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
+                                        <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10 }}>Take Photo</Text>
+                                    </Button>
+                                    <Button transparent style={{ paddingTop: 5, paddingBottom: 5 }} onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
+                                        <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10 }}>Choose from Library</Text>
+                                    </Button>
+
+                                    <Row style={{ marginTop: 50, marginBottom: 20 }}>
+                                        <Right style={{ marginTop: 15 }} >
+                                            <Button transparent style={{ marginTop: 15, alignItems: 'flex-end' }}
+
+                                                onPress={() => this.setState({ isH1Product: false })}
+                                                testID='cancleButton'>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}> Cancel</Text>
+                                            </Button>
+                                        </Right>
+                                    </Row>
+                                </View>
+
+                            </View>
+                        </Modal>
 
                 </Content>
                 <Footer style={

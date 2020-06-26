@@ -598,20 +598,20 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerTitle: null,
       headerLeft: (
-        <Grid>
-          <Col>
+        <Grid style={{justifyContent:'center'}}>
+          <Col style={{justifyContent:'center'}}>
             <TouchableOpacity onPress={() => navigation.pop()}>
               <Icon name="ios-arrow-back" style={{ color: '#fff', marginLeft: 15, justifyContent: 'center', fontSize: 30 }} />
             </TouchableOpacity>
           </Col>
-          <Col>
+          <Col style={{justifyContent:'center'}}>
             <TouchableOpacity style={{ marginLeft: 15 }}>
               <Thumbnail source={navigation.getParam('appBar', { profile_image: { uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' } }).profile_image} style={{ width: 45, height: 45, }} />
             </TouchableOpacity>
           </Col>
-          <Col style={{ marginLeft: 15 }}>
+          <Col style={{ marginLeft: 15,justifyContent:'center', }}>
             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text>
+            {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
           </Col>
         </Grid>
       ),

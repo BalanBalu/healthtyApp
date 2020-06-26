@@ -4,6 +4,7 @@ import { Container, Content, Text, List, ListItem,View,Row,Col,Footer,FooterTab,
 import { DragwerLogos } from './appRouterHome';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import FastImage from 'react-native-fast-image'
+import {CURRENT_PRODUCT_VERSION_CODE} from '../config'
 class SideBar extends React.Component {
   activeUserData = {};
   constructor(props) {
@@ -55,7 +56,7 @@ async getBasicData() {
  
    render() {
 
-    const { items, menuSubMenus} = this.props;
+    const { items, menuSubMenus,} = this.props;
     const { hasLoggedIn } = this.state;
     this.getBasicData();
     return (
@@ -132,9 +133,9 @@ async getBasicData() {
 
 
           
-        <View style={{marginTop:10}}>
+        <View style={{marginTop:10,marginLeft:2}}>
             <ListItem avatar style={{marginTop:-15}}>
-              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:22,
+              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',
             }}/>
             <Body style={{borderBottomWidth:0,}}>
             <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
@@ -147,6 +148,7 @@ async getBasicData() {
            <Footer style={{marginTop:10,backgroundColor:'#fff',}}>
               <FooterTab style={{justifyContent:'center',alignItems:'center',backgroundColor:'#7f49c3'}}>
                 <Text style={{textAlign:'center',fontFamily:'OpenSans',fontWeight:'700',fontSize:20,color:'#fff'}}>MEDFLIC</Text>
+                <Text style={{fontFamily:'OpenSans',fontSize:12,marginLeft:15,color:'#000'}}>Version {CURRENT_PRODUCT_VERSION_CODE}</Text>
               </FooterTab>
            </Footer>
          </View>

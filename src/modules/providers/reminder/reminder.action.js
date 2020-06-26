@@ -43,7 +43,7 @@ export async function addReminderdata(userId,data) {
       storeOnProp(respData);
       NoftifService.cancelAll();
       if(respData.data && respData.data.length > 0) {
-          sheudleNotificationForAddReminders(respData.data);
+        //  sheudleNotificationForAddReminders(respData.data);
       }
     }
 }

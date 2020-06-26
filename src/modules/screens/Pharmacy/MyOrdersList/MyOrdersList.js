@@ -3,7 +3,7 @@ import {
     Container, Content, Text, Icon, View, Card, Thumbnail, Item, Button, Footer
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, Platform, ScrollView,ActivityIndicator } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
 import { statusBar } from '../CommomPharmacy'
@@ -17,8 +17,10 @@ class MyOrdersList extends Component {
             data: [],
             isLoading: true,
             pagination: 0,
+            
             footerLoading: false
         }
+        this.onEndReachedCalledDuringMomentum = true;
     }
     async componentDidMount() {
         this.setState({ isLoading: true })
@@ -61,9 +63,7 @@ class MyOrdersList extends Component {
 
                 let data = this.state.data;
                 let temp = data.concat(result);
-                console.log('orderlist=======================');
-                console.log(JSON.stringify(temp))
-                console.log(temp.length)
+                console.log('Length of the Whole Data '+ temp.length)
                 this.setState({ data: temp })
             }
             return {
@@ -75,9 +75,14 @@ class MyOrdersList extends Component {
         }
     }
     handleLoadMore = async () => {
+        if(!this.onEndReachedCalledDuringMomentum) {
+        console.log('On Hanndle loading ' + this.state.pagination);
+        this.onEndReachedCalledDuringMomentum = true;
         this.setState({ pagination: this.state.pagination + 1, footerLoading: true });
         let result = await this.getMedicineOrderList()
          this.setState({ footerLoading: false })
+        
+        }
 
 
     }
@@ -91,14 +96,35 @@ class MyOrdersList extends Component {
         }
 
     }
+    renderFooter() {
+        return (
+        //Footer View with Load More button
+          <View style={styles.footer}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={this.loadMoreData}
+            
+              style={styles.loadMoreBtn}>
+             {this.state.footerLoading?
+            
+                <ActivityIndicator color="blue"  style={styles.btnText} />:null}
 
+            </TouchableOpacity>
+          </View>
+        );
+      }
 
     render() {
         const { data, isLoading } = this.state;
-        console.log(isLoading);
+       
         return (
             <Container style={{ backgroundColor: '#E6E6E6', flex: 1 }}>
-                <Content style={{ flex: 1 }}>
+                <ScrollView
+
+                 style={{flex: 1}}
+                 contentContainerStyle={{flex: 1}}>
+
+
                     <Spinner
                         visible={isLoading}
                     />
@@ -141,8 +167,11 @@ class MyOrdersList extends Component {
                             <FlatList data={data}
 
                                 keyExtractor={(item, index) => index.toString()}
-                                onEndReached={this.handleLoadMore}
-                                onEndReachedThreshold={8}
+                                onEndReached={() => this.handleLoadMore()}
+                                onEndReachedThreshold={0.5}
+                                onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+                                ListFooterComponent={this.renderFooter.bind(this)}
+                               
                                 renderItem={({ item, index }) =>
                                     <TouchableOpacity
                                         testID="orderDetailsNavigation"
@@ -218,14 +247,9 @@ class MyOrdersList extends Component {
 
 
                         </View>}
-                    <View >
-                        <Spinner
-
-                            color='blue'
-                            visible={this.state.footerLoading}
-                        />
-                    </View>
-                </Content>
+                  
+                {/* </Content> */}
+                </ScrollView>
                 {/* <Footer style={
                     Platform.OS === "ios" ?
                         { height: 30 } : { height: 45 }}> */}
@@ -249,6 +273,18 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10, marginTop: 5
     },
+    footer: {
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+      },
+      btnText: {
+        color: 'blue',
+        fontSize: 15,
+        textAlign: 'center',
+      },
+
 
     buytext: {
         fontSize: 12,
