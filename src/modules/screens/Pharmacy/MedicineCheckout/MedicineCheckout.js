@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon,Right } from 'native-base';
+import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon, Right } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform,Modal } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform, Modal } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -11,7 +11,7 @@ import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
 import { getAddress } from '../../../common';
 import { getMedicineNameByProductName } from '../CommomPharmacy';
-import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER ,IS_IOS} from '../../../../setup/config'
+import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER, IS_IOS } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { getPurcharseRecomentation } from '../../../providers/pharmacy/pharmacy.action'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
@@ -37,8 +37,8 @@ class MedicineCheckout extends Component {
             isPharmacyRecomentation: false,
             recommentationData: [],
             prescriptionDetails: null,
-            isH1Product:false,
-            h1ProductData:[],
+            isH1Product: false,
+            h1ProductData: [],
 
 
 
@@ -58,7 +58,7 @@ class MedicineCheckout extends Component {
             const isPrescription = navigation.getParam('isPrescription') || false
             let prescriptionDetails = null
             if (isPrescription === true) {
-                 prescriptionDetails = navigation.getParam('prescriptionDetails');
+                prescriptionDetails = navigation.getParam('prescriptionDetails');
                 this.setState({ medicineDetails, isPrescription, prescriptionDetails })
 
             } else {
@@ -83,16 +83,16 @@ class MedicineCheckout extends Component {
 
     clickedHomeDelivery = async () => {
         try {
-           
+
             let patientFields = "first_name,last_name,mobile_no,email,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             this.setState({ isLoading: true });
             let patientResult = await fetchUserProfile(userId, patientFields);
-           
+
 
             let deliveryAddressArray = []
             if (patientResult !== null) {
-               
+
                 let full_name = patientResult.first_name + " " + patientResult.last_name,
                     mobile_no = patientResult.mobile_no
                 this.setState({ full_name, mobile_no })
@@ -139,11 +139,11 @@ class MedicineCheckout extends Component {
 
     onProceedToPayment(navigationToPayment) {
         // debugger
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails, pharmacyInfo,h1ProductData } = this.state;
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails, pharmacyInfo, h1ProductData } = this.state;
         console.log('medicineDetailsmedicineDetailsmedicineDetailsmedicineDetailsmedicineDetails')
         console.log(JSON.stringify(medicineDetails))
-         let isH1Product=false
-        
+        let isH1Product = false
+
         if (medicineDetails.length === 0 && isPrescription === false) {
             Toast.show({
                 text: 'No Medicines Added to Checkout',
@@ -166,14 +166,14 @@ class MedicineCheckout extends Component {
 
             }
 
-          
+
         })
-        if(h1ProductData.length!==0){
+        if (h1ProductData.length !== 0) {
             isH1Product = false
         }
         if (isH1Product === true) {
-        this.setState({isH1Product:isH1Product})
-            return
+            this.setState({ isH1Product: isH1Product })
+            return false
 
         }
         // let medicinceNames = '';
@@ -185,7 +185,7 @@ class MedicineCheckout extends Component {
                 //     medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), '
                 // }
                 medicineOrderData.push(
-                 ele.item
+                    ele.item
                     // discountedAmount: Number(ele.discountedAmount) || Number(ele.price),
                     // productName:getMedicineName(ele),
                     // productId: ele.productDetails ? String(ele.productDetails.productId) : String(ele.id),
@@ -208,15 +208,15 @@ class MedicineCheckout extends Component {
                 medicineDetails: medicineOrderData,
                 totalAmount: amount,
                 deliveryType: itemSelected,
-               
+
                 // delivery_charges: deliveryDetails !== null ? deliveryDetails.delivery_charges : 0,
                 // delivery_tax: deliveryDetails !== null ? deliveryDetails.delivery_tax : 0,
                 delivery_address: {
-                  
+
                     mobile_no: selectedAddress.mobile_no || mobile_no || BASIC_DEFAULT.mobile_no,
                     full_name: selectedAddress.full_name || selectedAddress.name || full_name,
                     coordinates: selectedAddress.coordinates,
-                     type: selectedAddress.type,
+                    type: selectedAddress.type,
                     address: {
                         no_and_street: selectedAddress.address.no_and_street || ' ',
                         address_line_1: selectedAddress.address.address_line_1,
@@ -230,7 +230,8 @@ class MedicineCheckout extends Component {
             }
         }
         if (itemSelected === 1) {
-            paymentPageRequestData.bookSlotDetails.pharmacyId = pharmacyInfo.pharmacyId
+            
+            paymentPageRequestData.bookSlotDetails.pharmacyId = pharmacyInfo.pharmacy_id || null
             // delete paymentPageRequestData.bookSlotDetails.delivery_charges
             // delete paymentPageRequestData.bookSlotDetails.delivery_tax
         }
@@ -262,8 +263,8 @@ class MedicineCheckout extends Component {
                 paymentPageRequestData.amount = recommentationData[0].medicine_total_amount + deliveryDetails.delivery_charges + deliveryDetails.delivery_tax
 
             }
-            if(h1ProductData.length!==0){
-                paymentPageRequestData.bookSlotDetails.h1ItemPrescriptions=h1ProductData
+            if (h1ProductData.length !== 0) {
+                paymentPageRequestData.bookSlotDetails.h1ItemPrescriptions = h1ProductData
             }
 
             paymentPageRequestData.bookSlotDetails.fee = recommentationData[0].medicine_total_amount;
@@ -279,7 +280,7 @@ class MedicineCheckout extends Component {
             paymentPageRequestData.bookSlotDetails.recommentation_pharmacy_data = recommentation_pharmacy_data
             paymentPageRequestData.bookSlotDetails.medicineDetails = medicineOrderData
         }
-      
+
         if (navigationToPayment === true) {
             paymentPageRequestData.orderOption = this.props.navigation.getParam('orderOption') || null
             this.props.navigation.navigate('paymentPage', paymentPageRequestData)
@@ -288,14 +289,14 @@ class MedicineCheckout extends Component {
         }
     }
 
-    async  getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription) {
+    async getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription) {
         if (medicineDetails.length !== 0 && isPrescription === false) {
             let pharmacyData = []
             let medicineOrderData = [];
             let recommentationData = [];
 
             let amount = this.state.medicineDetails.map(ele => {
-            
+
 
                 return ele.item.totalPrice
             }).reduce(
@@ -397,7 +398,7 @@ class MedicineCheckout extends Component {
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', orderRequestData.bookSlotDetails, orderRequestData.service_type, userId, 'cash');
-        
+
 
         if (response.success) {
             if (this.props.navigation.getParam('orderOption') === 'pharmacyCart') {
@@ -429,11 +430,11 @@ class MedicineCheckout extends Component {
                 compressImageMaxHeight: 480,
                 freeStyleCropEnabled: true,
             }).then(image => {
-                this.setState({ selectOptionPoopup: false });
+                this.setState({ isH1Product: false });
                 console.log(image);
                 this.uploadImageToServer(image);
             }).catch(ex => {
-                this.setState({ selectOptionPoopup: false });
+                this.setState({ isH1Product: false });
                 console.log(ex);
             });
         } else {
@@ -448,10 +449,10 @@ class MedicineCheckout extends Component {
             }).then(image => {
                 console.log(image);
 
-                this.setState({ selectOptionPoopup: false });
+                this.setState({ isH1Product: false });
                 this.uploadImageToServer(image);
             }).catch(ex => {
-                this.setState({ selectOptionPoopup: false });
+                this.setState({ isH1Product: false });
                 console.log(ex);
             });
         }
@@ -487,11 +488,11 @@ class MedicineCheckout extends Component {
 
             const response = res.data;
             if (response.success) {
-             let temp=this.state.h1ProductData;
-           let data=  temp.concat(response.data)
-             
-             await this.setState({h1ProductData:data,isH1Product:false})
-           
+                let temp = this.state.h1ProductData;
+                let data = temp.concat(response.data)
+
+                await this.setState({ h1ProductData: data, isH1Product: false })
+
                 Toast.show({
                     text: 'Prescription Uploaded Successfully',
                     duration: 3000,
@@ -519,17 +520,17 @@ class MedicineCheckout extends Component {
             console.log(e);
         }
     }
-    
-  delete(index) {
-    console.log('Deliting...');
-    let temp = this.state.h1ProductData;
-    temp.splice(index, 1)
-    this.setState({ h1ProductData:temp})
 
-  }
+    delete(index) {
+        console.log('Deliting...');
+        let temp = this.state.h1ProductData;
+        temp.splice(index, 1)
+        this.setState({ h1ProductData: temp })
+
+    }
 
     render() {
-        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, recommentationData, isPharmacyRecomentation, prescriptionDetails,isH1Product ,h1ProductData} = this.state
+        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, recommentationData, isPharmacyRecomentation, prescriptionDetails, isH1Product, h1ProductData } = this.state
 
 
         return (
@@ -623,7 +624,7 @@ class MedicineCheckout extends Component {
 
 
                                 {itemSelected === 1 && pharmacyInfo !== null ?
-                                    <View style={{ padding: 10}}>
+                                    <View style={{ padding: 10 }}>
                                         {/* <Col style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                             
                                         </Col> */}
@@ -657,8 +658,8 @@ class MedicineCheckout extends Component {
                                                     <Row style={{ marginTop: 10 }}>
                                                         <Col size={8}>
                                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{getMedicineNameByProductName(item) + ' -'}
-                                                                {item.item.isH1Product&&<Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '400',color:'red' }}>
-                                                                {'*prescription'}</Text> }
+                                                                {item.item.isH1Product && <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '400', color: 'red' }}>
+                                                                    {'*prescription'}</Text>}
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(X' + item.item.quantity + ')'}</Text> </Text>
                                                             {/* </Text> */}
                                                         </Col>
@@ -668,8 +669,8 @@ class MedicineCheckout extends Component {
 
                                                         </Col>
                                                     </Row>
-                                                } /> 
-                                                : <Row style={{ marginTop: 10 }}>
+                                                } />
+                                            : <Row style={{ marginTop: 10 }}>
                                                 <Col size={8}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>No orders Available</Text>
                                                 </Col>
@@ -736,101 +737,101 @@ class MedicineCheckout extends Component {
                                 }
                             </View> : <Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a', marginTop: "40%", marginLeft: 55, alignContent: 'center' }}>No orders Available</Text>
                     }
-                    {h1ProductData.length!==0?
-                    <View>
-                    <FlatList
-                    data={this.state.h1ProductData}
-                    extraData={this.state.h1ProductData}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item,index }) =>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={8}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{item.file_name}
+                    {h1ProductData.length !== 0 ?
+                        <View>
+                            <FlatList
+                                data={this.state.h1ProductData}
+                                extraData={this.state.h1ProductData}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item, index }) =>
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col size={8}>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{item.file_name}
 
-                                 </Text> 
-                            </Col>
-                            
-                            <Col size={3}>
-                                      <Icon onPress={() => this.delete(index)} name={IS_IOS ? 'ios-close-circle' : 'md-close-circle'}
-                                        style={{ color: 'red', fontSize: 15 }} />
-                                    </Col>          
-                        </Row>
-                    } /> 
-                    <Button transparent onPress={() => this.setState({isH1Product:true})}>
-                    <Icon name='add' style={{ color: 'gray' }} />
-                    <Text uppercase={false} style={styles.customText}>Add More Prescription</Text>
-                </Button>
-                </View>
-                    :null
+                                            </Text>
+                                        </Col>
+
+                                        <Col size={3}>
+                                            <Icon onPress={() => this.delete(index)} name={IS_IOS ? 'ios-close-circle' : 'md-close-circle'}
+                                                style={{ color: 'red', fontSize: 15 }} />
+                                        </Col>
+                                    </Row>
+                                } />
+                            <Button transparent onPress={() => this.setState({ isH1Product: true })}>
+                                <Icon name='add' style={{ color: 'gray' }} />
+                                <Text uppercase={false} style={styles.customText}>Add More Prescription</Text>
+                            </Button>
+                        </View>
+                        : null
 
                     }
 
-                     <AwesomeAlert
-          show={false}
-          showProgress={false}
-          title={`you have choose a prescription mentory product kindly upload prescription`}
-          closeOnTouchOutside={false}
-          closeOnHardwareBackPress={true}
-          showCancelButton={true}
-          showConfirmButton={true}
-          cancelText="Reject"
-          confirmText="Accept"
-          cancelButtonColor="red"
-          confirmButtonColor="green"
-          onCancelPressed={this._onPressReject}
-          onConfirmPressed={this._onPressAccept}
-          onDismiss={this.hideInomingCallModal}
-          alertContainerStyle={{zIndex: 1}}
-          titleStyle={{fontSize: 21}}
-          cancelButtonTextStyle={{fontSize: 18}}
-          confirmButtonTextStyle={{fontSize: 18}}
-        />
-<Modal
-                            visible={isH1Product}
-                            transparent={true}
-                            animationType={'fade'}
-                        >
+                    <AwesomeAlert
+                        show={false}
+                        showProgress={false}
+                        title={`you have choose a prescription mentory product kindly upload prescription`}
+                        closeOnTouchOutside={false}
+                        closeOnHardwareBackPress={true}
+                        showCancelButton={true}
+                        showConfirmButton={true}
+                        cancelText="Reject"
+                        confirmText="Accept"
+                        cancelButtonColor="red"
+                        confirmButtonColor="green"
+                        onCancelPressed={this._onPressReject}
+                        onConfirmPressed={this._onPressAccept}
+                        onDismiss={this.hideInomingCallModal}
+                        alertContainerStyle={{ zIndex: 1 }}
+                        titleStyle={{ fontSize: 21 }}
+                        cancelButtonTextStyle={{ fontSize: 18 }}
+                        confirmButtonTextStyle={{ fontSize: 18 }}
+                    />
+                    <Modal
+                        visible={isH1Product}
+                        transparent={true}
+                        animationType={'fade'}
+                    >
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)'
+                        }}>
                             <View style={{
-                                flex: 1,
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: 'rgba(0,0,0,0.5)'
+                                width: '80%',
+                                backgroundColor: '#fff',
+                                borderColor: 'gray',
+                                borderWidth: 3,
+                                padding: 25,
+                                borderRadius: 5
                             }}>
-                                <View style={{
-                                    width: '80%',
-                                    backgroundColor: '#fff',
-                                    borderColor: 'gray',
-                                    borderWidth: 3,
-                                    padding: 25,
-                                    borderRadius: 5
-                                }}>
 
 
-                                    <Text style={{ fontSize: 22, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> you have choose a prescription mentory product kindly upload prescription  </Text>
-                                    {/* </Item> */}
+                                <Text style={{ fontSize: 22, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> you have choose a prescription mentory product kindly upload prescription  </Text>
+                                {/* </Item> */}
 
-                                    <Button transparent style={{ paddingTop: 5, paddingBottom: 5, marginTop: 20 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
-                                        <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10 }}>Take Photo</Text>
-                                    </Button>
-                                    <Button transparent style={{ paddingTop: 5, paddingBottom: 5 }} onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
-                                        <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10 }}>Choose from Library</Text>
-                                    </Button>
+                                <Button transparent style={{ paddingTop: 5, paddingBottom: 5, marginTop: 20 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
+                                    <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10 }}>Take Photo</Text>
+                                </Button>
+                                <Button transparent style={{ paddingTop: 5, paddingBottom: 5 }} onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
+                                    <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10 }}>Choose from Library</Text>
+                                </Button>
 
-                                    <Row style={{ marginTop: 50, marginBottom: 20 }}>
-                                        <Right style={{ marginTop: 15 }} >
-                                            <Button transparent style={{ marginTop: 15, alignItems: 'flex-end' }}
+                                <Row style={{ marginTop: 50, marginBottom: 20 }}>
+                                    <Right style={{ marginTop: 15 }} >
+                                        <Button transparent style={{ marginTop: 15, alignItems: 'flex-end' }}
 
-                                                onPress={() => this.setState({ isH1Product: false })}
-                                                testID='cancleButton'>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}> Cancel</Text>
-                                            </Button>
-                                        </Right>
-                                    </Row>
-                                </View>
-
+                                            onPress={() => this.setState({ isH1Product: false })}
+                                            testID='cancleButton'>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}> Cancel</Text>
+                                        </Button>
+                                    </Right>
+                                </Row>
                             </View>
-                        </Modal>
+
+                        </View>
+                    </Modal>
 
                 </Content>
                 <Footer style={
