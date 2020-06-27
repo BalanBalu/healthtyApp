@@ -231,7 +231,7 @@ class MedicineCheckout extends Component {
         }
         if (itemSelected === 1) {
             
-            paymentPageRequestData.bookSlotDetails.pharmacyId = pharmacyInfo.pharmacy_id || 'hi'
+            paymentPageRequestData.bookSlotDetails.pharmacyId = pharmacyInfo.pharmacy_id || null
             // delete paymentPageRequestData.bookSlotDetails.delivery_charges
             // delete paymentPageRequestData.bookSlotDetails.delivery_tax
         }
