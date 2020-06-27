@@ -88,8 +88,8 @@ class PharmacyHome extends Component {
             userId = await AsyncStorage.getItem('userId')
 
             let result = await searchRecentItemsByPharmacy(10)
-            // console.log('result==========================================')
-            //     console.log(JSON.stringify(result))
+             console.log('result==========================================')
+                 console.log(JSON.stringify(result))
 
 
             if (result) {
@@ -331,7 +331,13 @@ class PharmacyHome extends Component {
                                                 <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%', borderRadius: 2.5, }}>
 
                                                     <Row>
-                                                        <Col size={9} style={{ alignItems: 'center' }}>
+                                                    {item.h1Product ?
+                                                            <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginRight: 120 }}>
+                                                              
+                                                                <Text style={{ width: 50, height: 45,fontSize:8,marginTop: 10,color:'red'}}>{'* Prescription'}</Text>
+                                                             
+                                                            </Col> : null}
+                                                        <Col size={8} style={{ alignItems: 'center' }}>
                                                             <Image source={renderMedicineImage(item.productImages)}
                                                                 style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                         </Col>
@@ -352,9 +358,7 @@ class PharmacyHome extends Component {
                                                     <Row style={{ alignSelf: 'center', marginTop: 5 }} >
                                                         <Text style={styles.mednames}>{getMedicineName(item)}</Text>
                                                     </Row>
-                                                    {/* <Row style={{ alignSelf: 'center' }} >
-                                                        <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
-                                                    </Row> */}
+                                            
                                                     <Row style={{ alignSelf: 'center', marginTop: 2 }}>
                                                         <Text style={item.discount !== undefined && item.discount !== null ? styles.oldRupees : styles.newRupees}>₹{item.price}</Text>
                                                         {item.discount !== undefined && item.discount !== null ?

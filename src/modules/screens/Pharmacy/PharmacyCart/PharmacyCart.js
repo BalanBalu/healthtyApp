@@ -14,6 +14,7 @@ class PharmacyCart extends Component {
         this.state = {
             cartItems: [],
             isLoading: true,
+         
         }
 
     }
@@ -26,13 +27,13 @@ class PharmacyCart extends Component {
         try {
             this.setState({ isLoading: true })
             userId = await AsyncStorage.getItem('userId')
-           let cartItems = await AsyncStorage.getItem('cartItems-' + userId) || [];
-           
+            let cartItems = await AsyncStorage.getItem('cartItems-' + userId) || [];
+
             if (cartItems.length === 0) {
                 this.setState({ cartItems: [], isLoading: false });
             } else {
-                
-                 this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
+
+                this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
 
             }
             console.log('cart===========')
@@ -57,22 +58,22 @@ class PharmacyCart extends Component {
         // let userId = await AsyncStorage.getItem('userId')
         // let offeredAmount = medicineRateAfterOffer(item);
         let offeredAmount = this.unitOfPrice(item);
-        let result = await ProductIncrementDecreMent(item.item.quantity, offeredAmount, operator,item.item.maxThreashold)
+        let result = await ProductIncrementDecreMent(item.item.quantity, offeredAmount, operator, item.item.maxThreashold)
         let temp = item;
 
         temp.item.totalPrice = result.totalAmount || 0,
             temp.item.quantity = result.quantity || 0
-            let threshold_message = result.threshold_message || null;
-            if (threshold_message !== null) {
-                Toast.show({
-                    text: threshold_message,
-                    duration: 3000,
-                    type: 'danger',
-                    position: "bottom",
-                    style: { bottom: "50%" }
-    
-                })
-            }
+        let threshold_message = result.threshold_message || null;
+        if (threshold_message !== null) {
+            Toast.show({
+                text: threshold_message,
+                duration: 3000,
+                type: 'danger',
+                position: "bottom",
+                style: { bottom: "50%" }
+
+            })
+        }
         let cartItems = this.state.cartItems
         cartItems[index] == temp
         this.setState({ cartItems })
@@ -96,12 +97,15 @@ class PharmacyCart extends Component {
 
     totalPrice() {
         let total = 0;
+        
         if (this.state.cartItems) {
-
+            
             this.state.cartItems.map(element => {
+               
 
                 total = total + element.item.totalPrice
             })
+         
             return total.toFixed(2);
         }
     }
@@ -124,6 +128,7 @@ class PharmacyCart extends Component {
     }
     async procced() {
         const { cartItems } = this.state;
+       
         this.props.navigation.navigate("MedicineCheckout", {
             medicineDetails: cartItems,
             orderOption: "pharmacyCart",
@@ -221,9 +226,7 @@ class PharmacyCart extends Component {
                                 </Button>
                             </Item>
                         </Card>
-                        // <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
-                        //     <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No Medicines Are Found Your Cart</Text>
-                        // </Item> 
+
                         :
                         <View style={{ margin: 5, backgroundColor: '#fff', borderRadius: 5, paddingBottom: 5 }}>
                             <FlatList
@@ -243,8 +246,9 @@ class PharmacyCart extends Component {
                                         <Col size={7} style={{ marginLeft: 10, justifyContent: 'center' }}>
                                             <Row>
                                                 <Col size={7}>
+                                                    {item.item.isH1Product && <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'*Prescription'}</Text>}
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{getMedicineNameByProductName(item)}<Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5, color: '#909090' }}>{getMedicineWeightUnit(item.medicine_weight, item.medicine_weight_unit)}</Text></Text>
-                                                    <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.pharmacy_name}</Text>
+
 
                                                 </Col>
                                                 <Col size={3}>
