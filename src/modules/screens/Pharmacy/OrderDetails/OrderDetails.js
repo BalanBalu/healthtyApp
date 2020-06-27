@@ -68,7 +68,8 @@ class OrderDetails extends Component {
                     this.setState({ statusSlap })
                 }
             }
-                if (result.status === 'DELIVERED' && result.is_review_added === undefined) {
+            console.log(JSON.stringify(result))
+                if (result.status === 'DELIVERED' &&(result.isReviewSkipped === null||result.raviewComment===null)) {
                     await this.setState({ modalVisible: true })
                 } 
                 this.getPaymentInfo(result.paymentId)
@@ -371,7 +372,7 @@ class OrderDetails extends Component {
 
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
-                                <Text style={styles.ItemText}>Medicine total amout</Text>
+                                <Text style={styles.ItemText}>Medicine total amount</Text>
 
                             </Col>
                             <Col size={5}>
@@ -379,7 +380,7 @@ class OrderDetails extends Component {
                             </Col>
                         </Row>
 
-                        {orderDetails.delivery_option === 0 ?
+                         {orderDetails.delivery_option === 0 ? 
                             <View>
                                 <Row style={{ marginTop: 10 }}>
                                     <Col size={5}>
@@ -400,7 +401,7 @@ class OrderDetails extends Component {
                                     </Col>
                                 </Row>
                             </View>
-                            : null}
+                             : null} 
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
                                 <Text style={styles.grandTotalText}>Grand Total</Text>
@@ -414,7 +415,7 @@ class OrderDetails extends Component {
                     {orderDetails.status === "PENDING" ?
                         <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('CancelService', { serviceType: 'MEDICINES_ORDER', prevState: this.props.navigation.state, tittle: 'Cancel Order' })}
+                                onPress={() => this.props.navigation.navigate('CancelService', { serviceType: 'MEDICINE_ORDER', prevState: this.props.navigation.state, tittle: 'Cancel Order' })}
                                 block danger
                                 style={styles.reviewButton1
                                 }>
@@ -441,7 +442,7 @@ class OrderDetails extends Component {
 
                     {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails._id, serviceType: 'MEDICINE_ORDER' }) }}>
+                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails.id, serviceType: 'MEDICINE_ORDER' }) }}>
                                 <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this medicine orders"</Text>
                                 <Row>
                                     <Col size={9}>

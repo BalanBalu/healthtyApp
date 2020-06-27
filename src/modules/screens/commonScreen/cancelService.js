@@ -18,7 +18,7 @@ class CancelService extends Component {
       selectedIndex: 0,
       cancelReasonList: [],
       reasonForCancelComment: '',
-      reasonForCancel:''
+      reasonForCancel: ''
 
     }
 
@@ -38,10 +38,13 @@ class CancelService extends Component {
       let type = '', cancelReasonList = []
       if (serviceType !== null) {
         type = serviceType + '_CANCEL_REASON'
+       
       }
-      console.log(type)
-      let cancelList = await getCurrentVersion(type)
 
+      console.log(type)
+     
+      let cancelList = await getCurrentVersion(type)
+      // alert(JSON.stringify(cancelList))
       if (cancelList.success) {
         cancelReasonList = cancelList.data[0].value
 
@@ -49,13 +52,13 @@ class CancelService extends Component {
 
 
       let obj = {
-        cancel_no: cancelReasonList.length + 1,
-        cancel_reason: "Others"
+    
+        code: "Others"
       }
 
       cancelReasonList.push(obj)
 
-      this.setState({ cancelReasonList: cancelReasonList, type, isLoading: false,reasonForCancel:cancelReasonList[0].cancel_reason })
+      this.setState({ cancelReasonList: cancelReasonList, type, isLoading: false, reasonForCancel: cancelReasonList[0].cancel_reason })
     }
     catch (e) {
       console.log(e)
@@ -64,7 +67,7 @@ class CancelService extends Component {
   toggleRadio(data, index) {
     if (index !== -1) {
       console.log(this.state.cancelReasonList)
-      this.setState({ selectedIndex: index, reasonForCancel:data.cancel_reason })
+      this.setState({ selectedIndex: index, reasonForCancel: data.cancel_reason })
     }
   }
 
@@ -84,7 +87,7 @@ class CancelService extends Component {
       }
       else {
         Toast.show({
-          text: 'Write a reason for Cancellation',
+          text: 'Write a reason for Cancelation',
           type: "danger",
           duration: 3000
         })
@@ -125,7 +128,7 @@ class CancelService extends Component {
                       <Row onPress={() => this.toggleRadio(item, index)} style={{ marginTop: 10 }}>
                         <Radio borderColor='black' selected={selectedIndex === index ? true : false} onPress={() => this.toggleRadio(item, index)}
                           selectedColor={"#775DA3"} testID='checkOption_1Selected' />
-                        <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15, marginTop: 3 }}>{item.cancel_reason}</Text>
+                        <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15, marginTop: 3 }}>{item.code}</Text>
                       </Row>
                       {selectedIndex === index ?
 
