@@ -19,7 +19,6 @@ class FilterDocInfo extends Component {
             selectAvailabilityIndex: 0,
             selectExperinceIndex: 0,
             selectedHospitalNames: [],
-            searchedDoctorIdsArray: [],
         }
         this.selectedSpecialistId = '';
         this.selectedSpecialist = [];
@@ -61,17 +60,16 @@ class FilterDocInfo extends Component {
 
                 }
             }
+            else {
+                this.clearSelectedData()
+            }
         }
         const languageListFromData = [];
         const removeDupCategoriesFromList = [];
         const specialistInfoList = [];
         const hospitalInfoList = [];
         const removeDupHospitalsFromList = [];
-        const searchedDoctorIdsArray = [];
         doctorInfoListAndSlotsData.map(doctorItem => {
-            if (!searchedDoctorIdsArray.includes(doctorItem.doctor_id)) {
-                searchedDoctorIdsArray.push(doctorItem.doctor_id)
-            }
             if (doctorItem.language && doctorItem.language.length) {
                 Array.prototype.push.apply(languageListFromData, doctorItem.language)  // Push multiple language array's
             }
@@ -103,14 +101,13 @@ class FilterDocInfo extends Component {
                 languageList.push({ value: language })
             }
         })
-        this.setState({ languageList, specialistInfoList, hospitalInfoList, searchedDoctorIdsArray });
+        this.setState({ languageList, specialistInfoList, hospitalInfoList });
     }
 
 
 
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
-        filterDataObject.doctorIds = this.state.searchedDoctorIdsArray;
         console.log('filterDataObject::', filterDataObject)
         this.props.navigation.navigate('Doctor Search List', {
             filterData: filterDataObject,

@@ -37,12 +37,12 @@ export const serviceOfGetNextDayAVailabilityAndFeeDetails4Doctors = async (docto
         const respData = response.data;
         return respData;
     } catch (Ex) {
-        console.log('Ex is getting on fetch Doctor Fee and Next Day availability details====>', Ex)
+        // console.log('Ex is getting on fetch Doctor Fee and Next Day availability details====>', Ex.message)
         return {
             success: false,
             statusCode: 500,
             error: Ex,
-            message: `Exception while getting on fetch Fee and Next Day availability details : ${Ex}`
+            message: `Exception while getting on fetch Fee and Next Day availability details : ${Ex.message}`
         }
     }
 }
@@ -67,26 +67,11 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
 }
 
 
-export const filterByDocDetailsService = async (filteredReqData) => {
+export const searchByDocDetailsService = async (type, activeSponsor, reqData, skipCount, limit) => {
     try {
-        const endPoint = 'V2/doctor/filterDoctorDetails';
-        const response = await postService(endPoint, filteredReqData);
-        const respData = response.data;
-        return respData;
-    } catch (ex) {
-        return {
-            success: false,
-            message: `Error Occurred on :${ex.message}`
-        }
-    }
-}
-
-
-export const searchByDocDetailsService = async (locationDataFromSearch, inputKeywordFromSearch, skipCount, limit) => {
-    try {
-        const endPoint = `V2/doctor/search/search/${inputKeywordFromSearch}?skip=${skipCount}&limit=${limit}`;
+        const endPoint = `V2/doctor/search/${type}?active_sponsor=${activeSponsor}&skip=${skipCount}&limit=${limit}`;
         // const endPoint = 'V2/doctor/search/search/' + inputKeywordFromSearch;
-        const response = await postService(endPoint, locationDataFromSearch);
+        const response = await postService(endPoint, reqData);
         const respData = response.data;
         return respData;
     } catch (ex) {
@@ -97,23 +82,6 @@ export const searchByDocDetailsService = async (locationDataFromSearch, inputKey
     }
 }
 
-/* Search Services and category Module  */
-export async function searchDoctorList(userId, searchInputvalues, isLoading = true) {
-    try {
-        let endPoint = 'user/' + userId + '/filters/doctors';
-        let response = await postService(endPoint, searchInputvalues);
-        console.log("searchInputvalues");
-        console.log(searchInputvalues);
-        let respData = response.data;
-        console.log(respData);
-        return respData;
-    } catch (e) {
-        return {
-            message: 'exception' + e,
-            success: false
-        }
-    }
-}
 
 export async function fetchDoctorAvailabilitySlotsService(doctorIds, dateFilter, patientGender) {
     try {
@@ -172,11 +140,12 @@ export const serviceOfGetTotalReviewsCount4Doctors = async (doctorIds) => {
 
 export const ServiceOfGetDoctorFavoriteListCount4Pat = async (doctorId) => {
     try {
+        const { bookAppointmentData: { docFavoriteListCountOfDoctorIDs } } = store.getState();
         const endPoint = 'doctor/wishList/' + doctorId;
         const response = await getService(endPoint);
         const favoritesList = response.data;
         if (favoritesList.success) {
-            docFavoriteListCountOfDoctorIDs = {};
+            // docFavoriteListCountOfDoctorIDs = {};
             for (i = 0; i < favoritesList.data.length; i++) {
                 doctorId = favoritesList.data[i].wishList.doctor_id;
                 docFavoriteListCountOfDoctorIDs[doctorId] = docFavoriteListCountOfDoctorIDs[doctorId] ? docFavoriteListCountOfDoctorIDs[doctorId] + 1 : 1
@@ -189,12 +158,12 @@ export const ServiceOfGetDoctorFavoriteListCount4Pat = async (doctorId) => {
         return favoritesList;
     }
     catch (Ex) {
-        console.log('Ex is getting on fetch total WishList for Doctor====>', Ex)
+        console.log('Ex is getting on fetch total WishList for Doctor====>', Ex.message)
         return {
             success: false,
             statusCode: 500,
             error: Ex,
-            message: `Exception while getting on fetch total WishList for Doctor : ${Ex}`
+            message: `Exception while getting on fetch total WishList for Doctor : ${Ex.message}`
         }
     }
 }
@@ -271,9 +240,8 @@ export const getFavoriteListCount4PatientService = async (userId) => {
             result.data.forEach(element => {
                 wishListDoctorsIds.push(element.doctorInfo.doctor_id)
             })
-            console.log(wishListDoctorsIds);
             store.dispatch({
-                type: SET_PATIENT_WISH_LIST_DOC_IDS,
+                type: SET_PATIENT_FAVORITE_COUNTS_OF_DOCTOR_IDS,
                 data: wishListDoctorsIds
             })
         }

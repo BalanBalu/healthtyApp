@@ -65,7 +65,7 @@ export default class RenderDoctorInfo extends Component {
                                 onPressFavoriteIcon={() => addToFavoritesList(item.doctor_id)}
                             />
                         </Row>
-                        {item.isPrimeDoctorOnNormalCardView === true ?
+                        {item.isDoctorIdHostpitalIdSponsoredOnNormalCarView === true ?
                             <Row>
                                 <View style={{ position: 'absolute', marginLeft: 15, alignSelf: 'center' }}>
                                     <Image square source={vipLogo} style={{ height: 30, width: 30 }} />
@@ -90,7 +90,7 @@ export default class RenderDoctorInfo extends Component {
                     </Col>
                     <Col style={{ width: "25%", marginTop: 20 }}>
                         <RenderFavoritesCount
-                            favoritesCount={docFavoriteListCountOfDoctorIDs[item.doctor_id] ? docFavoriteListCountOfDoctorIDs[item.doctor_id] : '0'}
+                            favoritesCount={docFavoriteListCountOfDoctorIDs[item.doctor_id] !== undefined ? docFavoriteListCountOfDoctorIDs[item.doctor_id] : '0'}
                         />
                     </Col>
                     <Col style={{ width: "25%", marginTop: 20 }}>

@@ -24,11 +24,14 @@ class RenderSuggestionsList extends PureComponent {
         try {
             this.setState({ isLoading: true })
             const { bookappointment: { locationCordinates } } = this.props;
-            const locationData = {
-                "coordinates": locationCordinates,
-                "maxDistance": MAX_DISTANCE_TO_COVER
+            const suggestionReqData = {
+                locationData: {
+                    "coordinates": locationCordinates,
+                    "maxDistance": MAX_DISTANCE_TO_COVER
+                },
+                inputText: enteredText
             }
-            let resultOfSuggestionData = await getSpecialistDataSuggestions('suggestion', enteredText, locationData);
+            let resultOfSuggestionData = await getSpecialistDataSuggestions('suggestion', suggestionReqData);
             // console.log('resultOfSuggestionData.data' + JSON.stringify(resultOfSuggestionData.data))
             if (resultOfSuggestionData.success) {
                 this.setState({ suggestionList: resultOfSuggestionData.data, searchValue: enteredText });

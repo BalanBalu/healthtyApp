@@ -48,12 +48,11 @@ const enumerateStartToEndDates = (startDateByMoment, endDateByMoment, datesArry)
     }
     return datesArry
 }
+/** return Prime Doctor list on Top by using given Array */
+// const sortByPrimeDoctors = (firstObj, secObj) => firstObj.isPrimeDoctorOnNormalCardView === secObj.isPrimeDoctorOnNormalCardView ? 0 : firstObj.isPrimeDoctorOnNormalCardView ? -1 : 1;
 
-function sortByPrimeDoctors(a, b) {
-    if (a.isPrimeDoctorOnNormalCardView == true || b.isPrimeDoctorOnNormalCardView) {
-        return 1;
-    }
-}
+const sortByPrimeDoctors = (firstObj, secObj) => firstObj.isDoctorIdHostpitalIdSponsoredOnSwiperListView === secObj.isDoctorIdHostpitalIdSponsoredOnSwiperListView ? 0 : firstObj.isDoctorIdHostpitalIdSponsoredOnSwiperListView ? -1 : 1;
+
 const calculateDoctorUpdatedExperience = (experience) => {
     const updatedDate = getMoment(experience.updated_date);
     let getDocExpInMonthsByUpToDate = dateDiff(updatedDate, getMoment(new Date()), 'months');
