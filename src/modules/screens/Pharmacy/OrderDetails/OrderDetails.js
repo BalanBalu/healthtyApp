@@ -304,7 +304,7 @@ class OrderDetails extends Component {
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
                         {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined &&orderDetails.prescriptions.length!==0?
 
-                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10,marginTop: 10, justifyContent: 'center', alignItems: 'center', }}>
                                 <ImageZoom cropWidth={200}
                                     cropHeight={200}
                                     imageWidth={200}
