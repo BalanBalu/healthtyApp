@@ -179,6 +179,24 @@ export class Badge extends Component {
     }
 }
 
+export function getGender(data) {
+    console.log("data", data)
+    let genderAndAge = '';
+    if (data) {
+        if (data.gender) {
+            if (data.gender === 'M') {
+                genderAndAge = '(Male)'
+            }
+            else if (data.gender === 'F') {
+                genderAndAge = '(Female)'
+            }
+            else if (data.gender === 'O') {
+                genderAndAge = '(Others)'
+            }
+        }
+    }
+    return genderAndAge;
+}
 
 
 export function getAllEducation(data) {
@@ -212,6 +230,8 @@ export function getAllSpecialist(data) {
 }
 
 export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
+export const relationship = ['Select Retionship', 'Father', 'Mother', 'Husband', 'Wife', 'Son', 'Daughter']
+
 export const appointmentIssue = [
     { id: 0, value: 'If you see "Your payment was declined due to an issue with your account"' },
     { id: 1, value: 'You accidentally entered incorrect credit/debit card details like name on the card, card number, CVV, 3D secure PIN and expiry date incorrect.' },

@@ -40,8 +40,7 @@ async componentDidMount() {
         return;
     }
     this.userId = await AsyncStorage.getItem("userId");
-    this.callVideAndChat()
-   
+    this.callVideAndChat()  
 }
 async callVideAndChat(doctorIds) {
     this.setState({ isLoading: true })
