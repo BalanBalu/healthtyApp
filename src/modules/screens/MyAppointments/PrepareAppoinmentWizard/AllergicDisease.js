@@ -56,6 +56,7 @@ class AllergicDisease extends PureComponent {
                 allergy_info: checkBoxClick
             }
             this.setState({ isLoading: true })
+            if(checkBoxClick.length !==0){
             let response = await userFiledsUpdate(userId, data)
             console.log(JSON.stringify(response))
             if (response.success) {
@@ -67,6 +68,13 @@ class AllergicDisease extends PureComponent {
                 this.skippingButton(false)
                 this.props.navigation.navigate('HospitalizationAndSurgeries', { AppointmentId: appointmentId });
             }
+        }else{
+            Toast.show({
+                text: 'select atleast one',
+                type: "danger",
+                duration: 3000,
+            })  
+        }
         }
         catch (e) {
             console.log(e)
