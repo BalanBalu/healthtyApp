@@ -58,7 +58,7 @@ class CancelService extends Component {
 
       cancelReasonList.push(obj)
 
-      this.setState({ cancelReasonList: cancelReasonList, type, isLoading: false, reasonForCancel: cancelReasonList[0].cancel_reason })
+      this.setState({ cancelReasonList: cancelReasonList, type, isLoading: false, reasonForCancel: cancelReasonList[0].code })
     }
     catch (e) {
       console.log(e)
@@ -67,7 +67,7 @@ class CancelService extends Component {
   toggleRadio(data, index) {
     if (index !== -1) {
       console.log(this.state.cancelReasonList)
-      this.setState({ selectedIndex: index, reasonForCancel: data.cancel_reason })
+      this.setState({ selectedIndex: index, reasonForCancel: data.code })
     }
   }
 

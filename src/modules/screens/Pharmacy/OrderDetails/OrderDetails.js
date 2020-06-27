@@ -179,9 +179,10 @@ class OrderDetails extends Component {
         
             orderNumber: orderDetails.orderNumber,
             reasonForCancel: reasonForCancel,
-            commentForCancel: reasonForCancelComment,
+            reasonForCancelComment: reasonForCancelComment,
             userId: userId
         }
+   
 
         let result = await upDateOrderData(reqData)
           
@@ -301,7 +302,7 @@ class OrderDetails extends Component {
 
                             : null}
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
-                        {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined ?
+                        {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined &&orderDetails.prescriptions.length!==0?
 
                             <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
                                 <ImageZoom cropWidth={200}
@@ -380,7 +381,7 @@ class OrderDetails extends Component {
                             </Col>
                         </Row>
 
-                         {orderDetails.delivery_option === 0 ? 
+                        
                             <View>
                                 <Row style={{ marginTop: 10 }}>
                                     <Col size={5}>
@@ -388,7 +389,7 @@ class OrderDetails extends Component {
 
                                     </Col>
                                     <Col size={5}>
-                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
+                                        <Text style={styles.rsText}>₹ { orderDetails.deliveryType === 0 ? (orderDetails.delivery_charges || 0):'--'}</Text>
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
@@ -397,11 +398,11 @@ class OrderDetails extends Component {
 
                                     </Col>
                                     <Col size={5}>
-                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
+                                        <Text style={styles.rsText}>₹ {orderDetails.deliveryType === 0 ?orderDetails.delivery_tax || 0:'--'}</Text>
                                     </Col>
                                 </Row>
                             </View>
-                             : null} 
+
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
                                 <Text style={styles.grandTotalText}>Grand Total</Text>
