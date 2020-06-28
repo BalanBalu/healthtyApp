@@ -52,13 +52,13 @@ class CancelService extends Component {
 
 
       let obj = {
-    
-        code: "Others"
+        code:'OTHERS',
+        value: "Others"
       }
 
       cancelReasonList.push(obj)
 
-      this.setState({ cancelReasonList: cancelReasonList, type, isLoading: false, reasonForCancel: cancelReasonList[0].code })
+      this.setState({ cancelReasonList: cancelReasonList, type, isLoading: false, reasonForCancel: cancelReasonList[0].value })
     }
     catch (e) {
       console.log(e)
@@ -67,7 +67,7 @@ class CancelService extends Component {
   toggleRadio(data, index) {
     if (index !== -1) {
       console.log(this.state.cancelReasonList)
-      this.setState({ selectedIndex: index, reasonForCancel: data.code })
+      this.setState({ selectedIndex: index, reasonForCancel: data.value })
     }
   }
 
@@ -128,7 +128,7 @@ class CancelService extends Component {
                       <Row onPress={() => this.toggleRadio(item, index)} style={{ marginTop: 10 }}>
                         <Radio borderColor='black' selected={selectedIndex === index ? true : false} onPress={() => this.toggleRadio(item, index)}
                           selectedColor={"#775DA3"} testID='checkOption_1Selected' />
-                        <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15, marginTop: 3 }}>{item.code}</Text>
+                        <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15, marginTop: 3 }}>{item.value}</Text>
                       </Row>
                       {selectedIndex === index ?
 
