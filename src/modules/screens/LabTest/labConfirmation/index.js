@@ -91,13 +91,7 @@ class LabConfirmation extends Component {
             }
 
             if (result.delivery_address) {
-                let userAddressData = {
-                    mobile_no: result.delivery_address[0].mobile_no,
-                    coordinates: result.delivery_address[0].coordinates,
-                    type: result.delivery_address[0].type,
-                    address: result.delivery_address[0].address
-                }
-                patientAddress.push(userAddressData);
+                patientAddress = result.delivery_address
             }
             if (result.address.address) {
                 let userAddressData = {
@@ -110,7 +104,7 @@ class LabConfirmation extends Component {
             }
             await this.setState({ patientAddress, data: result })
             console.log("data", this.defaultPatientDetails)
-            // this.onChangeSelf()
+            console.log("patientAddress", this.state.patientAddress)
 
         }
         catch (e) {
@@ -127,7 +121,7 @@ class LabConfirmation extends Component {
     }
     onChangeSelf = async () => {
         console.log("Start:::", this.state.patientDetails.length);
-        if (this.state.selfChecked == true && patientDetails.length==0) {
+        if (this.state.selfChecked == true && patientDetails.length == 0) {
             patientDetails.unshift(this.defaultPatientDetails)
         }
         else if (this.state.selfChecked == false) {
@@ -135,7 +129,7 @@ class LabConfirmation extends Component {
         }
         this.setState({ patientDetails })
         console.log("self:::", this.state.patientDetails);
-        
+
     }
 
     onChangeCheckBox = async () => {
@@ -148,7 +142,7 @@ class LabConfirmation extends Component {
                     this.state.patientDetails.pop(this.state.patientDetails)
                 }
             })
-         this.setState({ errMsg:'' })
+            this.setState({ errMsg: '' })
 
         }
         await this.setState({ patientDetails })
@@ -195,9 +189,9 @@ class LabConfirmation extends Component {
 
 
     proceedToLabTestAppointment = async (paymentMode) => {
-        let { patientDetails, packageDetails, selectedAddress, itemSelected,errMsg } = this.state
+        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg } = this.state
         try {
-            console.log("errMsg",errMsg)
+            console.log("errMsg", errMsg)
             if (patientDetails.length == 0) {
                 Toast.show({
                     text: 'Kindly select or add patient details',
@@ -206,14 +200,14 @@ class LabConfirmation extends Component {
                 })
                 return false;
             }
-            if (errMsg){
+            if (errMsg) {
                 Toast.show({
                     text: 'Kindly fill other patient details',
                     type: "warning",
                     duration: 3000
                 });
                 return false;
-           }
+            }
             if (itemSelected === 'TEST_AT_HOME' && selectedAddress == null) {
                 Toast.show({
                     text: 'Kindly chosse Address',
@@ -224,7 +218,7 @@ class LabConfirmation extends Component {
             } else {
                 selectedAddress = packageDetails.location;
             }
-            
+
             let patientData = [];
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
@@ -540,7 +534,7 @@ class LabConfirmation extends Component {
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Save Address</Text>
                                     </Col>
                                     <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                        <TouchableOpacity onPress={() => this.editProfile('MapBox', 'delivery_Address')}>
+                                        <TouchableOpacity onPress={() => this.editProfile('MapBox', 'lab_delivery_Address')}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>Add new Address</Text>
                                         </TouchableOpacity>
                                     </Col>
