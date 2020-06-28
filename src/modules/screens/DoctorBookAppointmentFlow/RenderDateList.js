@@ -14,7 +14,6 @@ export default class RenderDatesList extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.shouldUpdate !== this.props.shouldUpdate) {
             return true
-
         }
         if (nextProps.onEndReachedIsTriggedFromRenderDateList == true) {
             return true

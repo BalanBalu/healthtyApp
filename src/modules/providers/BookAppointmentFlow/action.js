@@ -10,44 +10,6 @@ export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 import { store } from '../../../setup/store';
 
 
-/*  get All Active Sponsors data details for Doctors */
-export const serviceOfGetTotalActiveSponsorDetails4Doctors = async (doctorIds) => {
-    try {
-        const endPoint = 'sponsor/withoutAuth/' + doctorIds + '?active_sponsor=true';
-        const response = await getService(endPoint);
-        const respData = response.data;
-        return respData;
-    } catch (Ex) {
-        console.log('Ex is getting on fetch Doctor active sponsor list====>', Ex)
-        return {
-            success: false,
-            statusCode: 500,
-            error: Ex,
-            message: `Exception while getting on fetch Doctor active sponsor list : ${Ex}`
-        }
-    }
-}
-
-
-/*  get Fee and Next day availability slots for doctors */
-export const serviceOfGetNextDayAVailabilityAndFeeDetails4Doctors = async (doctorIds) => {
-    try {
-        const endPoint = 'V2/nextDayAvailableSlotsDates/' + doctorIds;
-        const response = await getService(endPoint);
-        const respData = response.data;
-        return respData;
-    } catch (Ex) {
-        // console.log('Ex is getting on fetch Doctor Fee and Next Day availability details====>', Ex.message)
-        return {
-            success: false,
-            statusCode: 500,
-            error: Ex,
-            message: `Exception while getting on fetch Fee and Next Day availability details : ${Ex.message}`
-        }
-    }
-}
-
-
 /* Update Sponsor Viewers Counts */
 export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorIds) {
     try {
@@ -70,7 +32,6 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
 export const searchByDocDetailsService = async (type, activeSponsor, reqData, skipCount, limit) => {
     try {
         const endPoint = `V2/doctor/search/${type}?active_sponsor=${activeSponsor}&skip=${skipCount}&limit=${limit}`;
-        // const endPoint = 'V2/doctor/search/search/' + inputKeywordFromSearch;
         const response = await postService(endPoint, reqData);
         const respData = response.data;
         return respData;

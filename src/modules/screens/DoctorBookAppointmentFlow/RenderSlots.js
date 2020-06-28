@@ -11,15 +11,15 @@ export default class RenderSlots extends Component {
     constructor(props) {
         super(props)
     }
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     return nextProps.shouldUpdate !== this.props.shouldUpdate;
-    // }
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.shouldUpdate === this.props.shouldUpdate) return false;
+        return true
+    }
     render() {
-        debugger
+        console.log('Slots Rendering=======>');
         const { slotDetails: { slotData, selectedSlotIndex, doctorIdHostpitalId }, onSlotItemPress, selectedDate4DocIdHostpitalIdToStoreInObj, selectedSlotItem4DocIdHostpitalIdToStoreInObj } = this.props;
         const { width } = Dimensions.get('screen');
         const itemWidth = (width) / 4;
-        debugger
         return <FlatList
             numColumns={4}
             // extraData={[selectedDate4DocIdHostpitalIdToStoreInObj, selectedSlotItem4DocIdHostpitalIdToStoreInObj]}

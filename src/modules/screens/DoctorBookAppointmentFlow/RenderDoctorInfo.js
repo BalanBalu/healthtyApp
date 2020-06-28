@@ -10,14 +10,10 @@ export default class RenderDoctorInfo extends Component {
     constructor(props) {
         super(props)
     }
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     debugger
-
-    //     if (this.props.item.doctorIdHostpitalId == nextProps.item.doctorIdHostpitalId && this.props.docInfoData.fee == nextProps.docInfoData.fee && this.props.docInfoData.feeWithoutOffer == nextProps.docInfoData.feeWithoutOffer) {
-    //         return false
-    //     }
-    //     return true
-    // }
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.shouldUpdate === nextProps.shouldUpdate) return false
+        return true
+    }
     getDistance(distanceInMeter) {
         if (!isNaN(distanceInMeter)) {
             if (distanceInMeter > 0) {
@@ -32,10 +28,8 @@ export default class RenderDoctorInfo extends Component {
     }
 
     render() {
-        // console.log('Rendering Doc Info====>');
-        // debugger
+        console.log('Rendering Doc Info====>');
         const { item, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList, onPressGoToBookAppointmentPage } = this.props;
-        // debugger
         return (
             <View>
                 <Row onPress={() => onPressGoToBookAppointmentPage(item)}>
@@ -65,7 +59,7 @@ export default class RenderDoctorInfo extends Component {
                                 onPressFavoriteIcon={() => addToFavoritesList(item.doctor_id)}
                             />
                         </Row>
-                        {item.isDoctorIdHostpitalIdSponsoredOnNormalCarView === true ?
+                        {item.is_doctor_sponsor == true ?
                             <Row>
                                 <View style={{ position: 'absolute', marginLeft: 15, alignSelf: 'center' }}>
                                     <Image square source={vipLogo} style={{ height: 30, width: 30 }} />

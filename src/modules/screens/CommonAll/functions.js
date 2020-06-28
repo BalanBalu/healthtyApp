@@ -49,26 +49,12 @@ const enumerateStartToEndDates = (startDateByMoment, endDateByMoment, datesArry)
     return datesArry
 }
 /** return Prime Doctor list on Top by using given Array */
-// const sortByPrimeDoctors = (firstObj, secObj) => firstObj.isPrimeDoctorOnNormalCardView === secObj.isPrimeDoctorOnNormalCardView ? 0 : firstObj.isPrimeDoctorOnNormalCardView ? -1 : 1;
+const sortByPrimeDoctors = (firstObj, secObj) => firstObj.is_doctor_sponsor === secObj.is_doctor_sponsor ? 0 : firstObj.is_doctor_sponsor ? -1 : 1;
 
-const sortByPrimeDoctors = (firstObj, secObj) => firstObj.isDoctorIdHostpitalIdSponsoredOnSwiperListView === secObj.isDoctorIdHostpitalIdSponsoredOnSwiperListView ? 0 : firstObj.isDoctorIdHostpitalIdSponsoredOnSwiperListView ? -1 : 1;
-
-const calculateDoctorUpdatedExperience = (experience) => {
-    const updatedDate = getMoment(experience.updated_date);
-    let getDocExpInMonthsByUpToDate = dateDiff(updatedDate, getMoment(new Date()), 'months');
-    let expInMonthsByUpdated = (experience.year * 12) + experience.month
-    let expInMonths = getDocExpInMonthsByUpToDate + expInMonthsByUpdated;
-    return {
-        month: expInMonths % 12,
-        year: parseInt(expInMonths / 12),
-        isPrivate: experience.isPrivate
-    };
-}
 export {
     getUserGenderAndAge,
     enumerateStartToEndDates,
     sortByStartTime,
     reducer,
-    sortByPrimeDoctors,
-    calculateDoctorUpdatedExperience
+    sortByPrimeDoctors
 }

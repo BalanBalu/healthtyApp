@@ -25,12 +25,9 @@ class FilterDocInfo extends Component {
     }
 
     async componentDidMount() {
-        debugger
         const { bookAppointmentData: { doctorInfoListAndSlotsData }, navigation } = this.props;
-        console.log('doctorInfoListAndSlotsData=====>', JSON.stringify(doctorInfoListAndSlotsData));
-        debugger
+        // console.log('doctorInfoListAndSlotsData=====>', JSON.stringify(doctorInfoListAndSlotsData));
         const filterData = navigation.getParam('filterData');
-        debugger
         if (Object.keys(filterDataObject).length) { // condition for when click the Clear button and then press the back button and come back again Filter page (The previous selected filtered values from Doctor Search list page are Showing again)
             if (filterData) {
                 if (filterData.gender) {

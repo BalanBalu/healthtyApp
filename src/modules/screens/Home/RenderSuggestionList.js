@@ -132,7 +132,7 @@ class RenderSuggestionsList extends PureComponent {
                                             inputKeywordFromSearch: item.value,
                                             locationDataFromSearch: {
                                                 type: 'geo',
-                                                coordinates: locationCordinates,
+                                                "coordinates": locationCordinates,
                                                 maxDistance: MAX_DISTANCE_TO_COVER
                                             }
                                         })
