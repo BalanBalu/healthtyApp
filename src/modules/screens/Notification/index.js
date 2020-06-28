@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, ScrollView,YellowBox } from 'react-native';
 // import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import {
@@ -12,7 +12,8 @@ import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, dateDiff, notificationNavigation } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
 import { store } from '../../../setup/store';
-
+import  {RenderFooterLoader} from '../../common';
+YellowBox.ignoreWarnings(['Async']);
 class Notification extends Component {
     constructor(props) {
 
@@ -20,10 +21,11 @@ class Notification extends Component {
         this.state = {
             data: [],
             notificationId: null,
-
-            isLoading: false
+            isLoading: false,
+            skip:0,
+			limit:10
         };
-
+        this.onEndReachedCalledDuringMomentum = true;
     }
 
     async componentDidMount() {
@@ -104,10 +106,14 @@ class Notification extends Component {
 
             let userId = await AsyncStorage.getItem('userId');
 
-            let result = await fetchUserNotification(userId);
+            let result = await fetchUserNotification(userId,this.state.skip,this.state.limit);
 
             if (result.success) {
-                this.setState({ data: result.data })
+               
+                let temp=this.state.data.concat(result.data)
+   
+                this.setState({ data: temp})
+               
             }
 
 
@@ -123,7 +129,30 @@ class Notification extends Component {
 
     }
 
+    renderFooter() {
+		return (
+		<	RenderFooterLoader
+    footerLoading={this.state.footerLoading}
+    />
+		);
+	}
+    handleLoadMore = async () => {
+   
+		if (!this.onEndReachedCalledDuringMomentum) {
+     
+			console.log('On Hanndle loading ' + this.state.skip);
 
+			this.onEndReachedCalledDuringMomentum = true;
+			await this.setState({ skip: this.state.skip + this.state.limit, footerLoading: true });
+	
+				
+					await this.getUserNotification()
+				
+		
+
+	}
+	this.setState({ footerLoading: false })
+	}
 
     render() {
         const { data, isLoading } = this.state;
@@ -133,6 +162,7 @@ class Notification extends Component {
             < Container style={styles.container} >
                 {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}
                 <Content>
+              
                     {isLoading === false ?
                         <Spinner
                             color="blue"
@@ -155,22 +185,28 @@ class Notification extends Component {
 
                             :
 
-                            < ScrollView horizontal={false}>
-                                <NavigationEvents
-                                    onWillFocus={payload => { this.backNavigation(payload) }}
-                                />
+                            // < ScrollView horizontal={false}>
+                              
 
-                                <List noBorder>
+                                // <List noBorder>
+                                     
                                     <FlatList
                                         // horizontal={true}
                                         data={data}
                                         extraData={this.state}
+                                        onEndReached={() => this.handleLoadMore()}
+                                        onEndReachedThreshold={0.5}
+                                        onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+                                        ListFooterComponent={this.renderFooter.bind(this)}
                                         renderItem={({ item, index }) =>
 
 
 
                                             <Card style={{ borderRadius: 5, width: 'auto', padding: 15, backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
                                                 {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
+                                                <NavigationEvents
+                                    onWillFocus={payload => { this.backNavigation(payload) }}
+                                />
                                                 <TouchableOpacity onPress={() => this.updateNavigation(item)} testID='notificationView'>
                                                     <View >
 
@@ -207,9 +243,9 @@ class Notification extends Component {
 
                                         }
                                         keyExtractor={(item, index) => index.toString()} />
-                                </List>
+                                // </List>
 
-                            </ ScrollView>
+                            // </ ScrollView>
 
 
                     }
