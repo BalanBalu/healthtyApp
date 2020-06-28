@@ -5,7 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, View, TextInput, TouchableOpacity } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
-import { saveEvent } from '../../../setup/calendarEvent'
+
 import Spinner from '../../../components/Spinner';
 import { renderDoctorImage, getDoctorEducation, getAllSpecialist } from '../../common';
 import { SERVICE_TYPES } from '../../../setup/config';
@@ -86,13 +86,7 @@ export default class PaymentReview extends Component {
     console.log('Book Appointment Payment Update Response ');
 
     if (response.success) {
-       let auth = saveEvent('doctor appointment',{
-        startDate: '2020-06-28T05:30:00.000Z',
-        endDate:'2020-06-28T:06:00.000Z'
-      });
-      console.log(auth)
-      console.log('res')
-      console.log(JSON.stringify(response))
+      
       this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
     } else {
       Toast.show({

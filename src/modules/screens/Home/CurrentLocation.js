@@ -90,6 +90,7 @@ try {
      setTimeout(async () => {
       Geolocation.requestAuthorization();
       CallKeepService.setupCallkeep();
+      requestCalendarPermissions()
       console.log('Getting Current Llocation Androud');
       Geolocation.getCurrentPosition(async (position) => {
         console.log('position '+ position);
