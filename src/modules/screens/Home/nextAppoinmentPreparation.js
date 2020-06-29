@@ -48,7 +48,6 @@ class NextAppoinmentPreparation extends PureComponent {
 				// on_going_appointment: true
 			};
 
-            // alert(JSON.stringify(userId))
             let upCommingAppointmentResult = await getUserAppointments(userId, filters);
            
 
@@ -105,7 +104,7 @@ class NextAppoinmentPreparation extends PureComponent {
 
                 const { AppoinmentData, updatedDate } = this.state
 
-                alert(JSON.stringify(this.state.AppoinmentData))
+               
                 let time = [...AppoinmentData]
                 time.map((t) => {
                     let appointmentId = t.appointmentResult._id;
