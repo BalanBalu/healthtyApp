@@ -1,8 +1,12 @@
 import RNCalendarEvents from "react-native-calendar-events";
 
-import React, { Component } from "react";
 import { Text, View, Button, Alert,BackHandler, AsyncStorage } from "react-native";
 const CALENDERID = 'calenderId';
+/*
+    1. SaveEvent when User Creates an Appointment → (providers/bookappointment.js) and update the EventId on DB as node called “user_calender_event_id“
+    2. UpdateEvent When user Approves the “PostPoned Appointment”)
+    3. RemoveEvent when User Reject the “PostPoned Appointment” or Cancel the Appointment
+*/
 export async function createCalendar() {
  const result = await requestCalendarPermissions();
  if(result ==='authorized') {
@@ -19,7 +23,7 @@ export async function createCalendar() {
         entityType: 'event',
         name: 'MEDFLIC',
         accessLevel: 'read',
-        ownerAccount: 'sathishkrish20@gmail.com',
+        ownerAccount: 'medflic',
         source: {
           name: 'MEDFLIC',
           type: 'event'
