@@ -29,7 +29,12 @@ import {
 } from '../../providers/bookappointment/bookappointment.action';
 
 import { userReviews } from '../../providers/profile/profile.action';
-
+import {
+  fetchAvailableDoctors4Video, createVideoConsuting
+} from '../../screens/VideoConsulation/services/video-consulting-service';
+import {
+  fetchAvailableDoctors4Chat, createChat
+} from '../../providers/chat/chat.action';
 import moment from 'moment';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../common';
 import { store } from '../../../setup/store';
@@ -79,7 +84,8 @@ class BookAppoinment extends Component {
       userId: null,
       isReviewLoading: false,
       showMoreOption: false,
-      doctorIdWithHosId: []
+      doctorIdWithHosId: [],
+      availableVideoDoctors:[]
     }
 
   }
@@ -87,6 +93,7 @@ class BookAppoinment extends Component {
 
 
   async componentDidMount() {
+   
     const { navigation } = this.props;
     const availabilitySlots = navigation.getParam('fetchAvailabiltySlots') || false;
     this.setState({ isLoading: true });
@@ -132,6 +139,7 @@ class BookAppoinment extends Component {
       console.log(this.state.doctorDetails);
     }
     this.setState({ isLoading: false, slotDatesToShow: this.slotDatesToShow });
+    this.callVideAndChat()
   }
 
 
@@ -442,10 +450,118 @@ class BookAppoinment extends Component {
     this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
   }
 
+
+
+
+
+
+  async callVideAndChat(doctorIds) {
+    this.setState({ isLoading: true })
+    let availablityMap = new Map()
+    let availabilityForVideo = false;
+    let availabilityForChat = false;
+    let [ availableDocsVideo, availableDocsChat ] = await Promise.all([
+        this.getDoctorAvailableDoctorData([this.state.doctorId]).catch(ex => { console.log(ex);return [] } ),
+        this.getDoctorAvailableDoctorDataChat([this.state.doctorId]).catch(ex => { console.log(ex); return [] }),
+    ])
+    console.log('availableDocsChat==>,', availableDocsChat);
+    availableDocsVideo.forEach(doc => {
+        availabilityForVideo = true;
+    });
+    availableDocsChat.forEach(docChat => {
+       availabilityForChat = true;
+    })
+    this.setState({ availabilityForVideo, availabilityForChat, isLoading: false})
+}
+
+
+getDoctorAvailableDoctorData = async(doctorIds) => {
+    try {
+         if(doctorIds) {
+            doctorIds = doctorIds.join(',')
+         }
+         const availableDocData = await fetchAvailableDoctors4Video(doctorIds);
+         if (availableDocData.success === true) {
+           return availableDocData.data;
+         }
+    } catch (error) {
+            console.log(error);
+            return [];
+    }
+    return [];
+ }
+
+ getDoctorAvailableDoctorDataChat = async (doctorIds) => {
+  console.log('doctorIds' + JSON.stringify(doctorIds));
+  try {
+      let request = {};
+      if(doctorIds) { 
+          request = {
+              doctor_ids: doctorIds
+          }
+      }
+      const availableDocData = await fetchAvailableDoctors4Chat(request);
+      if (availableDocData.success === true) {
+          return availableDocData.data
+      }
+  } catch (error) {
+      return []
+  }
+  return []
+}
+
+getMinVideoChatConsultFee(item) {
+    let videoFee = null;
+    let chatFee = null;
+    console.log(item);
+    if(item && item.availabilityData && item.availabilityData[0]) {
+        videoFee = Number(item.availabilityData[0].fee);
+    } 
+    if(item.chat_service_config) {
+        if(item.chat_service_config.chat_fee !== undefined && item.chat_service_config.chat_fee !== null && item.chat_service_config.chat_fee !== '') {
+            chatFee = Number(item.chat_service_config.chat_fee);
+        }
+    }
+    if(videoFee !== null && chatFee !== null) {
+        return Math.min(videoFee, chatFee)
+    }
+    if(videoFee !== null) {
+        return videoFee;
+    } 
+    if(chatFee !== null) {
+        return chatFee;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   render() {
 
     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
-    const { doctorData, isLoading, selectedDate, selectedSlotItem, pressTab, isLoggedIn, servicesByCategories, categoryShownObj, isLoadedUserReview, reviewData, isReviewLoading } = this.state;
+    const { doctorData, isLoading, selectedDate, selectedSlotItem, pressTab, isLoggedIn, servicesByCategories, categoryShownObj, isLoadedUserReview, reviewData, isReviewLoading ,availabilityForVideo, availabilityForChat } = this.state;
 
     return (
       <Container style={styles.container}>
@@ -456,7 +572,7 @@ class BookAppoinment extends Component {
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })} style={{paddingRight:60,paddingBottom:5}}>
                       <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
                     </TouchableOpacity>
                   </Col>
@@ -485,7 +601,7 @@ class BookAppoinment extends Component {
                   </Col>
                 </Row>
 
-                <Row style={{ marginBottom: 10 }}>
+                <Row style={{ borderBottomWidth:0.3,borderBottomColor:'gray',paddingBottom:10,marginLeft:10,marginRight:10 }}>
                   <Col style={{ width: "25%", marginTop: 15, }}>
                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Experience</Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}> {getDoctorExperience(doctorData.calulatedExperience)}</Text>
@@ -520,6 +636,33 @@ class BookAppoinment extends Component {
 
                   </Col>
                 </Row>
+                <Row style={{marginLeft:10,marginRight:10,justifyContent:'center',alignItems:"center",marginTop:10,marginBottom:5}}>
+                {availabilityForVideo  === true ?
+                <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
+                    <TouchableOpacity style={{flexDirection:'row'}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
+                      <Icon name="ios-videocam" style={{fontSize:25,color:'#7F49C3'}}/>
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:3}}>Video</Text>
+                    </TouchableOpacity>
+                  </Col> 
+                  : null}
+                      {availabilityForChat === true ?
+                  <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
+                  <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
+                      <Icon name="ios-chatboxes" style={{fontSize:25,color:'#7F49C3'}} />
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:2}}>Chat</Text>
+                    </TouchableOpacity>
+                  </Col>
+                  : null}
+                  <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
+                  <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}}>
+                      <Icon name="md-share" style={{fontSize:18,color:'#7F49C3'}} />
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>Share</Text>
+                    </TouchableOpacity>
+                  </Col>
+
+
+                  
+                     </Row>
 
                 {/* <Row style={{borderTopColor:'#000',borderTopWidth:0.5,padding:5,width:'100%',marginLeft:0,marginRight:0}}>
                         <Col style={{width:'33.33%',alignItems:'center',marginTop:10,borderRightColor:'#000',borderRightWidth:1}}>

@@ -4,6 +4,7 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { BackHandler, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
+import{requestCalendarPermissions, createCalendar} from '../../../setup/calendarEvent';
 import { store } from '../../../setup/store';
 import Axios from 'axios';
 import { CallKeepService } from '../VideoConsulation/services';
@@ -31,6 +32,10 @@ try {
       if (isGranted) {
           CallKeepService.setupCallkeep();
           console.log('You ARE RUNNING ON ANDROID')
+          const permissionResult = await requestCalendarPermissions()
+          if(permissionResult ==='authorized') {
+            createCalendar();
+          }
           Geolocation.getCurrentPosition(async (position) => {
             const origin_coordinates = [position.coords.latitude, position.coords.longitude,];
             let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${origin_coordinates[1]},${origin_coordinates[0]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
@@ -88,6 +93,10 @@ try {
      setTimeout(async () => {
       Geolocation.requestAuthorization();
       CallKeepService.setupCallkeep();
+      const permissionResult = await requestCalendarPermissions()
+      if(permissionResult ==='authorized') {
+          createCalendar();
+      }
       console.log('Getting Current Llocation Androud');
       Geolocation.getCurrentPosition(async (position) => {
         console.log('position '+ position);

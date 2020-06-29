@@ -101,7 +101,7 @@ class LabAppointmentList extends Component {
             let userId = await AsyncStorage.getItem("userId");
             let filters = {
                 startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
-                endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
+                endDate: subTimeUnit(new Date(), 1, 'days').toUTCString(),
             };
             let result = await getLapAppointments(userId, filters);
 
@@ -129,7 +129,7 @@ class LabAppointmentList extends Component {
                     })
                 }
                 result.sort(function (firstDateValue, secondDateValue) {
-                    return firstDateValue.appointment_starttime < secondDateValue.appointment_starttime ? -1 : 0
+                    return firstDateValue.appointment_starttime > secondDateValue.appointment_starttime ? -1 : 0
                 })
                 this.setState({
                     pastData: result,

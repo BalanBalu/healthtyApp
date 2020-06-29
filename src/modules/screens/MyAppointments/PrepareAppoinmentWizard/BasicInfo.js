@@ -38,7 +38,7 @@ class BasicInfo extends PureComponent {
             this.setState({ isLoading: true })
             let response = await prepareAppointmentUpdate(appointmentId, data)
 
-            debugger
+            
             console.log(response);
             if (response.success) {
                 Toast.show({
