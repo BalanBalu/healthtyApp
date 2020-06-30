@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
+import { Container, Content, Text, Toast, Button, Card, Form, CheckBox, Picker, Item, List, ListItem, Left, Thumbnail, Icon, Right } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, Modal } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
 import { enumerateStartToEndDates } from '../../CommonAll/functions'
@@ -13,6 +13,10 @@ import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
 import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
 import { store } from '../../../../setup/store'
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import { color } from 'react-native-reanimated';
+
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 
 class labSearchList extends Component {
@@ -33,6 +37,11 @@ class labSearchList extends Component {
             refreshCountOnDateFL: 1,
             renderRefreshCount: 0,
             isLoggedIn: false,
+            modalVisible: false,
+            proposedVisible: false,
+            testOptionChecked: false,
+            values: [3, 7],
+            selected: "key0"
         }
     }
     async componentDidMount() {
@@ -272,6 +281,21 @@ class labSearchList extends Component {
         this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
     }
 
+
+    setModalVisible(visible) {
+        this.setState({ modalVisible: visible });
+    }
+
+    multiSliderValuesChange = (values) => {
+        this.setState({
+            values,
+        });
+    }
+    onValueChange(value) {
+        this.setState({
+            selected: value
+        });
+    }
     renderLabListCards(item) {
 
         const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
@@ -289,7 +313,7 @@ class labSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: '80%' }}>
                                         <Row style={{ marginLeft: 55, }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.labInfo.lab_name+' '+item.labInfo.location_code}</Text>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.labInfo.lab_name + ' ' + item.labInfo.location_code}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
                                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{(item.labCatInfo.categoryInfo && item.labCatInfo.categoryInfo.category_name) + ' - '}</Text>
@@ -410,12 +434,16 @@ class labSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', borderLeftColor: 'gray', borderLeftWidth: 1 }}>
                                         <Row>
-                                            <Col style={{ width: '35%', marginLeft: 10 }}>
-                                                <Icon name='ios-funnel' style={{ color: 'gray' }} />
-                                            </Col>
-                                            <Col style={{ width: '65%' }}>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>
-                                            </Col>
+                                            <TouchableOpacity onPress={() => {
+                                                this.setModalVisible(true);
+                                            }} style={{ flexDirection: 'row' }}>
+                                                <Col style={{ width: '35%', marginLeft: 10 }}>
+                                                    <Icon name='ios-funnel' style={{ color: 'gray' }} />
+                                                </Col>
+                                                <Col style={{ width: '65%' }}>
+                                                    <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>
+                                                </Col>
+                                            </TouchableOpacity>
                                         </Row>
                                     </Col>
                                 </Row>
@@ -433,6 +461,248 @@ class labSearchList extends Component {
                                 }
                             </View>
                         </View>
+
+                        <Modal
+                            animationType='fade'
+                            transparent={true}
+                            backdropColor="transparent"
+                            backgroundColor="transparent"
+                            containerStyle={{
+                                justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            }}
+                            visible={this.state.modalVisible}
+                            animationType={'slide'}
+                            overlayColor={'rgba(0,0,0,0.5)'}
+                        >
+                            <Grid style={{
+                                backgroundColor: '#fff',
+                                position: 'absolute',
+                                top: 100,
+                                justifyContent: 'center',
+                                borderRadius: 5, borderColor: 'gray', borderWidth: 0.3
+                            }}>
+                                <View style={{ width: '100%' }}>
+                                    <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
+                                        <Row >
+                                            <Col size={6}>
+                                                <Row style={styles.rowMainText}>
+                                                    <Text style={styles.mainHeadText}>Test Option</Text>
+                                                </Row>
+                                            </Col>
+                                            <Col size={4}></Col>
+                                        </Row>
+                                        <View>
+                                            <Row style={{ paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3, }}>
+                                                <Col size={6} >
+                                                    <Row style={{ marginTop: 10, paddingLeft: 5 }}>
+                                                        <Col size={5}>
+                                                            <TouchableOpacity style={styles.homeTextButton}>
+                                                                <Text style={styles.innerTexts}>Test at Home</Text>
+
+                                                            </TouchableOpacity>
+                                                        </Col>
+                                                        <Col size={5} style={{ marginLeft: 5 }}>
+                                                            <TouchableOpacity style={styles.labTextButton}>
+                                                                <Text style={styles.innerTexts}>Test at Lab</Text>
+
+                                                            </TouchableOpacity>
+                                                        </Col>
+                                                    </Row>
+                                                </Col>
+                                                <Col size={4}>
+                                                </Col>
+                                            </Row>
+                                        </View>
+                                        <Row style={{ marginTop: 10 }} >
+                                            <Col size={6}>
+                                                <Row style={styles.rowMainText}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000' }}>Services</Text>
+                                                </Row>
+                                            </Col>
+                                            <Col size={4}></Col>
+                                        </Row>
+
+                                        <Row style={{ marginTop: 10, paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3 }}>
+                                            <Col size={10}>
+                                                <TouchableOpacity onPress={() => this.toggle("Services")}>
+                                                    <Row >
+
+                                                        <Col size={10} style={styles.multiSelectStyle}>
+                                                            <SectionedMultiSelect
+                                                                styles={{
+                                                                    selectToggleText: {
+                                                                        color: '#909090',
+                                                                        fontSize: 12,
+
+                                                                        marginTop: 20,
+                                                                        height: 15
+
+                                                                    },
+                                                                    chipIcon: {
+                                                                        color: '#909090',
+                                                                    },
+
+                                                                }}
+                                                                items={this.state.languageData}
+                                                                uniqueKey='value'
+                                                                displayKey='value'
+                                                                selectText='Select Services'
+                                                                selectToggleText={{ fontSize: 10, }}
+                                                                searchPlaceholderText='Search Your Languages'
+                                                                modalWithTouchable={true}
+                                                                showDropDowns={true}
+                                                                hideSearch={false}
+                                                                showRemoveAll={true}
+                                                                showChips={false}
+                                                                readOnlyHeadings={false}
+                                                                onSelectedItemsChange={this.onSelectedStatusChange}
+                                                                selectedItems={this.state.language}
+                                                                colors={{ primary: '#18c971' }}
+                                                                showCancelButton={true}
+                                                                animateDropDowns={true}
+                                                                selectToggleIconComponent={
+                                                                    <Icon
+                                                                        name="ios-arrow-down"
+                                                                        style={{
+                                                                            fontSize: 20,
+                                                                            marginHorizontal: 6,
+                                                                            color: '#909090',
+                                                                            textAlign: 'center',
+                                                                            marginTop: 10,
+                                                                        }}
+                                                                    />
+                                                                }
+
+                                                                testID='languageSelected'
+                                                            />
+                                                        </Col>
+
+
+
+                                                    </Row>
+                                                </TouchableOpacity>
+                                            </Col>
+                                        </Row>
+                                        <Row style={{ marginTop: 10 }}>
+                                            <Col size={6}>
+                                                <Row style={styles.rowMainText}>
+                                                    <Text style={styles.mainHeadText}>Sub Categories</Text>
+                                                </Row>
+                                            </Col>
+                                            <Col size={4}></Col>
+                                        </Row>
+                                        <Row style={{ marginTop: 10, paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3 }}>
+                                            <Col size={10}>
+                                                <TouchableOpacity onPress={() => this.toggle("Services")}>
+                                                    <Row >
+
+                                                        <Col size={10} style={styles.multiSelectStyle}>
+                                                            <SectionedMultiSelect
+                                                                styles={{
+                                                                    selectToggleText: {
+                                                                        color: '#909090',
+                                                                        fontSize: 12,
+                                                                        marginTop: 20,
+                                                                        height: 15
+                                                                    },
+                                                                    chipIcon: {
+                                                                        color: '#909090',
+                                                                    },
+                                                                }}
+                                                                items={this.state.languageData}
+                                                                uniqueKey='value'
+                                                                displayKey='value'
+                                                                selectText='Select Sub Category'
+                                                                selectToggleText={{ fontSize: 10, }}
+                                                                searchPlaceholderText='Search Your Languages'
+                                                                modalWithTouchable={true}
+                                                                showDropDowns={true}
+                                                                hideSearch={false}
+                                                                showRemoveAll={true}
+                                                                showChips={false}
+                                                                readOnlyHeadings={false}
+                                                                onSelectedItemsChange={this.onSelectedStatusChange}
+                                                                selectedItems={this.state.language}
+                                                                colors={{ primary: '#18c971' }}
+                                                                showCancelButton={true}
+                                                                animateDropDowns={true}
+                                                                selectToggleIconComponent={
+                                                                    <Icon
+                                                                        name="ios-arrow-down"
+                                                                        style={{
+                                                                            fontSize: 20,
+                                                                            marginHorizontal: 6,
+                                                                            color: '#909090',
+                                                                            textAlign: 'center',
+                                                                            marginTop: 10,
+                                                                        }}
+                                                                    />
+                                                                }
+
+                                                                testID='languageSelected'
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                </TouchableOpacity>
+                                            </Col>
+                                        </Row>
+                                        <View >
+                                            <Row style={{ marginTop: 10 }}>
+                                                <Col size={6}>
+
+                                                    <Row style={styles.rowMainText}>
+                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000' }}>Price</Text>
+                                                    </Row>
+                                                </Col>
+                                                <Col size={4}></Col>
+                                            </Row>
+                                            <View >
+                                                <Row style={{ paddingLeft: 5, paddingRight: 5, paddingTop: 5, }}>
+                                                    <Col size={10}>
+                                                        <Row>
+                                                            <Col size={1} style={{ justifyContent: 'center', height: 25, }}>
+                                                                <TouchableOpacity style={styles.priceDetails}>
+                                                                    <Text style={styles.innerTexts}>100</Text>
+                                                                </TouchableOpacity>
+                                                            </Col>
+                                                            <Col size={8} style={{ marginTop: -12, marginLeft: 8 }}>
+                                                                <MultiSlider
+                                                                    values={[this.state.values[0], this.state.values[1]]}
+                                                                    sliderLength={275}
+                                                                    onValuesChange={this.multiSliderValuesChange}
+                                                                    min={0}
+                                                                    max={10}
+                                                                    step={1}
+                                                                    touchDimensions={{ height: 50, width: 50, borderRadius: 15, slipDisplacement: 200 }}
+                                                                    customMarkerRight={(e) => {
+                                                                        return (<CustomSliderMarkerRight
+                                                                            currentValue={e.currentValue} />)
+                                                                    }}
+                                                                />
+                                                            </Col>
+                                                            <Col size={1} style={{ justifyContent: 'center', height: 25, marginLeft: 5 }}>
+                                                                <TouchableOpacity style={styles.priceDetails}>
+                                                                    <Text style={styles.innerTexts}>800</Text>
+
+                                                                </TouchableOpacity>
+                                                            </Col>
+                                                        </Row>
+
+                                                    </Col>
+                                                </Row>
+                                                <Row style={{ borderTopColor: '#909090', borderTopWidth: 0.3, paddingBottom: 15, paddingTop: 10 }}>
+                                                    <Right>
+                                                    <TouchableOpacity onPress={() => { this.setModalVisible(false)}}>
+                                                        <Text style={styles.doneButton}>DONE</Text>
+                                                        </TouchableOpacity>
+                                                    </Right>
+                                                </Row>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </Grid>
+                        </Modal>
                     </Content>
                 }
             </Container >

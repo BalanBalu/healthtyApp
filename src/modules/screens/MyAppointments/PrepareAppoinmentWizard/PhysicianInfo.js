@@ -3,7 +3,7 @@ import {
     Container, Content, Text, View, Badge, Toast, Radio, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform, Alert } from 'react-native';
 import Spinner from '../../../../components/Spinner';
 import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bookappointment.action'
@@ -63,6 +63,8 @@ class PhysicianInfo extends PureComponent {
             }
 
             this.setState({ isLoading: true })
+            if( data.primary_care_physician_info.physician_name != undefined || data.primary_care_physician_info.hospital_name != undefined || data.primary_care_physician_info.mobile_no != undefined ){
+
             let response = await userFiledsUpdate(userId, data)
             console.log(JSON.stringify(response))
             if (response.success) {
@@ -74,6 +76,15 @@ class PhysicianInfo extends PureComponent {
                 this.skippingButton(false);
                 this.props.navigation.navigate('PastMedicalConditions', { AppointmentId: appointmentId });
             }
+        }
+        else{
+            Toast.show({
+                text: 'Please fill atleast one of the  field',
+                type: 'danger',
+                duration: 3000
+              });
+
+        }
         }
         catch (e) {
             console.log(e)

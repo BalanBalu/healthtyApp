@@ -52,8 +52,8 @@ class PastMedicalConditions extends PureComponent {
             let data = {
                 past_health_condition: checkBoxClick
             }
-
             this.setState({ isLoading: true })
+            if(checkBoxClick.length !==0){
             let response = await userFiledsUpdate(userId, data)
 
             console.log(JSON.stringify(response))
@@ -66,6 +66,15 @@ class PastMedicalConditions extends PureComponent {
                 this.skippingButton(false)
                 this.props.navigation.navigate('PatientInfo', { AppointmentId: appointmentId });
             }
+        }
+        else{
+            Toast.show({
+                text: 'select atleast one',
+                type: "danger",
+                duration: 3000,
+            })  
+        }
+
         }
         catch (e) {
             console.log(e)
