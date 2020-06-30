@@ -35,6 +35,7 @@ class LabConfirmation extends Component {
             itemSelected: 'TEST_AT_LAP',
             packageDetails: {},
             selectedAddress: null,
+            buttonEnable:false
 
 
         };
@@ -81,7 +82,7 @@ class LabConfirmation extends Component {
             let fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
-            let patientAddress = [], patientDetails = [];
+            let patientAddress = [];
 
             this.defaultPatientDetails = {
                 type: 'self',
@@ -120,16 +121,13 @@ class LabConfirmation extends Component {
         this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType: addressType })
     }
     onChangeSelf = async () => {
-        console.log("Start:::", this.state.patientDetails.length);
         if (this.state.selfChecked == true && patientDetails.length == 0) {
             patientDetails.unshift(this.defaultPatientDetails)
         }
-        else if (this.state.selfChecked == false) {
+        else if (this.state.selfChecked == false && this.state.patientDetails[0].type=='self') {
             this.state.patientDetails.shift(this.defaultPatientDetails)
         }
         this.setState({ patientDetails })
-        console.log("self:::", this.state.patientDetails);
-
     }
 
     onChangeCheckBox = async () => {
@@ -189,7 +187,7 @@ class LabConfirmation extends Component {
 
 
     proceedToLabTestAppointment = async (paymentMode) => {
-        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg } = this.state
+        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg  } = this.state
         try {
             console.log("errMsg", errMsg)
             if (patientDetails.length == 0) {
@@ -223,7 +221,7 @@ class LabConfirmation extends Component {
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
-            this.setState({ isLoading: true });
+            this.setState({ isLoading: true, buttonEnable:true });
             const userId = await AsyncStorage.getItem('userId')
 
             let requestData = {
@@ -333,7 +331,7 @@ class LabConfirmation extends Component {
 
 
     render() {
-        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, defaultPatientDetails } = this.state;
+        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, buttonEnable } = this.state;
 
         return (
             <Container>
@@ -658,12 +656,12 @@ class LabConfirmation extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment('cash')}>
+                                <TouchableOpacity disabled={buttonEnable} onPress={() => this.proceedToLabTestAppointment('cash')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment('online')}>
+                                <TouchableOpacity disabled={buttonEnable} onPress={() => this.proceedToLabTestAppointment('online')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                 </TouchableOpacity>
                             </Col>
