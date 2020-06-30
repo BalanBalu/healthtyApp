@@ -91,14 +91,11 @@ class DoctorList extends Component {
 
     async componentDidMount() {
         try {
-            console.log('calling componentDidMount====>');
             this.setState({ isLoading: true });
             await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props
             const userId = await AsyncStorage.getItem('userId');
-            debugger
             /** Passing ActiveSponsor is TRUE Or FALSE values on Params **/
             await this.callSearchAndFilterServiceWithActiveSponsorTrueAndFalse();// multiple times services call
-            debugger
             if (userId) {
                 await this.getFavoriteCounts4PatByUserId(userId);
                 this.setState({ isLoggedIn: true })
@@ -229,7 +226,6 @@ class DoctorList extends Component {
     }
 
     render() {
-        console.log('RENDERING MAIN====>');
         const { bookAppointmentData: { doctorInfoListAndSlotsData, filteredDoctorData } } = this.props;
         const { isLoading, isLoadingMoreDocList } = this.state;
         if (isLoading) return <Loader style='list' />;
@@ -332,13 +328,10 @@ class DoctorList extends Component {
         this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
     }
     onSlotItemPress(doctorIdHostpitalId, item, index) {
-        debugger
         const { storeFeeBySelectedSlotOfDocIdHostpitalIdInObj } = this.state;
         this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId] = index;
         this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId] = item
-        debugger
         if ((item.fee != storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctorIdHostpitalId])) {
-            debugger
             if (storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctorIdHostpitalId] != undefined) {
                 Toast.show({
                     text: 'Appointment Fee Updated',
@@ -346,29 +339,24 @@ class DoctorList extends Component {
                     duration: 3000
                 });
             }
-            debugger
             storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctorIdHostpitalId] = item.fee
             this.setState({ storeFeeBySelectedSlotOfDocIdHostpitalIdInObj });
-            debugger
         }
         this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
-        debugger
     }
 
     onPressGoToBookAppointmentPage(doctorItemData) {
         doctorItemData.doctorId = doctorItemData.doctor_id;
-        let reqDocBookAppointmentData = { ...doctorItemData }
-        store.dispatch({
-            type: SET_SINGLE_DOCTOR_ITEM_DATA,
-            data: reqDocBookAppointmentData
-        })
-        this.props.navigation.navigate('Book Appointment', { doctorId: doctorItemData.doctor_id, processedAvailabilityDates: this.weekWiseDatesList })
+        const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorItemData.doctorIdHostpitalId).slotData;
+        if (doctorItemHaveSlotsDataObj) {
+            doctorItemData.slotData = doctorItemHaveSlotsDataObj;
+        }
+        const singleDoctorItemData = { ...doctorItemData };
+        this.props.navigation.navigate('Doctor Details Preview', { doctorId: doctorItemData.doctor_id, singleDoctorItemData: singleDoctorItemData, weekWiseDatesList: this.weekWiseDatesList })
     }
 
     getFeesBySelectedSlot(selectedSlotData, wholeSlotData, doctorIdHostpitalId, item) {
-        // debugger
         if (selectedSlotData) {
-            // debugger
             const selectedSlotIndex = this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId] || 0;
             if (selectedSlotData === undefined) {
                 selectedSlotData = wholeSlotData[Object.keys(wholeSlotData)[0]]
@@ -417,10 +405,8 @@ class DoctorList extends Component {
     /* get Doctor  Availability Slots service */
     getDoctorAvailabilitySlots = async (doctorIdHostpitalId, startDateByMoment, endDateByMoment, indexOfItem) => {
         try {
-            ////debugger
             this.weekWiseDatesList = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.weekWiseDatesList);
             const orderedDataFromWholeData = this.getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService(indexOfItem) // get 5 Or LessThan 5 of doctorIdHostpitalIds in order wise using index of given input of doctorInfoListAndSlotsData
-            ////debugger
             const setDoctorIdHostpitalIdsArrayMap = new Map();
             orderedDataFromWholeData.map((item) => {
                 const doctorIdFromItem = item.doctor_id;
@@ -528,12 +514,10 @@ class DoctorList extends Component {
     }
 
     renderAvailableSlots(doctorIdHostpitalId, slotData) {
-        // debugger
         let selectedSlotIndex = this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId] !== undefined ? this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId] : -1;
         if (slotData === undefined || !Object.keys(slotData)) {
             return null;
         }
-        // debugger
         return (
             <View>
                 <RenderSlots

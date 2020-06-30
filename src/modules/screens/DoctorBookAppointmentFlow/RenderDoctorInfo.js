@@ -28,7 +28,6 @@ export default class RenderDoctorInfo extends Component {
     }
 
     render() {
-        console.log('Rendering Doc Info====>');
         const { item, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList, onPressGoToBookAppointmentPage } = this.props;
         return (
             <View>

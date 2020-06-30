@@ -9,6 +9,23 @@ export const SET_FILTERED_DOCTOR_DATA = 'BOOK/FILTERED_DOCTOR_DATA';
 export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 import { store } from '../../../setup/store';
 
+/*  Get multiple doctor details  */
+export const getMultipleDoctorDetails = async (doctorIds, fields) => {
+    try {
+        const endPoint = 'doctors/' + doctorIds + '?fields=' + fields;
+        const response = await getService(endPoint);
+        const respData = response.data;
+        return respData;
+    } catch (Ex) {
+        console.log('Ex is getting on get  multiple Doctor details====>', Ex)
+        return {
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on get multiple Doctor details : ${Ex}`
+        }
+    }
+}
 
 /* Update Sponsor Viewers Counts */
 export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorIds) {
