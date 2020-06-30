@@ -25,7 +25,7 @@ class NextAppoinmentPreparation extends PureComponent {
     async componentDidMount() {
         try {
             await this.upCommingNextAppointment()
-             this.getUserProfile();
+            await this.getUserProfile();
         } catch (ex) {
             console.log(ex)
         }
@@ -39,13 +39,18 @@ class NextAppoinmentPreparation extends PureComponent {
             let userId = await AsyncStorage.getItem("userId");
 
             let filters = {
-                startDate: new Date().toUTCString(),
-                endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
-                on_going_appointment: true
-            };
+				startDate: new Date().toUTCString(),
+				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
+				skip:this.state.skip,
+				limit:this.state.limit,
+				sort:1
+			
+				// on_going_appointment: true
+			};
 
-            // alert(JSON.stringify(userId))
             let upCommingAppointmentResult = await getUserAppointments(userId, filters);
+           
+
             console.log('upcomming==================================');
             console.log(upCommingAppointmentResult)
             if (upCommingAppointmentResult.success) {
@@ -99,7 +104,7 @@ class NextAppoinmentPreparation extends PureComponent {
 
                 const { AppoinmentData, updatedDate } = this.state
 
-                //alert(JSON.stringify(this.state.AppoinmentData))
+               
                 let time = [...AppoinmentData]
                 time.map((t) => {
                     let appointmentId = t.appointmentResult._id;
@@ -141,8 +146,6 @@ class NextAppoinmentPreparation extends PureComponent {
          
           if (result) {
             this.setState({ appointmentDetails: resultData[0] });
-         
-    
           }
         }
         catch (e) {
