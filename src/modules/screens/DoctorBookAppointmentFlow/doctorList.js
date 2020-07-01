@@ -195,7 +195,7 @@ class DoctorList extends Component {
                 }
             }
             else {
-                if (!this.conditionFromFilterPage) {
+                if (!this.conditionFromFilterPage && this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.size !== 0) {
                     Toast.show({
                         text: 'No more Doctors Available!',
                         duration: 4000,
