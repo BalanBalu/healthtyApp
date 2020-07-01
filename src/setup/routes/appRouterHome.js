@@ -27,6 +27,8 @@ import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
 import doctorList from "../../modules/screens/DoctorBookAppointmentFlow/doctorList";
+import doctorDetailsPreview from "../../modules/screens/DoctorBookAppointmentFlow/doctorDetailsPreview/doctorDetailsPreview";
+
 import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
@@ -106,6 +108,7 @@ import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/Pre
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
+import share from '../../modules/screens/Home/share'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -501,7 +504,18 @@ const HomeStack = createStackNavigator({
       title: 'Doctor Search List',
     }
   },
-
+  "Doctor Details Preview": {
+    screen: doctorDetailsPreview,
+    navigationOptions: {
+      title: 'Book Appointment'
+    }
+  },
+  "share": {
+    screen: share,
+    navigationOptions: {
+      title: 'share',
+    }
+  },
   "Filter Doctor Info": {
     screen: filterDocInfo,
     navigationOptions: {

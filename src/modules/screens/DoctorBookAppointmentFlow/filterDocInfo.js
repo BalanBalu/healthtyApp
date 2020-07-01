@@ -25,8 +25,8 @@ class FilterDocInfo extends Component {
     }
 
     async componentDidMount() {
-        const { bookAppointmentData: { doctorInfoListAndSlotsData }, navigation } = this.props;
-        // console.log('doctorInfoListAndSlotsData=====>', JSON.stringify(doctorInfoListAndSlotsData));
+        const { bookAppointmentData: { baCupOfDoctorInfoListAndSlotsData4Filter }, navigation } = this.props;
+        // console.log('baCupOfDoctorInfoListAndSlotsData4Filter=====>', JSON.stringify(baCupOfDoctorInfoListAndSlotsData4Filter));
         const filterData = navigation.getParam('filterData');
         if (Object.keys(filterDataObject).length) { // condition for when click the Clear button and then press the back button and come back again Filter page (The previous selected filtered values from Doctor Search list page are Showing again)
             if (filterData) {
@@ -66,7 +66,7 @@ class FilterDocInfo extends Component {
         const specialistInfoList = [];
         const hospitalInfoList = [];
         const removeDupHospitalsFromList = [];
-        doctorInfoListAndSlotsData.map(doctorItem => {
+        baCupOfDoctorInfoListAndSlotsData4Filter.map(doctorItem => {
             if (doctorItem.language && doctorItem.language.length) {
                 Array.prototype.push.apply(languageListFromData, doctorItem.language)  // Push multiple language array's
             }

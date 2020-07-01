@@ -4,6 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount } from '../../screens/CommonAll/components';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../common';
+import { getDistance } from '../CommonAll/functions'
 const vipLogo = require('../../../../assets/images/viplogo.png')
 
 export default class RenderDoctorInfo extends Component {
@@ -14,21 +15,8 @@ export default class RenderDoctorInfo extends Component {
         if (this.props.shouldUpdate === nextProps.shouldUpdate) return false
         return true
     }
-    getDistance(distanceInMeter) {
-        if (!isNaN(distanceInMeter)) {
-            if (distanceInMeter > 0) {
-                const distanceInMeter = Number(distanceInMeter).toFixed(3)
-                const distanceInNumber = Number(distanceInMeter.split('.')[1]);
-                return distanceInNumber + 'm'
-            } else {
-                const distanceInKm = Number(distanceInMeter).toFixed(1) + 'Km'
-                return distanceInKm;
-            }
-        }
-    }
 
     render() {
-        console.log('Rendering Doc Info====>');
         const { item, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList, onPressGoToBookAppointmentPage } = this.props;
         return (
             <View>
@@ -67,7 +55,7 @@ export default class RenderDoctorInfo extends Component {
                             </Row>
                             :
                             <Row>
-                                <Text style={{ fontFamily: 'OpenSans', marginTop: 20, fontSize: 12, marginLeft: 15 }}>{this.getDistance(item.hospitalInfo.distInKiloMeter) || 0}</Text>
+                                <Text style={{ fontFamily: 'OpenSans', marginTop: 20, fontSize: 12, marginLeft: 15 }}>{getDistance(item.hospitalInfo.distInKiloMeter)}</Text>
                             </Row>
                         }
                     </Col>

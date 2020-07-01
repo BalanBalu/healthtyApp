@@ -16,7 +16,6 @@ export default class RenderSlots extends Component {
         return true
     }
     render() {
-        console.log('Slots Rendering=======>');
         const { slotDetails: { slotData, selectedSlotIndex, doctorIdHostpitalId }, onSlotItemPress, selectedDate4DocIdHostpitalIdToStoreInObj, selectedSlotItem4DocIdHostpitalIdToStoreInObj } = this.props;
         const { width } = Dimensions.get('screen');
         const itemWidth = (width) / 4;

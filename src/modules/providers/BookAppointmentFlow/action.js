@@ -1,6 +1,7 @@
 import { postService, getService, putService } from '../../../setup/services/httpservices';
 
 export const SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA = 'BOOK_APP/DOCTOR_INFO_LIST_AND_SLOTS_DATA';
+export const BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER = 'BOOK_APP/BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER';
 export const SET_SINGLE_DOCTOR_ITEM_DATA = 'BOOK_APP/SINGLE_DOCTOR_ITEM_DATA';
 export const SET_PATIENT_FAVORITE_COUNTS_OF_DOCTOR_IDS = 'BOOK/PATIENT_FAVORITE_COUNTS_OF_DOCTOR_IDS';
 export const SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS = 'BOOK/DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS';
@@ -9,6 +10,23 @@ export const SET_FILTERED_DOCTOR_DATA = 'BOOK/FILTERED_DOCTOR_DATA';
 export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 import { store } from '../../../setup/store';
 
+/*  Get multiple doctor details  */
+export const getMultipleDoctorDetails = async (doctorIds, fields) => {
+    try {
+        const endPoint = 'doctors/' + doctorIds + '?fields=' + fields;
+        const response = await getService(endPoint);
+        const respData = response.data;
+        return respData;
+    } catch (Ex) {
+        console.log('Ex is getting on get  multiple Doctor details====>', Ex)
+        return {
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on get multiple Doctor details : ${Ex}`
+        }
+    }
+}
 
 /* Update Sponsor Viewers Counts */
 export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorIds) {
