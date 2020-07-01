@@ -104,7 +104,9 @@ import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmen
 import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
-
+import DoctorList from '../../modules/screens/HomeTest/doctorList';
+import HomeTestConfirmation from '../../modules/screens/HomeTest/homeTestConfirmation'
+import AppointmentList from '../../modules/screens/HomeTest/appoinmentList'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -552,6 +554,27 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: navigation.getParam("title"),
     }),
+  },
+
+
+  // ============Home Test ========================
+  DoctorList: {
+    screen: DoctorList,
+    navigationOptions: {
+      title: 'Doctor List'
+    }
+  },
+  HomeTestConfirmation: {
+    screen: HomeTestConfirmation,
+    navigationOptions: {
+      title: 'Home Test Confirmation'
+    }
+  },
+  AppointmentList: {
+    screen: AppointmentList,
+    navigationOptions: {
+      title: 'Appointments'
+    }
   },
   // ============Chat ========================
   "Chat Service": {
