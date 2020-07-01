@@ -106,7 +106,9 @@ import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionLis
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
 import DoctorList from '../../modules/screens/HomeTest/doctorList';
 import HomeTestConfirmation from '../../modules/screens/HomeTest/homeTestConfirmation'
-import AppointmentList from '../../modules/screens/HomeTest/appoinmentList'
+import AppointmentList from '../../modules/screens/HomeTest/appoinmentList';
+import AppointmentDetail from '../../modules/screens/HomeTest/appoinmentDetail'
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -574,6 +576,12 @@ const HomeStack = createStackNavigator({
     screen: AppointmentList,
     navigationOptions: {
       title: 'Appointments'
+    }
+  },
+  AppointmentDetail: {
+    screen: AppointmentDetail,
+    navigationOptions: {
+      title: 'Appointment info'
     }
   },
   // ============Chat ========================
