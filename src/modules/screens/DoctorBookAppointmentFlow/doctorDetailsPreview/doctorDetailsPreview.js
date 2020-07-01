@@ -4,6 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
+import { store } from '../../../../setup/store';
 import {
     addFavoritesToDocByUserService,
     getFavoriteListCount4PatientService,
@@ -11,6 +12,8 @@ import {
     serviceOfGetTotalReviewsCount4Doctors,
     ServiceOfGetDoctorFavoriteListCount4Pat,
     fetchDoctorAvailabilitySlotsService,
+    SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
+    SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS
 } from '../../../providers/BookAppointmentFlow/action';
 import { userReviews } from '../../../providers/profile/profile.action';
 import RenderHospitalLoc from './RenderHospitalLoc'
@@ -39,12 +42,11 @@ class DoctorDetailsPreview extends Component {
 
         this.state = {
             selectedSlotItem: null,
-            isLoading: false,
+            isLoading: true,
             onPressTabView: 1,
             selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
             currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
             selectedSlotIndex: -1,
-            sliderPageIndex: 0,
             doctorData: {},
             doctorDetails: null,
             showedFee: undefined,
@@ -52,7 +54,6 @@ class DoctorDetailsPreview extends Component {
             specialistWithServicesList: [],
             isAvailabilityLoading: false,
             isLoggedIn: false,
-            hidden: false,
             categoryShownObj: {},
             isLoadedUserReview: false,
             reviewsData: [],
@@ -73,18 +74,19 @@ class DoctorDetailsPreview extends Component {
         const { navigation } = this.props;
         const { selectedDate, selectedSlotIndex } = this.state;
         this.setState({ isLoading: true });
-        const availabilitySlots = navigation.getParam('fetchAvailabiltySlots') || true;
+        const availabilitySlots = navigation.getParam('fetchAvailabiltySlots') || false;
         const startDateByMoment = addMoment(selectedDate)
         const endDateByMoment = addMoment(selectedDate, 7, 'days');
         const userId = await AsyncStorage.getItem('userId');
         if (userId) {
             this.setState({ isLoggedIn: true, userId });
         }
-        if (availabilitySlots) { // coming from  My Appointment list via click  Book again button
+        if (availabilitySlots) { // coming from  My Appointment list via click  Book again button.
+            await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props.
             if (userId) {
                 await this.getFavoriteCounts4PatByUserId(userId);
             }
-            const doctorId = navigation.getParam('doctorId') || '5dca754e850cdd3944cac111';
+            const doctorId = navigation.getParam('doctorId');
             const [doctorDetailsResp, wishListResp, rattingResp] = await Promise.all([
                 getMultipleDoctorDetails(doctorId, fields).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
                 ServiceOfGetDoctorFavoriteListCount4Pat(doctorId).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -103,7 +105,9 @@ class DoctorDetailsPreview extends Component {
 
             await this.getDoctorAvailabilitySlots(reqData4Availability, startDateByMoment, endDateByMoment);
             console.log('setDocInfoAndAvailableSlotsData====>', this.setDocInfoAndAvailableSlotsData)
-            await this.getLocationDataBySelectedSlot(this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData, selectedSlotIndex)
+            await this.getLocationDataBySelectedSlot(this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData, selectedSlotIndex);
+            const specialistWithServicesList = this.formServiceListByUsingSpecialist(this.doctorDetailsObj.specialist || []);
+            this.setState({ doctorId, doctorData: this.setDocInfoAndAvailableSlotsData, specialistWithServicesList });
         } else {
             this.isFromSearchList = true;
             this.weekWiseDatesList = navigation.getParam('weekWiseDatesList');
@@ -131,6 +135,21 @@ class DoctorDetailsPreview extends Component {
         }
         debugger
         this.setState({ isLoading: false });
+    }
+    dispatchAndCResetOfRattingAndFavorites = async () => {
+        await store.dispatch(
+            {
+                type: SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
+                data: {}
+            },
+        );
+        await store.dispatch(
+            {
+                type: SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS,
+                data: {}
+            },
+        );
+
     }
     /* Update Favorites for Doctor by UserId  */
     addToFavoritesList = async (doctorId) => {
@@ -185,6 +204,7 @@ class DoctorDetailsPreview extends Component {
 
     getDoctorAvailabilitySlots = async (availabilityReqData, startDateByMoment, endDateByMoment) => {
         try {
+            debugger
             this.weekWiseDatesList = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.weekWiseDatesList);
             const reqStartAndEndDates = {
                 startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
@@ -192,13 +212,18 @@ class DoctorDetailsPreview extends Component {
             }
             const availabilityResp = await fetchDoctorAvailabilitySlotsService(availabilityReqData, reqStartAndEndDates);
             const availabilityData = availabilityResp.data;
-            console.log('availabilityData=====>', availabilityData)
+            // console.log('availabilityData=====>', availabilityData)
+            debugger
 
             if (availabilityResp.success === true && availabilityData.length > 0) {
+                debugger
                 for (let availabilityCount = 0; availabilityCount < availabilityData.length; availabilityCount++) {
                     let docHostpitalIdSlotData = availabilityData[availabilityCount];
-                    if (this.setDocInfoAndAvailableSlotsData.slotData) {
+                    debugger
+                    if (this.setDocInfoAndAvailableSlotsData && this.setDocInfoAndAvailableSlotsData.slotData) {
+                        debugger
                         for (var key in docHostpitalIdSlotData.slotData) {
+                            debugger
                             if (this.setDocInfoAndAvailableSlotsData.slotData[key] === undefined) {
                                 this.setDocInfoAndAvailableSlotsData.slotData[key] = docHostpitalIdSlotData.slotData[key]
                             }
@@ -220,6 +245,7 @@ class DoctorDetailsPreview extends Component {
                 this.setDocInfoAndAvailableSlotsData = docDetailWithSlotsData;
             }
         } catch (error) {
+            this.setState({ isLoading: false })
             console.log('Ex getting on getAvailabilitySlots service======', error.message);
         } finally {
             // this.setState({ isAvailabilityLoading: false })

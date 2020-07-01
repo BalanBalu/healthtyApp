@@ -10,19 +10,6 @@ export default class RenderDoctorInfoPreview extends Component {
         super(props)
     }
 
-    getDistance(distanceInMeter) {
-        if (!isNaN(distanceInMeter)) {
-            if (distanceInMeter > 0) {
-                const distanceInMeter = Number(distanceInMeter).toFixed(3)
-                const distanceInNumber = Number(distanceInMeter.split('.')[1]);
-                return distanceInNumber + 'm'
-            } else {
-                const distanceInKm = Number(distanceInMeter).toFixed(1) + 'Km'
-                return distanceInKm;
-            }
-        }
-    }
-
     render() {
         debugger
         console.log('Rendering Doc Details Preview====>');
@@ -41,7 +28,7 @@ export default class RenderDoctorInfoPreview extends Component {
                         <Row style={{ marginLeft: 55, marginTop: 10 }}>
                             <Col size={9}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(doctorData.prefix ? doctorData.prefix + '. ' : '') + (doctorData.first_name || '') + ' ' + (doctorData.last_name || '')}</Text>
-                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 11, marginTop: 5 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
+                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 11, marginTop: 5 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist || doctorData.specialistInfo)}</Text>
                             </Col>
                             <Col size={1}>
                             </Col>
@@ -62,7 +49,7 @@ export default class RenderDoctorInfoPreview extends Component {
                 <Row style={{ marginBottom: 10 }}>
                     <Col style={{ width: "25%", marginTop: 15, }}>
                         <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Experience</Text>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}> {getDoctorExperience(doctorData.calculatedExperience)}</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}> {getDoctorExperience(doctorData.calculatedExperience || doctorData.calulatedExperience)}</Text>
                     </Col>
                     <Col style={{ width: "25%", marginTop: 15, }}>
 
