@@ -7,10 +7,9 @@ import styles from '../CommonAll/styles'
 import {
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
     SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS,
-    SET_PATIENT_FAVORITE_COUNTS_OF_DOCTOR_IDS,
-    SET_SINGLE_DOCTOR_ITEM_DATA,
     SET_FILTERED_DOCTOR_DATA,
     SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+    BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER,
     searchByDocDetailsService,
     serviceOfGetTotalReviewsCount4Doctors,
     ServiceOfGetDoctorFavoriteListCount4Pat,
@@ -19,7 +18,7 @@ import {
     serviceOfUpdateDocSponsorViewCountByUser,
     getFavoriteListCount4PatientService,
 } from '../../providers/BookAppointmentFlow/action';
-import { formatDate, addMoment, addTimeUnit, getMoment } from '../../../setup/helpers';
+import { formatDate, addMoment, getMoment } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
@@ -77,7 +76,7 @@ class DoctorList extends Component {
                     this.incrementPaginationCount = 0,
                         this.totalSearchedDoctorIdsArray = [];
                     this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.clear();
-                    this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props;
+                    await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props;
                     /** Passing ActiveSponsor is TRUE Or FALSE values on Params **/
                     await this.callSearchAndFilterServiceWithActiveSponsorTrueAndFalse();// multiple times services call
                     this.setState({ isLoading: false, renderRefreshCount: this.state.renderRefreshCount + 1 });
@@ -131,12 +130,10 @@ class DoctorList extends Component {
                 data: {}
             },
         );
-        if (!this.conditionFromFilterPage) {
-            await store.dispatch({
-                type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-                data: []
-            })
-        }
+        await store.dispatch({
+            type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+            data: []
+        })
     }
     searchByDoctorDetails = async (activeSponsor) => {
         try {
@@ -189,11 +186,15 @@ class DoctorList extends Component {
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
-                })
+                });
+                if (!this.conditionFromFilterPage) {
+                    store.dispatch({
+                        type: BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER,
+                        data: doctorInfoList
+                    })
+                }
             }
             else {
-                /** TODO:-
-                  Need to Filter negative scenario also  **/
                 if (!this.conditionFromFilterPage) {
                     Toast.show({
                         text: 'No more Doctors Available!',
@@ -255,7 +256,7 @@ class DoctorList extends Component {
                         </Col>
                     </Row>
                 </Card>
-                {doctorInfoListAndSlotsData.length === 0 ? <RenderListNotFound text={' No Doctor list found!'} />
+                {doctorInfoListAndSlotsData.length === 0 ? <RenderListNotFound text={this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'} />
                     :
                     <FlatList
                         data={doctorInfoListAndSlotsData}
@@ -440,7 +441,7 @@ class DoctorList extends Component {
                     store.dispatch({
                         type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                         data: docInfoAndAvailableSlotsMap
-                    })
+                    });
                     // this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
                 }
             }
@@ -625,8 +626,8 @@ class DoctorList extends Component {
                                     </Col>
                                     <Col style={{ width: "15%" }}>
                                         {!expandItemOfDocIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
-                                            <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId, indexOfItem)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
-                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                            <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId, indexOfItem)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, width: 66, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
                                             </TouchableOpacity> :
                                             null}
                                         {this.state.isLoadingDatesAndSlotsByRespectedItem == item.doctorIdHostpitalId ?
@@ -665,7 +666,7 @@ class DoctorList extends Component {
                                                     <Col size={4}>
                                                         <TouchableOpacity
                                                             onPress={() => { console.log('......Pressing....'); this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
-                                                            style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
+                                                            style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: 5 }}>
                                                             <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
                                                         </TouchableOpacity>
                                                     </Col>
