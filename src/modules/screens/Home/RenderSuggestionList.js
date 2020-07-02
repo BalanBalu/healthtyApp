@@ -19,8 +19,11 @@ class RenderSuggestionsList extends PureComponent {
         }
         this.callGetSuggestionListService = debounce(this.callGetSuggestionListService, 300);
     }
+    componentWillMount() {
+        this.callGetSuggestionListService('Primary', true) 
+    }
 
-    callGetSuggestionListService = async (enteredText) => {
+    callGetSuggestionListService = async (enteredText, suggestionTextDisable) => {
         try {
             this.setState({ isLoading: true })
             const { bookappointment: { locationCordinates } } = this.props;
@@ -34,9 +37,9 @@ class RenderSuggestionsList extends PureComponent {
             let resultOfSuggestionData = await getSpecialistDataSuggestions('suggestion', suggestionReqData);
             // console.log('resultOfSuggestionData.data' + JSON.stringify(resultOfSuggestionData.data))
             if (resultOfSuggestionData.success) {
-                this.setState({ suggestionList: resultOfSuggestionData.data, searchValue: enteredText });
+                this.setState({ suggestionList: resultOfSuggestionData.data, searchValue: suggestionTextDisable ? '' : enteredText });
             } else {
-                this.setState({ suggestionList: [], searchValue: enteredText });
+                this.setState({ suggestionList: [], searchValue: suggestionTextDisable? '' : enteredText });
             }
         } catch (Ex) {
             console.log('Ex is getting on get Suggestions list details for Patient====>', Ex)
