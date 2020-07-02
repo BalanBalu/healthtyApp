@@ -108,7 +108,6 @@ import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/Pre
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
-import share from '../../modules/screens/Home/share'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -510,12 +509,7 @@ const HomeStack = createStackNavigator({
       title: 'Book Appointment'
     }
   },
-  "share": {
-    screen: share,
-    navigationOptions: {
-      title: 'share',
-    }
-  },
+  
   "Filter Doctor Info": {
     screen: filterDocInfo,
     navigationOptions: {
