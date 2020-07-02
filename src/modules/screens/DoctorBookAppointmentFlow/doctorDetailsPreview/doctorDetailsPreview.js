@@ -16,6 +16,8 @@ import {
     SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS
 } from '../../../providers/BookAppointmentFlow/action';
 import { userReviews } from '../../../providers/profile/profile.action';
+import { fetchAvailableDoctors4Video } from '../../../screens/VideoConsulation/services/video-consulting-service';
+import { fetchAvailableDoctors4Chat } from '../../../providers/chat/chat.action';
 import RenderHospitalLoc from './RenderHospitalLoc'
 import { Loader } from '../../../../components/ContentLoader';
 import { CATEGORY_BASE_URL } from '../../../../setup/config';
@@ -62,8 +64,9 @@ class DoctorDetailsPreview extends Component {
             showMoreOption: false,
             renderRefreshCount: 1,
             reviewRefreshCount: 0,
-
         }
+        this.isVideoAvailability = false;
+        this.isChatAvailability = false;
         this.onEndReachedIsTriggedFromRenderDateList = false;
     }
 
@@ -87,6 +90,7 @@ class DoctorDetailsPreview extends Component {
                 await this.getFavoriteCounts4PatByUserId(userId);
             }
             const doctorId = navigation.getParam('doctorId');
+            this.callVideAndChat(doctorId);
             const [doctorDetailsResp, wishListResp, rattingResp] = await Promise.all([
                 getMultipleDoctorDetails(doctorId, fields).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
                 ServiceOfGetDoctorFavoriteListCount4Pat(doctorId).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -109,10 +113,10 @@ class DoctorDetailsPreview extends Component {
             const specialistWithServicesList = this.formServiceListByUsingSpecialist(this.doctorDetailsObj.specialist || []);
             this.setState({ doctorId, doctorData: this.setDocInfoAndAvailableSlotsData, specialistWithServicesList });
         } else {
-            this.isFromSearchList = true;
             this.weekWiseDatesList = navigation.getParam('weekWiseDatesList');
             const doctorItemData = navigation.getParam('singleDoctorItemData');
-            this.doctorDetailsObj = doctorItemData
+            this.doctorDetailsObj = doctorItemData;
+            this.callVideAndChat(this.doctorDetailsObj.doctor_id);
             debugger
             this.setDocInfoAndAvailableSlotsData = doctorItemData;
 
@@ -136,6 +140,58 @@ class DoctorDetailsPreview extends Component {
         debugger
         this.setState({ isLoading: false });
     }
+
+
+
+    async callVideAndChat(doctorId) {
+        let [availableDocsVideo, availableDocsChat] = await Promise.all([
+            this.getDoctorAvailableDoctorData([doctorId]).catch(ex => { console.log(ex); return [] }),
+            this.getDoctorAvailableDoctorDataChat([doctorId]).catch(ex => { console.log(ex); return [] }),
+        ])
+        availableDocsVideo.forEach(doc => {
+            this.isVideoAvailability = true;
+        });
+        availableDocsChat.forEach(docChat => {
+            this.isChatAvailability = true;
+        })
+    }
+
+
+    getDoctorAvailableDoctorData = async (doctorIds) => {
+        try {
+            if (doctorIds) {
+                doctorIds = doctorIds.join(',')
+            }
+            const availableDocData = await fetchAvailableDoctors4Video(doctorIds);
+            if (availableDocData.success === true) {
+                return availableDocData.data;
+            }
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+        return [];
+    }
+
+    getDoctorAvailableDoctorDataChat = async (doctorIds) => {
+        console.log('doctorIds' + JSON.stringify(doctorIds));
+        try {
+            let request = {};
+            if (doctorIds) {
+                request = {
+                    doctor_ids: doctorIds
+                }
+            }
+            const availableDocData = await fetchAvailableDoctors4Chat(request);
+            if (availableDocData.success === true) {
+                return availableDocData.data
+            }
+        } catch (error) {
+            return []
+        }
+        return []
+    }
+
     dispatchAndCResetOfRattingAndFavorites = async () => {
         await store.dispatch(
             {
@@ -339,8 +395,9 @@ class DoctorDetailsPreview extends Component {
         return (
             <View>
                 <RenderDoctorInfoPreview
+                    navigation={this.props.navigation}
                     doctorData={doctorData}
-                    docInfoData={{ isLoggedIn, fee: this.selectedSlotFee, feeWithoutOffer: this.selectedSlotFeeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }}
+                    docInfoData={{ isLoggedIn, fee: this.selectedSlotFee, feeWithoutOffer: this.selectedSlotFeeWithoutOffer, isVideoAvailability: this.isVideoAvailability, isChatAvailability: this.isChatAvailability, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }}
                     addToFavoritesList={(doctorId) => { this.addToFavoritesList(doctorId) }}
                 >
                 </RenderDoctorInfoPreview>

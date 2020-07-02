@@ -230,7 +230,7 @@ class MedicineCheckout extends Component {
             }
         }
         if (itemSelected === 1) {
-            
+
             paymentPageRequestData.bookSlotDetails.pharmacyId = pharmacyInfo.pharmacy_id || null
             // delete paymentPageRequestData.bookSlotDetails.delivery_charges
             // delete paymentPageRequestData.bookSlotDetails.delivery_tax
@@ -840,13 +840,13 @@ class MedicineCheckout extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity onPress={() => this.processToPayLater()} >
+                                <TouchableOpacity style={styles.buttonTouch} onPress={() => this.processToPayLater()} >
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 0 ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             {isPrescription === false ?
                                 <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                    <TouchableOpacity onPress={() => this.onProceedToPayment(true)}>
+                                    <TouchableOpacity style={styles.buttonTouch1} onPress={() => this.onProceedToPayment(true)}>
                                         <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                     </TouchableOpacity>
                                 </Col> : null}
@@ -968,7 +968,25 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         margin: 2,
         fontSize: 13
-    }
+    },
+    buttonTouch: {
+       
+        flexDirection: 'row',
+        paddingTop: 4,
+        paddingBottom: 15,
+        paddingLeft: 25,
+        paddingRight: 20,
+        borderRadius: 10
+    },
+    buttonTouch1: {
+     
+       flexDirection: 'row',
+       paddingTop: 4,
+       paddingBottom: 15,
+       paddingLeft: 50,
+       paddingRight: 50,
+       borderRadius: 10
+   },
 });
 
 

@@ -195,7 +195,7 @@ class DoctorList extends Component {
                 }
             }
             else {
-                if (!this.conditionFromFilterPage && this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.size !== 0) {
+                if (!this.conditionFromFilterPage && this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.size > 4) {
                     Toast.show({
                         text: 'No more Doctors Available!',
                         duration: 4000,
@@ -504,6 +504,7 @@ class DoctorList extends Component {
             <View>
                 <RenderDoctorInfo
                     item={item}
+                    navigation={this.props.navigation}
                     docInfoData={{ isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }}
                     addToFavoritesList={(doctorId) => { this.addToFavoritesList(doctorId) }}
                     onPressGoToBookAppointmentPage={(item) => { this.onPressGoToBookAppointmentPage(item) }}

@@ -27,8 +27,8 @@ export default class RenderHospitalLoc extends Component {
                 </Row>
                 <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
 
-                    <Card style={{ height: 250 }}>
-                        <Mapbox hospitalLocation={hopitalLocationData} />
+                    <Card>
+                        {/* <Mapbox hospitalLocation={hopitalLocationData} /> */}
                         <List>
                             <ListItem avatar>
                                 <Left>

@@ -59,7 +59,7 @@ export class AddToCard extends Component {
                 duration: 3000,
                 type: 'danger',
                 position: "bottom",
-                style: { bottom: "50%" }
+                style: { bottom: "46%" }
 
             })
         }
