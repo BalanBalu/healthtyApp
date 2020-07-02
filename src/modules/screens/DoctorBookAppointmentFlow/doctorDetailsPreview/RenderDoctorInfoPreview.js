@@ -13,14 +13,17 @@ export default class RenderDoctorInfoPreview extends Component {
     render() {
         debugger
         console.log('Rendering Doc Details Preview====>');
-        const { doctorData, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList } = this.props;
+        const { doctorData, navigation, docInfoData: { isLoggedIn, fee, feeWithoutOffer, isVideoAvailability, isChatAvailability, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList } = this.props;
+        console.log('isVideoAvailability===>', isVideoAvailability);
+        console.log('isChatAvailability===>', isChatAvailability);
+
         debugger
         return (
             <View>
 
                 <Row >
                     <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
+                        <TouchableOpacity onPress={() => navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
                             <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
                         </TouchableOpacity>
                     </Col>
@@ -77,7 +80,33 @@ export default class RenderDoctorInfoPreview extends Component {
 
                     </Col>
                 </Row>
+                <Row style={{ marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: "center", marginTop: 10, marginBottom: 5 }}>
+                    {isVideoAvailability === true ?
+                        <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
+                            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate("Video and Chat Service")}>
+                                <Icon name="ios-videocam" style={{ fontSize: 25, color: '#7F49C3' }} />
+                                <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3', marginTop: 3 }}>Video</Text>
+                            </TouchableOpacity>
+                        </Col>
+                        : null}
+                    {isChatAvailability === true ?
+                        <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }} onPress={() => navigation.navigate("Video and Chat Service")}>
+                                <Icon name="ios-chatboxes" style={{ fontSize: 25, color: '#7F49C3' }} />
+                                <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3', marginTop: 2 }}>Chat</Text>
+                            </TouchableOpacity>
+                        </Col>
+                        : null}
+                    <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }}>
+                            <Icon name="md-share" style={{ fontSize: 18, color: '#7F49C3' }} />
+                            <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3', }}>Share</Text>
+                        </TouchableOpacity>
+                    </Col>
 
+
+
+                </Row>
             </View>
         )
     }
