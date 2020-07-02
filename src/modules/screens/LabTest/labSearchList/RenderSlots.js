@@ -26,11 +26,7 @@ export default class RenderSlots extends Component {
             // extraData={[this.labTestSelectedDates[labId]]}
             renderItem={({ item, index }) => {
                 return (
-                    // <Col>
-                    //     <Row>
-                    //         <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', paddingRight: 30, marginLeft: 10 }}>{formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
-                    //         <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginLeft: 10 }}>{formatDate(item.slotEndDateAndTime, 'hh:mm A')} </Text>
-                    //     </Row>
+                   
                     <Col style={{ width: itemWidth - 10 }}>
                         <TouchableOpacity disabled={item.isSlotBooked}
                             style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ?
