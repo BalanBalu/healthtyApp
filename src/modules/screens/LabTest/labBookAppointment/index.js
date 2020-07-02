@@ -146,10 +146,14 @@ class LabBookAppointment extends Component {
     this.selectedSlotItem = selectedSlot;
     this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
   }
-  renderAvailableSlots(slotsData) {
+  renderWorkingHours(slotsData) {
     const { selectedDate, labId } = this.state;
     return (
       <View>
+        <Row style={{ marginTop: 10 }}>
+          <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Opening Time</Text>
+          <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 10 }}>Closing Time</Text>
+        </Row>
         <RenderSlots
           selectedSlotIndex={this.selectedSlotIndex}
           selectedDate={selectedDate}
@@ -177,16 +181,6 @@ class LabBookAppointment extends Component {
       /> : null
   }
   onPressContinueForPaymentReview(labData, selectedSlotItem) {
-    if (!selectedSlotItem) {
-      Toast.show({
-        text: 'Please Select a Slot to continue booking',
-        type: 'warning',
-        duration: 3000
-      })
-      return;
-    }
-    console.log(selectedSlotItem);
-
     const { labInfo, labCatInfo } = labData;
 
     let packageDetails = {
@@ -198,8 +192,8 @@ class LabBookAppointment extends Component {
       mobile_no: labInfo.mobile_no || null,
       lab_name: labInfo.lab_name,
       category_name: labCatInfo.category_name,
-      appointment_starttime: selectedSlotItem.slotStartDateAndTime,
-      appointment_endtime: selectedSlotItem.slotEndDateAndTime,
+      // appointment_starttime: selectedSlotItem.slotStartDateAndTime,
+      // appointment_endtime: selectedSlotItem.slotEndDateAndTime,
       location: labInfo.location
     }
     console.log("packageDetails", packageDetails);
@@ -298,7 +292,7 @@ class LabBookAppointment extends Component {
                   {this.availabilitySlotsDatesArry.length !== 0 ? this.renderDatesOnFlatList() : null}
                   {
                     slotDataObj4Item[selectedDate] ?
-                      this.renderAvailableSlots(slotDataObj4Item[selectedDate])
+                      this.renderWorkingHours(slotDataObj4Item[selectedDate])
                       : <RenderNoSlotsAvailable
                         text={'No Slots Available'}
                       />

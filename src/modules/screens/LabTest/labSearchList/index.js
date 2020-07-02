@@ -76,12 +76,12 @@ class labSearchList extends Component {
             this.setState({ isLoading: true });
             const inputDataBySearch = this.props.navigation.getParam('inputDataFromLabCat');
             const labListResponse = await searchByLabDetailsService(inputDataBySearch);
-            console.log('labListResponse====>', labListResponse);
+            // console.log('labListResponse====>', labListResponse);
             if (labListResponse.success) {
                 const labListData = labListResponse.data;
                 this.totalLabIdsArryBySearched = labListData.map(item => String(item.labInfo.lab_id));
                 await this.setState({ labListData });
-                console.log("labListData", this.state.labListData)
+                // console.log("labListData", this.state.labListData)
                 this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
                 this.getTotalReviewsCount4LabTest(this.totalLabIdsArryBySearched);
 
@@ -149,6 +149,8 @@ class labSearchList extends Component {
             console.log('resultSlotsData======>', resultSlotsData);
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
+                console.log('availabilityData======>', availabilityData);
+
                 if (availabilityData.length != 0) {
                     availabilityData.map((item) => {
                         let previousSlotsDataByItem = this.availableSlotsDataMap.get(String(item.labId))
@@ -205,6 +207,8 @@ class labSearchList extends Component {
     renderDatesOnFlatList(labId) {
         const selectedDate = this.selectedDateObj[labId] || this.state.currentDate;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(labId)) || {}
+        console.log("selectedDate", selectedDate);
+
         if (!Object.keys(slotDataObj4Item)) {
             return null;
         }
@@ -225,17 +229,18 @@ class labSearchList extends Component {
             </View>
         )
     }
-    renderAvailableSlots(labId, slotsData) {
-        let selectedSlotIndex = this.selectedSlotByLabIdsObj[labId] !== undefined ? this.selectedSlotByLabIdsObj[labId] : -1;
+    renderWorkingHours(labId, slotsData) {
+        this.slotData = slotsData;
+        console.log("this.slotData", this.slotData);
+
         return (
             <View>
+                <Row style={{ marginTop: 10 }}>
+                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Opening Time</Text>
+                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 10 }}>Closing Time</Text>
+                </Row>
                 <RenderSlots
-                    selectedSlotIndex={selectedSlotIndex}
-                    // selectedDate={selectedDate}
                     slotData={slotsData}
-                    labId={labId}
-                    shouldUpdate={`${labId}-${selectedSlotIndex}`}
-                    onSlotItemPress={(labId, selectedSlot, selectedSlotIndex) => this.onSlotItemPress(labId, selectedSlot, selectedSlotIndex)}
                 >
                 </RenderSlots>
             </View>
@@ -244,15 +249,8 @@ class labSearchList extends Component {
 
     onPressToContinue4PaymentReview(labData, selectedSlotItem) {   // navigate to next further process
         const { labInfo, labCatInfo } = labData;
-        console.log("labCatInfo", labCatInfo)
-        if (!selectedSlotItem) {
-            Toast.show({
-                text: 'Please Select a Slot to continue booking',
-                type: 'warning',
-                duration: 3000
-            })
-            return;
-        }
+        console.log("selectedSlotItem", selectedSlotItem)
+
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo.lab_test_categories_id,
@@ -262,8 +260,7 @@ class labSearchList extends Component {
             mobile_no: labInfo.mobile_no || null,
             lab_name: labInfo.lab_name,
             category_name: labCatInfo.category_name,
-            appointment_starttime: selectedSlotItem.slotStartDateAndTime,
-            appointment_endtime: selectedSlotItem.slotEndDateAndTime,
+            slotData: this.slotData,
             "location": labInfo.location
         }
         this.props.navigation.navigate('labConfirmation', { packageDetails })
@@ -382,16 +379,14 @@ class labSearchList extends Component {
                                         {this.renderDatesOnFlatList(item.labInfo.lab_id)}
                                         {
                                             slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate] !== undefined ?
-                                                this.renderAvailableSlots(item.labInfo.lab_id, slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate])
+                                                this.renderWorkingHours(item.labInfo.lab_id, slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate])
                                                 : <RenderNoSlotsAvailable
-                                                    text={'No Slots Available'}
+                                                    text={'Not Available Time'}
                                                 />
                                         }
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
-                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
                                                 <Col size={4}>
                                                     <TouchableOpacity
@@ -692,8 +687,8 @@ class labSearchList extends Component {
                                                 </Row>
                                                 <Row style={{ borderTopColor: '#909090', borderTopWidth: 0.3, paddingBottom: 15, paddingTop: 10 }}>
                                                     <Right>
-                                                    <TouchableOpacity onPress={() => { this.setModalVisible(false)}}>
-                                                        <Text style={styles.doneButton}>DONE</Text>
+                                                        <TouchableOpacity onPress={() => { this.setModalVisible(false) }}>
+                                                            <Text style={styles.doneButton}>DONE</Text>
                                                         </TouchableOpacity>
                                                     </Right>
                                                 </Row>
