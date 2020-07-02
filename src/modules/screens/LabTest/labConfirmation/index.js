@@ -5,13 +5,17 @@ import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'rea
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
-import { dateDiff } from '../../../../setup/helpers';
+import { dateDiff, formatDate } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { insertAppointment, updateLapAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../CommonLabTest'
 import { SERVICE_TYPES } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
+import DateTimePicker from "react-native-modal-datetime-picker";
+import moment from 'moment';
+
+
 let patientDetails = [];
 class LabConfirmation extends Component {
     constructor(props) {
@@ -35,8 +39,12 @@ class LabConfirmation extends Component {
             itemSelected: 'TEST_AT_LAP',
             packageDetails: {},
             selectedAddress: null,
-            buttonEnable:false
-
+            buttonEnable: false,
+            isTimePickerVisible: false,
+            pickByStartTime: moment().startOf('day').toDate(),
+            startTime: moment().startOf('day').toDate(),
+            isDateTimePickerVisible: false,
+            startDatePlaceholder: false,
 
         };
     }
@@ -52,6 +60,8 @@ class LabConfirmation extends Component {
             this.setState({ packageDetails })
         }
         this.setState({ packageDetails })
+        console.log("packageDetails", this.state.packageDetails);
+
         await this.getUserProfile();
     }
 
@@ -124,7 +134,7 @@ class LabConfirmation extends Component {
         if (this.state.selfChecked == true && patientDetails.length == 0) {
             patientDetails.unshift(this.defaultPatientDetails)
         }
-        else if (this.state.selfChecked == false && this.state.patientDetails[0].type=='self') {
+        else if (this.state.selfChecked == false && this.state.patientDetails[0].type == 'self') {
             this.state.patientDetails.shift(this.defaultPatientDetails)
         }
         this.setState({ patientDetails })
@@ -187,7 +197,7 @@ class LabConfirmation extends Component {
 
 
     proceedToLabTestAppointment = async (paymentMode) => {
-        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg  } = this.state
+        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg } = this.state
         try {
             console.log("errMsg", errMsg)
             if (patientDetails.length == 0) {
@@ -216,12 +226,31 @@ class LabConfirmation extends Component {
             } else {
                 selectedAddress = packageDetails.location;
             }
+            console.log("pickByStartTime", this.state.pickByStartTime);
 
             let patientData = [];
+            let startTime;
+            if (!this.state.startDatePlaceholder) {
+                Toast.show({
+                    text: 'Kindly select your appointment time',
+                    type: 'warning',
+                    duration: 3000
+                })
+                return false;
+            } else {
+                let startDate = formatDate(packageDetails.slotData[0].slotDate, 'YYYY-MM-DD')   ;
+                            let startTimeByFormate = formatDate(this.state.pickByStartTime,'HH:mm:ss' )
+                startTime = startDate + 'T' + startTimeByFormate+'.000'
+                console.log("startTime", startTime);
+
+                console.log("packageDetails.slotData[0].slotDate", packageDetails.slotData[0].slotDate);
+                console.log("this.state.pickByStartTime", this.state.pickByStartTime);
+
+            }
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
-            this.setState({ isLoading: true, buttonEnable:true });
+            this.setState({ isLoading: true, buttonEnable: true });
             const userId = await AsyncStorage.getItem('userId')
 
             let requestData = {
@@ -232,8 +261,7 @@ class LabConfirmation extends Component {
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
                 lab_test_description: packageDetails.lab_test_description,
                 fee: packageDetails.fee,
-                startTime: packageDetails.appointment_starttime,
-                endTime: packageDetails.appointment_endtime,
+                startTime: startTime,
                 location: {
                     coordinates: selectedAddress.coordinates,
                     type: selectedAddress.type,
@@ -328,10 +356,13 @@ class LabConfirmation extends Component {
         temp.splice(index, 1);
         this.setState({ patientDetails: temp });
     }
+    handleDatePicked = date => {
+        this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
+        console.log("pickByStartTime", this.state.pickByStartTime);
 
-
+    }
     render() {
-        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, buttonEnable } = this.state;
+        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, buttonEnable, pickByStartTime, } = this.state;
 
         return (
             <Container>
@@ -508,8 +539,56 @@ class LabConfirmation extends Component {
                             } />
 
                     </View>
+                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                        {/* <TouchableOpacity onPress={() => { this.setState({ startDateTimePickerVisible: !startDateTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
+                            <Icon name='clock' style={{ padding: 10, color: '#09bf01' }} />
+                            <Text style={{ marginTop: 15, fontFamily: 'OpenSans', color: '#5A5A5A', fontSize: 14, textAlign: 'center' }}>
+                                {formatDate(new Date(), 'hh:mm A')}
+                            </Text> */}
+                        <Row style={{ marginTop: 10, }}>
+                            <Col style={{ alignItems: 'center' }} >
+                                <Row>
+                                    <Col size={5} style={{ justifyContent: 'center' }}>
 
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
 
+                                        {/* </Col>
+                                    <Col size={6} style={{ flexDirection: 'row' }}> */}
+                                        {/* <TouchableOpacity style={{ flex: 1, flexDirection: 'row' }} onPress={() => this.showStartTimePicker}>
+                                            <Icon name="md-clock" style={styles.iconstyle1} />
+                                            <Text style={styles.timeDetail}>{formatDate(this.state.startTime, 'hh:mm A')}</Text>
+
+                                            <DateTimePicker mode={'time'}
+                                                timePickerModeAndroid={'spinner'}
+                                                is24Hour={false}
+                                                date={pickByStartTime}
+                                                isVisible={this.state.startDateTimePickerVisible}
+                                                onConfirm={this.submitStartTimePickedValue}
+                                                onCancel={this.cancelStartTimePicker}
+                                                textStyle={{ fontFamily: 'OpenSans' }} /> */}
+
+                                        <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
+                                            <Icon name='ios-clock' style={styles.iconstyle1} />
+                                            {
+                                                this.state.startDatePlaceholder ?
+                                                    <View>
+                                                        <Text style={styles.startenddatetext}>{formatDate(this.state.pickByStartTime, 'hh:mm a')}</Text>
+                                                    </View> :
+                                                    <Text style={styles.startenddatetext}>Select time </Text>
+                                            }
+                                            <DateTimePicker
+                                                mode={'time'}
+                                                date={this.state.pickByStartTime}
+                                                isVisible={this.state.isTimePickerVisible}
+                                                onConfirm={this.handleDatePicked}
+                                                onCancel={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })} />
+                                        </TouchableOpacity>
+
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </View>
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Row>
@@ -693,6 +772,29 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 'auto'
     },
+    timeText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        marginTop: 3,
+        fontWeight: 'bold'
+    },
+    TouchStyle1: {
+        borderRadius: 5,
+        flexDirection: 'row',
+        backgroundColor: '#f0f0f0',
+        padding: 4,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    timeDetail: {
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        marginLeft: 5
+    },
+    iconstyle1: {
+        fontSize: 20,
+        color: '#13C100'
+    },
 
 
     curvedGrid: {
@@ -722,6 +824,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold'
     },
+    startenddatetext: {
+        // marginTop: 5,
+        marginBottom: 5,
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        textAlign: 'center',
+        marginLeft: 5
+    },
+
     labelTop:
     {
         fontFamily: 'OpenSans',
