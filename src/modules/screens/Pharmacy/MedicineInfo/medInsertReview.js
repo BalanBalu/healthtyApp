@@ -232,13 +232,13 @@ export class OrderInsertReview extends Component {
         this.setState({ errorMsg: '' });
 
         console.log("data", userId)
-        reviewInsertData.is_review_added = true,
+        reviewInsertData.isReviewSkipped = true,
           reviewInsertData.rating= rating,
           reviewInsertData.raviewComment= comments
        
       }
       else {
-        reviewInsertData.is_review_added = false
+        reviewInsertData.isReviewSkipped = false
       }
 
       let result = await InsertOrderReviews(userId, reviewInsertData);

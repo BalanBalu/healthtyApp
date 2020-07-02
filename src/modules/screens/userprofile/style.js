@@ -245,6 +245,27 @@ export default StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold',
         marginTop: 5
-    }
+    },
+    headText: {
+        marginTop: 10,
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '500',
+        fontFamily: 'OpenSans'
+    },
+    cardStyle: {
+        borderRadius: 10,
+        marginTop: 10,
+        padding: 10
+    },
+    rowStyle: {
+        marginTop: 10,
+        borderColor: '#909090',
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: 5
+    },
+
+
 });
 

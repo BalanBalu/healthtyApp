@@ -40,8 +40,7 @@ async componentDidMount() {
         return;
     }
     this.userId = await AsyncStorage.getItem("userId");
-    this.callVideAndChat()
-   
+    this.callVideAndChat()  
 }
 async callVideAndChat(doctorIds) {
     this.setState({ isLoading: true })
@@ -384,9 +383,12 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
         return (
             <Row style={styles.RowStyle}>
                 <Col style={{ width: '20%' }}>
-                    <Thumbnail source={renderDoctorImage(item)}
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })} >
+                <Thumbnail source={renderDoctorImage(item)}
                             style={{ width: 60, height: 60, position: 'relative', borderRadius: 60 / 2 }}
-                    />
+                    />   
+                        	</TouchableOpacity>
+                   
                     <View style={styles.circle} />
                         {isPremium === true ? 
                             <Thumbnail source={require('../../../../../../assets/images/viplogo.png')}

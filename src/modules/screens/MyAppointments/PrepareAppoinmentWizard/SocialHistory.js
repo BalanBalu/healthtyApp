@@ -70,7 +70,10 @@ class SocialHistory extends PureComponent {
                 }
             }
             this.setState({ isLoading: true })
-            let response = await userFiledsUpdate(userId, data)
+            if(sexuallyActive !=undefined || drinkAlcohol !=undefined || smoke !=undefined || recreational_drugs !=undefined || physically_or_verbally !=undefined || selectnumber !=null  || exercise !=undefined){
+             
+                let response = await userFiledsUpdate(userId, data)
+         
             if (response.success) {
                 Toast.show({
                     text: response.message,
@@ -80,6 +83,13 @@ class SocialHistory extends PureComponent {
                 this.skippingButton(false);
                 this.props.navigation.navigate('PrepareAppointmentLastStep', { AppointmentId: appointmentId });
             }
+        }else{
+            Toast.show({
+                text: 'Please fill  the  fields',
+                type: "danger",
+                duration: 3000,
+            })  
+        }
         }
         catch (e) {
             console.log(e)
@@ -90,6 +100,7 @@ class SocialHistory extends PureComponent {
     }
     render() {
         const { selectnumber } = this.state
+
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>

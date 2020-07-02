@@ -6,10 +6,11 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon, Picker
 } from 'native-base';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage, medicineDiscountedAmount, CartMedicineImage } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
-import{ updateTopSearchedItems} from '../../../providers/pharmacy/pharmacy.action'
+import { createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action'
+import { updateTopSearchedItems } from '../../../providers/pharmacy/pharmacy.action'
 
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 
@@ -29,11 +30,11 @@ export class AddToCard extends Component {
     async componentDidMount() {
         let data = this.props.data;
 
-       
+
         console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
-        if (data.userAddedMedicineQuantity) {
-            let userAddedMedicineQuantity = data.userAddedMedicineQuantity || 1
+        if (data.cartData && data.cartData.item) {
+            let userAddedMedicineQuantity = data.cartData.item.quantity || 1
             let discountedValue = medicineRateAfterOffer(data);
             let userAddedTotalMedicineAmount = Number(Number(userAddedMedicineQuantity * discountedValue).toFixed(2))
 
@@ -48,7 +49,7 @@ export class AddToCard extends Component {
     }
     async productQuantityOperator(item, operator) {
         let discountedValue = medicineRateAfterOffer(item)
-        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, discountedValue, operator, item.threshold_limit)
+        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, discountedValue, operator, item.maxThreashold)
         let userAddedTotalMedicineAmount = result.totalAmount || 0;
         let userAddedMedicineQuantity = result.quantity || 0;
         let threshold_message = result.threshold_message || null;
@@ -58,7 +59,7 @@ export class AddToCard extends Component {
                 duration: 3000,
                 type: 'danger',
                 position: "bottom",
-                style: { bottom: "50%" }
+                style: { bottom: "46%" }
 
             })
         }
@@ -75,8 +76,26 @@ export class AddToCard extends Component {
         const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
         let temp = [];
         temp = data
+
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
+
+        let item = {
+            discountedAmount: temp.discount ? medicineDiscountedAmount(temp) : 0,
+            productName: getMedicineName(temp),
+            productId: String(temp.id),
+            quantity: Number(temp.userAddedMedicineQuantity),
+            tax: 0,
+            totalPrice: Number(temp.userAddedTotalMedicineAmount),
+            unitPrice: Number(temp.price),
+            image: CartMedicineImage(temp.productImages)
+        }
+        if (temp.maxThreashold) {
+            item.maxThreashold = temp.maxThreashold
+        }
+        if (temp.h1Product) {
+            item.isH1Product = temp.h1Product
+        }
         if (data.selectedType === 'Add to Cart') {
             const isLoggedIn = await hasLoggedIn(this.props);
             if (!isLoggedIn) {
@@ -84,31 +103,44 @@ export class AddToCard extends Component {
                 return
             }
             let cartItems = []
+            let isCartUpdated = true
             let userId = await AsyncStorage.getItem('userId')
-            let cart = await AsyncStorage.getItem('cartItems-' + userId);
-
-            if (cart != null) {
-                cartItems = JSON.parse(cart);
+            let reqData = {
+                userId: userId,
+                type: "CART",
+                item: item
             }
-            if (temp.index != undefined) {
-                let index = temp.index
-                delete temp.index
-                cartItems.splice(index, 1, temp)
+            if (temp.cartData && temp.cartData.id) {
+                reqData.id = temp.cartData.id
+            } if (temp.cartData && temp.cartData.item.quantity === temp.userAddedMedicineQuantity) {
+                isCartUpdated = false
+            }
+            if (isCartUpdated === true) {
+                let AddCartResult = await createCart(reqData)
+                if (AddCartResult) {
+                    let result = await getCartListByUserId(userId)
+                    cartItems = result;
+                    console.log(JSON.stringify(result))
+
+                }
+
+                await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
+
+                this.props.popupVisible({
+                    visible: false,
+                    updatedVisible: false,
+                    isNavigateCart: true,
+                    medicineData: temp
+                })
             } else {
-                cartItems.push(temp);
+                this.props.popupVisible({
+                    visible: false,
+                    updatedVisible: false
+                })
             }
-            let count = cartItems.length;
-            console.log("count", count)
-            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
-
-            this.props.popupVisible({
-                visible: false,
-                updatedVisible: false,
-                isNavigateCart: true,
-                medicineData: temp
-            })
         }
         else if (data.selectedType === 'Buy Now') {
+            temp.item = item
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: true,

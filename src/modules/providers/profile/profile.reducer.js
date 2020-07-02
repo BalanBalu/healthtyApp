@@ -25,7 +25,7 @@ export const initialState = {
     gender:null,
     marital_status:null,
     blood_group:null,
-    secondary_mobile:null,
+    secondary_mobile:"",
     having_any_allergies:[{
       allergy_name:null,
       allergy_reaction:null
@@ -41,13 +41,13 @@ export const initialState = {
     allergy_info:[],
     medical_procedure:null,
     social_history:{
-      sexually_active: null,
-  drink_alcohol:null,
-  smoke:null,
-  use_recreational_drugs:null,
-  use_caffeinated_drink: null,
-  physically_or_verbally_hurt_you:null,
-  exercise:null
+      sexually_active: false,
+  drink_alcohol:false,
+  smoke:false,
+  use_recreational_drugs:false,
+  use_caffeinated_drink: undefined,
+  physically_or_verbally_hurt_you:false,
+  exercise:false
     }
   }
 
