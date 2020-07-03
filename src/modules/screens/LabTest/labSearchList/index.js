@@ -4,11 +4,11 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, Modal } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
-import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../labTestComponents';
-import { enumerateStartToEndDates } from '../CommonLabTest'
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
+import { enumerateStartToEndDates } from '../../CommonAll/functions'
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
-import styles from '../styles'
+import styles from '../../CommonAll/styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
 import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
