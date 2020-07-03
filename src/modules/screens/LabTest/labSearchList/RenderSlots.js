@@ -3,8 +3,8 @@ import { Container, Content, Text } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import styles from '../styles';
-import { sortByStartTime } from '../CommonLabTest';
+import styles from '../../CommonAll/styles';
+import { sortByStartTime } from '../../CommonAll/functions';
 
 export default class RenderSlots extends Component {
     constructor(props) {

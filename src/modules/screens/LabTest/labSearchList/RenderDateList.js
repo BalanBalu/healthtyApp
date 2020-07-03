@@ -3,8 +3,8 @@ import { Container, Content, Text } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, Dimensions, ScrollView, Image } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { reducer } from '../CommonLabTest';
-import styles from '../styles'
+import { reducer } from '../../CommonAll/functions';
+import styles from '../../CommonAll/styles'
 import moment from 'moment';
 
 export default class RenderDates extends Component {

@@ -19,21 +19,27 @@ class RenderSuggestionsList extends PureComponent {
         }
         this.callGetSuggestionListService = debounce(this.callGetSuggestionListService, 300);
     }
+    componentWillMount() {
+        this.callGetSuggestionListService('Primary', true) 
+    }
 
-    callGetSuggestionListService = async (enteredText) => {
+    callGetSuggestionListService = async (enteredText, suggestionTextDisable) => {
         try {
             this.setState({ isLoading: true })
             const { bookappointment: { locationCordinates } } = this.props;
-            const locationData = {
-                "coordinates": locationCordinates,
-                "maxDistance": MAX_DISTANCE_TO_COVER
+            const suggestionReqData = {
+                locationData: {
+                    "coordinates": locationCordinates,
+                    "maxDistance": MAX_DISTANCE_TO_COVER
+                },
+                inputText: enteredText
             }
-            let resultOfSuggestionData = await getSpecialistDataSuggestions('suggestion', enteredText, locationData);
+            let resultOfSuggestionData = await getSpecialistDataSuggestions('suggestion', suggestionReqData);
             // console.log('resultOfSuggestionData.data' + JSON.stringify(resultOfSuggestionData.data))
             if (resultOfSuggestionData.success) {
-                this.setState({ suggestionList: resultOfSuggestionData.data, searchValue: enteredText });
+                this.setState({ suggestionList: resultOfSuggestionData.data, searchValue: suggestionTextDisable ? '' : enteredText });
             } else {
-                this.setState({ suggestionList: [], searchValue: enteredText });
+                this.setState({ suggestionList: [], searchValue: suggestionTextDisable? '' : enteredText });
             }
         } catch (Ex) {
             console.log('Ex is getting on get Suggestions list details for Patient====>', Ex)
@@ -111,20 +117,28 @@ class RenderSuggestionsList extends PureComponent {
                             renderItem={({ item, index }) => (
                                 <Row
                                     onPress={() => {
-                                        let requestData = [{
-                                            type: 'geo',
-                                            value: {
-                                                coordinates: locationCordinates,
+                                        // let requestData = [{
+                                        //     type: 'geo',
+                                        //     value: {
+                                        //         coordinates: locationCordinates,
+                                        //         maxDistance: MAX_DISTANCE_TO_COVER
+                                        //     }
+                                        // }]
+                                        // if (index !== 0) {
+                                        //     requestData.push({
+                                        //         type: item.type,
+                                        //         value: item.value
+                                        //     })
+                                        // }
+                                        // this.props.navigation.navigate("Doctor List", { resultData: requestData })
+                                        this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+                                            inputKeywordFromSearch: item.value,
+                                            locationDataFromSearch: {
+                                                type: 'geo',
+                                                "coordinates": locationCordinates,
                                                 maxDistance: MAX_DISTANCE_TO_COVER
                                             }
-                                        }]
-                                        if (index !== 0) {
-                                            requestData.push({
-                                                type: item.type,
-                                                value: item.value
-                                            })
-                                        }
-                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
+                                        })
                                     }}
                                 >
                                     <Col size={7}>

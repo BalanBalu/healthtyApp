@@ -9,7 +9,7 @@ import { dateDiff, formatDate } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { insertAppointment, updateLapAppointment } from '../../../providers/lab/lab.action';
-import { getUserGenderAndAge } from '../CommonLabTest'
+import { getUserGenderAndAge } from '../../CommonAll/functions'
 import { SERVICE_TYPES } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
 import DateTimePicker from "react-native-modal-datetime-picker";
