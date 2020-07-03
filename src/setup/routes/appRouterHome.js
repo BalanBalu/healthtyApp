@@ -190,9 +190,13 @@ const HomeStack = createStackNavigator({
               </View>
             </TouchableOpacity> */}
           </TouchableOpacity>
+          {Platform.OS != "ios" ?
           <TouchableOpacity style={{ marginRight: 5,paddingLeft:5,paddingRight:5}}>
           <PopupMenu actions={['English','Tamil','Malayalam']}   onPress={onPopupEvent} navigation={navigation}/>
           </TouchableOpacity>
+          : 
+          null
+          }
 
 
         </Row>
