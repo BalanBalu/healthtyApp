@@ -101,18 +101,18 @@ const RenderListNotFound = (props) => {
 
 
 
-const renderLabTestImage = (data) => {
+const renderLabProfileImage = (data) => {
     let source = null;
-    if (data.profile_image) {
+    if(data.profile_image) {
         source = { uri: data.profile_image.imageURL }
     } else {
-        // source = require('../../assets/images/Logo.png')
+        source = require('../../../../assets/icon.png')
     }
     return (source)
 }
 
 export {
-    renderLabTestImage,
+    renderLabProfileImage,
     RenderNoSlotsAvailable,
     RenderListNotFound,
     RenderFavoritesComponent,

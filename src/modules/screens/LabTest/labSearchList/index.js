@@ -4,7 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, Modal } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
-import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound } from '../labTestComponents';
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../labTestComponents';
 import { enumerateStartToEndDates } from '../CommonLabTest'
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
@@ -195,7 +195,7 @@ class labSearchList extends Component {
         this.selectedSlotItemByLabIdsObj[labId] = selectedSlot;
         this.setState({ selectedSlotIndex })
         console.log("selectedSlotIndex", this.state.selectedSlotIndex);
-        
+
     }
     callSlotsServiceWhenOnEndReached = (labId, availabilitySlotsDatesArry) => { // call availability slots service when change dates on next week
         const finalIndex = availabilitySlotsDatesArry.length
@@ -238,7 +238,7 @@ class labSearchList extends Component {
 
         return (
             <View>
-               
+
                 <RenderSlots
                     selectedSlotIndex={selectedSlotIndex}
                     // selectedDate={selectedDate}
@@ -320,7 +320,9 @@ class labSearchList extends Component {
                             <Grid>
                                 <Row onPress={() => this.onPressGoToBookAppointmentPage(item)}>
                                     <Col style={{ width: '5%' }}>
-                                        <Thumbnail source={renderLabTestImage(item.labInfo)} style={{ height: 60, width: 60 }} />
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(item.labInfo), title: 'Profile photo' })}>
+                                            <Thumbnail circle source={renderLabProfileImage(item.labInfo)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
+                                        </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '80%' }}>
                                         <Row style={{ marginLeft: 55, }}>
