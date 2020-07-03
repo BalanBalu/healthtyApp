@@ -12,13 +12,13 @@ import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../s
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
 import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById, getUserReviews } from "../../../providers/lab/lab.action"
 import InsertReview from '../Reviews/insertReviews';
-import { renderLabProfileImage } from "../labTestComponents"
+import { renderLabProfileImage } from "../../CommonAll/components"
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: props.navigation.getParam('data')||{},
+      data: props.navigation.getParam('data') || {},
       labTestCategoryInfo: '',
       upcomingTap: 0,
       paymentData: {},
@@ -120,7 +120,7 @@ class LabAppointmentInfo extends Component {
       this.getUserReviews()
     }
   }
-  async  navigateCancelAppoointment() {
+  async navigateCancelAppoointment() {
     try {
       this.props.navigation.navigate('LabCancelAppointment', { appointmentData: this.state.data })
     }
@@ -129,7 +129,7 @@ class LabAppointmentInfo extends Component {
     }
   }
 
-  async  navigateLabConfirmation() {
+  async navigateLabConfirmation() {
     try {
       const { data } = this.state;
       this.packageDetails = {
