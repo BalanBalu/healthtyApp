@@ -146,7 +146,6 @@ class LabAppointmentInfo extends Component {
         category_name: data.labCategoryInfo.category_name,
         extra_charges: data.labInfo.extra_charges,
         appointment_starttime: data.appointment_starttime,
-        appointment_endtime: data.appointment_endtime,
         mobile_no: data.labInfo.mobile_no,
         location: data.labInfo.location
       }
@@ -166,7 +165,6 @@ class LabAppointmentInfo extends Component {
         labId: data.lab_id,
         userId: userId,
         startTime: data.appointment_starttime,
-        endTime: data.appointment_endtime,
         status: updatedStatus,
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
@@ -434,7 +432,7 @@ class LabAppointmentInfo extends Component {
                   </Col>
                 </Row>
 
-                {(data.appointment_status == 'COMPLETED' && reviewData.length !== 0) || reviewData.length !== 0 ?
+                {reviewData.length !== 0 ?
                   <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
                       <Icon name="ios-medkit" style={{ fontSize: 20, }} />
@@ -450,7 +448,7 @@ class LabAppointmentInfo extends Component {
                       <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
                     </Col>
                   </Row> :
-                  (data.appointment_status == 'COMPLETED' && reviewData.length == 0) ?
+                  reviewData.length == 0 ?
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
                         <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
