@@ -310,7 +310,7 @@ class LabAppointmentInfo extends Component {
                     <Col style={{ width: '50%', justifyContent: 'center', alignItems: 'center' }}>
                       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <Icon name="md-clock" style={styles.iconStyle} />
-                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a') + '-' + formatDate(data.appointment_endtime, 'hh:mm a')}</Text>
+                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a')}</Text>
                       </Row>
                     </Col>
                   </Row>
