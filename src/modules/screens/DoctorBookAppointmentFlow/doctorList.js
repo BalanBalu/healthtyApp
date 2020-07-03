@@ -17,6 +17,7 @@ import {
     fetchDoctorAvailabilitySlotsService,
     serviceOfUpdateDocSponsorViewCountByUser,
     getFavoriteListCount4PatientService,
+    SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
 } from '../../providers/BookAppointmentFlow/action';
 import { formatDate, addMoment, getMoment } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
@@ -56,9 +57,10 @@ class DoctorList extends Component {
             doctorInfoListAndSlotsData1: [],
         }
         this.conditionFromFilterPage = false,
-            this.selectedDataFromFilterPage = null;
-        this.incrementPaginationCount = 0,
-            this.onEndReachedIsTriggedFromRenderDateList = false;
+            this.isEnabledLoadMoreData = true;
+        this.selectedDataFromFilterPage = null;
+        this.incrementPaginationCount = 0;
+        this.onEndReachedIsTriggedFromRenderDateList = false;
     }
     navigateToFilters() {
         this.props.navigation.navigate("Filter Doctor Info", {
@@ -69,18 +71,12 @@ class DoctorList extends Component {
         try {
             const { navigation } = this.props;
             this.selectedDataFromFilterPage = navigation.getParam('filterData');
-            if (this.selectedDataFromFilterPage) {
-                this.conditionFromFilterPage = navigation.getParam('conditionFromFilterPage');
-                if (this.conditionFromFilterPage) {
-                    this.setState({ isLoading: true });
-                    this.incrementPaginationCount = 0,
-                        this.totalSearchedDoctorIdsArray = [];
-                    this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.clear();
-                    await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props;
-                    /** Passing ActiveSponsor is TRUE Or FALSE values on Params **/
-                    await this.callSearchAndFilterServiceWithActiveSponsorTrueAndFalse();// multiple times services call
-                    this.setState({ isLoading: false, renderRefreshCount: this.state.renderRefreshCount + 1 });
-                }
+            this.conditionFromFilterPage = navigation.getParam('conditionFromFilterPage');
+            const { bookAppointmentData: { getPreviousDocListWhenClearFilter } } = this.props;
+            debugger
+            debugger
+            if (this.conditionFromFilterPage && getPreviousDocListWhenClearFilter || this.conditionFromFilterPage && this.selectedDataFromFilterPage) { //Call Initial search service  when clear the Filter data from filter page Or Call Filter service by  selected Input filtered data
+                await this.callInitialSearchOrFilterServiceWithClearedData();
             }
         }
         catch (Ex) {
@@ -110,6 +106,19 @@ class DoctorList extends Component {
             this.setState({ isLoading: false });
         }
     }
+    callInitialSearchOrFilterServiceWithClearedData = async () => {
+        this.setState({ isLoading: true });
+        this.isEnabledLoadMoreData = true;
+        this.incrementPaginationCount = 0;
+        this.onEndReachedIsTriggedFromRenderDateList = false;
+        this.totalSearchedDoctorIdsArray = [];
+        this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.clear();
+        await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props;
+        /** Passing ActiveSponsor is TRUE Or FALSE values on Params **/
+        await this.callSearchAndFilterServiceWithActiveSponsorTrueAndFalse();// multiple times services call
+        this.setState({ isLoading: false, renderRefreshCount: this.state.renderRefreshCount + 1 })
+    }
+
     callSearchAndFilterServiceWithActiveSponsorTrueAndFalse = async () => {
         await Promise.all([
             this.searchByDoctorDetails(true).catch(Ex => console.log('Ex is getting on get Doctor details by search service call using Active Sponsor TRUE====>', Ex.message)),
@@ -117,6 +126,7 @@ class DoctorList extends Component {
         ]);
 
     }
+
     dispatchAndCResetOfRattingAndFavorites = async () => {
         await store.dispatch(
             {
@@ -133,23 +143,34 @@ class DoctorList extends Component {
         await store.dispatch({
             type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
             data: []
-        })
+        });
+        if (!this.conditionFromFilterPage) {
+            await store.dispatch(
+                {
+                    type: SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
+                    data: false
+                },
+            );
+        }
+
     }
     searchByDoctorDetails = async (activeSponsor) => {
         try {
+            console.log(activeSponsor);
             const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
             const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
+            const { bookAppointmentData: { getPreviousDocListWhenClearFilter } } = this.props;
             let type;
             let reqData4ServiceCall = {
                 locationData: locationDataFromSearch
             }
-            if (this.conditionFromFilterPage) {
+            reqData4ServiceCall.inputText = inputKeywordFromSearch;
+            if (this.conditionFromFilterPage && !getPreviousDocListWhenClearFilter) {
                 type = 'filter';
                 reqData4ServiceCall = { ...reqData4ServiceCall, ...this.selectedDataFromFilterPage }
             }
             else {
                 type = 'search';
-                reqData4ServiceCall.inputText = inputKeywordFromSearch;
             }
             const docListResponse = await searchByDocDetailsService(type, activeSponsor, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
@@ -182,7 +203,10 @@ class DoctorList extends Component {
                     this.updateDocSponsorViewersCountByUser(activeSponsorDocIdsArry);
                 }
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
+                // console.log('doctorInfoList=-==>', activeSponsor, doctorInfoList);
+
                 doctorInfoList.sort(sortByPrimeDoctors);  // Sort by active Sponsors list in TOP
+
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
@@ -195,7 +219,8 @@ class DoctorList extends Component {
                 }
             }
             else {
-                if (!this.conditionFromFilterPage && this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.size > 4) {
+                if (!activeSponsor) this.isEnabledLoadMoreData = false;
+                if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.size > 4) {
                     Toast.show({
                         text: 'No more Doctors Available!',
                         duration: 4000,
@@ -227,7 +252,7 @@ class DoctorList extends Component {
     }
 
     render() {
-        const { bookAppointmentData: { doctorInfoListAndSlotsData, filteredDoctorData } } = this.props;
+        const { bookAppointmentData: { doctorInfoListAndSlotsData, } } = this.props;
         const { isLoading, isLoadingMoreDocList } = this.state;
         if (isLoading) return <Loader style='list' />;
         return (
@@ -256,16 +281,21 @@ class DoctorList extends Component {
                         </Col>
                     </Row>
                 </Card>
-                {doctorInfoListAndSlotsData.length === 0 ? <RenderListNotFound text={this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'} />
-                    :
-                    <FlatList
+                {doctorInfoListAndSlotsData.length ?
+                    < FlatList
                         data={doctorInfoListAndSlotsData}
                         onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
-                        onEndReached={() => this.loadMoreData()}
+                        onEndReached={() => {
+                            if (this.isEnabledLoadMoreData) {
+                                this.loadMoreData();
+                            }
+                        }}
                         renderItem={({ item, index }) => this.renderDoctorCard(item, index)
                         }
                         keyExtractor={(item, index) => index.toString()}
                     />
+                    : <RenderListNotFound text={this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'} />
+
                 }
                 {isLoadingMoreDocList ?
                     <View style={{ flex: 1, justifyContent: 'flex-end' }}>
@@ -309,7 +339,13 @@ class DoctorList extends Component {
     /* Update Favorites for Doctor by UserId  */
     addToFavoritesList = async (doctorId) => {
         const userId = await AsyncStorage.getItem('userId');
-        await addFavoritesToDocByUserService(userId, doctorId);
+        const updateResp = await addFavoritesToDocByUserService(userId, doctorId);
+        if (updateResp)
+            Toast.show({
+                text: 'Doctor wish list updated successfully',
+                type: "success",
+                duration: 3000,
+            });
         this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
     }
 
@@ -323,6 +359,7 @@ class DoctorList extends Component {
             })
             return;
         }
+        this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
         doctorData.doctorId = doctorData.doctor_id;
         const confirmSlotDetails = { ...doctorData, slotData: selectedSlotItemByDoctor };
@@ -347,6 +384,7 @@ class DoctorList extends Component {
     }
 
     onPressGoToBookAppointmentPage(doctorItemData) {
+        this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         doctorItemData.doctorId = doctorItemData.doctor_id;
         const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorItemData.doctorIdHostpitalId).slotData;
         if (doctorItemHaveSlotsDataObj) {
@@ -508,7 +546,7 @@ class DoctorList extends Component {
                     docInfoData={{ isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }}
                     addToFavoritesList={(doctorId) => { this.addToFavoritesList(doctorId) }}
                     onPressGoToBookAppointmentPage={(item) => { this.onPressGoToBookAppointmentPage(item) }}
-                    shouldUpdate={`${item.doctorIdHostpitalId}-${fee}-${feeWithoutOffer}`}
+                    shouldUpdate={`${item.doctorIdHostpitalId}-${fee}-${feeWithoutOffer}-${patientFavoriteListCountOfDoctorIds.includes(item.doctor_id)}`}
                 >
                 </RenderDoctorInfo>
             </View>

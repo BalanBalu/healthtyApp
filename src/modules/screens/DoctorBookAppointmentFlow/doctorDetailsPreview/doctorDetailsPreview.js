@@ -29,7 +29,7 @@ selectedSlotFee = null;
 selectedSlotFeeWithoutOffer = null;
 showedFee = null;
 fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image,hospital";
-
+import styles from '../../CommonAll/styles';
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
 import { RenderNoSlotsAvailable } from '../../CommonAll/components'
 import RenderDatesList from '../RenderDateList';
@@ -134,7 +134,7 @@ class DoctorDetailsPreview extends Component {
                 await this.getDoctorAvailabilitySlots(reqData4Availability, startDateByMoment, endDateByMoment);
             }
             await this.getLocationDataBySelectedSlot(this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData, selectedSlotIndex)
-            const specialistWithServicesList = this.formServiceListByUsingSpecialist(doctorItemData.specialistInfo || []);
+            const specialistWithServicesList = this.formServiceListByUsingSpecialist(doctorItemData.specialist || []);
             this.setState({ doctorId: this.setDocInfoAndAvailableSlotsData.doctorId, doctorData: this.setDocInfoAndAvailableSlotsData, specialistWithServicesList });
         }
         debugger

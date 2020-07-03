@@ -73,9 +73,9 @@ const RenderFavoritesCount = (props) => {
 
 const RenderFavoritesComponent = (props) => {
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => props.onPressFavoriteIcon()}>
             {props.isLoggedIn ?
-                <Icon name="heart" onPress={() => props.onPressFavoriteIcon()}
+                <Icon name="heart"
                     style={props.isEnabledFavorites ? props.isFromLabBookApp ? styles.isEnabledFavorite4LalBookApp : styles.isEnabledFavorite : props.isFromLabBookApp ? styles.isDisabledFavorite4LalBookApp : styles.isDisabledFavorite}>
                 </Icon> : null}
         </TouchableOpacity>
