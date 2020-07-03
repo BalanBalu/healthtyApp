@@ -12,19 +12,20 @@ import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../s
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
 import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById, getUserReviews } from "../../../providers/lab/lab.action"
 import InsertReview from '../Reviews/insertReviews';
+import { renderLabProfileImage } from "../labTestComponents"
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: {},
+      data: props.navigation.getParam('data')||{},
       labTestCategoryInfo: '',
       upcomingTap: 0,
       paymentData: {},
       reviewData: [],
       reportData: null,
       isLoading: true,
-      appointmentId:'',
+      appointmentId: '',
       modalVisible: false,
 
     }
@@ -32,12 +33,8 @@ class LabAppointmentInfo extends Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    const appointmentData = navigation.getParam('data');
-    console.log("appointmentData", appointmentData)
-
     const upcomingTap = navigation.getParam('selectedIndex');
-
-    if (appointmentData == undefined) {
+    if (this.state.data == undefined) {
       let appointmentId = navigation.getParam('serviceId')
       console.log("appointmentId", appointmentId)
       await this.setState({ appointmentId })
@@ -47,9 +44,9 @@ class LabAppointmentInfo extends Component {
       ])
     }
     else {
-      await this.setState({ data: appointmentData, upcomingTap, appointmentId: appointmentData._id })
-      this.getLapTestPaymentInfo(appointmentData.payment_id),
-      this.getUserReviews()
+      await this.setState({ upcomingTap, appointmentId: this.state.data._id })
+      this.getLapTestPaymentInfo(this.state.data.payment_id),
+        this.getUserReviews()
 
     }
   }
@@ -146,7 +143,6 @@ class LabAppointmentInfo extends Component {
         category_name: data.labCategoryInfo.category_name,
         extra_charges: data.labInfo.extra_charges,
         appointment_starttime: data.appointment_starttime,
-        appointment_endtime: data.appointment_endtime,
         mobile_no: data.labInfo.mobile_no,
         location: data.labInfo.location
       }
@@ -166,7 +162,6 @@ class LabAppointmentInfo extends Component {
         labId: data.lab_id,
         userId: userId,
         startTime: data.appointment_starttime,
-        endTime: data.appointment_endtime,
         status: updatedStatus,
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
@@ -219,7 +214,11 @@ class LabAppointmentInfo extends Component {
                   <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }}>{"Ref no :" + data.token_no}</Text>
                   <Row>
                     <Col style={{ width: '25%', }}>
-                      <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
+                      {/* <TouchableOpacity onPress={() => console.log("111", data.labInfo), console.log("222",data.labInfo&&data.labInfo) }>
+                      </TouchableOpacity> */}
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(data.labInfo && data.labInfo), title: 'Profile photo' })}>
+                        <Thumbnail circle source={renderLabProfileImage(data.labInfo && data.labInfo)} style={{ height: 60, width: 60 }} />
+                      </TouchableOpacity>
                     </Col>
                     <Col style={{ width: '80%', marginTop: 10 }}>
                       <Row>
@@ -310,7 +309,7 @@ class LabAppointmentInfo extends Component {
                     <Col style={{ width: '50%', justifyContent: 'center', alignItems: 'center' }}>
                       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <Icon name="md-clock" style={styles.iconStyle} />
-                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a') + '-' + formatDate(data.appointment_endtime, 'hh:mm a')}</Text>
+                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a')}</Text>
                       </Row>
                     </Col>
                   </Row>
@@ -434,7 +433,7 @@ class LabAppointmentInfo extends Component {
                   </Col>
                 </Row>
 
-                {(data.appointment_status == 'COMPLETED' && reviewData.length !== 0) || reviewData.length !== 0 ?
+                {reviewData.length !== 0 ?
                   <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
                       <Icon name="ios-medkit" style={{ fontSize: 20, }} />
@@ -450,7 +449,7 @@ class LabAppointmentInfo extends Component {
                       <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
                     </Col>
                   </Row> :
-                  (data.appointment_status == 'COMPLETED' && reviewData.length == 0) ?
+                  reviewData.length == 0 ?
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
                         <Icon name="ios-add-circle" style={{ fontSize: 20, }} />

@@ -4,7 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, Modal } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
-import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
 import { enumerateStartToEndDates } from '../../CommonAll/functions'
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
@@ -194,6 +194,8 @@ class labSearchList extends Component {
         this.selectedSlotByLabIdsObj[labId] = selectedSlotIndex;
         this.selectedSlotItemByLabIdsObj[labId] = selectedSlot;
         this.setState({ selectedSlotIndex })
+        console.log("selectedSlotIndex", this.state.selectedSlotIndex);
+
     }
     callSlotsServiceWhenOnEndReached = (labId, availabilitySlotsDatesArry) => { // call availability slots service when change dates on next week
         const finalIndex = availabilitySlotsDatesArry.length
@@ -230,17 +232,20 @@ class labSearchList extends Component {
         )
     }
     renderWorkingHours(labId, slotsData) {
-        this.slotData = slotsData;
+        let selectedSlotIndex = this.selectedSlotByLabIdsObj[labId] !== undefined ? this.selectedSlotByLabIdsObj[labId] : -1;
+        // this.slotData = slotsData;
         console.log("this.slotData", this.slotData);
 
         return (
             <View>
-                <Row style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Opening Time</Text>
-                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 10 }}>Closing Time</Text>
-                </Row>
+
                 <RenderSlots
+                    selectedSlotIndex={selectedSlotIndex}
+                    // selectedDate={selectedDate}
                     slotData={slotsData}
+                    labId={labId}
+                    shouldUpdate={`${labId}-${selectedSlotIndex}`}
+                    onSlotItemPress={(labId, selectedSlot, selectedSlotIndex) => this.onSlotItemPress(labId, selectedSlot, selectedSlotIndex)}
                 >
                 </RenderSlots>
             </View>
@@ -249,6 +254,14 @@ class labSearchList extends Component {
 
     onPressToContinue4PaymentReview(labData, selectedSlotItem) {   // navigate to next further process
         const { labInfo, labCatInfo } = labData;
+        if (!selectedSlotItem) {
+            Toast.show({
+                text: 'Please Select a Slot to continue booking',
+                type: 'warning',
+                duration: 3000
+            })
+            return;
+        }
         console.log("selectedSlotItem", selectedSlotItem)
 
         let packageDetails = {
@@ -260,6 +273,7 @@ class labSearchList extends Component {
             mobile_no: labInfo.mobile_no || null,
             lab_name: labInfo.lab_name,
             category_name: labCatInfo.category_name,
+            selectedSlotItem: selectedSlotItem,
             slotData: this.slotData,
             "location": labInfo.location
         }
@@ -306,7 +320,9 @@ class labSearchList extends Component {
                             <Grid>
                                 <Row onPress={() => this.onPressGoToBookAppointmentPage(item)}>
                                     <Col style={{ width: '5%' }}>
-                                        <Thumbnail source={renderLabTestImage(item.labInfo)} style={{ height: 60, width: 60 }} />
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(item.labInfo), title: 'Profile photo' })}>
+                                            <Thumbnail circle source={renderLabProfileImage(item.labInfo)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
+                                        </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '80%' }}>
                                         <Row style={{ marginLeft: 55, }}>
@@ -387,6 +403,8 @@ class labSearchList extends Component {
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
+                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
                                                 <Col size={4}>
                                                     <TouchableOpacity

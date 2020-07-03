@@ -15,7 +15,7 @@ import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../s
 import { getLapAppointments, getCategories, getUserReviews } from '../../../providers/lab/lab.action'
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 import InsertReview from '../Reviews/insertReviews';
-
+import { renderLabProfileImage} from "../labTestComponents"
 
 class LabAppointmentList extends Component {
     constructor(props) {
@@ -270,7 +270,9 @@ class LabAppointmentList extends Component {
                                                     : null}
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Col size={2}>
-                                                        <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
+                                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(item.labInfo), title: 'Profile photo' })}>
+                                                            <Thumbnail circle source={renderLabProfileImage(item.labInfo)} style={{ height: 60, width: 60 }} />
+                                                        </TouchableOpacity>
                                                     </Col>
                                                     <Col size={8}>
                                                         <Row style={{ borderBottomWidth: 0 }}>

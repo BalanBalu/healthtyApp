@@ -37,7 +37,7 @@ class LabConfirmation extends Component {
             gender: '',
             age: '',
             itemSelected: 'TEST_AT_LAP',
-            packageDetails: {},
+            packageDetails: props.navigation.getParam('packageDetails') || {},
             selectedAddress: null,
             buttonEnable: false,
             isTimePickerVisible: false,
@@ -47,21 +47,16 @@ class LabConfirmation extends Component {
             startDatePlaceholder: false,
 
         };
+
     }
     async componentDidMount() {
+        console.log("packageDetails", this.state.packageDetails);
         const { navigation } = this.props;
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             navigation.navigate('login');
             return
         }
-        const packageDetails = navigation.getParam('packageDetails') || {};
-        if (packageDetails != undefined) {
-            this.setState({ packageDetails })
-        }
-        this.setState({ packageDetails })
-        console.log("packageDetails", this.state.packageDetails);
-
         await this.getUserProfile();
     }
 
@@ -238,12 +233,12 @@ class LabConfirmation extends Component {
                 })
                 return false;
             } else {
-                let startDate = formatDate(packageDetails.slotData[0].slotDate, 'YYYY-MM-DD')   ;
-                            let startTimeByFormate = formatDate(this.state.pickByStartTime,'HH:mm:ss' )
-                startTime = startDate + 'T' + startTimeByFormate+'.000'
+                let startDate = formatDate(packageDetails.selectedSlotItem.slotStartDateAndTime, 'YYYY-MM-DD');
+                let startTimeByFormate = formatDate(this.state.pickByStartTime, 'HH:mm:ss')
+                startTime = startDate + 'T' + startTimeByFormate + '.000'
                 console.log("startTime", startTime);
 
-                console.log("packageDetails.slotData[0].slotDate", packageDetails.slotData[0].slotDate);
+                console.log("packageDetails.slotData[0].slotDate", packageDetails.selectedSlotItem.slotStartDateAndTime)
                 console.log("this.state.pickByStartTime", this.state.pickByStartTime);
 
             }
@@ -540,32 +535,13 @@ class LabConfirmation extends Component {
 
                     </View>
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
-                        {/* <TouchableOpacity onPress={() => { this.setState({ startDateTimePickerVisible: !startDateTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
-                            <Icon name='clock' style={{ padding: 10, color: '#09bf01' }} />
-                            <Text style={{ marginTop: 15, fontFamily: 'OpenSans', color: '#5A5A5A', fontSize: 14, textAlign: 'center' }}>
-                                {formatDate(new Date(), 'hh:mm A')}
-                            </Text> */}
+
                         <Row style={{ marginTop: 10, }}>
                             <Col style={{ alignItems: 'center' }} >
                                 <Row>
                                     <Col size={5} style={{ justifyContent: 'center' }}>
 
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
-
-                                        {/* </Col>
-                                    <Col size={6} style={{ flexDirection: 'row' }}> */}
-                                        {/* <TouchableOpacity style={{ flex: 1, flexDirection: 'row' }} onPress={() => this.showStartTimePicker}>
-                                            <Icon name="md-clock" style={styles.iconstyle1} />
-                                            <Text style={styles.timeDetail}>{formatDate(this.state.startTime, 'hh:mm A')}</Text>
-
-                                            <DateTimePicker mode={'time'}
-                                                timePickerModeAndroid={'spinner'}
-                                                is24Hour={false}
-                                                date={pickByStartTime}
-                                                isVisible={this.state.startDateTimePickerVisible}
-                                                onConfirm={this.submitStartTimePickedValue}
-                                                onCancel={this.cancelStartTimePicker}
-                                                textStyle={{ fontFamily: 'OpenSans' }} /> */}
 
                                         <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
                                             <Icon name='ios-clock' style={styles.iconstyle1} />
