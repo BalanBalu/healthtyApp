@@ -51,7 +51,57 @@
     "End Date":"അവസാന ദിവസം",
     "Choose times":"സമയം തിരഞ്ഞെടുക്കുക",
     "Select time":"സമയം തിരഞ്ഞെടുക്കുക",
-    "Notify Me":"എന്നെ അറിയിക്കു"
+    "Notify Me":"എന്നെ അറിയിക്കു",
+    "Upcoming":"വരാനിരിക്കുന്ന",
+    "Past":"കഴിഞ്ഞ",
+    "Appointment Preparation":"നിയമനം തയ്യാറാക്കൽ",
+    "Book Again":"വീണ്ടും ബുക്ക് ചെയ്യുക",
+    "Disease":"രോഗം",
+    "Hospital":"ആശുപത്രി",
+    "Doctor spoken language":"ഡോക്ടർ സംസാരിക്കുന്ന ഭാഷ",
+    "Payment Report":"പേയ്‌മെന്റ് റിപ്പോർട്ട്",
+    "Report Issue":"റിപ്പോർട്ട് ഇഷ്യു",
+    "Add Feedback":"ഫീഡ്‌ബാക്ക് ചേർക്കുക",
+    "Payment Info":"പണം അടച്ച വിവരം",
+    "Total Fee":"ആകെ ഫീസ്",
+    "Payment Made":"പേയ്‌മെന്റ് നടത്തി",
+    "Payment Due":"പേയ്‌മെന്റ് കുടിശ്ശിക",
+    "Payment Method":"പണംകൊടുക്കൽരീതി",
+    "Top Rated":"ടോപ്പ് റേറ്റുചെയ്തത്",
+"Filters":"ഫിൽട്ടറുകൾ",
+"Gender":"ലിംഗഭേദം",
+"Male":"ആൺ",
+"Female":"പെൺ",
+"Others":"മറ്റുള്ളവ",
+"Availability Date & Time":"ലഭ്യത തീയതിയും സമയവും",
+"Today":"ഇന്ന്",
+"Next 3 days":"അടുത്ത 3 ദിവസം",
+"Next 7 days":"അടുത്ത 7 ദിവസം",
+"Work Experience":"ജോലി പരിചയം",
+"Choose Spoken Languages":"സംസാര ഭാഷകൾ തിരഞ്ഞെടുക്കുക",
+"Select your category":"നിങ്ങളുടെ വിഭാഗം തിരഞ്ഞെടുക്കുക",
+"Select service":"സേവനം തിരഞ്ഞെടുക്കുക",
+"Clear Filters":"ഫിൽട്ടറുകൾ മായ്‌ക്കുക",
+"Apply":"പ്രയോഗിക്കുക",
+"Experience":"അനുഭവം",
+"Rating":"റേറ്റിംഗ്",
+"Favourite":"പ്രിയപ്പെട്ടവ",
+"Fees":"ഫീസ്",
+"Video":"വീഡിയോ",
+"Share":"പങ്കിടുക",
+"Chat":"ചാറ്റ്",
+"About":"കുറിച്ച്",
+"Reviews":"അവലോകനങ്ങൾ",
+"Choose appointment date and time":"അപ്പോയിന്റ്മെന്റ് തീയതിയും സമയവും",
+"Selected Appointment on":"നിയമനം തിരഞ്ഞെടുക്കുക",
+"Language Spoken":"ഭാഷ സംസാരിക്കുന്നു",
+"No reviews yet":"ഇതുവരെ അവലോകനങ്ങളൊന്നുമില്ല",
+"BOOK APPOINTMENT":"ബുക്ക് അപ്പോയിന്റ്മെന്റ്"
+
+
+
+
+
 
 
 
