@@ -7,7 +7,7 @@ import {
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
-import { getMedicinesSearchList, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action';
+import { getMedicinesSearchList, getNearOrOrderPharmacy ,getproductDetailsByPharmacyId} from '../../../providers/pharmacy/pharmacy.action';
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getAddress, getKiloMeterCalculation, renderPharmacyImage } from '../CommomPharmacy'
 import Spinner from "../../../../components/Spinner";
@@ -23,24 +23,27 @@ class ChosePharmacyList extends Component {
             selectedPharmacy: -1,
             checked: false,
             prescriptionDetails: null,
+            medicineOrderData:[],
+            productAvailableData:[]
         }
     }
     componentDidMount() {
-        let prescriptionDetails = this.props.navigation.getParam('prescriptionDetails') || null;
-        this.setState({ prescriptionDetails })
+        let medicineOrderData = this.props.navigation.getParam('medicineOrderData') || [];
+        
+        this.setState({ medicineOrderData })
         this.getNearByPharmacyList()
     }
     getNearByPharmacyList = async () => {
         try {
             const { bookappointment: { locationCordinates } } = this.props;
-            locationData = {
+          let  locationData = {
                 "coordinates": locationCordinates,
                 "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
             console.log('JSON.stringify(locationData)')
             console.log(JSON.stringify(locationData))
             this.setState({ locationCordinates: locationCordinates })
-            userId = await AsyncStorage.getItem('userId')
+           let  userId = await AsyncStorage.getItem('userId')
             let postData = [
                 {
                     type: 'geo',
@@ -53,6 +56,25 @@ class ChosePharmacyList extends Component {
 
 
             if (result.success) {
+                if(this.state.medicineOrderData.length!==0){
+                let pharmacyIds=[]
+                let productmasterIds=[]
+                result.data.forEach(element => {
+                    pharmacyIds.push(element.pharmacyInfo.pharmacy_id)
+                    
+                });
+                this.state.medicineOrderData.forEach(ele=>{
+                    productmasterIds.push(ele.item.masterProductId)
+                })
+                console.log(pharmacyIds)
+               let  productResult=await getproductDetailsByPharmacyId(pharmacyIds,productmasterIds);
+              
+               if(productResult){
+                console.log('data=============================')
+                console.log(JSON.stringify(productResult))
+                   this.setState({productAvailableData:productResult})
+               }
+            }
                 await this.setState({ pharmacyData: result.data, pharmacyMainData: result.data })
             }
         }
@@ -134,6 +156,35 @@ class ChosePharmacyList extends Component {
             </View>
         )
     }
+    renderProductAvailable(pharmacyData) {
+        const{productAvailableData}=this.state;
+        return (
+            <View style={{ width: '100%' }} >
+                <Row style={styles.SearchRow}>
+
+                    <Col size={9.1} style={{ justifyContent: 'center', }}>
+                        <Input
+                            placeholder="Search Pharmacy"
+                            style={styles.inputfield}
+                            placeholderTextColor="#e2e2e2"
+                            keyboardType={'email-address'}
+                            value={this.state.searchValue}
+                            onChangeText={searchValue => this.filterPharmacies(searchValue)}
+                            underlineColorAndroid="transparent"
+                            blurOnSubmit={false}
+                        />
+                    </Col>
+                    <Col size={0.9} style={{justifyContent:'center'}}>
+                        <TouchableOpacity style={{ justifyContent: 'center' }}>
+                            <Icon name="ios-search" style={{ color: 'gray', fontSize: 25,}} />
+                        </TouchableOpacity>
+                    </Col>
+
+                </Row>
+            </View>
+        )
+    }
+
 
     render() {
         const { pharmacyData, isLoading, locationCordinates, selectedPharmacy, checked, prescriptionDetails } = this.state;
@@ -209,7 +260,7 @@ class ChosePharmacyList extends Component {
                                                         </Row>
                                                         <Row style={{ marginTop: 5 }}>
                                                           
-
+                                                       {this.renderProductAvailable(item)}
 
 
 

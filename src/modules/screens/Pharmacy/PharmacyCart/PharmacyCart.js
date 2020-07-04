@@ -14,7 +14,7 @@ class PharmacyCart extends Component {
         this.state = {
             cartItems: [],
             isLoading: true,
-         
+
         }
 
     }
@@ -28,6 +28,8 @@ class PharmacyCart extends Component {
             this.setState({ isLoading: true })
             userId = await AsyncStorage.getItem('userId')
             let cartItems = await AsyncStorage.getItem('cartItems-' + userId) || [];
+            console.log('cartItemscartItemscartItemscartItems')
+            console.log(cartItems)
 
             if (cartItems.length === 0) {
                 this.setState({ cartItems: [], isLoading: false });
@@ -97,15 +99,15 @@ class PharmacyCart extends Component {
 
     totalPrice() {
         let total = 0;
-        
+
         if (this.state.cartItems) {
-            
+
             this.state.cartItems.map(element => {
-               
+
 
                 total = total + element.item.totalPrice
             })
-         
+
             return total.toFixed(2);
         }
     }
@@ -128,7 +130,7 @@ class PharmacyCart extends Component {
     }
     async procced() {
         const { cartItems } = this.state;
-       
+
         this.props.navigation.navigate("MedicineCheckout", {
             medicineDetails: cartItems,
             orderOption: "pharmacyCart",

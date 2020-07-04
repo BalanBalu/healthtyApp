@@ -578,3 +578,20 @@ export async function getCartCount(userId) {
     }
   }
 }
+
+
+export async function getproductDetailsByPharmacyId(pharmacyIds,masterProductIds) {
+  try {
+
+
+    let endPoint = `/products/master/pharmacy?pid=${pharmacyIds}&ids=${masterProductIds}`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}

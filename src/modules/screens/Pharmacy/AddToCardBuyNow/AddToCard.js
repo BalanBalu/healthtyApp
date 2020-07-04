@@ -84,6 +84,7 @@ export class AddToCard extends Component {
             discountedAmount: temp.discount ? medicineDiscountedAmount(temp) : 0,
             productName: getMedicineName(temp),
             productId: String(temp.id),
+            masterProductId:String(temp.masterProductId),
             quantity: Number(temp.userAddedMedicineQuantity),
             tax: 0,
             totalPrice: Number(temp.userAddedTotalMedicineAmount),
