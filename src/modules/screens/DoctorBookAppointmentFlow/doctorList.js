@@ -262,7 +262,7 @@ class DoctorList extends Component {
                 />
                 <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
                     <Row style={{ height: 35, alignItems: 'center' }}>
-                        <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+                        <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(doctorInfoListAndSlotsData)}>
                             <Col size={2.0} >
                                 <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
@@ -502,9 +502,9 @@ class DoctorList extends Component {
 
 
 
-    sortByTopRatings(filteredDoctorData) {
+    sortByTopRatings(doctorDataList) {
         const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
-        filteredData = filteredDoctorData.sort(function (a, b) {
+        const doctorDataListBySort = doctorDataList.sort(function (a, b) {
             let ratingA = 0;
             let ratingB = 0;
             if (docReviewListCountOfDoctorIDs[a.doctor_id]) {
@@ -513,7 +513,7 @@ class DoctorList extends Component {
             if (docReviewListCountOfDoctorIDs[b.doctor_id]) {
                 ratingB = docReviewListCountOfDoctorIDs[b.doctor_id].average_rating || 0
             }
-            if (a.primeDocOnNonPrimeList === true || b.primeDocOnNonPrimeList) {
+            if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
                 return ratingB - ratingA;
             }
             if (currentDoctorOrder === 'ASC') {
@@ -523,9 +523,9 @@ class DoctorList extends Component {
             }
         });
         store.dispatch({
-            type: SET_FILTERED_DOCTOR_DATA,
-            data: filteredData
-        })
+            type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+            data: doctorDataListBySort
+        });
         if (currentDoctorOrder === 'ASC') {
             currentDoctorOrder = 'DESC';
         } else if (currentDoctorOrder === 'DESC') {
