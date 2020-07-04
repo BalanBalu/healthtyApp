@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Segment, Button, Card, Right, Thumbnail, Icon, Toast, Item, Footer, Spinner } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image, Share } from 'react-native';
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
 import { store } from '../../../../setup/store';
 import {
@@ -387,6 +387,26 @@ class DoctorDetailsPreview extends Component {
         };
         this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
     }
+    shareDocInfo = async (doctorData) => {
+        try {
+            const doctorNameWithPrefix = `${doctorData.prefix}.${doctorData.first_name} ${doctorData.last_name}`;
+            const result = await Share.share({
+                title: 'MEDFLIC Consultation',
+                message:
+                    ` MEDFLIC Consultation :-
+                   
+                    Recommend ${doctorNameWithPrefix}
+
+                 ${doctorNameWithPrefix} from MEDFLIC SELECT is one of the top ${this.state.specialistWithServicesList[0].category_name} in the country.
+                 I recommend her for any relevant health concerns.
+                You can instantly consult  ${doctorNameWithPrefix}   on the MEDFLIC app.`,
+                url: "https://medflic.com/appointment/booking?doctorId=" + this.state.doctorId
+            });
+
+        } catch (error) {
+            console.log('Ex is getting on Share plain content====>', Ex)
+        }
+    }
 
     renderDocInfoPreviewCard() {
         const { isLoggedIn, doctorData } = this.state;
@@ -399,6 +419,7 @@ class DoctorDetailsPreview extends Component {
                     doctorData={doctorData}
                     docInfoData={{ isLoggedIn, fee: this.selectedSlotFee, feeWithoutOffer: this.selectedSlotFeeWithoutOffer, isVideoAvailability: this.isVideoAvailability, isChatAvailability: this.isChatAvailability, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }}
                     addToFavoritesList={(doctorId) => { this.addToFavoritesList(doctorId) }}
+                    shareDocInfo={(doctorData) => { this.shareDocInfo(doctorData) }}
                 >
                 </RenderDoctorInfoPreview>
             </View>

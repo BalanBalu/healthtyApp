@@ -16,7 +16,7 @@ export default class RenderDoctorInfoPreview extends Component {
     render() {
         debugger
         console.log('Rendering Doc Details Preview====>');
-        const { doctorData, navigation, docInfoData: { isLoggedIn, fee, feeWithoutOffer, isVideoAvailability, isChatAvailability, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList } = this.props;
+        const { doctorData, navigation, shareDocInfo, docInfoData: { isLoggedIn, fee, feeWithoutOffer, isVideoAvailability, isChatAvailability, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList } = this.props;
         debugger
         return (
             <View>
@@ -99,7 +99,7 @@ export default class RenderDoctorInfoPreview extends Component {
                         </Col>
                         : null}
                     <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
-                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }} onPress={() => shareDocInfo(doctorData)}>
                             <Icon name="md-share" style={{ fontSize: 18, color: '#7F49C3' }} />
                             <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3', }}>Share</Text>
                         </TouchableOpacity>
