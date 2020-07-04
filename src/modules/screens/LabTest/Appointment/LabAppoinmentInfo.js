@@ -18,7 +18,7 @@ class LabAppointmentInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: props.navigation.getParam('data') || {},
+      data:{},
       labTestCategoryInfo: '',
       upcomingTap: 0,
       paymentData: {},
@@ -32,9 +32,12 @@ class LabAppointmentInfo extends Component {
   }
 
   async componentDidMount() {
+
     const { navigation } = this.props;
+    const appointmentData = navigation.getParam('data');
+    console.log("appointmentData", appointmentData)
     const upcomingTap = navigation.getParam('selectedIndex');
-    if (this.state.data == undefined) {
+    if (appointmentData == undefined) {
       let appointmentId = navigation.getParam('serviceId')
       console.log("appointmentId", appointmentId)
       await this.setState({ appointmentId })
@@ -44,8 +47,8 @@ class LabAppointmentInfo extends Component {
       ])
     }
     else {
-      await this.setState({ upcomingTap, appointmentId: this.state.data._id })
-      this.getLapTestPaymentInfo(this.state.data.payment_id),
+      await this.setState({ data: appointmentData, upcomingTap, appointmentId: appointmentData._id })
+      this.getLapTestPaymentInfo(appointmentData.payment_id),
         this.getUserReviews()
 
     }
