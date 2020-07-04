@@ -102,8 +102,7 @@ const RenderListNotFound = (props) => {
 
 
 const renderLabProfileImage = (data) => {
-    console.log("data:::", data);
-    
+   
     let source = null;
     if (!data) {
         return (source)
