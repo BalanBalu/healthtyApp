@@ -242,22 +242,28 @@ class Home extends Component {
         }
     }
 
-
     navigateToCategorySearch(categoryName) {
         const { bookappointment: { locationCordinates } } = this.props;
-
-        let serachInputvalues = [{
-            type: 'category',
-            value: categoryName
-        },
-        {
-            type: 'geo',
-            value: {
-                coordinates: locationCordinates,
+        this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+            inputKeywordFromSearch: categoryName,
+            locationDataFromSearch: {
+                type: 'geo',
+                "coordinates": locationCordinates,
                 maxDistance: MAX_DISTANCE_TO_COVER
             }
-        }]
-        this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
+        })
+        // let serachInputvalues = [{
+        //     type: 'category',
+        //     value: categoryName
+        // },
+        // {
+        //     type: 'geo',
+        //     value: {
+        //         coordinates: locationCordinates,
+        //         maxDistance: MAX_DISTANCE_TO_COVER
+        //     }
+        // }]
+        // this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
 
     getMarkedAsReadedNotification = async (userId) => {
@@ -592,8 +598,8 @@ class Home extends Component {
                                     </Row>
                                 </TouchableOpacity>
                             </Card>
-                            <NextAppoinmentPreparation 
-                            navigation={this.props.navigation}
+                            <NextAppoinmentPreparation
+                                navigation={this.props.navigation}
                             />
                         </View>
 

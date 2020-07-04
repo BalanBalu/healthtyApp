@@ -8,15 +8,15 @@ import RenderReviews from './RenderReviews'
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
 import RenderDates from '../labSearchList/RenderDateList';
 import RenderSlots from '../labSearchList/RenderSlots';
-import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabTestImage, RenderNoSlotsAvailable } from '../labTestComponents'
-import { enumerateStartToEndDates } from '../CommonLabTest'
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabProfileImage, RenderNoSlotsAvailable } from '../../CommonAll/components'
+import { enumerateStartToEndDates } from '../../CommonAll/functions'
 import { } from '../../../providers/labTest/labTestBookAppointment.action';
 import { fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import RenderLabLocation from '../RenderLabLocation';
 import { Loader } from '../../../../components/ContentLoader';
 import { addFavoritesToLabByUserService } from '../../../providers/labTest/labTestBookAppointment.action'
 import RenderLabCategories from '../RenderLabCategories';
-import styles from '../styles'
+import styles from '../../CommonAll/styles'
 class LabBookAppointment extends Component {
   availabilitySlotsDatesArry = [];
   slotData4ItemMap = new Map();
@@ -150,10 +150,7 @@ class LabBookAppointment extends Component {
     const { selectedDate, labId } = this.state;
     return (
       <View>
-        <Row style={{ marginTop: 10 }}>
-          <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Opening Time</Text>
-          <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 10 }}>Closing Time</Text>
-        </Row>
+
         <RenderSlots
           selectedSlotIndex={this.selectedSlotIndex}
           selectedDate={selectedDate}
@@ -182,7 +179,14 @@ class LabBookAppointment extends Component {
   }
   onPressContinueForPaymentReview(labData, selectedSlotItem) {
     const { labInfo, labCatInfo } = labData;
-
+    if (!selectedSlotItem) {
+      Toast.show({
+        text: 'Please Select a Slot to continue booking',
+        type: 'warning',
+        duration: 3000
+      })
+      return;
+    }
     let packageDetails = {
       lab_id: labInfo.lab_id,
       lab_test_categories_id: labCatInfo.lab_test_categories_id,
@@ -192,8 +196,7 @@ class LabBookAppointment extends Component {
       mobile_no: labInfo.mobile_no || null,
       lab_name: labInfo.lab_name,
       category_name: labCatInfo.category_name,
-      // appointment_starttime: selectedSlotItem.slotStartDateAndTime,
-      // appointment_endtime: selectedSlotItem.slotEndDateAndTime,
+      selectedSlotItem: selectedSlotItem,
       location: labInfo.location
     }
     console.log("packageDetails", packageDetails);
@@ -219,7 +222,9 @@ class LabBookAppointment extends Component {
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
-                    <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(labInfo && labInfo), title: 'Profile photo' })}>
+                      <Thumbnail circle source={renderLabProfileImage(labInfo && labInfo)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
+                    </TouchableOpacity>
                   </Col>
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>

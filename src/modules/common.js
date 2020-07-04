@@ -96,7 +96,6 @@ export function renderDoctorImage(data) {
     return (source)
 }
 
-
 export function getDoctorSpecialist(specialistData) {
     if (specialistData) {
         return specialistData[0] ? specialistData[0].category : '';
@@ -332,7 +331,7 @@ export function getHospitalName(location) {
 export function getAddress(location) {
     if (!location) return ''
     if (location)
-        return `${location.address.no_and_street},${location.address.address_line_1||''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
+        return `${location.address.no_and_street},${location.address.address_line_1 || ''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
     else
         return ''
 }
@@ -377,12 +376,12 @@ export const reportStatusValue = {
 }
 
 
-    export async function validateFirstNameLastName(text){
+export async function validateFirstNameLastName(text) {
     const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
-   
+
     if (regex.test(text) === false) {
-       return false
-    } else{
+        return false
+    } else {
         return true
     }
 }
