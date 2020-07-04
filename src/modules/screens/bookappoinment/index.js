@@ -44,6 +44,8 @@ const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
 import { Loader } from '../../../components/ContentLoader';
 import { CATEGORY_BASE_URL } from '../../../setup/config';
 import { RenderReviewData } from '../Reviews/ReviewCard';
+import { translate } from "../../../setup/translator.helper"
+
 processedDoctorDetailsAndSlotData = null;
 showedHospitalDoctorId = null;
 selectedSlotLocationShowed = null;
@@ -603,11 +605,11 @@ getMinVideoChatConsultFee(item) {
 
                 <Row style={{ borderBottomWidth:0.3,borderBottomColor:'gray',paddingBottom:10,marginLeft:10,marginRight:10 }}>
                   <Col style={{ width: "25%", marginTop: 15, }}>
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Experience</Text>
+                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>{translate("Experience")}</Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}> {getDoctorExperience(doctorData.calulatedExperience)}</Text>
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Rating</Text>
+                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>{translate("Rating")} </Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                       <StarRating
                         fullStarColor='#FF9500'
@@ -621,11 +623,11 @@ getMinVideoChatConsultFee(item) {
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
 
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Favourite</Text>
+                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>{translate("Favourite")} </Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}> {favouriteListCountByDoctorIds[doctorData.doctor_id] ? favouriteListCountByDoctorIds[doctorData.doctor_id] : 0}</Text>
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Fees</Text>
+                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>{translate("Fees")} </Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{this.selectedSlotFee}{' '}
 
                       {this.selectedSlotFee !== this.selectedSlotFeeWithoutOffer ?
@@ -641,7 +643,7 @@ getMinVideoChatConsultFee(item) {
                 <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                     <TouchableOpacity style={{flexDirection:'row'}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
                       <Icon name="ios-videocam" style={{fontSize:25,color:'#7F49C3'}}/>
-                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:3}}>Video</Text>
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:3}}>{translate("Video")}</Text>
                     </TouchableOpacity>
                   </Col> 
                   : null}
@@ -649,14 +651,14 @@ getMinVideoChatConsultFee(item) {
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
                       <Icon name="ios-chatboxes" style={{fontSize:25,color:'#7F49C3'}} />
-                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:2}}>Chat</Text>
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:2}}>{translate("Chat")}</Text>
                     </TouchableOpacity>
                   </Col>
                   : null}
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}}>
                       <Icon name="md-share" style={{fontSize:18,color:'#7F49C3'}} />
-                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>Share</Text>
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>{translate("Share")}</Text>
                     </TouchableOpacity>
                   </Col>
 
@@ -680,7 +682,7 @@ getMinVideoChatConsultFee(item) {
             <Row style={{ marginLeft: 5, marginRight: 5,marginTop:10 }}>
               <Segment>
                 <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 5, alignItems: 'center', justifyContent: 'center' }, pressTab === 1 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => { this.onSegemntClick(1) }}>
-                  <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center' }}>About</Text>
+                  <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center' }}>{translate("About")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 5, alignContent: 'center', justifyContent: 'center' }, pressTab === 2 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => {
                   if (!isLoadedUserReview) {
@@ -688,7 +690,7 @@ getMinVideoChatConsultFee(item) {
                   }
                   this.onSegemntClick(2)
                 }}>
-                  <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center' }}>Reviews</Text>
+                  <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center' }}>{translate("Reviews")}</Text>
                 </TouchableOpacity>
 
               </Segment>
@@ -713,7 +715,7 @@ getMinVideoChatConsultFee(item) {
 
                 <View>
                   <Row style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
+                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>{translate("Choose appointment date and time")}</Text>
                   </Row>
 
                   {this.renderDatesOnFlatlist(doctorData.slotData, selectedDate)}
@@ -725,7 +727,7 @@ getMinVideoChatConsultFee(item) {
 
                   <View style={{ borderTopColor: '#000', borderTopWidth: 0.3, marginTop: 10 }}>
                     <Row style={{ marginTop: 10,paddingTop:10 }}>
-                      <Text  style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
+                      <Text  style={{ fontSize: 12, fontFamily: 'OpenSans' }}>{translate("Selected Appointment on")}</Text>
                     </Row>
                     <Row style={{ marginTop: 5 }}>
                       <Col style={{ width: '40%' }}>
@@ -756,7 +758,7 @@ getMinVideoChatConsultFee(item) {
                 <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3,marginTop:10  }}>
                   <Row style={{ marginTop: 10,paddingTop:10 }}>
                     <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Language Spoken</Text>
+                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>{translate("Language Spoken")}</Text>
                   </Row>
 
                   <Row style={{ marginLeft: 20 }}>
@@ -777,7 +779,7 @@ getMinVideoChatConsultFee(item) {
                 <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3, marginTop: 10 }}>
                   <Row style={{ marginTop: 10,paddingTop:10 }}>
                     <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Services</Text>
+                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>{translate("Services")}</Text>
                   </Row>
                   <FlatList
                     data={servicesByCategories}
@@ -825,7 +827,7 @@ getMinVideoChatConsultFee(item) {
                 {isReviewLoading === true ? <Spinner color='blue' /> :
                   reviewData.length === 0 ?
                     <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 300 }}>
-                      <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No reviews yet</Text>
+                      <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>{translate("No reviews yet")}</Text>
                     </Item> :
                     <FlatList
                       data={reviewData}
@@ -852,7 +854,7 @@ getMinVideoChatConsultFee(item) {
                 onPress={() => this.onPressContinueForPaymentReview(doctorData, selectedSlotItem)}
                 testID='clickButtonToPaymentReviewPage'>
                 <Row style={{ justifyContent: 'center', }}>
-                  <Text style={{ marginLeft: -25, marginTop: 2, fontWeight: 'bold', justifyContent: 'center', alignItems: 'center' }}>BOOK APPOINTMENT</Text>
+                  <Text style={{ marginLeft: -25, marginTop: 2, fontWeight: 'bold', justifyContent: 'center', alignItems: 'center' }}>{translate("BOOK APPOINTMENT")}</Text>
                 </Row>
               </Button>
             </Col>
