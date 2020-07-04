@@ -18,7 +18,7 @@ class LabAppointmentInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: props.navigation.getParam('data') || {},
+      data:{},
       labTestCategoryInfo: '',
       upcomingTap: 0,
       paymentData: {},
@@ -32,11 +32,12 @@ class LabAppointmentInfo extends Component {
   }
 
   async componentDidMount() {
+
     const { navigation } = this.props;
+    const appointmentData = navigation.getParam('data');
     const upcomingTap = navigation.getParam('selectedIndex');
-    if (this.state.data == undefined) {
+    if (appointmentData == undefined) {
       let appointmentId = navigation.getParam('serviceId')
-      console.log("appointmentId", appointmentId)
       await this.setState({ appointmentId })
       await new Promise.all([
         this.getAppointmentById(appointmentId),
@@ -44,8 +45,8 @@ class LabAppointmentInfo extends Component {
       ])
     }
     else {
-      await this.setState({ upcomingTap, appointmentId: this.state.data._id })
-      this.getLapTestPaymentInfo(this.state.data.payment_id),
+      await this.setState({ data: appointmentData, upcomingTap, appointmentId: appointmentData._id })
+      this.getLapTestPaymentInfo(appointmentData.payment_id),
         this.getUserReviews()
 
     }
@@ -56,8 +57,6 @@ class LabAppointmentInfo extends Component {
 
     try {
       let result = await getLabAppointmentById(appointmentId)
-      console.log("result", result)
-
       if (result.success) {
         await this.setState({ data: result.data[0], isLoading: true });
         this.getLapTestPaymentInfo(result.data[0].payment_id)
@@ -96,7 +95,6 @@ class LabAppointmentInfo extends Component {
   getUserReviews = async () => {
     try {
       let reviewResult = await getUserReviews('appointment', this.state.appointmentId)
-      console.log("reviewResult", reviewResult)
       if (reviewResult.success) {
         this.setState({ reviewData: reviewResult.data });
       }
@@ -214,8 +212,7 @@ class LabAppointmentInfo extends Component {
                   <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }}>{"Ref no :" + data.token_no}</Text>
                   <Row>
                     <Col style={{ width: '25%', }}>
-                      {/* <TouchableOpacity onPress={() => console.log("111", data.labInfo), console.log("222",data.labInfo&&data.labInfo) }>
-                      </TouchableOpacity> */}
+                     
                       <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(data.labInfo && data.labInfo), title: 'Profile photo' })}>
                         <Thumbnail circle source={renderLabProfileImage(data.labInfo && data.labInfo)} style={{ height: 60, width: 60 }} />
                       </TouchableOpacity>
