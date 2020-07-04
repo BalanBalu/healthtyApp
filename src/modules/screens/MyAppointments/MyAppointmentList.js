@@ -16,6 +16,8 @@ import { renderDoctorImage, getAllEducation, getAllSpecialist, getName } from '.
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
+import { translate } from "../../../setup/translator.helper"
+
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -366,7 +368,7 @@ class MyAppoinmentList extends Component {
 							marginRight: "auto",
 							marginTop: "auto"
 						}}
-						values={["Upcoming", "Past"]}
+						values={[translate("Upcoming"), translate("Past")]}
 						selectedIndex={this.state.selectedIndex}
 						onTabPress={this.handleIndexChange}
 						activeTabStyle={{

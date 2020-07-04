@@ -14,6 +14,7 @@ import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.a
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
 import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName } from '../../common'
+import { translate } from "../../../setup/translator.helper"
 
 const hasReviewButtonShow = true
 
@@ -458,7 +459,7 @@ class AppointmentDetails extends Component {
                     <Col size={6}>
                         <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
 
-                          <Text style={styles.touchableText1}>Appointment Preparation</Text>
+                          <Text style={styles.touchableText1}>{translate("Appointment Preparation")}</Text>
 
                         </TouchableOpacity>
                     </Col>
@@ -466,7 +467,7 @@ class AppointmentDetails extends Component {
                   }
                   <Col size={4} style={{ marginLeft: 5 }}>
                     <TouchableOpacity style={styles.appoinmentPrepareStyle2} onPress={() => this.navigateToBookAppointmentPage()} testID='navigateBookingPage'>
-                      <Text style={styles.touchableText1}>	Book Again</Text>
+                      <Text style={styles.touchableText1}>{translate("Book Again")}	</Text>
                     </TouchableOpacity>
                   </Col>
 
@@ -513,7 +514,7 @@ class AppointmentDetails extends Component {
                       <Icon name="ios-medkit" style={{ fontSize: 20, }} />
                     </Col>
                     <Col style={{ width: '92%', paddingTop: 5 }}>
-                      <Text style={styles.innerSubText}>Disease</Text>
+                      <Text style={styles.innerSubText}>{translate("Disease")}</Text>
                       <Text note style={styles.subTextInner1}>{data.disease_description || ''}</Text>
                     </Col>
                   </Row>
@@ -524,7 +525,7 @@ class AppointmentDetails extends Component {
                         <Icon name="ios-create" style={{ fontSize: 20, }} />
                       </Col>
                       <Col style={{ width: '92%', paddingTop: 5 }}>
-                        <Text style={styles.innerSubText}>Patient Stament</Text>
+                        <Text style={styles.innerSubText}>{translate("Patient Stament")}</Text>
                         <Text note style={styles.subTextInner1}>{data.disease_description}</Text>
                       </Col>
                     </Row> : null}
@@ -534,7 +535,7 @@ class AppointmentDetails extends Component {
                         <Icon name="ios-pin" style={{ fontSize: 20, }} />
                       </Col>
                       <Col style={{ width: '92%', paddingTop: 5 }}>
-                        <Text style={styles.innerSubText}>Hospital</Text>
+                        <Text style={styles.innerSubText}>{translate("Hospital")}</Text>
                         <Text style={styles.subTextInner1}>{getHospitalHeadeName(data.location[0])}</Text>
                         <Text note style={styles.subTextInner1}>{getHospitalName(data.location[0])}</Text>
                       </Col>
@@ -578,7 +579,7 @@ class AppointmentDetails extends Component {
                         <Icon name="ios-book" style={{ fontSize: 20, }} />
                       </Col>
                       <Col style={{ width: '92%', paddingTop: 5 }}>
-                        <Text style={styles.innerSubText}>Doctor spoken language</Text>
+                        <Text style={styles.innerSubText}>{translate("Doctor spoken language")}</Text>
                         <Text note style={styles.subTextInner1}>{doctorData.language && doctorData.language.toString()}</Text>
                       </Col>
                     </Row> : null}
@@ -612,7 +613,7 @@ class AppointmentDetails extends Component {
                       <Icon name="ios-document" style={{ fontSize: 20, }} />
                     </Col>
                     <Col style={{ width: '92%', paddingTop: 5 }}>
-                      <Text style={styles.innerSubText}>Payment Report</Text>
+                      <Text style={styles.innerSubText}>{translate("Payment Report")}</Text>
                       {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
                           <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'appointment' }) }}>
@@ -641,7 +642,7 @@ class AppointmentDetails extends Component {
                             style={styles.reviewButton
                             }>
                             <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
-                              Report Issue
+                            {translate("Report Issue")}
                         </Text>
                           </TouchableOpacity>
                         </View>
@@ -671,11 +672,11 @@ class AppointmentDetails extends Component {
 
                         </Col>
                         <Col style={{ width: '92%', paddingTop: 5 }}>
-                          <Text style={styles.innerSubText}>Add Feedback</Text>
+                          <Text style={styles.innerSubText}>{translate("Add Feedback")}</Text>
                           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
 
-                              <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
+                              <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>{translate("Add Feedback")} </Text>
                               <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
                             </TouchableOpacity>
                           </View>
@@ -689,10 +690,10 @@ class AppointmentDetails extends Component {
                       <Icon name="ios-cash" style={{ fontSize: 20, }} />
                     </Col>
                     <Col style={{ width: '92%', paddingTop: 5 }}>
-                      <Text style={styles.innerSubText}>Payment Info</Text>
+                      <Text style={styles.innerSubText}>{translate("Payment Info")}</Text>
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
-                          <Text style={styles.downText}>Total Fee
+                          <Text style={styles.downText}>{translate("Total Fee")} 
                   </Text>
                         </Col>
                         <Col style={{ width: '15%' }}>
@@ -704,7 +705,7 @@ class AppointmentDetails extends Component {
                       </Row>
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
-                          <Text style={styles.downText}>Payment Made
+                          <Text style={styles.downText}>{translate("Payment Made")}
                   </Text>
                         </Col>
                         <Col style={{ width: '15%' }}>
@@ -716,7 +717,7 @@ class AppointmentDetails extends Component {
                       </Row>
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
-                          <Text style={styles.downText}>Payment Due
+                          <Text style={styles.downText}>{translate("Payment Due")} 
                   </Text>
                         </Col>
                         <Col style={{ width: '15%' }}>
@@ -728,7 +729,7 @@ class AppointmentDetails extends Component {
                       </Row>
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
-                          <Text style={styles.downText}>Payment Method
+                          <Text style={styles.downText}>{translate("Payment Method")} 
                 </Text></Col>
                         <Col style={{ width: '15%' }}>
                           <Text style={styles.downText}>-</Text>

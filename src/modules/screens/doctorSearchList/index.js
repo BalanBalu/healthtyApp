@@ -30,6 +30,8 @@ import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
+import { translate } from "../../../setup/translator.helper"
+
 
 const vipLogo = require('../../../../assets/images/viplogo.png')
 let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,experience,profile_image";
@@ -773,7 +775,7 @@ class doctorSearchList extends Component {
                                             <Icon name='ios-arrow-down' style={{ color: 'gray', fontSize: 20, marginTop: 10 }} />
                                         </Col>
                                         <Col size={8.9} style={{ justifyContent: 'center' }}>
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
+                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>{translate("Top Rated")}</Text>
                                         </Col>
 
                                     </Col>
@@ -783,7 +785,7 @@ class doctorSearchList extends Component {
                                             <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25, marginTop: 5 }} />
                                         </Col>
                                         <Col size={8.9} style={{ justifyContent: 'center' }}>
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%', textAlign: 'center' }}>Filters </Text>
+                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%', textAlign: 'center' }}>{translate("Filters") } </Text>
                                         </Col>
 
                                     </Col>
