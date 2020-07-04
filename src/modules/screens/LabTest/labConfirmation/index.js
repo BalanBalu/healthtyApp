@@ -5,13 +5,17 @@ import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'rea
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
-import { dateDiff } from '../../../../setup/helpers';
+import { dateDiff, formatDate } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { insertAppointment, updateLapAppointment } from '../../../providers/lab/lab.action';
-import { getUserGenderAndAge } from '../CommonLabTest'
+import { getUserGenderAndAge } from '../../CommonAll/functions'
 import { SERVICE_TYPES } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
+import DateTimePicker from "react-native-modal-datetime-picker";
+import moment from 'moment';
+
+
 let patientDetails = [];
 class LabConfirmation extends Component {
     constructor(props) {
@@ -33,24 +37,26 @@ class LabConfirmation extends Component {
             gender: '',
             age: '',
             itemSelected: 'TEST_AT_LAP',
-            packageDetails: {},
+            packageDetails: props.navigation.getParam('packageDetails') || {},
             selectedAddress: null,
-
+            buttonEnable: false,
+            isTimePickerVisible: false,
+            pickByStartTime: moment().startOf('day').toDate(),
+            startTime: moment().startOf('day').toDate(),
+            isDateTimePickerVisible: false,
+            startDatePlaceholder: false,
 
         };
+
     }
     async componentDidMount() {
+        console.log("packageDetails", this.state.packageDetails);
         const { navigation } = this.props;
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             navigation.navigate('login');
             return
         }
-        const packageDetails = navigation.getParam('packageDetails') || {};
-        if (packageDetails != undefined) {
-            this.setState({ packageDetails })
-        }
-        this.setState({ packageDetails })
         await this.getUserProfile();
     }
 
@@ -81,7 +87,7 @@ class LabConfirmation extends Component {
             let fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
-            let patientAddress = [], patientDetails = [];
+            let patientAddress = [];
 
             this.defaultPatientDetails = {
                 type: 'self',
@@ -120,16 +126,13 @@ class LabConfirmation extends Component {
         this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType: addressType })
     }
     onChangeSelf = async () => {
-        console.log("Start:::", this.state.patientDetails.length);
         if (this.state.selfChecked == true && patientDetails.length == 0) {
             patientDetails.unshift(this.defaultPatientDetails)
         }
-        else if (this.state.selfChecked == false) {
+        else if (this.state.selfChecked == false && this.state.patientDetails[0].type == 'self') {
             this.state.patientDetails.shift(this.defaultPatientDetails)
         }
         this.setState({ patientDetails })
-        console.log("self:::", this.state.patientDetails);
-
     }
 
     onChangeCheckBox = async () => {
@@ -218,12 +221,31 @@ class LabConfirmation extends Component {
             } else {
                 selectedAddress = packageDetails.location;
             }
+            console.log("pickByStartTime", this.state.pickByStartTime);
 
             let patientData = [];
+            let startTime;
+            if (!this.state.startDatePlaceholder) {
+                Toast.show({
+                    text: 'Kindly select your appointment time',
+                    type: 'warning',
+                    duration: 3000
+                })
+                return false;
+            } else {
+                let startDate = formatDate(packageDetails.selectedSlotItem.slotStartDateAndTime, 'YYYY-MM-DD');
+                let startTimeByFormate = formatDate(this.state.pickByStartTime, 'HH:mm:ss')
+                startTime = startDate + 'T' + startTimeByFormate + '.000'
+                console.log("startTime", startTime);
+
+                console.log("packageDetails.slotData[0].slotDate", packageDetails.selectedSlotItem.slotStartDateAndTime)
+                console.log("this.state.pickByStartTime", this.state.pickByStartTime);
+
+            }
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
-            this.setState({ isLoading: true });
+            this.setState({ isLoading: true, buttonEnable: true });
             const userId = await AsyncStorage.getItem('userId')
 
             let requestData = {
@@ -234,8 +256,7 @@ class LabConfirmation extends Component {
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
                 lab_test_description: packageDetails.lab_test_description,
                 fee: packageDetails.fee,
-                startTime: packageDetails.appointment_starttime,
-                endTime: packageDetails.appointment_endtime,
+                startTime: startTime,
                 location: {
                     coordinates: selectedAddress.coordinates,
                     type: selectedAddress.type,
@@ -330,10 +351,13 @@ class LabConfirmation extends Component {
         temp.splice(index, 1);
         this.setState({ patientDetails: temp });
     }
+    handleDatePicked = date => {
+        this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
+        console.log("pickByStartTime", this.state.pickByStartTime);
 
-
+    }
     render() {
-        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, defaultPatientDetails } = this.state;
+        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, buttonEnable, pickByStartTime, } = this.state;
 
         return (
             <Container>
@@ -510,8 +534,37 @@ class LabConfirmation extends Component {
                             } />
 
                     </View>
+                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
 
+                        <Row style={{ marginTop: 10, }}>
+                            <Col style={{ alignItems: 'center' }} >
+                                <Row>
+                                    <Col size={5} style={{ justifyContent: 'center' }}>
 
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
+
+                                        <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
+                                            <Icon name='ios-clock' style={styles.iconstyle1} />
+                                            {
+                                                this.state.startDatePlaceholder ?
+                                                    <View>
+                                                        <Text style={styles.startenddatetext}>{formatDate(this.state.pickByStartTime, 'hh:mm a')}</Text>
+                                                    </View> :
+                                                    <Text style={styles.startenddatetext}>Select time </Text>
+                                            }
+                                            <DateTimePicker
+                                                mode={'time'}
+                                                date={this.state.pickByStartTime}
+                                                isVisible={this.state.isTimePickerVisible}
+                                                onConfirm={this.handleDatePicked}
+                                                onCancel={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })} />
+                                        </TouchableOpacity>
+
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </View>
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Row>
@@ -658,12 +711,12 @@ class LabConfirmation extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment('cash')}>
+                                <TouchableOpacity disabled={buttonEnable} onPress={() => this.proceedToLabTestAppointment('cash')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment('online')}>
+                                <TouchableOpacity disabled={buttonEnable} onPress={() => this.proceedToLabTestAppointment('online')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                 </TouchableOpacity>
                             </Col>
@@ -695,6 +748,29 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 'auto'
     },
+    timeText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        marginTop: 3,
+        fontWeight: 'bold'
+    },
+    TouchStyle1: {
+        borderRadius: 5,
+        flexDirection: 'row',
+        backgroundColor: '#f0f0f0',
+        padding: 4,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    timeDetail: {
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        marginLeft: 5
+    },
+    iconstyle1: {
+        fontSize: 20,
+        color: '#13C100'
+    },
 
 
     curvedGrid: {
@@ -724,6 +800,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold'
     },
+    startenddatetext: {
+        // marginTop: 5,
+        marginBottom: 5,
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        textAlign: 'center',
+        marginLeft: 5
+    },
+
     labelTop:
     {
         fontFamily: 'OpenSans',

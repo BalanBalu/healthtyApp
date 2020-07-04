@@ -8,15 +8,15 @@ import RenderReviews from './RenderReviews'
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
 import RenderDates from '../labSearchList/RenderDateList';
 import RenderSlots from '../labSearchList/RenderSlots';
-import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabTestImage, RenderNoSlotsAvailable } from '../labTestComponents'
-import { enumerateStartToEndDates } from '../CommonLabTest'
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabProfileImage, RenderNoSlotsAvailable } from '../../CommonAll/components'
+import { enumerateStartToEndDates } from '../../CommonAll/functions'
 import { } from '../../../providers/labTest/labTestBookAppointment.action';
 import { fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import RenderLabLocation from '../RenderLabLocation';
 import { Loader } from '../../../../components/ContentLoader';
 import { addFavoritesToLabByUserService } from '../../../providers/labTest/labTestBookAppointment.action'
 import RenderLabCategories from '../RenderLabCategories';
-import styles from '../styles'
+import styles from '../../CommonAll/styles'
 class LabBookAppointment extends Component {
   availabilitySlotsDatesArry = [];
   slotData4ItemMap = new Map();
@@ -146,10 +146,11 @@ class LabBookAppointment extends Component {
     this.selectedSlotItem = selectedSlot;
     this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
   }
-  renderAvailableSlots(slotsData) {
+  renderWorkingHours(slotsData) {
     const { selectedDate, labId } = this.state;
     return (
       <View>
+
         <RenderSlots
           selectedSlotIndex={this.selectedSlotIndex}
           selectedDate={selectedDate}
@@ -173,10 +174,11 @@ class LabBookAppointment extends Component {
       <RenderLabLocation
         number={labInfo.lab_id}
         locationData={labInfo.location}
-        name={labInfo.lab_name+" "+labInfo.location_code}
+        name={labInfo.lab_name + " " + labInfo.location_code}
       /> : null
   }
   onPressContinueForPaymentReview(labData, selectedSlotItem) {
+    const { labInfo, labCatInfo } = labData;
     if (!selectedSlotItem) {
       Toast.show({
         text: 'Please Select a Slot to continue booking',
@@ -185,10 +187,6 @@ class LabBookAppointment extends Component {
       })
       return;
     }
-    console.log(selectedSlotItem);
-    
-    const { labInfo, labCatInfo } = labData;
-    
     let packageDetails = {
       lab_id: labInfo.lab_id,
       lab_test_categories_id: labCatInfo.lab_test_categories_id,
@@ -198,12 +196,11 @@ class LabBookAppointment extends Component {
       mobile_no: labInfo.mobile_no || null,
       lab_name: labInfo.lab_name,
       category_name: labCatInfo.category_name,
-      appointment_starttime: selectedSlotItem.slotStartDateAndTime,
-      appointment_endtime: selectedSlotItem.slotEndDateAndTime,
+      selectedSlotItem: selectedSlotItem,
       location: labInfo.location
     }
     console.log("packageDetails", packageDetails);
-    
+
     this.props.navigation.navigate('labConfirmation', { packageDetails })
   }
   /* Update Favorites for LabTest by UserId  */
@@ -225,17 +222,19 @@ class LabBookAppointment extends Component {
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
-                    <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(labInfo && labInfo), title: 'Profile photo' })}>
+                      <Thumbnail circle source={renderLabProfileImage(labInfo && labInfo)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
+                    </TouchableOpacity>
                   </Col>
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Col size={9}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(labInfo && labInfo.lab_name)+' '+(labInfo && labInfo.location_code)}</Text>
-                      <Row>  
-                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.categoryInfo && labCatInfo.categoryInfo.category_name}</Text>
-                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{' - '}</Text>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.category_name}</Text>
-                      </Row>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(labInfo && labInfo.lab_name) + ' ' + (labInfo && labInfo.location_code)}</Text>
+                        <Row>
+                          <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.categoryInfo && labCatInfo.categoryInfo.category_name}</Text>
+                          <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{' - '}</Text>
+                          <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.category_name}</Text>
+                        </Row>
                       </Col>
                       <Col size={1}>
                       </Col>
@@ -298,7 +297,7 @@ class LabBookAppointment extends Component {
                   {this.availabilitySlotsDatesArry.length !== 0 ? this.renderDatesOnFlatList() : null}
                   {
                     slotDataObj4Item[selectedDate] ?
-                      this.renderAvailableSlots(slotDataObj4Item[selectedDate])
+                      this.renderWorkingHours(slotDataObj4Item[selectedDate])
                       : <RenderNoSlotsAvailable
                         text={'No Slots Available'}
                       />
