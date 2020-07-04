@@ -31,11 +31,12 @@ export default class RenderDoctorInfo extends Component {
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
                         </Row>
                         <Row style={{ marginLeft: 55, }}>
-                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialistInfo)}</Text>
+                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
                         </Row>
                         <Row style={{ marginLeft: 55, }}>
                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, }}>
-                                {item.hospitalInfo && item.hospitalInfo.hospital.name + ' - ' + item.hospitalInfo && item.hospitalInfo.hospital.location && item.hospitalInfo.hospital.location.address.city}
+                                {`${item.hospitalInfo && item.hospitalInfo.hospital.name} - ${
+                                    item.hospitalInfo && item.hospitalInfo.hospital.location && item.hospitalInfo.hospital.location.address.city}`}
                             </Text>
                         </Row>
                     </Col>

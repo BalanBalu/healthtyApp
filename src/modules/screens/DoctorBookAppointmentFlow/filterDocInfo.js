@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Radio, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import { SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER } from '../../providers/BookAppointmentFlow/action'
 import { connect } from 'react-redux'
+import { store } from '../../../setup/store';
 let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
 let selectedCount = 0
 class FilterDocInfo extends Component {
@@ -70,8 +72,8 @@ class FilterDocInfo extends Component {
             if (doctorItem.language && doctorItem.language.length) {
                 Array.prototype.push.apply(languageListFromData, doctorItem.language)  // Push multiple language array's
             }
-            if (doctorItem.specialistInfo && doctorItem.specialistInfo.length) {
-                doctorItem.specialistInfo.map(specialistItem => {
+            if (doctorItem.specialist && doctorItem.specialist.length) {
+                doctorItem.specialist.map(specialistItem => {
                     if (!removeDupCategoriesFromList.includes(specialistItem.category_id)) {
                         removeDupCategoriesFromList.push(specialistItem.category_id);
                         const specialistObj = { id: specialistItem._id, value: specialistItem.category };
@@ -105,6 +107,12 @@ class FilterDocInfo extends Component {
 
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
+        await store.dispatch(
+            {
+                type: SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
+                data: false
+            },
+        );
         console.log('filterDataObject::', filterDataObject)
         this.props.navigation.navigate('Doctor Search List', {
             filterData: filterDataObject,
@@ -215,7 +223,7 @@ class FilterDocInfo extends Component {
             delete filterDataObject.specialist;
         }
     }
-    clearSelectedData = () => {  // Clear All selected Data when clicked the Clear filter option
+    clearSelectedData = async () => {  // Clear All selected Data when clicked the Clear filter option
         this.setState({
             genderSelected: '',
             selectedSpecialist: [],
@@ -228,6 +236,12 @@ class FilterDocInfo extends Component {
         this.selectedSpecialist = [];
         selectedCount = 0;
         filterDataObject = {};
+        await store.dispatch(
+            {
+                type: SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
+                data: true
+            },
+        );
     }
 
     render() {

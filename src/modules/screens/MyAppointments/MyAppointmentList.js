@@ -87,10 +87,10 @@ class MyAppoinmentList extends Component {
 			let filters = {
 				startDate: new Date().toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
-				skip:this.state.skip,
-				limit:this.state.limit,
-				sort:1
-			
+				skip: this.state.skip,
+				limit: this.state.limit,
+				sort: 1
+
 				// on_going_appointment: true
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
@@ -99,7 +99,7 @@ class MyAppoinmentList extends Component {
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
-			
+
 				let doctorIds = getAllId(upCommingAppointmentResult)
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
@@ -137,7 +137,7 @@ class MyAppoinmentList extends Component {
 				// upcommingInfo.sort(function (firstVarlue, secandValue) {
 				// 	return firstVarlue.appointmentResult.appointment_starttime < secandValue.appointmentResult.appointment_starttime ? -1 : 0
 				// })
-				let tempData=this.state.upComingData.concat(upcommingInfo)
+				let tempData = this.state.upComingData.concat(upcommingInfo)
 				this.setState({
 					upComingData: tempData,
 					data: tempData,
@@ -162,9 +162,9 @@ class MyAppoinmentList extends Component {
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
-				skip:this.state.skip,
-				limit:this.state.limit,
-				sort:-1
+				skip: this.state.skip,
+				limit: this.state.limit,
+				sort: -1
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
@@ -232,7 +232,7 @@ class MyAppoinmentList extends Component {
 				// pastDoctorDetails.sort(function (firstVarlue, secandValue) {
 				// 	return firstVarlue.appointmentResult.appointment_starttime > secandValue.appointmentResult.appointment_starttime ? -1 : 0
 				// })
-				let tempData=this.state.pastData.concat(pastDoctorDetails)
+				let tempData = this.state.pastData.concat(pastDoctorDetails)
 				await this.setState({
 					pastData: tempData, data: tempData, isLoading: false
 				});
@@ -265,8 +265,8 @@ class MyAppoinmentList extends Component {
 		let data = []
 		await this.setState({
 			selectedIndex: index,
-			skip:0,
-			
+			skip: 0,
+
 		});
 
 		if (index === 0) {
@@ -300,7 +300,7 @@ class MyAppoinmentList extends Component {
 	navigateToBookAppointmentPage(item) {
 
 		let doctorId = item.appointmentResult.doctor_id;
-		this.props.navigation.navigate('Book Appointment', {
+		this.props.navigation.navigate('Doctor Details Preview', {
 			doctorId: doctorId,
 			fetchAvailabiltySlots: true
 		})
@@ -308,10 +308,10 @@ class MyAppoinmentList extends Component {
 	handleLoadMore = async () => {
 		if (!this.onEndReachedCalledDuringMomentum) {
 			console.log('On Hanndle loading ' + this.state.skip);
-		
+
 			this.onEndReachedCalledDuringMomentum = true;
 			await this.setState({ skip: this.state.skip + this.state.limit, footerLoading: true });
-		
+
 			if (this.state.selectedIndex === 0) {
 
 				await this.upCommingAppointment()

@@ -7,7 +7,8 @@ import {
     SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS,
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
     SET_FILTERED_DOCTOR_DATA,
-    SET_PATIENT_LOCATION_DATA
+    SET_PATIENT_LOCATION_DATA,
+    SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER
 } from './action'
 
 export const bookAppointmentData = {
@@ -23,11 +24,17 @@ export const bookAppointmentData = {
     patientSearchLocationName: null,
     locationCordinates: null,
     isSearchByCurrentLocation: true,
-    locationUpdatedCount: 0
+    locationUpdatedCount: 0,
+    getPreviousDocListWhenClearFilter: false
 }
 // State
 export default (state = bookAppointmentData, action) => {
     switch (action.type) {
+        case SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER:
+            return {
+                ...state,
+                getPreviousDocListWhenClearFilter: action.data
+            }
         case SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA:
             return {
                 ...state,

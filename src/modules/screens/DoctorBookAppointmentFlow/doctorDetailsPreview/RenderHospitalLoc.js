@@ -35,12 +35,14 @@ export default class RenderHospitalLoc extends Component {
                                     <Icon name="locate" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
                                 </Left>
                                 <Body>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.no_and_street}</Text>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.city}</Text>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.state}</Text>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.pin_code}</Text>
+                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.no_and_street}</Text>
+                                    {addressData.address_line_1 ? <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.address_line_1}</Text> : null}
+                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.city}</Text>
+                                    {addressData.district ? <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.district}</Text> : null}
+                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.state}</Text>
+                                    {addressData.post_office_name ? <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.post_office_name}</Text> : null}
+                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.pin_code}</Text>
                                 </Body>
-
                             </ListItem>
                         </List>
                     </Card>
