@@ -15,7 +15,7 @@ import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../s
 import { getLapAppointments, getCategories, getUserReviews } from '../../../providers/lab/lab.action'
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 import InsertReview from '../Reviews/insertReviews';
-import { renderLabProfileImage} from "../labTestComponents"
+import { renderLabProfileImage } from "../../CommonAll/components"
 
 class LabAppointmentList extends Component {
     constructor(props) {
@@ -152,11 +152,11 @@ class LabAppointmentList extends Component {
 
     handleIndexChange = async (index) => {
         let data = []
-       await this.setState({
+        await this.setState({
             selectedIndex: index,
         });
         console.log("selectedIndex", this.state.selectedIndex);
-        
+
         if (index === 0) {
             if (this.state.upComingData.length == 0) {
                 await this.upCommingAppointment()

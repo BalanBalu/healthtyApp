@@ -97,10 +97,10 @@ export default styles = StyleSheet.create({
     },
 
     isEnabledFavorite: {
-        marginLeft: 20, color: '#B22222', fontSize: 20
+        marginLeft: 20, color: '#B22222', fontSize: 22
     },
     isDisabledFavorite: {
-        marginLeft: 20, borderColor: '#fff', fontSize: 20
+        marginLeft: 20, borderColor: '#fff', fontSize: 22
     },
     favoritesCount: {
         fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold'
@@ -186,64 +186,71 @@ export default styles = StyleSheet.create({
         paddingTop: 1,
         color: '#7F49C3'
     },
-    
-      homeTextButton:{
-        paddingLeft:10,
-        paddingRight:10,
-        paddingTop:2,
-        paddingBottom:2,
-        borderColor:'#7F49C3',
-        borderWidth:1,
-        borderRadius:5
-      },
-      labTextButton:{
-        paddingLeft:10,
-        paddingRight:10,
-        paddingTop:2,
-        paddingBottom:2,
-        borderRadius:5,
-        borderColor:'#909090',
-        borderWidth:1
-      },
-      innerTexts:{
-        fontFamily: 'OpenSans', 
-        fontSize: 10, 
-        color: '#000', 
-        textAlign:'center'
-      },
-      rowMainText:{
-        paddingLeft: 5, 
-        paddingRight: 5, 
-        paddingTop: 5, 
-        paddingBottom: 5 
-      },
-      multiSelectStyle:{
-        justifyContent: 'center', 
-        backgroundColor: '#fff', 
-        height: 30, 
-        marginLeft: 5, 
-        borderColor: 'gray', 
-        borderWidth: 0.3, 
-        borderRadius: 2, 
+
+    homeTextButton: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 2,
+        paddingBottom: 2,
+        borderColor: '#7F49C3',
+        borderWidth: 1,
+        borderRadius: 5
+    },
+    labTextButton: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 2,
+        paddingBottom: 2,
+        borderRadius: 5,
+        borderColor: '#909090',
+        borderWidth: 1
+    },
+    innerTexts: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        color: '#000',
+        textAlign: 'center'
+    },
+    rowMainText: {
+        paddingLeft: 5,
+        paddingRight: 5,
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+    multiSelectStyle: {
+        justifyContent: 'center',
+        backgroundColor: '#fff',
+        height: 30,
+        marginLeft: 5,
+        borderColor: 'gray',
+        borderWidth: 0.3,
+        borderRadius: 2,
         paddingTop: 10,
-      },
-      priceDetails:{
-        paddingLeft:5,
-        paddingRight:5,
-        paddingTop:1,
-        paddingBottom:1,
-        borderColor:'#909090',
-        borderWidth:1,
-        borderRadius:5
-      },
-      doneButton:{
-        fontFamily: 'OpenSans', 
-        fontSize: 15, 
-        color: '#7F49C3', 
-        textAlign:'center',
-        fontWeight:'700'
-      }
-    
+    },
+    priceDetails: {
+        paddingLeft: 5,
+        paddingRight: 5,
+        paddingTop: 1,
+        paddingBottom: 1,
+        borderColor: '#909090',
+        borderWidth: 1,
+        borderRadius: 5
+    },
+    doneButton: {
+        fontFamily: 'OpenSans',
+        fontSize: 15,
+        color: '#7F49C3',
+        textAlign: 'center',
+        fontWeight: '700'
+    },
+    customText:
+    {
+        fontFamily: 'OpenSans',
+        color: '#000',
+        fontSize: 14,
+        marginTop: 5
+    },
+
 })
 
 
