@@ -515,7 +515,7 @@ const HomeStack = createStackNavigator({
   "Doctor Search List": {
     screen: doctorList,
     navigationOptions: {
-      title: 'Doctor Search List',
+      title: 'Doctor List',
     }
   },
   "Doctor Details Preview": {
@@ -524,11 +524,11 @@ const HomeStack = createStackNavigator({
       title: 'Book Appointment'
     }
   },
-  
+
   "Filter Doctor Info": {
     screen: filterDocInfo,
     navigationOptions: {
-      title: 'Doctor Filter Page'
+      title: 'Filter Page'
     }
   },
   Filters: {
