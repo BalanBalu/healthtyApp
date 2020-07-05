@@ -164,14 +164,19 @@ class DoctorList extends Component {
             let reqData4ServiceCall = {
                 locationData: locationDataFromSearch
             }
-            reqData4ServiceCall.inputText = inputKeywordFromSearch;
+            if (inputKeywordFromSearch) reqData4ServiceCall.inputText = inputKeywordFromSearch;
+
             if (this.conditionFromFilterPage && !getPreviousDocListWhenClearFilter) {
                 type = 'filter';
                 reqData4ServiceCall = { ...reqData4ServiceCall, ...this.selectedDataFromFilterPage }
             }
+            else if (!inputKeywordFromSearch) {
+                type = 'location'
+            }
             else {
                 type = 'search';
             }
+
             const docListResponse = await searchByDocDetailsService(type, activeSponsor, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
             if (docListResponse.success) {

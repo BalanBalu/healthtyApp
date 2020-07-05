@@ -394,15 +394,11 @@ class DoctorDetailsPreview extends Component {
                 title: 'MEDFLIC Consultation',
                 message:
                     ` MEDFLIC Consultation :-
-                   
-                    Recommend ${doctorNameWithPrefix}
-
-                 ${doctorNameWithPrefix} from MEDFLIC SELECT is one of the top ${this.state.specialistWithServicesList[0].category_name} in the country.
-                 I recommend her for any relevant health concerns.
-                You can instantly consult  ${doctorNameWithPrefix}   on the MEDFLIC app.`,
-                url: "https://medflic.com/appointment/booking?doctorId=" + this.state.doctorId
+          Recommend  "${doctorNameWithPrefix}" from MEDFLIC select is one of the top "${this.state.specialistWithServicesList[0].category_name}" in the country.
+          You can instantly consult  "${doctorNameWithPrefix}"   on the MEDFLIC app.`,
+                // url: "https://medflic.com/appointment/booking?doctorId=" + this.state.doctorId
             });
-
+            //  I recommend her for any relevant health concerns.
         } catch (error) {
             console.log('Ex is getting on Share plain content====>', Ex)
         }
