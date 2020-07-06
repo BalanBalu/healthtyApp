@@ -25,7 +25,7 @@ const RenderPriceDetails = (props) => {
         <>
             <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
             <Row style={{ justifyContent: 'center' }}>
-                <Text style={styles.finalRs}>₹ {props.priceInfo}</Text>
+                <Text style={styles.finalRs}>₹ {(parseInt(props.priceInfo.branch_details.price) - ((parseInt(props.priceInfo.branch_details.offer) / 100) * parseInt(props.priceInfo.branch_details.price)))}</Text>
                 {/* <Text style={styles.finalRs}>₹ {item.finalAmount || ''}</Text> */}
             </Row>
         </>
@@ -33,10 +33,11 @@ const RenderPriceDetails = (props) => {
 }
 
 const RenderOfferDetails = (props) => {
+   
     return (
         <>
             <Text note style={props.isFromLabBookApp ? styles.offerText4LalBookApp : styles.offerText}>Offer</Text>
-            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo} off</Text>
+            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo}%</Text>
         </>
     )
 }

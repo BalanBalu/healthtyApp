@@ -146,7 +146,6 @@ class LabAppointmentInfo extends Component {
         category_name: data.labCategoryInfo.category_name,
         extra_charges: data.labInfo.extra_charges,
         appointment_starttime: data.appointment_starttime,
-        appointment_endtime: data.appointment_endtime,
         mobile_no: data.labInfo.mobile_no,
         location: data.labInfo.location
       }
@@ -166,7 +165,6 @@ class LabAppointmentInfo extends Component {
         labId: data.lab_id,
         userId: userId,
         startTime: data.appointment_starttime,
-        endTime: data.appointment_endtime,
         status: updatedStatus,
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
@@ -310,7 +308,7 @@ class LabAppointmentInfo extends Component {
                     <Col style={{ width: '50%', justifyContent: 'center', alignItems: 'center' }}>
                       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <Icon name="md-clock" style={styles.iconStyle} />
-                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a') + '-' + formatDate(data.appointment_endtime, 'hh:mm a')}</Text>
+                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a')}</Text>
                       </Row>
                     </Col>
                   </Row>

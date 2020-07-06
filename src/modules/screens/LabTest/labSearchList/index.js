@@ -76,12 +76,12 @@ class labSearchList extends Component {
             this.setState({ isLoading: true });
             const inputDataBySearch = this.props.navigation.getParam('inputDataFromLabCat');
             const labListResponse = await searchByLabDetailsService(inputDataBySearch);
-            // console.log('labListResponse====>', labListResponse);
+            console.log('labListResponse====>', labListResponse);
             if (labListResponse.success) {
                 const labListData = labListResponse.data;
                 this.totalLabIdsArryBySearched = labListData.map(item => String(item.labInfo.lab_id));
                 await this.setState({ labListData });
-                // console.log("labListData", this.state.labListData)
+                console.log("labListData", this.state.labListData)
                 this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
                 this.getTotalReviewsCount4LabTest(this.totalLabIdsArryBySearched);
 
@@ -362,12 +362,12 @@ class labSearchList extends Component {
                                     <Col style={{ width: "25%" }}>
 
                                         <RenderOfferDetails
-                                            offerInfo={item.labCatInfo && item.labCatInfo.offer ? item.labCatInfo.offer : ' '}
+                                            offerInfo={item.labCatInfo && item.labCatInfo.offer ? item.labCatInfo.offer : 0}
                                         />
                                     </Col>
                                     <Col style={{ width: "25%", marginLeft: 10 }}>
                                         <RenderPriceDetails
-                                            priceInfo={item.labCatInfo && item.labCatInfo.price ? item.labCatInfo.price : ' '}
+                                            priceInfo={item.labCatInfo && item.labCatInfo ? item.labCatInfo : ' '}
                                         />
                                     </Col>
                                 </Row>
@@ -402,7 +402,7 @@ class labSearchList extends Component {
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
-                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
+                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') + ' to ' + formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotEndDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
                                                 <Col size={4}>
                                                     <TouchableOpacity

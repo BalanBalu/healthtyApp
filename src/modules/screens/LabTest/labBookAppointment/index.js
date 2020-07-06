@@ -196,7 +196,7 @@ class LabBookAppointment extends Component {
       mobile_no: labInfo.mobile_no || null,
       lab_name: labInfo.lab_name,
       category_name: labCatInfo.category_name,
-      appointment_starttime: selectedSlotItem,
+      selectedSlotItem: selectedSlotItem,
       location: labInfo.location
     }
     console.log("packageDetails", packageDetails);
