@@ -206,6 +206,7 @@ export default class BookAppointmentPaymentUpdate {
         try {
             let bookAppointmentData = {
                 userId: userId,
+                patients_Data_list: bookSlotDetails.patients_Data_list,
                 doctorId: bookSlotDetails.doctorId,
                 description: bookSlotDetails.diseaseDescription || '',
                 fee: bookSlotDetails.slotData.fee,
@@ -264,10 +265,10 @@ export default class BookAppointmentPaymentUpdate {
             if (orderData.is_order_type_recommentation === false) {
                 delete requestData.recommentation_pharmacy_data
             }
-           
-            if(orderData.pharmacyId){
-               
-                requestData.pharmacyId=orderData.pharmacyId
+
+            if (orderData.pharmacyId) {
+
+                requestData.pharmacyId = orderData.pharmacyId
             }
             let resultData = await createMedicineOrder(requestData);
             console.log('resultData create order result==================')
@@ -275,8 +276,8 @@ export default class BookAppointmentPaymentUpdate {
             if (resultData) {
                 capturePayment(paymentId)
                 if (orderData.prescriptions) {
-                   deletePrescriptionByUserId(userId)
-                 
+                    deletePrescriptionByUserId(userId)
+
 
                 }
                 return {

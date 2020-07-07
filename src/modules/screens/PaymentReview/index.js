@@ -6,48 +6,43 @@ import { StyleSheet, AsyncStorage, View, TextInput, TouchableOpacity, FlatList }
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import { renderDoctorImage, getDoctorEducation, getAllSpecialist,getUserGenderAndAge } from '../../common';
+import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge } from '../../common';
 import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
-let patientDetails= []
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       bookSlotDetails: {
         diseaseDescription: ''
       },
       isLoading: false,
-      othersChecked: false,
-      selfChecked: false,
+      isCheckedOthers: false,
+      isCheckedSelf: false,
       gender: 'M',
       full_name: '',
       age: '',
-      defaultPatientDetails: [],
-     
-
-
+      patDetailsArray: [],
     }
+    this.defaultPatDetails = {};
   }
 
   async componentDidMount() {
     const { navigation } = this.props;
-    console.log(navigation.state);
     const isLoggedIn = await hasLoggedIn(this.props);
     if (!isLoggedIn) {
       navigation.navigate('login');
       return
     }
-
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
     await this.setState({ bookSlotDetails: bookSlotDetails });
-    await this.getUserProfile();
+    await this.getPatientInfo();
   }
   async confirmProceedPayment() {
-    let { diseaseDescription } = this.state.bookSlotDetails;
+    const { bookSlotDetails, patDetailsArray } = this.state;
+    let { diseaseDescription } = bookSlotDetails;
     if (!diseaseDescription || String(diseaseDescription).trim() === '') {
       Toast.show({
         text: 'Please enter valid Reason',
@@ -57,7 +52,7 @@ export default class PaymentReview extends Component {
       return
     }
     this.setState({ isLoading: true, spinnerText: "Please Wait" });
-    const bookingSlotData = this.state.bookSlotDetails
+    const bookingSlotData = bookSlotDetails
     const reqData = {
       doctorId: bookingSlotData.doctorId,
       startTime: bookingSlotData.slotData.slotStartDateAndTime,
@@ -66,8 +61,13 @@ export default class PaymentReview extends Component {
     validationResult = await validateBooking(reqData)
     this.setState({ isLoading: false, spinnerText: ' ' });
     if (validationResult.success) {
-      const amount = this.state.bookSlotDetails.slotData.fee;
-      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+      const patientsDataList = patDetailsArray.map(item => {
+        return { patient_name: item.full_name, patient_age: item.age, gender: item.gender }
+      });
+      if (patientsDataList.length) bookSlotDetails.patients_Data_list = patientsDataList;
+      console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+      const amount = bookSlotDetails.slotData.fee;
+      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails, amount: amount })
     } else {
       console.log(validationResult);
       Toast.show({
@@ -79,7 +79,8 @@ export default class PaymentReview extends Component {
 
   }
   async processToPayLater() {
-    let { diseaseDescription } = this.state.bookSlotDetails;
+    const { bookSlotDetails, patDetailsArray } = this.state;
+    let { diseaseDescription } = bookSlotDetails;
     if (!diseaseDescription || String(diseaseDescription).trim() === '') {
       Toast.show({
         text: 'Please enter valid Reason',
@@ -89,14 +90,18 @@ export default class PaymentReview extends Component {
       return
     }
     this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
-    console.log(this.state.bookSlotDetails);
+    const patientsDataList = patDetailsArray.map(item => {
+      return { patient_name: item.full_name, patient_age: item.age, gender: item.gender }
+    })
+    if (patientsDataList.length) bookSlotDetails.patients_Data_list = patientsDataList;
+    console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, 'cash');
+    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, 'cash');
     console.log('Book Appointment Payment Update Response ');
 
     if (response.success) {
-      this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
+      this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
     } else {
       Toast.show({
         text: response.message,
@@ -108,96 +113,86 @@ export default class PaymentReview extends Component {
   }
 
 
-
-  getUserProfile = async () => {
+  getPatientInfo = async () => {
     try {
-      let fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
-      let userId = await AsyncStorage.getItem('userId');
-      let result = await fetchUserProfile(userId, fields);
-      let patientAddress = [], patientDetails = [];
-     
-
-      this.defaultPatientDetails = {
-          type: 'self',
-          full_name: result.first_name + " " + result.last_name,
-          gender: result.gender,
-          age: parseInt(dateDiff(result.dob, new Date(), 'years'))
+      const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+      const userId = await AsyncStorage.getItem('userId');
+      const patInfoResp = await fetchUserProfile(userId, fields);
+      console.log('patInfoResp====>', patInfoResp)
+      this.defaultPatDetails = {
+        type: 'self',
+        full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+        gender: patInfoResp.gender,
+        age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
       }
-
-    
+    }
+    catch (Ex) {
+      console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
+    }
   }
-  catch (e) {
-      console.log(e);
-  }
-  finally {
-      this.setState({ isLoading: false });
-  }
-}
 
 
-onChangeSelf = async () => {
-  console.log("Start:::", this.state.patientDetails.length);
-  if (this.state.selfChecked == true && this.state.patientDetails.length==0) {
-      this.state.patientDetails.unshift(this.defaultPatientDetails)
+  onPressSelfCheckBox = async () => {
+    const { isCheckedSelf, patDetailsArray } = this.state;
+    if (isCheckedSelf) {
+      patDetailsArray.unshift(this.defaultPatDetails);
+    }
+    else if (!isCheckedSelf) {
+      const findIndexOfSelfItem = patDetailsArray.findIndex(ele => ele.type === 'self')
+      if (findIndexOfSelfItem !== -1) patDetailsArray.splice(findIndexOfSelfItem, 1)
+    }
+    this.setState({ patDetailsArray })
   }
-  else if (this.state.selfChecked == false) {
-      this.state.patientDetails.shift(this.defaultPatientDetails)
-  }
- this.setState({patientDetails:this.state.patientDetails})
-  console.log("self:::", this.state.patientDetails);
-  
-}
 
-
-addPatientData = async () => {
-  if (!this.state.name || !this.state.age || !this.state.gender) {
-      this.setState({ errMsg: '* Kindly fill all the fields' })
-  } else {
-      let temp;
+  addPatientList = async () => {
+    const { name, age, gender, patDetailsArray } = this.state;
+    if (!name || !age || !gender) {
+      this.setState({ errMsg: '* Kindly fill all the fields' });
+    }
+    else {
       this.setState({ errMsg: '' })
-      temp = this.state.patientDetails;
-
-      temp.push({
-          type: 'others',
-          full_name: this.state.name,
-          age: parseInt(this.state.age),
-          gender: this.state.gender
-      });
-      await this.setState({ patientDetails: temp, updateButton: false });
+      const othersDetailsObj = {
+        type: 'others',
+        full_name: name,
+        age: parseInt(age),
+        gender
+      }
+      patDetailsArray.push(othersDetailsObj);
+      await this.setState({ patDetailsArray, updateButton: false });
       await this.setState({ name: null, age: null, gender: null });
-
+    }
   }
-}
-onChangeCheckBox = async () => {
-  if (this.state.othersChecked == true) {
-      this.addPatientData()
+  onPressOthersCheckBox = async () => {
+    const { isCheckedOthers, patDetailsArray } = this.state;
+    if (isCheckedOthers) {
+      this.addPatientList()
+    }
+    if (!isCheckedOthers) {
+      var removedOfOthersData = patDetailsArray.filter(ele => ele.type === 'self');
+      this.setState({ patDetailsArray: removedOfOthersData, errMsg: '' })
+    }
   }
-  if (this.state.othersChecked == false) {
-      this.state.patientDetails.map(ele => {
-          if (ele.type == 'others') {
-              this.state.patientDetails.pop(this.state.patientDetails)
-          }
-      })
-   this.setState({ errMsg:'' })
-
+  /*  remove the patient details item from list  */
+  onPressRemoveIcon(item, index) {
+    const baCupOfPatDetailsArray = this.state.patDetailsArray
+    baCupOfPatDetailsArray.splice(index, 1);
+    if (item.type === 'self') {
+      this.setState({ patDetailsArray: baCupOfPatDetailsArray, isCheckedSelf: false });
+    }
+    else if (item.type === 'others') {
+      const findHaveRemainingOthersData = baCupOfPatDetailsArray.find(ele => ele.type === 'others');
+      if (findHaveRemainingOthersData) {
+        this.setState({ patDetailsArray: baCupOfPatDetailsArray, errMsg: '' });
+      }
+      else {   // unchecked the Others Box when there is no patient data available (Exe when press the remove Icon in Others data)
+        this.setState({ patDetailsArray: baCupOfPatDetailsArray, isCheckedOthers: false, errMsg: '' });
+      }
+    }
   }
-  await this.setState({ patientDetails })
-}
-
-removePatientData(item, index) {
-  let temp = this.state.patientDetails
-  temp.splice(index, 1);
-  this.setState({ patientDetails: temp });
-}
-
 
   render() {
-    const { bookSlotDetails, isLoading, spinnerText, othersChecked, name, age, gender,patientDetails } = this.state;
-    // const patientDetails = [{ name: 'Marie Curie', Age: 26, gender: 'Female' }]
-    // alert(JSON.stringify( this.state.defaultPatientDetails))
-   
+    const { bookSlotDetails, errMsg, isLoading, spinnerText, isCheckedSelf, isCheckedOthers, name, age, gender, patDetailsArray } = this.state;
     return (
-
       <Container>
         <Content style={{ padding: 15 }}>
           <Spinner
@@ -257,23 +252,23 @@ removePatientData(item, index) {
                 </Row>
               </Grid>
               <CardItem footer style={styles.cardItem2}>
-                <Text style={styles.cardItemText3} >Total Fees - {'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
+                <Text style={styles.cardItemText3} >Total Fees - {'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee && patDetailsArray.length ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
               </CardItem>
             </Card>
             <View>
-
               <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
                 <Text style={styles.subHead}>For Whom do you need to take up the Checkup?</Text>
-
                 <Row style={{ marginTop: 5 }}>
                   <Col size={10}>
                     <Row>
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
-
                           <CheckBox style={{ borderRadius: 5 }}
-                            checked={this.state.selfChecked}
-                            onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }),this.onChangeSelf() }}
+                            checked={isCheckedSelf}
+                            onPress={async () => {
+                              await this.setState({ isCheckedSelf: !isCheckedSelf }),
+                                this.onPressSelfCheckBox()
+                            }}
                           />
                           <Text style={styles.firstCheckBox}>Self</Text>
                         </Row>
@@ -281,9 +276,11 @@ removePatientData(item, index) {
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
                           <CheckBox style={{ borderRadius: 5 }}
-
-                            checked={this.state.othersChecked}
-                            onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }),this.onChangeCheckBox() }}
+                            checked={isCheckedOthers}
+                            onPress={async () => {
+                              await this.setState({ isCheckedOthers: !isCheckedOthers }),
+                                this.onPressOthersCheckBox()
+                            }}
                           />
                           <Text style={styles.firstCheckBox}>Others</Text>
                         </Row>
@@ -294,7 +291,7 @@ removePatientData(item, index) {
                   </Col>
                 </Row>
               </View>
-              {othersChecked == true ?
+              {isCheckedOthers ?
                 <View style={{ marginTop: 10, marginLeft: 8 }}>
                   <Text style={styles.subHead}>Add other patient's details</Text>
                   <Row style={{ marginTop: 10 }}>
@@ -333,13 +330,10 @@ removePatientData(item, index) {
                       </Row>
                     </Col>
                   </Row>
-
-
                   <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
                     <Text style={{
                       fontFamily: 'OpenSans', fontSize: 12, marginTop: 3
                     }}>Gender</Text>
-
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                       <Radio
                         standardStyle={true}
@@ -362,26 +356,21 @@ removePatientData(item, index) {
                       <Text style={styles.genderText}>Others</Text>
                     </View>
                   </View>
-
-
                 </View> : null}
-
-              {othersChecked == true ?
+              {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
+              {isCheckedOthers ?
                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
-                  <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientData()}>
+                  <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()}>
                     <Text style={styles.touchText}>Add patient</Text>
                   </TouchableOpacity>
                 </Row> : null}
-
-
-
               <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
                 <Text style={styles.subHead}>Patient Details</Text>
                 <FlatList
-                 data={patientDetails}
-                 extraData={patientDetails}
-                 keyExtractor={(item, index) => index.toString()}
-                 renderItem={({ item, index }) =>
+                  data={patDetailsArray}
+                  extraData={patDetailsArray}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({ item, index }) =>
                     <View>
                       <Row style={{ marginTop: 10, }}>
                         <Col size={8}>
@@ -399,12 +388,11 @@ removePatientData(item, index) {
                           </Row>
                         </Col>
                         <Col size={0.5}>
-                          <TouchableOpacity onPress={() => this.removePatientData(item, index)}>
+                          <TouchableOpacity onPress={() => this.onPressRemoveIcon(item, index)}>
                             <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 18 }} />
                           </TouchableOpacity>
                         </Col>
                       </Row>
-
                       <Row>
                         <Col size={10}>
                           <Row>
@@ -416,29 +404,13 @@ removePatientData(item, index) {
                             </Col>
                             <Col size={7.5}>
                               <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
-
                             </Col>
                           </Row>
                         </Col>
                       </Row>
                     </View>
                   } />
-
               </View>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               <Row>
                 <Icon name="create" style={{ fontSize: 20, marginLeft: 10, marginTop: 20, color: '#7F49C3' }} />
                 <Text style={styles.subText}> Your Reason For Checkup</Text>
@@ -460,20 +432,16 @@ removePatientData(item, index) {
               <Button style={styles.payButton1} onPress={() => this.processToPayLater()}>
                 <Text style={styles.payButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
               </Button>
-
               <Button style={styles.payButton}
                 onPress={() => this.confirmProceedPayment()} >
                 <Text style={styles.payButtonText}>Pay Online</Text>
               </Button>
-
             </Row>
           </View>
         </Content>
       </Container>
-
     )
   }
-
 }
 
 const styles = StyleSheet.create({
