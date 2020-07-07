@@ -26,6 +26,9 @@ import UserAddress from "../../modules/screens/auth/UserAddress";
 import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
+import doctorList from "../../modules/screens/DoctorBookAppointmentFlow/doctorList";
+import doctorDetailsPreview from "../../modules/screens/DoctorBookAppointmentFlow/doctorDetailsPreview/doctorDetailsPreview";
+
 import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
@@ -63,7 +66,7 @@ import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchLis
 import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/ChosePharmacyList'
 
 
-import { Badge } from '../../../src/modules/common'
+import { Badge,onPopupEvent } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import LocationDetail from '../../modules/screens/Home/LocationDetail';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
@@ -104,7 +107,8 @@ import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmen
 import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
-
+ import PopupMenu from './popUpMenu';
+import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
 const AuthRoutes = {
   login: {
     screen: login,
@@ -177,18 +181,26 @@ const HomeStack = createStackNavigator({
         <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
             <View>
-              <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+              <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
               {navigation.getParam('notificationBadgeCount') != null ?
                 <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
                 : null}
               {/* <Badge /> */}
             </View>
+
             {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
               <View>
                 <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
               </View>
             </TouchableOpacity> */}
           </TouchableOpacity>
+          {Platform.OS != "ios" ?
+          <TouchableOpacity style={{ marginRight: 5,paddingLeft:5,paddingRight:5}}>
+          <PopupMenu actions={['English','Tamil','Malayalam']}   onPress={onPopupEvent} navigation={navigation}/>
+          </TouchableOpacity>
+          : 
+          null
+          }
 
 
         </Row>
@@ -211,6 +223,12 @@ const HomeStack = createStackNavigator({
     screen: NextAppoinmentPreparation,
     navigationOptions: {
       title: 'Next Appoinment Preparation'
+    }
+  },
+  PopupMenu :{
+    screen: PopupMenu,
+    navigationOptions: {
+      title: 'PopupMenu'
     }
   },
   // ================Categories  ===============
@@ -494,6 +512,25 @@ const HomeStack = createStackNavigator({
       title: 'Doctor List',
     }
   },
+  "Doctor Search List": {
+    screen: doctorList,
+    navigationOptions: {
+      title: 'Doctor List',
+    }
+  },
+  "Doctor Details Preview": {
+    screen: doctorDetailsPreview,
+    navigationOptions: {
+      title: 'Book Appointment'
+    }
+  },
+
+  "Filter Doctor Info": {
+    screen: filterDocInfo,
+    navigationOptions: {
+      title: 'Filter Page'
+    }
+  },
   Filters: {
     screen: FilterList,
     navigationOptions: {
@@ -595,18 +632,18 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerTitle: null,
       headerLeft: (
-        <Grid style={{justifyContent:'center'}}>
-          <Col style={{justifyContent:'center'}}>
+        <Grid style={{ justifyContent: 'center' }}>
+          <Col style={{ justifyContent: 'center' }}>
             <TouchableOpacity onPress={() => navigation.pop()}>
               <Icon name="ios-arrow-back" style={{ color: '#fff', marginLeft: 15, justifyContent: 'center', fontSize: 30 }} />
             </TouchableOpacity>
           </Col>
-          <Col style={{justifyContent:'center'}}>
+          <Col style={{ justifyContent: 'center' }}>
             <TouchableOpacity style={{ marginLeft: 15 }}>
               <Thumbnail source={navigation.getParam('appBar', { profile_image: { uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' } }).profile_image} style={{ width: 45, height: 45, }} />
             </TouchableOpacity>
           </Col>
-          <Col style={{ marginLeft: 15,justifyContent:'center', }}>
+          <Col style={{ marginLeft: 15, justifyContent: 'center', }}>
             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
             {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
           </Col>

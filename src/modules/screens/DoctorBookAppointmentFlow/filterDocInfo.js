@@ -2,43 +2,35 @@ import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Radio, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import { SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER } from '../../providers/BookAppointmentFlow/action'
 import { connect } from 'react-redux'
-import { translate } from "../../../setup/translator.helper"
+import { store } from '../../../setup/store';
 let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
-let globalOffilterBySelectedAvailabilityDateCount = 0;
 let selectedCount = 0
-class Filters extends Component {
-
+class FilterDocInfo extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            doctorData: [],
-            languageData: [],
+            languageList: [],
             genderSelected: '',
-            categoryList: [],
-            sampleServiceArray: [],
-            serviceList: [],
-            selectedCategory: [],
-            language: [],
+            specialistInfoList: [],
+            hospitalInfoList: [],
+            selectedSpecialist: [],
+            languages: [],
             genderIndex: 0,
             selectAvailabilityIndex: 0,
             selectExperinceIndex: 0,
-            selectedServices: [],
+            selectedHospitalNames: [],
         }
+        this.selectedSpecialistId = '';
+        this.selectedSpecialist = [];
     }
 
     async componentDidMount() {
-        const { bookappointment: { doctorData }, navigation } = this.props;
+        const { bookAppointmentData: { baCupOfDoctorInfoListAndSlotsData4Filter }, navigation } = this.props;
+        // console.log('baCupOfDoctorInfoListAndSlotsData4Filter=====>', JSON.stringify(baCupOfDoctorInfoListAndSlotsData4Filter));
         const filterData = navigation.getParam('filterData');
-        const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
-        console.log('Filter Data from Search List: ' + JSON.stringify(filterData));
-        console.log(' filterBySelectedAvailabilityDateCount' + filterBySelectedAvailabilityDateCount);
-        if (globalOffilterBySelectedAvailabilityDateCount != 0) {
-            if (filterBySelectedAvailabilityDateCount !== 0 && filterBySelectedAvailabilityDateCount !== undefined) {
-                this.clickFilterByAvailabilityDates(filterBySelectedAvailabilityDateCount, false, true);
-            }
-        }
-        if (Object.keys(filterDataObject).length != 0) { // condition for when click the Clear button and then press the back button and come back again Filter page (The previous selected filtered values from Doctor Search list page are Showing again)
+        if (Object.keys(filterDataObject).length) { // condition for when click the Clear button and then press the back button and come back again Filter page (The previous selected filtered values from Doctor Search list page are Showing again)
             if (filterData) {
                 if (filterData.gender) {
                     if (filterData.gender === 'M') {
@@ -52,59 +44,79 @@ class Filters extends Component {
                 if (filterData.experience) {
                     this.clickFilterByExperince(filterData.experience, false, true);
                 }
-                if (filterData.language) {
-                    this.onSelectedLanguagesChange(filterData.language, true);
+                if (filterData.languages) {
+                    this.onSelectedLanguagesChange(filterData.languages, true);
                 }
-                if (filterData.category) {
-                    this.onSelectedCategoryChange([filterData.category], true);
+                if (filterData.specialist) {
+                    this.onSelectedSpecialistChange([filterData.specialist], true);
+                    this.onSelectedSpecialistObjChange(filterData.specialist)
                 }
-                if (filterData.service) {
-                    this.onSelectedServiceChange(filterData.service, true)
+                if (filterData.hospitalName) {
+                    this.onSelectedHospitalChange([filterData.hospitalName], true)
                 }
+                if (filterData.availabilityDatesCount) {
+                    this.clickFilterByAvailabilityDates(filterData.availabilityDatesCount, false, true);
+
+                }
+            }
+            else {
+                this.clearSelectedData()
             }
         }
-
-        await this.setState({ doctorData: doctorData });
-        // console.log('doctorData' + JSON.stringify(this.state.doctorData));
-        let sampleLangArray = [];
-        let sampleCategoryArray = [];
-        let sampleServiceArray = [];
-        let conditionCategoryArry = [];
-        let conditionServiceArry = [];
-        let multipleLanguages = [];
-
-        for (var data in this.state.doctorData) {
-            if (this.state.doctorData[data].language) {
-                Array.prototype.push.apply(sampleLangArray, this.state.doctorData[data].language)
+        const languageListFromData = [];
+        const removeDupCategoriesFromList = [];
+        const specialistInfoList = [];
+        const hospitalInfoList = [];
+        const removeDupHospitalsFromList = [];
+        baCupOfDoctorInfoListAndSlotsData4Filter.map(doctorItem => {
+            if (doctorItem.language && doctorItem.language.length) {
+                Array.prototype.push.apply(languageListFromData, doctorItem.language)  // Push multiple language array's
             }
-            if (this.state.doctorData[data].specialist) {
-                this.state.doctorData[data].specialist.forEach(element => {
-                    if (!conditionCategoryArry.includes(element.category_id) && !conditionServiceArry.includes(element.service_id)) {
-                        conditionCategoryArry.push(element.category_id);
-                        conditionServiceArry.push(element.service_id);
-                        let sampleCategoryObject = { id: element.category_id, value: element.category };
-                        let sampleServiceObject = { id: element.service_id, value: element.service };
-                        sampleCategoryArray.push(sampleCategoryObject);
-                        sampleServiceArray.push(sampleServiceObject);
+            if (doctorItem.specialist && doctorItem.specialist.length) {
+                doctorItem.specialist.map(specialistItem => {
+                    if (!removeDupCategoriesFromList.includes(specialistItem.category_id)) {
+                        removeDupCategoriesFromList.push(specialistItem.category_id);
+                        const specialistObj = { id: specialistItem._id, value: specialistItem.category };
+                        specialistInfoList.push(specialistObj);  // Store Unique Specialists
                     }
                 })
             }
-        }
-        let setUniqueLanguages = new Set(sampleLangArray)
-        setUniqueLanguages.forEach(element => {
-            let sample = { value: element };
-            multipleLanguages.push(sample);
+            if (doctorItem.hospitalInfo && doctorItem.hospitalInfo.hospital) {
+                if (!removeDupHospitalsFromList.includes(doctorItem.hospitalInfo.hospital.name)) {
+                    removeDupHospitalsFromList.push(doctorItem.hospitalInfo.hospital.name);
+                    const hospitalObj = {
+                        value: doctorItem.hospitalInfo.hospital.name,
+                        profile_image: doctorItem.hospitalInfo.profile_image,
+                    }
+                    hospitalInfoList.push(hospitalObj)   // Store Unique hospitals
+                }
+            }
         })
-        await this.setState({ languageData: multipleLanguages, categoryList: sampleCategoryArray, serviceList: sampleServiceArray });
+        const removeDupValuesInArray = [];
+        const languageList = [];
+        languageListFromData.map(language => {
+            if (!removeDupValuesInArray.includes(language.toLowerCase())) {
+                removeDupValuesInArray.push(language.toLowerCase());
+                languageList.push({ value: language })
+            }
+        })
+        this.setState({ languageList, specialistInfoList, hospitalInfoList });
     }
+
+
 
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
+        await store.dispatch(
+            {
+                type: SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
+                data: false
+            },
+        );
         console.log('filterDataObject::', filterDataObject)
-        console.log('this.state.selectAvailabilityIndex::', this.state.selectAvailabilityIndex)
-        this.props.navigation.navigate('Doctor List', {
+        this.props.navigation.navigate('Doctor Search List', {
             filterData: filterDataObject,
-            filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true
+            conditionFromFilterPage: true
         })
     }
     /*  Select GenderPreference */
@@ -138,7 +150,7 @@ class Filters extends Component {
             }
         }
         this.setState({ selectAvailabilityIndex: index });
-        globalOffilterBySelectedAvailabilityDateCount = index;
+        filterDataObject.availabilityDatesCount = index;
     }
 
     clickFilterByExperince = async (index, bySelect, isFilteredData) => {
@@ -157,8 +169,8 @@ class Filters extends Component {
         filterDataObject.experience = index;
     }
 
-    onSelectedLanguagesChange = async (language, isFilteredData) => {
-        if (this.state.language.length < language.length) {
+    onSelectedLanguagesChange = async (languages, isFilteredData) => {
+        if (this.state.languages.length < languages.length) {
             if (!isFilteredData) {
                 selectedCount++;
             }
@@ -166,103 +178,123 @@ class Filters extends Component {
         else {
             selectedCount--;
         }
-        this.setState({ language });
-        filterDataObject.language = language;
+        this.setState({ languages });
+        filterDataObject.languages = languages;
     };
-    onSelectedServiceChange = async (selectedServices, isFilteredData) => {
-        if (this.state.selectedServices.length < selectedServices.length) {
-            if (!isFilteredData) {
-                selectedCount++;
-            }
-        }
-        else {
-            selectedCount--;
-        }
-        await this.setState({ selectedServices })
-        filterDataObject.service = selectedServices;
-    }
-    onSelectedCategoryChange = async (selectedCategory, isFilteredData) => {
-        const checkCategory = String(selectedCategory);
-        if (this.state.selectedCategory.includes(checkCategory)) {
-            selectedCategory = [];
+    onSelectedHospitalChange = async (selectedHospitalNames, isFilteredData) => {
+        const checkHospitalName = String(selectedHospitalNames);
+        if (this.state.selectedHospitalNames.includes(checkHospitalName)) {
+            selectedHospitalNames = [];
             selectedCount--
         }
         else {
             if (!isFilteredData) {
-                if (this.state.selectedCategory.length ===0) {
-                selectedCount++
+                if (this.state.selectedHospitalNames.length === 0) {
+                    selectedCount++
                 }
             }
         }
-        let categoryItem = String(selectedCategory);
-        this.setState({ selectedCategory });
-        filterDataObject.category = categoryItem;
+        let hospitalItem = String(selectedHospitalNames);
+        this.setState({ selectedHospitalNames });
+        if (hospitalItem) filterDataObject.hospitalName = hospitalItem;
+        else delete filterDataObject.hospitalName
     }
-    clearSelectedData = () => {  // Clear All selected Data when clicked the Clear filter option
+    onSelectedSpecialistChange = async (selectedSpecialist, isFilteredData) => {
+        const checkSpecialist = String(selectedSpecialist);
+        if (this.state.selectedSpecialist.includes(checkSpecialist)) {
+            selectedSpecialist = [];
+            selectedCount--
+        }
+        else {
+            if (!isFilteredData) {
+                if (this.state.selectedSpecialist.length === 0) {
+                    selectedCount++
+                }
+            }
+        }
+        this.selectedSpecialist = selectedSpecialist;
+        this.setState({ selectedSpecialist });
+    }
+    onSelectedSpecialistObjChange = (selectedSpecialistId) => {
+        if (this.selectedSpecialist.length) {
+            filterDataObject.specialist = selectedSpecialistId;
+        }
+        else {
+            delete filterDataObject.specialist;
+        }
+    }
+    clearSelectedData = async () => {  // Clear All selected Data when clicked the Clear filter option
         this.setState({
             genderSelected: '',
-            selectedCategory: [],
-            language: [],
+            selectedSpecialist: [],
+            languages: [],
             genderIndex: 0,
             selectAvailabilityIndex: 0,
             selectExperinceIndex: 0,
-            selectedServices: [],
+            selectedHospitalNames: [],
         });
+        this.selectedSpecialist = [];
         selectedCount = 0;
-        globalOffilterBySelectedAvailabilityDateCount = 0;
         filterDataObject = {};
+        await store.dispatch(
+            {
+                type: SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
+                data: true
+            },
+        );
     }
+
     render() {
-        const { genderIndex, selectAvailabilityIndex, language, genderSelected, selectedCategory,
-            selectedServices, selectExperinceIndex, languageData, categoryList, serviceList } = this.state;
+        const { genderIndex, selectAvailabilityIndex, languages, genderSelected, selectedSpecialist,
+            selectedHospitalNames, selectExperinceIndex, languageList, specialistInfoList, hospitalInfoList } = this.state;
         return (
             <Container style={styles.container}>
                 <Content>
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>{translate("Gender")}</Text>
+                        <Text style={styles.headingLabelStyle}>Gender </Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
                             <Col size={3.33} >
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(1, "M", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio 
-                                     standardStyle={true}
-                                    selected={genderIndex === 1 ? true : false} 
-                                   onPress={()=>  this.clickGenderInButton(1, "M", true)}  />
-                                  
+                                    <Radio
+                                        standardStyle={true}
+                                        selected={genderIndex === 1 ? true : false}
+                                        onPress={() => this.clickGenderInButton(1, "M", true)} />
+
                                     <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
-                                    <Text style={styles.genderTextStyles}>{translate("Male")} </Text>
+                                    <Text style={styles.genderTextStyles}>Male</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.33} >
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(2, "F", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio 
-                                    standardStyle={true}
-                                    selected={genderIndex === 2 ? true : false} 
-                                    onPress={()=>  this.clickGenderInButton(2, "F", true)}  />
+                                    <Radio
+                                        standardStyle={true}
+                                        selected={genderIndex === 2 ? true : false}
+                                        onPress={() => this.clickGenderInButton(2, "F", true)} />
                                     <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
-                                    <Text style={styles.genderTextStyles}>{translate("Female")}</Text>
+                                    <Text style={styles.genderTextStyles}>Female</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.33} >
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(3, "O", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio 
-                                    standardStyle={true}
-                                    selected={genderIndex === 3 ? true : false} 
-                              onPress={()=>  this.clickGenderInButton(3, "O", true)}  />                                  
-                                    <Text style={styles.genderTextStyles}>{translate("Others")}</Text>
+                                    <Radio
+                                        standardStyle={true}
+                                        selected={genderIndex === 3 ? true : false}
+                                        onPress={() => this.clickGenderInButton(3, "O", true)} />
+                                    <Text style={styles.genderTextStyles}>Others</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>{translate("Availability Date & Time")} </Text>
+                        <Text style={styles.headingLabelStyle}>Availability Date & Time </Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
                             <Col size={3}>
                                 <TouchableOpacity
@@ -270,7 +302,7 @@ class Filters extends Component {
                                     style={selectAvailabilityIndex === 1 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                 >
                                     <Text style={selectAvailabilityIndex === 1 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}
-                                    >{translate("Today")}</Text>
+                                    >Today</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3} style={{ marginLeft: 10 }}>
@@ -278,7 +310,7 @@ class Filters extends Component {
                                     onPress={() => this.clickFilterByAvailabilityDates(3, true)}
                                     style={selectAvailabilityIndex === 3 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                 >
-                                    <Text style={selectAvailabilityIndex === 3 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>{translate("Next 3 days")}</Text>
+                                    <Text style={selectAvailabilityIndex === 3 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>Next 3 days</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3} style={{ marginLeft: 10 }}>
@@ -286,14 +318,14 @@ class Filters extends Component {
                                     style={selectAvailabilityIndex === 7 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                     onPress={() => this.clickFilterByAvailabilityDates(7, true)}
                                 >
-                                    <Text style={selectAvailabilityIndex === 7 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>{translate("Next 7 days")}</Text>
+                                    <Text style={selectAvailabilityIndex === 7 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>Next 7 days</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>{translate("Work Experience")}</Text>
+                        <Text style={styles.headingLabelStyle}>Work Experience</Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
                             <Col size={2.5}>
                                 <TouchableOpacity
@@ -331,7 +363,7 @@ class Filters extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>{translate("Choose Spoken Languages")}</Text>
+                        <Text style={styles.headingLabelStyle}>Choose Spoken Languages</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -341,7 +373,7 @@ class Filters extends Component {
                                     },
 
                                 }}
-                                items={languageData}
+                                items={languageList}
                                 uniqueKey='value'
                                 displayKey='value'
                                 selectText='Choose Languages you know'
@@ -353,7 +385,7 @@ class Filters extends Component {
                                 showChips={false}
                                 readOnlyHeadings={false}
                                 onSelectedItemsChange={this.onSelectedLanguagesChange}
-                                selectedItems={language}
+                                selectedItems={languages}
                                 colors={{ primary: '#18c971' }}
                                 showCancelButton={true}
                                 animateDropDowns={true}
@@ -363,7 +395,7 @@ class Filters extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>{translate("Select your category")}</Text>
+                        <Text style={styles.headingLabelStyle}>Selected your Specialist</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -373,11 +405,11 @@ class Filters extends Component {
                                     },
 
                                 }}
-                                items={categoryList}
+                                items={specialistInfoList}
                                 uniqueKey='value'
                                 displayKey='value'
-                                selectText='Choose your Category  '
-                                searchPlaceholderText='Search Your Languages'
+                                selectText='Choose your Specialist  '
+                                searchPlaceholderText='Search Your Specialist'
                                 modalWithTouchable={true}
                                 showDropDowns={true}
                                 hideSearch={false}
@@ -385,17 +417,22 @@ class Filters extends Component {
                                 showChips={false}
                                 single={true}
                                 readOnlyHeadings={false}
-                                onSelectedItemsChange={this.onSelectedCategoryChange}
-                                selectedItems={selectedCategory}
+                                // onSelectedItemObjectsChange={this.onSelectedSpecialistObjChange}
+
+                                onSelectedItemObjectsChange={(selectedSpecialistObj) => { this.onSelectedSpecialistObjChange(selectedSpecialistObj[0].id) }}
+
+
+                                onSelectedItemsChange={this.onSelectedSpecialistChange}
+                                selectedItems={selectedSpecialist}
                                 colors={{ primary: '#18c971' }}
                                 showCancelButton={true}
                                 animateDropDowns={true}
-                                testID='languageSelected'
+                                testID='languagesSelected'
                             />
                         </TouchableOpacity>
                     </View>
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>{translate("Select service")}</Text>
+                        <Text style={styles.headingLabelStyle}>Selected hospitalName</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -405,20 +442,21 @@ class Filters extends Component {
                                     },
 
                                 }}
-                                items={serviceList}
+                                items={hospitalInfoList}
                                 uniqueKey='value'
                                 displayKey='value'
-                                selectText='Choose your Services  '
+                                selectText='Choose your hospitals  '
                                 selectToggleText={{ fontSize: 13 }}
-                                searchPlaceholderText='Search Your Services'
+                                searchPlaceholderText='Search Your hospitals'
                                 modalWithTouchable={true}
+                                single={true}
                                 showDropDowns={true}
                                 hideSearch={false}
                                 showRemoveAll={true}
                                 showChips={false}
                                 readOnlyHeadings={false}
-                                onSelectedItemsChange={this.onSelectedServiceChange}
-                                selectedItems={selectedServices}
+                                onSelectedItemsChange={this.onSelectedHospitalChange}
+                                selectedItems={selectedHospitalNames}
                                 colors={{ primary: '#18c971' }}
                                 showCancelButton={true}
                                 animateDropDowns={true}
@@ -433,34 +471,30 @@ class Filters extends Component {
                                     onPress={this.clearSelectedData}
                                     style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}>
 
-                                    <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>{translate("Clear Filters")}</Text>
+                                    <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 20 }}>
                                 <TouchableOpacity
                                     block success
-                                    disabled={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? false : true}
-                                    style={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.viewDocButtonBgGreeen : styles.viewDocButtonBgGray}
+                                    disabled={languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectedHospitalNames.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? false : true}
+                                    style={languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectedHospitalNames.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.viewDocButtonBgGreeen : styles.viewDocButtonBgGray}
                                     onPress={this.sendFilteredData}
                                 >
-                                    <Text style={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.enabledApplyTextColor : styles.defaultApplyTextColor}>{translate("Apply")}</Text>
+                                    <Text style={languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectedHospitalNames.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.enabledApplyTextColor : styles.defaultApplyTextColor}>Apply</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
-                        {language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#ffffff', fontFamily: 'OpenSans', fontSize: 12, fontWeight: '600', position: "absolute", backgroundColor: '#775DA3', height: 25, width: 25, borderRadius: 25/2, textAlign: 'center', marginLeft: 25, marginTop: 35, paddingTop:2 }}>{selectedCount}</Text> : null}
+                        {languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectedHospitalNames.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#ffffff', fontFamily: 'OpenSans', fontSize: 12, fontWeight: '600', position: "absolute", backgroundColor: '#775DA3', height: 25, width: 25, borderRadius: 25 / 2, textAlign: 'center', marginLeft: 25, marginTop: 35, paddingTop: 2 }}>{selectedCount}</Text> : null}
                     </View>
                 </Content>
             </Container >
         );
     }
 }
-function bookApppointmentState(state) {
-    return {
-        bookappointment: state.bookappointment
-    }
-}
-export default connect(bookApppointmentState)(Filters)
 
+const bookAppointmentDataState = ({ bookAppointmentData } = state) => ({ bookAppointmentData })
+export default connect(bookAppointmentDataState)(FilterDocInfo)
 const styles = StyleSheet.create({
     defaultDaysColor:
     {
@@ -530,58 +564,58 @@ const styles = StyleSheet.create({
         borderWidth: 0.5
     },
     defaultDaysTextColor: {
-        color: '#333333', 
-        fontFamily: 'OpenSans', 
-        fontSize: 13, 
+        color: '#333333',
+        fontFamily: 'OpenSans',
+        fontSize: 13,
         textAlign: 'center'
     },
     selectedDaysTextColor: {
-        color: '#FFFFFF', 
-        fontFamily: 'OpenSans', 
-        fontSize: 13, 
+        color: '#FFFFFF',
+        fontFamily: 'OpenSans',
+        fontSize: 13,
         textAlign: 'center'
 
     },
     defaultExpTextColor: {
-        color: '#333333', 
-        fontFamily: 'OpenSans', 
-        fontSize: 10, 
+        color: '#333333',
+        fontFamily: 'OpenSans',
+        fontSize: 10,
         textAlign: 'center'
     },
     selectedExpTextColor: {
-        color: '#FFFFFF', 
-        fontFamily: 'OpenSans', 
-        fontSize: 10, 
+        color: '#FFFFFF',
+        fontFamily: 'OpenSans',
+        fontSize: 10,
         textAlign: 'center'
     },
     defaultApplyTextColor: {
-        color: '#775DA3', 
-        fontFamily: 'OpenSans', 
-        fontSize: 13, 
-        textAlign: 'center', 
+        color: '#775DA3',
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        textAlign: 'center',
         fontWeight: '500'
     },
     enabledApplyTextColor: {
-        color: '#FFFFFF', 
-        fontFamily: 'OpenSans', 
-        fontSize: 13, 
-        textAlign: 'center', 
+        color: '#FFFFFF',
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        textAlign: 'center',
         fontWeight: '500'
     },
     headingLabelStyle: {
-        fontFamily: 'OpenSans',  
+        fontFamily: 'OpenSans',
         fontSize: 13,
-        fontWeight:'bold'
+        fontWeight: 'bold'
     },
     genderTextStyles: {
-        fontFamily: 'OpenSans', 
-        fontSize: 13, 
-        marginLeft: 15, 
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        marginLeft: 15,
         color: '#333333'
     },
     genderTouchableStyles: {
-        alignItems: 'center', 
-        justifyContent: 'center', 
+        alignItems: 'center',
+        justifyContent: 'center',
         flexDirection: 'row'
     },
 })
