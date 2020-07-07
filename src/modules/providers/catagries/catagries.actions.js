@@ -6,12 +6,11 @@ export const CATAGRIES_REQUEST = 'CATAGRIES/CATAGRIES_REQUEST'
 export const CATAGRIES_RESPONSE = 'CATAGRIES/CATAGRIES_RESPONSE'
 export const CATAGRIES_ERROR = 'CATAGRIES/CATAGRIES_ERROR'
 
-export async function getSpecialistDataSuggestions(type, keyWord, locationData) {
+export async function getSpecialistDataSuggestions(type, SuggestionReqData) {
   try {
     // let endPoint = 'doctor/searchKeys/'+userId +'/'+keyWord;   // old path
-    let endPoint = 'V2/doctor/search/' + type + '/' + keyWord; // new path
-
-    let response = await postService(endPoint, locationData);
+    let endPoint = 'V2/doctor/search/' + type; // new path
+    let response = await postService(endPoint, SuggestionReqData);
     let respData = response.data;
     // console.log('respData'+JSON.stringify(respData))
     return respData;

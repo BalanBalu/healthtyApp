@@ -73,9 +73,9 @@ const RenderFavoritesCount = (props) => {
 
 const RenderFavoritesComponent = (props) => {
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => props.onPressFavoriteIcon()}>
             {props.isLoggedIn ?
-                <Icon name="heart" onPress={() => props.onPressFavoriteIcon()}
+                <Icon name="heart"
                     style={props.isEnabledFavorites ? props.isFromLabBookApp ? styles.isEnabledFavorite4LalBookApp : styles.isEnabledFavorite : props.isFromLabBookApp ? styles.isDisabledFavorite4LalBookApp : styles.isDisabledFavorite}>
                 </Icon> : null}
         </TouchableOpacity>
@@ -101,18 +101,23 @@ const RenderListNotFound = (props) => {
 
 
 
-const renderLabTestImage = (data) => {
+const renderLabProfileImage = (data) => {
+   
     let source = null;
-    if (data.profile_image) {
+    if (!data) {
+        return (source)
+    }
+    if(data.profile_image) {
         source = { uri: data.profile_image.imageURL }
     } else {
-        // source = require('../../assets/images/Logo.png')
+        source = require('../../../../assets/icon.png')
     }
+    
     return (source)
 }
 
 export {
-    renderLabTestImage,
+    renderLabProfileImage,
     RenderNoSlotsAvailable,
     RenderListNotFound,
     RenderFavoritesComponent,

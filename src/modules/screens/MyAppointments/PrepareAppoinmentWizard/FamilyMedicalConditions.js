@@ -56,8 +56,15 @@ class FamilyMedicalConditions extends PureComponent {
             let data = {
                 family_conditions: familyCondition
             }
-
             this.setState({ isLoading: true })
+            if(familyCondition[0]['person_name']==null&&familyCondition[0]['family_person_who']==null){
+                Toast.show({
+                 text: 'Please fill  the  field',
+                 type: "danger",
+                 duration: 3000,
+             })  
+             }
+           
             let response = await userFiledsUpdate(userId, data)
             console.log(JSON.stringify(response))
             if (response.success) {
@@ -68,7 +75,8 @@ class FamilyMedicalConditions extends PureComponent {
                 })
                 this.skippingButton(false);
                 this.props.navigation.navigate('AllergicDisease', { AppointmentId: appointmentId });
-            }
+           }
+        
         }
         catch (e) {
             console.log(e)

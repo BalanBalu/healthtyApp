@@ -10,41 +10,45 @@ import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../setup/helpers";
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
-import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById } from "../../../providers/lab/lab.action"
+import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById, getUserReviews } from "../../../providers/lab/lab.action"
+import InsertReview from '../Reviews/insertReviews';
+import { renderLabProfileImage } from "../../CommonAll/components"
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: {},
+      data:{},
       labTestCategoryInfo: '',
       upcomingTap: 0,
       paymentData: {},
       reviewData: [],
       reportData: null,
       isLoading: true,
-      appointmentId:''
+      appointmentId: '',
+      modalVisible: false,
+
     }
   }
 
   async componentDidMount() {
+
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    console.log("appointmentData", appointmentData)
-
     const upcomingTap = navigation.getParam('selectedIndex');
-
     if (appointmentData == undefined) {
       let appointmentId = navigation.getParam('serviceId')
-      console.log("appointmentId", appointmentId)
       await this.setState({ appointmentId })
       await new Promise.all([
         this.getAppointmentById(appointmentId),
+        this.getUserReviews(),
       ])
     }
     else {
-      await this.setState({ data: appointmentData, upcomingTap })
-      this.getLapTestPaymentInfo(appointmentData.payment_id)
+      await this.setState({ data: appointmentData, upcomingTap, appointmentId: appointmentData._id })
+      this.getLapTestPaymentInfo(appointmentData.payment_id),
+        this.getUserReviews()
+
     }
   }
 
@@ -53,8 +57,6 @@ class LabAppointmentInfo extends Component {
 
     try {
       let result = await getLabAppointmentById(appointmentId)
-      console.log("result", result)
-
       if (result.success) {
         await this.setState({ data: result.data[0], isLoading: true });
         this.getLapTestPaymentInfo(result.data[0].payment_id)
@@ -90,9 +92,33 @@ class LabAppointmentInfo extends Component {
     }
   }
 
+  getUserReviews = async () => {
+    try {
+      let reviewResult = await getUserReviews('appointment', this.state.appointmentId)
+      if (reviewResult.success) {
+        this.setState({ reviewData: reviewResult.data });
+      }
 
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
 
-  async  navigateCancelAppoointment() {
+  navigateAddReview() {
+    this.setState({
+      modalVisible: true
+    });
+
+  }
+
+  async getvisble(val) {
+    this.setState({ modalVisible: false });
+    if (val.updatedVisible == true) {
+      this.getUserReviews()
+    }
+  }
+  async navigateCancelAppoointment() {
     try {
       this.props.navigation.navigate('LabCancelAppointment', { appointmentData: this.state.data })
     }
@@ -101,7 +127,7 @@ class LabAppointmentInfo extends Component {
     }
   }
 
-  async  navigateLabConfirmation() {
+  async navigateLabConfirmation() {
     try {
       const { data } = this.state;
       this.packageDetails = {
@@ -115,7 +141,6 @@ class LabAppointmentInfo extends Component {
         category_name: data.labCategoryInfo.category_name,
         extra_charges: data.labInfo.extra_charges,
         appointment_starttime: data.appointment_starttime,
-        appointment_endtime: data.appointment_endtime,
         mobile_no: data.labInfo.mobile_no,
         location: data.labInfo.location
       }
@@ -135,7 +160,6 @@ class LabAppointmentInfo extends Component {
         labId: data.lab_id,
         userId: userId,
         startTime: data.appointment_starttime,
-        endTime: data.appointment_endtime,
         status: updatedStatus,
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
@@ -172,7 +196,7 @@ class LabAppointmentInfo extends Component {
   }
 
   render() {
-    const { data, upcomingTap, paymentData, reportData } = this.state
+    const { data, upcomingTap, paymentData, reportData, reviewData } = this.state
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -188,7 +212,10 @@ class LabAppointmentInfo extends Component {
                   <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }}>{"Ref no :" + data.token_no}</Text>
                   <Row>
                     <Col style={{ width: '25%', }}>
-                      <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
+                     
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(data.labInfo && data.labInfo), title: 'Profile photo' })}>
+                        <Thumbnail circle source={renderLabProfileImage(data.labInfo && data.labInfo)} style={{ height: 60, width: 60 }} />
+                      </TouchableOpacity>
                     </Col>
                     <Col style={{ width: '80%', marginTop: 10 }}>
                       <Row>
@@ -279,7 +306,7 @@ class LabAppointmentInfo extends Component {
                     <Col style={{ width: '50%', justifyContent: 'center', alignItems: 'center' }}>
                       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <Icon name="md-clock" style={styles.iconStyle} />
-                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a') + '-' + formatDate(data.appointment_endtime, 'hh:mm a')}</Text>
+                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a')}</Text>
                       </Row>
                     </Col>
                   </Row>
@@ -403,6 +430,42 @@ class LabAppointmentInfo extends Component {
                   </Col>
                 </Row>
 
+                {reviewData.length !== 0 ?
+                  <Row style={styles.rowSubText}>
+                    <Col style={{ width: '8%', paddingTop: 5 }}>
+                      <Icon name="ios-medkit" style={{ fontSize: 20, }} />
+                    </Col>
+                    <Col style={{ width: '92%', paddingTop: 5 }}>
+                      <Text style={styles.innerSubText}>Review</Text>
+
+                      <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                        disabled={false}
+                        maxStars={5}
+                        rating={reviewData[0] && reviewData[0].overall_rating}
+                      />
+                      <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
+                    </Col>
+                  </Row> :
+                  reviewData.length == 0 ?
+                    <Row style={styles.rowSubText}>
+                      <Col style={{ width: '8%', paddingTop: 5 }}>
+                        <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
+
+                      </Col>
+                      <Col style={{ width: '92%', paddingTop: 5 }}>
+                        <Text style={styles.innerSubText}>Add Feedback</Text>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                          <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+
+                            <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
+                            <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                          </TouchableOpacity>
+                        </View>
+                      </Col>
+                    </Row> : null
+                }
+
+
                 <Row style={styles.rowStyles}>
                   <Col style={{ width: '8%', paddingTop: 5 }}>
                     <Icon name="ios-cash" style={{ fontSize: 18, }} />
@@ -458,6 +521,20 @@ class LabAppointmentInfo extends Component {
                     </Row>
                   </Col>
                 </Row>
+              </View>
+              <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  containerStyle={{ justifyContent: 'flex-end' }}
+                  visible={this.state.modalVisible}
+                >
+                  <InsertReview
+                    data={this.state.data}
+                    popupVisible={(data) => this.getvisble(data)}
+                  >
+                  </InsertReview>
+                </Modal>
               </View>
             </Grid>
           </View>

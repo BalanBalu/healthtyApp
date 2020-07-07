@@ -347,43 +347,43 @@ export const statusBar = {
 
   "PENDING":
   {
-    status: 'Ordered and Approved',
+    status: 'Ordered',
     checked: true,
     color: 'red'
   },
   "APPROVED":
   {
-    status: 'Packed and Out for Delivery',
+    status: 'Approved',
     checked: true,
     color: 'green'
   },
   "CANCELLED":
   {
-    status: 'Canceled the order',
+    status: 'Canceled',
     checked: true,
     color: 'red'
   },
   "REJECTED":
   {
-    status: 'Rejected  the order',
+    status: 'Rejected',
     checked: true,
     color: 'red'
   },
   "OUT_FOR_DELIVERY":
   {
-    status: 'Order is on the way',
+    status: 'out for delivery',
     checked: true,
     color: 'green'
   },
   "READY_FOR_DELIVERY":
   {
-    status: 'The order is ready for delivery',
+    status: 'Ready for delivery',
     checked: true,
     color: 'green'
   },
   "DELIVERED":
   {
-    status: 'The order is delivered',
+    status: 'Delivered',
     checked: true,
     color: 'green'
   },
@@ -432,7 +432,7 @@ export const statusBar = {
     color: 'red'
   },
   "PACKED": {
-    status: 'order is packed',
+    status: 'packed',
     checked: true,
     color: 'green'
   },

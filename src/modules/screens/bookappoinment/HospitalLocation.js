@@ -28,18 +28,21 @@ export default class HospitalLocation extends Component {
          {/* <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>  {addressData.no_and_street + ', ' + addressData.city + ', ' + addressData.state } </Text> */}
        <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
          
-         <Card style={ { height: 250 }}>
-             <Mapbox hospitalLocation={hopitalLocationData}/>        
+         <Card style={ { }}>
+             {/* <Mapbox hospitalLocation={hopitalLocationData}/>         */}
           <List>
           <ListItem avatar>
             <Left>
               <Icon name="locate" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
             </Left>
              <Body>
-                <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{addressData.no_and_street}</Text>
-                <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{addressData.city}</Text>
-                <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{addressData.state}</Text>
-                <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{addressData.pin_code}</Text>
+                <Text note style={{fontFamily:'OpenSans',fontSize:16}}>{addressData.no_and_street}</Text>
+                {addressData.address_line_1 ? <Text note style={{fontFamily:'OpenSans',fontSize:16}}>{addressData.address_line_1}</Text> : null }
+                <Text note style={{fontFamily:'OpenSans',fontSize:16}}>{addressData.city}</Text>
+                {addressData.district ? <Text note style={{fontFamily:'OpenSans',fontSize:16}}>{addressData.district}</Text> : null }
+                <Text note style={{fontFamily:'OpenSans',fontSize:16}}>{addressData.state}</Text>
+                {addressData.post_office_name ? <Text note style={{fontFamily:'OpenSans',fontSize:16}}>{addressData.post_office_name}</Text> : null }
+                <Text note style={{fontFamily:'OpenSans',fontSize:16}}>{addressData.pin_code}</Text>
             </Body>
             
           </ListItem>

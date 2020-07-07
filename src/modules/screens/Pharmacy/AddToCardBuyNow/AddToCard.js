@@ -59,7 +59,7 @@ export class AddToCard extends Component {
                 duration: 3000,
                 type: 'danger',
                 position: "bottom",
-                style: { bottom: "50%" }
+                style: { bottom: "46%" }
 
             })
         }
@@ -94,7 +94,7 @@ export class AddToCard extends Component {
             item.maxThreashold = temp.maxThreashold
         }
         if (temp.h1Product) {
-            item.h1Product = temp.h1Product
+            item.isH1Product = temp.h1Product
         }
         if (data.selectedType === 'Add to Cart') {
             const isLoggedIn = await hasLoggedIn(this.props);

@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Radio, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { connect } from 'react-redux'
+import { translate } from "../../../setup/translator.helper"
 let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
 let globalOffilterBySelectedAvailabilityDateCount = 0;
 let selectedCount = 0
@@ -218,7 +219,7 @@ class Filters extends Component {
             <Container style={styles.container}>
                 <Content>
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Gender </Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Gender")}</Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
                             <Col size={3.33} >
@@ -231,7 +232,7 @@ class Filters extends Component {
                                    onPress={()=>  this.clickGenderInButton(1, "M", true)}  />
                                   
                                     <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
-                                    <Text style={styles.genderTextStyles}>Male</Text>
+                                    <Text style={styles.genderTextStyles}>{translate("Male")} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.33} >
@@ -243,7 +244,7 @@ class Filters extends Component {
                                     selected={genderIndex === 2 ? true : false} 
                                     onPress={()=>  this.clickGenderInButton(2, "F", true)}  />
                                     <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
-                                    <Text style={styles.genderTextStyles}>Female</Text>
+                                    <Text style={styles.genderTextStyles}>{translate("Female")}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.33} >
@@ -254,14 +255,14 @@ class Filters extends Component {
                                     standardStyle={true}
                                     selected={genderIndex === 3 ? true : false} 
                               onPress={()=>  this.clickGenderInButton(3, "O", true)}  />                                  
-                                    <Text style={styles.genderTextStyles}>Others</Text>
+                                    <Text style={styles.genderTextStyles}>{translate("Others")}</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Availability Date & Time </Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Availability Date & Time")} </Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
                             <Col size={3}>
                                 <TouchableOpacity
@@ -269,7 +270,7 @@ class Filters extends Component {
                                     style={selectAvailabilityIndex === 1 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                 >
                                     <Text style={selectAvailabilityIndex === 1 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}
-                                    >Today</Text>
+                                    >{translate("Today")}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3} style={{ marginLeft: 10 }}>
@@ -277,7 +278,7 @@ class Filters extends Component {
                                     onPress={() => this.clickFilterByAvailabilityDates(3, true)}
                                     style={selectAvailabilityIndex === 3 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                 >
-                                    <Text style={selectAvailabilityIndex === 3 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>Next 3 days</Text>
+                                    <Text style={selectAvailabilityIndex === 3 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>{translate("Next 3 days")}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3} style={{ marginLeft: 10 }}>
@@ -285,14 +286,14 @@ class Filters extends Component {
                                     style={selectAvailabilityIndex === 7 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                     onPress={() => this.clickFilterByAvailabilityDates(7, true)}
                                 >
-                                    <Text style={selectAvailabilityIndex === 7 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>Next 7 days</Text>
+                                    <Text style={selectAvailabilityIndex === 7 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>{translate("Next 7 days")}</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Work Experience</Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Work Experience")}</Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
                             <Col size={2.5}>
                                 <TouchableOpacity
@@ -330,7 +331,7 @@ class Filters extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Choose Spoken Languages</Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Choose Spoken Languages")}</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -362,7 +363,7 @@ class Filters extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Selected your category</Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Select your category")}</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -394,7 +395,7 @@ class Filters extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Selected service</Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Select service")}</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -432,7 +433,7 @@ class Filters extends Component {
                                     onPress={this.clearSelectedData}
                                     style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}>
 
-                                    <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
+                                    <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>{translate("Clear Filters")}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 20 }}>
@@ -442,7 +443,7 @@ class Filters extends Component {
                                     style={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.viewDocButtonBgGreeen : styles.viewDocButtonBgGray}
                                     onPress={this.sendFilteredData}
                                 >
-                                    <Text style={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.enabledApplyTextColor : styles.defaultApplyTextColor}>Apply</Text>
+                                    <Text style={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.enabledApplyTextColor : styles.defaultApplyTextColor}>{translate("Apply")}</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>

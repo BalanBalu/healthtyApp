@@ -16,6 +16,8 @@ import { renderDoctorImage, getAllEducation, getAllSpecialist, getName } from '.
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
+import { translate } from "../../../setup/translator.helper"
+
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -32,9 +34,12 @@ class MyAppoinmentList extends Component {
 			isNavigation: true,
 			modalVisible: false,
 			reviewData: {},
-			reviewIndex: -1
+			reviewIndex: -1,
+			skip: 0,
+			limit: 10
 
 		};
+		this.onEndReachedCalledDuringMomentum = true;
 	}
 
 	async componentDidMount() {
@@ -79,12 +84,16 @@ class MyAppoinmentList extends Component {
 
 	upCommingAppointment = async () => {
 		try {
-			this.setState({ isLoading: true })
+			// this.setState({ isLoading: true })
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: new Date().toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
-				on_going_appointment: true
+				skip: this.state.skip,
+				limit: this.state.limit,
+				sort: 1
+
+				// on_going_appointment: true
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
 			console.log('upcomming==================================');
@@ -127,12 +136,13 @@ class MyAppoinmentList extends Component {
 						profile_image: details.profile_image
 					});
 				})
-				upcommingInfo.sort(function (firstVarlue, secandValue) {
-					return firstVarlue.appointmentResult.appointment_starttime < secandValue.appointmentResult.appointment_starttime ? -1 : 0
-				})
+				// upcommingInfo.sort(function (firstVarlue, secandValue) {
+				// 	return firstVarlue.appointmentResult.appointment_starttime < secandValue.appointmentResult.appointment_starttime ? -1 : 0
+				// })
+				let tempData = this.state.upComingData.concat(upcommingInfo)
 				this.setState({
-					upComingData: upcommingInfo,
-					data: upcommingInfo,
+					upComingData: tempData,
+					data: tempData,
 					isLoading: false
 				});
 			}
@@ -147,13 +157,16 @@ class MyAppoinmentList extends Component {
 	};
 	pastAppointment = async () => {
 		try {
-			this.setState({
-				isLoading: true
-			})
+			// this.setState({
+			// 	isLoading: true
+			// })
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
+				skip: this.state.skip,
+				limit: this.state.limit,
+				sort: -1
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
@@ -218,11 +231,12 @@ class MyAppoinmentList extends Component {
 					});
 				}
 				)
-				pastDoctorDetails.sort(function (firstVarlue, secandValue) {
-					return firstVarlue.appointmentResult.appointment_starttime > secandValue.appointmentResult.appointment_starttime ? -1 : 0
-				})
+				// pastDoctorDetails.sort(function (firstVarlue, secandValue) {
+				// 	return firstVarlue.appointmentResult.appointment_starttime > secandValue.appointmentResult.appointment_starttime ? -1 : 0
+				// })
+				let tempData = this.state.pastData.concat(pastDoctorDetails)
 				await this.setState({
-					pastData: pastDoctorDetails, data: pastDoctorDetails, isLoading: false
+					pastData: tempData, data: tempData, isLoading: false
 				});
 
 			}
@@ -253,7 +267,10 @@ class MyAppoinmentList extends Component {
 		let data = []
 		await this.setState({
 			selectedIndex: index,
+			skip: 0,
+
 		});
+
 		if (index === 0) {
 			if (this.state.upComingData.length == 0) {
 				await this.upCommingAppointment()
@@ -285,16 +302,58 @@ class MyAppoinmentList extends Component {
 	navigateToBookAppointmentPage(item) {
 
 		let doctorId = item.appointmentResult.doctor_id;
-		this.props.navigation.navigate('Book Appointment', {
+		this.props.navigation.navigate('Doctor Details Preview', {
 			doctorId: doctorId,
 			fetchAvailabiltySlots: true
 		})
 	}
+	handleLoadMore = async () => {
+		if (!this.onEndReachedCalledDuringMomentum) {
+			console.log('On Hanndle loading ' + this.state.skip);
+
+			this.onEndReachedCalledDuringMomentum = true;
+			await this.setState({ skip: this.state.skip + this.state.limit, footerLoading: true });
+
+			if (this.state.selectedIndex === 0) {
+
+				await this.upCommingAppointment()
+
+
+			} else {
+
+				await this.pastAppointment()
+
+
+			}
+
+
+			this.setState({ footerLoading: false })
+
+		}
+	}
+
+	renderFooter() {
+		return (
+			//Footer View with Load More button
+			<View style={styles.footer}>
+				<TouchableOpacity
+					activeOpacity={0.9}
+					onPress={this.loadMoreData}
+
+					style={styles.loadMoreBtn}>
+					{this.state.footerLoading ?
+
+						<ActivityIndicator color="blue" style={styles.btnText} /> : null}
+
+				</TouchableOpacity>
+			</View>
+		);
+	}
+
 
 	render() {
 		const {
 			data, selectedIndex, isLoading } = this.state;
-
 
 		return (
 			<View style={styles.container}>
@@ -309,7 +368,7 @@ class MyAppoinmentList extends Component {
 							marginRight: "auto",
 							marginTop: "auto"
 						}}
-						values={["Upcoming", "Past"]}
+						values={[translate("Upcoming"), translate("Past")]}
 						selectedIndex={this.state.selectedIndex}
 						onTabPress={this.handleIndexChange}
 						activeTabStyle={{
@@ -367,6 +426,10 @@ class MyAppoinmentList extends Component {
 									<FlatList
 										data={data}
 										extraData={data}
+										onEndReached={() => this.handleLoadMore()}
+										onEndReachedThreshold={0.5}
+										onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+										ListFooterComponent={this.renderFooter.bind(this)}
 										renderItem={({ item, index }) => (
 											<Card transparent style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
 
@@ -483,7 +546,7 @@ class MyAppoinmentList extends Component {
 																				<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																					<Text style={styles.bookAgain1}>
 																						Book Again
-																		</Text>
+																		           </Text>
 																				</Button>
 																			</Right>
 																		</Row>

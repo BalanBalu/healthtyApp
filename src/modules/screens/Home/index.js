@@ -242,22 +242,28 @@ class Home extends Component {
         }
     }
 
-
     navigateToCategorySearch(categoryName) {
         const { bookappointment: { locationCordinates } } = this.props;
-
-        let serachInputvalues = [{
-            type: 'category',
-            value: categoryName
-        },
-        {
-            type: 'geo',
-            value: {
-                coordinates: locationCordinates,
+        this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+            inputKeywordFromSearch: categoryName,
+            locationDataFromSearch: {
+                type: 'geo',
+                "coordinates": locationCordinates,
                 maxDistance: MAX_DISTANCE_TO_COVER
             }
-        }]
-        this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
+        })
+        // let serachInputvalues = [{
+        //     type: 'category',
+        //     value: categoryName
+        // },
+        // {
+        //     type: 'geo',
+        //     value: {
+        //         coordinates: locationCordinates,
+        //         maxDistance: MAX_DISTANCE_TO_COVER
+        //     }
+        // }]
+        // this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
 
     getMarkedAsReadedNotification = async (userId) => {
@@ -424,8 +430,8 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>Chat and Video</Text>
-                                            <Text style={styles.subText}>Consult doctors through chat or video</Text>
+                                            <Text style={styles.mainText}>{translate('Chat and Video')}</Text>
+                                            <Text style={styles.subText}>{translate('Consult doctors through chat or video')}</Text>
                                         </Col>
 
                                     </Row>
@@ -448,7 +454,7 @@ class Home extends Component {
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
                                             <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
-                                            <Text style={styles.subText}> Get medicines delivered to home</Text>
+                                            <Text style={styles.subText}>{translate('Get medicines delivered to home')} </Text>
                                         </Col>
                                     </Row>
                                 </Card>
@@ -467,8 +473,8 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>Blood donors</Text>
-                                            <Text style={styles.subText}>Find Available blood donors</Text>
+                                            <Text style={styles.mainText}>{translate('Blood donors')}</Text>
+                                            <Text style={styles.subText}>{translate('Find Available blood donors')}</Text>
                                         </Col>
 
                                     </Row>
@@ -484,7 +490,7 @@ class Home extends Component {
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>Medicine Reminder</Text>
+                                                <Text style={styles.mainText}>{translate('Medicine Reminder')}</Text>
                                             </Col>
                                             <Col size={2.5}>
                                                 <Image
@@ -503,7 +509,7 @@ class Home extends Component {
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>Book Lab tests</Text>
+                                                <Text style={styles.mainText}>{translate('Book Lab tests')} </Text>
                                             </Col>
                                             <Col size={2.5}>
 
@@ -523,11 +529,11 @@ class Home extends Component {
                     <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 20 }}>
                         <Row style={{ marginTop: 10, marginBottom: 5 }}>
                             <Left>
-                                <Text style={styles.mainHead}>Categories</Text>
+                                <Text style={styles.mainHead}>{translate('Categories')}</Text>
                             </Left>
                             <Right>
                                 <TouchableOpacity onPress={() => this.navigetToCategories()} style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 5, paddingTop: 5, borderRadius: 5, color: '#fff', flexDirection: 'row' }}>
-                                    <Text style={{ color: '#775DA3', fontSize: 13, textAlign: 'center', fontWeight: 'bold' }}>View All</Text>
+                                    <Text style={{ color: '#775DA3', fontSize: 13, textAlign: 'center', fontWeight: 'bold' }}>{translate('View All')}</Text>
                                 </TouchableOpacity>
                             </Right>
                         </Row>
@@ -561,7 +567,7 @@ class Home extends Component {
 
                         <Row style={{ marginTop: 10, marginBottom: 5 }}>
                             <Left>
-                                <Text style={styles.mainHead}>Refer and Earn!</Text>
+                                <Text style={styles.mainHead}>{translate('Refer and Earn!')} </Text>
                             </Left>
                         </Row>
                         <View>
@@ -592,8 +598,8 @@ class Home extends Component {
                                     </Row>
                                 </TouchableOpacity>
                             </Card>
-                            <NextAppoinmentPreparation 
-                            navigation={this.props.navigation}
+                            <NextAppoinmentPreparation
+                                navigation={this.props.navigation}
                             />
                         </View>
 
@@ -833,10 +839,12 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         width: '100%',
+        height:80,
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems:'center'
     },
     mainText: {
         fontSize: 10,

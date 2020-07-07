@@ -42,6 +42,7 @@ class OrderDetails extends Component {
         const { navigation } = this.props;
      
         let orderId = this.props.navigation.getParam('serviceId') || null
+  
         let getOderSlap=true
         this.medicineOrderDetails(orderId,getOderSlap);
         this.getUserReport()
@@ -67,7 +68,8 @@ class OrderDetails extends Component {
                     this.setState({ statusSlap })
                 }
             }
-                if (result.status === 'DELIVERED' && result.is_review_added === undefined) {
+            console.log(JSON.stringify(result))
+                if (result.status === 'DELIVERED' &&(result.isReviewSkipped === null||result.raviewComment===null)) {
                     await this.setState({ modalVisible: true })
                 } 
                 this.getPaymentInfo(result.paymentId)
@@ -85,6 +87,7 @@ class OrderDetails extends Component {
             const userId = await AsyncStorage.getItem('userId');
             let orderId = this.props.navigation.getParam('serviceId') || null
             let resultReport = await getUserRepportDetails('MEDICINE_ORDER', userId, orderId);
+            // alert(JSON.stringify(resultReport))
 
             if (resultReport.success) {
 
@@ -176,9 +179,10 @@ class OrderDetails extends Component {
         
             orderNumber: orderDetails.orderNumber,
             reasonForCancel: reasonForCancel,
-            commentForCancel: reasonForCancelComment,
+            reasonForCancelComment: reasonForCancelComment,
             userId: userId
         }
+   
 
         let result = await upDateOrderData(reqData)
           
@@ -298,9 +302,9 @@ class OrderDetails extends Component {
 
                             : null}
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
-                        {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined ?
+                        {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined &&orderDetails.prescriptions.length!==0?
 
-                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10,marginTop: 10, justifyContent: 'center', alignItems: 'center', }}>
                                 <ImageZoom cropWidth={200}
                                     cropHeight={200}
                                     imageWidth={200}
@@ -369,7 +373,7 @@ class OrderDetails extends Component {
 
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
-                                <Text style={styles.ItemText}>Medicine total amout</Text>
+                                <Text style={styles.ItemText}>Medicine total amount</Text>
 
                             </Col>
                             <Col size={5}>
@@ -377,7 +381,7 @@ class OrderDetails extends Component {
                             </Col>
                         </Row>
 
-                        {orderDetails.delivery_option === 0 ?
+                        
                             <View>
                                 <Row style={{ marginTop: 10 }}>
                                     <Col size={5}>
@@ -385,7 +389,7 @@ class OrderDetails extends Component {
 
                                     </Col>
                                     <Col size={5}>
-                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
+                                        <Text style={styles.rsText}>₹ { orderDetails.deliveryType === 0 ? (orderDetails.delivery_charges || 0):'--'}</Text>
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
@@ -394,11 +398,11 @@ class OrderDetails extends Component {
 
                                     </Col>
                                     <Col size={5}>
-                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
+                                        <Text style={styles.rsText}>₹ {orderDetails.deliveryType === 0 ?orderDetails.delivery_tax || 0:'--'}</Text>
                                     </Col>
                                 </Row>
                             </View>
-                            : null}
+
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
                                 <Text style={styles.grandTotalText}>Grand Total</Text>
@@ -412,7 +416,7 @@ class OrderDetails extends Component {
                     {orderDetails.status === "PENDING" ?
                         <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('CancelService', { serviceType: 'MEDICINES_ORDER', prevState: this.props.navigation.state, tittle: 'Cancel Order' })}
+                                onPress={() => this.props.navigation.navigate('CancelService', { serviceType: 'MEDICINE_ORDER', prevState: this.props.navigation.state, tittle: 'Cancel Order' })}
                                 block danger
                                 style={styles.reviewButton1
                                 }>
@@ -439,7 +443,7 @@ class OrderDetails extends Component {
 
                     {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails._id, serviceType: 'MEDICINE_ORDER' }) }}>
+                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails.id, serviceType: 'MEDICINE_ORDER' }) }}>
                                 <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this medicine orders"</Text>
                                 <Row>
                                     <Col size={9}>
@@ -457,7 +461,7 @@ class OrderDetails extends Component {
                             <TouchableOpacity
                                 onPress={() => {
                                     this.props.navigation.push('ReportIssue', {
-                                        issueFor: { serviceType: 'MEDICINE_ORDER', reportedId: orderDetails._id, status: orderDetails.status },
+                                        issueFor: { serviceType: 'MEDICINE_ORDER', reportedId: orderDetails.id, status: orderDetails.status },
                                         prevState: this.props.navigation.state
                                     })
                                 }}
@@ -502,7 +506,7 @@ class OrderDetails extends Component {
 
 
                     <View style={styles.mainView}>
-                        <Text style={styles.orderText}>OrderDetails</Text>
+                        <Text style={styles.orderText}>Order Details</Text>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Payment</Text>
                             <Text style={styles.rightText}>{paymentDetails.payment_method || 0}</Text>
@@ -518,7 +522,7 @@ class OrderDetails extends Component {
                             <Text style={styles.rightText}>{formatDate(orderDetails.created_date, 'Do MMM,YYYY')}</Text>
                         </View>
                         <View style={{ marginTop: 10, paddingBottom: 10 }}>
-                            <Text style={styles.innerText}>Customer Details</Text>
+                            <Text style={styles.innerText}>Delivery Details</Text>
                             <Text style={styles.nameTextss}>{this.getName(orderDetails)}</Text>
                             <Text style={styles.addressText}>{this.getAddress(orderDetails)}</Text>
                             <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
