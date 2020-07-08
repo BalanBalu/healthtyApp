@@ -342,6 +342,48 @@ export function quantityPriceSort(data) {
   return data
 }
 
+export  function ProductIncrementDecreMents(quantity, price, operation, threshold_limits) {
+
+  let itemQuantity = (quantity === undefined ? 0 : quantity);
+
+  let totalAmount = price * quantity;
+  let threshold_message = null;
+  let threshold_limit = threshold_limits || itemQuantity + 1
+  if (threshold_limits) {
+    threshold_limit = threshold_limits || itemQuantity + 1
+  }
+  if (operation === "add") {
+
+    if (itemQuantity < threshold_limit) {
+      quantity = ++itemQuantity;
+      totalAmount = quantity * price
+    } else {
+
+      threshold_message = `You can't add more than  ${String(threshold_limit)} items`
+
+    }
+
+  } else {
+    if (quantity > 1) {
+      quantity = --itemQuantity;
+      totalAmount = quantity * price
+    }
+  }
+  if (Number.isInteger(totalAmount) === false) {
+    let temp = Number(totalAmount).toFixed(2)
+    return {
+      quantity: quantity,
+      totalAmount: Number(temp),
+      threshold_message: threshold_message
+    }
+  }
+  return {
+    quantity: quantity,
+    totalAmount: Number(totalAmount),
+    threshold_message: threshold_message
+  }
+}
+
 
 export const statusBar = {
 

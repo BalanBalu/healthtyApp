@@ -102,7 +102,7 @@ class MedicineCheckout extends Component {
                 }
                 deliveryAddressArray.unshift(defaultAddressObject);
             }
-            console.log(JSON.stringify(deliveryAddressArray))
+            
             await this.setState({ deliveryAddressArray })
             this.selectedItem(this.state.itemSelected)
             this.setState({ isLoading: false });
@@ -312,7 +312,8 @@ class MedicineCheckout extends Component {
             if (this.props.navigation.getParam('orderOption') === 'pharmacyCart') {
                 await AsyncStorage.removeItem('cartItems-' + userId);
             }
-            this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+            this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState: this.props.navigation.state });
+            // this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
             Toast.show({
                 text: 'your order successfully requested',
                 type: 'success',
@@ -371,7 +372,7 @@ class MedicineCheckout extends Component {
         try {
             const userId = await AsyncStorage.getItem('userId');
             var formData = new FormData();
-            console.log(imagePath)
+      
             if (Array.isArray(imagePath) && imagePath.length != 0) {
                 imagePath.map((ele) => {
                     formData.append("prescription", {
@@ -389,7 +390,7 @@ class MedicineCheckout extends Component {
             }
             debugger
             let endPoint = `/images/upload`
-            console.log(endPoint + 'endpoint');
+          
             var res = await uploadMultiPart(endPoint, formData);
 
             const response = res.data;
@@ -425,7 +426,7 @@ class MedicineCheckout extends Component {
     }
 
     delete(index) {
-        console.log('Deliting...');
+       
         let temp = this.state.h1ProductData;
         temp.splice(index, 1)
         this.setState({ h1ProductData: temp })

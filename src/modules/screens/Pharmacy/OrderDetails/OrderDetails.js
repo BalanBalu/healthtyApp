@@ -4,10 +4,10 @@ import {
 } from 'native-base';
 import StarRating from 'react-native-star-rating';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, BackHandler } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
 import { getMedicineOrderDetails, upDateOrderData, getOrderTracking } from '../../../providers/pharmacy/pharmacy.action';
-import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName,renderMedicineImageByimageUrl } from '../CommomPharmacy';
+import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName, renderMedicineImageByimageUrl } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
@@ -34,44 +34,67 @@ class OrderDetails extends Component {
             paymentDetails: {},
             isLoading: true,
             modalVisible: false,
-       
+
             statusSlap: []
         }
     }
     async componentDidMount() {
         const { navigation } = this.props;
-     
-        let orderId = this.props.navigation.getParam('serviceId') || null
-  
-        let getOderSlap=true
-        this.medicineOrderDetails(orderId,getOderSlap);
-        this.getUserReport()
+        BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
+
+        let orderNumber = this.props.navigation.getParam('serviceId') || null
+
+        let getOderSlap = true
+
+        this.medicineOrderDetails(orderNumber, getOderSlap);
+
+
     }
+    removeBackHandlerListerner() {
+        BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
+    }
+    onBackPress = () => {
+        const { dispatch, navigation } = this.props;
+
+        const prevState = navigation.getParam('prevState') || null;
+      
+        if (prevState !== null && prevState.routeName !== 'OrderDetails') {
+            navigation.navigate('Home');
+            return true;
+
+        } else {
+        
+            return false;
+        }
+
+    };
 
 
-
-    async medicineOrderDetails(orderId,getOderSlap) {
+    async medicineOrderDetails(orderNumber, getOderSlap) {
         try {
             this.setState({ isLoading: true });
-           
+
             let userId = await AsyncStorage.getItem('userId')
-            let result = await getMedicineOrderDetails(orderId);
-            console.log('orderInfo====================')
-            console.log(result)
+            let result = await getMedicineOrderDetails(orderNumber);
+
             if (result) {
-                this.setState({ orderDetails: result });
-                if(getOderSlap){
-                let statusSlap = await getOrderTracking(result.orderNumber)
-               
-               
-                if (statusSlap) {
-                    this.setState({ statusSlap })
+
+                await this.setState({ orderDetails: result });
+                this.getUserReport()
+                if (getOderSlap) {
+
+                    let statusSlap = await getOrderTracking(result.orderNumber)
+
+
+
+                    if (statusSlap) {
+                        this.setState({ statusSlap })
+                    }
                 }
-            }
-            console.log(JSON.stringify(result))
-                if (result.status === 'DELIVERED' &&(result.isReviewSkipped === null||result.raviewComment===null)) {
+
+                if (result.status === 'DELIVERED' && (result.isReviewSkipped === null)) {
                     await this.setState({ modalVisible: true })
-                } 
+                }
                 this.getPaymentInfo(result.paymentId)
             }
             this.setState({ isLoading: false });
@@ -85,9 +108,9 @@ class OrderDetails extends Component {
     getUserReport = async () => {
         try {
             const userId = await AsyncStorage.getItem('userId');
-            let orderId = this.props.navigation.getParam('serviceId') || null
+            let orderId = this.state.orderDetails.id || null
             let resultReport = await getUserRepportDetails('MEDICINE_ORDER', userId, orderId);
-            // alert(JSON.stringify(resultReport))
+
 
             if (resultReport.success) {
 
@@ -106,10 +129,10 @@ class OrderDetails extends Component {
     getAddress(address) {
         if (address.delivery_address) {
             let temp = address.delivery_address.address;
-            if(temp){
-            return `${temp.no_and_street || ''},${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
-            }else{
-                return null  
+            if (temp) {
+                return `${temp.no_and_street || ''},${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
+            } else {
+                return null
             }
         } else {
             return null
@@ -170,25 +193,25 @@ class OrderDetails extends Component {
             console.log(e)
         }
     }
-    async cancelOreder(reasonForCancelComment,reasonForCancel) {
+    async cancelOreder(reasonForCancelComment, reasonForCancel) {
 
         const { orderDetails } = this.state
 
         let userId = await AsyncStorage.getItem('userId');
         let reqData = {
-        
+
             orderNumber: orderDetails.orderNumber,
             reasonForCancel: reasonForCancel,
             reasonForCancelComment: reasonForCancelComment,
             userId: userId
         }
-   
+
 
         let result = await upDateOrderData(reqData)
-          
+
         if (result) {
-            let getOrderSlap=true;
-            this.medicineOrderDetails(orderDetails.id,getOrderSlap)
+            let getOrderSlap = true;
+            this.medicineOrderDetails(orderDetails.orderNumber, getOrderSlap)
         } else {
             Toast.show({
                 text: 'order not canceled',
@@ -196,10 +219,10 @@ class OrderDetails extends Component {
                 type: 'warning'
             })
         }
-      
+
 
     }
-  
+
     async backNavigation() {
         const { navigation } = this.props;
         if (navigation.state.params) {
@@ -207,19 +230,19 @@ class OrderDetails extends Component {
                 this.getUserReport();  // Reload the Reported issues when they reload
             }
             if (navigation.state.params.hasUpdateCancelService) {
-                this.cancelOreder(navigation.state.params.reasonForCancelComment,navigation.state.params.reasonForCancel)
+                this.cancelOreder(navigation.state.params.reasonForCancelComment, navigation.state.params.reasonForCancel)
             }
         };
     }
-  
 
-    async  getvisble(val) {
+
+    async getvisble(val) {
         try {
-          
+
             await this.setState({ isLoading: true, modalVisible: false })
             if (val.reviewUpdated === true) {
-               let getOderSlap=false;
-                this.medicineOrderDetails(this.state.orderDetails.id,getOderSlap)
+                let getOderSlap = false;
+                this.medicineOrderDetails(this.state.orderDetails.orderNumber, getOderSlap)
             }
         } catch (e) {
             console.log(e)
@@ -240,12 +263,14 @@ class OrderDetails extends Component {
 
         return (
             <Container style={styles.container}>
-                <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
-                    <NavigationEvents
+                <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
+                        
                     />
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
+                    
 
-                                     <Spinner
+                    <Spinner
                         visible={isLoading}
                     />
 
@@ -302,9 +327,9 @@ class OrderDetails extends Component {
 
                             : null}
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
-                        {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined &&orderDetails.prescriptions.length!==0?
+                        {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined && orderDetails.prescriptions.length !== 0 ?
 
-                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10,marginTop: 10, justifyContent: 'center', alignItems: 'center', }}>
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 10, justifyContent: 'center', alignItems: 'center', }}>
                                 <ImageZoom cropWidth={200}
                                     cropHeight={200}
                                     imageWidth={200}
@@ -352,20 +377,13 @@ class OrderDetails extends Component {
                                         </Col>
                                         <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
                                             <Text style={styles.nameText}>{item.productName}</Text>
-                                            {/* {orderDetails.is_order_type_recommentation === true ?
-                                                <Text style={styles.pharText}>{'mediflic pharmacy'}</Text> :
-                                                orderDetails.is_order_type_prescription === true && orderDetails.status !== 'PENDING' ?
-                                                    <Text style={styles.pharText}>{orderDetails.pharmacyInfo[0].name}</Text> :
-                                                    <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
-                                            } */}
+
 
                                         </Col>
                                         <Col size={2} style={[styles.nameText, { alignSelf: 'flex-end' }]}>
-                                            {/* {orderDetails.is_order_type_recommentation === true ?
-                                                <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
-                                                 : */}
+
                                             <Text style={styles.amountText}>₹{item.totalPrice}</Text>
-                                            {/* } */}
+
                                         </Col>
                                     </Row>
                                 } /> : null}
@@ -381,27 +399,27 @@ class OrderDetails extends Component {
                             </Col>
                         </Row>
 
-                        
-                            <View>
-                                <Row style={{ marginTop: 10 }}>
-                                    <Col size={5}>
-                                        <Text style={styles.mainText}>Delivery Charges</Text>
 
-                                    </Col>
-                                    <Col size={5}>
-                                        <Text style={styles.rsText}>₹ { orderDetails.deliveryType === 0 ? (orderDetails.delivery_charges || 0):'--'}</Text>
-                                    </Col>
-                                </Row>
-                                <Row style={{ marginTop: 10 }}>
-                                    <Col size={5}>
-                                        <Text style={styles.mainText}>Tax</Text>
+                        <View>
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={5}>
+                                    <Text style={styles.mainText}>Delivery Charges</Text>
 
-                                    </Col>
-                                    <Col size={5}>
-                                        <Text style={styles.rsText}>₹ {orderDetails.deliveryType === 0 ?orderDetails.delivery_tax || 0:'--'}</Text>
-                                    </Col>
-                                </Row>
-                            </View>
+                                </Col>
+                                <Col size={5}>
+                                    <Text style={styles.rsText}>₹ {orderDetails.deliveryType === 0 ? (orderDetails.delivery_charges || 0) : '--'}</Text>
+                                </Col>
+                            </Row>
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={5}>
+                                    <Text style={styles.mainText}>Tax</Text>
+
+                                </Col>
+                                <Col size={5}>
+                                    <Text style={styles.rsText}>₹ {orderDetails.deliveryType === 0 ? orderDetails.delivery_tax || 0 : '--'}</Text>
+                                </Col>
+                            </Row>
+                        </View>
 
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
@@ -425,20 +443,20 @@ class OrderDetails extends Component {
                         </Text>
                             </TouchableOpacity>
                         </View> : orderDetails.status === "CANCELLED" ?
-                        <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+                            <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
 
-                            <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>{orderDetails.reasonForCancel}</Text>
-                            <Row>
-                                <Col size={9}>
-                                    <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{orderDetails.commentForCancel|| ' '}</Text>
+                                <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>{orderDetails.reasonForCancel}</Text>
+                                <Row>
+                                    <Col size={9}>
+                                        <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{orderDetails.commentForCancel || ' '}</Text>
 
-                                </Col>
-                                <Col size={1}>
-                                    
-                                </Col>
-                            </Row>
-                        
-                    </View>:null}
+                                    </Col>
+                                    <Col size={1}>
+
+                                    </Col>
+                                </Row>
+
+                            </View> : null}
                     <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Medicine order Report</Text>
 
                     {reportData != null ?
@@ -481,7 +499,7 @@ class OrderDetails extends Component {
                             <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                 disabled={false}
                                 maxStars={5}
-                                rating={orderDetails.rating }
+                                rating={orderDetails.rating}
                             />
                             <Text note style={styles.subTextInner1}>{orderDetails.reviewComment || ''}</Text>
                         </View>
