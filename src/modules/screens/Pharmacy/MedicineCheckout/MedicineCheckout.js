@@ -50,6 +50,7 @@ class MedicineCheckout extends Component {
                 return
             }
             const medicineDetails = navigation.getParam('medicineDetails') || [];
+           
             const isPrescription = navigation.getParam('isPrescription') || false
             let prescriptionDetails = null
             if (isPrescription === true) {
@@ -284,7 +285,12 @@ class MedicineCheckout extends Component {
                 if (navigation.state.params.hasChosePharmacyReload) {
                     let pharmacyInfo = navigation.getParam('pharmacyInfo')
                     pharmacyInfo.address = pharmacyInfo.location.address;
-                    pharmacyInfo.full_name = pharmacyInfo.name
+                    pharmacyInfo.full_name = pharmacyInfo.name;
+                    if(this.state.isPrescription===false){
+                        const medicineDetails = navigation.getParam('medicineDetails') || [];
+                        this.setState({medicineDetails})
+                        await this.getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription)
+                    }
 
                     this.setState({ pharmacyInfo: pharmacyInfo, selectedAddress: pharmacyInfo, itemSelected: 1 })
                 }
