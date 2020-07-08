@@ -11,13 +11,14 @@ import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import styles from '../../CommonAll/styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
-import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
+import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA, SET_LAB_LIST_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
 import { store } from '../../../../setup/store'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { color } from 'react-native-reanimated';
 
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
+let labListOrder = 'ASC';
 
 class labSearchList extends Component {
     availabilitySlotsDatesArry = [];
@@ -43,6 +44,12 @@ class labSearchList extends Component {
             values: [3, 7],
             selected: "key0",
             buttonEnable: false,
+            categoryInfoList: [],
+            subCategoryInfoList: [],
+            selectedCategory: [],
+            selectedSubCategory:[],
+            testOption:''
+
         }
     }
     async componentDidMount() {
@@ -55,9 +62,9 @@ class labSearchList extends Component {
     }
     /* Update Favorites for LabTest by UserId  */
     addToFavoritesList = async (labId) => {
-           this.setState({ buttonEnable: true });
+        this.setState({ buttonEnable: true });
         const userId = await AsyncStorage.getItem('userId');
-        const updateResp =  await addFavoritesToLabByUserService(userId, labId);
+        const updateResp = await addFavoritesToLabByUserService(userId, labId);
         if (updateResp)
             Toast.show({
                 text: 'Lab wish list updated successfully',
@@ -65,7 +72,7 @@ class labSearchList extends Component {
                 duration: 3000,
             });
         this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1, buttonEnable: false });
-        
+
     }
     getPatientWishListsByUserId = (userId) => {
         try {
@@ -93,7 +100,10 @@ class labSearchList extends Component {
                 console.log("labListData", this.state.labListData)
                 this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
                 this.getTotalReviewsCount4LabTest(this.totalLabIdsArryBySearched);
-
+                store.dispatch({
+                    type: SET_LAB_LIST_ITEM_DATA,
+                    data: this.state.labListData
+                });
             }
         } catch (ex) {
             Toast.show({
@@ -122,7 +132,7 @@ class labSearchList extends Component {
     }
     getTotalReviewsCount4LabTest = async (labIdsArry) => {
         try {
-            // getTotalReviewsCount4LabTestService(labIdsArry);
+            getTotalReviewsCount4LabTestService(labIdsArry);
         } catch (Ex) {
             console.log('Ex is getting on get Reviews count for Lab====>', Ex)
             return {
@@ -134,6 +144,34 @@ class labSearchList extends Component {
         }
     }
 
+    topRatingLabs(labListItemData) {
+        const { labTestData: { reviewCountsByLabIds } } = this.props;
+        const labListItemDataBySort = labListItemData.sort(function (a, b) {
+            let ratingA = 0;
+            let ratingB = 0;
+            if (reviewCountsByLabIds[a.labInfo.lab_id]) {
+                ratingA = reviewCountsByLabIds[a.labInfo.lab_id].average_rating || 0
+            };
+            if (reviewCountsByLabIds[b.labInfo.lab_id]) {
+                ratingB = reviewCountsByLabIds[b.labInfo.lab_id].average_rating || 0
+            }
+            if (labListOrder === 'ASC') {
+                return ratingB - ratingA;
+            } else if (labListOrder === 'DESC') {
+                return ratingA - ratingB;
+            }
+        });
+        store.dispatch({
+            type: SET_LAB_LIST_ITEM_DATA,
+            data: labListItemDataBySort
+        });
+        if (labListOrder === 'ASC') {
+            labListOrder = 'DESC';
+        } else if (labListOrder === 'DESC') {
+            labListOrder = 'ASC';
+        }
+        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+    }
 
 
     getLabIdsArrayByInput = labIdFromItem => {
@@ -302,8 +340,68 @@ class labSearchList extends Component {
     }
 
 
-    setModalVisible(visible) {
-        this.setState({ modalVisible: visible });
+    filterLabListData(labListItemData) {
+        const removeDupCategoriesFromList = [];
+        const categoryInfoList = [];
+        const subCategoryInfoList = [];
+        const removeDupSubCategoriesFromList = [];
+
+        this.setState({ modalVisible: true });
+        labListItemData.map(filterData => {
+            // console.log("filterData", JSON.stringify(filterData));
+
+            filterData.labCategories.map(categoryItem => {
+                // console.log("categoryItem", JSON.stringify(categoryItem));
+                if (!removeDupCategoriesFromList.includes(categoryItem.categoryInfo._id)) {
+                    removeDupCategoriesFromList.push(categoryItem.categoryInfo._id);
+                    const categoryObj = { id: categoryItem.categoryInfo._id, value: categoryItem.categoryInfo.category_name };
+                    categoryInfoList.push(categoryObj);
+                    console.log("categoryInfoList", categoryInfoList);
+
+                }
+                if (!removeDupSubCategoriesFromList.includes(categoryItem._id)) {
+                    removeDupSubCategoriesFromList.push(categoryItem._id);
+                    const subCategoryObj = { id: categoryItem._id, value: categoryItem.category_name };
+                    subCategoryInfoList.push(subCategoryObj);
+                    console.log("subCategoryInfoList", subCategoryInfoList);
+
+                }
+            })
+        })
+
+        this.setState({ categoryInfoList, subCategoryInfoList });
+
+    }
+    onSelectedCategoryObjChange = (selectedCategoryObj) => {
+        console.log("selectedCategoryObj", selectedCategoryObj);
+
+        // if (this.selectedCategory.length) {
+        //     filterDataObject.specialist = selectedCategoryId;
+        // }
+        // else {
+        //     delete filterDataObject.specialist;
+        // }
+    }
+    onSelectedCategoryChange = (selectedItems) => {
+        console.log("selectedItems", selectedItems);
+
+        // this.setState({ selectedItems: selectedItems, degree: selectedItems[0] })
+    }
+
+    onSelectedSubCategoryObjChange = (selectedSubCategoryObj) => {
+        console.log("selectedSubCategoryObj", selectedSubCategoryObj);
+
+        // if (this.selectedCategory.length) {
+        //     filterDataObject.specialist = selectedCategoryId;
+        // }
+        // else {
+        //     delete filterDataObject.specialist;
+        // }
+    }
+    onSelectedSubCategoryChange = (selectedItems) => {
+        console.log("selectedItems", selectedItems);
+
+        // this.setState({ selectedItems: selectedItems, degree: selectedItems[0] })
     }
 
     multiSliderValuesChange = (values) => {
@@ -435,7 +533,7 @@ class labSearchList extends Component {
     }
 
     render() {
-        const { labTestData: { patientWishListLabIds } } = this.props;
+        const { labTestData: { patientWishListLabIds, labListItemData } } = this.props;
 
         const { labListData, isLoading } = this.state;
         return (
@@ -445,7 +543,7 @@ class labSearchList extends Component {
                         <View>
                             <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
                                 <Row>
-                                    <Col style={{ width: '55%', flexDirection: 'row', marginLeft: 5, }} >
+                                    <Col style={{ width: '55%', flexDirection: 'row', marginLeft: 5, }} onPress={() => this.topRatingLabs(labListItemData)}>
                                         <Row>
                                             <Col style={{ width: '15%' }}>
                                                 <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
@@ -457,9 +555,7 @@ class labSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', borderLeftColor: 'gray', borderLeftWidth: 1 }}>
                                         <Row>
-                                            <TouchableOpacity onPress={() => {
-                                                this.setModalVisible(true);
-                                            }} style={{ flexDirection: 'row' }}>
+                                            <TouchableOpacity onPress={() => this.filterLabListData(labListItemData)} style={{ flexDirection: 'row' }}>
                                                 <Col style={{ width: '35%', marginLeft: 10 }}>
                                                     <Icon name='ios-funnel' style={{ color: 'gray' }} />
                                                 </Col>
@@ -556,7 +652,6 @@ class labSearchList extends Component {
                                                                     selectToggleText: {
                                                                         color: '#909090',
                                                                         fontSize: 12,
-
                                                                         marginTop: 20,
                                                                         height: 15
 
@@ -566,20 +661,23 @@ class labSearchList extends Component {
                                                                     },
 
                                                                 }}
-                                                                items={this.state.languageData}
+                                                                items={this.state.categoryInfoList}
                                                                 uniqueKey='value'
                                                                 displayKey='value'
                                                                 selectText='Select Services'
                                                                 selectToggleText={{ fontSize: 10, }}
-                                                                searchPlaceholderText='Search Your Languages'
+                                                                searchPlaceholderText='Search Your Services'
                                                                 modalWithTouchable={true}
                                                                 showDropDowns={true}
                                                                 hideSearch={false}
                                                                 showRemoveAll={true}
                                                                 showChips={false}
+                                                                single={true}
                                                                 readOnlyHeadings={false}
-                                                                onSelectedItemsChange={this.onSelectedStatusChange}
-                                                                selectedItems={this.state.language}
+                                                                onSelectedItemObjectsChange={(selectedCategoryObj) => { this.onSelectedCategoryObjChange(selectedCategoryObj) }}
+                                                                
+                                                                onSelectedItemsChange={this.onSelectedCategoryChange}
+                                                                selectedItems={this.state.selectedCategory}
                                                                 colors={{ primary: '#18c971' }}
                                                                 showCancelButton={true}
                                                                 animateDropDowns={true}
@@ -632,20 +730,23 @@ class labSearchList extends Component {
                                                                         color: '#909090',
                                                                     },
                                                                 }}
-                                                                items={this.state.languageData}
+                                                                items={this.state.subCategoryInfoList}
                                                                 uniqueKey='value'
                                                                 displayKey='value'
                                                                 selectText='Select Sub Category'
                                                                 selectToggleText={{ fontSize: 10, }}
-                                                                searchPlaceholderText='Search Your Languages'
+                                                                searchPlaceholderText='Select Sub Category'
                                                                 modalWithTouchable={true}
                                                                 showDropDowns={true}
                                                                 hideSearch={false}
                                                                 showRemoveAll={true}
                                                                 showChips={false}
+                                                                single={true}
                                                                 readOnlyHeadings={false}
-                                                                onSelectedItemsChange={this.onSelectedStatusChange}
-                                                                selectedItems={this.state.language}
+                                                                onSelectedItemObjectsChange={(selectedSubCategoryObj) => { this.onSelectedSubCategoryObjChange(selectedSubCategoryObj) }}
+
+                                                                onSelectedItemsChange={this.onSelectedSubCategoryChange}
+                                                                selectedItems={this.state.selectedSubCategory}
                                                                 colors={{ primary: '#18c971' }}
                                                                 showCancelButton={true}
                                                                 animateDropDowns={true}
@@ -715,7 +816,7 @@ class labSearchList extends Component {
                                                 </Row>
                                                 <Row style={{ borderTopColor: '#909090', borderTopWidth: 0.3, paddingBottom: 15, paddingTop: 10 }}>
                                                     <Right>
-                                                        <TouchableOpacity onPress={() => { this.setModalVisible(false) }}>
+                                                        <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
                                                             <Text style={styles.doneButton}>DONE</Text>
                                                         </TouchableOpacity>
                                                     </Right>
