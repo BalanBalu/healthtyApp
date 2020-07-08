@@ -43,6 +43,15 @@ export default class PaymentReview extends Component {
   async confirmProceedPayment() {
     const { bookSlotDetails, patDetailsArray } = this.state;
     let { diseaseDescription } = bookSlotDetails;
+    const patDetailsArrayLength = patDetailsArray.length;
+    if (!patDetailsArrayLength) {
+      Toast.show({
+        text: 'Kindly select Self or Add other patient details',
+        type: 'warning',
+        duration: 3000
+      })
+      return false;
+    }
     if (!diseaseDescription || String(diseaseDescription).trim() === '') {
       Toast.show({
         text: 'Please enter valid Reason',
@@ -64,8 +73,11 @@ export default class PaymentReview extends Component {
       const patientsDataList = patDetailsArray.map(item => {
         return { patient_name: item.full_name, patient_age: item.age, gender: item.gender }
       });
-      if (patientsDataList.length) bookSlotDetails.patients_Data_list = patientsDataList;
-      console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+      if (patientsDataList.length) {
+        bookSlotDetails.patients_Data_list = patientsDataList;
+        console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+        bookSlotDetails.slotData.fee = (bookSlotDetails.slotData.fee * patDetailsArrayLength)
+      }
       const amount = bookSlotDetails.slotData.fee;
       this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails, amount: amount })
     } else {
@@ -81,6 +93,15 @@ export default class PaymentReview extends Component {
   async processToPayLater() {
     const { bookSlotDetails, patDetailsArray } = this.state;
     let { diseaseDescription } = bookSlotDetails;
+    const patDetailsArrayLength = patDetailsArray.length;
+    if (!patDetailsArrayLength) {
+      Toast.show({
+        text: 'Kindly select Self or Add other patient details',
+        type: 'warning',
+        duration: 3000
+      })
+      return false;
+    }
     if (!diseaseDescription || String(diseaseDescription).trim() === '') {
       Toast.show({
         text: 'Please enter valid Reason',
@@ -93,13 +114,15 @@ export default class PaymentReview extends Component {
     const patientsDataList = patDetailsArray.map(item => {
       return { patient_name: item.full_name, patient_age: item.age, gender: item.gender }
     })
-    if (patientsDataList.length) bookSlotDetails.patients_Data_list = patientsDataList;
-    console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+    if (patientsDataList.length) {
+      bookSlotDetails.patients_Data_list = patientsDataList;
+      console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+      bookSlotDetails.slotData.fee = (bookSlotDetails.slotData.fee * patDetailsArrayLength)
+    }
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, 'cash');
     console.log('Book Appointment Payment Update Response ');
-
     if (response.success) {
       this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
     } else {
