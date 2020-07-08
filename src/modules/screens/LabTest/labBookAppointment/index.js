@@ -36,6 +36,7 @@ class LabBookAppointment extends Component {
       showMoreOption: false,
       renderRefreshCount: 0,
       refreshCountOnDateFL: 1,
+      buttonEnable: false,
     }
 
   }
@@ -205,14 +206,23 @@ class LabBookAppointment extends Component {
   }
   /* Update Favorites for LabTest by UserId  */
   addToFavoritesList = async (labId) => {
-    await addFavoritesToLabByUserService(this.state.userId, labId);
-    this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+    this.setState({ buttonEnable: true });
+    const updateResp =  await addFavoritesToLabByUserService(this.state.userId, labId);
+    if (updateResp)
+      Toast.show({
+        text: 'Lab wish list updated successfully',
+        type: "success",
+        duration: 3000,
+      });
+    this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1, buttonEnable: false, });
   }
   render() {
-    const { selectedDate, isLoggedIn, showMoreOption, labId, onPressTabView, isLoading } = this.state;
+    const { selectedDate, isLoggedIn, showMoreOption, labId, onPressTabView, isLoading, buttonEnable } = this.state;
     const slotDataObj4Item = this.slotData4ItemMap.get(String(labId)) || {}
     const { labTestData: { singleLabItemData, patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
     const { labInfo, labCatInfo } = singleLabItemData;
+    console.log("labCatInfo", labCatInfo);
+    
     return (
       <Container style={styles.container}>
         {isLoading ?
@@ -243,6 +253,7 @@ class LabBookAppointment extends Component {
                   <Col style={{ width: '17%' }}>
                     <RenderFavoritesComponent
                       isLoggedIn={isLoggedIn}
+                      isButtonEnable={buttonEnable}
                       isFromLabBookApp={true}
                       isEnabledFavorites={patientWishListLabIds.includes(labInfo.lab_id)}
                       onPressFavoriteIcon={() => this.addToFavoritesList(labInfo.lab_id)}
@@ -269,7 +280,7 @@ class LabBookAppointment extends Component {
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
                     <RenderPriceDetails
-                      priceInfo={labCatInfo && labCatInfo.price ? labCatInfo.price : ' '}
+                      priceInfo={labCatInfo && labCatInfo ? labCatInfo : ' '}
                     />
                   </Col>
                 </Row>

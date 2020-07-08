@@ -221,8 +221,6 @@ class LabConfirmation extends Component {
             } else {
                 selectedAddress = packageDetails.location;
             }
-            console.log("pickByStartTime", this.state.pickByStartTime);
-
             let patientData = [];
             let startTime;
             if (!this.state.startDatePlaceholder) {
@@ -233,14 +231,8 @@ class LabConfirmation extends Component {
                 })
                 return false;
             } else {
-                let startDate = formatDate(packageDetails.selectedSlotItem.slotStartDateAndTime, 'YYYY-MM-DD');
                 let startTimeByFormate = formatDate(this.state.pickByStartTime, 'HH:mm:ss')
-                startTime = startDate + 'T' + startTimeByFormate + '.000'
-                console.log("startTime", startTime);
-
-                console.log("packageDetails.slotData[0].slotDate", packageDetails.selectedSlotItem.slotStartDateAndTime)
-                console.log("this.state.pickByStartTime", this.state.pickByStartTime);
-
+                startTime = moment(packageDetails.selectedSlotItem.slotDate + 'T' + startTimeByFormate)
             }
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
@@ -294,7 +286,7 @@ class LabConfirmation extends Component {
                         type: "danger",
                         duration: 3000
                     });
-                    this.setState({ isLoading: false });
+                    this.setState({ isLoading: false, buttonEnable: false  });
                 }
 
             } else {

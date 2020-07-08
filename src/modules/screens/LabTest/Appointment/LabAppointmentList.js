@@ -69,8 +69,8 @@ class LabAppointmentList extends Component {
             this.setState({ isLoading: true })
             let userId = await AsyncStorage.getItem("userId");
             let filters = {
-                startDate: new Date().toUTCString(),
-                endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
+                startDate: new Date().toISOString(),
+                endDate: addTimeUnit(new Date(), 1, "years").toISOString(),
             };
             let result = await getLapAppointments(userId, filters);
             if (result.success) {
@@ -100,8 +100,8 @@ class LabAppointmentList extends Component {
             this.setState({ isLoading: true })
             let userId = await AsyncStorage.getItem("userId");
             let filters = {
-                startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
-                endDate: subTimeUnit(new Date(), 1, 'days').toUTCString(),
+                startDate: subTimeUnit(new Date(), 1, "years").toISOString(),
+                endDate: subTimeUnit(new Date(), 1, 'days').toISOString(),
             };
             let result = await getLapAppointments(userId, filters);
 
@@ -305,8 +305,8 @@ class LabAppointmentList extends Component {
                                                         </Row>
 
                                                         <Row style={{ borderBottomWidth: 0 }}>
-                                                            {item.appointment_status == 'DRAFT' ? null :
-                                                                <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>}
+                                                            
+                                                                <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>
                                                         </Row>
 
                                                         <Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
