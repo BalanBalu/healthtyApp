@@ -21,6 +21,7 @@ const RenderAddressInfo = (props) => {
 }
 
 const RenderPriceDetails = (props) => {
+   
     return (
         <>
             <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
@@ -74,7 +75,7 @@ const RenderFavoritesCount = (props) => {
 
 const RenderFavoritesComponent = (props) => {
     return (
-        <TouchableOpacity onPress={() => props.onPressFavoriteIcon()}>
+        <TouchableOpacity disabled={props.isButtonEnable} onPress={() => props.onPressFavoriteIcon()}>
             {props.isLoggedIn ?
                 <Icon name="heart"
                     style={props.isEnabledFavorites ? props.isFromLabBookApp ? styles.isEnabledFavorite4LalBookApp : styles.isEnabledFavorite : props.isFromLabBookApp ? styles.isDisabledFavorite4LalBookApp : styles.isDisabledFavorite}>

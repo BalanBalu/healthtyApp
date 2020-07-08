@@ -41,7 +41,8 @@ class labSearchList extends Component {
             proposedVisible: false,
             testOptionChecked: false,
             values: [3, 7],
-            selected: "key0"
+            selected: "key0",
+            buttonEnable: false,
         }
     }
     async componentDidMount() {
@@ -54,9 +55,17 @@ class labSearchList extends Component {
     }
     /* Update Favorites for LabTest by UserId  */
     addToFavoritesList = async (labId) => {
+           this.setState({ buttonEnable: true });
         const userId = await AsyncStorage.getItem('userId');
-        await addFavoritesToLabByUserService(userId, labId);
-        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+        const updateResp =  await addFavoritesToLabByUserService(userId, labId);
+        if (updateResp)
+            Toast.show({
+                text: 'Lab wish list updated successfully',
+                type: "success",
+                duration: 3000,
+            });
+        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1, buttonEnable: false });
+        
     }
     getPatientWishListsByUserId = (userId) => {
         try {
@@ -310,7 +319,7 @@ class labSearchList extends Component {
     renderLabListCards(item) {
 
         const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
-        const { expandedLabIdToShowSlotsData, isLoggedIn } = this.state;
+        const { expandedLabIdToShowSlotsData, isLoggedIn, buttonEnable } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
         return (
             <View>
@@ -343,6 +352,7 @@ class labSearchList extends Component {
                                         <Row>
                                             <RenderFavoritesComponent
                                                 isLoggedIn={isLoggedIn}
+                                                isButtonEnable={buttonEnable}
                                                 isEnabledFavorites={patientWishListLabIds.includes(item.labInfo.lab_id)}
                                                 onPressFavoriteIcon={() => this.addToFavoritesList(item.labInfo.lab_id)}
                                             />
