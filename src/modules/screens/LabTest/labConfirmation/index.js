@@ -194,7 +194,6 @@ class LabConfirmation extends Component {
     proceedToLabTestAppointment = async (paymentMode) => {
         let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg } = this.state
         try {
-            console.log("errMsg", errMsg)
             if (patientDetails.length == 0) {
                 Toast.show({
                     text: 'Kindly select or add patient details',
@@ -223,6 +222,7 @@ class LabConfirmation extends Component {
             }
             let patientData = [];
             let startTime;
+            if (packageDetails.appointment_status == undefined) {
             if (!this.state.startDatePlaceholder) {
                 Toast.show({
                     text: 'Kindly select your appointment time',
@@ -234,6 +234,7 @@ class LabConfirmation extends Component {
                 let startTimeByFormate = formatDate(this.state.pickByStartTime, 'HH:mm:ss')
                 startTime = moment(packageDetails.selectedSlotItem.slotDate + 'T' + startTimeByFormate)
             }
+        }
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
@@ -248,7 +249,7 @@ class LabConfirmation extends Component {
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
                 lab_test_description: packageDetails.lab_test_description,
                 fee: packageDetails.fee,
-                startTime: startTime,
+                startTime: startTime || packageDetails.appointment_starttime,
                 location: {
                     coordinates: selectedAddress.coordinates,
                     type: selectedAddress.type,
@@ -266,7 +267,7 @@ class LabConfirmation extends Component {
                 status_by: "USER",
                 booked_from: "Mobile",
             };
-            if (packageDetails.appointment_status == 'PAYMENT_FAILED') {
+            if (packageDetails.appointment_status == 'PAYMENT_FAILED' || packageDetails.appointment_status == 'PAYMENT_IN_PROGRESS') {
                 requestData.labTestAppointmentId = packageDetails.appointment_id;
             }
             if (paymentMode === 'cash') {
@@ -291,7 +292,7 @@ class LabConfirmation extends Component {
 
             } else {
                 let response = {};
-                if (packageDetails.appointment_status == 'PAYMENT_FAILED') {
+                if (packageDetails.appointment_status == 'PAYMENT_FAILED' || packageDetails.appointment_status == 'PAYMENT_IN_PROGRESS') {
                     console.log("requestData", requestData)
                     let updateData = {
                         labId: requestData.lab_id,
@@ -526,6 +527,8 @@ class LabConfirmation extends Component {
                             } />
 
                     </View>
+                    {packageDetails.appointment_status !== 'PAYMENT_FAILED' && packageDetails.appointment_status !== 'PAYMENT_IN_PROGRESS' ?
+
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
 
                         <Row style={{ marginTop: 10, }}>
@@ -556,8 +559,7 @@ class LabConfirmation extends Component {
                                 </Row>
                             </Col>
                         </Row>
-                    </View>
-
+                    </View>:null}
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Row>
                             <Col size={7}>
