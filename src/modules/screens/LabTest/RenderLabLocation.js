@@ -19,7 +19,7 @@ export default class RenderLabLocation extends Component {
             ios: `${scheme}${label}@${latLng}`,
             android: `${scheme}${latLng}(${label})`
         }); 
-       // Linking.openURL(url); 
+        Linking.openURL(url); 
     }
 
     render() {
