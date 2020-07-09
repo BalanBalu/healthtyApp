@@ -11,13 +11,13 @@ import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 import ModalPopup from '../../../components/Shared/ModalPopup';
-console.disableYellowBox = true
+// console.disableYellowBox = true
 class Signup extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             mobile_no: '',
+            email: '',
             password: '',
             gender: 'M',
             radioStatus: [true, false, false],
@@ -31,11 +31,8 @@ class Signup extends Component {
             isEmailServiceEnabled: false
 
         }
-        // await this.getMobileAndEmailOtpServicesDetails();
-    }
-
-    async componentWillMount() {
-        await this.getMobileAndEmailOtpServicesDetails();
+        console.log('constructor====>');
+        this.getMobileAndEmailOtpServicesDetails();
     }
 
     getMobileAndEmailOtpServicesDetails = async () => {
@@ -72,7 +69,7 @@ class Signup extends Component {
         await this.setState({ radioStatus: tempArray, gender: genderSelect });
     }
     doSignUp = async () => {
-        const { mobile_no, password, checked, gender, referralCode } = this.state;
+        const { mobile_no, email, password, checked, gender, referralCode } = this.state;
         try {
             if (checked === false) {
                 this.setState({ errorMsg: 'Please agree to the terms and conditions to continue', isModalVisible: true });
@@ -89,18 +86,20 @@ class Signup extends Component {
             }
             this.setState({ errorMsg: '', isLoading: true });
             let requestData = {
-                mobile_no: mobile_no,
+                // mobile_no: mobile_no,
                 password: password,
                 gender: gender,
                 type: 'user'
             };
+            if (mobile_no) requestData.mobile_no = mobile_no;
+            if (email) requestData.email = email;
             if (referralCode) {
                 requestData.refer_code = referralCode
             }
             await signUp(requestData);        // Do SignUp Process
             if (this.props.user.success) {
                 let loginData = {
-                    userEntry: mobile_no,
+                    userEntry: mobile_no || email,
                     password: password,
                     type: 'user'
                 }
@@ -121,7 +120,7 @@ class Signup extends Component {
     }
     render() {
         const { user: { isLoading } } = this.props;
-        const { mobile_no, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible, isMobileServiceEnabled, isEmailServiceEnabled } = this.state;
+        const { mobile_no, email, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible, isMobileServiceEnabled, isEmailServiceEnabled } = this.state;
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -139,7 +138,6 @@ class Signup extends Component {
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
                                     <Form>
-
                                         {isMobileServiceEnabled === true ?
                                             <View>
                                                 <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
@@ -154,14 +152,14 @@ class Signup extends Component {
                                                     />
                                                 </Item>
                                             </View>
-                                            : isEmailServiceEnabled ? <View>
+                                            : isEmailServiceEnabled === true ? <View>
                                                 <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                                     <Input placeholder="email" style={styles.authTransparentLabel}
                                                         returnKeyType={'next'}
-                                                        value={mobile_no}
+                                                        value={email}
                                                         keyboardType="email-address"
-                                                        onChangeText={mobile_no => this.setState({ mobile_no })}
+                                                        onChangeText={email => this.setState({ email })}
                                                         blurOnSubmit={false}
                                                         onSubmitEditing={() => { this.mobile_no._root.focus(); }}
                                                     />
@@ -252,8 +250,8 @@ class Signup extends Component {
                                         />
                                         <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
                                             <TouchableOpacity small
-                                                style={(mobile_no && password) == '' ? styles.loginButton1Disable : styles.loginButton1}
-                                                block success disabled={(mobile_no && password) == ''} onPress={() => this.doSignUp()}>
+                                                style={(email || mobile_no) == '' || password == '' ? styles.loginButton1Disable : styles.loginButton1}
+                                                block success disabled={(email || mobile_no) == '' || password == ''} onPress={() => this.doSignUp()}>
                                                 <Text uppercase={true} style={styles.ButtonText}>Sign Up</Text>
                                             </TouchableOpacity>
                                             {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans' }}>{errorMsg} </Text> */}
