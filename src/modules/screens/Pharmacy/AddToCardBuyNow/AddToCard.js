@@ -31,8 +31,7 @@ export class AddToCard extends Component {
         let data = this.props.data;
 
 
-        console.log('addtocard data=======================');
-        console.log(JSON.stringify(data))
+       
         if (data.cartData && data.cartData.item) {
             let userAddedMedicineQuantity = data.cartData.item.quantity || 1
             let discountedValue = medicineRateAfterOffer(data);
@@ -84,6 +83,7 @@ export class AddToCard extends Component {
             discountedAmount: temp.discount ? medicineDiscountedAmount(temp) : 0,
             productName: getMedicineName(temp),
             productId: String(temp.id),
+            masterProductId:String(temp.masterProductId),
             quantity: Number(temp.userAddedMedicineQuantity),
             tax: 0,
             totalPrice: Number(temp.userAddedTotalMedicineAmount),
@@ -120,8 +120,6 @@ export class AddToCard extends Component {
                 if (AddCartResult) {
                     let result = await getCartListByUserId(userId)
                     cartItems = result;
-                    console.log(JSON.stringify(result))
-
                 }
 
                 await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))

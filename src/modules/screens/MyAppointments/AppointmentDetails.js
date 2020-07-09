@@ -4,7 +4,7 @@ import {
   Thumbnail, Body, Icon, Toast, View, CardItem
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity, Modal, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
@@ -238,7 +238,7 @@ class AppointmentDetails extends Component {
   }
 
 
-  async  navigateCancelAppoointment() {
+  async navigateCancelAppoointment() {
     try {
       this.state.data.prefix = this.state.doctorData.prefix;
 
@@ -260,7 +260,7 @@ class AppointmentDetails extends Component {
     };
   }
 
-  async  getvisble(val) {
+  async getvisble(val) {
     try {
 
       await this.setState({ isLoading: true, modalVisible: false })
@@ -296,7 +296,7 @@ class AppointmentDetails extends Component {
 
   render() {
     const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
-
+    const patDetailsDataObj = data.patient_data;
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -455,13 +455,13 @@ class AppointmentDetails extends Component {
             </Row>:null} */}
 
                 <Row style={styles.rowStyle}>
-                  {data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME'?
+                  {data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME' ?
                     <Col size={6}>
-                        <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
+                      <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
 
-                          <Text style={styles.touchableText1}>{translate("Appointment Preparation")}</Text>
+                        <Text style={styles.touchableText1}>{translate("Appointment Preparation")}</Text>
 
-                        </TouchableOpacity>
+                      </TouchableOpacity>
                     </Col>
                     : null
                   }
@@ -509,6 +509,53 @@ class AppointmentDetails extends Component {
                         </Row>
                       }
                     </View> : null}
+                  {patDetailsDataObj && Object.keys(patDetailsDataObj).length ?
+                    <Row style={styles.rowSubText}>
+                      <Col style={{ width: '8%', paddingTop: 5 }}>
+                        <Icon name="ios-home" style={{ fontSize: 20, }} />
+                      </Col>
+                      <Col style={{ width: '92%', paddingTop: 5 }}>
+                        <Text style={styles.innerSubText}>Patient  Details</Text>
+                        <View >
+                          <Row style={{ marginTop: 8, }}>
+                            <Col size={8}>
+                              <Row>
+                                <Col size={.5}>
+                                  <Text style={styles.commonText}>1.</Text>
+                                </Col>
+                                <Col size={2}>
+                                  <Text style={styles.commonText}>Name</Text>
+                                </Col>
+                                <Col size={.5}>
+                                  <Text style={styles.commonText}>-</Text>
+                                </Col>
+                                <Col size={7.5}>
+                                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{patDetailsDataObj.patient_name}</Text>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col size={10}>
+                              <Row>
+                                <Col size={.5}>
+                                </Col>
+                                <Col size={2}>
+                                  <Text style={styles.commonText}>Age</Text>
+                                </Col>
+                                <Col size={.5}>
+                                  <Text style={styles.commonText}>-</Text>
+                                </Col>
+                                <Col size={7.5}>
+                                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{(patDetailsDataObj.patient_age) + ' - ' + (patDetailsDataObj.gender)}</Text>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                        </View>
+                      </Col>
+                    </Row>
+                    : null}
                   <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
                       <Icon name="ios-medkit" style={{ fontSize: 20, }} />
@@ -642,8 +689,8 @@ class AppointmentDetails extends Component {
                             style={styles.reviewButton
                             }>
                             <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
-                            {translate("Report Issue")}
-                        </Text>
+                              {translate("Report Issue")}
+                            </Text>
                           </TouchableOpacity>
                         </View>
                       }
@@ -693,8 +740,8 @@ class AppointmentDetails extends Component {
                       <Text style={styles.innerSubText}>{translate("Payment Info")}</Text>
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
-                          <Text style={styles.downText}>{translate("Total Fee")} 
-                  </Text>
+                          <Text style={styles.downText}>{translate("Total Fee")}
+                          </Text>
                         </Col>
                         <Col style={{ width: '15%' }}>
                           <Text style={styles.downText}>-</Text>
@@ -706,7 +753,7 @@ class AppointmentDetails extends Component {
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
                           <Text style={styles.downText}>{translate("Payment Made")}
-                  </Text>
+                          </Text>
                         </Col>
                         <Col style={{ width: '15%' }}>
                           <Text style={styles.downText}>-</Text>
@@ -717,8 +764,8 @@ class AppointmentDetails extends Component {
                       </Row>
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
-                          <Text style={styles.downText}>{translate("Payment Due")} 
-                  </Text>
+                          <Text style={styles.downText}>{translate("Payment Due")}
+                          </Text>
                         </Col>
                         <Col style={{ width: '15%' }}>
                           <Text style={styles.downText}>-</Text>
@@ -729,8 +776,8 @@ class AppointmentDetails extends Component {
                       </Row>
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
-                          <Text style={styles.downText}>{translate("Payment Method")} 
-                </Text></Col>
+                          <Text style={styles.downText}>{translate("Payment Method")}
+                          </Text></Col>
                         <Col style={{ width: '15%' }}>
                           <Text style={styles.downText}>-</Text>
                         </Col>
@@ -1233,6 +1280,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#7558e5',
     // marginBottom: 5
+  },
+  commonText: {
+    fontFamily: 'OpenSans',
+    fontSize: 12,
+    color: '#4c4c4c',
+    fontWeight: '500'
   },
   bookAgain1: {
     fontSize: 13,
