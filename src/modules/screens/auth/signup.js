@@ -3,7 +3,7 @@ import {
     Container, Content, Button, Text, Form, Item, Input, Header, Footer,
     FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast, Card, Label
 } from 'native-base';
-import { signUp, ServiceOfgetMobileAndEmailOtpServicesFromProductConfig } from '../../providers/auth/auth.actions';
+import { signUp, login, ServiceOfgetMobileAndEmailOtpServicesFromProductConfig } from '../../providers/auth/auth.actions';
 import { acceptNumbersOnly } from '../../common';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'react-native';
@@ -11,7 +11,8 @@ import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 import ModalPopup from '../../../components/Shared/ModalPopup';
-// console.disableYellowBox = true
+import { SHOW_MOBILE_AND_EMAIL_ENTRIES } from '../../../setup/config';
+console.disableYellowBox = true
 class Signup extends Component {
     constructor(props) {
         super(props)
@@ -27,31 +28,33 @@ class Signup extends Component {
             isLoading: false,
             referralCode: null,
             isModalVisible: false,
-            isMobileServiceEnabled: false,
-            isEmailServiceEnabled: false
-
         }
+        this.isShowMobileEntryView = false;
+        this.isShowEmailEntryView = false;
+        this.isEnabledToSendOtpPage = false;
         console.log('constructor====>');
         this.getMobileAndEmailOtpServicesDetails();
     }
 
     getMobileAndEmailOtpServicesDetails = async () => {
         try {
-            const productConfigTypes = 'PAT_MOBILE_NUMBER_OTP_SERVICE,PAT_EMAIL_OTP_SERVICE';
+            const productConfigTypes = `${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY}`;
             const productConfigResp = await ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes);
-            // console.log('productConfigResp==>', productConfigResp);
+            console.log('productConfigResp==>', productConfigResp);
             if (productConfigResp.success) {
                 const productConfigData = productConfigResp.data;
-                for (let i = 0; i < productConfigData.length; i++) {
-                    if (productConfigData[i].type === 'PAT_MOBILE_NUMBER_OTP_SERVICE' && productConfigData[i].value === true) {
-                        await this.setState({ isMobileServiceEnabled: true });
-                        break;
+                productConfigData.map(item => {
+                    if (item.type === SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY && item.value === true) {
+                        this.isShowMobileEntryView = true
                     }
-                    if (productConfigData[i].type === 'PAT_EMAIL_OTP_SERVICE' && productConfigData[i].value === true) {
-                        await this.setState({ isEmailServiceEnabled: true });
-                        break;
+                    if (item.type === SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY && item.value === true) {
+                        this.isShowEmailEntryView = true
                     }
-                }
+                    if (item.type === SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY && item.value === true) {
+                        this.isEnabledToSendOtpPage = true
+                    }
+                });
+                await this.setState({});
             }
         } catch (Ex) {
             console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
@@ -103,7 +106,12 @@ class Signup extends Component {
                     password: password,
                     type: 'user'
                 }
-                this.props.navigation.navigate('renderOtpInput', { loginData: loginData });
+                if (this.isEnabledToSendOtpPage === true) {
+                    this.props.navigation.navigate('renderOtpInput', { loginData: loginData });
+                }
+                else {
+                    await this.doLoginAndContinueBasicDetailsUpdate(loginData)
+                }
             } else {
                 this.setState({ errorMsg: this.props.user.message, isModalVisible: true })
             }
@@ -114,13 +122,32 @@ class Signup extends Component {
             this.setState({ isLoading: false })
         }
     }
+
+
+    async doLoginAndContinueBasicDetailsUpdate(loginData) {
+        try {
+            await login(loginData);  // Do SignIn Process after SignUp is Done
+            if (this.props.user.isAuthenticated) {
+                this.props.navigation.navigate('userdetails');
+            }
+            else {
+                this.setState({ errorMsg: this.props.user.message });
+            }
+        } catch (error) {
+            Toast.show({
+                text: 'Something Went Wrong' + error,
+                duration: 3000
+            })
+        }
+    }
+
     onPasswordTextChanged(value) {
         // code to remove White Spaces from text field
         this.setState({ password: value.replace(/\s/g, "") });
     }
     render() {
         const { user: { isLoading } } = this.props;
-        const { mobile_no, email, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible, isMobileServiceEnabled, isEmailServiceEnabled } = this.state;
+        const { mobile_no, email, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible } = this.state;
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -138,7 +165,7 @@ class Signup extends Component {
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
                                     <Form>
-                                        {isMobileServiceEnabled === true ?
+                                        {this.isShowMobileEntryView === true ?
                                             <View>
                                                 <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
@@ -152,7 +179,7 @@ class Signup extends Component {
                                                     />
                                                 </Item>
                                             </View>
-                                            : isEmailServiceEnabled === true ? <View>
+                                            : this.isShowEmailEntryView === true ? <View>
                                                 <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                                     <Input placeholder="email" style={styles.authTransparentLabel}

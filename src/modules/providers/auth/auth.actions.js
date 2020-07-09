@@ -21,7 +21,7 @@ import axios from 'axios';
 
 export async function ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes) {
   try {
-    const endPoint = 'admin/mobile_email_otp/productConfig/' + productConfigTypes;
+    const endPoint = 'admin/productConfig/multiple/' + productConfigTypes;
     const response = await getService(endPoint);
     return response.data;
   } catch (Ex) {
