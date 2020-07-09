@@ -109,6 +109,7 @@ import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionLis
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
  import PopupMenu from './popUpMenu';
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
+import PublicForum from '../../modules/screens/publicForum/publicForum'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -502,6 +503,13 @@ const HomeStack = createStackNavigator({
     screen: LabCancelAppointment,
     navigationOptions: {
       title: 'Lab Test Cancel Appointment'
+    }
+  },
+   //================ PublicForum ===============
+   PublicForum: {
+    screen: PublicForum,
+    navigationOptions: {
+      title: 'Public Forum'
     }
   },
 
