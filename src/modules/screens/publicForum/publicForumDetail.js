@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Form, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, TextInput } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import styles from './styles'
 
-class PublicForum extends PureComponent {
+class PublicForumDetail extends PureComponent {
     constructor(props) {
         super(props)
 
@@ -36,40 +36,39 @@ class PublicForum extends PureComponent {
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-                    <View style={{ backgroundColor: '#ECDCFA', paddingTop: 8, paddingBottom: 8, paddingRight: 10, marginTop: 5 }}>
-                        <Grid>
-                            <Col>
-                                <Form>
-                                    <Row>
-                                        <Col size={9}>
-                                            <Item style={styles.transparentLabel1}>
-                                                <Input placeholder="Type Yoyur Query" style={styles.firstTransparentLabel}
-                                                    placeholderTextColor="#C1C1C1"
-                                                    keyboardType={'default'}
-                                                    returnKeyType={'go'}
-                                                    multiline={false}
-
-                                                />
-
-                                            </Item>
-                                        </Col>
-                                        <Col size={1}>
-                                            <TouchableOpacity style={styles.iconStyle} >
-                                                <Icon name='ios-search' style={{ fontSize: 20, color: '#fff' }} />
-                                            </TouchableOpacity>
-                                        </Col>
-                                    </Row>
-
-                                </Form>
-                            </Col>
-                        </Grid>
+                 <Row>
+                    <Col size={1.5}>
+                        <Image source={require('../../../../assets/images/Female.png')} style={{ height: 50, width: 50 }} />
+                    </Col>
+                    <Col size={8.5} style={{marginTop:5,marginLeft:5}}>
+                      <Text style={styles.symptomsText}>Prevention for Covid - 19</Text>
+                      <Text note style={styles.dateText}>Raised by Anup singh</Text>
+                    </Col>
+                 </Row>
+                 <Text style={[styles.postText],{marginTop:10}} >Leave Your Answer</Text>
+                 <View style={{ marginTop: 10 }}>
+                        <Text style={styles.smallHeading}>Your Name</Text>
+                        <TextInput
+                            onChangeText={complaint => this.setState({ complaint })}
+                            multiline={true} placeholder="Type your name"
+                            style={styles.textInput3} />
                     </View>
-                    <View>
-                        <Text>Ask Query To Qualfied Doctors</Text>
+                    <View style={{ marginTop: 15 }}>
+                        <Text  style={styles.smallHeading}>Your Answer</Text>
+                        <TextInput
+                            onChangeText={complaint => this.setState({ complaint })}
+                            multiline={true} placeholder="Type your answer"
+                            style={styles.textInput4} />
+                    </View>
+                    <TouchableOpacity style={styles.postAnswerButton}>
+                        <Text style={styles.postAnswerText}>Post Your Answer</Text>
+                    </TouchableOpacity>
+                    <View style={styles.borderView}>
+                        <Text style={{color:'#7F49C3',fontSize:12,fontFamily:'OpenSans',}}>10 answers</Text>
                         <FlatList
                             data={datas}
                             renderItem={({ item }) =>
-                                <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 15 }}>
+                                <View style={{ borderTopColor: 'gray', borderTopWidth: 0.3, paddingTop: 10, marginTop: 10}}>
                                     <Row>
                                         <Col size={1}>
                                             <Image source={require('../../../../assets/images/Female.png')} style={{ height: 30, width: 30 }} />
@@ -89,6 +88,7 @@ class PublicForum extends PureComponent {
                                     <Text style={styles.descriptionText}>{item.description}</Text>
                                 </View>
                             } />
+                         
                     </View>
                 </Content>
                 <Footer style={styles.footerStyle}>
@@ -124,6 +124,6 @@ class PublicForum extends PureComponent {
 }
 
 
-export default PublicForum
+export default PublicForumDetail
 
 

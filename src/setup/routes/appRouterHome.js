@@ -110,6 +110,8 @@ import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinment
  import PopupMenu from './popUpMenu';
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
 import PublicForum from '../../modules/screens/publicForum/publicForum'
+import PostForum from '../../modules/screens/publicForum/postForum'
+import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -512,7 +514,18 @@ const HomeStack = createStackNavigator({
       title: 'Public Forum'
     }
   },
-
+  PostForum : {
+    screen: PostForum,
+    navigationOptions: {
+      title: 'Post your questions'
+    }
+  },
+  PublicForumDetail : {
+    screen: PublicForumDetail,
+    navigationOptions: {
+      title: 'Public Health Forum'
+    }
+  },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
