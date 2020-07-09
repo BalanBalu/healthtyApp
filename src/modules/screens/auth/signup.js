@@ -31,7 +31,7 @@ class Signup extends Component {
         }
         this.isShowMobileEntryView = true;
         this.isShowEmailEntryView = true;
-        this.isEnabledToSendOtpPage = true;
+        this.isEnabledToSendOtpPage = false;
         console.log('constructor====>');
         this.getMobileAndEmailOtpServicesDetails();
     }
