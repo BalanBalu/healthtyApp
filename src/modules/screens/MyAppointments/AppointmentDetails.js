@@ -296,6 +296,7 @@ class AppointmentDetails extends Component {
 
   render() {
     const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
+    const patDetailsDataObj = data.patient_data;
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -508,61 +509,53 @@ class AppointmentDetails extends Component {
                         </Row>
                       }
                     </View> : null}
-
-                  <Row style={styles.rowSubText}>
-                    <Col style={{ width: '8%', paddingTop: 5 }}>
-                      <Icon name="ios-home" style={{ fontSize: 20, }} />
-                    </Col>
-                    <Col style={{ width: '92%', paddingTop: 5 }}>
-                      <Text style={styles.innerSubText}>Patient Family Members</Text>
-
-                      <FlatList
-                        data={data.patients_Data_list || []}
-                        renderItem={({ item, index }) =>
-                          <View >
-                            <Row style={{ marginTop: 8, }}>
-                              <Col size={8}>
-                                <Row>
-                                  <Col size={.5}>
-                                    <Text style={styles.commonText}>{index + 1}</Text>
-                                  </Col>
-                                  <Col size={2}>
-                                    <Text style={styles.commonText}>Name</Text>
-                                  </Col>
-                                  <Col size={.5}>
-                                    <Text style={styles.commonText}>-</Text>
-                                  </Col>
-                                  <Col size={7.5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{item.patient_name}</Text>
-
-                                  </Col>
-                                </Row>
-                              </Col>
-                            </Row>
-
-                            <Row>
-                              <Col size={10}>
-                                <Row>
-                                  <Col size={.5}>
-
-                                  </Col>
-                                  <Col size={2}>
-                                    <Text style={styles.commonText}>Age</Text>
-                                  </Col>
-                                  <Col size={.5}>
-                                    <Text style={styles.commonText}>-</Text>
-                                  </Col>
-                                  <Col size={7.5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{(item.patient_age) + ' - ' + (item.gender)}</Text>
-
-                                  </Col>
-                                </Row>
-                              </Col>
-                            </Row>
-                          </View>
-                        } />
-                    </Col>
-                  </Row>
+                  {patDetailsDataObj && Object.keys(patDetailsDataObj).length ?
+                    <Row style={styles.rowSubText}>
+                      <Col style={{ width: '8%', paddingTop: 5 }}>
+                        <Icon name="ios-home" style={{ fontSize: 20, }} />
+                      </Col>
+                      <Col style={{ width: '92%', paddingTop: 5 }}>
+                        <Text style={styles.innerSubText}>Patient  Details</Text>
+                        <View >
+                          <Row style={{ marginTop: 8, }}>
+                            <Col size={8}>
+                              <Row>
+                                <Col size={.5}>
+                                  <Text style={styles.commonText}>1.</Text>
+                                </Col>
+                                <Col size={2}>
+                                  <Text style={styles.commonText}>Name</Text>
+                                </Col>
+                                <Col size={.5}>
+                                  <Text style={styles.commonText}>-</Text>
+                                </Col>
+                                <Col size={7.5}>
+                                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{patDetailsDataObj.patient_name}</Text>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col size={10}>
+                              <Row>
+                                <Col size={.5}>
+                                </Col>
+                                <Col size={2}>
+                                  <Text style={styles.commonText}>Age</Text>
+                                </Col>
+                                <Col size={.5}>
+                                  <Text style={styles.commonText}>-</Text>
+                                </Col>
+                                <Col size={7.5}>
+                                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{(patDetailsDataObj.patient_age) + ' - ' + (patDetailsDataObj.gender)}</Text>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                        </View>
+                      </Col>
+                    </Row>
+                    : null}
                   <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
                       <Icon name="ios-medkit" style={{ fontSize: 20, }} />

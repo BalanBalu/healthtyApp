@@ -206,7 +206,7 @@ export default class BookAppointmentPaymentUpdate {
         try {
             let bookAppointmentData = {
                 userId: userId,
-                patients_Data_list: bookSlotDetails.patients_Data_list,
+                patient_data: bookSlotDetails.patient_data,
                 doctorId: bookSlotDetails.doctorId,
                 description: bookSlotDetails.diseaseDescription || '',
                 fee: bookSlotDetails.slotData.fee,

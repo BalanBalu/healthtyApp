@@ -19,12 +19,12 @@ export default class PaymentReview extends Component {
         diseaseDescription: ''
       },
       isLoading: false,
-      isCheckedOthers: false,
-      isCheckedSelf: false,
       gender: 'M',
       full_name: '',
       age: '',
-      patDetailsArray: [],
+      isSelected: '',
+      patientDetailsObj: {},
+      addPatientDataPoPupEnable: false
     }
     this.defaultPatDetails = {};
   }
@@ -41,10 +41,9 @@ export default class PaymentReview extends Component {
     await this.getPatientInfo();
   }
   async confirmProceedPayment() {
-    const { bookSlotDetails, patDetailsArray } = this.state;
+    const { bookSlotDetails, patientDetailsObj } = this.state;
     let { diseaseDescription } = bookSlotDetails;
-    const patDetailsArrayLength = patDetailsArray.length;
-    if (!patDetailsArrayLength) {
+    if (!Object.keys(patientDetailsObj).length) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
         type: 'warning',
@@ -70,16 +69,11 @@ export default class PaymentReview extends Component {
     validationResult = await validateBooking(reqData)
     this.setState({ isLoading: false, spinnerText: ' ' });
     if (validationResult.success) {
-      const patientsDataList = patDetailsArray.map(item => {
-        return { patient_name: item.full_name, patient_age: item.age, gender: item.gender }
-      });
-      if (patientsDataList.length) {
-        bookSlotDetails.patients_Data_list = patientsDataList;
-        console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
-        bookSlotDetails.slotData.fee = (bookSlotDetails.slotData.fee * patDetailsArrayLength)
-      }
-      const amount = bookSlotDetails.slotData.fee;
-      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails, amount: amount })
+      const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
+      bookSlotDetails.patient_data = patientDataObj;
+      console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+      const amount = this.state.bookSlotDetails.slotData.fee;
+      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount })
     } else {
       console.log(validationResult);
       Toast.show({
@@ -91,10 +85,9 @@ export default class PaymentReview extends Component {
 
   }
   async processToPayLater() {
-    const { bookSlotDetails, patDetailsArray } = this.state;
+    const { bookSlotDetails, patientDetailsObj } = this.state;
     let { diseaseDescription } = bookSlotDetails;
-    const patDetailsArrayLength = patDetailsArray.length;
-    if (!patDetailsArrayLength) {
+    if (!Object.keys(patientDetailsObj).length) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
         type: 'warning',
@@ -111,14 +104,9 @@ export default class PaymentReview extends Component {
       return
     }
     this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
-    const patientsDataList = patDetailsArray.map(item => {
-      return { patient_name: item.full_name, patient_age: item.age, gender: item.gender }
-    })
-    if (patientsDataList.length) {
-      bookSlotDetails.patients_Data_list = patientsDataList;
-      console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
-      bookSlotDetails.slotData.fee = (bookSlotDetails.slotData.fee * patDetailsArrayLength)
-    }
+    const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
+    bookSlotDetails.patient_data = patientDataObj;
+    console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, 'cash');
@@ -155,20 +143,9 @@ export default class PaymentReview extends Component {
   }
 
 
-  onPressSelfCheckBox = async () => {
-    const { isCheckedSelf, patDetailsArray } = this.state;
-    if (isCheckedSelf) {
-      patDetailsArray.unshift(this.defaultPatDetails);
-    }
-    else if (!isCheckedSelf) {
-      const findIndexOfSelfItem = patDetailsArray.findIndex(ele => ele.type === 'self')
-      if (findIndexOfSelfItem !== -1) patDetailsArray.splice(findIndexOfSelfItem, 1)
-    }
-    this.setState({ patDetailsArray })
-  }
 
   addPatientList = async () => {
-    const { name, age, gender, patDetailsArray } = this.state;
+    const { name, age, gender } = this.state;
     if (!name || !age || !gender) {
       this.setState({ errMsg: '* Kindly fill all the fields' });
     }
@@ -180,41 +157,14 @@ export default class PaymentReview extends Component {
         age: parseInt(age),
         gender
       }
-      patDetailsArray.push(othersDetailsObj);
-      await this.setState({ patDetailsArray, updateButton: false });
+      await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
       await this.setState({ name: null, age: null, gender: null });
     }
   }
-  onPressOthersCheckBox = async () => {
-    const { isCheckedOthers, patDetailsArray } = this.state;
-    if (isCheckedOthers) {
-      this.addPatientList()
-    }
-    if (!isCheckedOthers) {
-      var removedOfOthersData = patDetailsArray.filter(ele => ele.type === 'self');
-      this.setState({ patDetailsArray: removedOfOthersData, errMsg: '' })
-    }
-  }
-  /*  remove the patient details item from list  */
-  onPressRemoveIcon(item, index) {
-    const baCupOfPatDetailsArray = this.state.patDetailsArray
-    baCupOfPatDetailsArray.splice(index, 1);
-    if (item.type === 'self') {
-      this.setState({ patDetailsArray: baCupOfPatDetailsArray, isCheckedSelf: false });
-    }
-    else if (item.type === 'others') {
-      const findHaveRemainingOthersData = baCupOfPatDetailsArray.find(ele => ele.type === 'others');
-      if (findHaveRemainingOthersData) {
-        this.setState({ patDetailsArray: baCupOfPatDetailsArray, errMsg: '' });
-      }
-      else {   // unchecked the Others Box when there is no patient data available (Exe when press the remove Icon in Others data)
-        this.setState({ patDetailsArray: baCupOfPatDetailsArray, isCheckedOthers: false, errMsg: '' });
-      }
-    }
-  }
+
 
   render() {
-    const { bookSlotDetails, errMsg, isLoading, spinnerText, isCheckedSelf, isCheckedOthers, name, age, gender, patDetailsArray } = this.state;
+    const { bookSlotDetails, patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender } = this.state;
     return (
       <Container>
         <Content style={{ padding: 15 }}>
@@ -275,7 +225,7 @@ export default class PaymentReview extends Component {
                 </Row>
               </Grid>
               <CardItem footer style={styles.cardItem2}>
-                <Text style={styles.cardItemText3} >Total Fees - {'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee && patDetailsArray.length ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
+                <Text style={styles.cardItemText3} >Total Fees - {'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
               </CardItem>
             </Card>
             <View>
@@ -286,24 +236,18 @@ export default class PaymentReview extends Component {
                     <Row>
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
-                          <CheckBox style={{ borderRadius: 5 }}
-                            checked={isCheckedSelf}
-                            onPress={async () => {
-                              await this.setState({ isCheckedSelf: !isCheckedSelf }),
-                                this.onPressSelfCheckBox()
-                            }}
+                          <Radio
+                            selected={isSelected === 'self'}
+                            onPress={() => this.setState({ isSelected: 'self', patientDetailsObj: this.defaultPatDetails })}
                           />
                           <Text style={styles.firstCheckBox}>Self</Text>
                         </Row>
                       </Col>
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
-                          <CheckBox style={{ borderRadius: 5 }}
-                            checked={isCheckedOthers}
-                            onPress={async () => {
-                              await this.setState({ isCheckedOthers: !isCheckedOthers }),
-                                this.onPressOthersCheckBox()
-                            }}
+                          <Radio
+                            selected={isSelected === 'others'}
+                            onPress={() => this.setState({ isSelected: 'others', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
                           />
                           <Text style={styles.firstCheckBox}>Others</Text>
                         </Row>
@@ -314,7 +258,7 @@ export default class PaymentReview extends Component {
                   </Col>
                 </Row>
               </View>
-              {isCheckedOthers ?
+              {isSelected === 'others' && addPatientDataPoPupEnable ?
                 <View style={{ marginTop: 10, marginLeft: 8 }}>
                   <Text style={styles.subHead}>Add other patient's details</Text>
                   <Row style={{ marginTop: 10 }}>
@@ -381,59 +325,58 @@ export default class PaymentReview extends Component {
                   </View>
                 </View> : null}
               {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
-              {isCheckedOthers ?
+              {isSelected === 'others' && addPatientDataPoPupEnable ?
                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
                   <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()}>
                     <Text style={styles.touchText}>Add patient</Text>
                   </TouchableOpacity>
                 </Row> : null}
-              <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
-                <Text style={styles.subHead}>Patient Details</Text>
-                <FlatList
-                  data={patDetailsArray}
-                  extraData={patDetailsArray}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item, index }) =>
-                    <View>
-                      <Row style={{ marginTop: 10, }}>
-                        <Col size={8}>
-                          <Row>
-                            <Col size={2}>
-                              <Text style={styles.commonText}>Name</Text>
-                            </Col>
-                            <Col size={.5}>
-                              <Text style={styles.commonText}>-</Text>
-                            </Col>
-                            <Col size={7}>
-                              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{item.full_name}</Text>
+              {Object.keys(patientDetailsObj).length ?
+                <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
+                  <Text style={styles.subHead}>Patient Details</Text>
+                  <View>
+                    <Row style={{ marginTop: 10, }}>
+                      <Col size={8}>
+                        <Row>
+                          <Col size={2}>
+                            <Text style={styles.commonText}>Name</Text>
+                          </Col>
+                          <Col size={.5}>
+                            <Text style={styles.commonText}>-</Text>
+                          </Col>
+                          <Col size={7}>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{patientDetailsObj.full_name}</Text>
 
-                            </Col>
-                          </Row>
-                        </Col>
+                          </Col>
+                        </Row>
+                      </Col>
+                      {isSelected === 'others' ?
                         <Col size={0.5}>
-                          <TouchableOpacity onPress={() => this.onPressRemoveIcon(item, index)}>
-                            <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 18 }} />
+                          <TouchableOpacity onPress={() => this.setState({ patientDetailsObj: {}, addPatientDataPoPupEnable: true })}>
+                            <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 20 }} />
                           </TouchableOpacity>
                         </Col>
-                      </Row>
-                      <Row>
-                        <Col size={10}>
-                          <Row>
-                            <Col size={2}>
-                              <Text style={styles.commonText}>Age</Text>
-                            </Col>
-                            <Col size={.5}>
-                              <Text style={styles.commonText}>-</Text>
-                            </Col>
-                            <Col size={7.5}>
-                              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-                    </View>
-                  } />
-              </View>
+                        : null
+                      }
+                    </Row>
+                    <Row>
+                      <Col size={10}>
+                        <Row>
+                          <Col size={2}>
+                            <Text style={styles.commonText}>Age</Text>
+                          </Col>
+                          <Col size={.5}>
+                            <Text style={styles.commonText}>-</Text>
+                          </Col>
+                          <Col size={7.5}>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(patientDetailsObj.age) + ' - ' + getUserGenderAndAge(patientDetailsObj)}</Text>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </View>
+                </View>
+                : null}
               <Row>
                 <Icon name="create" style={{ fontSize: 20, marginLeft: 10, marginTop: 20, color: '#7F49C3' }} />
                 <Text style={styles.subText}> Your Reason For Checkup</Text>
