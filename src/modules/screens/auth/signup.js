@@ -29,9 +29,9 @@ class Signup extends Component {
             referralCode: null,
             isModalVisible: false,
         }
-        this.isShowMobileEntryView = false;
-        this.isShowEmailEntryView = false;
-        this.isEnabledToSendOtpPage = false;
+        this.isShowMobileEntryView = true;
+        this.isShowEmailEntryView = true;
+        this.isEnabledToSendOtpPage = true;
         console.log('constructor====>');
         this.getMobileAndEmailOtpServicesDetails();
     }
@@ -44,11 +44,11 @@ class Signup extends Component {
             if (productConfigResp.success) {
                 const productConfigData = productConfigResp.data;
                 productConfigData.map(item => {
-                    if (item.type === SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY && item.value === true) {
-                        this.isShowMobileEntryView = true
+                    if (item.type === SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY && item.value === false) {
+                        this.isShowMobileEntryView = false
                     }
-                    if (item.type === SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY && item.value === true) {
-                        this.isShowEmailEntryView = true
+                    if (item.type === SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY && item.value === false) {
+                        this.isShowEmailEntryView = false
                     }
                     if (item.type === SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY && item.value === true) {
                         this.isEnabledToSendOtpPage = true
@@ -165,7 +165,7 @@ class Signup extends Component {
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
                                     <Form>
-                                        {this.isShowMobileEntryView === true ?
+                                        {this.isShowMobileEntryView === false ? null :
                                             <View>
                                                 <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
@@ -179,7 +179,10 @@ class Signup extends Component {
                                                     />
                                                 </Item>
                                             </View>
-                                            : this.isShowEmailEntryView === true ? <View>
+                                        }
+                                        {this.isShowEmailEntryView === false ?
+                                            null :
+                                            <View>
                                                 <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                                     <Input placeholder="email" style={styles.authTransparentLabel}
@@ -192,7 +195,7 @@ class Signup extends Component {
                                                     />
                                                 </Item>
                                             </View>
-                                                : null}
+                                        }
                                         <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Password</Label>
 
                                         <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
