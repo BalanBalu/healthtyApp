@@ -63,7 +63,7 @@ class MyOrdersList extends Component {
 
                 let data = this.state.data;
                 let temp = data.concat(result);
-                console.log('Length of the Whole Data '+ temp.length)
+                
                 this.setState({ data: temp })
             }
             return {
@@ -76,7 +76,7 @@ class MyOrdersList extends Component {
     }
     handleLoadMore = async () => {
         if(!this.onEndReachedCalledDuringMomentum) {
-        console.log('On Hanndle loading ' + this.state.pagination);
+        
         this.onEndReachedCalledDuringMomentum = true;
         this.setState({ pagination: this.state.pagination + 1, footerLoading: true });
         let result = await this.getMedicineOrderList()
@@ -175,7 +175,7 @@ class MyOrdersList extends Component {
                                 renderItem={({ item, index }) =>
                                     <TouchableOpacity
                                         testID="orderDetailsNavigation"
-                                        onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item.id })}>
+                                        onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item.orderNumber })}>
                                         <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10,borderRadius: 2.5, }}>
                                             <View style={{ marginBottom: 10 }}>
                                                 <Row style={{ borderBottomWidth: 0.5, borderBottomColor: '#E6E6E6', paddingBottom: 5, marginLeft: 10, marginRight: 10 }}>

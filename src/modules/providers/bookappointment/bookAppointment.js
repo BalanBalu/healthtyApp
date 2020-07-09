@@ -282,7 +282,7 @@ export default class BookAppointmentPaymentUpdate {
                 return {
                     message: 'order created sucessfully',
                     success: isSuccess,
-                    // orderNo: resultData.orderNo
+                    orderNo: resultData
                 }
             } else {
                 return {
