@@ -19,6 +19,22 @@ import axios from 'axios';
 
 
 
+export async function ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes) {
+  try {
+    const endPoint = 'admin/mobile_email_otp/productConfig/' + productConfigTypes;
+    const response = await getService(endPoint);
+    return response.data;
+  } catch (Ex) {
+    console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+      message: `Exception while occurred on Get Email and Mobile Otp product config details : ${Ex}`
+    }
+  }
+}
+
 export async function generateOtpForEmailAndMobile(reqData, userId) {
   try {
     let endPoint = '/auth/generateOtpForEmailAndMobile/' + userId;

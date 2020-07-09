@@ -3,7 +3,7 @@ import {
     Container, Content, Button, Text, Form, Item, Input, Header, Footer,
     FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast, Card, Label
 } from 'native-base';
-import { signUp } from '../../providers/auth/auth.actions';
+import { signUp, ServiceOfgetMobileAndEmailOtpServicesFromProductConfig } from '../../providers/auth/auth.actions';
 import { acceptNumbersOnly } from '../../common';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'react-native';
@@ -11,7 +11,7 @@ import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 import ModalPopup from '../../../components/Shared/ModalPopup';
-
+console.disableYellowBox = true
 class Signup extends Component {
     constructor(props) {
         super(props)
@@ -27,7 +27,43 @@ class Signup extends Component {
             isLoading: false,
             referralCode: null,
             isModalVisible: false,
+            isMobileServiceEnabled: false,
+            isEmailServiceEnabled: false
 
+        }
+        // await this.getMobileAndEmailOtpServicesDetails();
+    }
+
+    async componentWillMount() {
+        await this.getMobileAndEmailOtpServicesDetails();
+    }
+
+    getMobileAndEmailOtpServicesDetails = async () => {
+        try {
+            const productConfigTypes = 'PAT_MOBILE_NUMBER_OTP_SERVICE,PAT_EMAIL_OTP_SERVICE';
+            const productConfigResp = await ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes);
+            // console.log('productConfigResp==>', productConfigResp);
+            if (productConfigResp.success) {
+                const productConfigData = productConfigResp.data;
+                for (let i = 0; i < productConfigData.length; i++) {
+                    if (productConfigData[i].type === 'PAT_MOBILE_NUMBER_OTP_SERVICE' && productConfigData[i].value === true) {
+                        await this.setState({ isMobileServiceEnabled: true });
+                        break;
+                    }
+                    if (productConfigData[i].type === 'PAT_EMAIL_OTP_SERVICE' && productConfigData[i].value === true) {
+                        await this.setState({ isEmailServiceEnabled: true });
+                        break;
+                    }
+                }
+            }
+        } catch (Ex) {
+            console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting on Favorites for Patient : ${Ex}`
+            }
         }
     }
     toggleRadio = async (radioSelect, genderSelect) => {
@@ -85,7 +121,7 @@ class Signup extends Component {
     }
     render() {
         const { user: { isLoading } } = this.props;
-        const { mobile_no, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible } = this.state;
+        const { mobile_no, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible, isMobileServiceEnabled, isEmailServiceEnabled } = this.state;
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -103,17 +139,35 @@ class Signup extends Component {
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
                                     <Form>
-                                        <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
-                                        <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
-                                            <Input placeholder="Mobile Number" style={styles.authTransparentLabel}
-                                                returnKeyType={'next'}
-                                                value={mobile_no}
-                                                keyboardType={"number-pad"}
-                                                onChangeText={mobile_no => acceptNumbersOnly(mobile_no) == true || mobile_no === '' ? this.setState({ mobile_no }) : null}
-                                                blurOnSubmit={false}
-                                                onSubmitEditing={() => { this.mobile_no._root.focus(); }}
-                                            />
-                                        </Item>
+
+                                        {isMobileServiceEnabled === true ?
+                                            <View>
+                                                <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
+                                                <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+                                                    <Input placeholder="Mobile Number" style={styles.authTransparentLabel}
+                                                        returnKeyType={'next'}
+                                                        value={mobile_no}
+                                                        keyboardType={"number-pad"}
+                                                        onChangeText={mobile_no => acceptNumbersOnly(mobile_no) == true || mobile_no === '' ? this.setState({ mobile_no }) : null}
+                                                        blurOnSubmit={false}
+                                                        onSubmitEditing={() => { this.mobile_no._root.focus(); }}
+                                                    />
+                                                </Item>
+                                            </View>
+                                            : isEmailServiceEnabled ? <View>
+                                                <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
+                                                <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+                                                    <Input placeholder="email" style={styles.authTransparentLabel}
+                                                        returnKeyType={'next'}
+                                                        value={mobile_no}
+                                                        keyboardType="email-address"
+                                                        onChangeText={mobile_no => this.setState({ mobile_no })}
+                                                        blurOnSubmit={false}
+                                                        onSubmitEditing={() => { this.mobile_no._root.focus(); }}
+                                                    />
+                                                </Item>
+                                            </View>
+                                                : null}
                                         <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Password</Label>
 
                                         <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
