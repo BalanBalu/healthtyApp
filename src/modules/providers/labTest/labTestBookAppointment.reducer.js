@@ -1,6 +1,6 @@
 
 import {
-    SET_PATIENT_WISH_LIST_LAB_IDS, SET_WISHLIST_LAB_COUNT_BY_IDS, SET_REVIEWS_COUNT_BY_LAB_IDS, SET_SINGLE_LAB_ITEM_DATA, SET_LAB_LIST_ITEM_DATA
+    SET_PATIENT_WISH_LIST_LAB_IDS, SET_WISHLIST_LAB_COUNT_BY_IDS, SET_REVIEWS_COUNT_BY_LAB_IDS, SET_SINGLE_LAB_ITEM_DATA, SET_LAB_LIST_ITEM_DATA, SET_LAB_LIST_ITEM_PREVIOUS_DATA
 } from './labTestBookAppointment.action'
 
 export const commonInitialState = {
@@ -11,6 +11,7 @@ export const commonInitialState = {
     reviewCountsByLabIds: {},
     singleLabItemData: {},
     labListItemData: [],
+    labPreviousData:[],
 }
 
 export default (state = commonInitialState, action) => {
@@ -34,6 +35,11 @@ export default (state = commonInitialState, action) => {
             return {
                 ...state,
                 singleLabItemData: action.data
+            }
+        case SET_LAB_LIST_ITEM_PREVIOUS_DATA:
+            return {
+                ...state,
+                labPreviousData: action.data
             }
         case SET_LAB_LIST_ITEM_DATA:
             return {

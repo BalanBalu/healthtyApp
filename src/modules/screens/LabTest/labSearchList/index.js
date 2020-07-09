@@ -7,18 +7,21 @@ import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from 
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
 import { enumerateStartToEndDates } from '../../CommonAll/functions'
 import { Loader } from '../../../../components/ContentLoader';
-import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
+import { formatDate, addMoment, getMoment, intersection } from '../../../../setup/helpers';
 import styles from '../../CommonAll/styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
-import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA, SET_LAB_LIST_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
+import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA, SET_LAB_LIST_ITEM_DATA, SET_LAB_LIST_ITEM_PREVIOUS_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
 import { store } from '../../../../setup/store'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { color } from 'react-native-reanimated';
+import moment from 'moment';
 
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 let labListOrder = 'ASC';
+let filterData = {};
+let labDataWithMap = new Map();
 
 class labSearchList extends Component {
     availabilitySlotsDatesArry = [];
@@ -42,13 +45,15 @@ class labSearchList extends Component {
             proposedVisible: false,
             testOptionChecked: false,
             values: [3, 7],
-            selected: "key0",
+            selected: [0, 1000],
             buttonEnable: false,
             categoryInfoList: [],
             subCategoryInfoList: [],
             selectedCategory: [],
-            selectedSubCategory:[],
-            testOption:''
+            selectedSubCategory: [],
+            testOption: '',
+            filterData: null
+
 
         }
     }
@@ -89,19 +94,24 @@ class labSearchList extends Component {
     }
     searchByLabCatAndDetails = async () => {
         try {
+            let labIdsArry = [];
             this.setState({ isLoading: true });
             const inputDataBySearch = this.props.navigation.getParam('inputDataFromLabCat');
             const labListResponse = await searchByLabDetailsService(inputDataBySearch);
-            console.log('labListResponse====>', labListResponse);
             if (labListResponse.success) {
                 const labListData = labListResponse.data;
-                this.totalLabIdsArryBySearched = labListData.map(item => String(item.labInfo.lab_id));
+                this.totalLabIdsArryBySearched = labListData.map(item => String(item.labInfo.lab_id))
+
                 await this.setState({ labListData });
-                console.log("labListData", this.state.labListData)
                 this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
                 this.getTotalReviewsCount4LabTest(this.totalLabIdsArryBySearched);
+                labListData.forEach(item => labDataWithMap.set(String(item.labInfo.lab_id), item))
                 store.dispatch({
                     type: SET_LAB_LIST_ITEM_DATA,
+                    data: this.state.labListData
+                });
+                store.dispatch({
+                    type: SET_LAB_LIST_ITEM_PREVIOUS_DATA,
                     data: this.state.labListData
                 });
             }
@@ -193,11 +203,8 @@ class labSearchList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            console.log('resultSlotsData======>', resultSlotsData);
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
-                console.log('availabilityData======>', availabilityData);
-
                 if (availabilityData.length != 0) {
                     availabilityData.map((item) => {
                         let previousSlotsDataByItem = this.availableSlotsDataMap.get(String(item.labId))
@@ -221,7 +228,6 @@ class labSearchList extends Component {
         }
         const startDateByMoment = addMoment(this.state.currentDate)
         const endDateByMoment = addMoment(this.state.currentDate, 7, 'days');
-        console.log('slot is Booked');
         if (!this.availableSlotsDataMap.has(String(labIdFromItem))) {
             this.getLabTestAvailabilitySlots(labIdFromItem, startDateByMoment, endDateByMoment);
         }
@@ -241,8 +247,6 @@ class labSearchList extends Component {
         this.selectedSlotByLabIdsObj[labId] = selectedSlotIndex;
         this.selectedSlotItemByLabIdsObj[labId] = selectedSlot;
         this.setState({ selectedSlotIndex })
-        console.log("selectedSlotIndex", this.state.selectedSlotIndex);
-
     }
     callSlotsServiceWhenOnEndReached = (labId, availabilitySlotsDatesArry) => { // call availability slots service when change dates on next week
         const finalIndex = availabilitySlotsDatesArry.length
@@ -256,8 +260,6 @@ class labSearchList extends Component {
     renderDatesOnFlatList(labId) {
         const selectedDate = this.selectedDateObj[labId] || this.state.currentDate;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(labId)) || {}
-        console.log("selectedDate", selectedDate);
-
         if (!Object.keys(slotDataObj4Item)) {
             return null;
         }
@@ -280,9 +282,6 @@ class labSearchList extends Component {
     }
     renderWorkingHours(labId, slotsData) {
         let selectedSlotIndex = this.selectedSlotByLabIdsObj[labId] !== undefined ? this.selectedSlotByLabIdsObj[labId] : -1;
-        // this.slotData = slotsData;
-        console.log("this.slotData", this.slotData);
-
         return (
             <View>
 
@@ -309,7 +308,6 @@ class labSearchList extends Component {
             })
             return;
         }
-        console.log("selectedSlotItem", selectedSlotItem)
 
         let packageDetails = {
             lab_id: labInfo.lab_id,
@@ -340,86 +338,170 @@ class labSearchList extends Component {
     }
 
 
-    filterLabListData(labListItemData) {
+    filterLabListData(labPreviousData) {
+        const { filterData } = this.state;
+
+        if (filterData != null) {
+            if (filterData.category) {
+                this.onSelectedCategoryChange(filterData.category[0].value)
+            }
+            if (filterData.sub_category) {
+                this.onSelectedSubCategoryChange(filterData.sub_category[0].value)
+            }
+        }
         const removeDupCategoriesFromList = [];
         const categoryInfoList = [];
         const subCategoryInfoList = [];
         const removeDupSubCategoriesFromList = [];
-
+        const filterPrice = [];
+        let minPrice, maxPrice;
         this.setState({ modalVisible: true });
-        labListItemData.map(filterData => {
-            // console.log("filterData", JSON.stringify(filterData));
-
+        labPreviousData.map(filterData => {
             filterData.labCategories.map(categoryItem => {
-                // console.log("categoryItem", JSON.stringify(categoryItem));
                 if (!removeDupCategoriesFromList.includes(categoryItem.categoryInfo._id)) {
                     removeDupCategoriesFromList.push(categoryItem.categoryInfo._id);
                     const categoryObj = { id: categoryItem.categoryInfo._id, value: categoryItem.categoryInfo.category_name };
                     categoryInfoList.push(categoryObj);
-                    console.log("categoryInfoList", categoryInfoList);
-
                 }
                 if (!removeDupSubCategoriesFromList.includes(categoryItem._id)) {
                     removeDupSubCategoriesFromList.push(categoryItem._id);
                     const subCategoryObj = { id: categoryItem._id, value: categoryItem.category_name };
                     subCategoryInfoList.push(subCategoryObj);
-                    console.log("subCategoryInfoList", subCategoryInfoList);
+
+                }
+                if (categoryItem.price) {
+                    filterPrice.push(categoryItem.price);
+                    maxPrice = Math.max.apply(Math, filterPrice);
+                    minPrice = Math.min.apply(Math, filterPrice);
+
 
                 }
             })
         })
 
-        this.setState({ categoryInfoList, subCategoryInfoList });
+        this.setState({ categoryInfoList, subCategoryInfoList, maxPrice, minPrice });
 
     }
     onSelectedCategoryObjChange = (selectedCategoryObj) => {
-        console.log("selectedCategoryObj", selectedCategoryObj);
+        if (selectedCategoryObj.length) {
+            filterData.category = selectedCategoryObj
+        }
+        else {
+            delete filterData.category;
+        }
 
-        // if (this.selectedCategory.length) {
-        //     filterDataObject.specialist = selectedCategoryId;
-        // }
-        // else {
-        //     delete filterDataObject.specialist;
-        // }
     }
-    onSelectedCategoryChange = (selectedItems) => {
-        console.log("selectedItems", selectedItems);
+    onSelectedCategoryChange = async (selectedItems) => {
 
-        // this.setState({ selectedItems: selectedItems, degree: selectedItems[0] })
+        await this.setState({ selectedCategory: selectedItems })
     }
 
     onSelectedSubCategoryObjChange = (selectedSubCategoryObj) => {
-        console.log("selectedSubCategoryObj", selectedSubCategoryObj);
+        if (selectedSubCategoryObj.length) {
+            filterData.sub_category = selectedSubCategoryObj
+        }
+        else {
+            delete filterData.sub_category;
+        }
 
-        // if (this.selectedCategory.length) {
-        //     filterDataObject.specialist = selectedCategoryId;
-        // }
-        // else {
-        //     delete filterDataObject.specialist;
-        // }
     }
     onSelectedSubCategoryChange = (selectedItems) => {
-        console.log("selectedItems", selectedItems);
-
-        // this.setState({ selectedItems: selectedItems, degree: selectedItems[0] })
+        this.setState({ selectedSubCategory: selectedItems })
     }
 
+    onSelecteTestOption = (value) => {
+        if (value == 'Test at Home') {
+            filterData.is_inhome_test = true;
+        }
+        else {
+            filterData.is_inhome_test = false;
+        }
+    }
+    applyFilterData = () => {
+        const { labTestData: { labPreviousData } } = this.props;
+        this.setState({ modalVisible: false, filterData: filterData });
+        let testOptionList = [];
+        let categoryMatchedList = [];
+        let subCategoryMatchedList = [];
+        let priceMatchedList = [];
+        labPreviousData.forEach((labEle) => {
+            let labIds = labEle.labInfo.lab_id
+            if (filterData.is_inhome_test || filterData.is_inhome_test == false) {
+                if (labEle.labInfo.is_inhome_test && filterData.is_inhome_test) {
+                    testOptionList.push(labIds);
+                } else if (labEle.labInfo.is_inhome_test == false && filterData.is_inhome_test == false) {
+                    testOptionList.push(labIds);
+                }
+
+            }
+            if (filterData.category) {
+                let categoryArray = labEle.labCategories ? labEle.labCategories : [];
+                categoryArray.forEach((labCategoryEle) => {
+                    if (labCategoryEle.categoryInfo._id === filterData.category[0].id) {
+                        categoryMatchedList.push(labIds)
+                    }
+                })
+            }
+            if (filterData.sub_category) {
+                let subCategoryArray = labEle.labCategories ? labEle.labCategories : [];
+                subCategoryArray.forEach((labsubCategoryEle) => {
+                    if (labsubCategoryEle.category_name === filterData.sub_category[0].value) {
+                        subCategoryMatchedList.push(labIds)
+                    }
+                })
+            }
+        })
+        let selectedFiltesArray = [];
+        if (filterData) {
+            if (filterData.is_inhome_test || filterData.is_inhome_test == false) {
+                selectedFiltesArray.push(testOptionList);
+            }
+            if (filterData.category) {
+                selectedFiltesArray.push(categoryMatchedList);
+            }
+            if (filterData.sub_category) {
+                selectedFiltesArray.push(subCategoryMatchedList);
+            }
+            // if (filterData.price) {
+            //     selectedFiltesArray.push(categoryMatchedList);
+            // }
+            if (filterData) {
+                let filteredListArray = intersection(selectedFiltesArray);
+                let filteredLabData = [];
+                if (filteredListArray.length === 0) {
+                    Toast.show({
+                        text: 'Labs Not found!..Choose Filter again',
+                        type: "danger",
+                        duration: 5000,
+                    })
+                } else {
+                    filteredListArray.forEach(ele => {
+                        filteredLabData.push(labDataWithMap.get(String(ele)));
+                    });
+                }
+                store.dispatch({
+                    type: SET_LAB_LIST_ITEM_DATA,
+                    data: filteredLabData
+                })
+            }
+        }
+
+    }
     multiSliderValuesChange = (values) => {
-        this.setState({
-            values,
-        });
+        this.setState({ values });
     }
     onValueChange(value) {
-        this.setState({
-            selected: value
-        });
+        this.setState({ selected: value });
     }
+    // handleChange = (sliderValues) => {
+    //     this.setState({ selected:sliderValues });
+    // };
     renderLabListCards(item) {
 
         const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
-        const { expandedLabIdToShowSlotsData, isLoggedIn, buttonEnable } = this.state;
+        const { expandedLabIdToShowSlotsData, isLoggedIn, buttonEnable, labListData } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
-        
+
         return (
             <View>
                 <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
@@ -487,7 +569,7 @@ class labSearchList extends Component {
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
                                     </Col>
                                     <Col style={{ width: "80%" }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}>Available On Thu,23 Jan 20 </Text>
+                                        <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}>Available On {moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY')} </Text>
                                     </Col>
                                     <Col style={{ width: "15%" }}>
                                         {!expandedLabIdToShowSlotsData.includes(item.labInfo.lab_id) ?
@@ -532,9 +614,21 @@ class labSearchList extends Component {
             </View>
         )
     }
-
+    renderScale = () => {
+        const items = [];
+        for (let i = this.state.minPrice; i <= this.state.maxPrice; i++) {
+            items.push(
+                <Item
+                    value={i}
+                    first={this.state.minPrice}
+                    second={this.state.maxPrice}
+                />
+            );
+        }
+        return items;
+    }
     render() {
-        const { labTestData: { patientWishListLabIds, labListItemData } } = this.props;
+        const { labTestData: { patientWishListLabIds, labListItemData, labPreviousData } } = this.props;
 
         const { labListData, isLoading } = this.state;
         return (
@@ -556,7 +650,7 @@ class labSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', borderLeftColor: 'gray', borderLeftWidth: 1 }}>
                                         <Row>
-                                            <TouchableOpacity onPress={() => this.filterLabListData(labListItemData)} style={{ flexDirection: 'row' }}>
+                                            <TouchableOpacity onPress={() => this.filterLabListData(labPreviousData)} style={{ flexDirection: 'row' }}>
                                                 <Col style={{ width: '35%', marginLeft: 10 }}>
                                                     <Icon name='ios-funnel' style={{ color: 'gray' }} />
                                                 </Col>
@@ -569,10 +663,10 @@ class labSearchList extends Component {
                                 </Row>
                             </Card>
                             <View>
-                                {labListData.length === 0 ? <RenderListNotFound text={' No Lab list found!'} /> :
+                                {labListItemData.length === 0 ? <RenderListNotFound text={' No Lab list found!'} /> :
                                     <View>
                                         <FlatList
-                                            data={labListData}
+                                            data={labListItemData}
                                             keyExtractor={(item, index) => index.toString()}
                                             renderItem={({ item, index }) =>
                                                 this.renderLabListCards(item)
@@ -616,13 +710,13 @@ class labSearchList extends Component {
                                                 <Col size={6} >
                                                     <Row style={{ marginTop: 10, paddingLeft: 5 }}>
                                                         <Col size={5}>
-                                                            <TouchableOpacity style={styles.homeTextButton}>
+                                                            <TouchableOpacity onPress={() => this.onSelecteTestOption("Test at Home")} style={styles.homeTextButton}>
                                                                 <Text style={styles.innerTexts}>Test at Home</Text>
 
                                                             </TouchableOpacity>
                                                         </Col>
                                                         <Col size={5} style={{ marginLeft: 5 }}>
-                                                            <TouchableOpacity style={styles.labTextButton}>
+                                                            <TouchableOpacity onPress={() => this.onSelecteTestOption("Test at Lab")} style={styles.labTextButton}>
                                                                 <Text style={styles.innerTexts}>Test at Lab</Text>
 
                                                             </TouchableOpacity>
@@ -676,7 +770,7 @@ class labSearchList extends Component {
                                                                 single={true}
                                                                 readOnlyHeadings={false}
                                                                 onSelectedItemObjectsChange={(selectedCategoryObj) => { this.onSelectedCategoryObjChange(selectedCategoryObj) }}
-                                                                
+
                                                                 onSelectedItemsChange={this.onSelectedCategoryChange}
                                                                 selectedItems={this.state.selectedCategory}
                                                                 colors={{ primary: '#18c971' }}
@@ -782,12 +876,15 @@ class labSearchList extends Component {
                                                 <Col size={4}></Col>
                                             </Row>
                                             <View >
+                                                {/* <View style={[styles.column, { marginLeft: 40, marginRight:40 }]}>
+                                                    {this.renderScale()}
+                                                </View> */}
                                                 <Row style={{ paddingLeft: 5, paddingRight: 5, paddingTop: 5, }}>
                                                     <Col size={10}>
                                                         <Row>
                                                             <Col size={1} style={{ justifyContent: 'center', height: 25, }}>
                                                                 <TouchableOpacity style={styles.priceDetails}>
-                                                                    <Text style={styles.innerTexts}>100</Text>
+                                                                    <Text style={styles.innerTexts}>{this.state.minPrice}</Text>
                                                                 </TouchableOpacity>
                                                             </Col>
                                                             <Col size={8} style={{ marginTop: -12, marginLeft: 8 }}>
@@ -795,6 +892,8 @@ class labSearchList extends Component {
                                                                     values={[this.state.values[0], this.state.values[1]]}
                                                                     sliderLength={275}
                                                                     onValuesChange={this.multiSliderValuesChange}
+                                                                    // onValuesChange={this.handleChange}
+                                                                    // onValuesChangeFinish={this.multiSliderValuesChange}
                                                                     min={0}
                                                                     max={10}
                                                                     step={1}
@@ -807,7 +906,7 @@ class labSearchList extends Component {
                                                             </Col>
                                                             <Col size={1} style={{ justifyContent: 'center', height: 25, marginLeft: 5 }}>
                                                                 <TouchableOpacity style={styles.priceDetails}>
-                                                                    <Text style={styles.innerTexts}>800</Text>
+                                                                    <Text style={styles.innerTexts}>{this.state.maxPrice}</Text>
 
                                                                 </TouchableOpacity>
                                                             </Col>
@@ -817,7 +916,7 @@ class labSearchList extends Component {
                                                 </Row>
                                                 <Row style={{ borderTopColor: '#909090', borderTopWidth: 0.3, paddingBottom: 15, paddingTop: 10 }}>
                                                     <Right>
-                                                        <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
+                                                        <TouchableOpacity onPress={() => this.applyFilterData()}>
                                                             <Text style={styles.doneButton}>DONE</Text>
                                                         </TouchableOpacity>
                                                     </Right>
