@@ -338,12 +338,7 @@ class labSearchList extends Component {
 
 
     filterLabListData(labPreviousData) {
-        const { filterData } = this.state;
-        if (filterData != null) {
-            if (filterData.sub_category) {
-                this.onSelectedSubCategoryChange(filterData.sub_category[0].value)
-            }
-        }
+        
         const subCategoryInfoList = [];
         const removeDupSubCategoriesFromList = [];
         const filterPrice = [];
