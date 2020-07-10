@@ -4,7 +4,7 @@ import { Container, Content, Text, List, ListItem,View,Row,Col,Footer,FooterTab,
 import { DragwerLogos } from './appRouterHome';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import FastImage from 'react-native-fast-image'
-import {CURRENT_PRODUCT_VERSION_CODE} from '../config'
+import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE, IS_ANDROID } from '../config'
 import { translate } from "../../setup/translator.helper"
 
 class SideBar extends React.Component {
@@ -150,7 +150,7 @@ async getBasicData() {
            <Footer style={{marginTop:10,backgroundColor:'#fff',}}>
               <FooterTab style={{justifyContent:'center',alignItems:'center',backgroundColor:'#7f49c3'}}>
                 <Text style={{textAlign:'center',fontFamily:'OpenSans',fontWeight:'700',fontSize:20,color:'#fff'}}>MEDFLIC</Text>
-                <Text style={{fontFamily:'OpenSans',fontSize:12,marginLeft:15,color:'#000'}}>Version {CURRENT_PRODUCT_VERSION_CODE}</Text>
+                <Text style={{fontFamily:'OpenSans',fontSize:12,marginLeft:15,color:'#000'}}>Version {IS_ANDROID ? CURRENT_PRODUCT_ANDROID_VERSION_CODE : CURRENT_PRODUCT_IOS_VERSION_CODE }</Text>
               </FooterTab>
            </Footer>
          </View>
