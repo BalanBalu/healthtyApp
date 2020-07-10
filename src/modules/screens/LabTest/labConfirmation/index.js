@@ -351,7 +351,7 @@ class LabConfirmation extends Component {
         const valid = startDate <= date && endDate >= date;
         if(valid === false) {
             Toast.show({
-                text: 'Please choose the time betwenn' + getTimeWithMeredian(startDate) + ' and ' + getTimeWithMeredian(endDate),
+                text: 'Please choose the time between ' + getTimeWithMeredian(startDate) + ' and ' + getTimeWithMeredian(endDate),
                 duration: 2000, 
                 type: 'danger'  
             });
