@@ -15,7 +15,7 @@ import { Loader } from '../../../components/ContentLoader'
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices'
-import { renderDoctorImage, renderProfileImage } from '../../common';
+import { renderDoctorImage, renderProfileImage, getGender } from '../../common';
 
 class Profile extends Component {
 
@@ -62,11 +62,11 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified"
+            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified,height,weight,family_members"
 
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
-
+            console.log("result", result)
             if (result) {
                 this.setState({ data: result, is_blood_donor: result.is_blood_donor });
                 storeBasicProfile(result);
@@ -157,6 +157,8 @@ class Profile extends Component {
                 });
 
                 function location(locationObj) {
+                    console.log("locationObj", locationObj)
+
                     let placeName = '';
                     let contextData = [];
                     Object.keys(locationObj).forEach(keyEle => {
@@ -173,6 +175,9 @@ class Profile extends Component {
                             case 'city':
                                 obj.id = 'place.123';
                                 break;
+                            case 'post_office_name':
+                                obj.id = 'post_office_name.123';
+                                break
                             case 'district':
                                 obj.id = 'district.123';
                                 break;
@@ -401,7 +406,7 @@ class Profile extends Component {
                                         <Text style={styles.topValue}>Gender </Text>
 
                                     </View>
-                                    <Text note style={styles.bottomValue}>{data.gender === 'M' ? 'Male' : data.gender === 'F' ? 'Female' : data.gender === 'O' ? 'Others' : null} </Text>
+                                    <Text note style={styles.bottomValue}>{getGender(data)} </Text>
 
                                 </Col>
 
@@ -413,6 +418,135 @@ class Profile extends Component {
                         </Card>
                         <List>
                             <Text style={styles.titleText}>Personal details..</Text>
+
+                            <ListItem avatar>
+                                <Left>
+                                    <Icon name="ios-body" style={{ color: '#7E49C3' }}></Icon>
+                                </Left>
+                                <Body>
+                                    <Row>
+                                        <Col>
+                                            <Text style={styles.customText}>Weight</Text>
+                                            <Text note style={styles.customText1}>{data.weight} kg</Text>
+                                        </Col>
+                                        <Col>
+                                            <Text style={styles.customText}>Height</Text>
+                                            <Text note style={styles.customText1}>{data.height} cm</Text>
+                                        </Col>
+                                    </Row>
+                                </Body>
+
+                                <Right>
+                                    <Icon name="create" style={{ color: 'black' }} onPress={() => this.props.navigation.navigate('Updateheightweight', { weight: data.weight, height: data.height })}></Icon>
+                                </Right>
+
+                            </ListItem>
+                            <ListItem avatar>
+                                <Left>
+                                    <Icon name="ios-home" style={{ color: '#7E49C3' }}></Icon>
+                                </Left>
+                                <Body>
+                                    <Text style={styles.customText}>Family details</Text>
+
+                                    <FlatList
+                                        data={data.family_members}
+                                        renderItem={({ item }) =>
+                                            <View>
+                                             
+                                                <Row style={{ marginTop: 10, }}>
+                                                    <Col size={8}>
+                                                        <Row>
+                                                            <Col size={2}>
+                                                                <Text note style={styles.customText1}>Name</Text>
+                                                            </Col>
+                                                            <Col size={.5}>
+                                                                <Text note style={styles.customText1}>-</Text>
+                                                            </Col>
+                                                            <Col size={7}>
+                                                                <Text note style={styles.customText1}>{item.name}</Text>
+
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                    <Col size={0.5}>
+                                                        <TouchableOpacity onPress={() => this.editProfile('UpdateFamilyMembers')}>
+                                                            <Icon active name="create" style={{ color: 'black', fontSize: 20, marginRight: 5 }} />
+                                                        </TouchableOpacity>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row>
+                                                    <Col size={10}>
+                                                        <Row>
+                                                            <Col size={2}>
+                                                                <Text note style={styles.customText1}>Age</Text>
+                                                            </Col>
+                                                            <Col size={.5}>
+                                                                <Text note style={styles.customText1}>-</Text>
+                                                            </Col>
+                                                            <Col size={7.5}>
+                                                                <Text note style={styles.customText1}>{(item.age) + ' - ' + getGender(item)}</Text>
+
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col size={10}>
+                                                        <Row>
+                                                            <Col size={2}>
+                                                                <Text note style={styles.customText1}>Relation</Text>
+                                                            </Col>
+                                                            <Col size={.5}>
+                                                                <Text note style={styles.customText1}>-</Text>
+                                                            </Col>
+                                                            <Col size={7.5}>
+                                                                <Text note style={styles.customText1}>{item.relationship}</Text>
+
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                </Row>
+                                            </View>
+
+                                        } />
+                                    <Button transparent>
+                                        <Icon name='add' style={{ color: 'gray' }} />
+                                        <Text uppercase={false} style={styles.customText2} onPress={() => this.props.navigation.navigate('UpdateFamilyMembers')} testID="onPressAddFamilyMembers">Add your family details</Text>
+                                    </Button>
+                                </Body>
+
+
+                            </ListItem>
+                            <ListItem avatar>
+
+                                <Left>
+                                    <Icon name="ios-flame" style={{ color: '#7E49C3', marginTop: 5 }}></Icon>
+                                </Left>
+
+                                <Body >
+                                    <Text style={styles.customText}>Blood Donor</Text>
+                                </Body>
+
+                                <Right style={{ justifyContent: 'center', alignItems: 'center', marginTop: -15 }}>
+                                    <Switch
+                                        value={this.state.is_blood_donor}
+                                        style={{ marginTop: 15, }}
+                                        onValueChange={value => {
+                                            this.setState({ is_blood_donor: !this.state.is_blood_donor })
+                                            if (value === true) {
+                                                if (data.address === undefined) {
+                                                    this.editProfile('MapBox')
+                                                }
+                                            }
+                                            this.updateBloodDonor()
+                                        }}
+                                    />
+                                </Right>
+                            </ListItem>
+
+
+
 
                             <ListItem avatar>
 
@@ -442,32 +576,7 @@ class Profile extends Component {
 
                             </ListItem>
 
-                            <ListItem avatar>
 
-                                <Left>
-                                    <Icon name="ios-flame" style={{ color: '#7E49C3', marginTop: 5 }}></Icon>
-                                </Left>
-
-                                <Body >
-                                    <Text style={styles.customText}>Blood Donor</Text>
-                                </Body>
-
-                                <Right style={{ justifyContent: 'center', alignItems: 'center', marginTop: -15 }}>
-                                    <Switch
-                                        value={this.state.is_blood_donor}
-                                        style={{ marginTop: 15, }}
-                                        onValueChange={value => {
-                                            this.setState({ is_blood_donor: !this.state.is_blood_donor })
-                                            if (value === true) {
-                                                if (data.address === undefined) {
-                                                    this.editProfile('MapBox')
-                                                }
-                                            }
-                                            this.updateBloodDonor()
-                                        }}
-                                    />
-                                </Right>
-                            </ListItem>
                             <ListItem avatar>
 
                                 <Left>
@@ -587,7 +696,9 @@ class Profile extends Component {
                                         renderItem={({ item }) => (
                                             <ListItem avatar noBorder>
                                                 <Left>
+                                                    <TouchableOpacity style={{paddingRight:5,paddingBottom:5,paddingTop:5,}} onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item.doctorInfo), title: 'Profile photo' })}>
                                                     <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60, borderRadius: 60 }} />
+                                                   </TouchableOpacity>
                                                 </Left>
                                                 <Body>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, width: '100%' }}>{item.doctorInfo.prefix ? item.doctorInfo.prefix + '.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
@@ -645,6 +756,12 @@ const styles = StyleSheet.create({
     {
         fontSize: 13,
         fontFamily: 'OpenSans',
+    },
+    customText2:
+    {
+        fontSize: 15,
+        fontFamily: 'OpenSans',
+        marginRight: 100
     },
     logo: {
         height: 80,

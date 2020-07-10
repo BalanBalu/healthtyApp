@@ -54,15 +54,16 @@ class MedicineSuggestionList extends Component {
     callSuggestionService = async (enteredText) => {
         const userId = await AsyncStorage.getItem('userId');
         const { bookappointment: { locationCordinates } } = this.props;
-        locationData = {
+        let locationData = {
             "coordinates": locationCordinates,
             "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
         }
-        let medicineResultData = await getSuggestionMedicines(enteredText, locationData);
+        let medicineResultData = await getSuggestionMedicines(enteredText);
 
-        if (medicineResultData.success) {
+
+        if (medicineResultData) {
             this.setState({
-                medicineSugesstionArray: medicineResultData.data,
+                medicineSugesstionArray: medicineResultData,
                 searchValue: enteredText,
             });
         } else {
@@ -77,8 +78,8 @@ class MedicineSuggestionList extends Component {
     render() {
         const { medicineSugesstionArray } = this.state
         return (
-            <Container>
-                <Content style={{ backgroundColor: '#F5F5F5', padding: 20 }}>
+            <Container style={{ flex: 1 }}>
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 20, flex: 1 }}>
 
 
                     <View style={{ flex: 1, }}>
@@ -121,7 +122,7 @@ class MedicineSuggestionList extends Component {
                                     }}
                                     note
                                 >
-                                    No medicine found
+                                    No medicines were found
                         </Text>
 
                             </Card> :
@@ -135,11 +136,11 @@ class MedicineSuggestionList extends Component {
                                     renderItem={({ item }) => (
                                         <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }} onPress={() => {
 
-                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.value, medicineInfo: item })
+                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.description, medicineInfo: item })
                                         }} >
-                                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{(item.value || '') + ' ' + (item.medicine_dose || '') + ' ' + (item.medicine_unit || '')}</Text>
+                                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.description || ''}</Text>
                                             <Right>
-                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>{item.type || ''}</Text>
+                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>{item.typeName || ''}</Text>
                                             </Right>
                                         </Row>
                                     )}

@@ -4,7 +4,6 @@ import { Container, Content, View, Text, Item, Radio, Row, Col, Form, Button, To
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Spinner from "../../../components/Spinner";
-import { RadioButton } from 'react-native-paper';
 import { getCurrentVersion } from '../../providers/profile/profile.action';
 import { onlySpaceNotAllowed, chatIssue, pharmacyIssue } from '../../common';
 // import { statusValue } from '../../../setup/helpers';
@@ -35,27 +34,18 @@ class ReportIssue extends Component {
      const { issueFor } = this.state
     let type ,  issueList =[]
     if (issueFor) {
-      if (issueFor.serviceType == 'Appointment') {
-
+   
         if (issueFor.status) {
-          type ='REPORT_ISSUE_APPOINTMENT_'+issueFor.status
+          type ='REPORT_ISSUE_'+issueFor.serviceType +'_'+issueFor.status
         }
-        console.log(type)
-        let reportIssueList = await getCurrentVersion(type)
+     
+     
+      console.log(type)
+      let reportIssueList = await getCurrentVersion(type)
+      
+      if (reportIssueList.success) {
+         issueList = reportIssueList.data[0].value
         
-        if (reportIssueList.success) {
-           issueList = reportIssueList.data[0].value
-          
-        }
-
-      }
-      else if (issueFor == 'chat') {
-        this.setState({ issueList: chatIssue })
-
-      }
-      else if (issueFor == 'Pharmacy') {
-        this.setState({ issueList: pharmacyIssue })
-
       }
     }
    
@@ -85,7 +75,7 @@ class ReportIssue extends Component {
 
         let userId = await AsyncStorage.getItem('userId');
         let data = {
-          service_type: issueFor.serviceType.toUpperCase(),
+          service_type: issueFor.serviceType,
           sender_id: userId,
           report_by: 'USER',
           issue_type: issueType.issue,
@@ -94,15 +84,12 @@ class ReportIssue extends Component {
 
 
         }
-        if (issueFor.serviceType == 'Appointment') {
+        if (issueFor.serviceType == 'APPOINTMENT') {
           data.appointment_id = issueFor.reportedId
         }
-        else if (issueFor.serviceType == 'chat') {
-          data.chat_id = this.props.navigation.getParam('reportedId')
-        }
-        else if (issueFor.serviceType == 'Pharmacy') {
-          data.pharmacy_id = this.props.navigation.getParam('reportedId')
-        }
+       else{
+         data.service_id=issueFor.reportedId
+       }
         let response = await insertReportIssue(data);
 
         if (response.success) {
@@ -167,17 +154,12 @@ class ReportIssue extends Component {
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) =>
                     <View>
-                      <Row style={{ marginTop: 10 }}>
+                      <Row style={{ marginTop: 10,alignItems:'center' }}>
+                        <Radio standardStyle={true}
+                               selected={this.state.issueType === item ? true : false} 
+                               onPress={()=>   this.setState({ issueType: item })}  />
 
-                        <RadioButton.Group
-                          onValueChange={value => {
-                            this.setState({ issueType: value, })
-                          }}
-                          value={this.state.issueType}>
-                          <RadioButton value={item} style={{ marginTop: -5 }} />
-                        </RadioButton.Group>
-
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, lineHeight: 20, marginLeft: 10, marginTop: 8, width: '80%' }}>{item.issue}</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, lineHeight: 20, marginLeft: 10,  width: '80%' }}>{item.issue}</Text>
                       </Row>
                       {this.state.issueType == item ?
                         <Row style={{ marginTop: 10, marginBottom: 10 }}>

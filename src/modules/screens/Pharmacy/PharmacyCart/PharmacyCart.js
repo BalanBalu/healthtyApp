@@ -3,8 +3,8 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage, getMedicineName, getMedicineWeightUnit, setCartItemCountOnNavigation } from '../CommomPharmacy';
-import { getmedicineAvailableStatus } from '../../../providers/pharmacy/pharmacy.action';
+import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage, getMedicineNameByProductName, getMedicineWeightUnit, setCartItemCountOnNavigation, renderMedicineImageByimageUrl } from '../CommomPharmacy';
+import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds } from '../../../providers/pharmacy/pharmacy.action';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 
 let userId;
@@ -14,7 +14,7 @@ class PharmacyCart extends Component {
         this.state = {
             cartItems: [],
             isLoading: true,
-            deliveryCharge: 10
+
         }
 
     }
@@ -28,13 +28,20 @@ class PharmacyCart extends Component {
             this.setState({ isLoading: true })
             userId = await AsyncStorage.getItem('userId')
             let cartItems = await AsyncStorage.getItem('cartItems-' + userId) || [];
+            console.log('cartItemscartItemscartItemscartItems')
+            console.log(cartItems)
+
             if (cartItems.length === 0) {
                 this.setState({ cartItems: [], isLoading: false });
             } else {
+
                 this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
-                console.log("cartItems", this.state.cartItems)
+
             }
+            console.log('cart===========')
+            console.log("cartItems", this.state.cartItems)
         }
+
         catch (e) {
             console.log(e);
         }
@@ -42,35 +49,65 @@ class PharmacyCart extends Component {
             this.setState({ isLoading: false });
         }
     }
+    unitOfPrice(data) {
+        if (data && data.item) {
+            let unitPrice = Number(data.item.totalPrice) / Number(data.item.quantity)
+            return unitPrice
+        }
+    }
 
     async productQuantityOperator(item, operator, index) {
         // let userId = await AsyncStorage.getItem('userId')
-        let offeredAmount = medicineRateAfterOffer(item);
-        let result = await ProductIncrementDecreMent(item.userAddedMedicineQuantity, offeredAmount, operator)
+        // let offeredAmount = medicineRateAfterOffer(item);
+        let offeredAmount = this.unitOfPrice(item);
+        let result = await ProductIncrementDecreMent(item.item.quantity, offeredAmount, operator, item.item.maxThreashold)
         let temp = item;
-        temp.userAddedTotalMedicineAmount = result.totalAmount || 0,
-            temp.userAddedMedicineQuantity = result.quantity || 0
-        cartItems = this.state.cartItems
+
+        temp.item.totalPrice = result.totalAmount || 0,
+            temp.item.quantity = result.quantity || 0
+        let threshold_message = result.threshold_message || null;
+        if (threshold_message !== null) {
+            Toast.show({
+                text: threshold_message,
+                duration: 3000,
+                type: 'danger',
+                position: "bottom",
+                style: { bottom: "50%" }
+
+            })
+        }
+        let cartItems = this.state.cartItems
         cartItems[index] == temp
         this.setState({ cartItems })
         await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
     }
 
-    removeMedicine = async (index) => {
+    removeMedicine = async (index, removeData) => {
         let data = this.state.cartItems;
-        data.splice(index, 1);
-        this.setState({ cartItems: data });
-        // let userId = await AsyncStorage.getItem('userId')
-        await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
-        setCartItemCountOnNavigation(this.props.navigation)
+        let result = await deleteCartById(removeData.id)
+        if (result) {
+            data.splice(index, 1);
+            this.setState({ cartItems: data });
+
+            // let userId = await AsyncStorage.getItem('userId')
+            await AsyncStorage.setItem('hasCartReload', 'true')
+            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
+            setCartItemCountOnNavigation(this.props.navigation)
+
+        }
     }
 
     totalPrice() {
         let total = 0;
+
         if (this.state.cartItems) {
+
             this.state.cartItems.map(element => {
-                total = total + (element.userAddedMedicineQuantity) * (element.offeredAmount)
+
+
+                total = total + element.item.totalPrice
             })
+
             return total.toFixed(2);
         }
     }
@@ -78,64 +115,87 @@ class PharmacyCart extends Component {
         return Number(this.totalPrice()).toFixed(2);
     }
     removeAllItems = async () => {
-        this.setState({ cartItems: [] })
-        await AsyncStorage.removeItem('cartItems-' + userId);
-        setCartItemCountOnNavigation(this.props.navigation)
-    }
-    async  procced() {
-        const { cartItems } = this.state;
-        let order_items = []
-        cartItems.map(element => {
-            order_items.push({
-                medicine_id: element.medicine_id,
-                pharmacy_id: element.pharmacy_id,
-                quantity: element.userAddedMedicineQuantity,
-                medicine_weight: element.medicine_weight,
-                medicine_weight_unit: element.medicine_weight_unit
-            })
+        let cartIds = []
+        this.state.cartItems.forEach(ele => {
+            cartIds.push(ele.id)
 
         })
-        let obj = {
-            order_items: order_items
+        let result = await deleteCartByIds(cartIds)
+        if (result) {
+            this.setState({ cartItems: [] })
+            await AsyncStorage.setItem('hasCartReload', 'true')
+            await AsyncStorage.removeItem('cartItems-' + userId);
+            setCartItemCountOnNavigation(this.props.navigation)
         }
-        let checkResult = await getmedicineAvailableStatus(obj)
-   
-        if (checkResult.success === true) {
-            if (checkResult.data.length === cartItems.length) {
-                this.props.navigation.navigate("MedicineCheckout", {
-                    medicineDetails: cartItems,
-                    orderOption: "pharmacyCart",
-                })
-            } else {
-                Toast.show({
-                    text: 'out of stack',
-                    type: 'danger',
-                    duration: 3000
-                })
-                cartItems.map((ele, index) => {
-                    let value = checkResult.data.find(element => {
+    }
+    async procced() {
+        const { cartItems } = this.state;
 
-                        return element.pharmacy_id === ele.pharmacy_id && element.medicine_id === ele.medicine_id
-                    })
-                    console.log(value)
-                    if (value === undefined) {
+        this.props.navigation.navigate("MedicineCheckout", {
+            medicineDetails: cartItems,
+            orderOption: "pharmacyCart",
+        })
+        // let order_items = []
+        // cartItems.map(element => {
 
-                        ele.is_outofStack = true
+        //     order_items.push({
+        //         medicine_id: element.medicine_id,
+        //         pharmacy_id: element.pharmacy_id,
+        //         quantity: Number(element.userAddedMedicineQuantity),
+        //         medicine_weight: Number(element.medicine_weight),
+        //         medicine_weight_unit: element.medicine_weight_unit
+        //     })
 
-                        cartItems.splice(index, 1, ele)
-                    }
-                })
-                this.setState({ cartItems })
+        // })
+        // console.log('availble status=====');
+        // console.log(JSON.stringify(order_items))
+        // let obj = {
+        //     order_items: order_items
+        // }
+        // let checkResult = await getmedicineAvailableStatus(obj)
+        // console.log(JSON.stringify(checkResult))
+        // if (checkResult.success === true) {
+        //     if (checkResult.data.length === cartItems.length) {
+        //         this.props.navigation.navigate("MedicineCheckout", {
+        //             medicineDetails: cartItems,
+        //             orderOption: "pharmacyCart",
+        //         })
+        //     } else {
+        //         Toast.show({
+        //             text: 'out of stack',
+        //             type: 'danger',
+        //             duration: 3000
+        //         })
+        //         cartItems.map((ele, index) => {
+        //             let value = checkResult.data.find(element => {
 
-            }
-        }
+        //                 return element.pharmacy_id === ele.pharmacy_id && element.medicine_id === ele.medicine_id
+        //             })
+        //             console.log(value)
+        //             if (value === undefined) {
+
+        //                 ele.is_outofStack = true
+
+        //                 cartItems.splice(index, 1, ele)
+        //             }
+        //         })
+        //         this.setState({ cartItems })
+
+        //     }
+        // } else {
+        //     Toast.show({
+        //         text: 'out of stack',
+        //         type: 'danger',
+        //         duration: 3000
+        //     })
+        // }
     }
     render() {
         const { isLoading, cartItems } = this.state;
 
         return (
-            <Container style={{ backgroundColor: '#EAE6E6' }}>
-                <Content>
+            <Container style={{ backgroundColor: '#EAE6E6', flex: 1 }}>
+                <Content style={{ flex: 1 }}>
 
                     {cartItems.length === 0 ?
                         <Card transparent style={{
@@ -157,7 +217,7 @@ class PharmacyCart extends Component {
                                 }}
                                 note
                             >
-                                No Medicines Are Found Your Cart
+                                No medicines found on your Cart
                     </Text>
                             <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                                 <Button style={[styles.bookingButton, styles.customButton]}
@@ -168,9 +228,7 @@ class PharmacyCart extends Component {
                                 </Button>
                             </Item>
                         </Card>
-                        // <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
-                        //     <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No Medicines Are Found Your Cart</Text>
-                        // </Item> 
+
                         :
                         <View style={{ margin: 5, backgroundColor: '#fff', borderRadius: 5, paddingBottom: 5 }}>
                             <FlatList
@@ -180,47 +238,64 @@ class PharmacyCart extends Component {
                                 renderItem={({ item, index }) =>
                                     <Row style={{ justifyContent: 'center', paddingBottom: 5 }}>
                                         <Col size={2} style={{ justifyContent: 'center' }}>
-                                            <Image source={renderMedicineImage(item)}
+
+                                            <Image source={renderMedicineImageByimageUrl(item.item)}
                                                 style={{ height: 100, width: 70, margin: 5 }} />
                                             {item.is_outofStack !== undefined && item.is_outofStack === true ?
                                                 <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center', backgroundColor: '#E6E6E6', marginTop: -40, marginLeft: 5 }}>Out of stock</Text> : null}
 
                                         </Col>
                                         <Col size={7} style={{ marginLeft: 10, justifyContent: 'center' }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{getMedicineName(item)}<Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5, color: '#909090' }}>{getMedicineWeightUnit(item.medicine_weight, item.medicine_weight_unit)}</Text></Text>
-                                            <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.pharmacy_name}</Text>
+                                            <Row>
+                                                <Col size={7}>
+                                                    {item.item.isH1Product && <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'*Prescription'}</Text>}
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{getMedicineNameByProductName(item)}<Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5, color: '#909090' }}>{getMedicineWeightUnit(item.medicine_weight, item.medicine_weight_unit)}</Text></Text>
 
 
-                                            <Row style={{ marginTop: -15, marginRight: 10 }}>
-
-                                                <Col>
-                                                    <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
                                                 </Col>
-                                                <Col>
-                                                    <Text style={{ fontSize: 9.5, marginTop: 30, marginLeft: -32.5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>₹ {item.price}</Text>
+                                                <Col size={3}>
+                                                    <Row style={{ marginTop: 20, justifyContent: 'flex-end', marginRight: 5 }}>
+                                                        <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'sub', index)}>
+                                                            <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }} testID='decreaseMedicine'>-</Text>
+                                                        </TouchableOpacity>
+                                                        <Text style={{ fontWeight: '300', fontSize: 15, textAlign: 'center', marginTop: 4.5, marginLeft: 5, fontFamily: 'OpenSans' }}>{item.item.quantity}</Text>
+                                                        <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'add', index)} testID='increaseMedicine'>
+                                                            <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
+                                                        </TouchableOpacity>
+                                                    </Row>
                                                 </Col>
-                                                <Col>
-                                                    <Text style={{ fontSize: 15, marginTop: 25, marginLeft: -50, color: "#5FB404" }}>₹ {item.offeredAmount}</Text>
-                                                </Col>
-
-
-                                                <Row style={{ marginTop: -25 }}>
-                                                    <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'sub', index)}>
-                                                        <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }} testID='decreaseMedicine'>-</Text>
-                                                    </TouchableOpacity>
-                                                    <Text style={{ fontWeight: '300', fontSize: 15, textAlign: 'center', marginTop: 4.5, marginLeft: 5, fontFamily: 'OpenSans' }}>{item.userAddedMedicineQuantity}</Text>
-                                                    <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'add', index)} testID='increaseMedicine'>
-                                                        <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
-                                                    </TouchableOpacity>
-                                                </Row>
-                                                <Row style={{ marginLeft: -75, marginTop: 30, marginRight: 12.5 }}>
-                                                    <TouchableOpacity style={{ borderColor: '#ff4e42', borderWidth: 1, marginLeft: -25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 100, paddingBottom: -5, paddingTop: 2, backgroundColor: '#fff' }} onPress={() => this.removeMedicine(index)} testID='removeMedicineToCart'>
-                                                        <Row style={{ alignItems: 'center' }}>
-                                                            <Text style={{ fontSize: 12, color: '#ff4e42', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 13, marginLeft: -2.5, paddingTop: 2.3 }} /> Remove</Text>
-                                                        </Row>
-                                                    </TouchableOpacity>
-                                                </Row>
                                             </Row>
+
+
+
+
+                                            <Row style={{}}>
+                                                <Col size={7} style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
+                                                    {item.item.discountedAmount !== undefined && item.item.discountedAmount !== 0 && item.item.discountedAmount !== null ?
+                                                        <Row>
+                                                            <Text style={{ fontSize: 9.5, marginTop: 30, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.item.unitPrice}</Text>
+                                                            <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.unitPrice - item.item.discountedAmount}</Text>
+                                                        </Row>
+                                                        : <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.unitPrice}</Text>}
+                                                </Col>
+                                                <Col size={3}>
+                                                    <Row style={{ marginTop: 30, }}>
+                                                        <TouchableOpacity style={{ borderColor: '#ff4e42', borderWidth: 1, marginLeft: -25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 100, paddingBottom: -5, paddingTop: 2, backgroundColor: '#fff' }} onPress={() => this.removeMedicine(index, item)} testID='removeMedicineToCart'>
+                                                            <Row style={{ alignItems: 'center' }}>
+                                                                <Text style={{ fontSize: 12, color: '#ff4e42', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 13, marginLeft: -2.5, paddingTop: 2.3 }} /> Remove</Text>
+                                                            </Row>
+                                                        </TouchableOpacity>
+                                                    </Row>
+                                                </Col>
+
+
+                                            </Row>
+
+
+
+
+
                                         </Col>
                                     </Row>
                                 }

@@ -3,6 +3,8 @@ import { View, Text, AsyncStorage, Platform } from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
+import { setI18nConfig  } from '../setup/translator.helper';
+
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
@@ -94,7 +96,6 @@ export function renderDoctorImage(data) {
     return (source)
 }
 
-
 export function getDoctorSpecialist(specialistData) {
     if (specialistData) {
         return specialistData[0] ? specialistData[0].category : '';
@@ -177,6 +178,24 @@ export class Badge extends Component {
     }
 }
 
+export function getGender(data) {
+    console.log("data", data)
+    let genderAndAge = '';
+    if (data) {
+        if (data.gender) {
+            if (data.gender === 'M') {
+                genderAndAge = '(Male)'
+            }
+            else if (data.gender === 'F') {
+                genderAndAge = '(Female)'
+            }
+            else if (data.gender === 'O') {
+                genderAndAge = '(Others)'
+            }
+        }
+    }
+    return genderAndAge;
+}
 
 
 export function getAllEducation(data) {
@@ -210,6 +229,8 @@ export function getAllSpecialist(data) {
 }
 
 export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
+export const relationship = ['Select Retionship', 'Father', 'Mother', 'Husband', 'Wife', 'Son', 'Daughter']
+
 export const appointmentIssue = [
     { id: 0, value: 'If you see "Your payment was declined due to an issue with your account"' },
     { id: 1, value: 'You accidentally entered incorrect credit/debit card details like name on the card, card number, CVV, 3D secure PIN and expiry date incorrect.' },
@@ -310,7 +331,7 @@ export function getHospitalName(location) {
 export function getAddress(location) {
     if (!location) return ''
     if (location)
-        return `${location.address.no_and_street},${location.address.address_line_1||''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
+        return `${location.address.no_and_street},${location.address.address_line_1 || ''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
     else
         return ''
 }
@@ -355,12 +376,44 @@ export const reportStatusValue = {
 }
 
 
-    export async function validateFirstNameLastName(text){
+export async function validateFirstNameLastName(text) {
     const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
-   
+
     if (regex.test(text) === false) {
-       return false
-    } else{
+        return false
+    } else {
         return true
     }
 }
+
+export function getUserGenderAndAge(data) {
+    let genderAndAge = '';
+    if (data) {
+        if (data.gender) {
+            if (data.gender === 'M') {
+                genderAndAge = '(Male)'
+            }
+            else if (data.gender === 'F') {
+                genderAndAge = '(Female)'
+            }
+            else if (data.gender === 'O') {
+                genderAndAge = '(Others)'
+            }
+        }
+    }
+    return genderAndAge;
+}
+export const  onPopupEvent = (eventName, index,navigation) => {
+    if (eventName !== 'itemSelected') return
+    if (index === 0) {
+        setI18nConfig('en')
+    }
+    else if (index === 1)
+    {
+        setI18nConfig('ta')
+    }
+    else if (index === 2)
+    {
+        setI18nConfig('ma')
+    }
+  }

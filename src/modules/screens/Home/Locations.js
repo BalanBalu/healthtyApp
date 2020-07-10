@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Text, Container, Icon, Spinner } from 'native-base';
+import React, { PureComponent } from 'react';
+import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
@@ -7,20 +7,27 @@ import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
 import CurrentLocation from './CurrentLocation';
-class Locations extends Component {
+import { getPopularCities } from '../../providers/locations/location.action';
+class Locations extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
             locations: [],
-            isLoading: false
+            popularLocations: [],
+            isLoading: false,
+            pressStatus: false,
+            selectedItem: 0
         }
     }
+
+
     async componentDidMount() {
         const navigationOption = this.props.navigation.getParam('navigationOption') || null
-
+        const popularCitiesResp = this.getPopularCities()
         this.setState({ isLoading: true })
-        if (navigationOption!=null) {
+        if (navigationOption != null) {
             const pharmacyResult = await getPharmacyLocations();
+
             this.setState({ isLoading: false })
             if (pharmacyResult.success) {
                 this.setState({ locations: pharmacyResult.data });
@@ -31,6 +38,13 @@ class Locations extends Component {
             if (result.success) {
                 this.setState({ locations: result.data });
             }
+        }
+    }
+    getPopularCities = async () => {
+        const result = await getPopularCities();
+
+        if (result.success) {
+            this.setState({ popularLocations: result.data });
         }
     }
     itemSaperatedByListView = () => {
@@ -44,14 +58,20 @@ class Locations extends Component {
             />
         );
     };
+    onPressList = (cityInfo) => {
+        let value = this.props.navigation.getParam('navigationOption') || null
+        this.props.navigation.navigate("LocationDetail", { cityData: cityInfo, navigationOption: value })
+    }
     render() {
-        const { locations, isLoading } = this.state
+        const { locations, isLoading, popularLocations } = this.state
+
         return (
             <Container>
 
                 {isLoading ? <Spinner color='blue' /> : null}
-                <View style={{ flex: 1 }}>
-                    <FlatList
+                <Content>
+                    <View style={{ flex: 1 }}>
+                        {/* <FlatList
                         data={locations}
                         ItemSeparatorComponent={this.itemSaperatedByListView}
                         renderItem={({ item }) => (
@@ -64,23 +84,83 @@ class Locations extends Component {
                                 })
                                 this.props.navigation.pop()
                             }} >
-                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.location}</Text>
+                                <Left>
+                                    <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.location}</Text>
+                                </Left>
+                               
                             </Row>
                         )}
                         enableEmptySections={true}
                         style={{ marginTop: 10 }}
                         keyExtractor={(item, index) => index.toString()}
-                    />
+                    /> */}
+                        <View>
+                            <List>
+                                <ListItem itemDivider>
+                                    <Text> Popular Cities</Text>
+                                </ListItem>
+                                <FlatList
+                                    data={popularLocations}
+                                    extraData={popularLocations}
 
-                    <View>
-                        <TouchableOpacity style={styles.fab} onPress={() => {
-                            CurrentLocation.getCurrentPosition();
-                            this.props.navigation.navigate("Home")
-                        }}>
-                            <Icon name="locate" style={styles.text}></Icon>
-                        </TouchableOpacity>
+                                    renderItem={({ item }) => (
+                                        <ListItem
+                                            button
+                                            onPress={() => this.onPressList(item)}
+                                            button>
+                                            <Left>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.city_name}</Text>
+                                            </Left>
+                                            <Right style={{ marginRight: 10, }}>
+                                                <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
+                                            </Right>
+                                        </ListItem>
+
+                                    )}
+                                    keyExtractor={(item, index) => index.toString()} />
+                            </List>
+                            <List>
+                                <ListItem itemDivider>
+                                    <Text>Other Cities</Text>
+                                </ListItem>
+                                <FlatList
+                                    data={locations}
+                                    renderItem={({ item }) => (
+                                        <ListItem
+                                            button
+                                            onPress={() => {
+                                                store.dispatch({
+                                                    type: SET_PATIENT_LOCATION_DATA,
+                                                    center: item.coordinates,
+                                                    locationName: item.location,
+                                                    isSearchByCurrentLocation: false,
+                                                    isLocationSelected: true
+                                                })
+                                                this.props.navigation.pop()
+                                            }}
+                                            button>
+
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.location}</Text>
+
+                                        </ListItem>
+
+
+                                    )}
+                                    keyExtractor={(item, index) => index.toString()}
+                                />
+                            </List>
+                        </View>
                     </View>
+                </Content>
+                <View>
+                    <TouchableOpacity style={styles.fab} onPress={() => {
+                        CurrentLocation.getCurrentPosition();
+                        this.props.navigation.navigate("Home")
+                    }}>
+                        <Icon name="locate" style={styles.text}></Icon>
+                    </TouchableOpacity>
                 </View>
+
 
             </Container>
         )

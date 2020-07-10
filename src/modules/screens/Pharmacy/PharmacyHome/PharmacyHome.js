@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action'
+import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, quantityPriceSort } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable, getselectedCartData } from '../CommomPharmacy';
 import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
@@ -24,6 +24,7 @@ class PharmacyHome extends Component {
         super(props)
         this.state = {
             medicineData: [],
+            medicineDataAvailable: [],
             clickCard: null,
             footerSelectedItem: '',
             cartItems: [],
@@ -40,35 +41,66 @@ class PharmacyHome extends Component {
     }
 
     async componentDidMount() {
-        CurrentLocation.getCurrentPosition();
-        this.getCurrentLocation()
+        const { bookappointment: { locationCordinates } } = this.props;
+        if (locationCordinates === null) {
+            CurrentLocation.getCurrentPosition();
+        }
+
         this.getMedicineList();
         this.getNearByPharmacyList();
 
     }
 
-    backNavigation(payload) {
-        if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
-            this.getCurrentLocation();
-            this.getMedicineList();
-            this.getNearByPharmacyList();
+    async backNavigation(payload) {
+        try{
+            let hascartReload = await AsyncStorage.getItem('hasCartReload')
+  
+        if (hascartReload === 'true') {
+            await AsyncStorage.removeItem('hasCartReload');
+            
+            if (userId) {
+                let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                let cartData = []
+                if (cart.length != 0) {
+                    cartData = JSON.parse(cart)
+
+                }
+                setCartItemCountOnNavigation(this.props.navigation);
+                // console.log(JSON.stringify(cartData[]))
+                await this.setState({ cartItems: cartData })
+                await AsyncStorage.removeItem('hasCartReload');
+            }
         }
+       
+        if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
+
+            // this.getMedicineList();
+            // this.getNearByPharmacyList();
+        }
+    }catch(e){
+        console.log(e)
+    }
     }
 
     /*Get medicine list*/
     getMedicineList = async () => {
         try {
             userId = await AsyncStorage.getItem('userId')
-            const { bookappointment: { locationCordinates } } = this.props;
-            locationData = {
-                "coordinates": locationCordinates,
-                "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
-            }
-            let result = await getPopularMedicine(userId, JSON.stringify(locationData));
-            if (result.success) {
-                let sortedData = await quantityPriceSort(result.data)
 
-                this.setState({ medicineData: sortedData })
+            let result = await searchRecentItemsByPharmacy(10)
+             console.log('result==========================================')
+                 console.log(JSON.stringify(result))
+
+
+            if (result) {
+                let prodcuctIds = []
+                result.map(ele => {
+                    prodcuctIds.push(ele.id)
+                })
+
+                let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
+
+                this.setState({ medicineData: result, medicineDataAvailable: availableResult })
                 console.log("medicineData", this.state.medicineData)
                 if (userId) {
                     let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
@@ -79,10 +111,10 @@ class PharmacyHome extends Component {
                     }
                 }
             }
-            
+
         }
         catch (e) {
-           
+
             console.log(e)
         }
         finally {
@@ -90,26 +122,19 @@ class PharmacyHome extends Component {
         }
     }
 
-    /*Get Current Location */
-    getCurrentLocation() {
-        const { bookappointment: { patientSearchLocationName, locationUpdatedCount } } = this.props;
-        if (locationUpdatedCount !== this.locationUpdatedCount) {
-            let locationName = patientSearchLocationName;
-            this.setState({ locationName })
-        }
-        this.locationUpdatedCount = locationUpdatedCount;
-    }
+
 
     getNearByPharmacyList = async () => {
         try {
             const { bookappointment: { locationCordinates } } = this.props;
-            locationData = {
+            let locationData = {
                 "coordinates": locationCordinates,
                 "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
-            console.log('location data=============')
-            console.log(JSON.stringify(locationData))
+
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
+
+  
             if (result.success) {
                 this.setState({ pharmacyData: result.data })
             }
@@ -119,25 +144,11 @@ class PharmacyHome extends Component {
         }
 
     }
-    async selectedItems(data, selected, index) {
+    async selectedItems(data, selected, cartData) {
         try {
-            let temp = {
-                ...data.medInfo,
-                ...data.medPharDetailInfo
-            }
-            temp.pharmacy_name = data.pharmacyInfo.name;
-            temp.pharmacy_id = data.pharmacyInfo.pharmacy_id;
-            temp.medicine_id = data.medInfo.medicine_id;
-            temp.pharmacyInfo = data.pharmacyInfo;
-            // temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo.variations[0])
-            temp.selectedType = selected;
+            let selectedData = getselectedCartData(data, selected, cartData)
 
-            if (index !== undefined) {
-                cardItems = this.state.cartItems;
-                temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
-                temp.index = index
-            }
-            await this.setState({ selectedMedcine: temp })
+            await this.setState({ selectedMedcine: selectedData })
 
         } catch (e) {
             console.log(e)
@@ -186,6 +197,8 @@ class PharmacyHome extends Component {
     render() {
         const { medicineData, pharmacyData, cartItems } = this.state
         const { navigation } = this.props;
+        const { bookappointment: { patientSearchLocationName, locationCordinates } } = this.props;
+
         return (
             <Container style={styles.container}>
                 <NavigationEvents
@@ -193,7 +206,7 @@ class PharmacyHome extends Component {
                 />
                 <View style={{ backgroundColor: '#7F49C3', padding: 5, paddingBottom: 10, height: 45 }}>
                     <Grid>
-                        <Col size={6}>
+                        <Col size={10}>
                             <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
                                 <Input
                                     placeholder='Search for Medicines and Health Products...     '
@@ -204,24 +217,10 @@ class PharmacyHome extends Component {
                                     // onKeyPress={(evet) => this.navigatePress(evet)}
                                     returnKeyType={'go'}
                                     multiline={false} />
-
                                 <TouchableOpacity style={{ alignItems: 'flex-end' }}>
                                     <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
                                 </TouchableOpacity>
                             </Item>
-
-                        </Col>
-                        <Col size={4} style={{ marginLeft: 5 }}>
-                            <TouchableOpacity style={{ backgroundColor: '#fff', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('UploadPrescription')}>
-                                <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Col size={1.5} style={{ alignItems: 'center' }}>
-                                        <Icon name='ios-share' style={{ fontSize: 15, color: 'grey', }} />
-                                    </Col>
-                                    <Col size={8.5} style={{ alignItems: 'flex-start' }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#000' }}>Upload Prescription</Text>
-                                    </Col>
-                                </Row>
-                            </TouchableOpacity>
                         </Col>
                     </Grid>
                 </View>
@@ -243,13 +242,13 @@ class PharmacyHome extends Component {
                         </Col>
                         <Col size={4} style={{ marginLeft: 5 }}>
 
-                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('Locations', { navigationOption: 'Near by pharmacies' })}>
+                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('Locations', { navigationOption: 'Medicines' })}>
                                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 5 }}>
                                     <Col size={0.5} style={{ alignItems: 'flex-start' }}>
                                         <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
                                     </Col>
                                     <Col size={3.5} style={{ alignItems: 'flex-start' }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>{this.state.locationName} </Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>{patientSearchLocationName || ''} </Text>
                                     </Col>
                                 </Row>
 
@@ -273,21 +272,41 @@ class PharmacyHome extends Component {
                         </View>
 
                         <View style={{ borderColor: 'gray', borderWidth: 1, marginTop: 10, marginLeft: 5, backgroundColor: '#fff' }}>
-
-
                             <Image
                                 source={flatBannerOffer}
                                 style={{
                                     width: 235, height: 120, alignItems: 'center'
                                 }}
                             />
-
-
                         </View>
                     </ScrollView>
-
-
-
+                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10 }}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('UploadPrescription')}>
+                            <View style={styles.uploadStyles}>
+                                <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                        <Text style={styles.uploadText}>Upload your prescription and get your order quickly </Text>
+                                        <Row style={{ alignItems: 'center', }}>
+                                            <TouchableOpacity style={styles.uploadTouchable} onPress={() => this.props.navigation.navigate('UploadPrescription')}>
+                                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
+                                                    UPLOAD PRESCRIPTION
+                                                </Text>
+                                                <Icon name='ios-arrow-forward' style={{ marginLeft: 5, color: '#fff', fontSize: 15 }} />
+                                            </TouchableOpacity>
+                                        </Row>
+                                    </Col>
+                                    <Col size={2.5} >
+                                        <Image
+                                            source={require('../../../../../assets/images/PresciptionUploadImage.png')}
+                                            style={{
+                                                width: 80, height: 80, alignItems: 'center'
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <View style={{ marginTop: 10, marginLeft: 5, marginRight: 10 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#4c4c4c', marginBottom: 10, marginLeft: 5 }}>Popular Medicines</Text>
                         <View>
@@ -298,6 +317,7 @@ class PharmacyHome extends Component {
                                     </Item> :
                                     <FlatList
                                         data={medicineData}
+                                        extraData={cartItems}
                                         numColumns={2}
                                         columnWrapperStyle={{ margin: 3 }}
                                         keyExtractor={(item, index) => index.toString()}
@@ -305,18 +325,23 @@ class PharmacyHome extends Component {
                                         renderItem={({ item }) =>
                                             <Row onPress={() =>
                                                 this.props.navigation.navigate('MedicineInfo', {
-                                                    medicineId: item.medInfo.medicine_id,
-                                                    pharmacyId: item.pharmacyInfo.pharmacy_id,
+                                                    medicineId: item.id,
                                                     medicineData: item
                                                 })}>
-                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
+                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%', borderRadius: 2.5, }}>
 
                                                     <Row>
-                                                        <Col size={9} style={{ alignItems: 'center' }}>
-                                                            <Image source={renderMedicineImage(item.medInfo)}
+                                                    {item.h1Product ?
+                                                            <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginRight: 120 }}>
+                                                              
+                                                                <Text style={{ width: 50, height: 45,fontSize:8,marginTop: 10,color:'red'}}>{'* Prescription'}</Text>
+                                                             
+                                                            </Col> : null}
+                                                        <Col size={8} style={{ alignItems: 'center' }}>
+                                                            <Image source={renderMedicineImage(item.productImages)}
                                                                 style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                         </Col>
-                                                        {item.medPharDetailInfo.variations[0].discount_type != undefined ?
+                                                        {item.discount !== undefined && item.discount !== null ?
                                                             <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 120 }}>
                                                                 <Image
                                                                     source={require('../../../../../assets/images/Badge.png')}
@@ -324,54 +349,57 @@ class PharmacyHome extends Component {
                                                                         width: 45, height: 45, alignItems: 'flex-end'
                                                                     }}
                                                                 />
-                                                                <Text style={styles.offerText}>{item.medPharDetailInfo.variations[0].discount_value}</Text>
-                                                                <Text style={styles.offText}>{item.medPharDetailInfo.variations[0].discount_type === 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
+                                                                <Text style={styles.offerText}>{item.discount.value}</Text>
+                                                                <Text style={styles.offText}>{item.discount.type === 'PERCENT' ? "OFF" : "Rs"}</Text>
                                                             </Col> : null}
                                                     </Row>
 
 
                                                     <Row style={{ alignSelf: 'center', marginTop: 5 }} >
-                                                        <Text style={styles.mednames}>{getMedicineName(item.medInfo)}</Text>
+                                                        <Text style={styles.mednames}>{getMedicineName(item)}</Text>
                                                     </Row>
-                                                    <Row style={{ alignSelf: 'center' }} >
-                                                        <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
-                                                    </Row>
+                                            
                                                     <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                        <Text style={item.medPharDetailInfo.variations[0].discount_type != undefined ? styles.oldRupees : styles.newRupees}>₹{item.medPharDetailInfo.variations[0].price}</Text>
-                                                        {item.medPharDetailInfo.variations[0].discount_type != undefined ?
-                                                            <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medPharDetailInfo.variations[0])}</Text> : null}
+                                                        <Text style={item.discount !== undefined && item.discount !== null ? styles.oldRupees : styles.newRupees}>₹{item.price}</Text>
+                                                        {item.discount !== undefined && item.discount !== null ?
+                                                            <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item)}</Text> : null}
                                                     </Row>
+                                                    {getIsAvailable(item,this.state.medicineDataAvailable) === false ?
+                                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
 
                                                     <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
-                                                        {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) === -1 ?
+                                                        {cartItems.length == 0 || cartItems.findIndex(ele => ele.item.productId == item.id) === -1 ?
                                                             <TouchableOpacity style={styles.addCartTouch}
-                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card') }} >
+                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Cart') }} >
 
-                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 12, marginLeft: 3.5, paddingTop: 2.3, }} />
                                                                 <Text style={styles.addCartText}>Add to Cart</Text>
 
                                                             </TouchableOpacity> :
                                                             <TouchableOpacity style={styles.addCartTouch}
-                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)) }} >
+                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Cart', cartItems.find(ele => ele.item.productId == item.id)) }} >
 
-                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 12, marginLeft: 3.5, paddingTop: 2.3, }} />
+                                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => String(ele.item.productId) == String(item.id))].item.quantity}</Text>
 
                                                             </TouchableOpacity>}
 
                                                         <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(item, 'Buy Now') }} >
-                                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
+                                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff', marginTop: 1 }} />
                                                             <Text style={styles.BuyNowText}>Buy Now</Text>
                                                         </TouchableOpacity>
                                                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
                                                             <AddToCard
+                                                                navigation={this.props.navigation}
                                                                 data={this.state.selectedMedcine}
                                                                 popupVisible={(data) => this.getVisible(data)}
                                                             />
                                                             : null}
                                                     </Row>
+                                        }
                                                 </Col>
                                             </Row>
+                                                        
                                         } />
                                 }
                             </Row>
@@ -380,7 +408,7 @@ class PharmacyHome extends Component {
 
 
                     <View style={{ marginTop: 10, }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10, color: '#4c4c4c' }}>Nearby Pharmacies</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10, color: '#4c4c4c' }}>Near by pharmacy</Text>
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
@@ -394,7 +422,7 @@ class PharmacyHome extends Component {
                                     horizontal={true}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) =>
-                                        <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210 }}>
+                                        <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210, borderRadius: 2.5, }}>
 
                                             <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
                                                 <Col size={5}>
@@ -422,7 +450,7 @@ class PharmacyHome extends Component {
                                                                     pharmacyInfo: item.pharmacyInfo
                                                                 })}
                                                                 style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
-                                                                <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff' }} />
+                                                                <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff', marginTop: 3 }} />
                                                                 <Text style={styles.orderNowText}>Order Medicines</Text>
                                                             </TouchableOpacity>
                                                         </Row>
@@ -435,7 +463,7 @@ class PharmacyHome extends Component {
                         </ScrollView>
 
                     </View>
-                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10 }}>
+                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10, borderRadius: 5 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#4c4c4c' }}>Here is What you do!</Text>
                         <View style={{ backgroundColor: '#fff', marginTop: 5 }}>
                             <Image
@@ -469,10 +497,13 @@ const styles = StyleSheet.create({
 
     container: {
         backgroundColor: '#ffffff',
+        flex: 1
     },
     bodyContent: {
-        padding: 5
+        padding: 5,
+        flex: 1
     },
+
     customImage: {
         height: 70,
         width: 70,
@@ -629,5 +660,32 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#fff',
         marginLeft: 2
+    },
+    uploadStyles:{
+        backgroundColor: '#fff', 
+        marginTop: 5, 
+        width: '100%', 
+        paddingBottom: 5, 
+        paddingTop: 5, 
+        paddingLeft: 10, 
+        borderRadius: 5
+    },
+    uploadText:{
+        fontSize: 10, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginTop: 5, 
+        lineHeight: 20 
+    },
+    uploadTouchable:{
+        backgroundColor: '#7F49C3', 
+        paddingRight: 10, 
+        paddingBottom: 4,
+         paddingTop: 4, 
+         paddingLeft: 10, 
+         flexDirection: 'row', 
+         justifyContent: 'center', 
+         borderRadius: 5,
+         marginRight: 10, 
     }
 });

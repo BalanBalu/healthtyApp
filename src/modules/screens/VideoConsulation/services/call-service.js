@@ -3,23 +3,53 @@ import ConnectyCube from 'react-native-connectycube';
 import InCallManager from 'react-native-incall-manager';
 import Sound from 'react-native-sound';
 import { sendNotification } from './video-consulting-service';
+import { CallKeepService , REMOTE_USER_END_CALL_REASONS} from './index';
+import {  AppState  } from 'react-native';
+import { store } from '../../../../setup/store';
+import { IS_ANDROID } from '../../../../setup/config';
+import { DeviceEventEmitter, NativeModules, NativeEventEmitter } from 'react-native';
+let activityStarter;
+let eventEmitter;
+
+
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
+
+ 
+ constructor() {
+  console.log('Calling here ....'); 
+   this.getWiredPlugedIn()
+   if(IS_ANDROID) {
+    activityStarter = NativeModules.InCallManager;
+    eventEmitter = new NativeEventEmitter(activityStarter);
+    eventEmitter.addListener('onAudioFocusChange', function (data) {
+     // --- do something with events
+     console.log('Wired Headset State', data);
+ });
+}
+ }
+ async getWiredPlugedIn() {
+ const isPluggedIn = await InCallManager.getIsWiredHeadsetPluggedIn();
+ console.log('is Plugged in ' + isPluggedIn); 
+
+ }
 
   _session = null;
   _extension = null;
   mediaDevices = [];
 
   outgoingCall = new Sound(require('../../../../../assets/sounds/dialing.mp3'));
-  incomingCall = new Sound(require('../../../../../assets/sounds/calling.mp3'));
+  incomingCall = new Sound(require('../../../../../assets/sounds/incoming.mp3'));
   endCall =      new Sound(require('../../../../../assets/sounds/end_call.mp3'));
 
   showToast = text => {
-    Toast.show({
-      text: text,
-      type:'success',
-      duration: 4000
-    })
+    if(AppState.currentState === 'active') {
+      Toast.show({
+        text: text,
+        type:'success',
+        duration: 4000
+      })
+    }
   };
 
   getUserById = (userId, key) => {
@@ -87,7 +117,7 @@ export default class CallService {
 
   stopCall = () => {
     this.stopSounds();
-
+    CallKeepService.endCall();
     if (this._session) {
       this.playSound('end');
       this._session.stop({});
@@ -98,10 +128,20 @@ export default class CallService {
   };
 
   rejectCall = (session, extension) => {
+    console.log('On Reject Session', session);
+    console.log('On Reject Extentsion', extension);
     this.stopSounds();
-    session.reject(extension);
+    if(session) {
+      if(extension) {
+        session.reject(extension);
+      } else {
+        session.reject();
+      }
+      this._session = null;
+      CallKeepService.rejectCall();
+    }
   };
-
+  
   setAudioMuteState = mute => {
     if (mute) {
       this._session.mute('audio');
@@ -132,9 +172,8 @@ export default class CallService {
       } else {
         const userName = this.getUserById(userId, 'name');
         const message = `${userName} did not answer`;
-
-        this.showToast(message);
-
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_DID_NOT_ANSWER);
+        this.showToast ?  this.showToast(message) : null;
         resolve();
       }
     });
@@ -145,9 +184,11 @@ export default class CallService {
       if (session.initiatorID === session.currentUserID) {
         reject();
       }
-
-      if (this._session) {
+      const inIncomingCallViaBackgroudState = store.getState().chat.incomingVideoCallViaBackgrondState;
+      if (this._session && inIncomingCallViaBackgroudState === false ) {
+        console.log('is Busy.....');
         this.rejectCall(session, {busy: true});
+        CallKeepService.endCall();
         reject();
       }
 
@@ -161,14 +202,13 @@ export default class CallService {
     return new Promise((resolve, reject) => {
       if (userId === session.currentUserID) {
         this._session = null;
-        this.showToast('You have accepted the call on other side');
-
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_ENDED_CALL);
+        this.showToast ?  this.showToast('You have accepted the call on other side') : null;
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
         const message = `${userName} accepted the call`;
-
-        this.showToast(message);
+        this.showToast ? this.showToast(message) : null;
         this.stopSounds();
 
         resolve();
@@ -180,17 +220,16 @@ export default class CallService {
     return new Promise((resolve, reject) => {
       if (userId === session.currentUserID) {
         this._session = null;
-        this.showToast('You have rejected the call on other side');
-
+        this.showToast ? this.showToast('You have rejected the call on other side') : null;
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.CALL_FAILED);
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
         const message = extension.busy
           ? `${userName} is busy`
           : `${userName} rejected the call request`;
-
-        this.showToast(message);
-
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.CALL_FAILED);
+        this.showToast ? this.showToast(message) : null;
         resolve();
       }
     });
@@ -201,15 +240,15 @@ export default class CallService {
       this.stopSounds();
 
       if (!this._session) {
+        CallKeepService.endCall();
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
         const message = `${userName} ${
           isInitiator ? 'stopped' : 'left'
         } the call`;
-
-        this.showToast(message);
-
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_ENDED_CALL);
+        this.showToast ? this.showToast(message) : null;
         resolve();
       }
     });
@@ -232,8 +271,10 @@ export default class CallService {
         this.outgoingCall.play();
         break;
       case 'incoming':
-        this.incomingCall.setNumberOfLoops(-1);
-        this.incomingCall.play();
+        if(AppState.currentState === 'active' || IS_ANDROID ) {
+          this.incomingCall.setNumberOfLoops(-1);
+          this.incomingCall.setVolume(1).play();
+        }
         break;
       case 'end':
         this.endCall.play();

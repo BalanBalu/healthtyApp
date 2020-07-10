@@ -7,9 +7,9 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
-import { toDataUrl  } from '../../../setup/helpers';
-import { MAX_DISTANCE_TO_COVER  } from '../../../setup/config';
-
+import { toDataUrl } from '../../../setup/helpers';
+import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
+import FastImage from 'react-native-fast-image'
 
 
 class Categories extends Component {
@@ -28,12 +28,12 @@ class Categories extends Component {
       let result = await catagries();
       if (result.success) {
         this.setState({ data: result.data, categoriesMain: result.data })
-        for(let i = 0 ; i< result.data.length; i++) {
+        for (let i = 0; i < result.data.length; i++) {
           const item = result.data[i];
           imageURL = item.imageBaseURL + item.category_id + '.png';
-          base64ImageDataRes =  await toDataUrl(imageURL)
+          base64ImageDataRes = await toDataUrl(imageURL)
           result.data[i].base64ImageData = base64ImageDataRes;
-          this.setState({  categoriesMain: result.data })
+          this.setState({ categoriesMain: result.data })
         }
       }
     } catch (e) {
@@ -44,30 +44,37 @@ class Categories extends Component {
   }
 
   navigateToCategorySearch(categoryName) {
-    console.log(categoryName);
     const { bookappointment: { locationCordinates } } = this.props;
-    let serachInputvalues = [{
-      type: 'category',
-      value: categoryName
-    },
-    {
-      type: 'geo',
-      value: {
-          coordinates: locationCordinates,
-          maxDistance: MAX_DISTANCE_TO_COVER
+    this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+      inputKeywordFromSearch: categoryName,
+      locationDataFromSearch: {
+        type: 'geo',
+        "coordinates": locationCordinates,
+        maxDistance: MAX_DISTANCE_TO_COVER
       }
-    }]
-    this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
+    })
+    // let serachInputvalues = [{
+    //   type: 'category',
+    //   value: categoryName
+    // },
+    // {
+    //   type: 'geo',
+    //   value: {
+    //       coordinates: locationCordinates,
+    //       maxDistance: MAX_DISTANCE_TO_COVER
+    //   }
+    // }]
+    // this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
   }
 
   filterCategories(searchValue) {
     console.log(this.state.data);
     const { categoriesMain } = this.state;
-    if(!searchValue) {
+    if (!searchValue) {
       this.setState({ searchValue, data: categoriesMain });
     } else {
-      const filteredCategories = categoriesMain.filter(ele => 
-         ele.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1 
+      const filteredCategories = categoriesMain.filter(ele =>
+        ele.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
       );
       this.setState({ searchValue, data: filteredCategories })
     }
@@ -77,70 +84,72 @@ class Categories extends Component {
   renderStickeyHeader() {
     return (
       <View style={{ width: '100%' }} >
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Doctors by their specialism</Text>
-            <Row style={styles.SearchRow}>
+        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Doctors by their specialism</Text>
+        <Row style={styles.SearchRow}>
 
-              <Col size={9.1} style={{ justifyContent: 'center', }}>
-                <Input
-                  placeholder="Specialism and Categories"
-                  style={styles.inputfield}
-                  placeholderTextColor="#e2e2e2"
-                  keyboardType={'email-address'}
-                  onChangeText={searchValue => this.filterCategories(searchValue)}
-                  underlineColorAndroid="transparent"
-                  blurOnSubmit={false}
-                />
-              </Col>
-              <Col size={0.9} style={styles.SearchStyle}>
-                <TouchableOpacity style={{ justifyContent: 'center' }}>
-                  <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
-                </TouchableOpacity>
-              </Col>
+          <Col size={9.1} style={{ justifyContent: 'center', }}>
+            <Input
+              placeholder="Specialism and Categories"
+              style={styles.inputfield}
+              placeholderTextColor="#e2e2e2"
+              keyboardType={'email-address'}
+              onChangeText={searchValue => this.filterCategories(searchValue)}
+              underlineColorAndroid="transparent"
+              blurOnSubmit={false}
+            />
+          </Col>
+          <Col size={0.9} style={styles.SearchStyle}>
+            <TouchableOpacity style={{ justifyContent: 'center' }}>
+              <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
+            </TouchableOpacity>
+          </Col>
 
-            </Row>
-            </View>
+        </Row>
+      </View>
     )
   }
   render() {
     const { user: { isLoading } } = this.props;
-    const { data  } = this.state;
+    const { data } = this.state;
 
-    
+
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
-          <View style={{  marginBottom: 10 }}>
-              <FlatList horizontal={false} numColumns={3}
-                data={this.state.data}
-                extraData={this.state}
-                ListHeaderComponent={this.renderStickeyHeader()}
-                renderItem={({ item, index }) =>
-                  <Col style={styles.mainCol}>
-                    <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
-                      style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                      <Image
-                        source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
-                        style={{
-                          width: 60, height: 60, alignItems: 'center'
-                        }}
-                      />
-                      <Text style={{ fontSize: 10, 
-                          textAlign: 'center', 
-                          fontWeight: '200', 
-                          marginTop: 5, 
-                         
-                          paddingLeft: 5, 
-                          paddingRight: 5, 
-                          paddingTop: 1,
-                          paddingBottom: 1 }}>{item.category_name}</Text>
-                    </TouchableOpacity>
-                  </Col>
-                }
-                keyExtractor={(item, index) => index.toString()}
-              />
+          <View style={{ marginBottom: 10 }}>
+            <FlatList horizontal={false} numColumns={3}
+              data={this.state.data}
+              extraData={this.state}
+              ListHeaderComponent={this.renderStickeyHeader()}
+              renderItem={({ item, index }) =>
+                <Col style={styles.mainCol}>
+                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
+                    style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
+                    <FastImage
+                      source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
+                      style={{
+                        width: 60, height: 60, alignItems: 'center'
+                      }}
+                    />
+                    <Text style={{
+                      fontSize: 10,
+                      textAlign: 'center',
+                      fontWeight: '200',
+                      marginTop: 5,
+
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                      paddingTop: 1,
+                      paddingBottom: 1
+                    }}>{item.category_name}</Text>
+                  </TouchableOpacity>
+                </Col>
+              }
+              keyExtractor={(item, index) => index.toString()}
+            />
           </View>
         </Content>
-    </Container>
+      </Container>
 
     )
   }

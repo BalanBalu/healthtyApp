@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL } from '../config';
+import { API_URL ,INVENTORY_API_URL} from '../config';
 
 export const postService = async(endPoint, data) => {
    let fullPath =  API_URL + endPoint;
@@ -51,4 +51,25 @@ export const updateUploadMultiPart = async(endPoint,formData) => {
   console.log(response)
   return response;
 
+}
+export const inventryPostService = async(endPoint, data) => {
+   let fullPath =  INVENTORY_API_URL + endPoint;
+   let resp = await axios.post(fullPath, data)
+   return resp;
+}
+
+export const inventoryGetService = async(endPoint) => {
+   let fullPath =  INVENTORY_API_URL + endPoint;
+   let resp = await axios.get(fullPath)
+   return resp;
+}
+export const inventoryPutService = async(endPoint, data) => {
+   let fullPath =  INVENTORY_API_URL + endPoint;
+   let resp = await axios.put(fullPath, data)
+   return resp;
+}
+export const inventoryDeleteService = async(endPoint, data) => {
+   let fullPath =  INVENTORY_API_URL + endPoint;
+   let resp = await axios.delete(fullPath, data)
+   return resp;
 }

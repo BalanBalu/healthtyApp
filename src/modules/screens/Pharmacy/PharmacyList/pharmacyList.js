@@ -6,7 +6,7 @@ import {  getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.ac
 import { connect } from 'react-redux';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import { getAddress } from  '../../../common';
-import { setCartItemCountOnNavigation } from '../CommomPharmacy';
+import { setCartItemCountOnNavigation,renderPharmacyImage,getKiloMeterCalculation } from '../CommomPharmacy';
 class PharmacyList extends Component {
     constructor(props) {
         super(props)
@@ -30,8 +30,10 @@ class PharmacyList extends Component {
             }
             const userId = await AsyncStorage.getItem('userId')
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
+            console.log('JSON.stringify(result)==============================pharmacylist')
+            console.log(JSON.stringify(result))
             this.setState({ isLoading: false })
-            console.log(result);
+           
             if (result.success) {
                 this.setState({ pharmacyData: result.data })
             }
@@ -49,6 +51,7 @@ class PharmacyList extends Component {
     }
     render() {
         const { isLoading, pharmacyData } = this.state;
+        const { bookappointment: { locationCordinates } } = this.props;
         return (
             <Container style={{ backgroundColor: '#f2f2f2' }}>
                 <Content style={{ padding: 10 }}>
@@ -57,12 +60,14 @@ class PharmacyList extends Component {
                             data={pharmacyData}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) =>
-                                <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10, }}>
+                                <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10,borderRadius: 2.5, }}>
                                     <Row onPress={() => this.goPharmacyMedicineList(item)}
                                     style={{ paddingBottom: 2 }}>
                                         <Col size={2}>
                                             <Image
-                                                source={require('../../../../../assets/images/apollopharmacy.jpeg')}
+                                            source={renderPharmacyImage(item.pharmacyInfo.profile_image)}
+                                           
+                                               
                                                 style={{
                                                     width: 70, height: 75, alignItems: 'flex-end'
                                                 }} />
@@ -74,7 +79,7 @@ class PharmacyList extends Component {
                                                     <Text style={styles.addressText}>{getAddress(item.pharmacyInfo.location)}</Text>
                                                 </Col>
                                                 <Col size={3}>
-                                                    <Text style={styles.kmText}>{item.km}</Text>
+                                                    <Text style={styles.kmText}>{getKiloMeterCalculation(item.pharmacyInfo.location.coordinates, locationCordinates)}</Text>
                                                 </Col>
                                             </Row>
                                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 5 }}>

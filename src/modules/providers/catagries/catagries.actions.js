@@ -1,4 +1,4 @@
-import { postService,getService } from '../../../setup/services/httpservices';
+import { postService, getService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 import { store } from '../../../setup/store';
 import axios from 'axios';
@@ -6,12 +6,13 @@ export const CATAGRIES_REQUEST = 'CATAGRIES/CATAGRIES_REQUEST'
 export const CATAGRIES_RESPONSE = 'CATAGRIES/CATAGRIES_RESPONSE'
 export const CATAGRIES_ERROR = 'CATAGRIES/CATAGRIES_ERROR'
 
-export async function getSpecialistDataSuggestions(userId, keyWord,locationData) {
+export async function getSpecialistDataSuggestions(type, SuggestionReqData) {
   try {
-    let endPoint = 'doctor/searchKeys/'+userId +'/'+keyWord;    
-    let response = await postService(endPoint, locationData);
+    // let endPoint = 'doctor/searchKeys/'+userId +'/'+keyWord;   // old path
+    let endPoint = 'V2/doctor/search/' + type; // new path
+    let response = await postService(endPoint, SuggestionReqData);
     let respData = response.data;
-        // console.log('respData'+JSON.stringify(respData))
+    // console.log('respData'+JSON.stringify(respData))
     return respData;
   } catch (e) {
     return {
@@ -21,36 +22,36 @@ export async function getSpecialistDataSuggestions(userId, keyWord,locationData)
   }
 }
 
-export async function catagries ( searchQueries = '') {
+export async function catagries(searchQueries = '') {
   try {
     store.dispatch({
       type: CATAGRIES_REQUEST,
-    })     
+    })
     let endPoint = 'category_services'
-    if(searchQueries !== '') {
+    if (searchQueries !== '') {
       endPoint = endPoint + '?' + searchQueries;
     }
-    console.log(endPoint);   
-    let response = await getService(endPoint); 
-    let respData = response.data;    
-   
-     // console.log(respData);
-      store.dispatch({        
-        type: CATAGRIES_RESPONSE,
-        isLoading:false,
-        success: true,     
-        message: respData.message
-      })
-      return respData;
-    
-  
-    
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+
+    // console.log(respData);
+    store.dispatch({
+      type: CATAGRIES_RESPONSE,
+      isLoading: false,
+      success: true,
+      message: respData.message
+    })
+    return respData;
+
+
+
   } catch (e) {
     store.dispatch({
       type: CATAGRIES_ERROR,
       message: e
-      }); 
-  }  
+    });
+  }
 }
-  
+
 

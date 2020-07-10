@@ -7,11 +7,13 @@ export const REVIEWS_RESPONSE = 'PROFILE/REVIEWS_RESPONSE'
 export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR';
 export const AVAILABLE_CREDIT_POINTS = 'PROFILE/AVAILABLE_CREDIT_POINTS';
 export const SET_REFER_CODE = 'PROFILE/SET_REFER_CODE';
+export const SET_USER_DATA_FOR_PREPARATION = 'PROFILE/SET_USER_DATA_FOR_PREPARATION';
 
 import { store } from '../../../setup/store'
 import { getService, putService, postService } from '../../../setup/services/httpservices';
 import { AuthService } from '../../screens/VideoConsulation/services';
 import NotifService from '../../../setup/NotifService';
+import { SET_USER } from '../auth/auth.actions';
 /*get doctor profile*/
 export async function fetchUserProfile(userId, fields, isLoading = true) {
   try {
@@ -65,6 +67,8 @@ export function storeBasicProfile(result) {
     email: result.email
   }))
 }
+
+
 
 // get user reviews
 
@@ -176,7 +180,7 @@ export async function getCurrentVersion(type) {
 
 
 export const getReferalPoints = async (userId) => {
-  let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob,connectycube"
+  let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob"
   let result = await fetchUserProfile(userId, fields);
  
   console.log("result.is_mobile_verified", result.is_mobile_verified)
@@ -192,9 +196,6 @@ export const getReferalPoints = async (userId) => {
       })
     }
     NotifService.updateDeviceToken(userId);
-    if(result.connectycube) {
-        AuthService.loginToConnctyCube(userId, result.connectycube)
-    }
     if (result.mobile_no == undefined) {
       return {
         hasProfileUpdated: false,
@@ -229,7 +230,12 @@ export const getReferalPoints = async (userId) => {
 
 
 
-
+export function setUserDataForPreparation(result) {
+  store.dispatch({
+    type: SET_USER_DATA_FOR_PREPARATION,
+    data: result
+  })
+}
 
 
 
