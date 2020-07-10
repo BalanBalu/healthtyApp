@@ -549,6 +549,8 @@ class LabConfirmation extends Component {
                                             }
                                             <DateTimePicker
                                                 mode={'time'}
+                                                minimumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime)}
+                                                maximumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotEndDateAndTime)}
                                                 date={this.state.pickByStartTime}
                                                 isVisible={this.state.isTimePickerVisible}
                                                 onConfirm={this.handleDatePicked}
