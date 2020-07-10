@@ -286,7 +286,7 @@ class PaymentPage extends Component {
                 })
             }
             else if (serviceType === SERVICE_TYPES.PHARMACY) {
-                this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState: this.props.navigation.state });
+
                 const orderOption = this.props.navigation.getParam('orderOption') || null
                 if (orderOption === 'pharmacyCart') {
                     let cart = await AsyncStorage.getItem('cartItems-' + this.userId) || []
@@ -302,7 +302,9 @@ class PaymentPage extends Component {
                     }
 
                     await AsyncStorage.removeItem('cartItems-' + this.userId);
+                  
                 }
+                  this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState:'CREATE_ORDER' })
                 Toast.show({
                     text: 'Payment Success',
                     type: 'success',

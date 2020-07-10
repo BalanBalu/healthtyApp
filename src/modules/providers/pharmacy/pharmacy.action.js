@@ -160,6 +160,23 @@ export async function getMedicineOrderDetails(orderId) {
   }
 }
 
+export async function getMedicineOrderDetailsByOrderId(orderId) {
+  try {
+
+    let endPoint = `/transaction/order/${orderId}`;
+ 
+    let response = await inventoryGetService(endPoint);
+ 
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 export async function getOrderTracking(orderNumber) {
   try {

@@ -13,7 +13,7 @@ import { getAddress } from '../../../common';
 import { getMedicineNameByProductName } from '../CommomPharmacy';
 import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER, IS_IOS } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
-import { getPurcharseRecomentation } from '../../../providers/pharmacy/pharmacy.action'
+import { deleteCartByIds } from '../../../providers/pharmacy/pharmacy.action'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { connect } from 'react-redux'
@@ -316,9 +316,22 @@ class MedicineCheckout extends Component {
 
         if (response.success) {
             if (this.props.navigation.getParam('orderOption') === 'pharmacyCart') {
+                let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                    if (cart.length != 0) {
+                        let cartData = JSON.parse(cart)
+                        let cartIds = []
+                        cartData.forEach(ele => {
+                            cartIds.push(ele.id)
+                        })
+                        deleteCartByIds(cartIds)
+
+
+                    }
+
+                   
                 await AsyncStorage.removeItem('cartItems-' + userId);
             }
-            this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState: this.props.navigation.state });
+            this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState:"CREATE_ORDER" });
             // this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
             Toast.show({
                 text: 'your order successfully requested',
