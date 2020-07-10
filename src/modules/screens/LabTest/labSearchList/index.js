@@ -17,8 +17,6 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { color } from 'react-native-reanimated';
 import moment from 'moment';
-console.disableYellowBox = true
-
 
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 let labListOrder = 'ASC';
@@ -473,6 +471,8 @@ class labSearchList extends Component {
 
             if (filterData.sub_category) {
                 selectedFiltesArray.push(subCategoryMatchedList);
+                console.log("selectedFiltesArray", selectedFiltesArray);
+
             }
             if (filterData.price) {
                 selectedFiltesArray.push(priceMatchedList);
@@ -715,78 +715,7 @@ class labSearchList extends Component {
                                                 </Col>
                                             </Row>
                                         </View>
-                                        {/* <Row style={{ marginTop: 10 }} >
-                                            <Col size={6}>
-                                                <Row style={styles.rowMainText}>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000' }}>Services</Text>
-                                                </Row>
-                                            </Col>
-                                            <Col size={4}></Col>
-                                        </Row> */}
-
-                                        {/* <Row style={{ marginTop: 10, paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3 }}>
-                                            <Col size={10}>
-                                                <TouchableOpacity onPress={() => this.toggle("Services")}>
-                                                    <Row >
-
-                                                        <Col size={10} style={styles.multiSelectStyle}>
-                                                            <SectionedMultiSelect
-                                                                styles={{
-                                                                    selectToggleText: {
-                                                                        color: '#909090',
-                                                                        fontSize: 12,
-                                                                        marginTop: 20,
-                                                                        height: 15
-
-                                                                    },
-                                                                    chipIcon: {
-                                                                        color: '#909090',
-                                                                    },
-
-                                                                }}
-                                                                items={this.state.categoryInfoList}
-                                                                uniqueKey='value'
-                                                                displayKey='value'
-                                                                selectText='Select Services'
-                                                                selectToggleText={{ fontSize: 10, }}
-                                                                searchPlaceholderText='Search Your Services'
-                                                                modalWithTouchable={true}
-                                                                showDropDowns={true}
-                                                                hideSearch={false}
-                                                                showRemoveAll={true}
-                                                                showChips={false}
-                                                                single={true}
-                                                                readOnlyHeadings={false}
-                                                                onSelectedItemObjectsChange={(selectedCategoryObj) => { this.onSelectedCategoryObjChange(selectedCategoryObj) }}
-
-                                                                onSelectedItemsChange={this.onSelectedCategoryChange}
-                                                                selectedItems={this.state.selectedCategory}
-                                                                colors={{ primary: '#18c971' }}
-                                                                showCancelButton={true}
-                                                                animateDropDowns={true}
-                                                                selectToggleIconComponent={
-                                                                    <Icon
-                                                                        name="ios-arrow-down"
-                                                                        style={{
-                                                                            fontSize: 20,
-                                                                            marginHorizontal: 6,
-                                                                            color: '#909090',
-                                                                            textAlign: 'center',
-                                                                            marginTop: 10,
-                                                                        }}
-                                                                    />
-                                                                }
-
-                                                                testID='languageSelected'
-                                                            />
-                                                        </Col>
-
-
-
-                                                    </Row>
-                                                </TouchableOpacity>
-                                            </Col>
-                                        </Row> */}
+                                       
                                         <Row style={{ marginTop: 10 }}>
                                             <Col size={6}>
                                                 <Row style={styles.rowMainText}>
@@ -797,7 +726,7 @@ class labSearchList extends Component {
                                         </Row>
                                         <Row style={{ marginTop: 10, paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3 }}>
                                             <Col size={10}>
-                                                <TouchableOpacity onPress={() => this.toggle("Services")}>
+                                                {/* <TouchableOpacity onPress={() => this.toggle("Services")}> */}
                                                     <Row >
 
                                                         <Col size={10} style={styles.multiSelectStyle}>
@@ -850,7 +779,7 @@ class labSearchList extends Component {
                                                             />
                                                         </Col>
                                                     </Row>
-                                                </TouchableOpacity>
+                                                {/* </TouchableOpacity> */}
                                             </Col>
                                         </Row>
                                         <View >
