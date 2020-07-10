@@ -17,6 +17,8 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { color } from 'react-native-reanimated';
 import moment from 'moment';
+console.disableYellowBox = true
+
 
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 let labListOrder = 'ASC';
@@ -47,7 +49,6 @@ class labSearchList extends Component {
             values: [3, 7],
             selected: [0, 1000],
             buttonEnable: false,
-            categoryInfoList: [],
             subCategoryInfoList: [],
             selectedCategory: [],
             selectedSubCategory: [],
@@ -340,60 +341,62 @@ class labSearchList extends Component {
 
     filterLabListData(labPreviousData) {
         const { filterData } = this.state;
-
         if (filterData != null) {
-            if (filterData.category) {
-                this.onSelectedCategoryChange(filterData.category[0].value)
-            }
             if (filterData.sub_category) {
                 this.onSelectedSubCategoryChange(filterData.sub_category[0].value)
             }
         }
-        const removeDupCategoriesFromList = [];
-        const categoryInfoList = [];
         const subCategoryInfoList = [];
         const removeDupSubCategoriesFromList = [];
         const filterPrice = [];
         let minPrice, maxPrice;
         this.setState({ modalVisible: true });
         labPreviousData.map(filterData => {
-            filterData.labCategories.map(categoryItem => {
-                if (!removeDupCategoriesFromList.includes(categoryItem.categoryInfo._id)) {
-                    removeDupCategoriesFromList.push(categoryItem.categoryInfo._id);
-                    const categoryObj = { id: categoryItem.categoryInfo._id, value: categoryItem.categoryInfo.category_name };
-                    categoryInfoList.push(categoryObj);
-                }
-                if (!removeDupSubCategoriesFromList.includes(categoryItem._id)) {
-                    removeDupSubCategoriesFromList.push(categoryItem._id);
-                    const subCategoryObj = { id: categoryItem._id, value: categoryItem.category_name };
-                    subCategoryInfoList.push(subCategoryObj);
-
-                }
-                if (categoryItem.price) {
-                    filterPrice.push(categoryItem.price);
-                    maxPrice = Math.max.apply(Math, filterPrice);
-                    minPrice = Math.min.apply(Math, filterPrice);
+            if (!removeDupSubCategoriesFromList.includes(filterData.labCatInfo._id)) {
+                removeDupSubCategoriesFromList.push(filterData.labCatInfo._id);
+                const subCategoryObj = { id: filterData.labCatInfo._id, category_name: filterData.labCatInfo.category_name, lab_test_categories_id: filterData.labCatInfo.lab_test_categories_id, };
+                subCategoryInfoList.push(subCategoryObj);
+            }
+            if (filterData.labCatInfo.price) {
+                filterPrice.push(filterData.labCatInfo.price);
+                maxPrice = Math.max.apply(Math, filterPrice);
+                minPrice = Math.min.apply(Math, filterPrice);
 
 
-                }
-            })
+            }
         })
-
-        this.setState({ categoryInfoList, subCategoryInfoList, maxPrice, minPrice });
-
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.priceTagStep = this.calculatePriceDragStep(minPrice, maxPrice)
+        this.setState({ subCategoryInfoList, maxPrice, minPrice });
     }
-    onSelectedCategoryObjChange = (selectedCategoryObj) => {
-        if (selectedCategoryObj.length) {
-            filterData.category = selectedCategoryObj
-        }
-        else {
-            delete filterData.category;
-        }
 
-    }
-    onSelectedCategoryChange = async (selectedItems) => {
 
-        await this.setState({ selectedCategory: selectedItems })
+    calculatePriceDragStep = (minPrice, maxPrice) => {
+        const diff = maxPrice - minPrice;
+        if (diff >= 0 && diff <= 10) {
+            return 1
+        }
+        else if (diff >= 10 && diff <= 50) {
+            return 5
+        }
+        else if (diff >= 50 && diff <= 100) {
+            return 10
+        }
+        else if (diff >= 100 && diff <= 250) {
+            return 25
+        }
+        else if (diff >= 250 && diff <= 500) {
+            return 50
+        }
+        else if (diff >= 500 && diff <= 1000) {
+            return 100
+        }
+        else if (diff >= 1000 && diff <= 5000) {
+            return 500
+        } else {
+            return this.maxPrice / 4
+        }
     }
 
     onSelectedSubCategoryObjChange = (selectedSubCategoryObj) => {
@@ -410,61 +413,70 @@ class labSearchList extends Component {
     }
 
     onSelecteTestOption = (value) => {
-        if (value == 'Test at Home') {
+        if (value =='Test at Home') {
             filterData.is_inhome_test = true;
         }
         else {
-            filterData.is_inhome_test = false;
+            delete filterData.is_inhome_test;
         }
     }
+
+    multiSliderValuesChange = (values) => {
+        this.setState({ values });
+        this.setState({ minPrice: values[0], maxPrice: values[1] })
+        if (values.length) {
+            filterData.price = values
+        }
+        else {
+            delete filterData.price;
+        }
+    }
+
     applyFilterData = () => {
         const { labTestData: { labPreviousData } } = this.props;
         this.setState({ modalVisible: false, filterData: filterData });
+
         let testOptionList = [];
-        let categoryMatchedList = [];
         let subCategoryMatchedList = [];
         let priceMatchedList = [];
         labPreviousData.forEach((labEle) => {
             let labIds = labEle.labInfo.lab_id
-            if (filterData.is_inhome_test || filterData.is_inhome_test == false) {
+            if (filterData.is_inhome_test) {
                 if (labEle.labInfo.is_inhome_test && filterData.is_inhome_test) {
                     testOptionList.push(labIds);
-                } else if (labEle.labInfo.is_inhome_test == false && filterData.is_inhome_test == false) {
-                    testOptionList.push(labIds);
                 }
-
-            }
-            if (filterData.category) {
-                let categoryArray = labEle.labCategories ? labEle.labCategories : [];
-                categoryArray.forEach((labCategoryEle) => {
-                    if (labCategoryEle.categoryInfo._id === filterData.category[0].id) {
-                        categoryMatchedList.push(labIds)
-                    }
-                })
             }
             if (filterData.sub_category) {
-                let subCategoryArray = labEle.labCategories ? labEle.labCategories : [];
+                let subCategoryArray = filterData.sub_category ? filterData.sub_category : [];
+
                 subCategoryArray.forEach((labsubCategoryEle) => {
-                    if (labsubCategoryEle.category_name === filterData.sub_category[0].value) {
-                        subCategoryMatchedList.push(labIds)
+                    if (labEle.labCatInfo._id === labsubCategoryEle.id) {
+                    subCategoryMatchedList.push(labIds)
+                }
+            })
+            }
+            if (filterData.price) {
+                let priceArray = labEle.labCategories ? labEle.labCategories : [];
+                priceArray.forEach((labPriceEle) => {
+                    if (labPriceEle.offeredPrice >= filterData.price[0] && labPriceEle.offeredPrice <= filterData.price[1]) {
+                        priceMatchedList.push(labIds)
                     }
                 })
             }
+
         })
         let selectedFiltesArray = [];
         if (filterData) {
             if (filterData.is_inhome_test || filterData.is_inhome_test == false) {
                 selectedFiltesArray.push(testOptionList);
             }
-            if (filterData.category) {
-                selectedFiltesArray.push(categoryMatchedList);
-            }
+
             if (filterData.sub_category) {
                 selectedFiltesArray.push(subCategoryMatchedList);
             }
-            // if (filterData.price) {
-            //     selectedFiltesArray.push(categoryMatchedList);
-            // }
+            if (filterData.price) {
+                selectedFiltesArray.push(priceMatchedList);
+            }
             if (filterData) {
                 let filteredListArray = intersection(selectedFiltesArray);
                 let filteredLabData = [];
@@ -487,15 +499,10 @@ class labSearchList extends Component {
         }
 
     }
-    multiSliderValuesChange = (values) => {
-        this.setState({ values });
-    }
+
     onValueChange(value) {
         this.setState({ selected: value });
     }
-    // handleChange = (sliderValues) => {
-    //     this.setState({ selected:sliderValues });
-    // };
     renderLabListCards(item) {
 
         const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
@@ -614,19 +621,6 @@ class labSearchList extends Component {
             </View>
         )
     }
-    renderScale = () => {
-        const items = [];
-        for (let i = this.state.minPrice; i <= this.state.maxPrice; i++) {
-            items.push(
-                <Item
-                    value={i}
-                    first={this.state.minPrice}
-                    second={this.state.maxPrice}
-                />
-            );
-        }
-        return items;
-    }
     render() {
         const { labTestData: { patientWishListLabIds, labListItemData, labPreviousData } } = this.props;
 
@@ -710,14 +704,8 @@ class labSearchList extends Component {
                                                 <Col size={6} >
                                                     <Row style={{ marginTop: 10, paddingLeft: 5 }}>
                                                         <Col size={5}>
-                                                            <TouchableOpacity onPress={() => this.onSelecteTestOption("Test at Home")} style={styles.homeTextButton}>
+                                                            <TouchableOpacity onPress={() => this.onSelecteTestOption('Test at Home')} style={styles.homeTextButton}>
                                                                 <Text style={styles.innerTexts}>Test at Home</Text>
-
-                                                            </TouchableOpacity>
-                                                        </Col>
-                                                        <Col size={5} style={{ marginLeft: 5 }}>
-                                                            <TouchableOpacity onPress={() => this.onSelecteTestOption("Test at Lab")} style={styles.labTextButton}>
-                                                                <Text style={styles.innerTexts}>Test at Lab</Text>
 
                                                             </TouchableOpacity>
                                                         </Col>
@@ -727,16 +715,16 @@ class labSearchList extends Component {
                                                 </Col>
                                             </Row>
                                         </View>
-                                        <Row style={{ marginTop: 10 }} >
+                                        {/* <Row style={{ marginTop: 10 }} >
                                             <Col size={6}>
                                                 <Row style={styles.rowMainText}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000' }}>Services</Text>
                                                 </Row>
                                             </Col>
                                             <Col size={4}></Col>
-                                        </Row>
+                                        </Row> */}
 
-                                        <Row style={{ marginTop: 10, paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3 }}>
+                                        {/* <Row style={{ marginTop: 10, paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3 }}>
                                             <Col size={10}>
                                                 <TouchableOpacity onPress={() => this.toggle("Services")}>
                                                     <Row >
@@ -798,7 +786,7 @@ class labSearchList extends Component {
                                                     </Row>
                                                 </TouchableOpacity>
                                             </Col>
-                                        </Row>
+                                        </Row> */}
                                         <Row style={{ marginTop: 10 }}>
                                             <Col size={6}>
                                                 <Row style={styles.rowMainText}>
@@ -826,8 +814,8 @@ class labSearchList extends Component {
                                                                     },
                                                                 }}
                                                                 items={this.state.subCategoryInfoList}
-                                                                uniqueKey='value'
-                                                                displayKey='value'
+                                                                uniqueKey='category_name'
+                                                                displayKey='category_name'
                                                                 selectText='Select Sub Category'
                                                                 selectToggleText={{ fontSize: 10, }}
                                                                 searchPlaceholderText='Select Sub Category'
@@ -836,7 +824,7 @@ class labSearchList extends Component {
                                                                 hideSearch={false}
                                                                 showRemoveAll={true}
                                                                 showChips={false}
-                                                                single={true}
+                                                                // single={true}
                                                                 readOnlyHeadings={false}
                                                                 onSelectedItemObjectsChange={(selectedSubCategoryObj) => { this.onSelectedSubCategoryObjChange(selectedSubCategoryObj) }}
 
@@ -876,9 +864,7 @@ class labSearchList extends Component {
                                                 <Col size={4}></Col>
                                             </Row>
                                             <View >
-                                                {/* <View style={[styles.column, { marginLeft: 40, marginRight:40 }]}>
-                                                    {this.renderScale()}
-                                                </View> */}
+
                                                 <Row style={{ paddingLeft: 5, paddingRight: 5, paddingTop: 5, }}>
                                                     <Col size={10}>
                                                         <Row>
@@ -889,14 +875,12 @@ class labSearchList extends Component {
                                                             </Col>
                                                             <Col size={8} style={{ marginTop: -12, marginLeft: 8 }}>
                                                                 <MultiSlider
-                                                                    values={[this.state.values[0], this.state.values[1]]}
+                                                                    values={[this.state.minPrice, this.state.maxPrice]}
                                                                     sliderLength={275}
-                                                                    onValuesChange={this.multiSliderValuesChange}
-                                                                    // onValuesChange={this.handleChange}
-                                                                    // onValuesChangeFinish={this.multiSliderValuesChange}
-                                                                    min={0}
-                                                                    max={10}
-                                                                    step={1}
+                                                                    onValuesChange={(value) => this.multiSliderValuesChange(value)}
+                                                                    min={this.minPrice || 0}
+                                                                    max={this.maxPrice || 0}
+                                                                    step={this.priceTagStep}
                                                                     touchDimensions={{ height: 50, width: 50, borderRadius: 15, slipDisplacement: 200 }}
                                                                     customMarkerRight={(e) => {
                                                                         return (<CustomSliderMarkerRight
