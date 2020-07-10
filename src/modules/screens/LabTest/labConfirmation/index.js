@@ -345,9 +345,38 @@ class LabConfirmation extends Component {
         this.setState({ patientDetails: temp });
     }
     handleDatePicked = date => {
-        this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
-        console.log("pickByStartTime", this.state.pickByStartTime);
-
+        const { packageDetails: {selectedSlotItem : { slotEndDateAndTime, slotStartDateAndTime } } } = this.state;
+        const startDate = setDateTime(slotStartDateAndTime);
+        const endDate = setDateTime(slotEndDateAndTime);
+        const valid = startDate <= date && endDate >= date;
+        if(valid === false) {
+            Toast.show({
+                text: 'Please choose the time betwenn' + getTimeWithMeredian(startDate) + ' and ' + getTimeWithMeredian(endDate),
+                duration: 2000, 
+                type: 'danger'  
+            });
+            return;    
+        } else {
+            this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
+        }
+        
+        function setDateTime (dateStr) {
+            const date = new Date(dateStr);
+            const currentDate = new Date();
+            date.setDate(currentDate.getDate())
+            date.setMonth(currentDate.getMonth())
+            date.setFullYear(currentDate.getFullYear())
+            date.setSeconds(0)
+            return date;
+        }
+        function getTimeWithMeredian(dateTime) {
+            var currentDate = new Date(dateTime);
+            var hour = currentDate.getHours();
+            var meridiem = hour >= 12 ? "PM" : "AM";
+            const currentTime = ((hour + 11) % 12 + 1) + ":" + currentDate.getMinutes() + meridiem;
+            return currentTime;
+        }
+        
     }
     render() {
         const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, buttonEnable, pickByStartTime, } = this.state;
@@ -549,6 +578,8 @@ class LabConfirmation extends Component {
                                             }
                                             <DateTimePicker
                                                 mode={'time'}
+                                                display="spinner"
+                                                timePickerModeAndroid={'spinner'}
                                                 minimumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime)}
                                                 maximumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotEndDateAndTime)}
                                                 date={this.state.pickByStartTime}
