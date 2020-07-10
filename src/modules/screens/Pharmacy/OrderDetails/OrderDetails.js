@@ -6,7 +6,7 @@ import StarRating from 'react-native-star-rating';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, BackHandler } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { getMedicineOrderDetails, upDateOrderData, getOrderTracking,getMedicineOrderDetailsByOrderId } from '../../../providers/pharmacy/pharmacy.action';
+import { getMedicineOrderDetails, upDateOrderData, getOrderTracking, getMedicineOrderDetailsByOrderId } from '../../../providers/pharmacy/pharmacy.action';
 import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName, renderMedicineImageByimageUrl } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
@@ -41,10 +41,10 @@ class OrderDetails extends Component {
     async componentDidMount() {
         const { navigation } = this.props;
         const prevState = navigation.getParam('prevState') || null;
-        
-       
-            BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
-        
+
+
+        BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
+
 
         let orderNumber = this.props.navigation.getParam('serviceId') || null
 
@@ -60,16 +60,16 @@ class OrderDetails extends Component {
     onBackPress = () => {
         try {
             const { dispatch, navigation } = this.props;
-
+        
             const prevState = navigation.getParam('prevState') || null;
-
+         
             if (prevState === 'CREATE_ORDER') {
                 navigation.navigate('Home');
                 return true;
 
             } else {
-                // navigation.navigate('OrderDetails');
-                return false;
+                 navigation.pop();
+                return true;
             }
         }
         catch (e) {
@@ -82,17 +82,17 @@ class OrderDetails extends Component {
     async medicineOrderDetails(orderNumber, getOderSlap) {
         try {
             this.setState({ isLoading: true });
-            let result=null;
+            let result = null;
             let userId = await AsyncStorage.getItem('userId')
-            const fromNotification=this.props.navigation.getParam('fromNotification') ||false
-            if(fromNotification){
-            result = await getMedicineOrderDetailsByOrderId(orderNumber);
-            }else{
-                 result = await getMedicineOrderDetails(orderNumber);
+            const fromNotification = this.props.navigation.getParam('fromNotification') || false
+            if (fromNotification) {
+                result = await getMedicineOrderDetailsByOrderId(orderNumber);
+            } else {
+                result = await getMedicineOrderDetails(orderNumber);
             }
             console.log(JSON.stringify(result))
 
-            if (result!==null) {
+            if (result !== null) {
 
                 await this.setState({ orderDetails: result });
                 this.getUserReport()
@@ -280,7 +280,8 @@ class OrderDetails extends Component {
             <Container style={styles.container}>
                 <NavigationEvents
                     onWillFocus={payload => { this.backNavigation(payload) }}
-                  
+
+
 
                 />
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
