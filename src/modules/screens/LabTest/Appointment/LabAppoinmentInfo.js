@@ -275,7 +275,7 @@ class LabAppointmentInfo extends Component {
                       </Row>
                     </Col>
                   </Row> :
-                  data.appointment_status == 'PAYMENT_FAILED' ?
+                  data.appointment_status == 'PAYMENT_FAILED' || data.appointment_status == 'PAYMENT_IN_PROGRESS'  ?
                     <Row>
                       <Col size={7}>
                         <Row style={{ marginTop: 10 }}>

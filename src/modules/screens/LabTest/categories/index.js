@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { toDataUrl } from '../../../../setup/helpers';
-import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, Alert } from 'react-native';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getLabTestCateries } from '../../../providers/lab/lab.action';
 import FastImage from 'react-native-fast-image'
@@ -22,8 +22,21 @@ class LabCategories extends PureComponent {
   }
   getLabCategories = async () => {
     try {
-      const { bookappointment: { locationCordinates } } = this.props;
-      console.log("locationCordinates", locationCordinates)
+      const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
+      console.log("locationCordinates", isLocationSelected)
+      if (!isLocationSelected) {
+        Alert.alert(
+          "Location Warning",
+          "The Location is Not choose, To continue Please choose your Location",
+          [
+            { text: "Cancel" },
+            {
+              text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
+            }
+          ],
+        );
+        return
+      }
       let locationData = {
         "coordinates": locationCordinates,
         "maxDistance": MAX_DISTANCE_TO_COVER
@@ -40,9 +53,21 @@ class LabCategories extends PureComponent {
     }
   }
   onPressCatItem = async (type, value) => {	
-    const { bookappointment: { locationCordinates } } = this.props;
+    const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
     console.log("locationCordinates", locationCordinates)
-    
+    if (!isLocationSelected) {
+      Alert.alert(
+        "Location Warning",
+        "The Location is Not choose, To continue Please choose your Location",
+        [
+          { text: "Cancel" },
+          {
+            text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
+          }
+        ],
+      );
+      return
+    }
     const inputDataBySearch = [	
       {	
         type: 'geo',	
@@ -58,7 +83,6 @@ class LabCategories extends PureComponent {
         value	
       })	
     }
-    console.log('cate inputDataBySearch=====>', inputDataBySearch)	
     this.props.navigation.navigate('LabSearchList', { inputDataFromLabCat: inputDataBySearch })
   
   }
