@@ -237,12 +237,39 @@ export default styles = StyleSheet.create({
         borderRadius: 5
     },
     doneButton: {
-        fontFamily: 'OpenSans',
-        fontSize: 15,
-        color: '#7F49C3',
-        textAlign: 'center',
-        fontWeight: '700'
+            color: '#FFFFFF',
+            fontFamily: 'OpenSans',
+            fontSize: 13,
+            textAlign: 'center',
+            fontWeight: '700'
     },
+
+    defaultdoneButton: {
+        color: '#775DA3',
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        textAlign: 'center',
+        fontWeight: '500'
+    },
+
+    viewButtonBgGreeen: {
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 5,
+        paddingRight: 5,
+        borderRadius: 15,
+        backgroundColor: '#775DA3'
+    },
+    viewButtonBgGray: {
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 5,
+        paddingRight: 5,
+        borderRadius: 15,
+        borderColor: '#775DA3',
+        borderWidth: 0.5
+    },
+
     customText:
     {
         fontFamily: 'OpenSans',
