@@ -165,29 +165,23 @@ class MyAppoinmentList extends Component {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
 				skip: this.state.skip,
-				limit: this.state.limit,
-				sort: -1
+				limit:this.state.limit,
+				sort: -1,
+				reviewInfo:true
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
 			console.log("===========================================================")
 			console.log(JSON.stringify(pastAppointmentResult))
-			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
+	
 
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
-				viewUserReviewResult = viewUserReviewResult.data;
+			
 
 				let doctorInfo = new Map();
-				let reviewRate = new Map();
-				if (viewUserReviewResult != undefined) {
-					viewUserReviewResult.map(review => {
-						reviewRate.set(review.appointment_id, {
-							ratting: review.overall_rating
-						})
-
-					})
-				}
+			
+				
 				let doctorIds = getAllId(pastAppointmentResult)
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
@@ -212,28 +206,18 @@ class MyAppoinmentList extends Component {
 				});
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
-
-					let ratting;
-					if (doctorData.is_review_added == true) {
-						let rating = reviewRate.get(doctorData._id);
-						ratting = rating.ratting;
-
-					}
 					let details = doctorInfo.get(doctorData.doctor_id)
+
 					pastDoctorDetails.push({
 						appointmentResult: doctorData,
 						specialist: details.specialist,
 						degree: details.degree,
-						ratting: ratting,
 						prefix: details.prefix,
 						profile_image: details.profile_image
-
 					});
 				}
 				)
-				// pastDoctorDetails.sort(function (firstVarlue, secandValue) {
-				// 	return firstVarlue.appointmentResult.appointment_starttime > secandValue.appointmentResult.appointment_starttime ? -1 : 0
-				// })
+			
 				let tempData = this.state.pastData.concat(pastDoctorDetails)
 				await this.setState({
 					pastData: tempData, data: tempData, isLoading: false
@@ -482,7 +466,7 @@ class MyAppoinmentList extends Component {
 																</Text>
 
 																{selectedIndex == 1 &&
-																	item.ratting != undefined && (
+																	item.appointmentResult.reviewInfo != undefined &&item.appointmentResult.reviewInfo.overall_rating!==undefined&& (
 
 																		<StarRating
 																			fullStarColor="#FF9500"
@@ -493,7 +477,7 @@ class MyAppoinmentList extends Component {
 																			}}
 																			disabled={false}
 																			maxStars={5}
-																			rating={item.ratting}
+																			rating={item.appointmentResult.reviewInfo.overall_rating}
 
 																		/>
 																	)}
