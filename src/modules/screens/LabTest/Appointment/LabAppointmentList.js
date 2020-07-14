@@ -258,7 +258,7 @@ class LabAppointmentList extends Component {
                                     }}>No appoinments are scheduled
 								</Text>
                                     <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
-                                        <Button style={[styles.bookingButton, styles.customButton]} onPress={() => this.props.navigation.navigate("Home")
+                                        <Button style={[styles.bookingButton, styles.customButton]} onPress={() => this.props.navigation.navigate("Lab Test")
                                         } testID='navigateToHome'>
                                             <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
                                         </Button>
