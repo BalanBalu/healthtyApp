@@ -313,7 +313,7 @@ class labSearchList extends Component {
             })
             return;
         }
-
+        let fee = (parseInt(labCatInfo.branch_details.price) - ((parseInt(labCatInfo.branch_details.offer) / 100) * parseInt(labCatInfo.branch_details.price)))
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo.lab_test_categories_id,
@@ -335,12 +335,7 @@ class labSearchList extends Component {
         labItemData.labId = labInfo.lab_id;
         labItemData.slotData = this.availableSlotsDataMap.get(String(labInfo.lab_id)) || {};
         let reqLabBookAppointmentData = { ...labItemData }
-        console.log("reqLabBookAppointmentData", reqLabBookAppointmentData);
-        store.dispatch({
-            type: SET_SINGLE_LAB_ITEM_DATA,
-            data: reqLabBookAppointmentData
-        });
-        this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
+        this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry, singleLabItemData: reqLabBookAppointmentData });
     }
 
 
@@ -409,7 +404,7 @@ class labSearchList extends Component {
 
     }
     onSelectedSubCategoryChange = (selectedItems) => {
-        this.setState({ selectedSubCategory: selectedItems, disabled:false })
+        this.setState({ selectedSubCategory: selectedItems, disabled: false })
     }
 
     onSelecteTestOption = (value) => {
@@ -423,7 +418,7 @@ class labSearchList extends Component {
     }
 
     multiSliderValuesChange = (values) => {
-        this.setState({ values, disabled: false,minPrice: values[0], maxPrice: values[1] })
+        this.setState({ values, disabled: false, minPrice: values[0], maxPrice: values[1] })
         if (values.length) {
             filterData.price = values
         }
@@ -508,7 +503,7 @@ class labSearchList extends Component {
         this.setState({
             selectedSubCategory: [],
             disabled: true,
-           
+
         });
         filterData = {};
 
@@ -849,8 +844,8 @@ class labSearchList extends Component {
                                                         <Row>
                                                             <Col size={5} style={{ marginLeft: 20 }}>
                                                                 <TouchableOpacity disabled={selectedSubCategory.length != 0 || values.length != 0 || testOption != '' ? false : true}
-                                                                 style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}
-                                                                 onPress={() => this.clearFilteredData()}>
+                                                                    style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}
+                                                                    onPress={() => this.clearFilteredData()}>
                                                                     <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>CLEAR</Text>
                                                                 </TouchableOpacity>
                                                             </Col>
