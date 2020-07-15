@@ -269,20 +269,7 @@ class LabConfirmation extends Component {
 
             }
             let patientData = [];
-            // let startTime;
-        //     if (packageDetails.appointment_status == undefined) {
-        //     if (!this.state.startDatePlaceholder) {
-        //         Toast.show({
-        //             text: 'Kindly select your appointment time',
-        //             type: 'warning',
-        //             duration: 3000
-        //         })
-        //         return false;
-        //     } else {
-        //         let startTimeByFormate = formatDate(this.state.pickByStartTime, 'HH:mm:ss')
-        //         startTime = moment(packageDetails.selectedSlotItem.slotDate + 'T' + startTimeByFormate)
-        //     }
-        // }
+            
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
