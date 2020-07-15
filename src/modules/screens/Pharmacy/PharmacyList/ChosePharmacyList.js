@@ -121,6 +121,7 @@ class ChosePharmacyList extends Component {
         }
     }
     onProceedToPayment = () => {
+      
         const { selectedPharmacy, pharmacyData, prescriptionDetails } = this.state;
 
         if (selectedPharmacy === -1) {
@@ -130,13 +131,11 @@ class ChosePharmacyList extends Component {
                 duration: 3000
             })
         } else {
-            let temp = [];
-
             let value = pharmacyData[selectedPharmacy];
-
+          
             this.props.navigation.navigate("MedicineCheckout", {
                 pharmacyInfo: value.pharmacyInfo, isPrescription: true, hasChosePharmacyReload: true, medicineDetails: value.pharmacyAvailable
-            })
+            });
         }
     }
     filterPharmacies(searchValue) {

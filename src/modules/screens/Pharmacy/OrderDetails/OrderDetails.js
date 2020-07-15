@@ -60,15 +60,15 @@ class OrderDetails extends Component {
     onBackPress = () => {
         try {
             const { dispatch, navigation } = this.props;
-        
+
             const prevState = navigation.getParam('prevState') || null;
-         
+
             if (prevState === 'CREATE_ORDER') {
                 navigation.navigate('Home');
                 return true;
 
             } else {
-                 navigation.pop();
+                navigation.pop();
                 return true;
             }
         }
@@ -90,7 +90,8 @@ class OrderDetails extends Component {
             } else {
                 result = await getMedicineOrderDetails(orderNumber);
             }
-            console.log(JSON.stringify(result))
+            console.log('ccgjdfvsfdgfhg')
+console.log(JSON.stringify(result))
 
             if (result !== null) {
 
@@ -99,6 +100,7 @@ class OrderDetails extends Component {
                 if (getOderSlap) {
 
                     let statusSlap = await getOrderTracking(result.orderNumber)
+                    console.log(JSON.stringify(statusSlap))
 
 
 
@@ -226,6 +228,7 @@ class OrderDetails extends Component {
 
         if (result) {
             let getOrderSlap = true;
+            await AsyncStorage.setItem('hasReload','true');
             this.medicineOrderDetails(orderDetails.orderNumber, getOrderSlap)
         } else {
             Toast.show({
@@ -335,7 +338,7 @@ class OrderDetails extends Component {
                                         <Col size={9.3}>
                                             <View style={{ marginTop: -3 }}>
                                                 <Text style={styles.trackingText}>{statusBar[item.status].status}</Text>
-                                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{formatDate(item.updatedDate, ' Do MMMM YYYY ') + ' at ' + formatDate(item.status_update_date, 'h:mm:ss a')}</Text>
+                                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{formatDate(item.updatedDate, ' Do MMMM YYYY ') + ' at ' + formatDate(item.updatedDate, 'h:mm:ss a')}</Text>
                                             </View>
 
                                         </Col>
@@ -509,7 +512,7 @@ class OrderDetails extends Component {
                             </TouchableOpacity>
                         </View>
                     }
-                    {(orderDetails.status === 'DELIVERED' && orderDetails.rating !== null) || orderDetails.rating !== null ?
+                    {orderDetails.status === 'DELIVERED' && orderDetails.rating !== null&& orderDetails.rating !== 0  ?
                         <View>
                             <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Review</Text>
 

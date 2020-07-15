@@ -3,6 +3,7 @@ import {
     Container, Content, Text, Icon, View, Card, Thumbnail, Item, Button, Footer
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
+import { NavigationEvents } from 'react-navigation';
 import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, Platform, ScrollView,ActivityIndicator } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
@@ -113,12 +114,25 @@ class MyOrdersList extends Component {
           </View>
         );
       }
+      async backNavigation() {
+        let hasReload = await AsyncStorage.getItem('hasReload')||false;
+     
+        if(hasReload){
+            this.setState({ data: [],isLoading: true, pagination: 0})
+            await AsyncStorage.removeItem('hasReload');
+            
+            this.componentDidMount()
 
+        }
+    }
     render() {
         const { data, isLoading } = this.state;
        
         return (
             <Container style={{ backgroundColor: '#E6E6E6', flex: 1 }}>
+                 <NavigationEvents
+                    onWillFocus={payload => { this.backNavigation(payload) }}
+                />
                 <ScrollView
 
                  style={{flex: 1}}

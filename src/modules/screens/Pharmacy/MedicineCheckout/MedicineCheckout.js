@@ -50,7 +50,7 @@ class MedicineCheckout extends Component {
                 return
             }
             const medicineDetails = navigation.getParam('medicineDetails') || [];
-           
+
             const isPrescription = navigation.getParam('isPrescription') || false
             let prescriptionDetails = null
             if (isPrescription === true) {
@@ -103,7 +103,7 @@ class MedicineCheckout extends Component {
                 }
                 deliveryAddressArray.unshift(defaultAddressObject);
             }
-            
+
             await this.setState({ deliveryAddressArray })
             this.selectedItem(this.state.itemSelected)
             this.setState({ isLoading: false });
@@ -131,9 +131,9 @@ class MedicineCheckout extends Component {
     }
 
     onProceedToPayment(navigationToPayment) {
-      
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription,  deliveryDetails, pharmacyInfo, h1ProductData } = this.state;
-     
+
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, deliveryDetails, pharmacyInfo, h1ProductData } = this.state;
+
         let isH1Product = false
 
         if (medicineDetails.length === 0 && isPrescription === false) {
@@ -168,13 +168,13 @@ class MedicineCheckout extends Component {
             return false
 
         }
-       
+
         let medicineOrderData = [];
         let amount = 0;
         if (isPrescription !== true) {
             amount = medicineDetails.map(ele => {
                 medicineOrderData.push(
-                    ele.item  
+                    ele.item
                 )
                 return ele.item.totalPrice
             }).reduce(
@@ -210,12 +210,12 @@ class MedicineCheckout extends Component {
         if (itemSelected === 1) {
 
             paymentPageRequestData.bookSlotDetails.pharmacyId = pharmacyInfo.pharmacy_id || null
-           
+
         }
         if (isPrescription === true) {
             paymentPageRequestData.bookSlotDetails.prescriptions = this.state.prescriptionDetails.prescriptionData
         }
-    
+
 
         if (navigationToPayment === true) {
             paymentPageRequestData.orderOption = this.props.navigation.getParam('orderOption') || null
@@ -231,10 +231,10 @@ class MedicineCheckout extends Component {
                 return ele.item.totalPrice
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
-         
+
             this.setState({
                 medicineTotalAmount: amount,
-               
+
             })
         } else {
             this.setState({
@@ -263,11 +263,11 @@ class MedicineCheckout extends Component {
             if (this.state.pharmacyInfo !== null) {
                 this.setState({ medicineTotalAmountwithDeliveryChage: this.state.medicineTotalAmount, itemSelected: value, selectedAddress: this.state.pharmacyInfo })
             } else {
-                let navigateData=[]
-                if(!this.state.isPrescription){
-                    navigateData=this.state.medicineDetails
+                let navigateData = []
+                if (!this.state.isPrescription) {
+                    navigateData = this.state.medicineDetails
                 }
-                this.props.navigation.navigate('ChosePharmacyList',{medicineOrderData:navigateData})
+                this.props.navigation.navigate('ChosePharmacyList', { medicineOrderData: navigateData })
             }
         }
     }
@@ -286,10 +286,11 @@ class MedicineCheckout extends Component {
                     let pharmacyInfo = navigation.getParam('pharmacyInfo')
                     pharmacyInfo.address = pharmacyInfo.location.address;
                     pharmacyInfo.full_name = pharmacyInfo.name;
-                    if(this.state.isPrescription===false){
+                    if (this.state.isPrescription === false) {
                         const medicineDetails = navigation.getParam('medicineDetails') || [];
-                        this.setState({medicineDetails})
-                        await this.getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription)
+                        this.setState({ medicineDetails })
+                        await this.getdeliveryWithMedicineAmountCalculation(medicineDetails, this.state.isPrescription)
+                        this.selectedItem(1)
                     }
 
                     this.setState({ pharmacyInfo: pharmacyInfo, selectedAddress: pharmacyInfo, itemSelected: 1 })
@@ -317,21 +318,21 @@ class MedicineCheckout extends Component {
         if (response.success) {
             if (this.props.navigation.getParam('orderOption') === 'pharmacyCart') {
                 let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
-                    if (cart.length != 0) {
-                        let cartData = JSON.parse(cart)
-                        let cartIds = []
-                        cartData.forEach(ele => {
-                            cartIds.push(ele.id)
-                        })
-                        deleteCartByIds(cartIds)
+                if (cart.length != 0) {
+                    let cartData = JSON.parse(cart)
+                    let cartIds = []
+                    cartData.forEach(ele => {
+                        cartIds.push(ele.id)
+                    })
+                    deleteCartByIds(cartIds)
 
 
-                    }
+                }
 
-                   
+
                 await AsyncStorage.removeItem('cartItems-' + userId);
             }
-            this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState:"CREATE_ORDER" });
+            this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState: "CREATE_ORDER" });
             // this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
             Toast.show({
                 text: 'your order successfully requested',
@@ -391,7 +392,7 @@ class MedicineCheckout extends Component {
         try {
             const userId = await AsyncStorage.getItem('userId');
             var formData = new FormData();
-      
+
             if (Array.isArray(imagePath) && imagePath.length != 0) {
                 imagePath.map((ele) => {
                     formData.append("prescription", {
@@ -409,7 +410,7 @@ class MedicineCheckout extends Component {
             }
             debugger
             let endPoint = `/images/upload`
-          
+
             var res = await uploadMultiPart(endPoint, formData);
 
             const response = res.data;
@@ -445,10 +446,16 @@ class MedicineCheckout extends Component {
     }
 
     delete(index) {
-       
+
         let temp = this.state.h1ProductData;
         temp.splice(index, 1)
         this.setState({ h1ProductData: temp })
+
+    }
+ async changePharmacy() {
+         await this.setState({ pharmacyInfo: null });
+        this.selectedItem(1)
+        
 
     }
 
@@ -556,7 +563,7 @@ class MedicineCheckout extends Component {
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
                                             </Col>
                                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('ChosePharmacyList')}>
+                                                <TouchableOpacity onPress={() => this.changePharmacy()}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>change Store</Text>
                                                 </TouchableOpacity>
                                             </Col>
@@ -782,7 +789,7 @@ export default connect(MedicineCheckoutState)(MedicineCheckout)
 
 const styles = StyleSheet.create({
 
-    container:{
+    container: {
         backgroundColor: '#ffffff',
     },
     bodyContent: {
@@ -815,7 +822,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#775DA3',
         borderRadius: 5,
     },
-    normalText:{
+    normalText: {
         fontFamily: 'OpenSans',
         fontSize: 14,
         color: '#fff',
@@ -827,21 +834,21 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#000',
     },
-    customText:{
+    customText: {
         marginLeft: 10,
         fontFamily: 'OpenSans',
         fontSize: 13,
         marginTop: 3,
         color: 'gray'
     },
-    customSubText:{
+    customSubText: {
         marginLeft: 2,
         fontFamily: 'OpenSans',
         fontSize: 13,
         marginTop: 3,
         color: 'gray'
     },
-    transparentLabel:{
+    transparentLabel: {
         borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',
         height: 45,
@@ -852,7 +859,7 @@ const styles = StyleSheet.create({
         margin: 2,
         fontSize: 13
     },
-    addressLabel:{
+    addressLabel: {
         borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',
         height: 45,
@@ -872,14 +879,14 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     buttonTouch1: {
-     
-       flexDirection: 'row',
-       paddingTop: 4,
-       paddingBottom: 15,
-       paddingLeft: 50,
-       paddingRight: 50,
-       borderRadius: 10
-   },
+
+        flexDirection: 'row',
+        paddingTop: 4,
+        paddingBottom: 15,
+        paddingLeft: 50,
+        paddingRight: 50,
+        borderRadius: 10
+    },
 });
 
 

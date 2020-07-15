@@ -4,7 +4,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage, getMedicineNameByProductName, getMedicineWeightUnit, setCartItemCountOnNavigation, renderMedicineImageByimageUrl } from '../CommomPharmacy';
-import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds } from '../../../providers/pharmacy/pharmacy.action';
+
+import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds,createCart,getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 
 let userId;
@@ -38,8 +39,7 @@ class PharmacyCart extends Component {
                 this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
 
             }
-            console.log('cart===========')
-            console.log("cartItems", this.state.cartItems)
+          
         }
 
         catch (e) {
@@ -75,7 +75,16 @@ class PharmacyCart extends Component {
                 style: { bottom: "50%" }
 
             })
+            return false
         }
+           createCart(temp)
+        //    getCartListByUserId(userId)
+            
+             
+           await AsyncStorage.setItem('hasCartReload','true')         
+              
+
+             
         let cartItems = this.state.cartItems
         cartItems[index] == temp
         this.setState({ cartItems })
@@ -89,7 +98,6 @@ class PharmacyCart extends Component {
             data.splice(index, 1);
             this.setState({ cartItems: data });
 
-            // let userId = await AsyncStorage.getItem('userId')
             await AsyncStorage.setItem('hasCartReload', 'true')
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
             setCartItemCountOnNavigation(this.props.navigation)
@@ -130,65 +138,15 @@ class PharmacyCart extends Component {
     }
     async procced() {
         const { cartItems } = this.state;
-
+      let   hasCartReload= await AsyncStorage.getItem('hasCartReload') 
+      if(hasCartReload){
+        await AsyncStorage.removeItem('hasCartReload') 
+      }
         this.props.navigation.navigate("MedicineCheckout", {
             medicineDetails: cartItems,
             orderOption: "pharmacyCart",
         })
-        // let order_items = []
-        // cartItems.map(element => {
-
-        //     order_items.push({
-        //         medicine_id: element.medicine_id,
-        //         pharmacy_id: element.pharmacy_id,
-        //         quantity: Number(element.userAddedMedicineQuantity),
-        //         medicine_weight: Number(element.medicine_weight),
-        //         medicine_weight_unit: element.medicine_weight_unit
-        //     })
-
-        // })
-        // console.log('availble status=====');
-        // console.log(JSON.stringify(order_items))
-        // let obj = {
-        //     order_items: order_items
-        // }
-        // let checkResult = await getmedicineAvailableStatus(obj)
-        // console.log(JSON.stringify(checkResult))
-        // if (checkResult.success === true) {
-        //     if (checkResult.data.length === cartItems.length) {
-        //         this.props.navigation.navigate("MedicineCheckout", {
-        //             medicineDetails: cartItems,
-        //             orderOption: "pharmacyCart",
-        //         })
-        //     } else {
-        //         Toast.show({
-        //             text: 'out of stack',
-        //             type: 'danger',
-        //             duration: 3000
-        //         })
-        //         cartItems.map((ele, index) => {
-        //             let value = checkResult.data.find(element => {
-
-        //                 return element.pharmacy_id === ele.pharmacy_id && element.medicine_id === ele.medicine_id
-        //             })
-        //             console.log(value)
-        //             if (value === undefined) {
-
-        //                 ele.is_outofStack = true
-
-        //                 cartItems.splice(index, 1, ele)
-        //             }
-        //         })
-        //         this.setState({ cartItems })
-
-        //     }
-        // } else {
-        //     Toast.show({
-        //         text: 'out of stack',
-        //         type: 'danger',
-        //         duration: 3000
-        //     })
-        // }
+        
     }
     render() {
         const { isLoading, cartItems } = this.state;

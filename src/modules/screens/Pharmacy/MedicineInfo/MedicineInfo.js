@@ -248,7 +248,7 @@ class MedicineInfo extends Component {
         let hascartReload = await AsyncStorage.getItem('hasCartReload')
 
         if (hascartReload === 'true') {
-            await AsyncStorage.removeItem('hasCartReload');
+            // await AsyncStorage.removeItem('hasCartReload');
 
             if (userId) {
                 let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
