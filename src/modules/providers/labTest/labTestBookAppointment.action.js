@@ -45,6 +45,24 @@ export const getTotalReviewsCount4LabTestService = async (labIds) => {
     }
 }
 
+export const getLabDetails = async (labId, fields) => {
+    try {
+        const endPoint = 'lab-test/lab/' + labId + '?fields=' + fields;
+        console.log('endPoint=====>', endPoint);
+
+        const response = await getService(endPoint);
+        const respData = response.data;
+        return respData;
+    } catch (Ex) {
+        console.log('Ex is getting on get lab details====>', Ex)
+        return {
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on get labId details : ${Ex}`
+        }
+    }
+}
 
 
 export const getTotalWishList4LabTestService = async (labId) => {

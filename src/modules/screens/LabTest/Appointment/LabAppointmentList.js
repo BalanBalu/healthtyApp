@@ -16,6 +16,8 @@ import { getLapAppointments, getCategories, getUserReviews } from '../../../prov
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 import InsertReview from '../Reviews/insertReviews';
 import { renderLabProfileImage } from "../../CommonAll/components"
+import { store } from '../../../../setup/store'
+import { SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
 
 class LabAppointmentList extends Component {
     constructor(props) {
@@ -191,6 +193,14 @@ class LabAppointmentList extends Component {
             await this.pastAppointment();
         }
     }
+    onPressBookAgain(labItemData) {
+        let labId = labItemData.lab_id;
+        console.log("labId", labId);
+
+        this.props.navigation.navigate('LabBookAppointment', {
+            labId: labId, fetchAvailabiltySlots: true
+        });
+    }
 
     render() {
         const { data, selectedIndex, isLoading } = this.state;
@@ -248,7 +258,7 @@ class LabAppointmentList extends Component {
                                     }}>No appoinments are scheduled
 								</Text>
                                     <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
-                                        <Button style={[styles.bookingButton, styles.customButton]} onPress={() => this.props.navigation.navigate("Home")
+                                        <Button style={[styles.bookingButton, styles.customButton]} onPress={() => this.props.navigation.navigate("Lab Test")
                                         } testID='navigateToHome'>
                                             <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
                                         </Button>
@@ -305,8 +315,8 @@ class LabAppointmentList extends Component {
                                                         </Row>
 
                                                         <Row style={{ borderBottomWidth: 0 }}>
-                                                            
-                                                                <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>
+
+                                                            <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>
                                                         </Row>
 
                                                         <Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
@@ -327,7 +337,7 @@ class LabAppointmentList extends Component {
 
                                                                 <Right style={(styles.marginRight = 5)}>
 
-                                                                    <Button style={styles.bookingButton}>
+                                                                    <Button style={styles.bookingButton} onPress={() => this.onPressBookAgain(item)} testID='navigateBookingPage'>
                                                                         <Text style={styles.bookAgain1}>Book Again</Text>
                                                                     </Button>
                                                                 </Right>
@@ -336,7 +346,7 @@ class LabAppointmentList extends Component {
                                                                 selectedIndex === 1 && (
                                                                     <Row style={{ borderBottomWidth: 0 }}>
                                                                         <Right style={(styles.marginRight = 10)}>
-                                                                            <Button style={styles.bookingButton}>
+                                                                            <Button style={styles.bookingButton} onPress={() => this.onPressBookAgain(item)} testID='navigateBookingPage'>
                                                                                 <Text style={styles.bookAgain1}>Book Again</Text>
                                                                             </Button>
                                                                         </Right>

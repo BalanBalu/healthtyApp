@@ -44,17 +44,19 @@ class labSearchList extends Component {
             modalVisible: false,
             proposedVisible: false,
             testOptionChecked: false,
-            values: [3, 7],
+            values: [],
             selected: [0, 1000],
             buttonEnable: false,
             subCategoryInfoList: [],
             selectedCategory: [],
             selectedSubCategory: [],
             testOption: '',
-            filterData: null
-
+            filterData: null,
+            disabled: true
 
         }
+        this.isFilteredData = false;
+
     }
     async componentDidMount() {
         const userId = await AsyncStorage.getItem('userId');
@@ -109,10 +111,12 @@ class labSearchList extends Component {
                     type: SET_LAB_LIST_ITEM_DATA,
                     data: this.state.labListData
                 });
-                store.dispatch({
-                    type: SET_LAB_LIST_ITEM_PREVIOUS_DATA,
-                    data: this.state.labListData
-                });
+                if (!this.isFilteredData) {
+                    store.dispatch({
+                        type: SET_LAB_LIST_ITEM_PREVIOUS_DATA,
+                        data: this.state.labListData
+                    });
+                }
             }
         } catch (ex) {
             Toast.show({
@@ -193,6 +197,8 @@ class labSearchList extends Component {
     getLabTestAvailabilitySlots = async (labIdFromItem, startDateByMoment, endDateByMoment) => {
         try {
             this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
+            console.log("this.availabilitySlotsDatesArry ", this.availabilitySlotsDatesArry);
+
             const arryOfLabIds = this.getLabIdsArrayByInput(labIdFromItem) // get 5 Or LessThan 5 of LabIds in order wise using index of given input of labIdFromItem
             const reqData4Availability = {
                 "labIds": arryOfLabIds
@@ -307,7 +313,7 @@ class labSearchList extends Component {
             })
             return;
         }
-
+        let fee = (parseInt(labCatInfo.branch_details.price) - ((parseInt(labCatInfo.branch_details.offer) / 100) * parseInt(labCatInfo.branch_details.price)))
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo.lab_test_categories_id,
@@ -329,29 +335,25 @@ class labSearchList extends Component {
         labItemData.labId = labInfo.lab_id;
         labItemData.slotData = this.availableSlotsDataMap.get(String(labInfo.lab_id)) || {};
         let reqLabBookAppointmentData = { ...labItemData }
-        store.dispatch({
-            type: SET_SINGLE_LAB_ITEM_DATA,
-            data: reqLabBookAppointmentData
-        });
-        this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
+        this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry, singleLabItemData: reqLabBookAppointmentData });
     }
 
 
     filterLabListData(labPreviousData) {
-        
         const subCategoryInfoList = [];
         const removeDupSubCategoriesFromList = [];
         const filterPrice = [];
         let minPrice, maxPrice;
         this.setState({ modalVisible: true });
-        labPreviousData.map(filterData => {
-            if (!removeDupSubCategoriesFromList.includes(filterData.labCatInfo._id)) {
-                removeDupSubCategoriesFromList.push(filterData.labCatInfo._id);
-                const subCategoryObj = { id: filterData.labCatInfo._id, category_name: filterData.labCatInfo.category_name, lab_test_categories_id: filterData.labCatInfo.lab_test_categories_id, };
+        labPreviousData.map(element => {
+
+            if (!removeDupSubCategoriesFromList.includes(element.labCatInfo.category_name)) {
+                removeDupSubCategoriesFromList.push(element.labCatInfo.category_name);
+                const subCategoryObj = { id: element.labCatInfo._id, category_name: element.labCatInfo.category_name, lab_test_categories_id: element.labCatInfo.lab_test_categories_id, };
                 subCategoryInfoList.push(subCategoryObj);
             }
-            if (filterData.labCatInfo.price) {
-                filterPrice.push(filterData.labCatInfo.price);
+            if (element.labCatInfo.offeredPrice) {
+                filterPrice.push(element.labCatInfo.offeredPrice);
                 maxPrice = Math.max.apply(Math, filterPrice);
                 minPrice = Math.min.apply(Math, filterPrice);
 
@@ -402,11 +404,12 @@ class labSearchList extends Component {
 
     }
     onSelectedSubCategoryChange = (selectedItems) => {
-        this.setState({ selectedSubCategory: selectedItems })
+        this.setState({ selectedSubCategory: selectedItems, disabled: false })
     }
 
     onSelecteTestOption = (value) => {
-        if (value =='Test at Home') {
+        this.setState({ testOption: value, values, disabled: false });
+        if (value == 'Test at Home') {
             filterData.is_inhome_test = true;
         }
         else {
@@ -415,8 +418,7 @@ class labSearchList extends Component {
     }
 
     multiSliderValuesChange = (values) => {
-        this.setState({ values });
-        this.setState({ minPrice: values[0], maxPrice: values[1] })
+        this.setState({ values, disabled: false, minPrice: values[0], maxPrice: values[1] })
         if (values.length) {
             filterData.price = values
         }
@@ -427,6 +429,7 @@ class labSearchList extends Component {
 
     applyFilterData = () => {
         const { labTestData: { labPreviousData } } = this.props;
+        this.isFilteredData = true;
         this.setState({ modalVisible: false, filterData: filterData });
 
         let testOptionList = [];
@@ -443,10 +446,10 @@ class labSearchList extends Component {
                 let subCategoryArray = filterData.sub_category ? filterData.sub_category : [];
 
                 subCategoryArray.forEach((labsubCategoryEle) => {
-                    if (labEle.labCatInfo._id === labsubCategoryEle.id) {
-                    subCategoryMatchedList.push(labIds)
-                }
-            })
+                    if (labEle.labCatInfo.category_name === labsubCategoryEle.category_name) {
+                        subCategoryMatchedList.push(labIds)
+                    }
+                })
             }
             if (filterData.price) {
                 let priceArray = labEle.labCategories ? labEle.labCategories : [];
@@ -466,7 +469,6 @@ class labSearchList extends Component {
 
             if (filterData.sub_category) {
                 selectedFiltesArray.push(subCategoryMatchedList);
-                console.log("selectedFiltesArray", selectedFiltesArray);
 
             }
             if (filterData.price) {
@@ -491,7 +493,19 @@ class labSearchList extends Component {
                     data: filteredLabData
                 })
             }
+        } else {
+            this.clearFilteredData();
         }
+
+    }
+
+    clearFilteredData = async () => {  // Clear All selected Data when clicked the Clear filter option
+        this.setState({
+            selectedSubCategory: [],
+            disabled: true,
+
+        });
+        filterData = {};
 
     }
 
@@ -619,7 +633,7 @@ class labSearchList extends Component {
     render() {
         const { labTestData: { patientWishListLabIds, labListItemData, labPreviousData } } = this.props;
 
-        const { labListData, isLoading } = this.state;
+        const { labListData, isLoading, selectedSubCategory, values, testOption, disabled } = this.state;
         return (
             <Container style={styles.container}>
                 {isLoading ? <Loader style='list' /> :
@@ -652,7 +666,7 @@ class labSearchList extends Component {
                                 </Row>
                             </Card>
                             <View>
-                                {labListItemData.length === 0 ? <RenderListNotFound text={' No Lab list found!'} /> :
+                                {labListItemData.length === 0 ? <RenderListNotFound text={this.isFilteredData ? 'Labs Not found!..Choose Filter again' : ' No Lab list found!'} /> :
                                     <View>
                                         <FlatList
                                             data={labListItemData}
@@ -693,6 +707,11 @@ class labSearchList extends Component {
                                                 </Row>
                                             </Col>
                                             <Col size={4}></Col>
+                                            <Col size={0.5}>
+                                                <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
+                                                    <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 30 }} />
+                                                </TouchableOpacity>
+                                            </Col>
                                         </Row>
                                         <View>
                                             <Row style={{ paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3, }}>
@@ -710,7 +729,7 @@ class labSearchList extends Component {
                                                 </Col>
                                             </Row>
                                         </View>
-                                       
+
                                         <Row style={{ marginTop: 10 }}>
                                             <Col size={6}>
                                                 <Row style={styles.rowMainText}>
@@ -721,59 +740,57 @@ class labSearchList extends Component {
                                         </Row>
                                         <Row style={{ marginTop: 10, paddingBottom: 15, borderBottomColor: '#909090', borderBottomWidth: 0.3 }}>
                                             <Col size={10}>
-                                                {/* <TouchableOpacity onPress={() => this.toggle("Services")}> */}
-                                                    <Row >
+                                                <Row >
+                                                    <Col size={10} style={styles.multiSelectStyle}>
+                                                        <SectionedMultiSelect
+                                                            styles={{
+                                                                selectToggleText: {
+                                                                    color: '#909090',
+                                                                    fontSize: 12,
+                                                                    marginTop: 20,
+                                                                    height: 15
+                                                                },
+                                                                chipIcon: {
+                                                                    color: '#909090',
+                                                                },
+                                                            }}
+                                                            items={this.state.subCategoryInfoList}
+                                                            uniqueKey='category_name'
+                                                            displayKey='category_name'
+                                                            selectText='Select Sub Category'
+                                                            selectToggleText={{ fontSize: 10, }}
+                                                            searchPlaceholderText='Select Sub Category'
+                                                            modalWithTouchable={true}
+                                                            showDropDowns={true}
+                                                            hideSearch={false}
+                                                            showRemoveAll={true}
+                                                            showChips={false}
+                                                            // single={true}
+                                                            readOnlyHeadings={false}
+                                                            onSelectedItemObjectsChange={(selectedSubCategoryObj) => { this.onSelectedSubCategoryObjChange(selectedSubCategoryObj) }}
 
-                                                        <Col size={10} style={styles.multiSelectStyle}>
-                                                            <SectionedMultiSelect
-                                                                styles={{
-                                                                    selectToggleText: {
+                                                            onSelectedItemsChange={this.onSelectedSubCategoryChange}
+                                                            selectedItems={this.state.selectedSubCategory}
+                                                            colors={{ primary: '#18c971' }}
+                                                            showCancelButton={true}
+                                                            animateDropDowns={true}
+                                                            selectToggleIconComponent={
+                                                                <Icon
+                                                                    name="ios-arrow-down"
+                                                                    style={{
+                                                                        fontSize: 20,
+                                                                        marginHorizontal: 6,
                                                                         color: '#909090',
-                                                                        fontSize: 12,
-                                                                        marginTop: 20,
-                                                                        height: 15
-                                                                    },
-                                                                    chipIcon: {
-                                                                        color: '#909090',
-                                                                    },
-                                                                }}
-                                                                items={this.state.subCategoryInfoList}
-                                                                uniqueKey='category_name'
-                                                                displayKey='category_name'
-                                                                selectText='Select Sub Category'
-                                                                selectToggleText={{ fontSize: 10, }}
-                                                                searchPlaceholderText='Select Sub Category'
-                                                                modalWithTouchable={true}
-                                                                showDropDowns={true}
-                                                                hideSearch={false}
-                                                                showRemoveAll={true}
-                                                                showChips={false}
-                                                                // single={true}
-                                                                readOnlyHeadings={false}
-                                                                onSelectedItemObjectsChange={(selectedSubCategoryObj) => { this.onSelectedSubCategoryObjChange(selectedSubCategoryObj) }}
+                                                                        textAlign: 'center',
+                                                                        marginTop: 10,
+                                                                    }}
+                                                                />
+                                                            }
 
-                                                                onSelectedItemsChange={this.onSelectedSubCategoryChange}
-                                                                selectedItems={this.state.selectedSubCategory}
-                                                                colors={{ primary: '#18c971' }}
-                                                                showCancelButton={true}
-                                                                animateDropDowns={true}
-                                                                selectToggleIconComponent={
-                                                                    <Icon
-                                                                        name="ios-arrow-down"
-                                                                        style={{
-                                                                            fontSize: 20,
-                                                                            marginHorizontal: 6,
-                                                                            color: '#909090',
-                                                                            textAlign: 'center',
-                                                                            marginTop: 10,
-                                                                        }}
-                                                                    />
-                                                                }
-
-                                                                testID='languageSelected'
-                                                            />
-                                                        </Col>
-                                                    </Row>
+                                                            testID='languageSelected'
+                                                        />
+                                                    </Col>
+                                                </Row>
                                                 {/* </TouchableOpacity> */}
                                             </Col>
                                         </Row>
@@ -824,9 +841,22 @@ class labSearchList extends Component {
                                                 </Row>
                                                 <Row style={{ borderTopColor: '#909090', borderTopWidth: 0.3, paddingBottom: 15, paddingTop: 10 }}>
                                                     <Right>
-                                                        <TouchableOpacity onPress={() => this.applyFilterData()}>
-                                                            <Text style={styles.doneButton}>DONE</Text>
-                                                        </TouchableOpacity>
+                                                        <Row>
+                                                            <Col size={5} style={{ marginLeft: 20 }}>
+                                                                <TouchableOpacity disabled={selectedSubCategory.length != 0 || values.length != 0 || testOption != '' ? false : true}
+                                                                    style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}
+                                                                    onPress={() => this.clearFilteredData()}>
+                                                                    <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>CLEAR</Text>
+                                                                </TouchableOpacity>
+                                                            </Col>
+                                                            <Col size={5}>
+                                                                <TouchableOpacity disabled={(selectedSubCategory.length != 0 || values.length != 0 || testOption != '') && !disabled ? false : true}
+                                                                    style={(selectedSubCategory.length != 0 || values.length != 0 || testOption != '') && !disabled ? styles.viewButtonBgGreeen : styles.viewButtonBgGray}
+                                                                    onPress={() => this.applyFilterData()}>
+                                                                    <Text style={(selectedSubCategory.length != 0 || values.length != 0 || testOption != '') && !disabled ? styles.doneButton : styles.defaultdoneButton}>DONE</Text>
+                                                                </TouchableOpacity>
+                                                            </Col>
+                                                        </Row>
                                                     </Right>
                                                 </Row>
                                             </View>
