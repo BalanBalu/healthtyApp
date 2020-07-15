@@ -197,7 +197,7 @@ class labSearchList extends Component {
     getLabTestAvailabilitySlots = async (labIdFromItem, startDateByMoment, endDateByMoment) => {
         try {
             this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
-            console.log("this.availabilitySlotsDatesArry ", this.availabilitySlotsDatesArry);
+            // console.log("this.availabilitySlotsDatesArry ", this.availabilitySlotsDatesArry);
 
             const arryOfLabIds = this.getLabIdsArrayByInput(labIdFromItem) // get 5 Or LessThan 5 of LabIds in order wise using index of given input of labIdFromItem
             const reqData4Availability = {
@@ -208,8 +208,11 @@ class labSearchList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
+            console.log("resultSlotsData", resultSlotsData);
+
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
+
                 if (availabilityData.length != 0) {
                     availabilityData.map((item) => {
                         let previousSlotsDataByItem = this.availableSlotsDataMap.get(String(item.labId))
@@ -249,6 +252,7 @@ class labSearchList extends Component {
         this.setState({ refreshCountOnDateFL: this.state.refreshCountOnDateFL + 1 })
     }
     onSlotItemPress(labId, selectedSlot, selectedSlotIndex) {
+        console.log("selectedSlot", selectedSlot);
         this.selectedSlotByLabIdsObj[labId] = selectedSlotIndex;
         this.selectedSlotItemByLabIdsObj[labId] = selectedSlot;
         this.setState({ selectedSlotIndex })
@@ -318,7 +322,7 @@ class labSearchList extends Component {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo.lab_test_categories_id,
             lab_test_description: labCatInfo.category_discription || 'null',
-            fee: labCatInfo.price || 0,
+            fee: fee || labCatInfo.price || 0,
             extra_charges: labInfo.extra_charges || 0,
             mobile_no: labInfo.mobile_no || null,
             lab_name: labInfo.lab_name,
@@ -513,7 +517,6 @@ class labSearchList extends Component {
         this.setState({ selected: value });
     }
     renderLabListCards(item) {
-
         const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
         const { expandedLabIdToShowSlotsData, isLoggedIn, buttonEnable, labListData } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
