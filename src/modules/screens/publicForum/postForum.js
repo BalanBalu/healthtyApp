@@ -9,7 +9,6 @@ import styles from './styles'
 class PostForum extends PureComponent {
     constructor(props) {
         super(props)
-
         this.state = {
             question_title:'',
             question_description:''
@@ -46,7 +45,6 @@ class PostForum extends PureComponent {
                 data.questioner_id = userId
             }
               let result = await forumInsertQuestion(data)
-              alert(JSON.stringify(result))
               if (result.success) {
                 Toast.show({
                   text: result.message,
@@ -68,12 +66,8 @@ class PostForum extends PureComponent {
             console.log(e.message)
           }
         }
-    
-
-
-
+  
     render() {
-// alert(this.state.question_description == '')
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
