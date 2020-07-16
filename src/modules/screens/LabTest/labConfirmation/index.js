@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform, Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff, formatDate } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
-import { insertAppointment, updateLapAppointment } from '../../../providers/lab/lab.action';
+import { insertAppointment, updateLapAppointment, validateAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../../CommonAll/functions'
 import { SERVICE_TYPES } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
@@ -190,9 +190,55 @@ class LabConfirmation extends Component {
         return totalAmount;
     }
 
+    validateAppointment = async (paymentMode) => {
+        const { packageDetails, startDatePlaceholder, pickByStartTime } = this.state
+
+        try {
+            const userId = await AsyncStorage.getItem('userId')
+            if (!startDatePlaceholder) {
+                Toast.show({
+                    text: 'Kindly select your appointment time',
+                    type: 'warning',
+                    duration: 3000
+                })
+                return false;
+            } else {
+                let startTimeByFormate = formatDate(pickByStartTime, 'HH:mm:ss')
+                let startTime = moment(packageDetails.selectedSlotItem.slotDate + 'T' + startTimeByFormate)
+                this.setState({ startTime })
+            }
+            let response = await validateAppointment(userId, packageDetails.selectedSlotItem.availabilityId, this.state.startTime);
+            console.log("response", response);
+
+            if (response.success == false) {
+                this.timeText = formatDate(response.data[0].appointment_starttime, 'HH:mm A')
+                console.log("this.timeText", this.timeText);
+
+                Alert.alert(
+                    "Appointment Warning",
+                    `You already booked for the same Lab on ${this.timeText}, You want to book the appointment to continue`,
+                    [
+                        { text: "Cancel" },
+                        {
+                            text: "Continue", onPress: () => this.proceedToLabTestAppointment(paymentMode),
+                        }
+                    ],
+                );
+                return
+            } else {
+                this.proceedToLabTestAppointment(paymentMode);
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
 
     proceedToLabTestAppointment = async (paymentMode) => {
-        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg } = this.state
+        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg, startTime } = this.state
         try {
             if (patientDetails.length == 0) {
                 Toast.show({
@@ -219,22 +265,11 @@ class LabConfirmation extends Component {
                 return false;
             } else {
                 selectedAddress = packageDetails.location;
+                console.log("selectedAddress", selectedAddress)
+
             }
             let patientData = [];
-            let startTime;
-            if (packageDetails.appointment_status == undefined) {
-            if (!this.state.startDatePlaceholder) {
-                Toast.show({
-                    text: 'Kindly select your appointment time',
-                    type: 'warning',
-                    duration: 3000
-                })
-                return false;
-            } else {
-                let startTimeByFormate = formatDate(this.state.pickByStartTime, 'HH:mm:ss')
-                startTime = moment(packageDetails.selectedSlotItem.slotDate + 'T' + startTimeByFormate)
-            }
-        }
+            
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
@@ -738,12 +773,14 @@ class LabConfirmation extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity disabled={buttonEnable} onPress={() => this.proceedToLabTestAppointment('cash')}>
+                                <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
+                                    this.validateAppointment('cash') : this.proceedToLabTestAppointment('cash')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity disabled={buttonEnable} onPress={() => this.proceedToLabTestAppointment('online')}>
+                                <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
+                                    this.validateAppointment('online') : this.proceedToLabTestAppointment('online')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                 </TouchableOpacity>
                             </Col>

@@ -62,6 +62,22 @@ export async function updateLapAppointment(appointmentId, requestData, isLoading
     }
 }
 
+export const validateAppointment = async (userId, availabilityId, startDateTime) => {
+    try {
+        let endPoint = 'lab-test/appointments/' + userId + '/' + availabilityId + '?startDate=' + startDateTime;
+        console.log(endPoint);
+        let response = await getService(endPoint);
+        let respData = response.data;
+        return respData;
+    } catch (e) {
+        console.log(e.message);
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
+
 
 export const getLapTestPaymentDetails = async (paymentId) => {
     try {
