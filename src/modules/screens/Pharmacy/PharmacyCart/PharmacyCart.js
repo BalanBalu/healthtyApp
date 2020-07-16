@@ -3,10 +3,12 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage, getMedicineNameByProductName, getMedicineWeightUnit, setCartItemCountOnNavigation, renderMedicineImageByimageUrl } from '../CommomPharmacy';
-
-import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds,createCart,getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action';
+import { ProductIncrementDecreMent, getMedicineNameByProductName, getMedicineWeightUnit, setCartItemCountOnNavigation, renderMedicineImageByimageUrl, medicineRateAfterOffer ,ProductIncrementDecreMents} from '../CommomPharmacy';
+import { getproductDetailsByPharmacyId } from '../../../providers/pharmacy/pharmacy.action';
+import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds, createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
+
+import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/profile.action';
 
 let userId;
 class PharmacyCart extends Component {
@@ -21,8 +23,77 @@ class PharmacyCart extends Component {
     }
 
     async componentDidMount() {
-        await this.getAddToCart();
+        try {
+            let reOrderData = this.props.navigation.getParam('reOrderData') || null;
+            if (reOrderData !== null) {
+                await this.getReOderData()
+            } else {
+                await this.getAddToCart();
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
+    getReOderData = async () => {
+        try {
+            let reOrderData = this.props.navigation.getParam('reOrderData') || null;
+            this.setState({ isLoading: true })
+            let temp=[];
+            let productmasterIds=[];
+            let pharmacyId=null
+            let type='MEDFLIC_PHARMACY_ID'
+            let productConfigPharmacy= await getCurrentVersion(type);
+    
+            if(productConfigPharmacy.success){
+                pharmacyId=productConfigPharmacy.data[0].value
+            }
+   
+        
+            if(pharmacyId){
+            reOrderData.forEach(ele=>{
+                productmasterIds.push(ele.masterProductId)
+            
+            })
+            let productResult = await getproductDetailsByPharmacyId(pharmacyId, productmasterIds);
+           
+            if(productResult){
+                reOrderData.forEach( ele=>{
+                  let findData=  productResult.find(element=>{return element.masterProductId===ele.masterProductId})
+                  
+                  if(findData!==undefined){
+                    console.log(findData)
+                    let discountedValue = medicineRateAfterOffer(findData);
+                    let price =  ProductIncrementDecreMents(ele.quantity, discountedValue, 'add', ele.maxThreashold)
+                 
+                    ele.discountedAmount =findData.discount ? medicineDiscountedAmount(findData) : 0; 
+                    ele.totalPrice = Number(price.totalAmount)
+                    ele.unitPrice=Number(findData.price)
+                    temp.push({item:ele})
+                }
+                })
+              
+            this.setState({ cartItems: temp , isLoading: false});
+            }
+        }else{
+            Toast.show({
+                text: ' sorry unable to make a re order please try again later',
+                duration: 3000,
+                type: 'danger',
+              
+
+            })
+        }
+
+        }
+
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
+
 
     getAddToCart = async () => {
         try {
@@ -39,7 +110,7 @@ class PharmacyCart extends Component {
                 this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
 
             }
-          
+
         }
 
         catch (e) {
@@ -57,8 +128,7 @@ class PharmacyCart extends Component {
     }
 
     async productQuantityOperator(item, operator, index) {
-        // let userId = await AsyncStorage.getItem('userId')
-        // let offeredAmount = medicineRateAfterOffer(item);
+        let reOrderData = this.props.navigation.getParam('reOrderData') || null;
         let offeredAmount = this.unitOfPrice(item);
         let result = await ProductIncrementDecreMent(item.item.quantity, offeredAmount, operator, item.item.maxThreashold)
         let temp = item;
@@ -77,18 +147,23 @@ class PharmacyCart extends Component {
             })
             return false
         }
-           createCart(temp)
-        //    getCartListByUserId(userId)
-            
-             
-           await AsyncStorage.setItem('hasCartReload','true')         
-              
+        if (reOrderData === null) {
+            createCart(temp)
+            await AsyncStorage.setItem('hasCartReload', 'true')
+        }
 
-             
+
+
+
+
+
+
         let cartItems = this.state.cartItems
         cartItems[index] == temp
         this.setState({ cartItems })
-        await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
+        if (reOrderData === null) {
+            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
+        }
     }
 
     removeMedicine = async (index, removeData) => {
@@ -138,15 +213,20 @@ class PharmacyCart extends Component {
     }
     async procced() {
         const { cartItems } = this.state;
-      let   hasCartReload= await AsyncStorage.getItem('hasCartReload') 
-      if(hasCartReload){
-        await AsyncStorage.removeItem('hasCartReload') 
-      }
+        let hasCartReload = await AsyncStorage.getItem('hasCartReload')
+        if (hasCartReload) {
+            await AsyncStorage.removeItem('hasCartReload')
+        }
         this.props.navigation.navigate("MedicineCheckout", {
             medicineDetails: cartItems,
             orderOption: "pharmacyCart",
         })
-        
+
+    }
+    productDiscountedPrice(unitPrice,discountedAmount){
+      
+        let value=parseInt(unitPrice)-parseInt(discountedAmount)
+        return value
     }
     render() {
         const { isLoading, cartItems } = this.state;
@@ -233,7 +313,7 @@ class PharmacyCart extends Component {
                                                     {item.item.discountedAmount !== undefined && item.item.discountedAmount !== 0 && item.item.discountedAmount !== null ?
                                                         <Row>
                                                             <Text style={{ fontSize: 9.5, marginTop: 30, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.item.unitPrice}</Text>
-                                                            <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.unitPrice - item.item.discountedAmount}</Text>
+                                                            <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {this.productDiscountedPrice(item.item.unitPrice ,item.item.discountedAmount)}</Text>
                                                         </Row>
                                                         : <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.unitPrice}</Text>}
                                                 </Col>

@@ -7,7 +7,7 @@ import {
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
-import { getMedicinesSearchList, getNearOrOrderPharmacy, getproductDetailsByPharmacyId } from '../../../providers/pharmacy/pharmacy.action';
+import { getMedicinesSearchList, getNearOrOrderPharmacy, getproductDetailsByPharmacyIds } from '../../../providers/pharmacy/pharmacy.action';
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getAddress, getKiloMeterCalculation, renderPharmacyImage, medicineRateAfterOffer, medicineDiscountedAmount, getMedicineName, CartMedicineImage, ProductIncrementDecreMents, getMedicineNameByProductName } from '../CommomPharmacy'
 import Spinner from "../../../../components/Spinner";
@@ -64,14 +64,13 @@ class ChosePharmacyList extends Component {
                         productmasterIds.push(ele.item.masterProductId)
                     })
 
-                    let productResult = await getproductDetailsByPharmacyId(pharmacyIds, productmasterIds);
+                    let productResult = await getproductDetailsByPharmacyIds(pharmacyIds, productmasterIds);
 
                     if (productResult) {
                         let modifiedData = {}
                         let pharmacyData = []
                         result.data.forEach(element => {
-                            let pharmacyAvailableData = [];
-                            let totalAmount = 0
+                       
                             let pharmacyProductData = productResult.find(ele => {
                                 return ele.pharmacyId === element.pharmacyInfo.pharmacy_id
                             })
@@ -121,8 +120,8 @@ class ChosePharmacyList extends Component {
         }
     }
     onProceedToPayment = () => {
-      
-        const { selectedPharmacy, pharmacyData, prescriptionDetails } = this.state;
+      try{
+        const { selectedPharmacy, pharmacyData } = this.state;
 
         if (selectedPharmacy === -1) {
             Toast.show({
@@ -132,11 +131,14 @@ class ChosePharmacyList extends Component {
             })
         } else {
             let value = pharmacyData[selectedPharmacy];
-          
+       
             this.props.navigation.navigate("MedicineCheckout", {
                 pharmacyInfo: value.pharmacyInfo, isPrescription: true, hasChosePharmacyReload: true, medicineDetails: value.pharmacyAvailable
             });
         }
+    }catch(e){
+        console.log(e)
+    }
     }
     filterPharmacies(searchValue) {
 
@@ -192,8 +194,7 @@ class ChosePharmacyList extends Component {
                 })
                 if (index !== -1) {
                     let element = data.products[index]
-                    console.log('element===')
-             console.log(JSON.stringify(element))
+                
                     let item = {
                         discountedAmount: element.discount ? medicineDiscountedAmount(element) : 0,
                         productName: getMedicineName(element),
@@ -306,6 +307,7 @@ class ChosePharmacyList extends Component {
                                                                 <View style={{ alignItems: 'flex-end', }}>
                                                                     <Text style={styles.kmText}>{getKiloMeterCalculation(item.pharmacyInfo.location.coordinates, locationCordinates)}</Text>
                                                                 </View>
+                                                                
                                                                 {selectedPharmacy === index ?
                                                                     <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
                                                                         <CheckBox style={{ borderRadius: 5 }}

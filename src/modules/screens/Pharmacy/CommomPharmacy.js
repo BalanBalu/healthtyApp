@@ -12,7 +12,7 @@ export function medicineRateAfterOffer(item) {
   }
   if (item.discount === undefined || item.discount === null) {
 
-    amount = parseInt(item.price)
+    amount = Number(item.price)
     return amount
   }
   if (item.discount.type) {
@@ -115,7 +115,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
 export function renderMedicineImage(data) {
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source = require('../../../../assets/images/noImage.jpg');
 
   if (data !== null && data !== undefined) {
 
@@ -134,27 +134,30 @@ export function renderMedicineImage(data) {
 }
 export function CartMedicineImage(data) {
 
-  let source = null
-
+  let source =  null;
+  
   if (data !== null && data !== undefined) {
 
     if (Array.isArray(data) && data.length !== 0) {
       let defaultImage = data.find(ele => {
         return ele.isDefault === true
       })
+     
       if (defaultImage) {
+
         source =  defaultImage.imageURL 
       } else {
         source = data[0].imageURL 
       }
     }
   }
+  
   return (source)
 }
 export function renderMedicineImageAnimation(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source =  require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data.imageURL }
   }
@@ -164,7 +167,7 @@ export function renderMedicineImageAnimation(data) {
 export function renderMedicineImageByimageUrl(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source = require('../../../../assets/images/noImage.jpg')
   if (data&&data.image) {
     source = { uri: data.image }
   }
@@ -173,7 +176,7 @@ export function renderMedicineImageByimageUrl(data) {
 export function renderMedicineImageView(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source =  require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data }
   }
@@ -182,7 +185,7 @@ export function renderMedicineImageView(data) {
 export function renderPrescriptionImageAnimation(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source =  require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data.prescription_path }
   }
@@ -239,11 +242,7 @@ export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
     let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 
     return result.toFixed(1) + ' Km'
-    // squareNarthCorinate = Math.pow((gpsLocation[0] - pharmacyLocation[0]), 2);
-    // squareeastCorinate = Math.pow((gpsLocation[1] - pharmacyLocation[1]), 2)
-    // add = squareNarthCorinate + squareeastCorinate
-    // let km = Math.sqrt(add).toFixed(1) + ' Km'
-    // return km
+  
 
   }
   else {
@@ -323,24 +322,6 @@ export function getMedicineWeightUnit(weight, unit) {
   }
 }
 
-export function quantityPriceSort(data) {
-  data.forEach(element => {
-    if (element.medPharDetailInfo) {
-      if (element.medPharDetailInfo.variations) {
-
-        element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
-
-
-          if (firstVarlue.total_quantity === 0) return 1;
-          else if (secandValue.total_quantity === 0) return -1;
-          else return firstVarlue.price - secandValue.price;
-        });
-
-      }
-    }
-  })
-  return data
-}
 
 export  function ProductIncrementDecreMents(quantity, price, operation, threshold_limits) {
 
