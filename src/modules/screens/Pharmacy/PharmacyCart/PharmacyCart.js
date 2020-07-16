@@ -17,6 +17,7 @@ class PharmacyCart extends Component {
         this.state = {
             cartItems: [],
             isLoading: true,
+            isReOrder:false,
 
         }
 
@@ -25,8 +26,11 @@ class PharmacyCart extends Component {
     async componentDidMount() {
         try {
             let reOrderData = this.props.navigation.getParam('reOrderData') || null;
+            let isReOrder= this.props.navigation.getParam('isReOrder')||false
+            this.setState({isReOrder})
             if (reOrderData !== null) {
-                await this.getReOderData()
+               
+                await this.getReOderData();
             } else {
                 await this.getAddToCart();
             }
@@ -56,7 +60,8 @@ class PharmacyCart extends Component {
             })
             let productResult = await getproductDetailsByPharmacyId(pharmacyId, productmasterIds);
            
-            if(productResult){
+            if(productResult&&productResult.length!==0){
+                
                 reOrderData.forEach( ele=>{
                   let findData=  productResult.find(element=>{return element.masterProductId===ele.masterProductId})
                   
@@ -74,6 +79,13 @@ class PharmacyCart extends Component {
               
             this.setState({ cartItems: temp , isLoading: false});
             }
+            Toast.show({
+                text: ' sorry unable to make a re order please try again later',
+                duration: 3000,
+                type: 'danger',
+              
+
+            })
         }else{
             Toast.show({
                 text: ' sorry unable to make a re order please try again later',
@@ -229,7 +241,7 @@ class PharmacyCart extends Component {
         return value
     }
     render() {
-        const { isLoading, cartItems } = this.state;
+        const { isLoading, cartItems,isReOrder } = this.state;
 
         return (
             <Container style={{ backgroundColor: '#EAE6E6', flex: 1 }}>
@@ -262,7 +274,7 @@ class PharmacyCart extends Component {
                                     onPress={() =>
                                         this.props.navigation.pop()
                                     } testID='navigateToHome'>
-                                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Place Order</Text>
+                                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>{isReOrder===true?'go back':'Place Order'}</Text>
                                 </Button>
                             </Item>
                         </Card>
