@@ -5,7 +5,7 @@ import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform, Alert } fr
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
-import { dateDiff, formatDate } from '../../../../setup/helpers';
+import { dateDiff, formatDate, subTimeUnit } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { insertAppointment, updateLapAppointment, validateAppointment } from '../../../providers/lab/lab.action';
@@ -191,7 +191,7 @@ class LabConfirmation extends Component {
     }
 
     validateAppointment = async (paymentMode) => {
-        const { packageDetails, startDatePlaceholder, pickByStartTime } = this.state
+        const { packageDetails: { selectedSlotItem: { slotDate, availabilityId, slotEndDateAndTime, slotStartDateAndTime } }, startDatePlaceholder, pickByStartTime } = this.state
 
         try {
             const userId = await AsyncStorage.getItem('userId')
@@ -204,15 +204,18 @@ class LabConfirmation extends Component {
                 return false;
             } else {
                 let startTimeByFormate = formatDate(pickByStartTime, 'HH:mm:ss')
-                let startTime = moment(packageDetails.selectedSlotItem.slotDate + 'T' + startTimeByFormate)
+                let startTime = moment(slotDate + 'T' + startTimeByFormate)
                 this.setState({ startTime })
             }
-            let response = await validateAppointment(userId, packageDetails.selectedSlotItem.availabilityId, this.state.startTime);
-            console.log("response", response);
+            let filters = {
+                startDate: subTimeUnit(slotStartDateAndTime, 1, "second").toISOString(),
+                endDate: subTimeUnit(slotEndDateAndTime, 1, "second").toISOString(),
+            }
+
+            let response = await validateAppointment(userId, availabilityId, filters);
 
             if (response.success == false) {
-                this.timeText = formatDate(response.data[0].appointment_starttime, 'HH:mm A')
-                console.log("this.timeText", this.timeText);
+                this.timeText = formatDate(response.data[0].appointment_starttime, 'hh:mm A')
 
                 Alert.alert(
                     "Appointment Warning",
@@ -269,7 +272,7 @@ class LabConfirmation extends Component {
 
             }
             let patientData = [];
-            
+
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
@@ -278,6 +281,7 @@ class LabConfirmation extends Component {
 
             let requestData = {
                 user_id: userId,
+                availability_id: packageDetails.selectedSlotItem.availabilityId,
                 patient_data: patientData,
                 lab_id: packageDetails.lab_id,
                 lab_name: packageDetails.lab_name,
@@ -322,7 +326,7 @@ class LabConfirmation extends Component {
                         type: "danger",
                         duration: 3000
                     });
-                    this.setState({ isLoading: false, buttonEnable: false  });
+                    this.setState({ isLoading: false, buttonEnable: false });
                 }
 
             } else {
@@ -380,22 +384,22 @@ class LabConfirmation extends Component {
         this.setState({ patientDetails: temp });
     }
     handleDatePicked = date => {
-        const { packageDetails: {selectedSlotItem : { slotEndDateAndTime, slotStartDateAndTime } } } = this.state;
+        const { packageDetails: { selectedSlotItem: { slotEndDateAndTime, slotStartDateAndTime } } } = this.state;
         const startDate = setDateTime(slotStartDateAndTime);
         const endDate = setDateTime(slotEndDateAndTime);
         const valid = startDate <= date && endDate >= date;
-        if(valid === false) {
+        if (valid === false) {
             Toast.show({
                 text: 'Please choose the time between ' + getTimeWithMeredian(startDate) + ' and ' + getTimeWithMeredian(endDate),
-                duration: 2000, 
-                type: 'danger'  
+                duration: 2000,
+                type: 'danger'
             });
-            return;    
+            return;
         } else {
             this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
         }
-        
-        function setDateTime (dateStr) {
+
+        function setDateTime(dateStr) {
             const date = new Date(dateStr);
             const currentDate = new Date();
             date.setDate(currentDate.getDate())
@@ -411,7 +415,7 @@ class LabConfirmation extends Component {
             const currentTime = ((hour + 11) % 12 + 1) + ":" + currentDate.getMinutes() + meridiem;
             return currentTime;
         }
-        
+
     }
     render() {
         const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, buttonEnable, pickByStartTime, } = this.state;
@@ -593,41 +597,41 @@ class LabConfirmation extends Component {
                     </View>
                     {packageDetails.appointment_status !== 'PAYMENT_FAILED' && packageDetails.appointment_status !== 'PAYMENT_IN_PROGRESS' ?
 
-                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
 
-                        <Row style={{ marginTop: 10, }}>
-                            <Col style={{ alignItems: 'center' }} >
-                                <Row>
-                                    <Col size={5} style={{ justifyContent: 'center' }}>
+                            <Row style={{ marginTop: 10, }}>
+                                <Col style={{ alignItems: 'center' }} >
+                                    <Row>
+                                        <Col size={5} style={{ justifyContent: 'center' }}>
 
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
 
-                                        <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
-                                            <Icon name='ios-clock' style={styles.iconstyle1} />
-                                            {
-                                                this.state.startDatePlaceholder ?
-                                                    <View>
-                                                        <Text style={styles.startenddatetext}>{formatDate(this.state.pickByStartTime, 'hh:mm a')}</Text>
-                                                    </View> :
-                                                    <Text style={styles.startenddatetext}>Select time </Text>
-                                            }
-                                            <DateTimePicker
-                                                mode={'time'}
-                                                display="spinner"
-                                                timePickerModeAndroid={'spinner'}
-                                                minimumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime)}
-                                                maximumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotEndDateAndTime)}
-                                                date={this.state.pickByStartTime}
-                                                isVisible={this.state.isTimePickerVisible}
-                                                onConfirm={this.handleDatePicked}
-                                                onCancel={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })} />
-                                        </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
+                                                <Icon name='ios-clock' style={styles.iconstyle1} />
+                                                {
+                                                    this.state.startDatePlaceholder ?
+                                                        <View>
+                                                            <Text style={styles.startenddatetext}>{formatDate(this.state.pickByStartTime, 'hh:mm a')}</Text>
+                                                        </View> :
+                                                        <Text style={styles.startenddatetext}>Select time </Text>
+                                                }
+                                                <DateTimePicker
+                                                    mode={'time'}
+                                                    display="spinner"
+                                                    timePickerModeAndroid={'spinner'}
+                                                    minimumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime)}
+                                                    maximumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotEndDateAndTime)}
+                                                    date={this.state.pickByStartTime}
+                                                    isVisible={this.state.isTimePickerVisible}
+                                                    onConfirm={this.handleDatePicked}
+                                                    onCancel={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })} />
+                                            </TouchableOpacity>
 
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </View>:null}
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </View> : null}
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Row>
                             <Col size={7}>

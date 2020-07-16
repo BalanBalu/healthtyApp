@@ -62,9 +62,9 @@ export async function updateLapAppointment(appointmentId, requestData, isLoading
     }
 }
 
-export const validateAppointment = async (userId, availabilityId, startDateTime) => {
+export const validateAppointment = async (userId, availabilityId, filters) => {
     try {
-        let endPoint = 'lab-test/appointments/' + userId + '/' + availabilityId + '?startDate=' + startDateTime;
+        let endPoint = 'lab-test/appointments/' + userId + '/' + availabilityId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
         console.log(endPoint);
         let response = await getService(endPoint);
         let respData = response.data;
@@ -151,9 +151,9 @@ export async function insertReviews(userId, insertUserReviews) {
 }
 
 
-export async function getUserReviews(type,Id) {
+export async function getUserReviews(type, Id) {
     try {
-        let endPoint = 'lab-test/user/'+type+'/' + Id;
+        let endPoint = 'lab-test/user/' + type + '/' + Id;
         console.log("endPoint", endPoint)
         let response = await getService(endPoint);
         let respData = response.data;
