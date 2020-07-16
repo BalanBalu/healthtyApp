@@ -6,6 +6,8 @@ import { possibleChatStatus } from '../../../Constants/Chat';
 import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
 import { POSSIBLE_VIDEO_CONSULTING_STATUS } from '../../screens/VideoConsulation/constants';
 import { insertAppointment, updateLapAppointment } from '../lab/lab.action';
+import { getMoment } from '../../../setup/helpers';
+import { saveEvent } from '../../../setup/calendarEvent';
 export default class BookAppointmentPaymentUpdate {
 
 
@@ -204,8 +206,16 @@ export default class BookAppointmentPaymentUpdate {
     }
     async updateNewBookAppointment(bookSlotDetails, userId, paymentId) {
         try {
+        
+            let slotStartDateAndTime=getMoment(bookSlotDetails.slotData.slotStartDateAndTime).toISOString();
+           let slotEndDateAndTime=getMoment(bookSlotDetails.slotData.slotEndDateAndTime).toISOString();
+           let Address=bookSlotDetails.slotData.location.city||bookSlotDetails.slotData.location.district
+ 
+            let eventId = await saveEvent("Appointment booked with "+bookSlotDetails.slotData.location.name+" "+bookSlotDetails.slotData.location.type,slotStartDateAndTime , slotEndDateAndTime, Address,bookSlotDetails.diseaseDescription);
+        
             let bookAppointmentData = {
                 userId: userId,
+                user_appointment_event_id:eventId,
                 patient_data: bookSlotDetails.patient_data,
                 doctorId: bookSlotDetails.doctorId,
                 description: bookSlotDetails.diseaseDescription || '',
