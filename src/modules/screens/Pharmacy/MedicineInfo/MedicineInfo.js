@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount, getAvailableStockForListOfProducts, updateTopSearchedItems } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable, getselectedCartData } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable, getselectedCartData,renderMedicineImage } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -148,9 +148,6 @@ class MedicineInfo extends Component {
         try {
 
             let selectedData = getselectedCartData(data, selected, cartData)
-            console.log('selectedDataselectedDataselectedData')
-            console.log(JSON.stringify(selectedData))
-
 
             await this.setState({ selectedMedcine: selectedData })
 
@@ -328,7 +325,12 @@ class MedicineInfo extends Component {
                                             showPagination
                                         />
                                     </ImageZoom>
-                                </View> : null}
+                                </View> : <Image
+                                    source={renderMedicineImage(medicineData.productImages)}
+                                    style={{
+                                        width: 200, height: 200,
+                                    }}
+                                />}
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>

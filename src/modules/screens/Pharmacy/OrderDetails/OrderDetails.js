@@ -90,8 +90,7 @@ class OrderDetails extends Component {
             } else {
                 result = await getMedicineOrderDetails(orderNumber);
             }
-            console.log('ccgjdfvsfdgfhg')
-console.log(JSON.stringify(result))
+           
 
             if (result !== null) {
 
@@ -100,9 +99,6 @@ console.log(JSON.stringify(result))
                 if (getOderSlap) {
 
                     let statusSlap = await getOrderTracking(result.orderNumber)
-                    console.log(JSON.stringify(statusSlap))
-
-
 
                     if (statusSlap) {
                         this.setState({ statusSlap })
@@ -228,7 +224,7 @@ console.log(JSON.stringify(result))
 
         if (result) {
             let getOrderSlap = true;
-            await AsyncStorage.setItem('hasReload','true');
+            await AsyncStorage.setItem('hasReload', 'true');
             this.medicineOrderDetails(orderDetails.orderNumber, getOrderSlap)
         } else {
             Toast.show({
@@ -512,7 +508,7 @@ console.log(JSON.stringify(result))
                             </TouchableOpacity>
                         </View>
                     }
-                    {orderDetails.status === 'DELIVERED' && orderDetails.rating !== null&& orderDetails.rating !== 0  ?
+                    {orderDetails.status === 'DELIVERED' && orderDetails.rating !== null && orderDetails.rating !== 0 ?
                         <View>
                             <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Review</Text>
 
@@ -542,6 +538,22 @@ console.log(JSON.stringify(result))
                     }
 
 
+                    {orderDetails.status === 'DELIVERED' &&orderDetails.prescriptions === null?
+                        <View>
+ 
+
+
+                            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                                <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.props.navigation.navigate('PharmacyCart',{reOrderData:orderDetails.items,isReOrder:true})} testID='addFeedBack'>
+
+                                    <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>RE ORDER</Text>
+                                    <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+                        : null
+                    }
 
                     <View style={styles.mainView}>
                         <Text style={styles.orderText}>Order Details</Text>
