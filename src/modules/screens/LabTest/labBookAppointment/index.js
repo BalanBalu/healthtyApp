@@ -358,7 +358,7 @@ class LabBookAppointment extends Component {
                     </Row>
                   </View>
                 </View>
-                {/* {this.renderLabLocAddress()} */}
+                {this.renderLabLocAddress()}
                 <RenderLabCategories> </RenderLabCategories>
               </Content>
             }
