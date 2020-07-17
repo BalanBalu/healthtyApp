@@ -35,6 +35,8 @@ class LabAppointmentInfo extends Component {
 
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
+    console.log("appointmentData", appointmentData);
+    
     const upcomingTap = navigation.getParam('selectedIndex');
     if (appointmentData == undefined) {
       let appointmentId = navigation.getParam('serviceId')
@@ -132,6 +134,7 @@ class LabAppointmentInfo extends Component {
       const { data } = this.state;
       this.packageDetails = {
         appointment_id: data._id,
+        availability_id: data.availability_id,
         lab_id: data.lab_id,
         lab_test_categories_id: data.lab_test_categories_id,
         lab_test_descriptiion: data.lab_test_descriptiion,

@@ -138,8 +138,6 @@ class LabAppointmentList extends Component {
                     data: result,
                     isLoading: false
                 });
-                console.log("pastData", this.state.pastData);
-
             }
         } catch (ex) {
             console.log(ex);
@@ -157,7 +155,6 @@ class LabAppointmentList extends Component {
         await this.setState({
             selectedIndex: index,
         });
-        console.log("selectedIndex", this.state.selectedIndex);
 
         if (index === 0) {
             if (this.state.upComingData.length == 0) {
@@ -195,8 +192,6 @@ class LabAppointmentList extends Component {
     }
     onPressBookAgain(labItemData) {
         let labId = labItemData.lab_id;
-        console.log("labId", labId);
-
         this.props.navigation.navigate('LabBookAppointment', {
             labId: labId, fetchAvailabiltySlots: true
         });
@@ -204,6 +199,7 @@ class LabAppointmentList extends Component {
 
     render() {
         const { data, selectedIndex, isLoading } = this.state;
+       
         return (
             <Container style={styles.container}>
                 <NavigationEvents

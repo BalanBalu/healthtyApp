@@ -37,7 +37,7 @@ class labSearchList extends Component {
             selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
             labListData: [],
             expandedLabIdToShowSlotsData: [],
-            isLoading: false,
+            isLoading: true,
             refreshCountOnDateFL: 1,
             renderRefreshCount: 0,
             isLoggedIn: false,
@@ -107,6 +107,7 @@ class labSearchList extends Component {
                 this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
                 this.getTotalReviewsCount4LabTest(this.totalLabIdsArryBySearched);
                 labListData.forEach(item => labDataWithMap.set(String(item.labInfo.lab_id), item))
+
                 store.dispatch({
                     type: SET_LAB_LIST_ITEM_DATA,
                     data: this.state.labListData
@@ -197,7 +198,6 @@ class labSearchList extends Component {
     getLabTestAvailabilitySlots = async (labIdFromItem, startDateByMoment, endDateByMoment) => {
         try {
             this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
-            // console.log("this.availabilitySlotsDatesArry ", this.availabilitySlotsDatesArry);
 
             const arryOfLabIds = this.getLabIdsArrayByInput(labIdFromItem) // get 5 Or LessThan 5 of LabIds in order wise using index of given input of labIdFromItem
             const reqData4Availability = {
@@ -208,7 +208,6 @@ class labSearchList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            console.log("resultSlotsData", resultSlotsData);
 
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
@@ -252,7 +251,6 @@ class labSearchList extends Component {
         this.setState({ refreshCountOnDateFL: this.state.refreshCountOnDateFL + 1 })
     }
     onSlotItemPress(labId, selectedSlot, selectedSlotIndex) {
-        console.log("selectedSlot", selectedSlot);
         this.selectedSlotByLabIdsObj[labId] = selectedSlotIndex;
         this.selectedSlotItemByLabIdsObj[labId] = selectedSlot;
         this.setState({ selectedSlotIndex })
@@ -339,7 +337,7 @@ class labSearchList extends Component {
         labItemData.labId = labInfo.lab_id;
         labItemData.slotData = this.availableSlotsDataMap.get(String(labInfo.lab_id)) || {};
         let reqLabBookAppointmentData = { ...labItemData }
-        this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry, singleLabItemData: reqLabBookAppointmentData });
+        this.props.navigation.navigate('LabBookAppointment', { singleLabItemData: reqLabBookAppointmentData, labId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
     }
 
 
@@ -412,7 +410,7 @@ class labSearchList extends Component {
     }
 
     onSelecteTestOption = (value) => {
-        this.setState({ testOption: value, values, disabled: false });
+        this.setState({ testOption: value, disabled: false });
         if (value == 'Test at Home') {
             filterData.is_inhome_test = true;
         }
@@ -431,7 +429,7 @@ class labSearchList extends Component {
         }
     }
 
-    applyFilterData = () => {
+    applyFilterData =async () => {
         const { labTestData: { labPreviousData } } = this.props;
         this.isFilteredData = true;
         this.setState({ modalVisible: false, filterData: filterData });
@@ -459,7 +457,7 @@ class labSearchList extends Component {
                 let priceArray = labEle.labCategories ? labEle.labCategories : [];
                 priceArray.forEach((labPriceEle) => {
                     if (labPriceEle.offeredPrice >= filterData.price[0] && labPriceEle.offeredPrice <= filterData.price[1]) {
-                        priceMatchedList.push(labIds)
+                       priceMatchedList.push(labIds)
                     }
                 })
             }
@@ -479,6 +477,7 @@ class labSearchList extends Component {
                 selectedFiltesArray.push(priceMatchedList);
             }
             if (filterData) {
+              
                 let filteredListArray = intersection(selectedFiltesArray);
                 let filteredLabData = [];
                 if (filteredListArray.length === 0) {
@@ -507,7 +506,8 @@ class labSearchList extends Component {
         this.setState({
             selectedSubCategory: [],
             disabled: true,
-
+            minPrice: this.minPrice,
+            maxPrice: this.maxPrice
         });
         filterData = {};
 
@@ -517,6 +517,7 @@ class labSearchList extends Component {
         this.setState({ selected: value });
     }
     renderLabListCards(item) {
+       
         const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
         const { expandedLabIdToShowSlotsData, isLoggedIn, buttonEnable, labListData } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
@@ -635,7 +636,6 @@ class labSearchList extends Component {
     }
     render() {
         const { labTestData: { patientWishListLabIds, labListItemData, labPreviousData } } = this.props;
-
         const { labListData, isLoading, selectedSubCategory, values, testOption, disabled } = this.state;
         return (
             <Container style={styles.container}>
