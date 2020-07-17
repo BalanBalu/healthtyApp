@@ -4,7 +4,7 @@ export const IS_IOS = Platform.OS === 'ios';
 
 /*** Change ON Prod Start ***/
 
-export const API_URL = 'http://192.168.43.63:3000/api/';
+export const API_URL = 'https://medflic-qa-api.aopks.com/api/';
 export const INVENTORY_API_URL = 'https://med-inv-qa-api.aopks.com/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category/';
 export const CHAT_API_URL = 'https://chat-qa-api.aopks.com';
@@ -25,6 +25,8 @@ export const CONNECTY_CUBE = [{
 }
 ]
 export const CURRENT_PRODUCT_VERSION_CODE = 18;
+export const CURRENT_PRODUCT_ANDROID_VERSION_CODE = '1.0.20';
+export const CURRENT_PRODUCT_IOS_VERSION_CODE = '16.0.0';
 
 /*** Change ON Prod End ***/
 export const ANDROID_BUNDLE_IDENTIFIER = 'com.ads.medflic';
