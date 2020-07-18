@@ -110,6 +110,9 @@ import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionLis
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
  import PopupMenu from './popUpMenu';
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
+import PublicForum from '../../modules/screens/publicForum/publicForum'
+import PostForum from '../../modules/screens/publicForum/postForum'
+import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -505,7 +508,25 @@ const HomeStack = createStackNavigator({
       title: 'Lab Test Cancel Appointment'
     }
   },
-
+   //================ PublicForum ===============
+  "Public Forum": {
+    screen: PublicForum,
+    navigationOptions: {
+      title: 'Public Forum'
+    }
+  },
+  PostForum : {
+    screen: PostForum,
+    navigationOptions: {
+      title: 'Post your questions'
+    }
+  },
+  PublicForumDetail : {
+    screen: PublicForumDetail,
+    navigationOptions: {
+      title: 'Public Health Forum'
+    }
+  },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -945,7 +966,12 @@ const drawerNavigatorRoutes = {
   "Blood Donors": {
     screen: BloodDonersList,
     routeName: 'Blood Donors'
-  }
+  },
+  "Public Forum" : {
+    screen: PublicForum,
+    routeName: 'Public Forum'
+  },
+
 }
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -982,6 +1008,10 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'Blood Donors',
             routeName: drawerNavigatorRoutes["Blood Donors"].routeName,
             icon: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+          },
+          {
+            name:'Public Forum',
+            routeName: drawerNavigatorRoutes["Public Forum"].routeName,
           }
         ]
       },
@@ -1028,6 +1058,7 @@ export const DragwerLogos = {
   Medicines: require('../../../assets/images/drawerIcons/Pharmacy.png'),
   "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
+  "Public Forum" :require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
