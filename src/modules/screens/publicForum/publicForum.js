@@ -35,6 +35,7 @@ class PublicForum extends PureComponent {
     }
     componentDidMount() {
         this.callquerysearchService()
+        this.handleLoadMore()
     }
     SearchKeyWordFunction =  async (enteredText) =>{
         if (enteredText == '') {
