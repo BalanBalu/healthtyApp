@@ -290,10 +290,11 @@ class MedicineCheckout extends Component {
                         const medicineDetails = navigation.getParam('medicineDetails') || [];
                         this.setState({ medicineDetails })
                         await this.getdeliveryWithMedicineAmountCalculation(medicineDetails, this.state.isPrescription)
-                        this.selectedItem(1)
+                        
                     }
 
-                    this.setState({ pharmacyInfo: pharmacyInfo, selectedAddress: pharmacyInfo, itemSelected: 1 })
+                   await  this.setState({ pharmacyInfo: pharmacyInfo, selectedAddress: pharmacyInfo, itemSelected: 1 })
+                    this.selectedItem(1)
                 }
             };
 

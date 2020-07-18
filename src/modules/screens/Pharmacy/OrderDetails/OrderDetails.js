@@ -89,6 +89,7 @@ class OrderDetails extends Component {
                 result = await getMedicineOrderDetailsByOrderId(orderNumber);
             } else {
                 result = await getMedicineOrderDetails(orderNumber);
+                console.log(JSON.stringify(result))
             }
            
 
@@ -392,7 +393,10 @@ class OrderDetails extends Component {
                                             />
                                         </Col>
                                         <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
+                                            <Item style={{ borderBottomWidth: 0}}>
                                             <Text style={styles.nameText}>{item.productName}</Text>
+                                            <Text style={styles.amountText}>{'(X'+item.quantity+')'}</Text>
+                                            </Item>
 
 
                                         </Col>
@@ -544,7 +548,7 @@ class OrderDetails extends Component {
 
 
                             <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
-                                <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.props.navigation.navigate('PharmacyCart',{reOrderData:orderDetails.items,isReOrder:true})} testID='addFeedBack'>
+                                <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.props.navigation.navigate('ReOrder',{reOrderData:orderDetails.items,isReOrder:true})} testID='addFeedBack'>
 
                                     <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>RE ORDER</Text>
                                     <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>

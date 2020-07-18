@@ -57,6 +57,7 @@ import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHo
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
 import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
+import ReOrder from '../../modules/screens/Pharmacy/PharmacyCart/ReOder';
 import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
@@ -770,6 +771,12 @@ const HomeStack = createStackNavigator({
     screen: ChosePharmacyList,
     navigationOptions: {
       title: ' Choose Pharmacy'
+    }
+  },
+  ReOrder: {
+    screen: ReOrder,
+    navigationOptions: {
+      title: ' Re Order'
     }
   },
   //=================== Medicine Order Details =============

@@ -131,7 +131,8 @@ class ChosePharmacyList extends Component {
             })
         } else {
             let value = pharmacyData[selectedPharmacy];
-       
+            console.log('cmncv,jzmcnvbmcv')
+       console.log(JSON.stringify(value))
             this.props.navigation.navigate("MedicineCheckout", {
                 pharmacyInfo: value.pharmacyInfo, isPrescription: true, hasChosePharmacyReload: true, medicineDetails: value.pharmacyAvailable
             });
@@ -214,7 +215,7 @@ class ChosePharmacyList extends Component {
 
                     let discountedValue = medicineRateAfterOffer(element);
 
-                    let price = ProductIncrementDecreMents(temp.quantity, discountedValue, 'add', temp.maxThreashold)
+                    let price = ProductIncrementDecreMents(temp.quantity, discountedValue, 'null', temp.maxThreashold)
                     //   
                     item.totalPrice = price.totalAmount
                     totalAmount = +price.totalAmount

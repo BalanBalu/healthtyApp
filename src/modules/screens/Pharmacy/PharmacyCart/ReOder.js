@@ -1,54 +1,92 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge, Toast } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import { Loader } from '../../../../components/ContentLoader';
-import { ProductIncrementDecreMent, getMedicineNameByProductName, getMedicineWeightUnit, setCartItemCountOnNavigation, renderMedicineImageByimageUrl, medicineRateAfterOffer ,ProductIncrementDecreMents} from '../CommomPharmacy';
+import { Container, Content, Text,  Button, Item, Card, Thumbnail, Icon, Footer, FooterTab, View,  Toast } from 'native-base';
+import { Col, Row } from 'react-native-easy-grid';
+import { StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
+import { ProductIncrementDecreMent, getMedicineNameByProductName, getMedicineWeightUnit, renderMedicineImageByimageUrl, medicineRateAfterOffer ,ProductIncrementDecreMents,medicineDiscountedAmount} from '../CommomPharmacy';
 import { getproductDetailsByPharmacyId } from '../../../providers/pharmacy/pharmacy.action';
-import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds, createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
+import Spinner from '../../../../components/Spinner';
+import {  getCurrentVersion } from '../../../providers/profile/profile.action';
 
-import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/profile.action';
 
-let userId;
-class PharmacyCart extends Component {
+class ReOrder extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            cartItems: [],
+            reOrderData: [],
             isLoading: true,
-           
-
+         
         }
 
     }
 
     async componentDidMount() {
-        try {
-         
-         
-                await this.getAddToCart();
-            
+        try {  
+                await this.getReOderData();
+           
         } catch (e) {
             console.log(e)
         }
     }
-   
-    getAddToCart = async () => {
+    getReOderData = async () => {
         try {
-            this.setState({ isLoading: true })
-            userId = await AsyncStorage.getItem('userId')
-            let cartItems = await AsyncStorage.getItem('cartItems-' + userId) || [];
-            console.log('cartItemscartItemscartItemscartItems')
-            console.log(cartItems)
-
-            if (cartItems.length === 0) {
-                this.setState({ cartItems: [], isLoading: false });
-            } else {
-
-                this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
-
+           await  this.setState({ isLoading: true })
+            let reOrderData = this.props.navigation.getParam('reOrderData') || null;
+     
+            let temp=[];
+            let productmasterIds=[];
+            let pharmacyId=null
+            let type='MEDFLIC_PHARMACY_ID'
+            let productConfigPharmacy= await getCurrentVersion(type);
+    
+            if(productConfigPharmacy.success){
+                pharmacyId=productConfigPharmacy.data[0].value
             }
+   
+        
+            if(pharmacyId){
+            reOrderData.forEach(ele=>{
+                productmasterIds.push(ele.masterProductId)
+            
+            })
+            let productResult = await getproductDetailsByPharmacyId(pharmacyId, productmasterIds);
+           
+            if(productResult&&productResult.length!==0){
+                
+                reOrderData.forEach( ele=>{
+                  let findData=  productResult.find(element=>{return element.masterProductId===ele.masterProductId})
+                  
+                  if(findData!==undefined){
+                    console.log(findData)
+                    let discountedValue = medicineRateAfterOffer(findData);
+                    let price =  ProductIncrementDecreMents(ele.quantity, discountedValue, 'null', ele.maxThreashold)
+                 
+                    ele.discountedAmount =findData.discount ? medicineDiscountedAmount(findData) : 0; 
+                    ele.totalPrice = Number(price.totalAmount)
+                    ele.unitPrice=Number(findData.price)
+                    temp.push({item:ele})
+                }
+                })
+              
+            this.setState({ reOrderData: temp , isLoading: false});
+            }else{
+            Toast.show({
+                text: ' sorry unable to make a re order please try again later',
+                duration: 3000,
+                type: 'danger',
+              
+
+            })
+        }
+        }else{
+            Toast.show({
+                text: ' sorry unable to make a re order please try again later',
+                duration: 3000,
+                type: 'danger',
+              
+
+            })
+        }
 
         }
 
@@ -59,6 +97,9 @@ class PharmacyCart extends Component {
             this.setState({ isLoading: false });
         }
     }
+
+
+   
     unitOfPrice(data) {
         if (data && data.item) {
             let unitPrice = Number(data.item.totalPrice) / Number(data.item.quantity)
@@ -67,7 +108,7 @@ class PharmacyCart extends Component {
     }
 
     async productQuantityOperator(item, operator, index) {
-        
+  
         let offeredAmount = this.unitOfPrice(item);
         let result = await ProductIncrementDecreMent(item.item.quantity, offeredAmount, operator, item.item.maxThreashold)
         let temp = item;
@@ -86,46 +127,25 @@ class PharmacyCart extends Component {
             })
             return false
         }
-      
-            createCart(temp)
-            await AsyncStorage.setItem('hasCartReload', 'true')
-      
-
-
-
-
-
-
-
-        let cartItems = this.state.cartItems
-        cartItems[index] == temp
-        this.setState({ cartItems })
-      
-            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
-        
+        let reOrderData = this.state.reOrderData
+        reOrderData[index] == temp
+        this.setState({ reOrderData })
+       
     }
 
     removeMedicine = async (index, removeData) => {
-        let data = this.state.cartItems;
-        let result = await deleteCartById(removeData.id)
-        if (result) {
+        let data = this.state.reOrderData;
             data.splice(index, 1);
-            this.setState({ cartItems: data });
-
-            await AsyncStorage.setItem('hasCartReload', 'true')
-            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
-            setCartItemCountOnNavigation(this.props.navigation)
-
-        }
+            this.setState({ reOrderData: data });
     }
 
     totalPrice() {
         let total = 0;
 
-        if (this.state.cartItems) {
+        if (this.state.reOrderData) {
 
-            this.state.cartItems.map(element => {
-          console.log( element.item.totalPrice)
+            this.state.reOrderData.map(element => {
+              
 
                 total = total + element.item.totalPrice
             })
@@ -137,45 +157,35 @@ class PharmacyCart extends Component {
         return Number(this.totalPrice()).toFixed(2);
     }
     removeAllItems = async () => {
-        let cartIds = []
-        this.state.cartItems.forEach(ele => {
-            cartIds.push(ele.id)
-
-        })
-        let result = await deleteCartByIds(cartIds)
-        if (result) {
-            this.setState({ cartItems: [] })
-            await AsyncStorage.setItem('hasCartReload', 'true')
-            await AsyncStorage.removeItem('cartItems-' + userId);
-            setCartItemCountOnNavigation(this.props.navigation)
-        }
+  
+    
+            this.setState({ reOrderData: [] })
+         
     }
     async procced() {
-        const { cartItems } = this.state;
-        let hasCartReload = await AsyncStorage.getItem('hasCartReload')
-        if (hasCartReload) {
-            await AsyncStorage.removeItem('hasCartReload')
-        }
+        const { reOrderData } = this.state;
+     
         this.props.navigation.navigate("MedicineCheckout", {
-            medicineDetails: cartItems,
+            medicineDetails: reOrderData,
             orderOption: "pharmacyCart",
         })
 
     }
     productDiscountedPrice(unitPrice,discountedAmount){
-         console.log(unitPrice)
-         console.log(discountedAmount)
-        let value=Number(unitPrice)-Number(discountedAmount)
-        return Number(Number(value).toFixed(2))
+      
+        let value=parseInt(unitPrice)-parseInt(discountedAmount)
+        return value
     }
     render() {
-        const { isLoading, cartItems } = this.state;
+        const { isLoading, reOrderData } = this.state;
 
         return (
             <Container style={{ backgroundColor: '#EAE6E6', flex: 1 }}>
                 <Content style={{ flex: 1 }}>
-
-                    {cartItems.length === 0 ?
+                <Spinner
+                        visible={isLoading}
+                    />
+                    {reOrderData.length === 0 ?
                         <Card transparent style={{
                             alignItems: "center",
                             justifyContent: "center",
@@ -195,12 +205,12 @@ class PharmacyCart extends Component {
                                 }}
                                 note
                             >
-                                No medicines found on your Cart
+                                sorry unable to make Re Order
                     </Text>
                             <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                                 <Button style={[styles.bookingButton, styles.customButton]}
                                     onPress={() =>
-                                        this.props.navigation.pop()
+                                        this.props.navigation.navigate('Medicines')
                                     } testID='navigateToHome'>
                                     <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>{'Place Order'}</Text>
                                 </Button>
@@ -210,7 +220,7 @@ class PharmacyCart extends Component {
                         :
                         <View style={{ margin: 5, backgroundColor: '#fff', borderRadius: 5, paddingBottom: 5 }}>
                             <FlatList
-                                data={this.state.cartItems}
+                                data={this.state.reOrderData}
                                 extraData={this.state}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
@@ -281,7 +291,7 @@ class PharmacyCart extends Component {
                         </View>
                     }
 
-                    {cartItems.length !== 0 ?
+                    {reOrderData.length !== 0 ?
                         <View style={{ backgroundColor: '#fff', margin: 5, borderRadius: 5 }}>
                             <Row>
                                 <Col size={7.5}>
@@ -304,7 +314,7 @@ class PharmacyCart extends Component {
                     }
 
                 </Content>
-                {cartItems.length !== 0 ?
+                {reOrderData.length !== 0 ?
 
                     <Footer style={{}}>
                         <FooterTab>
@@ -329,7 +339,7 @@ class PharmacyCart extends Component {
 }
 
 
-export default PharmacyCart
+export default ReOrder
 
 
 const styles = StyleSheet.create({
