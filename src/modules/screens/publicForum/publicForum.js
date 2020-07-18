@@ -112,7 +112,7 @@ class PublicForum extends PureComponent {
         const { isLoading , data,  } = this.state;
         return (
             <Container style={styles.container}>
-                 {isLoading ? <Loader style='list' /> :
+                 {isLoading ? <ActivityIndicator  /> :
 
                 <View  style={{ flex: 1,padding:15,marginBottom:10 }}
                 contentContainerStyle={{ flexGrow: 1 }}>

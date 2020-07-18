@@ -111,7 +111,7 @@ class PublicForumDetail extends PureComponent {
         const { answer_text, getsData, isLoading } = this.state
         return (
             <Container style={styles.container}>
-                {isLoading ? <ActivityIndicator  /> :
+             
                     <Content style={styles.bodyContent}>
                         <FlatList
                             data={getsData}
@@ -180,7 +180,7 @@ class PublicForumDetail extends PureComponent {
                                 </View>
                             } />
                     </Content>
-                }
+                
            
             </Container>
 
