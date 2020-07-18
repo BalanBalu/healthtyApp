@@ -156,7 +156,7 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center'
     },
     offer: {
-        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green'
+        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green', marginLeft: 5
     },
     offer4LabBookApp: {
         fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', color: 'green'

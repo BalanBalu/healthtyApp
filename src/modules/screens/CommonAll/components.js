@@ -38,7 +38,7 @@ const RenderOfferDetails = (props) => {
     return (
         <>
             <Text note style={props.isFromLabBookApp ? styles.offerText4LalBookApp : styles.offerText}>Offer</Text>
-            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo}%</Text>
+            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo ?props.offerInfo:'0'}%</Text>
         </>
     )
 }
