@@ -245,9 +245,12 @@ export class OrderInsertReview extends Component {
      
 
       if (result) {
-      
+      let  message='review added successfully'
+         if( reviewInsertData.isReviewSkipped===true){
+          message='review skipped successfully'
+         }
         Toast.show({
-          text: 'review added successfully ',
+          text: message,
           type: "success",
           duration: 3000
         });

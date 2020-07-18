@@ -205,7 +205,7 @@ class ReOrder extends Component {
                                 }}
                                 note
                             >
-                                No medicines found on Re Order
+                                sorry unable to make Re Order
                     </Text>
                             <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                                 <Button style={[styles.bookingButton, styles.customButton]}
