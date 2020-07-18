@@ -1,5 +1,8 @@
 import {getService, postService} from '../../../setup/services/httpservices';
-
+import { store } from '../../../setup/store';
+import axios from 'axios';
+export const FORUM_RESPONSE = 'FORUM/FORUM_RESPONSE'
+export const FORUM_ERROR = 'FORUM/CATAGRIES_ERROR'
 export async function forumInsertQuestion(data) {
     try {
       let endPoint = '/publicforum/question';
@@ -30,19 +33,36 @@ export async function forumInsertQuestion(data) {
       }
     }
   }
-  export async function getAllPublicForumDetails() {
+  export async function getAllPublicForumDetails(inputText,skip,limit) {
     try {
       let endPoint = '/getAllPublicForumDetails/' ;
+         if (inputText) {
+       endPoint = endPoint + '?' + inputText;
+        }
+        if (inputText&&limit) {
+          endPoint = endPoint + '&skip=' + skip + '&limit=' + limit;
+        }
+        if(limit){
+          endPoint = endPoint + '?skip=' + skip + '&limit=' + limit;
+
+        }
       let response = await getService(endPoint);
       let respData = response.data;
+      store.dispatch({
+        type: FORUM_RESPONSE,
+        isLoading: false,
+        success: true,
+        message: respData.message
+      })
       return respData;
     } catch (e) {
-      return {
-        message: 'exception' + e,
-        success: false
-      }
+      store.dispatch({
+        type: FORUM_ERROR,
+        message: e
+      });
     }
   }
+  
   export async function getForumQuestionAndAnswerDetails(questionId) {
     try {
       let endPoint = '/getForumQuestionAndAnswerDetails/' + questionId;

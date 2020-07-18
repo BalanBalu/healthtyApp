@@ -51,7 +51,7 @@ class PostForum extends PureComponent {
                   type: "success",
                   duration: 3000,
                 })
-    
+    this.setState({question_title:null,question_description:null})
               }
               else {
                 Toast.show({

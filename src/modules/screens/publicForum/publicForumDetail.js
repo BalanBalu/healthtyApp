@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Form, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler, TextInput, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, TextInput, AsyncStorage,ActivityIndicator } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import styles from './styles'
 import { forumInsertAnswer, getForumQuestionAndAnswerDetails } from '../../providers/forum/forum.action'
@@ -60,7 +60,7 @@ class PublicForumDetail extends PureComponent {
                         type: "success",
                         duration: 3000,
                     })
-
+                    this.setState({answer_text:null})
                 }
                 else {
                     Toast.show({
@@ -89,7 +89,6 @@ class PublicForumDetail extends PureComponent {
                 this.setState({ getsData: forumFetced })
                 console.log("data=========<<<<<<<<<<<<<", JSON.stringify(result.data))
             }
-
         } catch (e) {
             console.log(e)
         }
@@ -112,7 +111,7 @@ class PublicForumDetail extends PureComponent {
         const { answer_text, getsData, isLoading } = this.state
         return (
             <Container style={styles.container}>
-                {isLoading ? <Loader style='list' /> :
+                {isLoading ? <ActivityIndicator  /> :
                     <Content style={styles.bodyContent}>
                         <FlatList
                             data={getsData}
@@ -147,7 +146,7 @@ class PublicForumDetail extends PureComponent {
                                         <Text style={styles.postAnswerText}>Post Your Answer</Text>
                                     </TouchableOpacity>
                                     <View style={styles.borderView}>
-
+                                    {isLoading ? <ActivityIndicator  /> :
                                         <View>
                                             <Text style={{ color: '#7F49C3', fontSize: 12, fontFamily: 'OpenSans', }}>{item.answersData.length} answers</Text>
                                             <FlatList
@@ -175,38 +174,14 @@ class PublicForumDetail extends PureComponent {
                                                     </View>
                                                 } />
                                         </View>
-
+                            }
 
                                     </View>
                                 </View>
                             } />
                     </Content>
                 }
-                <Footer style={styles.footerStyle}>
-                    <Row>
-                        <Col size={1} style={styles.colstyle}>
-                            <TouchableOpacity style={styles.pageCount}>
-                                <Text style={styles.pageCountText}>{"<"}</Text>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col size={8} style={styles.colstyle}>
-                            <TouchableOpacity style={[styles.pageCount, { alignItems: 'center', justifyContent: 'center' }]}>
-                                <Text style={styles.pageCountText}>1</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.pageCount, { alignItems: 'center', justifyContent: 'center' }]}>
-                                <Text style={styles.pageCountText}>2</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.pageCount, { alignItems: 'center', justifyContent: 'center' }]}>
-                                <Text style={styles.pageCountText}>3</Text>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col size={1} style={styles.colstyle}>
-                            <TouchableOpacity style={styles.pageCount}>
-                                <Text style={styles.pageCountText}>{">"}</Text>
-                            </TouchableOpacity>
-                        </Col>
-                    </Row>
-                </Footer>
+           
             </Container>
 
         )

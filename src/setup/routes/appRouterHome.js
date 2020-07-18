@@ -508,7 +508,7 @@ const HomeStack = createStackNavigator({
     }
   },
    //================ PublicForum ===============
-   PublicForum: {
+  "Public Forum": {
     screen: PublicForum,
     navigationOptions: {
       title: 'Public Forum'
@@ -959,7 +959,12 @@ const drawerNavigatorRoutes = {
   "Blood Donors": {
     screen: BloodDonersList,
     routeName: 'Blood Donors'
-  }
+  },
+  "Public Forum" : {
+    screen: PublicForum,
+    routeName: 'Public Forum'
+  },
+
 }
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -996,6 +1001,10 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'Blood Donors',
             routeName: drawerNavigatorRoutes["Blood Donors"].routeName,
             icon: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+          },
+          {
+            name:'Public Forum',
+            routeName: drawerNavigatorRoutes["Public Forum"].routeName,
           }
         ]
       },
@@ -1042,6 +1051,7 @@ export const DragwerLogos = {
   Medicines: require('../../../assets/images/drawerIcons/Pharmacy.png'),
   "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
+  "Public Forum" :require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
