@@ -384,8 +384,9 @@ class LabConfirmation extends Component {
     }
     handleDatePicked = date => {
         const { packageDetails: { selectedSlotItem: { slotEndDateAndTime, slotStartDateAndTime } } } = this.state;
-        const startDate = setDateTime(slotStartDateAndTime);
-        const endDate = setDateTime(slotEndDateAndTime);
+        const startDate = new Date(slotStartDateAndTime);//setDateTime(slotStartDateAndTime, date);
+        const endDate = new Date(slotEndDateAndTime);// setDateTime(slotEndDateAndTime, date);
+        date = setDateTime(slotStartDateAndTime, date)
         const valid = startDate <= date && endDate >= date;
         if (valid === false) {
             Toast.show({
@@ -393,18 +394,18 @@ class LabConfirmation extends Component {
                 duration: 2000,
                 type: 'danger'
             });
+            this.setState({ isTimePickerVisible: false});
             return;
+            
         } else {
             this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
         }
 
-        function setDateTime(dateStr) {
+        function setDateTime(dateStr, customTime) {
             const date = new Date(dateStr);
-            const currentDate = new Date();
-            date.setDate(currentDate.getDate())
-            date.setMonth(currentDate.getMonth())
-            date.setFullYear(currentDate.getFullYear())
-            date.setSeconds(0)
+            date.setHours(customTime.getHours())
+            date.setMinutes(customTime.getMinutes());
+            date.setSeconds(1)
             return date;
         }
         function getTimeWithMeredian(dateTime) {
