@@ -173,7 +173,7 @@ class MedicineSearchList extends Component {
         }
     }
     async backNavigation(payload) {
-       
+       await this.setState({isLoading: true })
         let hascartReload = await AsyncStorage.getItem('hasCartReload');
         let userId = await AsyncStorage.getItem('userId')
 
@@ -190,7 +190,7 @@ class MedicineSearchList extends Component {
                 await this.setState({ cartItems: cartData })
             }
         }else{
-            this.setState({ pagination: 0,data:[], isLoading: true })
+            await this.setState({ pagination: 0,data:[]})
             this.componentDidMount()
         }
     }
