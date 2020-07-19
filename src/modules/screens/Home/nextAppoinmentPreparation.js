@@ -142,9 +142,9 @@ class NextAppoinmentPreparation extends PureComponent {
         try {
           // const {data} = this.state
           let result = await getappointmentDetails(this.state.AppointmentId, prepareAppointment = 1);
-          const resultData = result.data
+          const resultData = result.data && result.data[0];
          
-          if (result) {
+          if (result && resultData) {
             this.setState({ appointmentDetails: resultData[0] });
           }
         }

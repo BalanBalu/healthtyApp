@@ -35,25 +35,24 @@ export async function forumInsertQuestion(data) {
   }
   export async function getAllPublicForumDetails(inputText,skip,limit) {
     try {
-      let endPoint = '/getAllPublicForumDetails/' ;
-         if (inputText) {
-       endPoint = endPoint + '?' + inputText;
-        }
-        if (inputText&&limit) {
-          endPoint = endPoint + '&skip=' + skip + '&limit=' + limit;
-        }
-        if(limit){
-          endPoint = endPoint + '?skip=' + skip + '&limit=' + limit;
-
-        }
-      let response = await getService(endPoint);
-      let respData = response.data;
-      store.dispatch({
-        type: FORUM_RESPONSE,
-        isLoading: false,
-        success: true,
-        message: respData.message
-      })
+          let endPoint = '/getAllPublicForumDetails?q=1';
+          if (inputText) {
+            endPoint = endPoint + '&searchQuery=' + inputText;
+          }
+          if (skip) {
+            endPoint = endPoint + '&skip=' + skip;
+          }
+          if (limit) {
+            endPoint = endPoint + '&limit=' + limit;
+          }
+        let response = await getService(endPoint);
+        let respData = response.data;
+        store.dispatch({
+          type: FORUM_RESPONSE,
+          isLoading: false,
+          success: true,
+          message: respData.message
+        })
       return respData;
     } catch (e) {
       store.dispatch({

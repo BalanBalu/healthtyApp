@@ -28,9 +28,10 @@ class PublicForum extends PureComponent {
           querySugesstionArray:[],
           query_text:'',
           skip: 0,
-          limit: 10
+          limit: 10,
+          isAllItemFetched: false 
       };
-      this.onEndReachedCalledDuringMomentum = false;
+      this.onEndReachedCalledDuringMomentum = true;
      this.callquerysearchService = debounce(this.callquerysearchService, 500); 
     }
     componentDidMount() {
@@ -38,25 +39,36 @@ class PublicForum extends PureComponent {
         this.handleLoadMore()
     }
     SearchKeyWordFunction =  async (enteredText) =>{
-        if (enteredText == '') {
-            this.setState({ data: this.state.data, query_text: enteredText })
-          } else {
-            this.setState({ query_text: enteredText })
-            this.callquerysearchService(enteredText);
-          }
+        if (enteredText) {
+            await this.setState({ query_text: enteredText, skip: 0 })
+            this.callquerysearchService(enteredText, true );
+        }
     }
-    callquerysearchService = async (enteredText) => {
-        if(this.state.query_text == ''){
-            let result = await getAllPublicForumDetails(this.state.skip,this.state.limit)
+    callquerysearchService = async (enteredText, skipConcatWithPreviousData ) => {
+      //  if(this.state.query_text == '') {
+            let result = await getAllPublicForumDetails(this.state.query_text, this.state.skip,this.state.limit)
             if (result.success) {
-                let forumFetced = result.data
-                this.setState({ data: forumFetced })
-                console.log("Wholedata=========<<<<<<<<<<<<<", JSON.stringify(result.data))
+                let forumFetced = result.data || []
+                this.setState({ 
+                    data: skipConcatWithPreviousData === true ? result.data : this.state.data.concat(forumFetced),
+                    searchValue: enteredText,
+                    isLoading: false,
+                    isAllItemFetched: forumFetced.length < this.state.limit 
+                 })
+                console.log("Wholedata=========<<<<<<<<<<<<< Length", result.data.length)
+            } else {
+                this.setState({
+                    searchValue: enteredText,
+                    setShowSuggestions: false,
+                    isLoading: false,
+                    isAllItemFetched: true
+                  });
             }
-        }else{
-      let queryResultData = await getAllPublicForumDetails(enteredText,this.state.skip,this.state.limit);
-       console.log('query+++++++++++++++++' + JSON.stringify(queryResultData))
-    //    alert(JSON.stringify(queryResultData))
+       // } 
+       /* 
+        else {
+            let queryResultData = await getAllPublicForumDetails(enteredText,this.state.skip,this.state.limit);
+            console.log('query+++++++++++++++++' + JSON.stringify(queryResultData))
        if (queryResultData.success) {
           this.setState({
             data: queryResultData.data,
@@ -70,53 +82,47 @@ class PublicForum extends PureComponent {
             setShowSuggestions: false,
             isLoading:true
           });
-        }
+        } 
+        
+        } */
     }
-         }
          renderFooter() {
             return (
                 //Footer View with Load More button
-                <View style={styles.footer}>
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={this.loadMoreData}
+                // <View style={styles.footer}>
+                //     <TouchableOpacity
+                //         activeOpacity={0.9}
+                //         style={styles.loadMoreBtn}>
+                //         {this.state.footerLoading ?
     
-                        style={styles.loadMoreBtn}>
-                        {this.state.footerLoading ?
+                        
     
-                            <ActivityIndicator color="blue" style={styles.btnText} /> : null}
-    
-                    </TouchableOpacity>
-                </View>
+                //     </TouchableOpacity>
+                // </View>
+                this.state.isAllItemFetched === false ? 
+                <ActivityIndicator color="blue" style={styles.btnText} /> : null
             );
         }
 
-         handleLoadMore = async () => {
-               console.log('On Hanndle loading ' + this.state.skip);
-            if (!this.onEndReachedCalledDuringMomentum) {
-              
-                this.onEndReachedCalledDuringMomentum = false;
-                await this.setState({ skip: this.state.skip + this.state.limit, footerLoading: true });              
+          handleLoadMore = async () => {
+                console.log('On Hanndle loading ' + this.onEndReachedCalledDuringMomentum);
+                 this.setState({ 
+                        skip: (this.state.skip + this.state.limit) });              
                 await  this.callquerysearchService(this.state.query_text)
                 console.log('loading>>>>>>>>.. ' + this.state.skip);
-
-                this.setState({ footerLoading: false })
-    
-            }
         }
     
 
 
 
     render() {
-        console.log(JSON.stringify(this.state.data))
         const { isLoading , data,  } = this.state;
         return (
             <Container style={styles.container}>
-                 {isLoading ? <ActivityIndicator  /> :
+                 {isLoading ? <ActivityIndicator  /> : null }
 
-                <View  style={{ flex: 1,padding:15,marginBottom:10 }}
-                contentContainerStyle={{ flexGrow: 1 }}>
+                <View  style={{ flex: 1, marginLeft: 5, marginRight: 5, marginBottom:10 }}
+contentContainerStyle={{ flexGrow: 1 }}>
                         <View >
                             <View style={{ backgroundColor: '#ECDCFA', paddingTop: 8, paddingBottom: 8, paddingRight: 10, marginTop: 5,flexDirection:'row' }}>
                                 <View style={{width:'70%'}}>
@@ -163,20 +169,16 @@ class PublicForum extends PureComponent {
                                 </Form>
                           
                     </View>
-                    {this.state.setShowSuggestions == true ?
-                  <View style={{
-                    flex: 1,
-                  }}>
-                  </View>
-                  : null}
-                    <View>
-                        <Text style={{fontFamily:'OpenSans',fontSize:15,}}>Ask Query To Qualfied Doctors</Text>
+                   
+                    <View style={{flex: 1 }}>
+                        <Text style={{fontFamily:'OpenSans',fontSize:15, marginBottom: 10 }}>Ask Query To Qualfied Doctors</Text>
+                       
                         <FlatList
                             	data={data}
                                 extraData={data}
                                 onEndReached={() => this.handleLoadMore()}
                                 onEndReachedThreshold={0.5}
-                                onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = true; }}
+                               // onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
                                 ListFooterComponent={this.renderFooter.bind(this)}
                             renderItem={({ item }) =>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("PublicForumDetail", {QuestionId:item._id })}>
@@ -201,10 +203,11 @@ class PublicForum extends PureComponent {
                                     <Text style={styles.descriptionText}>{item.description}</Text>
                                 </View>
                                 </TouchableOpacity>
-                            } />
+                            }
+                            keyExtractor={(item, index) => index.toString()} />
                     </View>
                 </View>
-    }
+    
             </Container>
 
         )
