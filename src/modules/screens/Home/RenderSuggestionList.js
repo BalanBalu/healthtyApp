@@ -1,6 +1,6 @@
 
 import React, { PureComponent } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, ActivityIndicator, BackHandler, Alert } from 'react-native';
 import { Item, Text, Icon, Header, Left, Input, Container, Content, Right, Card, Button } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
@@ -19,21 +19,27 @@ class RenderSuggestionsList extends PureComponent {
         }
         this.callGetSuggestionListService = debounce(this.callGetSuggestionListService, 300);
     }
+    componentWillMount() {
+        this.callGetSuggestionListService('Primary', true)
+    }
 
-    callGetSuggestionListService = async (enteredText) => {
+    callGetSuggestionListService = async (enteredText, suggestionTextDisable) => {
         try {
             this.setState({ isLoading: true })
             const { bookappointment: { locationCordinates } } = this.props;
-            const locationData = {
-                "coordinates": locationCordinates,
-                "maxDistance": MAX_DISTANCE_TO_COVER
+            const suggestionReqData = {
+                locationData: {
+                    "coordinates": locationCordinates,
+                    "maxDistance": MAX_DISTANCE_TO_COVER
+                },
+                inputText: enteredText
             }
-            let resultOfSuggestionData = await getSpecialistDataSuggestions('suggestion', enteredText, locationData);
+            let resultOfSuggestionData = await getSpecialistDataSuggestions('suggestion', suggestionReqData);
             // console.log('resultOfSuggestionData.data' + JSON.stringify(resultOfSuggestionData.data))
             if (resultOfSuggestionData.success) {
-                this.setState({ suggestionList: resultOfSuggestionData.data, searchValue: enteredText });
+                this.setState({ suggestionList: resultOfSuggestionData.data, searchValue: suggestionTextDisable ? '' : enteredText });
             } else {
-                this.setState({ suggestionList: [], searchValue: enteredText });
+                this.setState({ suggestionList: [], searchValue: suggestionTextDisable ? '' : enteredText });
             }
         } catch (Ex) {
             console.log('Ex is getting on get Suggestions list details for Patient====>', Ex)
@@ -68,9 +74,55 @@ class RenderSuggestionsList extends PureComponent {
             />
         );
     };
+
+    navigateToSearchListPage(item) {
+        const { bookappointment: { isLocationSelected, locationCordinates } } = this.props;
+        if (!isLocationSelected) {
+            Alert.alert(
+                "Location Warning",
+                "The Location is Not choose, To continue Please choose your Location",
+                [
+                    { text: "Cancel" },
+                    {
+                        text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
+                    }
+                ],
+            );
+            return
+        }
+        let reqData4SearchDocList = {
+            locationDataFromSearch: {
+                type: 'geo',
+                "coordinates": locationCordinates,
+                maxDistance: MAX_DISTANCE_TO_COVER
+            }
+        }
+        if (item) {
+            reqData4SearchDocList = { inputKeywordFromSearch: item.value, ...reqData4SearchDocList }
+        }
+        console.log('reqData4SearchDocList===>', JSON.stringify(reqData4SearchDocList));
+        this.props.navigation.navigate("Doctor Search List", reqData4SearchDocList);
+        // let requestData = [{
+        //     type: 'geo',
+        //     value: {
+        //         coordinates: locationCordinates,
+
+        //         maxDistance: MAX_DISTANCE_TO_COVER
+        //     }
+        // }]
+        // if (index !== 0) {
+        //     requestData.push({
+        //         type: item.type,
+        //         value: item.value
+        //     })
+        // }
+        // this.props.navigation.navigate("Doctor List", { resultData: requestData })
+    }
+
     render() {
         const { suggestionList, searchValue, visibleClearIcon, isLoading } = this.state;
-        const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation } } = this.props;
+        const { bookappointment: { isLocationSelected, patientSearchLocationName, locationCordinates, isSearchByCurrentLocation } } = this.props;
+        const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'All Doctors in Near Current Location' : 'All Doctors in ' + patientSearchLocationName + ' City' : 'Please Choose your Location in Map';
         return (
             <Container style={{ flex: 1 }}>
                 <Row style={styles.SearchRow}>
@@ -102,45 +154,33 @@ class RenderSuggestionsList extends PureComponent {
                     </Col>
 
                 </Row>
+                <TouchableOpacity onPress={() => this.navigateToSearchListPage()} style={{ marginTop: 5, paddingLeft: 2, paddingRight: 2, marginBottom: 5 }}>
+                    <Text style={styles.valueText}>{locationText}</Text>
+                </TouchableOpacity>
                 <Content style={{ backgroundColor: '#F5F5F5', paddingLeft: 2, paddingRight: 2, paddingBottom: 20, flex: 1 }}>
                     {searchValue != null ?
                         <FlatList
-                            data={suggestionList ? [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }].concat(suggestionList) : [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }]}
+                            data={suggestionList}
                             extraData={[searchValue, suggestionList]}
                             ItemSeparatorComponent={this.itemSeparatedByListView}
                             renderItem={({ item, index }) => (
-                                <Row
-                                    onPress={() => {
-                                        let requestData = [{
-                                            type: 'geo',
-                                            value: {
-                                                coordinates: locationCordinates,
-                                                maxDistance: MAX_DISTANCE_TO_COVER
-                                            }
-                                        }]
-                                        if (index !== 0) {
-                                            requestData.push({
-                                                type: item.type,
-                                                value: item.value
-                                            })
-                                        }
-                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
-                                    }}
-                                >
-                                    <Col size={7}>
-                                        <Text style={styles.valueText}>{item.value}</Text>
-                                        {item.address ? <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 13, color: '#9c9b9f', paddingLeft: 10, }}>{item.address}</Text> : null}
+                                <TouchableOpacity onPress={() => this.navigateToSearchListPage(item)}>
+                                    <Row>
+                                        <Col size={7}>
+                                            <Text style={styles.valueText}>{item.value}</Text>
+                                            {item.address ? <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 13, color: '#9c9b9f', paddingLeft: 10, }}>{item.address}</Text> : null}
 
-                                    </Col>
-                                    {/* <Col size={3}> */}
-                                    <Col size={2.5} style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                        {item.profile_image ? <Image
-                                            source={{ uri: item.profile_image.imageURL }}
-                                            style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center' }} /> :
-                                            <Text uppercase={true} style={styles.typeStyle} >{item.type}</Text>
-                                        }
-                                    </Col>
-                                </Row>
+                                        </Col>
+                                        {/* <Col size={3}> */}
+                                        <Col size={2.5} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                            {item.profile_image ? <Image
+                                                source={{ uri: item.profile_image.imageURL }}
+                                                style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center' }} /> :
+                                                <Text uppercase={true} style={styles.typeStyle} >{item.type}</Text>
+                                            }
+                                        </Col>
+                                    </Row>
+                                </TouchableOpacity>
                             )}
                             enableEmptySections={true}
                             style={{ marginTop: 10 }}

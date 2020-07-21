@@ -8,6 +8,8 @@ import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
 import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders, getReminderData } from '../../providers/reminder/reminder.action.js';
 import { IS_ANDROID, IS_IOS } from '../../../setup/config';
+import { translate } from "../../../setup/translator.helper"
+
 const POSSIBLE_PAGE_CONTENT = {
   MEDICINE_CONTENT: 'MEDCINE_CONTENT',
   DATE_CONTENT: 'DATE_CONTENT',
@@ -348,7 +350,7 @@ class AddReminder extends Component {
               <View pointerEvents={this.state.pageContent ? "auto" : "none"}
                 style={this.state.pageContent == true ? styles.medicineenabletext : styles.medicinedisabletext}>
                 <View>
-                  <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
+                  <Text style={styles.NumText}>{translate("What Medicine would you like to add ?")}</Text>
                   <Form style={{
                     borderColor: '#909090',
                     borderWidth: 0.5, height: 35, borderRadius: 5, marginTop: 5,
@@ -391,7 +393,7 @@ class AddReminder extends Component {
                 <View>
                   <Row>
                     <Col>
-                      <Text style={styles.NumText}>Form of Medicine</Text>
+                      <Text style={styles.NumText}>{translate("Form of Medicine")}</Text>
                       <Form style={{
                         marginTop: 5, borderColor: '#909090',
                         borderWidth: 0.5, height: 35, borderRadius: 5
@@ -410,7 +412,7 @@ class AddReminder extends Component {
                       </Form>
                     </Col>
                     <Col style={{ marginLeft: 5 }}>
-                      <Text style={styles.NumText}>Strength of Medicine</Text>
+                      <Text style={styles.NumText}>{translate("Strength of Medicine")}</Text>
                       <Form style={{
                         marginTop: 5, borderColor: '#909090',
                         borderWidth: 0.5, height: 35, borderRadius: 5
@@ -431,7 +433,7 @@ class AddReminder extends Component {
                   </Row>
                 </View>
                 <View>
-                  <Text style={styles.NumText}>How often would you take this Medicine</Text>
+                  <Text style={styles.NumText}>{translate("How often would you take this Medicine")}</Text>
                   <Item style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -441,7 +443,7 @@ class AddReminder extends Component {
                         onPress={() => this.setState({ medicinePeriod: "everyday" })} />
                       <Text style={{
                         fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10
-                      }}>Everyday</Text>
+                      }}>{translate("Everyday")}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                       <Radio
@@ -450,7 +452,7 @@ class AddReminder extends Component {
                         onPress={() => this.setState({ medicinePeriod: "onlyonce" })} />
                       <Text style={{
                         fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10
-                      }}>Only when I need</Text>
+                      }}>{translate("Only when I need")}</Text>
                     </View>
 
                   </Item>
@@ -459,7 +461,7 @@ class AddReminder extends Component {
                   <Form style={{ marginTop: 5, marginRight: 5 }}>
                     <Row>
                       <Col size={30}>
-                        <Text style={styles.NumText}>Select Date</Text>
+                        <Text style={styles.NumText}>{translate("Select Date")}</Text>
                       </Col>
                       <Col size={35}>
                         <View style={{ marginTop: 5, }}>
@@ -470,7 +472,7 @@ class AddReminder extends Component {
                             <Icon name='md-calendar' style={styles.calendarstyle} />
                             {this.state.startDatePlaceholder ?
                               <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_start_date, 'DD/MM/YYYY')}</Text> :
-                              <Text style={styles.startenddatetext}>Start Date</Text>
+                              <Text style={styles.startenddatetext}>{translate("Start Date")}</Text>
                             }
                             <DateTimePicker
                               mode={'date'}
@@ -491,7 +493,7 @@ class AddReminder extends Component {
                             {this.state.endDatePlaceholder ?
                               <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
                               :
-                              <Text style={styles.startenddatetext}>End Date</Text>
+                              <Text style={styles.startenddatetext}>{translate("End Date")}</Text>
                             }
                             <DateTimePicker
                               mode={'date'}
@@ -511,7 +513,7 @@ class AddReminder extends Component {
                   <Form style={{ marginTop: 5, marginBottom: 5, marginRight: 5 }}>
                     <Row>
                       <Col size={30}>
-                        <Text style={styles.NumText}>Select Date</Text>
+                        <Text style={styles.NumText}>{translate("Select Date")}</Text>
                       </Col>
                       <Col size={35} style={{ mariginTop: 10 }}>
                         <View style={{ marginTop: 5, }}>
@@ -552,12 +554,12 @@ class AddReminder extends Component {
 
                       }
                     >
-                      <Text style={styles.NextButtonText}>Next</Text>
+                      <Text style={styles.NextButtonText}>{translate("Next")}</Text>
                     </Button>
 
                     :
                     <Button style={styles.NextButton} onPress={() => this.setState({ pageContent: true })}>
-                      <Text style={styles.NextButtonText}>Edit</Text>
+                      <Text style={styles.NextButtonText}>{translate("Edit")}</Text>
                     </Button>
 
                   }
@@ -572,7 +574,7 @@ class AddReminder extends Component {
                     style={{ marginBottom: 10, marginTop: 10 }}>
                     <Row>
                       <Col size={4} style={{ mariginTop: 5 }}>
-                        <Text style={styles.NumText}>Choose times</Text>
+                        <Text style={styles.NumText}>{translate("Choose times")}</Text>
                       </Col>
                       <Col size={3.5} style={{ mariginTop: 5 }}>
                         <View style={{ alignItems: 'flex-start', marginTop: 5, padding: 1 }}>
@@ -583,7 +585,7 @@ class AddReminder extends Component {
                                 <View>
                                   <Text style={styles.startenddatetext}>{formatDate(this.state.RecentylyPickedTime, 'hh:mm a')}</Text>
                                 </View> :
-                                <Text style={styles.startenddatetext}>Select time </Text>
+                                <Text style={styles.startenddatetext}>{translate("Select time")}</Text>
                             }
                             <DateTimePicker
                               mode={'time'}
@@ -607,11 +609,11 @@ class AddReminder extends Component {
                 <View style={{ backgroundColor: '#f1f1f1', marginRight: 10, paddingBottom: 10, marginTop: 10, borderRadius: 5 }}>
                   <Row>
                     <Col size={5}>
-                      <Text style={{ textAlign: 'left', marginTop: 10, marginLeft: 10 }}>Preview</Text>
+                      <Text style={{ textAlign: 'left', marginTop: 10, marginLeft: 10 }}>{translate("Preview")}</Text>
                     </Col>
                     <Col size={5} style={{ alignItems: 'flex-end' }}>
                       <Row>
-                        <Text style={{ textAlign: 'left', marginTop: 10, marginLeft: 10 }}>Notify Me</Text>
+                        <Text style={{ textAlign: 'left', marginTop: 10, marginLeft: 10 }}>{translate("Notify Me")}</Text>
                         <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff', alignSelf: 'center', marginTop: 2 }} trackColor={{ true: '#6FC41A', false: 'grey' }}
                           trackColor={{ true: '#7F49C3' }}
                           thumbColor={"#F2F2F2"}
@@ -672,9 +674,9 @@ class AddReminder extends Component {
                 <View style={{ backgroundColor: '#F1F1F1', marginTop: 10, paddingBottom: 10 }}>
 
                   <View>
-                    <Text style={{ marginBottom: 5, marginTop: 10, textAlign: 'center' }}>Preview</Text>
+                    <Text style={{ marginBottom: 5, marginTop: 10, textAlign: 'center' }}>{translate("Preview")}</Text>
                     <Image source={require('../../../../assets/images/Remindericon.png')} style={{ height: 150, width: 150, marginLeft: 90 }} />
-                    <Text style={{ color: '#d83939', textAlign: 'center' }}>No Reminder is available now!</Text>
+                    <Text style={{ color: '#d83939', textAlign: 'center' }}>{translate("No Reminder is available now!")}</Text>
                   </View>
                 </View>}
 
@@ -682,7 +684,7 @@ class AddReminder extends Component {
 
                 <Button style={{ marginTop: 5, backgroundColor: '#1296db', height: -40, borderRadius: 5, justifyContent: 'center' }} onPress={this.AddReminderDatas}>
 
-                  <Text style={{ width: 475, fontWeight: 'bold', textAlign: 'center' }}>SET MEDICINE REMINDER</Text>
+                  <Text style={{ width: 475, fontWeight: 'bold', textAlign: 'center' }}>{translate("SET MEDICINE REMINDER")}</Text>
                 </Button>
 
               </View>

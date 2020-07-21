@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Container, Content, Text, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, Image } from 'react-native';
-import styles from './styles';
+import styles from '../CommonAll/styles';
 
 export default class RenderLabCategories extends PureComponent {
     constructor(props) {

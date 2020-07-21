@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform, Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
-import { dateDiff } from '../../../../setup/helpers';
+import { dateDiff, formatDate, subTimeUnit } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
-import { insertAppointment, updateLapAppointment } from '../../../providers/lab/lab.action';
-import { getUserGenderAndAge } from '../CommonLabTest'
+import { insertAppointment, updateLapAppointment, validateAppointment } from '../../../providers/lab/lab.action';
+import { getUserGenderAndAge } from '../../CommonAll/functions'
 import { SERVICE_TYPES } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
+import DateTimePicker from "react-native-modal-datetime-picker";
+import moment from 'moment';
+
+
 let patientDetails = [];
 class LabConfirmation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: false,
+            isLoading: true,
             itemSelected: 'itemOne',
             selfChecked: false,
             othersChecked: false,
@@ -33,11 +37,17 @@ class LabConfirmation extends Component {
             gender: '',
             age: '',
             itemSelected: 'TEST_AT_LAP',
-            packageDetails: {},
+            packageDetails: props.navigation.getParam('packageDetails') || {},
             selectedAddress: null,
-
+            buttonEnable: false,
+            isTimePickerVisible: false,
+            pickByStartTime: moment().startOf('day').toDate(),
+            startTime: moment().startOf('day').toDate(),
+            isDateTimePickerVisible: false,
+            startDatePlaceholder: false,
 
         };
+
     }
     async componentDidMount() {
         const { navigation } = this.props;
@@ -46,11 +56,6 @@ class LabConfirmation extends Component {
             navigation.navigate('login');
             return
         }
-        const packageDetails = navigation.getParam('packageDetails') || {};
-        if (packageDetails != undefined) {
-            this.setState({ packageDetails })
-        }
-        this.setState({ packageDetails })
         await this.getUserProfile();
     }
 
@@ -74,14 +79,15 @@ class LabConfirmation extends Component {
             array.splice(deSelectedIndex, 1);
         }
         this.setState({ patientType: array });
-        console.log("patientType", this.state.patientType)
     }
     getUserProfile = async () => {
         try {
+            this.setState({ isLoading: true });
+
             let fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
-            let patientAddress = [], patientDetails = [];
+            let patientAddress = [];
 
             this.defaultPatientDetails = {
                 type: 'self',
@@ -103,8 +109,6 @@ class LabConfirmation extends Component {
                 patientAddress.unshift(userAddressData);
             }
             await this.setState({ patientAddress, data: result })
-            console.log("data", this.defaultPatientDetails)
-            console.log("patientAddress", this.state.patientAddress)
 
         }
         catch (e) {
@@ -120,16 +124,13 @@ class LabConfirmation extends Component {
         this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType: addressType })
     }
     onChangeSelf = async () => {
-        console.log("Start:::", this.state.patientDetails.length);
         if (this.state.selfChecked == true && patientDetails.length == 0) {
             patientDetails.unshift(this.defaultPatientDetails)
         }
-        else if (this.state.selfChecked == false) {
+        else if (this.state.selfChecked == false && this.state.patientDetails[0].type == 'self') {
             this.state.patientDetails.shift(this.defaultPatientDetails)
         }
         this.setState({ patientDetails })
-        console.log("self:::", this.state.patientDetails);
-
     }
 
     onChangeCheckBox = async () => {
@@ -147,10 +148,6 @@ class LabConfirmation extends Component {
         }
         await this.setState({ patientDetails })
     }
-
-
-
-
 
     addPatientData = async () => {
         if (!this.state.name || !this.state.age || !this.state.gender) {
@@ -187,11 +184,58 @@ class LabConfirmation extends Component {
         return totalAmount;
     }
 
+    validateAppointment = async (paymentMode) => {
+        const { packageDetails: { selectedSlotItem: { slotDate, availabilityId, slotEndDateAndTime, slotStartDateAndTime } }, startDatePlaceholder, pickByStartTime } = this.state
+
+        try {
+            const userId = await AsyncStorage.getItem('userId')
+            if (!startDatePlaceholder) {
+                Toast.show({
+                    text: 'Kindly select your appointment time',
+                    type: 'warning',
+                    duration: 3000
+                })
+                return false;
+            } else {
+                let startTimeByFormate = formatDate(pickByStartTime, 'HH:mm:ss')
+                let startTime = moment(slotDate + 'T' + startTimeByFormate)
+                this.setState({ startTime })
+            }
+            let filters = {
+                startDate: subTimeUnit(slotStartDateAndTime, 1, "second").toISOString(),
+                endDate: subTimeUnit(slotEndDateAndTime, 1, "second").toISOString(),
+            }
+
+            let response = await validateAppointment(userId, availabilityId, filters);
+
+            if (response.success == false) {
+                this.timeText = formatDate(response.data[0].appointment_starttime, 'hh:mm A')
+                Alert.alert(
+                    "Appointment Warning",
+                    `You already booked for the same Lab on ${this.timeText}, You want to book the appointment to continue`,
+                    [
+                        { text: "Cancel" },
+                        {
+                            text: "Continue", onPress: () => this.proceedToLabTestAppointment(paymentMode),
+                        }
+                    ],
+                );
+                return
+            } else {
+                this.proceedToLabTestAppointment(paymentMode);
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
 
     proceedToLabTestAppointment = async (paymentMode) => {
-        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg } = this.state
+        let { patientDetails, packageDetails, selectedAddress, itemSelected, errMsg, startTime } = this.state
         try {
-            console.log("errMsg", errMsg)
             if (patientDetails.length == 0) {
                 Toast.show({
                     text: 'Kindly select or add patient details',
@@ -218,24 +262,23 @@ class LabConfirmation extends Component {
             } else {
                 selectedAddress = packageDetails.location;
             }
-
             let patientData = [];
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
-            this.setState({ isLoading: true });
+            this.setState({ isLoading: true, buttonEnable: true });
             const userId = await AsyncStorage.getItem('userId')
 
             let requestData = {
                 user_id: userId,
+                availability_id: packageDetails.availability_id || packageDetails.selectedSlotItem.availabilityId || ' ',
                 patient_data: patientData,
                 lab_id: packageDetails.lab_id,
                 lab_name: packageDetails.lab_name,
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
                 lab_test_description: packageDetails.lab_test_description,
                 fee: packageDetails.fee,
-                startTime: packageDetails.appointment_starttime,
-                endTime: packageDetails.appointment_endtime,
+                startTime: startTime || packageDetails.appointment_starttime,
                 location: {
                     coordinates: selectedAddress.coordinates,
                     type: selectedAddress.type,
@@ -253,7 +296,7 @@ class LabConfirmation extends Component {
                 status_by: "USER",
                 booked_from: "Mobile",
             };
-            if (packageDetails.appointment_status == 'PAYMENT_FAILED') {
+            if (packageDetails.appointment_status == 'PAYMENT_FAILED' || packageDetails.appointment_status == 'PAYMENT_IN_PROGRESS') {
                 requestData.labTestAppointmentId = packageDetails.appointment_id;
             }
             if (paymentMode === 'cash') {
@@ -273,15 +316,15 @@ class LabConfirmation extends Component {
                         type: "danger",
                         duration: 3000
                     });
-                    this.setState({ isLoading: false });
+                    this.setState({ isLoading: false, buttonEnable: false });
                 }
 
             } else {
                 let response = {};
-                if (packageDetails.appointment_status == 'PAYMENT_FAILED') {
-                    console.log("requestData", requestData)
+                if (packageDetails.appointment_status == 'PAYMENT_FAILED' || packageDetails.appointment_status == 'PAYMENT_IN_PROGRESS') {
                     let updateData = {
                         labId: requestData.lab_id,
+                        availability_id: requestData.availability_id,
                         userId: userId,
                         startTime: requestData.startTime,
                         endTime: requestData.endtime,
@@ -290,12 +333,22 @@ class LabConfirmation extends Component {
                         status_by: requestData.status_by
                     }
                     response = await updateLapAppointment(packageDetails.appointment_id, updateData);
+                    if (response.success === true) {
+                        requestData.labTestAppointmentId = response.appointmentId;
+                        this.props.navigation.navigate('paymentPage', {
+                            service_type: SERVICE_TYPES.LAB_TEST,
+                            bookSlotDetails: requestData,
+                            amount: packageDetails.fee
+                        });
+                    } else {
+                        Toast.show({
+                            text: response.message,
+                            duration: 3000,
+                        })
+                    }
 
                 } else {
                     response = await insertAppointment(requestData);
-
-                    console.log("response", response);
-
                     if (response.success === true) {
                         requestData.labTestAppointmentId = response.appointmentId;
                         this.props.navigation.navigate('paymentPage', {
@@ -313,7 +366,6 @@ class LabConfirmation extends Component {
             }
         }
         catch (e) {
-
             console.log(e);
             Toast.show({
                 text: 'Exception While Creating the Appointment' + e,
@@ -330,10 +382,43 @@ class LabConfirmation extends Component {
         temp.splice(index, 1);
         this.setState({ patientDetails: temp });
     }
+    handleDatePicked = date => {
+        const { packageDetails: { selectedSlotItem: { slotEndDateAndTime, slotStartDateAndTime } } } = this.state;
+        const startDate = new Date(slotStartDateAndTime);//setDateTime(slotStartDateAndTime, date);
+        const endDate = new Date(slotEndDateAndTime);// setDateTime(slotEndDateAndTime, date);
+        date = setDateTime(slotStartDateAndTime, date)
+        const valid = startDate <= date && endDate >= date;
+        if (valid === false) {
+            Toast.show({
+                text: 'Please choose the time between ' + getTimeWithMeredian(startDate) + ' and ' + getTimeWithMeredian(endDate),
+                duration: 2000,
+                type: 'danger'
+            });
+            this.setState({ isTimePickerVisible: false});
+            return;
+            
+        } else {
+            this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
+        }
 
+        function setDateTime(dateStr, customTime) {
+            const date = new Date(dateStr);
+            date.setHours(customTime.getHours())
+            date.setMinutes(customTime.getMinutes());
+            date.setSeconds(1)
+            return date;
+        }
+        function getTimeWithMeredian(dateTime) {
+            var currentDate = new Date(dateTime);
+            var hour = currentDate.getHours();
+            var meridiem = hour >= 12 ? "PM" : "AM";
+            const currentTime = ((hour + 11) % 12 + 1) + ":" + currentDate.getMinutes() + meridiem;
+            return currentTime;
+        }
 
+    }
     render() {
-        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, defaultPatientDetails } = this.state;
+        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, buttonEnable, pickByStartTime, } = this.state;
 
         return (
             <Container>
@@ -510,9 +595,43 @@ class LabConfirmation extends Component {
                             } />
 
                     </View>
+                    {packageDetails.appointment_status !== 'PAYMENT_FAILED' && packageDetails.appointment_status !== 'PAYMENT_IN_PROGRESS' ?
 
+                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
 
+                            <Row style={{ marginTop: 10, }}>
+                                <Col style={{ alignItems: 'center' }} >
+                                    <Row>
+                                        <Col size={5} style={{ justifyContent: 'center' }}>
 
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
+
+                                            <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
+                                                <Icon name='ios-clock' style={styles.iconstyle1} />
+                                                {
+                                                    this.state.startDatePlaceholder ?
+                                                        <View>
+                                                            <Text style={styles.startenddatetext}>{formatDate(this.state.pickByStartTime, 'hh:mm a')}</Text>
+                                                        </View> :
+                                                        <Text style={styles.startenddatetext}>Select time </Text>
+                                                }
+                                                <DateTimePicker
+                                                    mode={'time'}
+                                                    display="spinner"
+                                                    timePickerModeAndroid={'spinner'}
+                                                    minimumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime)}
+                                                    maximumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotEndDateAndTime)}
+                                                    date={this.state.pickByStartTime}
+                                                    isVisible={this.state.isTimePickerVisible}
+                                                    onConfirm={this.handleDatePicked}
+                                                    onCancel={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })} />
+                                            </TouchableOpacity>
+
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </View> : null}
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Row>
                             <Col size={7}>
@@ -616,16 +735,7 @@ class LabConfirmation extends Component {
 
                             </Col>
                         </Row>
-                        {/* <Row style={{ marginTop: 5 }}>
-                            <Col size={8}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Tax</Text>
-                            </Col>
-                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹ 50.00</Text>
-
-                            </Col>
-                        </Row> */}
                         {itemSelected === 'TEST_AT_HOME' ?
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={8}>
@@ -658,12 +768,14 @@ class LabConfirmation extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment('cash')}>
+                                <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
+                                    this.validateAppointment('cash') : this.proceedToLabTestAppointment('cash')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment('online')}>
+                                <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
+                                    this.validateAppointment('online') : this.proceedToLabTestAppointment('online')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                 </TouchableOpacity>
                             </Col>
@@ -695,6 +807,29 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 'auto'
     },
+    timeText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        marginTop: 3,
+        fontWeight: 'bold'
+    },
+    TouchStyle1: {
+        borderRadius: 5,
+        flexDirection: 'row',
+        backgroundColor: '#f0f0f0',
+        padding: 4,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    timeDetail: {
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        marginLeft: 5
+    },
+    iconstyle1: {
+        fontSize: 20,
+        color: '#13C100'
+    },
 
 
     curvedGrid: {
@@ -724,6 +859,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold'
     },
+    startenddatetext: {
+        // marginTop: 5,
+        marginBottom: 5,
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        textAlign: 'center',
+        marginLeft: 5
+    },
+
     labelTop:
     {
         fontFamily: 'OpenSans',

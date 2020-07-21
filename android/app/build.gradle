@@ -24,7 +24,7 @@ def buildTime() {
 */
  
 def genVersionName() {
-    return "1" + ".0." + "18";
+    return "1" + ".0." + "20";
 }
  
 // def genVersionCode() {
@@ -162,7 +162,7 @@ android {
         applicationId "com.ads.medflic"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 19
+        versionCode 20
         versionName genVersionName()
         multiDexEnabled true
     }

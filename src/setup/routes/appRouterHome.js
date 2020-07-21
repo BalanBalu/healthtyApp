@@ -26,6 +26,9 @@ import UserAddress from "../../modules/screens/auth/UserAddress";
 import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
+import doctorList from "../../modules/screens/DoctorBookAppointmentFlow/doctorList";
+import doctorDetailsPreview from "../../modules/screens/DoctorBookAppointmentFlow/doctorDetailsPreview/doctorDetailsPreview";
+
 import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
@@ -54,6 +57,7 @@ import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHo
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
 import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
+import ReOrder from '../../modules/screens/Pharmacy/PharmacyCart/ReOder';
 import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
@@ -63,7 +67,7 @@ import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchLis
 import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/ChosePharmacyList'
 
 
-import { Badge } from '../../../src/modules/common'
+import { Badge, onPopupEvent } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import LocationDetail from '../../modules/screens/Home/LocationDetail';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
@@ -109,6 +113,11 @@ import HomeTestConfirmation from '../../modules/screens/HomeTest/homeTestConfirm
 import AppointmentList from '../../modules/screens/HomeTest/appoinmentList';
 import AppointmentDetail from '../../modules/screens/HomeTest/appoinmentDetail'
 
+import PopupMenu from './popUpMenu';
+import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
+import PublicForum from '../../modules/screens/publicForum/publicForum'
+import PostForum from '../../modules/screens/publicForum/postForum'
+import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -181,18 +190,26 @@ const HomeStack = createStackNavigator({
         <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
             <View>
-              <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+              <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
               {navigation.getParam('notificationBadgeCount') != null ?
                 <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
                 : null}
               {/* <Badge /> */}
             </View>
+
             {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
               <View>
                 <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
               </View>
             </TouchableOpacity> */}
           </TouchableOpacity>
+          {Platform.OS != "ios" ?
+            <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+              <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
+            </TouchableOpacity>
+            :
+            null
+          }
 
 
         </Row>
@@ -215,6 +232,12 @@ const HomeStack = createStackNavigator({
     screen: NextAppoinmentPreparation,
     navigationOptions: {
       title: 'Next Appoinment Preparation'
+    }
+  },
+  PopupMenu: {
+    screen: PopupMenu,
+    navigationOptions: {
+      title: 'PopupMenu'
     }
   },
   // ================Categories  ===============
@@ -490,12 +513,49 @@ const HomeStack = createStackNavigator({
       title: 'Lab Test Cancel Appointment'
     }
   },
-
+  //================ PublicForum ===============
+  "Public Forum": {
+    screen: PublicForum,
+    navigationOptions: {
+      title: 'Public Forum'
+    }
+  },
+  PostForum: {
+    screen: PostForum,
+    navigationOptions: {
+      title: 'Post your questions'
+    }
+  },
+  PublicForumDetail: {
+    screen: PublicForumDetail,
+    navigationOptions: {
+      title: 'Public Health Forum'
+    }
+  },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
     navigationOptions: {
       title: 'Doctor List',
+    }
+  },
+  "Doctor Search List": {
+    screen: doctorList,
+    navigationOptions: {
+      title: 'Doctor List',
+    }
+  },
+  "Doctor Details Preview": {
+    screen: doctorDetailsPreview,
+    navigationOptions: {
+      title: 'Book Appointment'
+    }
+  },
+
+  "Filter Doctor Info": {
+    screen: filterDocInfo,
+    navigationOptions: {
+      title: 'Filter Page'
     }
   },
   Filters: {
@@ -626,18 +686,18 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerTitle: null,
       headerLeft: (
-        <Grid style={{justifyContent:'center'}}>
-          <Col style={{justifyContent:'center'}}>
+        <Grid style={{ justifyContent: 'center' }}>
+          <Col style={{ justifyContent: 'center' }}>
             <TouchableOpacity onPress={() => navigation.pop()}>
               <Icon name="ios-arrow-back" style={{ color: '#fff', marginLeft: 15, justifyContent: 'center', fontSize: 30 }} />
             </TouchableOpacity>
           </Col>
-          <Col style={{justifyContent:'center'}}>
+          <Col style={{ justifyContent: 'center' }}>
             <TouchableOpacity style={{ marginLeft: 15 }}>
               <Thumbnail source={navigation.getParam('appBar', { profile_image: { uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' } }).profile_image} style={{ width: 45, height: 45, }} />
             </TouchableOpacity>
           </Col>
-          <Col style={{ marginLeft: 15,justifyContent:'center', }}>
+          <Col style={{ marginLeft: 15, justifyContent: 'center', }}>
             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
             {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
           </Col>
@@ -764,6 +824,12 @@ const HomeStack = createStackNavigator({
     screen: ChosePharmacyList,
     navigationOptions: {
       title: ' Choose Pharmacy'
+    }
+  },
+  ReOrder: {
+    screen: ReOrder,
+    navigationOptions: {
+      title: ' Re Order'
     }
   },
   //=================== Medicine Order Details =============
@@ -932,7 +998,12 @@ const drawerNavigatorRoutes = {
   "Blood Donors": {
     screen: BloodDonersList,
     routeName: 'Blood Donors'
-  }
+  },
+  "Public Forum": {
+    screen: PublicForum,
+    routeName: 'Public Forum'
+  },
+
 }
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -969,6 +1040,10 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'Blood Donors',
             routeName: drawerNavigatorRoutes["Blood Donors"].routeName,
             icon: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+          },
+          {
+            name: 'Public Forum',
+            routeName: drawerNavigatorRoutes["Public Forum"].routeName,
           }
         ]
       },
@@ -1015,6 +1090,7 @@ export const DragwerLogos = {
   Medicines: require('../../../assets/images/drawerIcons/Pharmacy.png'),
   "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
+  "Public Forum": require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),

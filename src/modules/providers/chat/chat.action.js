@@ -1,9 +1,9 @@
 import { postService, getService, putService } from '../../../setup/services/httpservices';
-export const SET_LAST_MESSAGES_DATA = 'CHAT/LAST_MESSAGES_DATA' 
-export const SET_VIDEO_SESSION = 'CHAT/SET_VIDEO_SESSION'; 
-export const SET_USER_LOOGED_IN_CONNECTYCUBE = 'CHAT/SET_USER_LOOGED_IN_CONNECTYCUBE'; 
-export const SET_INCOMING_VIDEO_CALL = 'CHAT/SET_INCOMING_VIDEO_CALL'; 
-export const RESET_INCOMING_VIDEO_CALL = 'CHAT/RESET_INCOMING_VIDEO_CALL'; 
+export const SET_LAST_MESSAGES_DATA = 'CHAT/LAST_MESSAGES_DATA'
+export const SET_VIDEO_SESSION = 'CHAT/SET_VIDEO_SESSION';
+export const SET_USER_LOOGED_IN_CONNECTYCUBE = 'CHAT/SET_USER_LOOGED_IN_CONNECTYCUBE';
+export const SET_INCOMING_VIDEO_CALL = 'CHAT/SET_INCOMING_VIDEO_CALL';
+export const RESET_INCOMING_VIDEO_CALL = 'CHAT/RESET_INCOMING_VIDEO_CALL';
 export const SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND = 'CHAT/SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND';
 export const RESET_INCOMING_VIDEO_CALL_VIA_BACKGROUND = 'CHAT/RESET_INCOMING_VIDEO_CALL_VIA_BACKGROUND';
 export const SET_ON_VIDEO_SCREEN = 'CHAT/SET_ON_VIDEO_SCREEN';
@@ -37,7 +37,7 @@ export const createChat = async (request) => {
 
 export const updateChat = async (chatId, request) => {
     try {
-        let endPoint = 'chat/'+ chatId;
+        let endPoint = 'chat/' + chatId;
         let response = await putService(endPoint, request);
         let respData = response.data;
         return respData;
@@ -51,7 +51,7 @@ export const updateChat = async (chatId, request) => {
 
 export const getAllChats = async (userId, request) => {
     try {
-        let endPoint = 'chat/user/'+ userId;
+        let endPoint = 'chat/user/' + userId;
         let response = await getService(endPoint);
         let respData = response.data;
         return respData;
@@ -63,19 +63,36 @@ export const getAllChats = async (userId, request) => {
     }
 }
 
-export const updateChatUpdatedTime = async(chatId) => {
+export const updateChatUpdatedTime = async (chatId) => {
     try {
-        let endPoint = 'chat/'+ chatId +'/update/time';
+        let endPoint = 'chat/' + chatId + '/update/time';
         let response = await putService(endPoint, {});
         let respData = response.data;
         return respData;
     } catch (error) {
-        
+
     }
 }
-  
+
 export const hideIncomingVideoModal = () => dispatch => {
     dispatch({
-      type: RESET_INCOMING_VIDEO_CALL
+        type: RESET_INCOMING_VIDEO_CALL
     })
+}
+export const insertPushNotification = async (data) => {
+    try {
+        
+        let endPoint = '/chat/push_notification';
+        let response = await postService(endPoint , data);
+      
+        let respData = response.data;
+        return respData;
+    } catch (error) {
+       console.log(error)
+       return{
+           success:false,
+           error:error
+       }
+
+    }
 }

@@ -5,6 +5,7 @@ import { View, } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import {IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
 import MapboxDirectionsFactory from '@mapbox/mapbox-sdk/services/directions';
+const icon = require('../../../../assets/32marker.png')
 const directionsClient = MapboxDirectionsFactory({accessToken : MAP_BOX_TOKEN});
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 import Geolocation from 'react-native-geolocation-service';
@@ -29,6 +30,10 @@ const layerStyles = {
     lineColor: '#314ccd',
     lineWidth: 3,
   },
+  icon: {
+    iconImage: icon,
+    iconAllowOverlap: true,
+  },
 };
 class Mapbox extends React.PureComponent {
   constructor(props) {
@@ -46,7 +51,7 @@ class Mapbox extends React.PureComponent {
   }
 
   async componentDidMount() {
-    debugger
+    
     let isGranted = true;
     if (IS_ANDROID) {
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
@@ -56,7 +61,19 @@ class Mapbox extends React.PureComponent {
       });
     }
    if(isGranted) {
-      await this.getUserLocation();
+    const { hospitalLocation } = this.props
+    const data = hospitalLocation // navigation.getParam('coordinates');
+    console.log('hospitalLocation======>', hospitalLocation);
+    //data.location.location.coordinates = [13.0694, 80.1948]; //chennai location
+    hospitaldestination = [
+      data.location.coordinates[1],
+      data.location.coordinates[0]
+    ];
+    this.setState({
+      center : hospitaldestination
+    });
+    
+    //  await this.getUserLocation();
    }
   }
 
@@ -140,7 +157,6 @@ class Mapbox extends React.PureComponent {
     }  
   
 renderOrigin(coordinates, hospitaldestination) {
-  debugger
   console.log('coordinates========> ', coordinates)
   let backgroundColor = '#808080';
 
@@ -218,6 +234,13 @@ renderOrigin(coordinates, hospitaldestination) {
 
   render() {
     console.log('rendering map');
+    const features = {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: this.state.center,
+      }
+    }
     return (
       
       <Container>
@@ -230,7 +253,7 @@ renderOrigin(coordinates, hospitaldestination) {
         >
         {this.state.center !== null ?  
           <MapboxGL.Camera
-            zoomLevel={15}
+            zoomLevel={12}
             centerCoordinate={this.state.center}
           />: null }
           {/* {this.state.currentLocation !== null && this.state.hospitaldestination !== null ? 
@@ -239,7 +262,20 @@ renderOrigin(coordinates, hospitaldestination) {
           {/* {this.state.hospitaldestination !== null ? 
              this.renderDestination(this.state.hospitaldestination)
           : null }  */}
-          {this.renderRoute()}
+        {/*this.renderRoute()*/}
+        <MapboxGL.ShapeSource
+            id="symbolLocationSource"
+            hitbox={{width: 20, height: 20}}
+            //onPress={this.onSourceLayerPress}
+            shape={features}>
+            <MapboxGL.SymbolLayer
+              id="symbolLocationSymbols"
+              minZoomLevel={1}
+              style={layerStyles.icon}
+            />
+          </MapboxGL.ShapeSource>
+
+
         </MapboxGL.MapView>
       </View>
     </Container>

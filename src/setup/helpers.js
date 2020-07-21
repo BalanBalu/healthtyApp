@@ -271,7 +271,14 @@ export const statusValue = {
     color: 'red',
     icon: 'ios-close-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_FAILED'
-  }
+  },
+  "DRAFT":
+  {
+    text: 'DRAFT',
+    color: '#3d70ff',
+    icon: 'md-timer',
+    type: 'REPORT_ISSUE_APPOINTMENT_DRAFT'
+  },
 }
 
 

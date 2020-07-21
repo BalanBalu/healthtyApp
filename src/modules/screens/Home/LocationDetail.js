@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Text, Container,  ListItem, List } from 'native-base';
+import { Text, Container, ListItem, List } from 'native-base';
 import { connect } from 'react-redux'
 import { View, FlatList } from 'react-native';
 import { store } from '../../../setup/store';
@@ -18,36 +18,36 @@ class LocationDetail extends PureComponent {
     async fetchPopularCityAreas(cityData) {
         debugger
         console.log(cityData);
-       let  navigationOption=this.props.navigation.getParam('navigationOption')||null;
-       
+        let navigationOption = this.props.navigation.getParam('navigationOption') || null;
+
         let result;
-        if(navigationOption!==null){
-            result=await getPharmacyLocations({
-                fromPinCode: cityData.from_pincode, 
+        if (navigationOption !== null) {
+            result = await getPharmacyLocations({
+                fromPinCode: cityData.from_pincode,
                 toPinCode: cityData.to_pincode
-             });
-             this.setState({navigationOption:navigationOption}) 
+            });
+            this.setState({ navigationOption: navigationOption })
 
         } else {
             result = await getLocations({
-                fromPinCode: cityData.from_pincode, 
+                fromPinCode: cityData.from_pincode,
                 toPinCode: cityData.to_pincode
             });
-            this.setState({navigationOption:'Home'}) 
+            this.setState({ navigationOption: 'Home' })
             console.log(result);
-    }
-     
-      if (result.success) {
-        const asscendingResult = this.asscendingSort(result.data)
-        this.setState({ locations:  asscendingResult });
-    }
+        }
+
+        if (result.success) {
+            const asscendingResult = this.asscendingSort(result.data)
+            this.setState({ locations: asscendingResult });
+        }
     }
     onPressList = (index) => {
 
         this.setState({ pressStatus: true, selectedItem: index });
     }
     asscendingSort(data) {
-       const result =  data.sort((a, b) => {
+        const result = data.sort((a, b) => {
             if (a.location < b.location) {
                 return -1;
             }
@@ -60,7 +60,7 @@ class LocationDetail extends PureComponent {
 
     }
     render() {
-        const { locations, isLoading,navigationOption } = this.state
+        const { locations, isLoading, navigationOption } = this.state
         const { navigation } = this.props;
         return (
             <Container>
@@ -76,7 +76,8 @@ class LocationDetail extends PureComponent {
                                             type: SET_PATIENT_LOCATION_DATA,
                                             center: item.coordinates,
                                             locationName: item.location,
-                                            isSearchByCurrentLocation: false
+                                            isSearchByCurrentLocation: false,
+                                            isLocationSelected: true
                                         });
                                         navigation.navigate(navigationOption)
                                     }}
@@ -84,9 +85,9 @@ class LocationDetail extends PureComponent {
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.location}</Text>
                                 </ListItem>
                             </List>
-                        )} 
+                        )}
                         keyExtractor={(item, index) => index.toString()}
-                        />
+                    />
                 </View>
 
             </Container>
