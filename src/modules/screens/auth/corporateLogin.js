@@ -46,7 +46,9 @@ class SmartHealthLogin extends PureComponent {
                                                                     selectToggleText: {
                                                                         color: '#909090',
                                                                         fontSize: 14,
-                                                                        marginTop: 20,
+                                                                        height: 30,
+                                                                        marginTop: 10,
+                                                                        
 
                                                                     },
                                                                     chipIcon: {
