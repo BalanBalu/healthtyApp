@@ -85,6 +85,14 @@ class Login extends Component {
         <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
           <Content contentContainerStyle={styles.authBodyContent}>
             <ScrollView>
+              <Row>
+                <Right style={{ marginRight: -5, marginTop: -5 }}>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate'
+                    style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 10, paddingBottom: 10 }}>
+                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
+                  </TouchableOpacity>
+                </Right>
+              </Row>
               <Text uppercase={true}
                 style={[styles.welcome, { color: '#fff' }]}> Medflic</Text>
 

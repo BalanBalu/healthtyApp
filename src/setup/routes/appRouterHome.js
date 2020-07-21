@@ -113,6 +113,7 @@ import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filte
 import PublicForum from '../../modules/screens/publicForum/publicForum'
 import PostForum from '../../modules/screens/publicForum/postForum'
 import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
+import SmartHealthLogin from '../../modules/screens/auth/corporateLogin'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -138,6 +139,9 @@ const AuthRoutes = {
   termsAndConditions: {
     screen: termsAndConditions,
   },
+  SmartHealthLogin:{
+    screen: SmartHealthLogin
+  }
 
 
 }

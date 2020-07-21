@@ -11,21 +11,21 @@ export default StyleSheet.create({
     },
 
     bodyContent: {
-        flex:1,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center',
-       paddingLeft:30,
-       paddingRight:30 
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingLeft: 30,
+        paddingRight: 30
 
     },
     authBodyContent: {
-        flex:1,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center',
-       paddingLeft:20,
-       paddingRight:20 
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingLeft: 20,
+        paddingRight: 20
 
     },
     welcome:
@@ -33,7 +33,7 @@ export default StyleSheet.create({
         fontSize: 25,
         textAlign: 'center',
         marginTop: 30,
-        fontWeight:'bold',
+        fontWeight: 'bold',
         fontFamily: 'OpenSans',
 
     },
@@ -42,7 +42,7 @@ export default StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         marginTop: 30,
-        fontWeight:'bold',
+        fontWeight: 'bold',
         fontFamily: 'OpenSans',
 
     },
@@ -52,7 +52,7 @@ export default StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         marginTop: 10,
-        fontWeight:'bold',
+        fontWeight: 'bold',
         fontFamily: 'OpenSans',
     },
     transparentLabel: {
@@ -65,7 +65,7 @@ export default StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 15
     },
-    userDetailLabel:{
+    userDetailLabel: {
         borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',
         height: 45,
@@ -73,9 +73,9 @@ export default StyleSheet.create({
         borderRadius: 5,
         fontFamily: 'OpenSans',
         fontSize: 15,
-        marginLeft:'auto',
-        marginRight:'auto',
-        paddingLeft:8
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        paddingLeft: 8
     },
     authTransparentLabel: {
         borderBottomColor: 'transparent',
@@ -86,7 +86,7 @@ export default StyleSheet.create({
         paddingLeft: 15,
         fontFamily: 'OpenSans',
         fontSize: 15,
-        
+
     },
     transparentLabel1: {
         borderBottomColor: 'transparent',
@@ -94,7 +94,7 @@ export default StyleSheet.create({
         height: 45,
         marginTop: 20,
         borderRadius: 5,
-        
+
         fontFamily: 'OpenSans',
         fontSize: 15
     },
@@ -112,17 +112,17 @@ export default StyleSheet.create({
         borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',
         height: 45,
-        
+
         borderRadius: 5,
-        
+
         fontFamily: 'OpenSans',
         fontSize: 15
     },
-    ButtonText:{
-        fontSize:15,
-        fontWeight:'bold',
-        fontFamily:'OpenSans',
-        color:'#fff'
+    ButtonText: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        fontFamily: 'OpenSans',
+        color: '#fff'
     },
     loginButton: {
         marginTop: 20,
@@ -144,54 +144,54 @@ export default StyleSheet.create({
         backgroundColor: '#775DA3',
         marginLeft: 10,
         borderRadius: 20,
-        paddingRight:15,
-        paddingLeft:10,
-        paddingBottom:5,
-        paddingTop:5
+        paddingRight: 15,
+        paddingLeft: 10,
+        paddingBottom: 5,
+        paddingTop: 5
     },
     loginButton1: {
         marginTop: 20,
         backgroundColor: '#775DA3',
         borderRadius: 20,
-        justifyContent:'center',
-        paddingRight:35,
-        paddingLeft:35,
-        paddingBottom:8,
-        paddingTop:8
+        justifyContent: 'center',
+        paddingRight: 35,
+        paddingLeft: 35,
+        paddingBottom: 8,
+        paddingTop: 8
     },
     loginButton1Disable: {
         marginTop: 20,
         backgroundColor: '#9777c7',
         borderRadius: 20,
-        justifyContent:'center',
-        paddingRight:35,
-        paddingLeft:35,
-        paddingBottom:8,
-        paddingTop:8
+        justifyContent: 'center',
+        paddingRight: 35,
+        paddingLeft: 35,
+        paddingBottom: 8,
+        paddingTop: 8
     },
-    UserButton1: { 
+    UserButton1: {
         backgroundColor: '#775DA3',
         borderRadius: 20,
-        justifyContent:'center',
-        paddingRight:35,
-        paddingLeft:35,
-        paddingBottom:8,
-        paddingTop:8
+        justifyContent: 'center',
+        paddingRight: 35,
+        paddingLeft: 35,
+        paddingBottom: 8,
+        paddingTop: 8
     },
     detailsButton: {
         backgroundColor: '#775DA3',
         marginLeft: 15,
         borderRadius: 5,
-        marginTop:-20,
+        marginTop: -20,
     },
     customText:
     {
         color: 'gray',
         fontFamily: 'OpenSans',
-        fontSize:13,
-        color:'#775DA3',
-       
-        
+        fontSize: 13,
+        color: '#775DA3',
+
+
     },
     logo: {
         height: 86,
@@ -227,6 +227,26 @@ export default StyleSheet.create({
         fontSize: 15,
         padding: 5,
 
-    }
+    },
+    multiSelectStyleCorporate: {
+        justifyContent: 'center',
+        backgroundColor: '#F1F1F1',
+        height: 40,
+        marginLeft: 5,
+        borderColor: 'gray',
+        borderWidth: 0.3,
+        borderRadius: 2,
+        paddingTop: 10,
+    },
+    authTransparentLabel5: {
+        borderBottomColor: 'transparent',
+        backgroundColor: '#F1F1F1',
+        height: 45,
+        borderRadius: 5,
+        paddingLeft: 15,
+        fontFamily: 'OpenSans',
+        fontSize: 15,
+
+    },
 })
 
