@@ -113,6 +113,7 @@ import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filte
 import PublicForum from '../../modules/screens/publicForum/publicForum'
 import PostForum from '../../modules/screens/publicForum/postForum'
 import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
+import DropDownMenu from '../../modules/screens/chat/dropDownMenu'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -669,8 +670,16 @@ const HomeStack = createStackNavigator({
             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
             {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
           </Col>
+       
         </Grid>
       ),
+      headerRight: (
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
+           <Col style={{ justifyContent: 'flex-end' }}>
+          <DropDownMenu/>
+          </Col>
+          </Grid>
+          )
     })
   },
 
