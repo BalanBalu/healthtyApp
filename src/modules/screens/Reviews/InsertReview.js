@@ -122,14 +122,19 @@ export class InsertReview extends Component {
     const { data, checked, isAnonymous, isDoctorRecommended, ratingIndicatePopUp } = this.state;
     return (
       < Container style={styles.container} >
-        <Content
-          style={{
-            backgroundColor: '#fff',
-            position: 'absolute',
-            bottom: 0
-          }}>
-
-          <Grid>
+     	<View style={{ height: 300, position: 'absolute', bottom: 0 }}>
+					<Modal
+						animationType="slide"
+						transparent={true}
+						containerStyle={{ justifyContent: 'flex-end' }}
+						visible={this.state.modalVisible}
+					>
+          <Grid style={{
+                backgroundColor: '#fff',
+                position: 'absolute',
+                bottom: 0,
+                marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey'
+              }}>
             <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
               <Left>
                 <Text style={{ color: '#fff', fontSize: 16 }}>{getName(data.doctorInfo)}</Text>
@@ -230,7 +235,8 @@ export class InsertReview extends Component {
             </Row>
           </Grid>
 
-        </Content>
+     </Modal>
+     </View>
       </Container >
     );
   }
