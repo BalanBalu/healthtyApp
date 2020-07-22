@@ -7,7 +7,9 @@ import styles from '../../screens/auth/styles'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { AsyncStorage, ScrollView, TouchableOpacity, ImageBackground, FlatList } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import OTPTextInput from 'react-native-otp-textinput';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
+
 
 
 class SmartHealthLogin extends PureComponent {
@@ -106,64 +108,16 @@ class SmartHealthLogin extends PureComponent {
                                             />
                                         </Item>
                                         <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Authorizer Code</Label>
-
-                                        <Row style={{ marginTop: 10 }}>
-                                            <Col size={1}>
-                                                <Item regular>
-                                                    <Input placeholder="0" style={styles.authTransparentLabel5}
-                                                        placeholderTextColor={'#909090'}
-                                                        returnKeyType={'next'}
-                                                        keyboardType={"numeric"}
-                                                        onChangeText={userEntry => this.setState({ userEntry })}
-                                                        autoCapitalize='none'
-                                                        blurOnSubmit={false}
-                                                        maxLength={1}
-                                                    />
-                                                </Item>
-                                            </Col>
-                                            <Col size={1}>
-                                                <Item regular >
-                                                    <Input placeholder="0" style={styles.authTransparentLabel5}
-                                                        placeholderTextColor={'#909090'}
-                                                        returnKeyType={'next'}
-                                                        keyboardType={"numeric"}
-                                                        onChangeText={userEntry => this.setState({ userEntry })}
-                                                        autoCapitalize='none'
-                                                        blurOnSubmit={false}
-                                                        maxLength={1}
-                                                    />
-                                                </Item>
-                                            </Col>
-                                            <Col size={1}>
-                                                <Item regular>
-                                                    <Input placeholder="0" style={styles.authTransparentLabel5}
-                                                        placeholderTextColor={'#909090'}
-                                                        returnKeyType={'next'}
-                                                        keyboardType={"numeric"}
-                                                        onChangeText={userEntry => this.setState({ userEntry })}
-                                                        autoCapitalize='none'
-                                                        blurOnSubmit={false}
-                                                        maxLength={1}
-                                                    />
-                                                </Item>
-                                            </Col>
-                                            <Col size={1}>
-                                                <Item regular>
-                                                    <Input placeholder="0" style={styles.authTransparentLabel5}
-                                                        placeholderTextColor={'#909090'}
-                                                        returnKeyType={'next'}
-                                                        keyboardType={"numeric"}
-                                                        onChangeText={userEntry => this.setState({ userEntry })}
-                                                        autoCapitalize='none'
-                                                        blurOnSubmit={false}
-                                                        maxLength={1}
-                                                    />
-                                                </Item>
-                                            </Col>
-                                            <Col size={6} style={{ justifyContent: 'center' }}>
-
-                                            </Col>
-                                        </Row>
+                                            
+                                        <OTPTextInput 
+                                            ref={e => (this.otpInput = e)} 
+                                            inputCount={4}
+                                            tintColor={'#775DA3'}
+                                            inputCellLength={1}
+                                            handleTextChange={(text)=> {
+                                                this.setState({ otpInput : text})
+                                             }}
+                                        />                       
                                         <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 15 }}>
                                             <TouchableOpacity small
                                                 style={styles.loginButton1}
