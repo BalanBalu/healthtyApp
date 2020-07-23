@@ -8,6 +8,8 @@ import { forumInsertAnswer, getForumQuestionAndAnswerDetails } from '../../provi
 import { formatDate } from "../../../setup/helpers";
 import { Loader } from '../../../components/ContentLoader';
 
+import { renderForumImage } from '../../common';
+
 class PublicForumDetail extends PureComponent {
     constructor(props) {
         super(props)
@@ -121,7 +123,7 @@ class PublicForumDetail extends PureComponent {
                                 <View style={{ marginBottom: 10 }}>
                                     <Row>
                                         <Col size={1.5}>
-                                            <Image source={require('../../../../assets/images/Female.png')} style={{ height: 50, width: 50 }} />
+                                            <Image source={renderForumImage(item, 'questionerInfo')} style={{ height: 50, width: 50 }} />
                                         </Col>
                                         <Col size={8.5} style={{ marginTop: 5, marginLeft: 5 }}>
                                             <Text style={styles.symptomsText}>{item.question_name}</Text>
@@ -156,7 +158,7 @@ class PublicForumDetail extends PureComponent {
                                                     <View style={{ borderTopColor: 'gray', borderTopWidth: 0.3, paddingTop: 10, marginTop: 10 }}>
                                                         <Row>
                                                             <Col size={1}>
-                                                                <Image source={require('../../../../assets/images/Female.png')} style={{ height: 30, width: 30 }} />
+                                                                <Image source={renderForumImage(item, 'answererInfo')} style={{ height: 30, width: 30 }} />
                                                             </Col>
                                                             <Col size={9}>
                                                                 <Row>

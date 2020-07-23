@@ -578,7 +578,7 @@ class MedicineCheckout extends Component {
 
 
 
-                                <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                                <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5,marginBottom:20 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Order Details</Text>
                                     {isPrescription === false ?
                                         this.state.medicineDetails.length != 0 ?
@@ -619,7 +619,7 @@ class MedicineCheckout extends Component {
                                             </Col>
                                         </Row>}
                                     {deliveryDetails !== null && itemSelected === 0 ?
-                                        <View>
+                                        <View >
                                             <Row style={{ marginTop: 5 }}>
                                                 <Col size={8}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Delivery Charges</Text>
@@ -659,7 +659,7 @@ class MedicineCheckout extends Component {
                             </View> : <Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a', marginTop: "40%", marginLeft: 55, alignContent: 'center' }}>No orders Available</Text>
                     }
                     {h1ProductData.length !== 0 ?
-                        <View>
+                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5}}>
                             <FlatList
                                 data={this.state.h1ProductData}
                                 extraData={this.state.h1ProductData}
@@ -672,7 +672,7 @@ class MedicineCheckout extends Component {
                                             </Text>
                                         </Col>
 
-                                        <Col size={3}>
+                                        <Col size={3} style={{justifyContent: 'flex-end'}}>
                                             <Icon onPress={() => this.delete(index)} name={IS_IOS ? 'ios-close-circle' : 'md-close-circle'}
                                                 style={{ color: 'red', fontSize: 15 }} />
                                         </Col>
