@@ -4,6 +4,7 @@ import {
     Label
 } from 'native-base';
 import styles from '../../screens/auth/styles'
+import { getAllCompanyList } from '../../providers/auth/auth.actions'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { AsyncStorage, ScrollView, TouchableOpacity, ImageBackground, FlatList } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -14,13 +15,34 @@ class SmartHealthLogin extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
+            companyData: []
 
         }
     }
+    componentDidMount() {
+        this.getCompanyList();
+    }
+    async getCompanyList() {
+        let result = await getAllCompanyList()
+        if (result) {
 
+            const removeDupValuesInArray = [];
+            const companyData = [];
+            result.map(ele => {
+                if (!removeDupValuesInArray.includes(ele.entityName.toLowerCase())) {
+                    removeDupValuesInArray.push(ele.entityName.toLowerCase());
+                    companyData.push({ value: ele.entityName })
+                }
+
+            })
+            alert(JSON.stringify(companyData))
+            this.setState({ data: result, companyData })
+        }
+
+    }
 
     render() {
-        const { test, addedDatas } = this.state
+        const { test, addedDatas, companyData } = this.state
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -48,7 +70,7 @@ class SmartHealthLogin extends PureComponent {
                                                                         fontSize: 14,
                                                                         height: 30,
                                                                         marginTop: 10,
-                                                                        
+
 
                                                                     },
                                                                     chipIcon: {
@@ -56,7 +78,7 @@ class SmartHealthLogin extends PureComponent {
                                                                     },
 
                                                                 }}
-                                                                items={this.state.languageData}
+                                                                items={this.state.companyData}
                                                                 uniqueKey='value'
                                                                 displayKey='value'
                                                                 selectText='Select Company Name'
@@ -69,7 +91,7 @@ class SmartHealthLogin extends PureComponent {
                                                                 showChips={false}
                                                                 readOnlyHeadings={false}
                                                                 onSelectedItemsChange={this.onSelectedStatusChange}
-                                                                selectedItems={this.state.language}
+                                                                selectedItems={this.state.companyData}
                                                                 colors={{ primary: '#18c971' }}
                                                                 showCancelButton={true}
                                                                 animateDropDowns={true}
