@@ -178,8 +178,43 @@ class NextAppoinmentPreparation extends PureComponent {
                         }>You have an Appointment on {updatedDate}</Text>
                     </Left>
                 </Row>
-                <Card style={{ marginTop: 10 }}>
-                {appointmentDetails.agreed_for_send_forms != true ?
+        <Card style={{ marginTop: 10 }}>
+          {appointmentDetails && appointmentDetails.agreed_for_send_forms === true ?
+            <TouchableOpacity>
+                <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "#8EC63F", }}>
+                    <Col style={{ width: '90%', justifyContent: 'center' }}>
+                        <Text style={{
+                            color: '#fff',
+                            fontSize: 14,
+                            lineHeight: 20,
+                            marginLeft: 15,
+                            fontWeight: '500',
+                        }}>Your Appointment Schedule</Text>
+                    </Col>
+                    <Col style={{ width: '10%', justifyContent: 'center' }}>
+                        <Icon name="ios-information-circle-outline" style={{ color: '#fff', fontSize: 25 }} />
+                    </Col>
+                </Row>
+                <FlatList
+                    data={AppoinmentData}
+                    extraData={AppoinmentData}
+                    renderItem={({ item, index }) => (
+                        <Row style={{ width: '100%', overflow: 'hidden', backgroundColor: "#fff", marginBottom: 10, marginTop: 10 }}>
+                            <Col style={{ width: '100%', justifyContent: 'center', }}>
+                                <Text style={{
+                                    color: 'gray',
+                                    fontSize: 14,
+                                    lineHeight: 20,
+                                    marginLeft: 15,
+                                    marginRight: 15,
+                                    fontWeight: '500',
+                                }}>You  have  an  Appointment   with   {(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}  and  is  scheduled  at {formatDate(item.appointmentResult.appointment_starttime, "hh:mm a")}.Get ready for your Appointment</Text>
+                            
+                            </Col>
+                        </Row>
+                    )} />
+                    </TouchableOpacity>
+            :
                     <TouchableOpacity onPress={() => { navigation.navigate('PrepareAppointmentWizard', { AppointmentId: AppointmentId, DoctorData: AppoinmentData, Data: doctorInfo }) }}>
                         <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "#8EC63F", }}>
                             <Col style={{ width: '90%', justifyContent: 'center' }}>
@@ -214,42 +249,7 @@ class NextAppoinmentPreparation extends PureComponent {
                                 </Row>
                             )} />
                     </TouchableOpacity>
-                    :
-                    <TouchableOpacity>
-                    <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "#8EC63F", }}>
-                        <Col style={{ width: '90%', justifyContent: 'center' }}>
-                            <Text style={{
-                                color: '#fff',
-                                fontSize: 14,
-                                lineHeight: 20,
-                                marginLeft: 15,
-                                fontWeight: '500',
-                            }}>Your Appointment Schedule</Text>
-                        </Col>
-                        <Col style={{ width: '10%', justifyContent: 'center' }}>
-                            <Icon name="ios-information-circle-outline" style={{ color: '#fff', fontSize: 25 }} />
-                        </Col>
-                    </Row>
-                    <FlatList
-                        data={AppoinmentData}
-                        extraData={AppoinmentData}
-                        renderItem={({ item, index }) => (
-                            <Row style={{ width: '100%', overflow: 'hidden', backgroundColor: "#fff", marginBottom: 10, marginTop: 10 }}>
-                                <Col style={{ width: '100%', justifyContent: 'center', }}>
-                                    <Text style={{
-                                        color: 'gray',
-                                        fontSize: 14,
-                                        lineHeight: 20,
-                                        marginLeft: 15,
-                                        marginRight: 15,
-                                        fontWeight: '500',
-                                    }}>You  have  an  Appointment   with   {(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}  and  is  scheduled  at {formatDate(item.appointmentResult.appointment_starttime, "hh:mm a")}.Get ready for your Appointment</Text>
-                                
-                                </Col>
-                            </Row>
-                        )} />
-                </TouchableOpacity>
-    }
+            }
                 </Card>
                 </View>:
                 null
