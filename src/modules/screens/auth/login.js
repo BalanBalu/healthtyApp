@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
-  Grid, Toast, KeyboardAvoidingView, Icon, Row, Card, Label, Left
+  Grid, Toast, KeyboardAvoidingView, Icon, Row, Card, Label, Left,Col,Radio
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView, AsyncStorage, ImageBackground } from 'react-native';
@@ -25,13 +25,14 @@ class Login extends Component {
       loginErrorMsg: '',
       checked: false,
       isModalVisible: false,
-      showPassword: true
+      showPassword: true,
+      isSelected:'user'
     }
   }
 
   /*  Do Login with Credentials  */
   doLogin = async () => {
-    const { userEntry, password } = this.state;
+    const { userEntry, password,isSelected } = this.state;
     try {
       await this.setState({ loginErrorMsg: '' })
       if ((userEntry && password) == '') {
@@ -41,7 +42,7 @@ class Login extends Component {
       let requestData = {
         userEntry: userEntry,
         password: password,
-        type: 'user'
+        type: isSelected
       };
       await login(requestData);   // Do Login Process
       if (this.props.user.isAuthenticated) {
@@ -79,20 +80,13 @@ class Login extends Component {
 
   render() {
     const { user: { isLoading } } = this.props;
-    const { userEntry, password, showPassword, loginErrorMsg, isModalVisible } = this.state;
+    const { userEntry, password, showPassword, loginErrorMsg, isModalVisible,isSelected } = this.state;
     return (
       <Container style={styles.container}>
         <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
           <Content contentContainerStyle={styles.authBodyContent}>
             <ScrollView>
-              <Row>
-                <Right style={{ marginRight: -5, marginTop: -5 }}>
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate'
-                    style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 10, paddingBottom: 10 }}>
-                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
-                  </TouchableOpacity>
-                </Right>
-              </Row>
+       
               <Text uppercase={true}
                 style={[styles.welcome, { color: '#fff' }]}> Medflic</Text>
 
@@ -106,6 +100,7 @@ class Login extends Component {
                 </View>
                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                   <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
+                 
                   <Form>
                     <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number/ Email</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
@@ -133,11 +128,38 @@ class Login extends Component {
                         // blurOnSubmit={false}
                         onSubmitEditing={() => { (userEntry && password) != '' ? this.doLogin() : this.enterTextInputEmail._root.focus() }}
                       />
+                      
 
                       {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
                         : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
                       }
                     </Item>
+                    <Row style={{ marginTop: 5 }}>
+                  <Col size={10}>
+                    <Row>
+                      <Col size={3}>
+                        <Row style={{ alignItems: 'center' }}>
+                          <Radio
+                            selected={isSelected === 'user'}
+                            onPress={() => this.setState({ isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
+                          />
+                          <Text style={styles.firstCheckBox}>user</Text>
+                        </Row>
+                      </Col>
+                      <Col size={3}>
+                        <Row style={{ alignItems: 'center' }}>
+                          <Radio
+                            selected={isSelected === 'corporate_user'}
+                            onPress={() => this.setState({ isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                          />
+                          <Text style={styles.firstCheckBox}>corporate</Text>
+                        </Row>
+                      </Col>
+                      <Col size={4}>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
                     <Row style={{ marginTop: 20, }}>
                       <Right>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>

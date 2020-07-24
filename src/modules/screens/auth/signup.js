@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Button, Text, Form, Item, Input, Header, Footer,
-    FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast, Card, Label
+    FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast, Card, Label, Row
 } from 'native-base';
 import { signUp, login, ServiceOfgetMobileAndEmailOtpServicesFromProductConfig } from '../../providers/auth/auth.actions';
 import { acceptNumbersOnly } from '../../common';
 import { connect } from 'react-redux'
+import { NavigationEvents } from 'react-navigation';
 import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'react-native';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner'
@@ -28,6 +29,7 @@ class Signup extends Component {
             isLoading: false,
             referralCode: null,
             isModalVisible: false,
+            corporateData: null
         }
         this.isShowMobileEntryView = true;
         this.isShowEmailEntryView = true;
@@ -38,6 +40,9 @@ class Signup extends Component {
 
     getMobileAndEmailOtpServicesDetails = async () => {
         try {
+            
+            let corporateData = this.props.navigation.getParam('corporateData') || null
+            await this.setState({corporateData})
             const productConfigTypes = `${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY}`;
             const productConfigResp = await ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes);
             console.log('productConfigResp==>', productConfigResp);
@@ -54,6 +59,10 @@ class Signup extends Component {
                         this.isEnabledToSendOtpPage = true
                     }
                 });
+                if (corporateData !== null) {
+                    this.isEnabledToSendOtpPage = true;
+                    this.isShowEmailEntryView = false
+                }
                 await this.setState({});
             }
         } catch (Ex) {
@@ -73,6 +82,8 @@ class Signup extends Component {
     }
     doSignUp = async () => {
         const { mobile_no, email, password, checked, gender, referralCode } = this.state;
+        
+        let corporateData = this.props.navigation.getParam('corporateData') || null
         try {
             if (checked === false) {
                 this.setState({ errorMsg: 'Please agree to the terms and conditions to continue', isModalVisible: true });
@@ -99,12 +110,22 @@ class Signup extends Component {
             if (referralCode) {
                 requestData.refer_code = referralCode
             }
+
+            if (corporateData !== null) {
+             
+                    requestData.type = 'corporate_user';
+                    requestData.company_name = corporateData.company[0];
+                    requestData.email=corporateData.email
+                    requestData.employee_code = corporateData.employeeCode;
+                    requestData.authorizer_code = corporateData.authorizerCode;
+            }
+           
             await signUp(requestData);        // Do SignUp Process
             if (this.props.user.success) {
                 let loginData = {
                     userEntry: mobile_no || email,
                     password: password,
-                    type: 'user'
+                    type: requestData.type
                 }
                 if (this.isEnabledToSendOtpPage === true) {
                     this.props.navigation.navigate('renderOtpInput', { loginData: loginData });
@@ -126,6 +147,7 @@ class Signup extends Component {
 
     async doLoginAndContinueBasicDetailsUpdate(loginData) {
         try {
+          
             await login(loginData);  // Do SignIn Process after SignUp is Done
             if (this.props.user.isAuthenticated) {
                 this.props.navigation.navigate('userdetails');
@@ -134,6 +156,7 @@ class Signup extends Component {
                 this.setState({ errorMsg: this.props.user.message });
             }
         } catch (error) {
+            alert(error.message)
             Toast.show({
                 text: 'Something Went Wrong' + error,
                 duration: 3000
@@ -145,14 +168,33 @@ class Signup extends Component {
         // code to remove White Spaces from text field
         this.setState({ password: value.replace(/\s/g, "") });
     }
+    async backNavigation() {
+        let corporateData = this.props.navigation.getParam('corporateData') || null
+        await this.setState({corporateData})
+        if (corporateData !== null) {
+            this.isEnabledToSendOtpPage = false;
+           
+        }
+      }
     render() {
         const { user: { isLoading } } = this.props;
-        const { mobile_no, email, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible } = this.state;
+        const { mobile_no, email, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible ,corporateData} = this.state;
         return (
             <Container style={styles.container}>
+                   <NavigationEvents
+                  onWillFocus={payload => { this.backNavigation(payload) }}
+                />
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
                     <Content contentContainerStyle={styles.authBodyContent}>
                         <View >
+                            <Row>
+                                <Right style={{ marginRight: -5, marginTop: -5 }}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate'
+                                        style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 10, paddingBottom: 10 }}>
+                                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
+                                    </TouchableOpacity>
+                                </Right>
+                            </Row>
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
                             <Card style={{ borderRadius: 10, padding: 5, marginTop: 15 }}>
                                 <View style={{ flex: 1 }}>
@@ -181,10 +223,32 @@ class Signup extends Component {
                                             </View>
                                         }
                                         {this.isShowEmailEntryView === false ?
+                                          corporateData!==null&&corporateData.email?
+                                          <View>
+                                          <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
+                                          <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+                                            
+                                               <Text style={styles.authTransparentLabel}>{corporateData.email}</Text>
+                                          
+                                          </Item>
+                                              
+                                      </View>:
+                                        
                                             null :
+                                            corporateData!==null&&corporateData.email?
+                                            <View>
+                                            <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
+                                            <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+                                              
+                                                 <Text style={styles.authTransparentLabel}>{corporateData.email}</Text>
+                                            
+                                            </Item>
+                                                
+                                        </View>:
                                             <View>
                                                 <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+                                                   
                                                     <Input placeholder="email" style={styles.authTransparentLabel}
                                                         returnKeyType={'next'}
                                                         value={email}
@@ -193,7 +257,9 @@ class Signup extends Component {
                                                         blurOnSubmit={false}
                                                         onSubmitEditing={() => { this.mobile_no._root.focus(); }}
                                                     />
+    
                                                 </Item>
+                                                    
                                             </View>
                                         }
                                         <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Password</Label>
