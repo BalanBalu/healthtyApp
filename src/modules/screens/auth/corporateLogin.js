@@ -90,7 +90,7 @@ class SmartHealthLogin extends PureComponent {
             }
             let verifyResult = await verifyEmployeeDetails(SelectedCompanyData, employeeCode, authorizerCode)
             if (verifyResult) {
-                
+                if(Array.isArray(verifyResult)&&verifyResult.length!==0){
                 let obj = {
                     company: SelectedCompanyData,
                     employeeCode: employeeCode,
@@ -98,6 +98,9 @@ class SmartHealthLogin extends PureComponent {
                     ...verifyResult[0]
                 }
                 this.props.navigation.navigate('signup', { corporateData: obj })
+            }else{
+                this.setState({errorMsg:'Invalid  Credential',isModalVisible:true})
+            }
             }
             this.setState({ isLoading: false })
         } catch (e) {
@@ -108,11 +111,16 @@ class SmartHealthLogin extends PureComponent {
     }
 
     render() {
-        const { test, addedDatas, companyData, SelectedCompanyData, loginErrorMsg, isLoading } = this.state
+        const { test, addedDatas, companyData, SelectedCompanyData, loginErrorMsg, isLoading ,errorMsg,isModalVisible} = this.state
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
                     <Content contentContainerStyle={styles.authBodyContent}>
+                    <ModalPopup
+                    errorMessageText={errorMsg}
+                    closeButtonText={'CLOSE'}
+                    closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
+                    visible={isModalVisible} />
                         <ScrollView>
 
                             <Text uppercase={true}
