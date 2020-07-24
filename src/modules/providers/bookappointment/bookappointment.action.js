@@ -223,8 +223,11 @@ export const getUserAppointments = async (userId, filters) => {
     }
     if(filters.reviewInfo){
       endPoint = endPoint + '&reviewInfo=1'
-
     }
+    if(filters.prepareAppointment) {
+      endPoint = endPoint + '&prepareAppointment=1'
+    }
+    
 
     console.log(endPoint);
     let response = await getService(endPoint);
