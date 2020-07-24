@@ -42,8 +42,11 @@ class Login extends Component {
       let requestData = {
         userEntry: userEntry,
         password: password,
-        type: isSelected
+        type: 'user'
       };
+      if(isSelected==='corporate_user'){
+        requestData.is_corporate_user=true
+      }
       await login(requestData);   // Do Login Process
       if (this.props.user.isAuthenticated) {
         this.getUserProfile();

@@ -115,11 +115,11 @@ class Signup extends Component {
 
             if (corporateData !== null) {
 
-                requestData.type = 'corporate_user';
+                requestData.is_corporate_user=true
                 requestData.company_name = corporateData.company[0];
                 requestData.email = corporateData.email
                 requestData.employee_code = corporateData.employeeCode;
-                requestData.authorizer_code = corporateData.authorizerCode;
+               
             }
 
             await signUp(requestData);        // Do SignUp Process

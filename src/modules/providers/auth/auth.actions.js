@@ -235,21 +235,14 @@ export async function logout() {
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
   try{
-  let userId;
-  console.log('userDatauserDatauserDatauserData')
-  console.log(JSON.stringify(userData))
-  if (userData.userId) {
-    userId = userData.userId
-  } else if (userData.corporate_userId) {
-    userId = userData.corporate_userId
-  }
+
 
   await AsyncStorage.setItem('token', token)
-  await AsyncStorage.setItem('userId', userId)
+  await AsyncStorage.setItem('userId', userData.userId)
   await AsyncStorage.setItem('isLoggedIn', 'true');
   AsyncStorage.setItem('user', JSON.stringify(userData))
   axios.defaults.headers.common['x-access-token'] = token;
-  axios.defaults.headers.common['userId'] = userId
+  axios.defaults.headers.common['userId'] = userData.userId;
   AsyncStorage
   store.dispatch({
     type: SET_USER,
