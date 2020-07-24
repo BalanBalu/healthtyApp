@@ -47,8 +47,8 @@ class PublicForum extends PureComponent {
         }
     }
     callquerysearchService = async (enteredText, skipConcatWithPreviousData) => {
-
         let result = await getAllPublicForumDetails(this.state.query_text, this.state.skip, this.state.limit)
+
         if (result.success) {
             let forumFetced = result.data || []
             this.setState({
@@ -99,6 +99,7 @@ class PublicForum extends PureComponent {
 
     render() {
         const { isLoading, data, } = this.state;
+        console.log(JSON.stringify(data))
         return (
             <Container style={styles.container}>
                 {isLoading ? <ActivityIndicator /> : null}

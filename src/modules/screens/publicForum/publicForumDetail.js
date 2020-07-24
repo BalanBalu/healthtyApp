@@ -28,7 +28,7 @@ class PublicForumDetail extends PureComponent {
 
     insertForumAnswers = async () => {
         try {
-            if ((this.state.answer_text == '')) {
+            if ((this.state.answer_text === '')) {
                 Toast.show({
                     text: 'Kindly fill  the field',
                     type: 'danger',
@@ -46,19 +46,21 @@ class PublicForumDetail extends PureComponent {
                 const { answer_text, questionId } = this.state
                 let data = {
                     type: type,
-                    answer_name: answer_text,
+                    answer_name: answer_text.toString(),
                     question_id: questionId,
                     answer_provider_id: "",
                     active: true
                 }
                 if (userId != null) {
                     data.answer_provider_id = userId
+                }else{
+                    delete data.answer_provider_id
                 }
                 this.setState({ isLoading: true })
                 let result = await forumInsertAnswer(data)
                 if (result.success) {
                     Toast.show({
-                        text: result.message,
+                        text: "Your answer posted successfully",
                         type: "success",
                         duration: 3000,
                     })
