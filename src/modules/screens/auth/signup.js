@@ -34,15 +34,16 @@ class Signup extends Component {
         this.isShowMobileEntryView = true;
         this.isShowEmailEntryView = true;
         this.isEnabledToSendOtpPage = false;
+        this.emailEditable = true
         console.log('constructor====>');
         this.getMobileAndEmailOtpServicesDetails();
     }
 
     getMobileAndEmailOtpServicesDetails = async () => {
         try {
-            
+
             let corporateData = this.props.navigation.getParam('corporateData') || null
-            await this.setState({corporateData})
+            await this.setState({ corporateData })
             const productConfigTypes = `${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY}`;
             const productConfigResp = await ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes);
             console.log('productConfigResp==>', productConfigResp);
@@ -61,7 +62,8 @@ class Signup extends Component {
                 });
                 if (corporateData !== null) {
                     this.isEnabledToSendOtpPage = true;
-                    this.isShowEmailEntryView = false
+                    this.isShowEmailEntryView = true
+                   
                 }
                 await this.setState({});
             }
@@ -82,7 +84,7 @@ class Signup extends Component {
     }
     doSignUp = async () => {
         const { mobile_no, email, password, checked, gender, referralCode } = this.state;
-        
+
         let corporateData = this.props.navigation.getParam('corporateData') || null
         try {
             if (checked === false) {
@@ -112,14 +114,14 @@ class Signup extends Component {
             }
 
             if (corporateData !== null) {
-             
-                    requestData.type = 'corporate_user';
-                    requestData.company_name = corporateData.company[0];
-                    requestData.email=corporateData.email
-                    requestData.employee_code = corporateData.employeeCode;
-                    requestData.authorizer_code = corporateData.authorizerCode;
+
+                requestData.type = 'corporate_user';
+                requestData.company_name = corporateData.company[0];
+                requestData.email = corporateData.email
+                requestData.employee_code = corporateData.employeeCode;
+                requestData.authorizer_code = corporateData.authorizerCode;
             }
-           
+
             await signUp(requestData);        // Do SignUp Process
             if (this.props.user.success) {
                 let loginData = {
@@ -147,7 +149,7 @@ class Signup extends Component {
 
     async doLoginAndContinueBasicDetailsUpdate(loginData) {
         try {
-          
+
             await login(loginData);  // Do SignIn Process after SignUp is Done
             if (this.props.user.isAuthenticated) {
                 this.props.navigation.navigate('userdetails');
@@ -170,19 +172,22 @@ class Signup extends Component {
     }
     async backNavigation() {
         let corporateData = this.props.navigation.getParam('corporateData') || null
-        await this.setState({corporateData})
+        await this.setState({ corporateData })
         if (corporateData !== null) {
             this.isEnabledToSendOtpPage = false;
-           
+            this.isShowEmailEntryView = true;
+            this.emailEditable=false
+            this.setState({email:corporateData.email})
+
         }
-      }
+    }
     render() {
         const { user: { isLoading } } = this.props;
-        const { mobile_no, email, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible ,corporateData} = this.state;
+        const { mobile_no, email, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible, corporateData } = this.state;
         return (
             <Container style={styles.container}>
-                   <NavigationEvents
-                  onWillFocus={payload => { this.backNavigation(payload) }}
+                <NavigationEvents
+                    onWillFocus={payload => { this.backNavigation(payload) }}
                 />
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
                     <Content contentContainerStyle={styles.authBodyContent}>
@@ -223,43 +228,26 @@ class Signup extends Component {
                                             </View>
                                         }
                                         {this.isShowEmailEntryView === false ?
-                                          corporateData!==null&&corporateData.email?
-                                          <View>
-                                          <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
-                                          <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
-                                            
-                                               <Text style={styles.authTransparentLabel}>{corporateData.email}</Text>
-                                          
-                                          </Item>
-                                              
-                                      </View>:
-                                        
+
                                             null :
-                                            corporateData!==null&&corporateData.email?
-                                            <View>
-                                            <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
-                                            <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
-                                              
-                                                 <Text style={styles.authTransparentLabel}>{corporateData.email}</Text>
-                                            
-                                            </Item>
-                                                
-                                        </View>:
+
+
                                             <View>
                                                 <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
-                                                   
+
                                                     <Input placeholder="email" style={styles.authTransparentLabel}
                                                         returnKeyType={'next'}
                                                         value={email}
+                                                        editable={this.emailEditable}
                                                         keyboardType="email-address"
                                                         onChangeText={email => this.setState({ email })}
                                                         blurOnSubmit={false}
                                                         onSubmitEditing={() => { this.mobile_no._root.focus(); }}
                                                     />
-    
+
                                                 </Item>
-                                                    
+
                                             </View>
                                         }
                                         <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Password</Label>
