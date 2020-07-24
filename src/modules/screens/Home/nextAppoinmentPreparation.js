@@ -43,9 +43,9 @@ class NextAppoinmentPreparation extends PureComponent {
 				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
 				skip:this.state.skip,
 				limit:this.state.limit,
-				sort:1
+                sort: 1,
+                prepareAppointment: 1
 			
-				// on_going_appointment: true
 			};
 
             let upCommingAppointmentResult = await getUserAppointments(userId, filters);
@@ -58,6 +58,7 @@ class NextAppoinmentPreparation extends PureComponent {
                 upCommingAppointmentResult = upCommingAppointmentResult.data;
 
                 let doctorIds = getAllId(upCommingAppointmentResult)
+              
                 let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
                 speciallistResult.data.forEach(doctorData => {
