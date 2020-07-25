@@ -79,9 +79,14 @@ async getBasicData() {
                 {hasLoggedIn ?  
                    <View style={{marginLeft:10}}>
                     <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',color:'#fff'}}>{this.activeUserData && (this.activeUserData.first_name +" "+ this.activeUserData.last_name) }</Text>
-                   <TouchableOpacity onPress={()=> this.props.navigation.navigate('Profile')} style={{paddingRight:10,paddingTop:2,paddingBottom:10,width:'100%'}}>
+                   <TouchableOpacity onPress={()=> this.props.navigation.navigate('Profile')} style={{paddingRight:10,paddingTop:2, width:'100%'}}>
                     <Text style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>{translate("View Profile")}</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={()=> this.props.navigation.navigate('Ecard')} style={{paddingRight:10,paddingTop:2,paddingBottom:5 ,width:'100%'}}>
+                    <Text style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>{translate("View E-Card")}</Text>
+                    </TouchableOpacity>
+                   
+                    
                    </View>
                  : 
                    <View style={{alignItems:'center'}}>

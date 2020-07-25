@@ -22,7 +22,7 @@ export default class PaymentReview extends Component {
       gender: 'M',
       full_name: '',
       age: '',
-      isSelected: '',
+      isSelected: 'self',
       patientDetailsObj: {},
       addPatientDataPoPupEnable: false
     }
@@ -237,6 +237,7 @@ export default class PaymentReview extends Component {
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
                           <Radio
+                            standardStyle={true}
                             selected={isSelected === 'self'}
                             onPress={() => this.setState({ isSelected: 'self', patientDetailsObj: this.defaultPatDetails })}
                           />
@@ -246,6 +247,7 @@ export default class PaymentReview extends Component {
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
                           <Radio
+                            standardStyle={true}
                             selected={isSelected === 'others'}
                             onPress={() => this.setState({ isSelected: 'others', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
                           />

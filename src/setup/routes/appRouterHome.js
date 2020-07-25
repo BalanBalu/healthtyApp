@@ -113,7 +113,9 @@ import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filte
 import PublicForum from '../../modules/screens/publicForum/publicForum'
 import PostForum from '../../modules/screens/publicForum/postForum'
 import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
+import SmartHealthLogin from '../../modules/screens/auth/corporateLogin'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu'
+import Ecard from '../../modules/screens/Ecard/Ecard'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -139,6 +141,9 @@ const AuthRoutes = {
   termsAndConditions: {
     screen: termsAndConditions,
   },
+  SmartHealthLogin:{
+    screen: SmartHealthLogin
+  }
 
 
 }
@@ -509,7 +514,7 @@ const HomeStack = createStackNavigator({
       title: 'Lab Test Cancel Appointment'
     }
   },
-   //================ PublicForum ===============
+   //================ PublicForum  ===============
   "Public Forum": {
     screen: PublicForum,
     navigationOptions: {
@@ -526,6 +531,13 @@ const HomeStack = createStackNavigator({
     screen: PublicForumDetail,
     navigationOptions: {
       title: 'Public Health Forum'
+    }
+  },
+  //================  Ecard ===============
+  Ecard: {
+    screen: Ecard,
+    navigationOptions: {
+      title: 'Ecard Details'
     }
   },
   // ========Appointment stack ==========
