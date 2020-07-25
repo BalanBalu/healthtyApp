@@ -17,10 +17,9 @@ class NextAppoinmentPreparation extends PureComponent {
             updatedDate: '',
             AppointmentId: '',
             doctorInfo: {},
-            isLoading: false,
             appointmentDetails: [],
             skip: 0,
-            limit: 10
+            limit: 1
 
         }
 
@@ -36,8 +35,6 @@ class NextAppoinmentPreparation extends PureComponent {
     upCommingNextAppointment = async () => {
         try {
 
-            this.setState({ isLoading: true })
-
             let userId = await AsyncStorage.getItem("userId");
             let filters = {
                 startDate: new Date().toUTCString(),
@@ -49,55 +46,35 @@ class NextAppoinmentPreparation extends PureComponent {
             };
             let upCommingAppointmentResult = await getUserAppointments(userId, filters);
             console.log('upcomming==================================');
-            console.log(upCommingAppointmentResult)
             if (upCommingAppointmentResult.success) {
                 upCommingAppointmentResult = upCommingAppointmentResult.data;
-                console.log('fullData==================================');
-                console.log(upCommingAppointmentResult)
-                let getSingleData = upCommingAppointmentResult.slice(0, 1)
-                const result = Object.assign({}, getSingleData);
-                let fullResult = result[0]
-                this.setState({
-                    AppoinmentData: fullResult
-                });
-
+               
                 let appointmentId = fullResult._id;
-                this.setState({ AppointmentId: appointmentId })
                 let doctorInfo = fullResult.doctorInfo
-                this.setState({ doctorInfo: doctorInfo })
                 let dateData = formatDate(fullResult.doctorInfo.appointment_starttime, "dddd,MMMM DD-YYYY")
                 let currentDate = new Date();
                 let currentDataFormat = formatDate(currentDate.toISOString(), "dddd,MMMM DD-YYYY")
                 currentDate.setDate(currentDate.getDate() + 1);
                 let tomorrowDate = formatDate(currentDate.toISOString(), "dddd,MMMM DD-YYYY")
-
+               let updatedDate = '';
                 if (currentDataFormat == dateData) {
-                    console.log("currentDate")
-                    this.setState({ updatedDate: "Today" })
+                    updatedDate =  "Today";
                 } else if (tomorrowDate == dateData) {
-                    console.log("tomorrowDate")
-                    this.setState({ updatedDate: "Tomorrow" })
+                    updatedDate =  "Tomorrow";
                 } else {
-                    console.log("how")
-                    this.setState({ updatedDate: dateData })
+                    updatedDate = dateData;
                 }
-
+                this.setState({ 
+                    AppoinmentData: upCommingAppointmentResult[0],
+                    doctorInfo: doctorInfo, 
+                    AppointmentId: appointmentId,
+                    updatedDate: updatedDate
+                })
             }
-
-
         } catch (e) {
             console.log(e);
-        } finally {
-            this.setState({ isLoading: false });
         }
     };
-
-
-
-
-
-
-
 
 
     render() {
