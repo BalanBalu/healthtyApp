@@ -3,10 +3,10 @@ import { Container, Content, Text, Toast, Button, ListItem, Card, Thumbnail, Lis
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid'
 import StarRating from 'react-native-star-rating';
-import styles from './styles'
+import styles from '../Styles'
 
 
-class AppoinmentDetail extends PureComponent {
+class AppointmentDetails extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
@@ -35,7 +35,7 @@ class AppoinmentDetail extends PureComponent {
                                 <Row style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Col style={{ width: '22%', justifyContent: 'center', marginTop: 10 }}>
                                         <TouchableOpacity>
-                                            <Thumbnail circular source={require('../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
+                                            <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
                                         </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '77%', marginTop: 10 }}>
@@ -295,4 +295,4 @@ class AppoinmentDetail extends PureComponent {
     }
 }
 
-export default AppoinmentDetail
+export default AppointmentDetails

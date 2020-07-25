@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Container, Content, Text, Toast, Button, ListItem, CheckBox, Radio, Card, Thumbnail, List, Item, Input, Left, Right, Icon, Footer, FooterTab } from 'native-base';
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, Platform, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import styles from './styles'
+import styles from '../Styles'
 
 class HomeTestConfirmation extends PureComponent {
     constructor(props) {
@@ -211,7 +211,7 @@ class HomeTestConfirmation extends PureComponent {
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={1.5}>
                                     <TouchableOpacity >
-                                        <Thumbnail circle source={require('../../../../assets/images/Female.png')} style={{ height: 40, width: 40, borderRadius: 60 / 2 }} />
+                                        <Thumbnail circle source={require('../../../../../assets/images/Female.png')} style={{ height: 40, width: 40, borderRadius: 60 / 2 }} />
                                     </TouchableOpacity>
                                 </Col>
                                 <Col size={8.5}>

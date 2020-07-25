@@ -3,9 +3,9 @@ import { Container, Content, Text, Toast, Button, ListItem, Card, Thumbnail, Lis
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid'
 import SegmentedControlTab from "react-native-segmented-control-tab";
-import styles from './styles'
+import styles from '../Styles'
 
-class AppoinmentList extends PureComponent {
+class AppointmentList extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
@@ -46,7 +46,7 @@ class AppoinmentList extends PureComponent {
 
                                         <Row style={{ marginTop: 10 }}>
                                             <Col size={2}>
-                                                <Thumbnail circular source={require('../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
+                                                <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
                                             </Col>
                                             <Col size={8}>
                                                 <Text style={styles.nameText}>
@@ -83,5 +83,5 @@ class AppoinmentList extends PureComponent {
     }
 }
 
-export default AppoinmentList
+export default AppointmentList
 

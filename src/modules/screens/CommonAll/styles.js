@@ -237,11 +237,11 @@ export default styles = StyleSheet.create({
         borderRadius: 5
     },
     doneButton: {
-            color: '#FFFFFF',
-            fontFamily: 'OpenSans',
-            fontSize: 13,
-            textAlign: 'center',
-            fontWeight: '700'
+        color: '#FFFFFF',
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        textAlign: 'center',
+        fontWeight: '700'
     },
 
     defaultdoneButton: {
@@ -276,6 +276,34 @@ export default styles = StyleSheet.create({
         color: '#000',
         fontSize: 14,
         marginTop: 5
+    },
+    picodeText: {
+        fontFamily: 'OpenSans',
+        color: '#7F49C3',
+        fontSize: 13,
+    },
+    editPincodeButton: {
+        paddingBottom: 1,
+        paddingTop: 1,
+        paddingLeft: 2,
+        paddingRight: 2,
+        borderColor: '#ff4e42',
+        borderWidth: 1,
+        borderRadius: 2
+    },
+    showingDoctorText: {
+        fontFamily: 'OpenSans',
+        color: '#000',
+        fontSize: 13,
+    },
+    specialismInput: {
+        backgroundColor: '#fff',
+        height: 35,
+        borderRadius: 2,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+        borderLeftWidth: 1,
+        borderRightWidth: 1
     },
 
 })
