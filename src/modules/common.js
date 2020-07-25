@@ -417,3 +417,18 @@ export const  onPopupEvent = (eventName, index,navigation) => {
         setI18nConfig('ma')
     }
   }
+
+  export function renderForumImage(data, infoNode) {
+    let source = null;
+    if (data[infoNode] && data[infoNode].profile_image) {
+        source = { uri: data[infoNode].profile_image.imageURL }
+    } else if (data.gender == 'M') {
+        source = require('../../assets/images/profile_male.png')
+    } else if (data.gender == 'F') {
+        source = require('../../assets/images/profile_female.png')
+    } else {
+        source = require('../../assets/images/profile_common.png')
+    }
+    return (source)
+
+}

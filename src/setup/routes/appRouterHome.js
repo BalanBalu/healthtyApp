@@ -120,6 +120,8 @@ import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Con
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 
+// import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
+import DropDownMenu from '../../modules/screens/chat/dropDownMenu'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -703,8 +705,16 @@ const HomeStack = createStackNavigator({
             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
             {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
           </Col>
+
         </Grid>
       ),
+      headerRight: (
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Col style={{ justifyContent: 'flex-end' }}>
+            <DropDownMenu />
+          </Col>
+        </Grid>
+      )
     })
   },
 

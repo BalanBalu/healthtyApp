@@ -8,6 +8,7 @@ import {searchSuggestionsForQuestionsAndAnswers,getAllPublicForumDetails} from '
 import { Loader } from '../../../components/ContentLoader';
 import { formatDate } from "../../../setup/helpers";
 import { connect } from 'react-redux'
+import { renderForumImage } from '../../common';
 
 const debounce = (fun, delay) => {
     let timer = null;
@@ -185,7 +186,7 @@ contentContainerStyle={{ flexGrow: 1 }}>
                                 <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 15 }}>
                                     <Row>
                                         <Col size={1}>
-                                            <Image source={require('../../../../assets/images/Female.png')} style={{ height: 30, width: 30 }} />
+                                            <Image source={renderForumImage(item, 'questionerInfoUser')} style={{ height: 30, width: 30 }} />
                                         </Col>
                                         <Col size={9}>
                                             <Row>
