@@ -97,6 +97,11 @@ class SmartHealthLogin extends PureComponent {
                     authorizerCode: authorizerCode,
                     ...verifyResult[0]
                 }
+                Toast.show({
+                    text: 'Verified Successfully, Please Complete your Registration',
+                    type: 'success',
+                    duration: 3000
+                })
                 this.props.navigation.navigate('signup', { corporateData: obj })
             }else{
                 this.setState({errorMsg:'Invalid  Credential',isModalVisible:true})

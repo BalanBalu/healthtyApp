@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, ListItem, List, Content, Row, Col, Card, } from 'native-base';
-import { View, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
 
 
 class Ecard extends PureComponent {

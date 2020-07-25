@@ -114,12 +114,9 @@ class Signup extends Component {
             }
 
             if (corporateData !== null) {
-
                 requestData.is_corporate_user=true
                 requestData.company_name = corporateData.company[0];
-                requestData.email = corporateData.email
                 requestData.employee_code = corporateData.employeeCode;
-               
             }
 
             await signUp(requestData);        // Do SignUp Process
@@ -177,9 +174,10 @@ class Signup extends Component {
             console.log('corporateData', corporateData)
             this.isEnabledToSendOtpPage = false;
             this.isShowEmailEntryView = true;
-            this.emailEditable = true
-            this.setState({email: corporateData.email })
-
+            if(corporateData.emailId) {
+                this.emailEditable = false;
+                this.setState({email: corporateData.emailId })
+            }
         }
     }
     render() {
