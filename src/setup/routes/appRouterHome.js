@@ -108,16 +108,18 @@ import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmen
 import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
-import DoctorList from '../../modules/screens/HomeTest/doctorList';
-import HomeTestConfirmation from '../../modules/screens/HomeTest/homeTestConfirmation'
-import AppointmentList from '../../modules/screens/HomeTest/appoinmentList';
-import AppointmentDetail from '../../modules/screens/HomeTest/appoinmentDetail'
 
 import PopupMenu from './popUpMenu';
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
 import PublicForum from '../../modules/screens/publicForum/publicForum'
 import PostForum from '../../modules/screens/publicForum/postForum'
-import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
+import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail';
+
+import HomeHealthcareDoctorList from '../../modules/screens/HomeHealthCare/DoctorList/doctorList';
+import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Confirmation/confirmation';
+import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
+import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -620,28 +622,28 @@ const HomeStack = createStackNavigator({
 
 
   // ============Home Test ========================
-  DoctorList: {
-    screen: DoctorList,
+  HomeHealthcareDoctorList: {
+    screen: HomeHealthcareDoctorList,
     navigationOptions: {
-      title: 'Doctor List'
+      title: 'HomeHealthcare DoctorList'
     }
   },
-  HomeTestConfirmation: {
-    screen: HomeTestConfirmation,
+  HomeHealthcareConfirmation: {
+    screen: HomeHealthcareConfirmation,
     navigationOptions: {
-      title: 'Home Test Confirmation'
+      title: 'Home Healthcare Confirmation'
     }
   },
-  AppointmentList: {
-    screen: AppointmentList,
+  HomeHealthcareAppointmentList: {
+    screen: HomeHealthcareAppointmentList,
     navigationOptions: {
-      title: 'Appointments'
+      title: 'Home Healthcare AppointmentList'
     }
   },
-  AppointmentDetail: {
-    screen: AppointmentDetail,
+  HomeHealthcareAppointmentDetail: {
+    screen: HomeHealthcareAppointmentDetail,
     navigationOptions: {
-      title: 'Appointment info'
+      title: 'Home Healthcare Appointment info'
     }
   },
   // ============Chat ========================
