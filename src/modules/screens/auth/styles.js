@@ -248,5 +248,11 @@ export default StyleSheet.create({
         fontSize: 15,
 
     },
+    firstCheckBox: {
+        fontFamily: 'OpenSans',
+        fontSize: 14,
+        color: '#000',
+        marginLeft: 5
+    }
 })
 

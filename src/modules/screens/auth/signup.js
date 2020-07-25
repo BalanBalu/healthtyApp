@@ -174,10 +174,11 @@ class Signup extends Component {
         let corporateData = this.props.navigation.getParam('corporateData') || null
         await this.setState({ corporateData })
         if (corporateData !== null) {
+            console.log('corporateData', corporateData)
             this.isEnabledToSendOtpPage = false;
             this.isShowEmailEntryView = true;
-            this.emailEditable=false
-            this.setState({email:corporateData.email})
+            this.emailEditable = true
+            this.setState({email: corporateData.email })
 
         }
     }
@@ -191,16 +192,15 @@ class Signup extends Component {
                 />
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
                     <Content contentContainerStyle={styles.authBodyContent}>
-                        <View >
-                            <Row>
-                                <Right style={{ marginRight: -5, marginTop: -5 }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate'
-                                        style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 10, paddingBottom: 10 }}>
-                                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
-                                    </TouchableOpacity>
-                                </Right>
-                            </Row>
+                        <View>
+                           
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={{ marginTop: 10, justifyContent: 'flex-end', alignContent: 'flex-end',alignSelf: 'flex-end'  }}>
+                                <Button onPress={() => this.props.navigation.navigate('SmartHealthLogin')} style={{ backgroundColor: '#835BBA' }} >
+                                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
+                                </Button>
+                            </TouchableOpacity>
+                          
                             <Card style={{ borderRadius: 10, padding: 5, marginTop: 15 }}>
                                 <View style={{ flex: 1 }}>
                                     <ModalPopup
