@@ -42,8 +42,7 @@ class Signup extends Component {
     getMobileAndEmailOtpServicesDetails = async () => {
         try {
 
-            let corporateData = this.props.navigation.getParam('corporateData') || null
-            await this.setState({ corporateData })
+         
             const productConfigTypes = `${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY}`;
             const productConfigResp = await ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes);
             console.log('productConfigResp==>', productConfigResp);
@@ -60,12 +59,7 @@ class Signup extends Component {
                         this.isEnabledToSendOtpPage = true
                     }
                 });
-                if (corporateData !== null) {
-                    this.isEnabledToSendOtpPage = true;
-                    this.isShowEmailEntryView = true
-                   
-                }
-                await this.setState({});
+            ;
             }
         } catch (Ex) {
             console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
@@ -114,8 +108,8 @@ class Signup extends Component {
             }
 
             if (corporateData !== null) {
-                requestData.is_corporate_user=true
-                requestData.company_name = corporateData.company[0];
+                requestData.is_corporate_user = true
+                requestData.corporate_user_id=corporateData._id
                 requestData.employee_code = corporateData.employeeCode;
             }
 
@@ -125,6 +119,9 @@ class Signup extends Component {
                     userEntry: mobile_no || email,
                     password: password,
                     type: requestData.type
+                }
+                if (corporateData !== null) {
+                    loginData.is_corporate_user=true
                 }
                 if (this.isEnabledToSendOtpPage === true) {
                     this.props.navigation.navigate('renderOtpInput', { loginData: loginData });
@@ -146,16 +143,18 @@ class Signup extends Component {
 
     async doLoginAndContinueBasicDetailsUpdate(loginData) {
         try {
-
+ 
             await login(loginData);  // Do SignIn Process after SignUp is Done
             if (this.props.user.isAuthenticated) {
-                this.props.navigation.navigate('userdetails');
+               
+                let corporateData = this.props.navigation.getParam('corporateData') || null;
+                this.props.navigation.navigate('userdetails', { corporateData: corporateData });
             }
             else {
                 this.setState({ errorMsg: this.props.user.message });
             }
         } catch (error) {
-            alert(error.message)
+          
             Toast.show({
                 text: 'Something Went Wrong' + error,
                 duration: 3000
@@ -174,9 +173,9 @@ class Signup extends Component {
             console.log('corporateData', corporateData)
             this.isEnabledToSendOtpPage = false;
             this.isShowEmailEntryView = true;
-            if(corporateData.emailId) {
+            if (corporateData.emailId) {
                 this.emailEditable = false;
-                this.setState({email: corporateData.emailId })
+                this.setState({ email: corporateData.emailId })
             }
         }
     }
@@ -191,14 +190,14 @@ class Signup extends Component {
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
                     <Content contentContainerStyle={styles.authBodyContent}>
                         <View>
-                           
+
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={{ marginTop: 10, justifyContent: 'flex-end', alignContent: 'flex-end',alignSelf: 'flex-end'  }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={{ marginTop: 10, justifyContent: 'flex-end', alignContent: 'flex-end', alignSelf: 'flex-end' }}>
                                 <Button onPress={() => this.props.navigation.navigate('SmartHealthLogin')} style={{ backgroundColor: '#835BBA' }} >
                                     <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
                                 </Button>
                             </TouchableOpacity>
-                          
+
                             <Card style={{ borderRadius: 10, padding: 5, marginTop: 15 }}>
                                 <View style={{ flex: 1 }}>
                                     <ModalPopup

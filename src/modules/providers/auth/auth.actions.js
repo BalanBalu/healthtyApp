@@ -119,6 +119,7 @@ export async function login(userCredentials, isLoading = true) {
     }
 
   } catch (e) {
+   
     store.dispatch({
       type: LOGIN_HAS_ERROR,
       message: e + ' Occured! Please Try again'
@@ -235,8 +236,11 @@ export async function logout() {
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
   try{
-
-
+    console.log('userDatauserDatauserDatauserData')
+    console.log(JSON.stringify(userData))
+if(userData.is_corporate_user){
+  await AsyncStorage.setItem('is_corporate_user', 'true')
+}
   await AsyncStorage.setItem('token', token)
   await AsyncStorage.setItem('userId', userData.userId)
   await AsyncStorage.setItem('isLoggedIn', 'true');
@@ -409,9 +413,9 @@ export async function getAllCompanyList() {
   }
 }
 
-export async function verifyEmployeeDetails(companyName, empCode, authCode) {
+export async function verifyEmployeeDetails(empCode, authCode) {
   try {
-    let endPoint = `employee/${companyName}/${empCode}/${authCode}`;
+    let endPoint = `employee/${empCode}/${authCode}`;
 
     let response = await smartHealthGetService(endPoint);
 

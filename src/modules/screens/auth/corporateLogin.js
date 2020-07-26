@@ -26,42 +26,46 @@ class SmartHealthLogin extends PureComponent {
             authorizerCode: '',
             employeeCode: '',
             loginErrorMsg: '',
-            isLoading: false
+            // isLoading: false
 
 
 
         }
     }
-    componentDidMount() {
-        this.getCompanyList();
-    }
-    async getCompanyList() {
-        try {
-            this.setState({ isLoading: true })
-            let result = await getAllCompanyList()
+    // componentDidMount() {
+    //     this.getCompanyList();
+    // }
+    // async getCompanyList() {
+    //     try {
+    //         this.setState({ isLoading: true })
+    //         let result = await getAllCompanyList()
 
-            if (result) {
+    //         if (result) {
 
-                const removeDupValuesInArray = [];
-                const companyData = [];
-                result.map(ele => {
-                    if (!removeDupValuesInArray.includes(ele.entityName.toLowerCase())) {
-                        removeDupValuesInArray.push(ele.entityName.toLowerCase());
-                        companyData.push({ value: ele.entityName })
-                    }
+    //             const removeDupValuesInArray = [];
+    //             const companyData = [];
+    //             alert(JSON.stringify(result[0]))
+    //             result.map(ele => {
+    //                 if (!removeDupValuesInArray.includes(ele.entityName.toLowerCase())) {
+    //                     removeDupValuesInArray.push(ele.entityName.toLowerCase());
+    //                     companyData.push({
+    //                         value: ele.entityName
 
-                })
+    //                     })
+    //                 }
 
-                this.setState({ data: result, companyData, isLoading: false })
-            }
-        } catch (e) {
-            console.log(e)
+    //             })
 
-        } finally {
-            this.setState({ isLoading: false })
-        }
+    //             this.setState({ data: result, companyData, isLoading: false })
+    //         }
+    //     } catch (e) {
+    //         console.log(e)
 
-    }
+    //     } finally {
+    //         this.setState({ isLoading: false })
+    //     }
+
+    // }
     onSelectedStatusChange = async (item) => {
 
         this.setState({ SelectedCompanyData: item });
@@ -71,15 +75,12 @@ class SmartHealthLogin extends PureComponent {
         try {
             const { authorizerCode, employeeCode, SelectedCompanyData } = this.state;
 
-            await this.setState({ loginErrorMsg: '', isLoading: false })
+            await this.setState({ loginErrorMsg: '', isLoading: true })
 
 
 
 
-            if (SelectedCompanyData.length === 0) {
-                await this.setState({ loginErrorMsg: 'Please select componey' });
-                return false;
-            } else if (onlySpaceNotAllowed(employeeCode) === false) {
+           if (onlySpaceNotAllowed(employeeCode) === false) {
                 await this.setState({ loginErrorMsg: 'Please enter employee  code' });
                 return false;
             }
@@ -88,24 +89,23 @@ class SmartHealthLogin extends PureComponent {
                 await this.setState({ loginErrorMsg: 'Please enter authorizer code' });
                 return false;
             }
-            let verifyResult = await verifyEmployeeDetails(SelectedCompanyData, employeeCode, authorizerCode)
+            let verifyResult = await verifyEmployeeDetails(employeeCode, authorizerCode)
             if (verifyResult) {
-                if(Array.isArray(verifyResult)&&verifyResult.length!==0){
-                let obj = {
-                    company: SelectedCompanyData,
-                    employeeCode: employeeCode,
-                    authorizerCode: authorizerCode,
-                    ...verifyResult[0]
+                if (Array.isArray(verifyResult) && verifyResult.length !== 0) {
+                    let obj = {
+                        employeeCode: employeeCode,
+                        authorizerCode: authorizerCode,
+                        ...verifyResult[0]
+                    }
+                    Toast.show({
+                        text: 'Verified Successfully, Please Complete your Registration',
+                        type: 'success',
+                        duration: 3000
+                    })
+                    this.props.navigation.navigate('signup', { corporateData: obj })
+                } else {
+                    this.setState({ errorMsg: 'Invalid  Credential', isModalVisible: true })
                 }
-                Toast.show({
-                    text: 'Verified Successfully, Please Complete your Registration',
-                    type: 'success',
-                    duration: 3000
-                })
-                this.props.navigation.navigate('signup', { corporateData: obj })
-            }else{
-                this.setState({errorMsg:'Invalid  Credential',isModalVisible:true})
-            }
             }
             this.setState({ isLoading: false })
         } catch (e) {
@@ -116,16 +116,16 @@ class SmartHealthLogin extends PureComponent {
     }
 
     render() {
-        const { test, addedDatas, companyData, SelectedCompanyData, loginErrorMsg, isLoading ,errorMsg,isModalVisible} = this.state
+        const { test, addedDatas, companyData, SelectedCompanyData, loginErrorMsg, isLoading, errorMsg, isModalVisible } = this.state
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
                     <Content contentContainerStyle={styles.authBodyContent}>
-                    <ModalPopup
-                    errorMessageText={errorMsg}
-                    closeButtonText={'CLOSE'}
-                    closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
-                    visible={isModalVisible} />
+                        <ModalPopup
+                            errorMessageText={errorMsg}
+                            closeButtonText={'CLOSE'}
+                            closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
+                            visible={isModalVisible} />
                         <ScrollView>
 
                             <Text uppercase={true}
@@ -140,7 +140,7 @@ class SmartHealthLogin extends PureComponent {
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
                                     <Form>
 
-                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Company Name</Label>
+                                        {/* <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Company Name</Label>
                                         <Row style={{ marginTop: 10, }}>
                                             <Col size={10}>
                                                 <TouchableOpacity>
@@ -199,7 +199,7 @@ class SmartHealthLogin extends PureComponent {
                                                 </TouchableOpacity>
                                             </Col>
                                         </Row>
-
+ */}
 
                                         <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Employee Code</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 10 }}>

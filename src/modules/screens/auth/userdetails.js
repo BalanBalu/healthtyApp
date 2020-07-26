@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker, View, Picker, Card, Row,CheckBox,
+    Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker, View, Picker, Card, Row, CheckBox,
     FooterTab, H3, Toast
 } from 'native-base';
 import { connect } from 'react-redux'
@@ -8,7 +8,7 @@ import { Image, BackHandler, AsyncStorage, ScrollView, ImageBackground, Touchabl
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
-import { subTimeUnit } from "../../../setup/helpers";
+import { subTimeUnit, formatDate } from "../../../setup/helpers";
 import { bloodGroupList } from "../../common";
 
 class UserDetails extends Component {
@@ -26,8 +26,25 @@ class UserDetails extends Component {
             isLoading: false,
 
         };
+        this.dobIsEditable=false
     }
 
+    componentDidMount() {
+        let corporateData = this.props.navigation.getParam('corporateData') || null;
+            
+        if (corporateData !== null) {
+            this.setState({
+                firstName: corporateData.firstName,
+                lastName: corporateData.lastName,
+                dob: new Date(new Date(corporateData.dob).getFullYear(),new Date(corporateData.dob).getMonth(),new Date(corporateData.dob).getDate())
+            })
+            if(corporateData.dob){
+                this.dobIsEditable=true
+            }
+
+        }
+
+    }
 
     validateFirstNameLastName = async (text, type) => {
         const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
@@ -139,12 +156,12 @@ class UserDetails extends Component {
                                                     maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                                     animationType={"fade"}
                                                     androidMode={"default"}
-                                                    placeHolderText="Date Of Birth"
+                                                    placeHolderText={dob===''?"Date Of Birth":formatDate(dob,'MM/DD/YYYY')}
                                                     textStyle={{ color: "#5A5A5A" }}
                                                     value={dob}
                                                     placeHolderTextStyle={{ color: "#5A5A5A" }}
                                                     onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
-                                                    disabled={false}
+                                                    disabled={ this.dobIsEditable}
                                                 />
                                             </Row>
                                             <View style={{ marginLeft: 2 }}>
@@ -176,12 +193,12 @@ class UserDetails extends Component {
                                                 </Item>
                                             </View>
                                             <Row style={{ marginTop: 5, marginLeft: -5, alignItems: 'center' }}>
-                                            <CheckBox style={{borderRadius:5}}
-                                             status={this.state.isBloodDonor ? true : false}
-                                               checked={this.state.isBloodDonor}
-                                               onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'
-                                               />
-                                               
+                                                <CheckBox style={{ borderRadius: 5 }}
+                                                    status={this.state.isBloodDonor ? true : false}
+                                                    checked={this.state.isBloodDonor}
+                                                    onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'
+                                                />
+
                                                 <Text style={{ marginLeft: 20, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
                                             </Row>
 
