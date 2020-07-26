@@ -45,10 +45,9 @@ class NextAppoinmentPreparation extends PureComponent {
                 prepareAppointment: 1
             };
             let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-            console.log('upcomming==================================');
             if (upCommingAppointmentResult.success) {
                 upCommingAppointmentResult = upCommingAppointmentResult.data;
-               
+                let fullResult = upCommingAppointmentResult[0]
                 let appointmentId = fullResult._id;
                 let doctorInfo = fullResult.doctorInfo
                 let dateData = formatDate(fullResult.doctorInfo.appointment_starttime, "dddd,MMMM DD-YYYY")
