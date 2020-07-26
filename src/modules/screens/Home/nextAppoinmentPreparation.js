@@ -46,9 +46,11 @@ class NextAppoinmentPreparation extends PureComponent {
             };
             let upCommingAppointmentResult = await getUserAppointments(userId, filters);
             console.log('upcomming==================================');
+            console.log(JSON.stringify(upCommingAppointmentResult))
             if (upCommingAppointmentResult.success) {
                 upCommingAppointmentResult = upCommingAppointmentResult.data;
-               
+                let fullResult = upCommingAppointmentResult[0]
+                alert(JSON.stringify(fullResult))
                 let appointmentId = fullResult._id;
                 let doctorInfo = fullResult.doctorInfo
                 let dateData = formatDate(fullResult.doctorInfo.appointment_starttime, "dddd,MMMM DD-YYYY")
@@ -80,6 +82,7 @@ class NextAppoinmentPreparation extends PureComponent {
     render() {
         const { AppoinmentData, updatedDate, AppointmentId, doctorInfo, appointmentDetails } = this.state
         const { navigation } = this.props;
+        console.log(JSON.stringify(AppoinmentData))
         return (
             <View>
                 {Object.keys(AppoinmentData).length != 0 ?
