@@ -1033,6 +1033,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           {
             name:'Public Forum',
             routeName: drawerNavigatorRoutes["Public Forum"].routeName,
+            icon: require('../../../assets/images/drawerIcons/forum.png'),
           }
         ]
       },
