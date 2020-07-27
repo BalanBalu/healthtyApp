@@ -47,6 +47,8 @@ class PublicForum extends PureComponent {
         }
     }
     callquerysearchService = async (enteredText, skipConcatWithPreviousData) => {
+        console.log("Wholedata=========<<<<<<<<<<<<<Calling Data");
+       
         let result = await getAllPublicForumDetails(this.state.query_text, this.state.skip, this.state.limit)
 
         if (result.success) {
@@ -57,8 +59,7 @@ class PublicForum extends PureComponent {
                 isLoading: false,
                 isAllItemFetched: forumFetced.length < this.state.limit
             })
-            console.log("Wholedata=========<<<<<<<<<<<<< Length", result.data.length)
-        } else {
+         } else {
             this.setState({
                 searchValue: enteredText,
                 setShowSuggestions: false,
@@ -77,17 +78,16 @@ class PublicForum extends PureComponent {
     }
 
     handleLoadMore = async () => {
-        console.log('On Hanndle loading ' + this.onEndReachedCalledDuringMomentum);
         this.setState({
             skip: (this.state.skip + this.state.limit)
         });
         await this.callquerysearchService(this.state.query_text)
-        console.log('loading>>>>>>>>.. ' + this.state.skip);
     }
 
     backNavigation = async (navigationData) => {
         try {
-            if (navigationData.action) {
+            if (navigationData.lastState &&  navigationData.lastState.params && navigationData.lastState.params.refreshPage) {
+                console.log('Inside the Calling Service');
                 await this.callquerysearchService(this.state.query_text, true);
             }
         } catch (e) {
@@ -99,7 +99,6 @@ class PublicForum extends PureComponent {
 
     render() {
         const { isLoading, data, } = this.state;
-        console.log(JSON.stringify(data))
         return (
             <Container style={styles.container}>
                 {isLoading ? <ActivityIndicator /> : null}

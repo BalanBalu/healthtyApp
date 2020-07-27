@@ -23,7 +23,7 @@ class PublicForumDetail extends PureComponent {
     }
 
     componentDidMount() {
-        this.getAllForumDetails()
+        this.getAllForumDetails();
     }
 
     insertForumAnswers = async () => {
@@ -92,7 +92,6 @@ class PublicForumDetail extends PureComponent {
             if (result.success) {
                 let forumFetced = result.data
                 this.setState({ getsData: forumFetced })
-                console.log("data=========<<<<<<<<<<<<<", JSON.stringify(result.data))
             }
         } catch (e) {
             console.log(e)

@@ -43,8 +43,9 @@ class PostForum extends PureComponent {
             }else{
               delete data.questioner_id
             }
-              let result = await forumInsertQuestion(data)
+              let result = await forumInsertQuestion(data);
               if (result.success) {
+                this.props.navigation.setParams({'refreshPage': true});
                 Toast.show({
                   text: "Your question posted successfully",
                   type: "success",
