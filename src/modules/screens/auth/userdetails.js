@@ -156,7 +156,7 @@ class UserDetails extends Component {
                                                     maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                                     animationType={"fade"}
                                                     androidMode={"default"}
-                                                    placeHolderText={dob===''?"Date Of Birth":formatDate(dob,'MM-DD-YYYY')}
+                                                    placeHolderText={dob===''?"Date Of Birth":formatDate(dob,'DD-MM-YYYY')}
                                                     textStyle={{ color: "#5A5A5A" }}
                                                     value={dob}
                                                     placeHolderTextStyle={{ color: "#5A5A5A" }}
