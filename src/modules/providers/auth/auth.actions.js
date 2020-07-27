@@ -236,8 +236,7 @@ export async function logout() {
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
   try{
-    console.log('userDatauserDatauserDatauserData')
-    console.log(JSON.stringify(userData))
+   
 if(userData.is_corporate_user){
   await AsyncStorage.setItem('is_corporate_user', 'true')
 }

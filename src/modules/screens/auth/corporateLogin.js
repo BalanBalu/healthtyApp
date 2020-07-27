@@ -22,58 +22,20 @@ class SmartHealthLogin extends PureComponent {
         this.state = {
             companyData: [],
             data: [],
-            SelectedCompanyData: [],
             authorizerCode: '',
             employeeCode: '',
             loginErrorMsg: '',
-            // isLoading: false
+            isLoading: false
 
 
 
         }
     }
-    // componentDidMount() {
-    //     this.getCompanyList();
-    // }
-    // async getCompanyList() {
-    //     try {
-    //         this.setState({ isLoading: true })
-    //         let result = await getAllCompanyList()
-
-    //         if (result) {
-
-    //             const removeDupValuesInArray = [];
-    //             const companyData = [];
-    //             alert(JSON.stringify(result[0]))
-    //             result.map(ele => {
-    //                 if (!removeDupValuesInArray.includes(ele.entityName.toLowerCase())) {
-    //                     removeDupValuesInArray.push(ele.entityName.toLowerCase());
-    //                     companyData.push({
-    //                         value: ele.entityName
-
-    //                     })
-    //                 }
-
-    //             })
-
-    //             this.setState({ data: result, companyData, isLoading: false })
-    //         }
-    //     } catch (e) {
-    //         console.log(e)
-
-    //     } finally {
-    //         this.setState({ isLoading: false })
-    //     }
-
-    // }
-    onSelectedStatusChange = async (item) => {
-
-        this.setState({ SelectedCompanyData: item });
-
-    };
+   
+   
     async onSubmmit() {
         try {
-            const { authorizerCode, employeeCode, SelectedCompanyData } = this.state;
+            const { authorizerCode, employeeCode } = this.state;
 
             await this.setState({ loginErrorMsg: '', isLoading: true })
 
@@ -116,7 +78,7 @@ class SmartHealthLogin extends PureComponent {
     }
 
     render() {
-        const { test, addedDatas, companyData, SelectedCompanyData, loginErrorMsg, isLoading, errorMsg, isModalVisible } = this.state
+        const { test, addedDatas, companyData, loginErrorMsg, isLoading, errorMsg, isModalVisible } = this.state
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -139,67 +101,6 @@ class SmartHealthLogin extends PureComponent {
                                 <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
                                     <Form>
-
-                                        {/* <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Company Name</Label>
-                                        <Row style={{ marginTop: 10, }}>
-                                            <Col size={10}>
-                                                <TouchableOpacity>
-                                                    <Row >
-
-                                                        <Col size={10} style={styles.multiSelectStyleCorporate}>
-                                                            <SectionedMultiSelect
-                                                                styles={{
-                                                                    selectToggleText: {
-                                                                        color: '#909090',
-                                                                        fontSize: 14,
-                                                                        height: 30,
-                                                                        marginTop: 10,
-
-
-                                                                    },
-                                                                    chipIcon: {
-                                                                        color: '#909090',
-                                                                    },
-
-                                                                }}
-                                                                items={companyData}
-                                                                uniqueKey='value'
-                                                                displayKey='value'
-                                                                selectText='Select Company Name'
-                                                                selectToggleText={{ fontSize: 10, }}
-                                                                searchPlaceholderText='Search Your Languages'
-                                                                modalWithTouchable={true}
-                                                                showDropDowns={true}
-                                                                hideSearch={false}
-                                                                showRemoveAll={true}
-                                                                showChips={false}
-                                                                readOnlyHeadings={false}
-                                                                onSelectedItemsChange={this.onSelectedStatusChange}
-                                                                selectedItems={SelectedCompanyData}
-                                                                colors={{ primary: '#18c971' }}
-                                                                showCancelButton={true}
-                                                                animateDropDowns={true}
-                                                                selectToggleIconComponent={
-                                                                    <Icon
-                                                                        name="ios-arrow-down"
-                                                                        style={{
-                                                                            fontSize: 20,
-                                                                            marginHorizontal: 6,
-                                                                            color: '#909090',
-                                                                            textAlign: 'center',
-                                                                            marginTop: 10,
-                                                                        }}
-                                                                    />
-                                                                }
-
-                                                                testID='languageSelected'
-                                                            />
-                                                        </Col>
-                                                    </Row>
-                                                </TouchableOpacity>
-                                            </Col>
-                                        </Row>
- */}
 
                                         <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Employee Code</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 10 }}>
