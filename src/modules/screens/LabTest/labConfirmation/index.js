@@ -50,6 +50,9 @@ class LabConfirmation extends Component {
 
     }
     async componentDidMount() {
+        console.log('====================================');
+        console.log(this.state.packageDetails);
+        console.log('====================================');
         const { navigation } = this.props;
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
@@ -394,9 +397,9 @@ class LabConfirmation extends Component {
                 duration: 2000,
                 type: 'danger'
             });
-            this.setState({ isTimePickerVisible: false});
+            this.setState({ isTimePickerVisible: false });
             return;
-            
+
         } else {
             this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
         }
@@ -604,8 +607,7 @@ class LabConfirmation extends Component {
                                     <Row>
                                         <Col size={5} style={{ justifyContent: 'center' }}>
 
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
-
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time For {formatDate(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime, 'hh:mm a') + " to " + formatDate(this.state.packageDetails.selectedSlotItem.slotEndDateAndTime, 'hh:mm a')}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
                                                 <Icon name='ios-clock' style={styles.iconstyle1} />
                                                 {
