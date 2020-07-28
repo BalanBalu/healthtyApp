@@ -57,6 +57,7 @@ import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHo
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
 import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
+import ReOrder from '../../modules/screens/Pharmacy/PharmacyCart/ReOder';
 import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
@@ -109,6 +110,12 @@ import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionLis
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
  import PopupMenu from './popUpMenu';
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
+import PublicForum from '../../modules/screens/publicForum/publicForum'
+import PostForum from '../../modules/screens/publicForum/postForum'
+import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
+import SmartHealthLogin from '../../modules/screens/auth/corporateLogin'
+import DropDownMenu from '../../modules/screens/chat/dropDownMenu'
+import Ecard from '../../modules/screens/Ecard/Ecard'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -134,6 +141,9 @@ const AuthRoutes = {
   termsAndConditions: {
     screen: termsAndConditions,
   },
+  SmartHealthLogin:{
+    screen: SmartHealthLogin
+  }
 
 
 }
@@ -504,7 +514,32 @@ const HomeStack = createStackNavigator({
       title: 'Lab Test Cancel Appointment'
     }
   },
-
+   //================ PublicForum  ===============
+  "Public Forum": {
+    screen: PublicForum,
+    navigationOptions: {
+      title: 'Public Forum'
+    }
+  },
+  PostForum : {
+    screen: PostForum,
+    navigationOptions: {
+      title: 'Post your questions'
+    }
+  },
+  PublicForumDetail : {
+    screen: PublicForumDetail,
+    navigationOptions: {
+      title: 'Public Health Forum'
+    }
+  },
+  //================  Ecard ===============
+  Ecard: {
+    screen: Ecard,
+    navigationOptions: {
+      title: 'Ecard Details'
+    }
+  },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -647,8 +682,16 @@ const HomeStack = createStackNavigator({
             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
             {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
           </Col>
+       
         </Grid>
       ),
+      headerRight: (
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
+           <Col style={{ justifyContent: 'flex-end' }}>
+          <DropDownMenu/>
+          </Col>
+          </Grid>
+          )
     })
   },
 
@@ -770,6 +813,12 @@ const HomeStack = createStackNavigator({
     screen: ChosePharmacyList,
     navigationOptions: {
       title: ' Choose Pharmacy'
+    }
+  },
+  ReOrder: {
+    screen: ReOrder,
+    navigationOptions: {
+      title: ' Re Order'
     }
   },
   //=================== Medicine Order Details =============
@@ -938,7 +987,12 @@ const drawerNavigatorRoutes = {
   "Blood Donors": {
     screen: BloodDonersList,
     routeName: 'Blood Donors'
-  }
+  },
+  "Public Forum" : {
+    screen: PublicForum,
+    routeName: 'Public Forum'
+  },
+
 }
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -975,6 +1029,11 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'Blood Donors',
             routeName: drawerNavigatorRoutes["Blood Donors"].routeName,
             icon: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+          },
+          {
+            name:'Public Forum',
+            routeName: drawerNavigatorRoutes["Public Forum"].routeName,
+            icon: require('../../../assets/images/drawerIcons/forum.png'),
           }
         ]
       },
@@ -1021,6 +1080,7 @@ export const DragwerLogos = {
   Medicines: require('../../../assets/images/drawerIcons/Pharmacy.png'),
   "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
+  "Public Forum" :require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),

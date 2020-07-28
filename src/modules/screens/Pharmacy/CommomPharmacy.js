@@ -18,15 +18,15 @@ export function medicineRateAfterOffer(item) {
   if (item.discount.type) {
 
     if (item.discount.type === 'PERCENT') {
-      let divided = (parseInt(item.discount.value) / 100) * parseInt(item.price)
-      amount = parseInt(item.price) - divided
-      return amount
+      let divided = (Number(item.discount.value) / 100) * Number(item.price)
+      amount = Number(item.price) - divided
+      return Number(Number(amount).toFixed(2))
     } else if (item.discount.type === 'Amount') {
-      amount = parseInt(item.price) - parseInt(item.discount.value);
-      return amount
+      amount = Number(item.price) - Number(item.discount.value);
+      return Number(Number(amount).toFixed(2))
     } else if (item.discount.type === 'AMOUNT') {
-      amount = parseInt(item.price) - parseInt(item.discount.value);
-      return amount
+      amount = Number(item.price) - Number(item.discount.value);
+      return Number(Number(amount).toFixed(2))
     }
   }
 
