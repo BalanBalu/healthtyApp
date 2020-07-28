@@ -222,6 +222,7 @@ export async function logout() {
   await AsyncStorage.removeItem('basicProfileData');
   await AsyncStorage.removeItem('updatedDeviceToken');
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
+  await AsyncStorage.removeItem('is_corporate_user')
 
   store.dispatch({
     type: LOGOUT

@@ -13,6 +13,7 @@ class SideBar extends React.Component {
     super(props)
     this.state = {
        hasLoggedIn: false,
+       is_corporate_user:false
     };
     this.arrayData = []
 
@@ -23,6 +24,11 @@ class SideBar extends React.Component {
     if (token === undefined || userId === undefined || token === null || userId === null) {} 
     else {
       this.setState({ hasLoggedIn: true })  
+    }
+    const is_corporate_user = await AsyncStorage.getItem('is_corporate_user')
+    alert(is_corporate_user)
+    if(!!is_corporate_user){
+    this.setState({is_corporate_user:true})
     }
   }
   signInOrSignup(hasLoggedIn) {
@@ -59,7 +65,7 @@ async getBasicData() {
    render() {
 
     const { items, menuSubMenus,} = this.props;
-    const { hasLoggedIn } = this.state;
+    const { hasLoggedIn,is_corporate_user } = this.state;
     this.getBasicData();
     return (
       <Container>
@@ -82,9 +88,9 @@ async getBasicData() {
                    <TouchableOpacity onPress={()=> this.props.navigation.navigate('Profile')} style={{paddingRight:10,paddingTop:2, width:'100%'}}>
                     <Text style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>{translate("View Profile")}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=> this.props.navigation.navigate('Ecard')} style={{paddingRight:10,paddingTop:2,paddingBottom:5 ,width:'100%'}}>
+                    {/* <TouchableOpacity onPress={()=> this.props.navigation.navigate('Ecard')} style={{paddingRight:10,paddingTop:2,paddingBottom:5 ,width:'100%'}}>
                     <Text style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>{translate("View E-Card")}</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                    
                     
                    </View>
@@ -113,12 +119,15 @@ async getBasicData() {
               />
             }
             renderItem={({ item }) =>
+            item.menuName==='Corporate user'&&is_corporate_user===false?null:
               <View>
+                
                 <ListItem 
                   onPress={() => item.routeName ? this.props.navigation.navigate(item.routeName) : null }
                   itemDivider style={{backgroundColor:'#e6e1ed'}}>
                   <Text style={{fontFamily:'OpenSans',fontSize:15, justifyContent: 'center',fontWeight:'600'  }}>{translate(item.menuName)}</Text> 
                 </ListItem>
+            
                  <FlatList
                   data={item.subMenus}
                   keyExtractor={(item, index) => index.toString()}
