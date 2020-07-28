@@ -50,9 +50,6 @@ class LabConfirmation extends Component {
 
     }
     async componentDidMount() {
-        console.log('====================================');
-        console.log(this.state.packageDetails);
-        console.log('====================================');
         const { navigation } = this.props;
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
