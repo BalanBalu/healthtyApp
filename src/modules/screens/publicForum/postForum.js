@@ -17,7 +17,7 @@ class PostForum extends PureComponent {
 
     insertForumQuestions = async() => {
      try {
-            if ((this.state.question_title == '') || (this.state.question_description == '')) {
+            if ((this.state.question_title === '') || (this.state.question_description === '')) {
               Toast.show({
                 text: 'Kindly fill all the fields',
                 type: 'danger',
@@ -29,25 +29,25 @@ class PostForum extends PureComponent {
                 let type = ''
                 let userId = await AsyncStorage.getItem('userId');
                   if(userId != null){
-                      type = 'user'
-                  }else{
-                    type = 'unknown'
+                      type === 'user'
                   }
-                
               let data = {
-                type:type,
-                question_name:this.state.question_title,
+                type: type || 'unknown',
+                question_name:this.state.question_title.toString(),
                 description: this.state.question_description,
                 questioner_id:"",
                 active: true
               }
               if(userId != null){
                 data.questioner_id = userId
+            }else{
+              delete data.questioner_id
             }
-              let result = await forumInsertQuestion(data)
+              let result = await forumInsertQuestion(data);
               if (result.success) {
+                this.props.navigation.setParams({'refreshPage': true});
                 Toast.show({
-                  text: result.message,
+                  text: "Your question posted successfully",
                   type: "success",
                   duration: 3000,
                 })
