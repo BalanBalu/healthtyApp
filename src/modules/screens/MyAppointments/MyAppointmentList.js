@@ -64,7 +64,7 @@ class MyAppoinmentList extends Component {
 	}
 
 	backNavigation = async (navigationData) => {
-   const {pastData,skip,limit}=this.state;
+		const { pastData, skip, limit } = this.state;
 		if (!this.state.isNavigation) {
 			if (navigationData.action) {
 				await this.setState({
@@ -77,11 +77,11 @@ class MyAppoinmentList extends Component {
 							await this.upCommingAppointment();
 
 						} else {
-							if(skip!==0){
-								let skip=skip-limit
+							if (skip !== 0) {
+								let skip = skip - limit
 							}
-							let temp=pastData.splice(skip,limit);
-							await this.setState({pastData:temp})
+							let temp = pastData.splice(skip, limit);
+							await this.setState({ pastData: temp })
 							await this.pastAppointment();
 
 						}
@@ -251,8 +251,10 @@ class MyAppoinmentList extends Component {
 		})
 	}
 	async getvisble(val) {
+		const { reviewIndex, data } = this.state
 		this.setState({ modalVisible: false });
 		if (val.updatedVisible == true) {
+			await this.setState({ skip: 0, pastData: [] })
 			await this.pastAppointment();
 		}
 	}
