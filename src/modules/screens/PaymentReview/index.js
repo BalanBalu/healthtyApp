@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail, Icon, CheckBox, Input, Radio } from 'native-base';
+import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail, Icon, CheckBox, Input, Radio, Footer, FooterTab, } from 'native-base';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, AsyncStorage, Image, View, TextInput, TouchableOpacity, FlatList, Platform } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
@@ -11,6 +11,7 @@ import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
+import TestDetails from './testDeatils'
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
@@ -167,8 +168,8 @@ export default class PaymentReview extends Component {
     const { bookSlotDetails, patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender } = this.state;
     return (
       <Container>
-        <Content style={{ padding: 15 }}>
-          <Spinner
+        <Content style={{ padding: 15, backgroundColor: '#F5F5F5' }}>
+          {/* <Spinner
             visible={isLoading}
             textContent={spinnerText}
           />
@@ -176,11 +177,7 @@ export default class PaymentReview extends Component {
             <Card transparent >
               <CardItem header style={styles.cardItem}>
                 <Grid>
-                  {/* <Col style={{alignItems:'center'}}>
-                      <Thumbnail square source={ renderDoctorImage(bookSlotDetails) } style={{width:100,height:100,marginTop:-60}}/>
-                       <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
-                       <Text style={styles. cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
-                      </Col> */}
+                
                   <Row>
                     <Col style={{ width: '25%', justifyContent: 'center' }}>
                       <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
@@ -197,10 +194,7 @@ export default class PaymentReview extends Component {
             </Card>
             <Card style={styles.innerCard}>
               <Grid>
-                {/* <Row style={{marginTop:10,marginLeft:10}} >
-                   <Icon name="ios-medkit" style={{fontSize:20,marginTop:-5}}/>
-                   <Text note style={styles.diseaseText}>Typhoid</Text>
-                  </Row> */}
+              
                 {bookSlotDetails.slotData ?
                   <View style={{ marginTop: 10, marginLeft: 10 }} >
                     <Row>
@@ -405,8 +399,107 @@ export default class PaymentReview extends Component {
                 <Text style={styles.payButtonText}>Pay Online</Text>
               </Button>
             </Row>
+          </View> */}
+          <View style={{ paddingBottom: 50 }}>
+            <View style={{ backgroundColor: '#fff', padding: 10 }}>
+              <Row>
+                <Col size={1.6}>
+                  <Image source={require("../../../../assets/images/profile_male.png")} style={{ height: 50, width: 50 }} />
+                </Col>
+                <Col size={8.4}>
+                  <Text style={styles.docName}>Dr.Sathish Krishnan(M.B.B.S)</Text>
+                  <Text style={styles.specialist}>Primary Care doctor</Text>
+                </Col>
+              </Row>
+              <View style={{ marginTop: 10 }}>
+                <Row>
+                  <Icon name="ios-pin" style={{ fontSize: 15 }} />
+                  <Text style={styles.hospName}>Rajiv Gandhi Hospital</Text>
+                </Row>
+                <Text note style={styles.hosAddress}>No.3 EVR periyar Salai,Park Town ,Chennai-600003 opposite Central Railway station</Text>
+              </View>
+              <Row style={{ marginTop: 10, }}>
+                <Col size={5} style={{ flexDirection: 'row' }}>
+                  <Icon name="md-calendar" style={{ fontSize: 15, color: '#0054A5' }} />
+                  <Text style={styles.calDate}>25th July,2020</Text>
+                </Col>
+                <Col size={5} style={{ flexDirection: 'row' }}>
+                  <Icon name="md-clock" style={{ fontSize: 15, color: '#8EC63F' }} />
+                  <Text style={styles.clockTime}>07:00 AM - 08:00 AM</Text>
+                </Col>
+              </Row>
+
+            </View>
+            <TestDetails />
+            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+              <Row>
+                <Icon name="create" style={{ fontSize: 15, color: '#000' }} />
+                <Text style={styles.subText}> Your Reason For Checkup</Text>
+              </Row>
+              <Form style={{ marginRight: 1, marginLeft: -13 }}>
+                <Item style={{ borderBottomWidth: 0 }}>
+                  <TextInput
+                    onChangeText={(diseaseDescription) => {
+                      var bookSlotDetails = { ...this.state.bookSlotDetails }
+                      bookSlotDetails.diseaseDescription = diseaseDescription;
+                      this.setState({ bookSlotDetails })
+                    }}
+                    multiline={true} placeholder="Write Reason...."
+                    style={styles.textInput} />
+                </Item>
+              </Form>
+            </View>
+            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+              <Row>
+                <Icon name="ios-cash" style={{ fontSize: 15, color: '#784EBC' }} />
+                <Text style={styles.subText}> Billing Details</Text>
+              </Row>
+              <Row style={{ marginTop: 10 }}>
+                <Col>
+                  <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Consultation Fees</Text>
+                </Col>
+                <Col>
+                  <Text style={styles.rupeesText}>₹ 100.00</Text>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 10 }}>
+                <Col>
+                  <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Charges </Text>
+                </Col>
+                <Col>
+                  <Text style={styles.redRupesText}>₹ 50.00</Text>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 10 }}>
+                <Col>
+                  <Text style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
+                </Col>
+                <Col>
+                  <Text style={styles.rupeesText}>₹ 150.00</Text>
+                </Col>
+              </Row>
+            </View>
           </View>
         </Content>
+        <Footer style={
+          Platform.OS === "ios" ?
+            { height: 30 } : { height: 45 }}>
+          <FooterTab>
+            <Row>
+              <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
+                <TouchableOpacity style={styles.buttonTouch}>
+                  <Text style={styles.footerButtonText}>Pay at Hospital  </Text>
+                </TouchableOpacity>
+              </Col>
+              <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8EC63F' }}>
+                <TouchableOpacity style={styles.buttonTouch1} >
+                  <Text style={styles.footerButtonText}>Pay Online</Text>
+                </TouchableOpacity>
+              </Col>
+            </Row>
+          </FooterTab>
+        </Footer>
+
       </Container>
     )
   }
@@ -506,18 +599,16 @@ const styles = StyleSheet.create({
   },
   subText: {
     fontFamily: 'Opensans',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginLeft: 5,
-    color: '#7F49C3'
+    fontSize: 12,
+    color: '#000',
+    marginLeft: 5
   },
   textInput: {
     borderColor: 'gray',
     borderRadius: 10,
     borderWidth: 0.5,
     height: 100,
-    fontSize: 14,
+    fontSize: 12,
     textAlignVertical: 'top',
     width: '100%',
     padding: 10,
@@ -596,6 +687,74 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 10,
     height: 33,
+  },
+  buttonTouch: {
+    flexDirection: 'row',
+    paddingTop: 4,
+    paddingBottom: 5,
+    paddingLeft: 25,
+    paddingRight: 20,
+    borderRadius: 10
+  },
+  buttonTouch1: {
+
+    flexDirection: 'row',
+    paddingTop: 4,
+    paddingBottom: 5,
+    paddingLeft: 50,
+    paddingRight: 50,
+    borderRadius: 10
+  },
+  docName: {
+    fontSize: 15,
+    fontFamily: 'OpenSans',
+    color: '#7F49C3'
+  },
+  specialist: {
+    fontSize: 12,
+    fontFamily: 'OpenSans',
+    color: '#909090'
+  },
+  hospName: {
+    fontSize: 12,
+    fontFamily: 'OpenSans',
+    marginLeft: 5
+  },
+  hosAddress: {
+    fontSize: 12,
+    fontFamily: 'OpenSans',
+    color: '#C1C1C1',
+    marginLeft: 15
+  },
+  calDate: {
+    fontSize: 12,
+    fontFamily: 'OpenSans',
+    color: '#0054A5',
+    marginLeft: 5
+  },
+  clockTime: {
+    fontSize: 12,
+    fontFamily: 'OpenSans',
+    color: '#8EC63F',
+    marginLeft: 5
+  },
+  rupeesText: {
+    fontSize: 10,
+    fontFamily: 'OpenSans',
+    textAlign: 'right',
+    color: '#8EC63F'
+  },
+  redRupesText: {
+    fontSize: 10,
+    fontFamily: 'OpenSans',
+    textAlign: 'right',
+    color: 'red'
+  },
+  footerButtonText: {
+    fontSize: 16,
+    fontFamily: 'OpenSans',
+    color: '#fff',
+    fontWeight: '500'
   }
 
 
