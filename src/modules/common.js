@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, AsyncStorage, Platform } from "react-native";
-import { Icon } from 'native-base';
+import { Icon,Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
 import { setI18nConfig  } from '../setup/translator.helper';
@@ -431,4 +431,15 @@ export const  onPopupEvent = (eventName, index,navigation) => {
     }
     return (source)
 
+}
+
+export function toastMeassage(text,type,duration) {
+    
+    return (Toast.show({
+    text: text,
+    type: type,
+    duration: duration
+}))
+
+    
 }

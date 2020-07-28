@@ -992,6 +992,12 @@ const drawerNavigatorRoutes = {
     screen: PublicForum,
     routeName: 'Public Forum'
   },
+  "E Card": {
+    screen: Ecard,
+    routeName: 'E Card'
+    
+  },
+
 
 }
 
@@ -1037,6 +1043,15 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           }
         ]
       },
+      {
+        menuName: 'Corporate user',
+        subMenus: [
+          {
+            name: 'E Card',
+            routeName: drawerNavigatorRoutes['E Card'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          }]
+        },
       {
         menuName: 'Orders and Consultations',
         subMenus: [

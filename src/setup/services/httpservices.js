@@ -97,4 +97,24 @@ export const smartHealthDeleteService = async (endPoint, data) => {
    let resp = await axios.delete(fullPath, data)
    return resp;
 }
+export const getServiceExternal = async (endPoint) => {
+   let emptyHeaders = {
+      headers: {
+         'Content-Type': null,
+         'x-access-token': null,
+         'userId': null
+       }
+   }
+   let resp = await axios.get(endPoint, emptyHeaders);
+   return resp;
+}
 
+export const postServiceExternal = async (endPoint,data) => {
+   let emptyHeaders = {
+      headers: {
+      
+       }
+   }
+   let resp = await axios.post(endPoint,data, emptyHeaders);
+   return resp;
+}
