@@ -696,7 +696,9 @@ class Profile extends Component {
                                         renderItem={({ item }) => (
                                             <ListItem avatar noBorder>
                                                 <Left>
+                                                    <TouchableOpacity style={{paddingRight:5,paddingBottom:5,paddingTop:5,}} onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item.doctorInfo), title: 'Profile photo' })}>
                                                     <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60, borderRadius: 60 }} />
+                                                   </TouchableOpacity>
                                                 </Left>
                                                 <Body>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, width: '100%' }}>{item.doctorInfo.prefix ? item.doctorInfo.prefix + '.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>

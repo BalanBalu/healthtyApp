@@ -15,7 +15,9 @@ import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../s
 import { getLapAppointments, getCategories, getUserReviews } from '../../../providers/lab/lab.action'
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 import InsertReview from '../Reviews/insertReviews';
-
+import { renderLabProfileImage } from "../../CommonAll/components"
+import { store } from '../../../../setup/store'
+import { SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
 
 class LabAppointmentList extends Component {
     constructor(props) {
@@ -69,8 +71,8 @@ class LabAppointmentList extends Component {
             this.setState({ isLoading: true })
             let userId = await AsyncStorage.getItem("userId");
             let filters = {
-                startDate: new Date().toUTCString(),
-                endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
+                startDate: new Date().toISOString(),
+                endDate: addTimeUnit(new Date(), 1, "years").toISOString(),
             };
             let result = await getLapAppointments(userId, filters);
             if (result.success) {
@@ -100,8 +102,8 @@ class LabAppointmentList extends Component {
             this.setState({ isLoading: true })
             let userId = await AsyncStorage.getItem("userId");
             let filters = {
-                startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
-                endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
+                startDate: subTimeUnit(new Date(), 1, "years").toISOString(),
+                endDate: subTimeUnit(new Date(), 1, 'days').toISOString(),
             };
             let result = await getLapAppointments(userId, filters);
 
@@ -129,15 +131,13 @@ class LabAppointmentList extends Component {
                     })
                 }
                 result.sort(function (firstDateValue, secondDateValue) {
-                    return firstDateValue.appointment_starttime < secondDateValue.appointment_starttime ? -1 : 0
+                    return firstDateValue.appointment_starttime > secondDateValue.appointment_starttime ? -1 : 0
                 })
                 this.setState({
                     pastData: result,
                     data: result,
                     isLoading: false
                 });
-                console.log("pastData", this.state.pastData);
-
             }
         } catch (ex) {
             console.log(ex);
@@ -152,11 +152,10 @@ class LabAppointmentList extends Component {
 
     handleIndexChange = async (index) => {
         let data = []
-       await this.setState({
+        await this.setState({
             selectedIndex: index,
         });
-        console.log("selectedIndex", this.state.selectedIndex);
-        
+
         if (index === 0) {
             if (this.state.upComingData.length == 0) {
                 await this.upCommingAppointment()
@@ -191,9 +190,16 @@ class LabAppointmentList extends Component {
             await this.pastAppointment();
         }
     }
+    onPressBookAgain(labItemData) {
+        let labId = labItemData.lab_id;
+        this.props.navigation.navigate('LabBookAppointment', {
+            labId: labId, fetchAvailabiltySlots: true
+        });
+    }
 
     render() {
         const { data, selectedIndex, isLoading } = this.state;
+       
         return (
             <Container style={styles.container}>
                 <NavigationEvents
@@ -248,7 +254,7 @@ class LabAppointmentList extends Component {
                                     }}>No appoinments are scheduled
 								</Text>
                                     <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
-                                        <Button style={[styles.bookingButton, styles.customButton]} onPress={() => this.props.navigation.navigate("Home")
+                                        <Button style={[styles.bookingButton, styles.customButton]} onPress={() => this.props.navigation.navigate("Lab Test")
                                         } testID='navigateToHome'>
                                             <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
                                         </Button>
@@ -260,17 +266,20 @@ class LabAppointmentList extends Component {
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) =>
                                         <Card transparent style={styles.cardStyle}>
+                                            {item.appointment_status!='DRAFT'?
                                             <TouchableOpacity onPress={() =>
                                                 this.props.navigation.navigate("LabAppointmentInfo", {
                                                     data: item, selectedIndex: selectedIndex
                                                 })
                                             } testID='navigateLabAppointmentInfo'>
                                                 {item.token_no ?
-                                                    <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -5 }} >{"Ref no :" + item.token_no}</Text>
+                                                    <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -5 }}>{"Ref no :" + item.token_no}</Text>
                                                     : null}
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Col size={2}>
-                                                        <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
+                                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(item.labInfo), title: 'Profile photo' })}>
+                                                            <Thumbnail circle source={renderLabProfileImage(item.labInfo)} style={{ height: 60, width: 60 }} />
+                                                        </TouchableOpacity>
                                                     </Col>
                                                     <Col size={8}>
                                                         <Row style={{ borderBottomWidth: 0 }}>
@@ -303,8 +312,8 @@ class LabAppointmentList extends Component {
                                                         </Row>
 
                                                         <Row style={{ borderBottomWidth: 0 }}>
-                                                            {item.appointment_status == 'DRAFT' ? null :
-                                                                <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>}
+
+                                                            <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>
                                                         </Row>
 
                                                         <Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
@@ -325,7 +334,7 @@ class LabAppointmentList extends Component {
 
                                                                 <Right style={(styles.marginRight = 5)}>
 
-                                                                    <Button style={styles.bookingButton}>
+                                                                    <Button style={styles.bookingButton} onPress={() => this.onPressBookAgain(item)} testID='navigateBookingPage'>
                                                                         <Text style={styles.bookAgain1}>Book Again</Text>
                                                                     </Button>
                                                                 </Right>
@@ -334,7 +343,7 @@ class LabAppointmentList extends Component {
                                                                 selectedIndex === 1 && (
                                                                     <Row style={{ borderBottomWidth: 0 }}>
                                                                         <Right style={(styles.marginRight = 10)}>
-                                                                            <Button style={styles.bookingButton}>
+                                                                            <Button style={styles.bookingButton} onPress={() => this.onPressBookAgain(item)} testID='navigateBookingPage'>
                                                                                 <Text style={styles.bookAgain1}>Book Again</Text>
                                                                             </Button>
                                                                         </Right>
@@ -342,7 +351,7 @@ class LabAppointmentList extends Component {
                                                             )}
                                                     </Col>
                                                 </Row>
-                                            </TouchableOpacity>
+                                            </TouchableOpacity>:null}
                                         </Card>
                                     } />
                             )}

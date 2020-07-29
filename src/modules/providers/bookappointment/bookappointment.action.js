@@ -221,7 +221,13 @@ export const getUserAppointments = async (userId, filters) => {
     if (filters.limit) {
       endPoint = endPoint + '&skip=' + filters.skip + '&limit=' + filters.limit + '&sort=' + filters.sort;
     }
+    if(filters.reviewInfo){
+      endPoint = endPoint + '&reviewInfo=1'
+    }
 
+    if(filters.prepareAppointment) {
+      endPoint = endPoint + '&prepareAppointment=1'
+    }
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;

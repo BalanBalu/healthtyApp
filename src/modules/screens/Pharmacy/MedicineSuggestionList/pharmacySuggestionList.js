@@ -96,7 +96,7 @@ class MedicineSuggestionList extends Component {
                                 multiline={false} />
                             <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => {
 
-                                this.props.navigation.navigate("medicineSearchList", { medicineName: this.state.medicineName })
+                                this.props.navigation.navigate("medicineSearchList", { medicineName: this.state.medicineName,byPharmacy:false })
                             }}  >
                                 <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
                             </TouchableOpacity>
@@ -136,7 +136,7 @@ class MedicineSuggestionList extends Component {
                                     renderItem={({ item }) => (
                                         <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }} onPress={() => {
 
-                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.description, medicineInfo: item })
+                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.description, medicineInfo: item,byPharmacy:false })
                                         }} >
                                             <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.description || ''}</Text>
                                             <Right>

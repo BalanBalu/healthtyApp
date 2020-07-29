@@ -216,7 +216,7 @@ export class OrderInsertReview extends Component {
       const { data, is_anonymous, rating, comments } = this.state;
       let userId = await AsyncStorage.getItem('userId');
       let reviewInsertData = {
-        orderNumber:data.orderNumber ,
+        orderNumber: data.orderNumber,
         userId: userId
       };
       if (reviewType == 'ADD') {
@@ -231,24 +231,29 @@ export class OrderInsertReview extends Component {
 
         this.setState({ errorMsg: '' });
 
-        console.log("data", userId)
-        reviewInsertData.isReviewSkipped = true,
-          reviewInsertData.rating= rating,
-          reviewInsertData.raviewComment= comments
-       
+
+        reviewInsertData.isReviewSkipped = false,
+          reviewInsertData.rating = rating,
+          reviewInsertData.raviewComment = comments
+
       }
       else {
-        reviewInsertData.isReviewSkipped = false
+        reviewInsertData.isReviewSkipped = true
       }
-
+     
       let result = await InsertOrderReviews(userId, reviewInsertData);
+     
 
       if (result) {
-        Toast.show({
-          text: 'review added successfully ',
-          type: "success",
-          duration: 3000
-        });
+      
+         if( reviewInsertData.isReviewSkipped!==true){
+          Toast.show({
+            text: 'review added successfully',
+            type: "success",
+            duration: 3000
+          });
+         }
+        
         this.props.popupVisible({
           visible: false,
           reviewUpdated: true
@@ -286,7 +291,7 @@ export class OrderInsertReview extends Component {
     return (
       <Container style={{ flex: 1 }}>
         <Content style={{ backgroundColor: '#EAE6E6', padding: 10, flex: 1 }}>
-         
+
           <View style={{ height: 200, position: 'absolute', bottom: 0 }}>
             <Modal
               animationType="slide"
@@ -359,8 +364,8 @@ export class OrderInsertReview extends Component {
                       </Col>
                     </Row>
                   </View>
-                 
-              
+
+
                 </View>
               </Grid>
             </Modal>

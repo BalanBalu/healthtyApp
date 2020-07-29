@@ -5,6 +5,8 @@ import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import { bloodDonationFilter, bloodDonationList } from '../../providers/profile/profile.action'
 import { object } from 'prop-types';
+import { translate } from "../../../setup/translator.helper"
+
 class BloodDonerFilters extends Component {
   constructor(props) {
     super(props)
@@ -275,7 +277,7 @@ class BloodDonerFilters extends Component {
                 {this.state.selectedOne == 'BLOODGROUP' ?
                   <View>
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>Blood Group</Text>
+                      <Text style={styles.textHead}>{translate("Blood Group")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.bloodList}
@@ -305,7 +307,7 @@ class BloodDonerFilters extends Component {
                 {this.state.selectedOne == 'COUNTRY' ?
                   <View>
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>Country</Text>
+                      <Text style={styles.textHead}>{translate("Country")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.countryList}
@@ -333,7 +335,7 @@ class BloodDonerFilters extends Component {
                 {this.state.selectedOne == 'STATE' ?
                   <View>
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>State</Text>
+                      <Text style={styles.textHead}>{translate("State")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.stateList}
@@ -361,7 +363,7 @@ class BloodDonerFilters extends Component {
                 {this.state.selectedOne == 'DISTRICT' ?
                   <View>
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>District</Text>
+                      <Text style={styles.textHead}>{translate("District")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.districtList}
@@ -391,7 +393,7 @@ class BloodDonerFilters extends Component {
                   <View>
 
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>City</Text>
+                      <Text style={styles.textHead}>{translate("City")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.cityList}
@@ -426,13 +428,13 @@ class BloodDonerFilters extends Component {
         <View style={styles.ViewStyle}>
           <List style={{ marginLeft: -20 }}>
             <ListItem>
-              <Text style={styles.textHead}>Categories</Text>
+              <Text style={styles.textHead}>{translate("Categories")}</Text>
             </ListItem>
 
             <ListItem style={selectedOne === 'BLOODGROUP' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('BLOODGROUP')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>Blood Group</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("Blood Group")} </Text>
 
                 </Left>
                 <Right>
@@ -443,7 +445,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'COUNTRY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('COUNTRY')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>Country</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{translate("Country")}</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -453,7 +455,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'STATE' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('STATE')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>State</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{translate("State")}</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -463,7 +465,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'DISTRICT' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('DISTRICT')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>District</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("District")}</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -473,7 +475,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'CITY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('CITY')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>City</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("City")}</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -485,7 +487,7 @@ class BloodDonerFilters extends Component {
         <TouchableOpacity onPress={() => this.filteredTotalDataList1()} style={{ backgroundColor: '#7E49C3' }}>
           <Footer style={{ backgroundColor: '#7E49C3', justifyContent: 'center', alignItems: 'center' }}>
 
-            <Text uppercase={true} style={styles.searchText}>search</Text>
+            <Text uppercase={true} style={styles.searchText}>{translate("search")}</Text>
 
           </Footer>
         </TouchableOpacity>

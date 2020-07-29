@@ -3,6 +3,7 @@ import {
     Container, Content, Text, Icon, View, Card, Thumbnail, Item, Button, Footer
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
+import { NavigationEvents } from 'react-navigation';
 import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, Platform, ScrollView,ActivityIndicator } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
@@ -63,7 +64,7 @@ class MyOrdersList extends Component {
 
                 let data = this.state.data;
                 let temp = data.concat(result);
-                console.log('Length of the Whole Data '+ temp.length)
+                
                 this.setState({ data: temp })
             }
             return {
@@ -76,7 +77,7 @@ class MyOrdersList extends Component {
     }
     handleLoadMore = async () => {
         if(!this.onEndReachedCalledDuringMomentum) {
-        console.log('On Hanndle loading ' + this.state.pagination);
+        
         this.onEndReachedCalledDuringMomentum = true;
         this.setState({ pagination: this.state.pagination + 1, footerLoading: true });
         let result = await this.getMedicineOrderList()
@@ -113,12 +114,25 @@ class MyOrdersList extends Component {
           </View>
         );
       }
+      async backNavigation() {
+        let hasReload = await AsyncStorage.getItem('hasReload')||false;
+     
+        if(hasReload){
+            this.setState({ data: [],isLoading: true, pagination: 0})
+            await AsyncStorage.removeItem('hasReload');
+            
+            this.componentDidMount()
 
+        }
+    }
     render() {
         const { data, isLoading } = this.state;
        
         return (
             <Container style={{ backgroundColor: '#E6E6E6', flex: 1 }}>
+                 <NavigationEvents
+                    onWillFocus={payload => { this.backNavigation(payload) }}
+                />
                 <ScrollView
 
                  style={{flex: 1}}
@@ -175,7 +189,7 @@ class MyOrdersList extends Component {
                                 renderItem={({ item, index }) =>
                                     <TouchableOpacity
                                         testID="orderDetailsNavigation"
-                                        onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item.id })}>
+                                        onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item.orderNumber })}>
                                         <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10,borderRadius: 2.5, }}>
                                             <View style={{ marginBottom: 10 }}>
                                                 <Row style={{ borderBottomWidth: 0.5, borderBottomColor: '#E6E6E6', paddingBottom: 5, marginLeft: 10, marginRight: 10 }}>

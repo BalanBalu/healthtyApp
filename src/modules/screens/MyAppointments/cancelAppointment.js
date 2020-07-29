@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, Toast, CardItem, Right, Body, Content, Input, Item, Row, Col } from 'native-base';
 import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
+import {reomveEvent} from '../../../setup/calendarEvent'
 import{onlySpaceNotAllowed } from '../../common';
 import { Loader } from '../../../components/ContentLoader'
 import Spinner from '../../../components/Spinner';
@@ -46,7 +47,7 @@ class CancelAppointment extends Component {
   cancelAppointment = async (data, updatedStatus) => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-    
+ 
       if (onlySpaceNotAllowed(this.state.statusUpdateReason) == true) {
         this.setState({ isLoading: true });
         let requestData = {
@@ -63,6 +64,8 @@ class CancelAppointment extends Component {
         let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
            console.log(result)
         if (result.success) {
+        await reomveEvent(data.user_appointment_event_id)
+      
           Toast.show({
             text: 'Your appointment has been canceled',
             duration: 3000,

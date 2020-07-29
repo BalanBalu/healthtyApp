@@ -3,6 +3,8 @@ import { View, Text, AsyncStorage, Platform,StyleSheet,TouchableOpacity,Activity
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
+import { setI18nConfig  } from '../setup/translator.helper';
+
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
@@ -93,7 +95,6 @@ export function renderDoctorImage(data) {
     }
     return (source)
 }
-
 
 export function getDoctorSpecialist(specialistData) {
     if (specialistData) {
@@ -330,7 +331,7 @@ export function getHospitalName(location) {
 export function getAddress(location) {
     if (!location) return ''
     if (location)
-        return `${location.address.no_and_street},${location.address.address_line_1||''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
+        return `${location.address.no_and_street},${location.address.address_line_1 || ''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
     else
         return ''
 }
@@ -375,12 +376,12 @@ export const reportStatusValue = {
 }
 
 
-    export async function validateFirstNameLastName(text){
+export async function validateFirstNameLastName(text) {
     const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
-   
+
     if (regex.test(text) === false) {
-       return false
-    } else{
+        return false
+    } else {
         return true
     }
 }
@@ -418,3 +419,49 @@ export const RenderFooterLoader = (props) => {
       }
   });
   
+export function getUserGenderAndAge(data) {
+    let genderAndAge = '';
+    if (data) {
+        if (data.gender) {
+            if (data.gender === 'M') {
+                genderAndAge = '(Male)'
+            }
+            else if (data.gender === 'F') {
+                genderAndAge = '(Female)'
+            }
+            else if (data.gender === 'O') {
+                genderAndAge = '(Others)'
+            }
+        }
+    }
+    return genderAndAge;
+}
+export const  onPopupEvent = (eventName, index,navigation) => {
+    if (eventName !== 'itemSelected') return
+    if (index === 0) {
+        setI18nConfig('en')
+    }
+    else if (index === 1)
+    {
+        setI18nConfig('ta')
+    }
+    else if (index === 2)
+    {
+        setI18nConfig('ma')
+    }
+  }
+
+  export function renderForumImage(data, infoNode) {
+    let source = null;
+    if (data[infoNode] && data[infoNode].profile_image) {
+        source = { uri: data[infoNode].profile_image.imageURL }
+    } else if (data.gender == 'M') {
+        source = require('../../assets/images/profile_male.png')
+    } else if (data.gender == 'F') {
+        source = require('../../assets/images/profile_female.png')
+    } else {
+        source = require('../../assets/images/profile_common.png')
+    }
+    return (source)
+
+}

@@ -146,10 +146,27 @@ export async function getAvailableStockForListOfProducts(productIds) {
 export async function getMedicineOrderDetails(orderId) {
   try {
 
-    let endPoint = `/transaction/order/${orderId}`;
-    console.log(endPoint);
+    let endPoint = `/transaction/order-number/${orderId}`;
+ 
     let response = await inventoryGetService(endPoint);
-    console.log(response);
+ 
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getMedicineOrderDetailsByOrderId(orderId) {
+  try {
+
+    let endPoint = `/transaction/order/${orderId}`;
+ 
+    let response = await inventoryGetService(endPoint);
+ 
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -165,9 +182,9 @@ export async function getOrderTracking(orderNumber) {
   try {
 
     let endPoint = `/transaction/track/${orderNumber}`;
-    console.log(endPoint);
+ 
     let response = await inventoryGetService(endPoint);
-    console.log(response);
+ 
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -218,7 +235,7 @@ export async function getMedicinesSearchListByPharmacyId(pharmacyId, pagination,
     let endPoint = `/products/pharmacy/${pharmacyId}?p=${pagination}&c=${10}`;
     let response = await inventoryGetService(endPoint);
     let respData = response.data.content;
-    // console.log(JSON.stringify(respData))
+    
     return respData;
   } catch (e) {
     return {
@@ -238,7 +255,6 @@ export async function getNearOrOrderPharmacy(user_id, coordinates) {
       var endPoint = '/recommendation/recentOrNearByPharmacies?location=' + encodeURIComponent(coordinates);
     }
 
-    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
 
@@ -578,3 +594,36 @@ export async function getCartCount(userId) {
     }
   }
 }
+
+
+export async function getproductDetailsByPharmacyIds(pharmacyIds,masterProductIds) {
+  try {
+
+
+    let endPoint = `/products/master/pharmacy?pid=${pharmacyIds}&ids=${masterProductIds}`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getproductDetailsByPharmacyId(pharmacyId,masterProductIds) {
+  try {
+
+
+    let endPoint = `/products/master/${pharmacyId}?ids=${masterProductIds}`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+

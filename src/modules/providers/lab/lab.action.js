@@ -62,6 +62,22 @@ export async function updateLapAppointment(appointmentId, requestData, isLoading
     }
 }
 
+export const validateAppointment = async (userId, availabilityId, filters) => {
+    try {
+        let endPoint = 'lab-test/appointments/' + userId + '/' + availabilityId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+        console.log(endPoint);
+        let response = await getService(endPoint);
+        let respData = response.data;
+        return respData;
+    } catch (e) {
+        console.log(e.message);
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
+
 
 export const getLapTestPaymentDetails = async (paymentId) => {
     try {
@@ -135,9 +151,9 @@ export async function insertReviews(userId, insertUserReviews) {
 }
 
 
-export async function getUserReviews(type,Id) {
+export async function getUserReviews(type, Id) {
     try {
-        let endPoint = 'lab-test/user/'+type+'/' + Id;
+        let endPoint = 'lab-test/user/' + type + '/' + Id;
         console.log("endPoint", endPoint)
         let response = await getService(endPoint);
         let respData = response.data;

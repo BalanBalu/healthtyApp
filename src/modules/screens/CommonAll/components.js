@@ -21,11 +21,12 @@ const RenderAddressInfo = (props) => {
 }
 
 const RenderPriceDetails = (props) => {
+   
     return (
         <>
             <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
             <Row style={{ justifyContent: 'center' }}>
-                <Text style={styles.finalRs}>₹ {props.priceInfo}</Text>
+                <Text style={styles.finalRs}>₹ {(parseInt(props.priceInfo.branch_details.price) - ((parseInt(props.priceInfo.branch_details.offer) / 100) * parseInt(props.priceInfo.branch_details.price)))}</Text>
                 {/* <Text style={styles.finalRs}>₹ {item.finalAmount || ''}</Text> */}
             </Row>
         </>
@@ -33,10 +34,11 @@ const RenderPriceDetails = (props) => {
 }
 
 const RenderOfferDetails = (props) => {
+   
     return (
         <>
             <Text note style={props.isFromLabBookApp ? styles.offerText4LalBookApp : styles.offerText}>Offer</Text>
-            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo} off</Text>
+            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo ?props.offerInfo:'0'}%</Text>
         </>
     )
 }
@@ -73,9 +75,9 @@ const RenderFavoritesCount = (props) => {
 
 const RenderFavoritesComponent = (props) => {
     return (
-        <TouchableOpacity>
+        <TouchableOpacity disabled={props.isButtonEnable} onPress={() => props.onPressFavoriteIcon()}>
             {props.isLoggedIn ?
-                <Icon name="heart" onPress={() => props.onPressFavoriteIcon()}
+                <Icon name="heart"
                     style={props.isEnabledFavorites ? props.isFromLabBookApp ? styles.isEnabledFavorite4LalBookApp : styles.isEnabledFavorite : props.isFromLabBookApp ? styles.isDisabledFavorite4LalBookApp : styles.isDisabledFavorite}>
                 </Icon> : null}
         </TouchableOpacity>
@@ -101,18 +103,23 @@ const RenderListNotFound = (props) => {
 
 
 
-const renderLabTestImage = (data) => {
+const renderLabProfileImage = (data) => {
+   
     let source = null;
-    if (data.profile_image) {
+    if (!data) {
+        return (source)
+    }
+    if(data.profile_image) {
         source = { uri: data.profile_image.imageURL }
     } else {
-        // source = require('../../assets/images/Logo.png')
+        source = require('../../../../assets/icon.png')
     }
+    
     return (source)
 }
 
 export {
-    renderLabTestImage,
+    renderLabProfileImage,
     RenderNoSlotsAvailable,
     RenderListNotFound,
     RenderFavoritesComponent,
