@@ -201,7 +201,8 @@ export default class PaymentReview extends Component {
                       <Icon name="ios-pin" style={{ fontSize: 20 }} />
                       <Col>
                         <Text style={styles.hospitalText}>{bookSlotDetails.slotData.location.name}</Text>
-                        <Text note style={styles.hosAddressText}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                        <Text note style={styles.hosAddressText}>
+                        {bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
                           {bookSlotDetails.slotData.location.location.address.city + ', '}
                           {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
                       </Col>
@@ -404,33 +405,42 @@ export default class PaymentReview extends Component {
             <View style={{ backgroundColor: '#fff', padding: 10 }}>
               <Row>
                 <Col size={1.6}>
-                  <Image source={require("../../../../assets/images/profile_male.png")} style={{ height: 50, width: 50 }} />
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                    <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
+                  </TouchableOpacity>
                 </Col>
                 <Col size={8.4}>
-                  <Text style={styles.docName}>Dr.Sathish Krishnan(M.B.B.S)</Text>
-                  <Text style={styles.specialist}>Primary Care doctor</Text>
+                  <Text style={styles.docName}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                  <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                 </Col>
               </Row>
-              <View style={{ marginTop: 10 }}>
-                <Row>
-                  <Icon name="ios-pin" style={{ fontSize: 15 }} />
-                  <Text style={styles.hospName}>Rajiv Gandhi Hospital</Text>
-                </Row>
-                <Text note style={styles.hosAddress}>No.3 EVR periyar Salai,Park Town ,Chennai-600003 opposite Central Railway station</Text>
-              </View>
+              {bookSlotDetails.slotData ?
+                <View style={{ marginTop: 10 }}>
+                  <Row>
+                    <Icon name="ios-pin" style={{ fontSize: 15 }} />
+                    <Text style={styles.hospName}>{bookSlotDetails.slotData.location.name}</Text>
+                  </Row>
+                  <Text note style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                    {bookSlotDetails.slotData.location.location.address.city + ', '}
+                    {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
+                </View>
+                : null}
               <Row style={{ marginTop: 10, }}>
                 <Col size={5} style={{ flexDirection: 'row' }}>
                   <Icon name="md-calendar" style={{ fontSize: 15, color: '#0054A5' }} />
-                  <Text style={styles.calDate}>25th July,2020</Text>
+                  <Text style={styles.calDate}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                 </Col>
                 <Col size={5} style={{ flexDirection: 'row' }}>
                   <Icon name="md-clock" style={{ fontSize: 15, color: '#8EC63F' }} />
-                  <Text style={styles.clockTime}>07:00 AM - 08:00 AM</Text>
+                  <Text style={styles.clockTime}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                 </Col>
               </Row>
 
             </View>
-            <TestDetails />
+            <TestDetails
+              navigation={this.props.navigation}
+
+            />
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
               <Row>
                 <Icon name="create" style={{ fontSize: 15, color: '#000' }} />

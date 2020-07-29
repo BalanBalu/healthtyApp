@@ -3,30 +3,88 @@ import { Container, Content, Text, Title, Header, H3, Button, Radio, Item, Card,
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, AsyncStorage } from 'react-native';
 import { formatDate } from '../../../setup/helpers';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { data } from 'react-native-connectycube';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import BenefeciaryDetails from './benefeciaryDetails'
+import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { hasLoggedIn } from '../../providers/auth/auth.actions';
+import { dateDiff } from '../../../setup/helpers';
+
 class TestDetails extends PureComponent {
     constructor(props) {
         super(props)
 
         this.state = {
             test: 'self',
-            benefeciaryDeails: false
+            benefeciaryDeails: false,
+            addPatientDataPoPupEnable: false,
+            patientDetailsObj: {},
+            gender: 'M',
+            full_name: '',
+            age: '',
+            refreshCount: 0,
+            familyDetailsData: []
 
+        }
+        this.defaultPatDetails = {};
+    }
+
+    async componentDidMount() {
+        await this.getPatientInfo();
+    }
+
+
+    getPatientInfo = async () => {
+        try {
+            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+            const userId = await AsyncStorage.getItem('userId');
+            const patInfoResp = await fetchUserProfile(userId, fields);
+
+            console.log('patInfoResp====>', patInfoResp)
+            this.defaultPatDetails = {
+                type: 'self',
+                full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+                gender: patInfoResp.gender,
+                age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years')),
+                phone_no:patInfoResp.mobile_no
+            }
+            this.setState({ refreshCount: this.state.refreshCount + 1 })
+
+        }
+        catch (Ex) {
+            console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
         }
     }
 
+    addPatientList = async () => {
+        const { name, age, gender } = this.state;
+        if (!name || !age || !gender) {
+            this.setState({ errMsg: '* Kindly fill all the fields' });
+        }
+        else {
+            this.setState({ errMsg: '' })
+            const othersDetailsObj = {
+                type: 'others',
+                full_name: name,
+                age: parseInt(age),
+                gender
+            }
+            let familyData = []
+            familyData.push(othersDetailsObj)
+            await this.setState({ familyDetailsData: familyData, updateButton: false, addPatientDataPoPupEnable: false, refreshCount: this.state.refreshCount + 1 });
+            await this.setState({ name: null, age: null, gender: null });
+        }
+    }
     patientDetails(data) {
 
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
                 <Row>
                     <Col>
-                        <Text style={styles.NameText}>{data.name}</Text>
+                        <Text style={styles.NameText}>{data.full_name}</Text>
 
                     </Col>
                     <Col>
@@ -88,6 +146,7 @@ class TestDetails extends PureComponent {
             name: 'S.Mukesh Kannan(self)', age: 21, gender: "male", phone_no: 8921595872,
             familyData: [{ name: 'S.Ramesh(Son)', age: 4, gender: "male", phone_no: 8921595872 }, { name: 'S.Reshma(Daughter)', age: 4, gender: "female", phone_no: 8921595872 }]
         }
+        const { addPatientDataPoPupEnable, patientDetailsObj, test, name, age, gender, familyDetailsData } = this.state
         return (
 
 
@@ -97,122 +156,129 @@ class TestDetails extends PureComponent {
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Radio
                             standardStyle={true}
-                            selected={this.state.test === "self" ? true : false}
-                            onPress={() => this.setState({ test: "self" })} />
+                            selected={test === "self" ? true : false}
+                            onPress={() => this.setState({ test: "self", patientDetailsObj: this.defaultPatDetails })} />
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>Self</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
                         <Radio
                             standardStyle={true}
-                            selected={this.state.test === "family" ? true : false}
+                            selected={test === "family" ? true : false}
                             onPress={() => this.setState({ test: "family" })} />
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>Family</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
                         <Radio
                             standardStyle={true}
-                            selected={this.state.test === "other" ? true : false}
-                            onPress={() => this.setState({ test: "other" })} />
+                            selected={test === "other" ? true : false}
+                            onPress={() => this.setState({ test: "other", addPatientDataPoPupEnable: true, patientDetailsObj: {} })} />
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>Others</Text>
                     </View>
                 </View>
 
 
                 <View style={{ marginTop: 10 }}>
-                    {this.state.test === "self" ?
+                    {test === "self" ?
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
-                            {this.patientDetails(datas)}
+
+                            <View>
+                                {this.patientDetails(this.defaultPatDetails)}
+
+                            </View>
+
                         </View>
                         : null}
                 </View>
                 <View style={{ marginTop: 10 }}>
-                    {this.state.test === "other" ?
+                    {test === "other" ?
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                             <FlatList
 
-                                data={datas.familyData}
+                                data={familyDetailsData}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item }) =>
                                     this.patientDetails(item)
                                 } />
-                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', marginTop: 10 }}>(OR)</Text>
-                            <View style={{ marginTop: 10, marginLeft: 8 }}>
-                                <Text style={styles.subHead}>Add other patient's details</Text>
-                                <Row style={{ marginTop: 10 }}>
-                                    <Col size={6}>
-                                        <Row>
-                                            <Col size={2}>
-                                                <Text style={styles.nameAndAge}>Name</Text>
-                                            </Col>
-                                            <Col size={8} >
-                                                <Input placeholder="Enter patient's name" style={styles.inputText}
-                                                    returnKeyType={'next'}
-                                                    keyboardType={"default"}
-                                                    // value={name}
-                                                    onChangeText={(name) => this.setState({ name })}
-                                                    blurOnSubmit={false}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    </Col>
-                                    <Col size={4} style={{ marginLeft: 5 }}>
-                                        <Row>
-                                            <Col size={2}>
-                                                <Text style={styles.nameAndAge}>Age</Text>
-                                            </Col>
-                                            <Col size={7}>
-                                                <Input placeholder="Enter patient's age" style={styles.inputText}
-                                                    returnKeyType={'done'}
-                                                    keyboardType="numeric"
-                                                    // value={age}
-                                                    onChangeText={(age) => this.setState({ age })}
-                                                    blurOnSubmit={false}
-                                                />
-                                            </Col>
-                                            <Col size={1}>
-                                            </Col>
-                                        </Row>
-                                    </Col>
-                                </Row>
-                                <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
-                                    <Text style={{
-                                        fontFamily: 'OpenSans', fontSize: 12, marginTop: 3
-                                    }}>Gender</Text>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
-                                        <Radio
-                                            standardStyle={true}
-                                            // selected={gender === "M" ? true : false}
-                                            onPress={() => this.setState({ gender: "M" })} />
-                                        <Text style={[styles.commonText, { marginLeft: 5 }]}>Male</Text>
+                            {test === 'other' ?
+                                <View style={{ marginTop: 10, marginLeft: 8 }}>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text>
+                                    <Text style={styles.subHead}>Add other patient's details</Text>
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col size={6}>
+                                            <Row>
+                                                <Col size={2}>
+                                                    <Text style={styles.nameAndAge}>Name</Text>
+                                                </Col>
+                                                <Col size={8} >
+                                                    <Input placeholder="Enter patient's name" style={styles.inputText}
+                                                        returnKeyType={'next'}
+                                                        keyboardType={"default"}
+                                                        value={name}
+                                                        onChangeText={(name) => this.setState({ name })}
+                                                        blurOnSubmit={false}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                        <Col size={4} style={{ marginLeft: 5 }}>
+                                            <Row>
+                                                <Col size={2}>
+                                                    <Text style={styles.nameAndAge}>Age</Text>
+                                                </Col>
+                                                <Col size={7}>
+                                                    <Input placeholder="Enter patient's age" style={styles.inputText}
+                                                        returnKeyType={'done'}
+                                                        keyboardType="numeric"
+                                                        value={age}
+                                                        onChangeText={(age) => this.setState({ age })}
+                                                        blurOnSubmit={false}
+                                                    />
+                                                </Col>
+                                                <Col size={1}>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
+                                        <Text style={{
+                                            fontFamily: 'OpenSans', fontSize: 12, marginTop: 3
+                                        }}>Gender</Text>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
+                                            <Radio
+                                                standardStyle={true}
+                                                selected={gender === "M" ? true : false}
+                                                onPress={() => this.setState({ gender: "M" })} />
+                                            <Text style={[styles.commonText, { marginLeft: 5 }]}>Male</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
+                                            <Radio
+                                                standardStyle={true}
+                                                selected={gender === "F" ? true : false}
+                                                onPress={() => this.setState({ gender: "F" })} />
+                                            <Text style={[styles.commonText, { marginLeft: 5 }]}>Female</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
+                                            <Radio
+                                                standardStyle={true}
+                                                selected={gender === "O" ? true : false}
+                                                onPress={() => this.setState({ gender: "O" })} />
+                                            <Text style={[styles.commonText, { marginLeft: 5 }]}>Others</Text>
+                                        </View>
                                     </View>
-                                    <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
-                                        <Radio
-                                            standardStyle={true}
-                                            //selected={gender === "F" ? true : false}
-                                            onPress={() => this.setState({ gender: "F" })} />
-                                        <Text style={[styles.commonText, { marginLeft: 5 }]}>Female</Text>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
-                                        <Radio
-                                            standardStyle={true}
-                                            // selected={gender === "O" ? true : false}
-                                            onPress={() => this.setState({ gender: "O" })} />
-                                        <Text style={[styles.commonText, { marginLeft: 5 }]}>Others</Text>
-                                    </View>
+                                    <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
+                                        <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()} >
+                                            <Text style={styles.touchText}>Add patient</Text>
+                                        </TouchableOpacity>
+                                    </Row>
                                 </View>
-                                <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
-                                    <TouchableOpacity style={styles.touchStyle} >
-                                        <Text style={styles.touchText}>Add patient</Text>
-                                    </TouchableOpacity>
-                                </Row>
-                            </View>
+                                : null}
                         </View>
                         : null}
 
                     <View style={{ marginTop: 10 }}>
-                        {this.state.test === "family" ?
+                        {test === "family" ?
                             <View>
                                 <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                                 <FlatList
@@ -287,6 +353,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#000',
+        marginTop: 10
         // fontWeight: 'bold'
     },
     NameText: {
