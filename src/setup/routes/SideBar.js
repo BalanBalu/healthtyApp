@@ -26,7 +26,7 @@ class SideBar extends React.Component {
       this.setState({ hasLoggedIn: true })  
     }
     const is_corporate_user = await AsyncStorage.getItem('is_corporate_user')
-    alert(is_corporate_user)
+  
     if(!!is_corporate_user){
     this.setState({is_corporate_user:true})
     }

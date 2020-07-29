@@ -266,13 +266,14 @@ class LabAppointmentList extends Component {
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) =>
                                         <Card transparent style={styles.cardStyle}>
+                                            {item.appointment_status!='DRAFT'?
                                             <TouchableOpacity onPress={() =>
                                                 this.props.navigation.navigate("LabAppointmentInfo", {
                                                     data: item, selectedIndex: selectedIndex
                                                 })
                                             } testID='navigateLabAppointmentInfo'>
                                                 {item.token_no ?
-                                                    <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -5 }} >{"Ref no :" + item.token_no}</Text>
+                                                    <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -5 }}>{"Ref no :" + item.token_no}</Text>
                                                     : null}
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Col size={2}>
@@ -350,7 +351,7 @@ class LabAppointmentList extends Component {
                                                             )}
                                                     </Col>
                                                 </Row>
-                                            </TouchableOpacity>
+                                            </TouchableOpacity>:null}
                                         </Card>
                                     } />
                             )}
