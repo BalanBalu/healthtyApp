@@ -165,14 +165,14 @@ class TestDetails extends PureComponent {
                             standardStyle={true}
                             selected={test === "family" ? true : false}
                             onPress={() => this.setState({ test: "family" })} />
-                        <Text style={[styles.commonText, { marginLeft: 5 }]}>Family</Text>
+                        <Text style={[styles.commonText, { marginLeft: 5 }]}>Family With Insurance</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
                         <Radio
                             standardStyle={true}
                             selected={test === "other" ? true : false}
                             onPress={() => this.setState({ test: "other", addPatientDataPoPupEnable: true, patientDetailsObj: {} })} />
-                        <Text style={[styles.commonText, { marginLeft: 5 }]}>Others</Text>
+                        <Text style={[styles.commonText, { marginLeft: 5 }]}>Family W/O Insurance</Text>
                     </View>
                 </View>
 
