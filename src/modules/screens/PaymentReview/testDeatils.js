@@ -74,8 +74,10 @@ class TestDetails extends PureComponent {
             }
             let familyData = []
             familyData.push(othersDetailsObj)
-            await this.setState({ familyDetailsData: familyData, updateButton: false, addPatientDataPoPupEnable: false, refreshCount: this.state.refreshCount + 1 });
-            await this.setState({ name: null, age: null, gender: null });
+            await this.setState({ 
+                familyDetailsData: familyData, updateButton: false, addPatientDataPoPupEnable: false, refreshCount: this.state.refreshCount + 1,
+                name: null, age: null, gender: null
+            }); 
         }
     }
     patientDetails(data, index) {
@@ -84,8 +86,7 @@ class TestDetails extends PureComponent {
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
                 <Row>
                     <Col>
-                        <Text style={styles.NameText}>{data.full_name}</Text>
-
+                        <Text style={styles.NameText}>{data.full_name + (data.relation? ` (${data.relation})` : '') }</Text>
                     </Col>
                     <Col>
                         <Text style={styles.ageText}>{data.age} years</Text>
@@ -143,8 +144,8 @@ class TestDetails extends PureComponent {
 
     render() {
         const datas = {
-            name: 'S.Mukesh Kannan(self)', age: 21, gender: "male", phone_no: 8921595872,
-            familyData: [{ name: 'S.Ramesh(Son)', age: 4, gender: "male", phone_no: 8921595872 }, { name: 'S.Reshma(Daughter)', age: 4, gender: "female", phone_no: 8921595872 }]
+            full_name: 'S.Mukesh Kannan(self)', age: 21, gender: "male", phone_no: 8921595872,
+            familyData: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "female", phone_no: 8921595872 }]
         }
         const { addPatientDataPoPupEnable, patientDetailsObj, test, name, age, gender, familyDetailsData } = this.state
         return (
