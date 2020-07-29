@@ -510,7 +510,12 @@ class labSearchList extends Component {
             maxPrice: this.maxPrice
         });
         filterData = {};
-
+        this.isFilteredData=false;
+        const { labTestData: { labPreviousData} } = this.props;
+        store.dispatch({
+            type: SET_LAB_LIST_ITEM_DATA,
+            data: labPreviousData
+        })
     }
 
     onValueChange(value) {

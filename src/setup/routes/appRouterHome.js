@@ -122,6 +122,7 @@ import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCar
 
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu'
+import Ecard from '../../modules/screens/Ecard/Ecard'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -147,6 +148,9 @@ const AuthRoutes = {
   termsAndConditions: {
     screen: termsAndConditions,
   },
+  SmartHealthLogin: {
+    screen: SmartHealthLogin
+  }
 
 
 }
@@ -517,7 +521,11 @@ const HomeStack = createStackNavigator({
       title: 'Lab Test Cancel Appointment'
     }
   },
+<<<<<<< HEAD
   //================ PublicForum ===============
+=======
+   //================ PublicForum  ===============
+>>>>>>> d0387b9df34b8a5d39b5a8360817c994c0792dfc
   "Public Forum": {
     screen: PublicForum,
     navigationOptions: {
@@ -534,6 +542,13 @@ const HomeStack = createStackNavigator({
     screen: PublicForumDetail,
     navigationOptions: {
       title: 'Public Health Forum'
+    }
+  },
+  //================  Ecard ===============
+  Ecard: {
+    screen: Ecard,
+    navigationOptions: {
+      title: 'Ecard Details'
     }
   },
   // ========Appointment stack ==========
@@ -1056,6 +1071,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           {
             name: 'Public Forum',
             routeName: drawerNavigatorRoutes["Public Forum"].routeName,
+            icon: require('../../../assets/images/drawerIcons/forum.png'),
           }
         ]
       },

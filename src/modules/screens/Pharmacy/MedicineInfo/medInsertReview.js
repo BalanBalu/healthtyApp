@@ -245,15 +245,15 @@ export class OrderInsertReview extends Component {
      
 
       if (result) {
-      let  message='review added successfully'
-         if( reviewInsertData.isReviewSkipped===true){
-          message='review skipped successfully'
+      
+         if( reviewInsertData.isReviewSkipped!==true){
+          Toast.show({
+            text: 'review added successfully',
+            type: "success",
+            duration: 3000
+          });
          }
-        Toast.show({
-          text: message,
-          type: "success",
-          duration: 3000
-        });
+        
         this.props.popupVisible({
           visible: false,
           reviewUpdated: true
