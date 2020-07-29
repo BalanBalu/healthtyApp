@@ -124,7 +124,7 @@ class TestDetails extends PureComponent {
                 {this.state.test === "family" ?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
-                        <TouchableOpacity style={styles.benefeciaryButton} onPress={() => this.setState({ expandedListIndex : index })}>
+                        <TouchableOpacity style={styles.benefeciaryButton} onPress={() =>  this.setState({ expandedListIndex : this.state.expandedListIndex === index ? -1 : index })}>
                             <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'OpenSans', }}>Show Benefeciary Details</Text>
                             <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
                         </TouchableOpacity>
