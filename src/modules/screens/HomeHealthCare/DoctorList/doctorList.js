@@ -29,9 +29,7 @@ import { RenderListNotFound, RenderNoSlotsAvailable } from '../../CommonAll/comp
 import { enumerateStartToEndDates, sortByPrimeDoctors } from '../../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
 import RenderDatesList from './RenderDateList'
-// import RenderSlots from './RenderSlots'
-let currentDoctorOrder = 'ASC';
-
+import Styles from '../Styles';
 const CALL_AVAILABILITY_SLOTS_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 8;
 class DoctorList extends Component {
@@ -51,7 +49,6 @@ class DoctorList extends Component {
             storeFeeBySelectedSlotOfDocIdHostpitalIdInObj: {},
             isLoggedIn: false,
             renderRefreshCount: 1,
-            refreshCountOnDateFL: 1, // need to check
             isLoading: true,
             isLoadingDatesAndSlots: false,
             isLoadingMoreDocList: false,
@@ -68,8 +65,7 @@ class DoctorList extends Component {
         this.defaultInputText4FetchDocList = 'Primary care';
         this.defaultPinCode4FetchDocList = '600053';
 
-        this.callGetDocListService = debounce(this.callGetDocListService, 500);
-
+        this.callGetDocListService = debounce(this.callGetDocListService, 300);
     }
 
     async componentDidMount() {
@@ -131,7 +127,6 @@ class DoctorList extends Component {
             reqData4ServiceCall.locationData = this.defaultPinCode4FetchDocList ? { from_pincode: this.defaultPinCode4FetchDocList, to_pincode: this.defaultPinCode4FetchDocList } : { from_pincode: this.state.searchedInputPinCodeValue, to_pincode: this.state.searchedInputPinCodeValue };
             reqData4ServiceCall.inputText = this.defaultInputText4FetchDocList ? this.defaultInputText4FetchDocList : this.state.searchedInputTextValue;
             debugger
-
             if (this.conditionFromFilterPage && !getPreviousDocListWhenClearFilter) {
                 type = 'filter';
                 // reqData4ServiceCall = { ...reqData4ServiceCall, ...this.selectedDataFromFilterPage }
@@ -143,38 +138,29 @@ class DoctorList extends Component {
                 type = 'search';
             }
             debugger
-
             const docListResponse = await searchByHomeHealthcareDocDetailsService(type, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
-
             debugger
-
             if (docListResponse.success) {
                 debugger
-
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
                 const searchedDoctorIdsArray = [];
                 const docListData = docListResponse.data || [];
                 docListData.map(item => {
                     debugger
-
                     searchedDoctorIdsArray.push(item.doctor_id);
                     this.docInfoAndAvailableSlotsMapByDoctorId.set(item.doctor_id, item);
                     debugger
-
                 })
                 debugger
-
                 await Promise.all([
                     ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
                     serviceOfGetTotalReviewsCount4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
                 ]);
                 debugger
-
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorId.values()) || [];
                 // console.log('doctorInfoList=-==>', activeSponsor, doctorInfoList);
                 debugger
-
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
@@ -186,10 +172,10 @@ class DoctorList extends Component {
                     })
                 }
                 debugger
-
             }
             else {
-                if (this.docInfoAndAvailableSlotsMapByDoctorId.size > 4) {
+                if (this.docInfoAndAvailableSlotsMapByDoctorId.size < 3) this.isEnabledLoadMoreData = false;
+                else if (this.docInfoAndAvailableSlotsMapByDoctorId.size > 4) {
                     Toast.show({
                         text: 'No more Doctors Available!',
                         duration: 4000,
@@ -220,23 +206,21 @@ class DoctorList extends Component {
         }
     }
 
-    callGetDocListService = async () => {
-        await this.searchByDoctorDetails();
-    }
     onChangeInputTextValue = async (enteredText) => {
         await this.setState({ searchedInputTextValue: enteredText });
-        // await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props
         this.defaultInputText4FetchDocList = '';
         this.incrementPaginationCount = 0;
         this.callGetDocListService();  // Call the search list API with Debounce method
     }
 
     callGetDocListService = async () => {
+        this.isEnabledLoadMoreData = true;
+        // await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props
+        this.docInfoAndAvailableSlotsMapByDoctorId.clear();
         await this.searchByDoctorDetails();
     }
     onChangeInputPinCodeValue = async (enteredPinCode) => {
         await this.setState({ searchedInputPinCodeValue: enteredPinCode });
-        // await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props
         this.defaultPinCode4FetchDocList = '';
         this.incrementPaginationCount = 0;
         this.callGetDocListService();  // Call the search list API with Debounce method
@@ -247,7 +231,6 @@ class DoctorList extends Component {
         if (isLoading) return <Loader style='list' />;
         return (
             <Container style={styles.container}>
-
                 <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
                     <Row style={{ height: 35, alignItems: 'center' }}>
                         <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(doctorInfoListAndSlotsData)}>
@@ -383,25 +366,9 @@ class DoctorList extends Component {
         doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
         doctorData.doctorId = doctorData.doctor_id;
         const confirmSlotDetails = { ...doctorData, slotData: selectedSlotItemByDoctor };
-        this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
+        this.props.navigation.navigate('HomeHealthcareConfirmation', { resultconfirmSlotDetails: confirmSlotDetails })
     }
-    onSlotItemPress(doctor_id, item, index) {
-        const { storeFeeBySelectedSlotOfDocIdHostpitalIdInObj } = this.state;
-        this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[doctor_id] = index;
-        this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[doctor_id] = item
-        if ((item.fee != storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctor_id])) {
-            if (storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctor_id] != undefined) {
-                Toast.show({
-                    text: 'Appointment Fee Updated',
-                    type: 'warning',
-                    duration: 3000
-                });
-            }
-            storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctor_id] = item.fee
-            this.setState({ storeFeeBySelectedSlotOfDocIdHostpitalIdInObj });
-        }
-        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
-    }
+
 
     onPressGoToBookAppointmentPage(doctorItemData) {
         // this.props.navigation.setParams({ 'conditionFromFilterPage': false });
@@ -442,17 +409,15 @@ class DoctorList extends Component {
 
     getNextAvailableDateAndTime = (selectedSlotData, item) => {
         if (selectedSlotData) {
-            const startTime = moment(selectedSlotData[0].slotStartDateAndTime).format('h:mm a');
-            const endTime = moment(selectedSlotData[selectedSlotData.length - 1].slotEndDateAndTime).format('h:mm a');
-            return 'Available ' + startTime + ' - ' + endTime;
-        } else {
-            if (item.nextAvailableDateAndTime) {
-                const availableOn = moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY');
-                return 'Available On ' + availableOn;
-            }
-            else {
-                return 'Not Available';
-            }
+            const availableOn = moment(selectedSlotData[0].slotDate).format('ddd, DD MMM YY');
+            return 'Available On ' + availableOn;
+        }
+        else if (item.nextAvailableDateAndTime) {
+            const availableOn = moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY');
+            return 'Available On ' + availableOn;
+        }
+        else {
+            return 'Not Available';
         }
     }
 
@@ -478,7 +443,7 @@ class DoctorList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchDocHomeHealthcareAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            console.log('resultSlotsData====>' + JSON.stringify(resultSlotsData))
+            // console.log('resultSlotsData====>' + JSON.stringify(resultSlotsData))
 
             if (resultSlotsData.success) {
                 const availabilitySlotsData = resultSlotsData.data;
@@ -564,7 +529,6 @@ class DoctorList extends Component {
     }
     renderDatesOnFlatList(doctor_id, slotData, indexOfItem) {
         const selectedDate = this.selectedDate4DocIdHostpitalIdToStoreInObj[doctor_id] || this.state.currentDate;
-        console.log('renderDatesOnFlatList slotData===>', JSON.stringify(slotData));
         if (slotData === undefined || !Object.keys(slotData)) {
             return null;
         }
@@ -615,6 +579,23 @@ class DoctorList extends Component {
         }
     }
 
+    onPressBookingAvailableButton(doctor_id, selectedAvailableBookingItem, item, index) {
+        const { storeFeeBySelectedSlotOfDocIdHostpitalIdInObj } = this.state;
+        this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[doctor_id] = index;
+        this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[doctor_id] = selectedAvailableBookingItem;
+        if ((selectedAvailableBookingItem.fee != storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctor_id])) {
+            if (storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctor_id] != undefined) {
+                Toast.show({
+                    text: 'Appointment Fee Updated',
+                    type: 'warning',
+                    duration: 3000
+                });
+            }
+            storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctor_id] = selectedAvailableBookingItem.fee
+            this.setState({ storeFeeBySelectedSlotOfDocIdHostpitalIdInObj });
+        }
+        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+    }
     renderDoctorCard(item, indexOfItem) {
         const { currentDate, expandItemOfDocIdToShowSlotsData, isLoadingDatesAndSlots } = this.state;
         return (
@@ -657,11 +638,22 @@ class DoctorList extends Component {
                                                 <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
                                             </Row>
                                             {this.renderDatesOnFlatList(item.doctor_id, item.slotData, indexOfItem)}
+                                            {
+                                                item.slotData[this.selectedDate4DocIdHostpitalIdToStoreInObj[item.doctor_id] || this.state.currentDate] !== undefined ?
+                                                    <Row style={{ justifyContent: 'center', marginTop: 20 }}>
+                                                        <Button onPress={() => this.onPressBookingAvailableButton(item.doctor_id, item.slotData[this.selectedDate4DocIdHostpitalIdToStoreInObj[item.doctor_id] || this.state.currentDate][0], item, 0)} style={this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[item.doctor_id] == 0 ? Styles.enabledBookingAvailableBtn : Styles.defaultBookingAvailableBtn}>
+                                                            <Text>{"Booking Available"}</Text>
+                                                        </Button>
+                                                    </Row>
+                                                    : <RenderNoSlotsAvailable
+                                                        text={'Booking Not Available'}
+                                                    />
+                                            }
                                             <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
                                                         <Text style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
-                                                        <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id] ? formatDate(this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
+                                                        <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id] ? formatDate(this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id].slotDate, 'ddd DD MMM YYYY') : null}</Text>
                                                     </Col>
                                                     <Col size={4}>
                                                         <TouchableOpacity

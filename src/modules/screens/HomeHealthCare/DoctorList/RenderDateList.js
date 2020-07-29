@@ -42,7 +42,7 @@ export default class RenderDatesList extends Component {
                                 <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
                                     onPress={() => onDateChanged(item, doctor_id, indexOfItem)}>
                                     <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
-                                    <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? 'Booking Available' : 'Booking Not Available'}</Text>
+                                    <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? 'Available' : 'Not Available'}</Text>
                                 </TouchableOpacity>
                             </Col>
                         </View>
