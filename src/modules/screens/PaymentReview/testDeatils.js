@@ -78,7 +78,7 @@ class TestDetails extends PureComponent {
             await this.setState({ name: null, age: null, gender: null });
         }
     }
-    patientDetails(data) {
+    patientDetails(data, index) {
 
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
@@ -124,16 +124,16 @@ class TestDetails extends PureComponent {
                 {this.state.test === "family" ?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
-                        <TouchableOpacity style={styles.benefeciaryButton} onPress={() => this.setState({ benefeciaryDeails: true })}>
+                        <TouchableOpacity style={styles.benefeciaryButton} onPress={() => this.setState({ expandedListIndex : index })}>
                             <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'OpenSans', }}>Show Benefeciary Details</Text>
                             <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
                         </TouchableOpacity>
-                        {this.state.benefeciaryDeails == true ?
                             <View>
-                                <BenefeciaryDetails />
-                            </View> :
-                            null
-                        }
+                                <BenefeciaryDetails 
+                                   expand={this.state.expandedListIndex === index}  
+                                />
+                            </View> 
+                        
                     </View>
                     : null}
             </View>
@@ -195,7 +195,6 @@ class TestDetails extends PureComponent {
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                             <FlatList
-
                                 data={familyDetailsData}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item }) =>
@@ -282,11 +281,10 @@ class TestDetails extends PureComponent {
                             <View>
                                 <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                                 <FlatList
-
                                     data={datas.familyData}
                                     keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item }) =>
-                                        this.patientDetails(item)
+                                    renderItem={({ item , index }) =>
+                                        this.patientDetails(item, index)
                                     } />
                             </View>
                             : null

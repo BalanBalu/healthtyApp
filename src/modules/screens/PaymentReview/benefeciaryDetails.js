@@ -19,7 +19,8 @@ class BenefeciaryDetails extends PureComponent {
 
 
     render() {
-
+        const { expand } = this.props;
+        if(!expand) return null;
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, }}>
