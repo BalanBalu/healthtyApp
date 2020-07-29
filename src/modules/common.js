@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, Platform } from "react-native";
+import { View, Text, AsyncStorage, Platform,StyleSheet,TouchableOpacity,ActivityIndicator } from "react-native";
 import { Icon,Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
@@ -386,6 +386,39 @@ export async function validateFirstNameLastName(text) {
     }
 }
 
+export const RenderFooterLoader = (props) => {
+    return (
+      //Footer View with Load More button
+      <View style={styles.footer}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          // onPress={this.loadMoreData}
+  
+          style={styles.loadMoreBtn}>
+          {props.footerLoading ?
+  
+            <ActivityIndicator color="blue" style={styles.btnText} /> : null}
+  
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  
+  const styles = StyleSheet.create({
+    
+    footer: {
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+      },
+      btnText: {
+        color: 'blue',
+        fontSize: 15,
+        textAlign: 'center',
+      }
+  });
+  
 export function getUserGenderAndAge(data) {
     let genderAndAge = '';
     if (data) {

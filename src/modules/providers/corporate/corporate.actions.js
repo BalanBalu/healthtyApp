@@ -1,5 +1,6 @@
 import { postService, putService, getService, smartHealthGetService ,postServiceExternal} from '../../../setup/services/httpservices';
-import {AuthId,getCorporateUserEcardDetailsEndpoint,getECardLinkEndpoint} from '../../../setup/services/corporateEndpoint'
+import {getCorporateUserEcardDetailsEndpoint,getECardLinkEndpoint} from '../../../setup/services/corporateEndpoint';
+import {AuthId} from '../../../setup/config'
 
 
 
