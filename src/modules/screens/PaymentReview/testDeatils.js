@@ -122,7 +122,7 @@ class TestDetails extends PureComponent {
 
                     </Col>
                 </Row>
-                {this.state.test === "family" ?
+                {this.state.test === "family" || this.state.test === "self"?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
                         <TouchableOpacity style={styles.benefeciaryButton} onPress={() =>  this.setState({ expandedListIndex : this.state.expandedListIndex === index ? -1 : index })}>
