@@ -27,6 +27,7 @@ class Notification extends PureComponent {
         this.skip = 0;
         this.limit = 10
         this.onEndReachedCalledDuringMomentum = true;
+        this.isAllNotificationLoaded = false;
     }
 
     async componentDidMount() {
@@ -107,7 +108,12 @@ class Notification extends PureComponent {
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserNotification(userId,this.skip,this.limit);
             if (result.success) {
-                let temp=this.state.data.concat(result.data)
+               
+                let temp = this.state.data.concat(result.data);
+                console.log('Total Count ' + result.totalCount + ' Loaded Notification Count:' + temp.length);
+                if(temp.length === result.totalCount) {
+                    this.isAllNotificationLoaded = true;
+                }
                 this.setState({ data: temp, footerLoading: false });  
             }
         }
@@ -122,10 +128,12 @@ class Notification extends PureComponent {
 		);
 	}
     handleLoadMore = async () => {
+        if(this.isAllNotificationLoaded === false ) {
             this.onEndReachedCalledDuringMomentum = true;
             this.skip = this.skip + this.limit;
             this.setState({ footerLoading: true });	
-		    await this.getUserNotification()
+            await this.getUserNotification()
+        }
 	}
 
     render() {
