@@ -534,7 +534,7 @@ const HomeStack = createStackNavigator({
     }
   },
   //================  Ecard ===============
-  Ecard: {
+  "E Card": {
     screen: Ecard,
     navigationOptions: {
       title: 'Ecard Details'
@@ -1012,6 +1012,16 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
         subMenus: []
       },
       {
+        menuName: 'Insurance Services',
+        menuForCorporateUser: true,
+        subMenus: [
+          {
+            name: 'E Card',
+            routeName: drawerNavigatorRoutes['E Card'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          }]
+      },
+      {
         menuName: 'Services',
         subMenus: [
           {
@@ -1043,15 +1053,6 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           }
         ]
       },
-      {
-        menuName: 'Corporate user',
-        subMenus: [
-          {
-            name: 'E Card',
-            routeName: drawerNavigatorRoutes['E Card'].routeName,
-            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-          }]
-        },
       {
         menuName: 'Orders and Consultations',
         subMenus: [

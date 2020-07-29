@@ -58,6 +58,10 @@ class RenderOtpInput extends Component {
                 appType: 'user',
                 userEntry: requestData.userEntry
             }
+            let isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+            if(isCorporateUser) {
+                reqDataForGenerateOtpCode.is_corporate_user = true;
+            }
             if (this.state.fromProfile) {
                 console.log("userId:::"+userId)
                 reqOtpResponse = await generateOtpForEmailAndMobile(reqDataForGenerateOtpCode, userId)
