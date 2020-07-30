@@ -18,7 +18,7 @@ class HomeTestConfirmation extends Component {
             bookSlotDetails: {},
             isLoading: false,
             isCheckedOthers: false,
-            isCheckedSelf: false,
+            isCheckedSelf: true,
             gender: 'M',
             full_name: '',
             age: '',
@@ -51,13 +51,12 @@ class HomeTestConfirmation extends Component {
                 gender: patInfoResp.gender,
                 age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
             }
-            this.setState({ patDetails: patInfoResp });
+            this.setState({ patDetails: patInfoResp, patDetailsArray: [this.defaultPatDetails] });
         }
         catch (Ex) {
             console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
         }
     }
-
 
     onPressSelfCheckBox = async () => {
         const { isCheckedSelf, patDetailsArray } = this.state;
@@ -159,7 +158,6 @@ class HomeTestConfirmation extends Component {
 
         bookSlotDetails.patient_data = patientData;
         console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
-        bookSlotDetails.slotData.location = bookSlotDetails.hospitalInfo.hospital;
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.HOME_HEALTHCARE, userId, 'cash');
@@ -167,7 +165,7 @@ class HomeTestConfirmation extends Component {
         console.log('Book Appointment Payment Update Response ');
         if (response.success) {
             debugger
-            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
+            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo, isFromHomeHealthCareConfirmation: true });
         } else {
             Toast.show({
                 text: response.message,
@@ -398,7 +396,7 @@ class HomeTestConfirmation extends Component {
                                 </Row>
                                 <Row>
                                     <Col size={6}>
-                                        <Text note style={styles.nameDetails}>Charges</Text>
+                                        <Text note style={styles.nameDetails}>Extra Charges</Text>
                                     </Col>
                                     <Col size={4}>
                                         <Text style={styles.rightAmountText}>₹{bookSlotDetails.extra_charges || 0}</Text>

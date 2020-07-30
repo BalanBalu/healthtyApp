@@ -116,13 +116,16 @@ import PostForum from '../../modules/screens/publicForum/postForum'
 import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail';
 
 import HomeHealthcareDoctorList from '../../modules/screens/HomeHealthCare/DoctorList/doctorList';
+import HomeHealthcareFilterPage from '../../modules/screens/HomeHealthCare/filterHomeDocInfo';
 import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Confirmation/confirmation';
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 
+
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
-import DropDownMenu from '../../modules/screens/chat/dropDownMenu'
+import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -521,11 +524,7 @@ const HomeStack = createStackNavigator({
       title: 'Lab Test Cancel Appointment'
     }
   },
-<<<<<<< HEAD
-  //================ PublicForum ===============
-=======
-   //================ PublicForum  ===============
->>>>>>> d0387b9df34b8a5d39b5a8360817c994c0792dfc
+  //================ PublicForum  ===============
   "Public Forum": {
     screen: PublicForum,
     navigationOptions: {
@@ -645,6 +644,13 @@ const HomeStack = createStackNavigator({
       title: 'HomeHealthcare DoctorList'
     }
   },
+  HomeHealthcareFilterPage: {
+    screen: HomeHealthcareFilterPage,
+    navigationOptions: {
+      title: ' Home Filter Page'
+    }
+  },
+
   HomeHealthcareConfirmation: {
     screen: HomeHealthcareConfirmation,
     navigationOptions: {
@@ -1033,7 +1039,7 @@ const drawerNavigatorRoutes = {
   "E Card": {
     screen: Ecard,
     routeName: 'E Card'
-    
+
   },
 
 

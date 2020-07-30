@@ -10,10 +10,10 @@ export default class RenderDoctorInfo extends Component {
         super(props)
     }
     render() {
-        const { item, navigation, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList, onPressGoToBookAppointmentPage } = this.props;
+        const { item, navigation, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList } = this.props;
         return (
             <View>
-                <Row onPress={() => onPressGoToBookAppointmentPage(item)}>
+                <Row>
                     <Col style={{ width: '10%' }}>
                         <TouchableOpacity onPress={() => navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
                             <Thumbnail circle source={renderDoctorImage(item)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
@@ -26,12 +26,7 @@ export default class RenderDoctorInfo extends Component {
                         <Row style={{ marginLeft: 55, }}>
                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
                         </Row>
-                        <Row style={{ marginLeft: 55, }}>
-                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, }}>
-                                {`${item.hospitalInfo && item.hospitalInfo.hospital.name} - ${
-                                    item.hospitalInfo && item.hospitalInfo.hospital.location && item.hospitalInfo.hospital.location.address.city}`}
-                            </Text>
-                        </Row>
+
                     </Col>
                     <Col style={{ width: '17%' }}>
                         <Row>

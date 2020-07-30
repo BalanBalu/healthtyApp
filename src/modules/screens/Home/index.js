@@ -17,8 +17,8 @@ const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
 const BloodImg = require('../../../../assets/images/blood.png');
 const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
-const HomeTestImg = require('../../../../assets/images/hometest.jpg'); 
-const LabTestImgs = require('../../../../assets/images/Lab-tests.png'); 
+const HomeTestImg = require('../../../../assets/images/hometest.jpg');
+const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
@@ -462,11 +462,11 @@ class Home extends Component {
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-                      
+
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
-                    <Col style={{ width: '50%' }}>
-                            <TouchableOpacity >
+                        <Col style={{ width: '50%' }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("HomeHealthcareDoctorList")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
@@ -507,7 +507,7 @@ class Home extends Component {
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-                        </Grid>
+                    </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                         <Row style={{ marginTop: 5 }}>
                             <Col size={5}>
@@ -864,12 +864,12 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         width: '100%',
-        height:80,
+        height: 80,
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
         justifyContent: 'center',
-        alignItems:'center'
+        alignItems: 'center'
     },
     mainText: {
         fontSize: 10,
