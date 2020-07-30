@@ -38,7 +38,7 @@ class PublicForum extends PureComponent {
     }
     componentDidMount() {
         this.callquerysearchService()
-        this.handleLoadMore()
+        // this.handleLoadMore()
     }
     SearchKeyWordFunction = async (enteredText) => {
         if (enteredText) {
@@ -48,7 +48,7 @@ class PublicForum extends PureComponent {
     }
     callquerysearchService = async (enteredText, skipConcatWithPreviousData) => {
         console.log("Wholedata=========<<<<<<<<<<<<<Calling Data");
-       
+
         let result = await getAllPublicForumDetails(this.state.query_text, this.state.skip, this.state.limit)
 
         if (result.success) {
@@ -59,7 +59,7 @@ class PublicForum extends PureComponent {
                 isLoading: false,
                 isAllItemFetched: forumFetced.length < this.state.limit
             })
-         } else {
+        } else {
             this.setState({
                 searchValue: enteredText,
                 setShowSuggestions: false,
@@ -86,7 +86,7 @@ class PublicForum extends PureComponent {
 
     backNavigation = async (navigationData) => {
         try {
-            if (navigationData.lastState &&  navigationData.lastState.params && navigationData.lastState.params.refreshPage) {
+            if (navigationData.lastState && navigationData.lastState.params && navigationData.lastState.params.refreshPage) {
                 console.log('Inside the Calling Service');
                 await this.callquerysearchService(this.state.query_text, true);
             }
@@ -94,6 +94,15 @@ class PublicForum extends PureComponent {
             console.log(e)
         }
 
+    }
+    questionerName(item) {
+        let name = "Anonymous"
+        if (item && item.questionerInfoUser) {
+            if (item.questionerInfoUser.first_name) {
+                name = item.questionerInfoUser.first_name + " " + item.questionerInfoUser.last_name
+            }
+        }
+        return name
     }
 
 
@@ -168,13 +177,14 @@ class PublicForum extends PureComponent {
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate("PublicForumDetail", { QuestionId: item._id })}>
                                     <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 15 }}>
                                         <Row>
-                                            <Col size={1}>
-                                                <Image source={renderForumImage(item, 'questionerInfoUser')} style={{ height: 30, width: 30 }} />
+                                            <Col size={1.2}>
+                                                <Image source={renderForumImage(item, 'questionerInfoUser')} style={{ height: 45, width: 45 }} />
                                             </Col>
-                                            <Col size={9}>
+                                            <Col size={8.3}>
                                                 <Row>
                                                     <Col size={8}>
                                                         <Text style={styles.symptomsText}>{item.question_name}</Text>
+                                                        <Text note style={styles.NameText}>Raised by  {this.questionerName(item)}</Text>
                                                     </Col>
                                                     <Col size={2}>
                                                         <Text style={styles.answerText}>{item.answersData.length} Answered</Text>
