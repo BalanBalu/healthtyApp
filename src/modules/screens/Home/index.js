@@ -478,8 +478,8 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>Home Test</Text>
-                                            <Text style={styles.subText}>Get Doctor Consultation Right at Your Home</Text>
+                                            <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
+                                            <Text style={styles.subText}>{translate('Get Doctor Consultation at Your Home')} </Text>
                                         </Col>
 
                                     </Row>
