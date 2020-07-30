@@ -62,9 +62,8 @@ class DoctorList extends Component {
         this.selectedDataFromFilterPage = null;
         this.incrementPaginationCount = 0;
         this.onEndReachedIsTriggedFromRenderDateList = false;
-        this.defaultInputText4FetchDocList = 'dentist';
+        this.defaultInputText4FetchDocList = 'Primary';
         this.defaultPinCode4FetchDocList = '600001';
-
         this.callGetDocListService = debounce(this.callGetDocListService, 300);
     }
 
