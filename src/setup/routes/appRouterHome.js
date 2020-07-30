@@ -52,7 +52,7 @@ import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppoin
 import AddReminder from '../../modules/screens/Reminder/AddReminder'
 import Reminder from '../../modules/screens/Reminder/Reminders'
 
-
+import SmartHealthLogin from '../../modules/screens/auth/corporateLogin'
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
