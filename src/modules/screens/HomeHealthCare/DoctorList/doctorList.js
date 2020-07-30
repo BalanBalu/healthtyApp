@@ -54,6 +54,8 @@ class DoctorList extends Component {
             pinCode: '',
             searchedInputTextValue: '',
             searchedInputPinCodeValue: '',
+            isLoadingOnChangeDocList: false,
+
         }
         this.conditionFromFilterPage = false,
             this.isEnabledLoadMoreData = true;
@@ -249,7 +251,7 @@ class DoctorList extends Component {
     callGetDocListService = async () => {
         try {
             this.isEnabledLoadMoreData = true;
-            this.setState({ isLoading: true })
+            this.setState({ isLoadingOnChangeDocList: true })
             await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props
             this.docInfoAndAvailableSlotsMapByDoctorId.clear();
             await this.searchByDoctorDetails();
@@ -263,7 +265,7 @@ class DoctorList extends Component {
             }
         }
         finally {
-            this.setState({ isLoading: false });
+            this.setState({ isLoadingOnChangeDocList: false });
         }
     }
     onChangeInputPinCodeValue = async (enteredPinCode) => {
@@ -274,7 +276,7 @@ class DoctorList extends Component {
     }
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, } } = this.props;
-        const { searchedInputTextValue, searchedInputPinCodeValue, isLoading, isLoadingMoreDocList } = this.state;
+        const { searchedInputTextValue, searchedInputPinCodeValue, isLoading, isLoadingMoreDocList, isLoadingOnChangeDocList } = this.state;
         if (isLoading) return <Loader style='list' />;
         return (
             <Container style={styles.container}>
@@ -344,23 +346,32 @@ class DoctorList extends Component {
                         </Row>
                     </View>
                     {/* <View style={{ marginTop: 15 }}> */}
-                    {doctorInfoListAndSlotsData.length ?
-                        < FlatList
-                            data={doctorInfoListAndSlotsData}
-                            onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
-                            onEndReached={() => {
-                                if (this.isEnabledLoadMoreData) {
-                                    this.loadMoreData();
-                                }
-                            }}
-                            renderItem={({ item, index }) => this.renderDoctorCard(item, index)
-                            }
-                            keyExtractor={(item, index) => index.toString()}
-                        />
+                    {isLoadingOnChangeDocList ?
+                        <View style={{ marginTop: 60 }}>
+                            <ActivityIndicator
+                                animating={isLoadingOnChangeDocList}
+                                size="large"
+                                color='blue'
+                            />
+                        </View>
                         :
-                        <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
-                        </Item>
+                        doctorInfoListAndSlotsData.length ?
+                            < FlatList
+                                data={doctorInfoListAndSlotsData}
+                                onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
+                                onEndReached={() => {
+                                    if (this.isEnabledLoadMoreData) {
+                                        this.loadMoreData();
+                                    }
+                                }}
+                                renderItem={({ item, index }) => this.renderDoctorCard(item, index)
+                                }
+                                keyExtractor={(item, index) => index.toString()}
+                            />
+                            :
+                            <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
+                            </Item>
                     }
                     {/* </View> */}
                     {isLoadingMoreDocList ?
