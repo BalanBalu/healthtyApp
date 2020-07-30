@@ -108,8 +108,6 @@ class PublicForum extends PureComponent {
 
     render() {
         const { isLoading, data, } = this.state;
-        console.log(JSON.stringify(data))
-
         return (
             <Container style={styles.container}>
                 {isLoading ? <ActivityIndicator /> : null}
