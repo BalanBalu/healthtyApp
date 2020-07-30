@@ -221,11 +221,11 @@ export const getUserAppointments = async (userId, filters) => {
     if (filters.limit) {
       endPoint = endPoint + '&skip=' + filters.skip + '&limit=' + filters.limit + '&sort=' + filters.sort;
     }
-    if(filters.reviewInfo){
+    if (filters.reviewInfo) {
       endPoint = endPoint + '&reviewInfo=1'
     }
 
-    if(filters.prepareAppointment) {
+    if (filters.prepareAppointment) {
       endPoint = endPoint + '&prepareAppointment=1'
     }
     console.log(endPoint);
@@ -551,13 +551,28 @@ export async function fetchEmrData(appointmentId) {
 }
 export const getappointmentDetails = async (appointmentId, prepareAppointment) => {
   try {
-    let endPoint = 'appointment/' + appointmentId  
-    if(prepareAppointment)
-    {
-      endPoint = endPoint +  '?prepareAppointment=1'
+    let endPoint = 'appointment/' + appointmentId
+    if (prepareAppointment) {
+      endPoint = endPoint + '?prepareAppointment=1'
     }
     let response = await getService(endPoint);
     let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+/* Book the Doctor Appointment module  */
+export async function bookAppointment4Healthcare(bookSlotDetails, isLoading = true) {
+  try {
+    const endPoint = 'home_healthcare/appointment';
+    const response = await postService(endPoint, bookSlotDetails);
+    const respData = response.data;
     return respData;
   } catch (e) {
     return {
