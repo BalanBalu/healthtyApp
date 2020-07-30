@@ -1,0 +1,441 @@
+import React, { Component } from 'react';
+import { Container, Content, Text, Toast, Button, ListItem, CheckBox, Radio, Card, Thumbnail, List, Item, Input, Left, Right, Icon, Footer, FooterTab } from 'native-base';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, Platform, FlatList, ImageBackground, Alert, Linking } from 'react-native';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import styles from '../Styles'
+import { hasLoggedIn } from '../../../providers/auth/auth.actions';
+import { fetchUserProfile } from '../../../providers/profile/profile.action';
+import { dateDiff } from '../../../../setup/helpers';
+import { renderDoctorImage, getDoctorEducation, getDoctorSpecialist, getUserGenderAndAge } from '../../../common';
+import Spinner from '../../../../components/Spinner';
+import { SERVICE_TYPES } from '../../../../setup/config';
+import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
+
+class HomeTestConfirmation extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            bookSlotDetails: {},
+            isLoading: false,
+            isCheckedOthers: false,
+            isCheckedSelf: true,
+            gender: 'M',
+            full_name: '',
+            age: '',
+            patDetailsArray: [],
+            patDetails: {}
+        }
+        this.defaultPatDetails = {};
+    }
+
+    async componentDidMount() {
+        const { navigation } = this.props;
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if (!isLoggedIn) {
+            navigation.navigate('login');
+            return
+        }
+        const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
+        await this.setState({ bookSlotDetails: bookSlotDetails });
+        await this.getPatientInfo();
+    }
+
+    getPatientInfo = async () => {
+        try {
+            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+            const userId = await AsyncStorage.getItem('userId');
+            const patInfoResp = await fetchUserProfile(userId, fields);
+            this.defaultPatDetails = {
+                type: 'self',
+                full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+                gender: patInfoResp.gender,
+                age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
+            }
+            this.setState({ patDetails: patInfoResp, patDetailsArray: [this.defaultPatDetails] });
+        }
+        catch (Ex) {
+            console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
+        }
+    }
+
+    onPressSelfCheckBox = async () => {
+        const { isCheckedSelf, patDetailsArray } = this.state;
+        if (isCheckedSelf) {
+            patDetailsArray.unshift(this.defaultPatDetails);
+        }
+        else if (!isCheckedSelf) {
+            const findIndexOfSelfItem = patDetailsArray.findIndex(ele => ele.type === 'self')
+            if (findIndexOfSelfItem !== -1) patDetailsArray.splice(findIndexOfSelfItem, 1)
+        }
+        await this.setState({ patDetailsArray });
+    }
+
+    addPatientList = async () => {
+        const { name, age, gender, patDetailsArray } = this.state;
+        if (!name || !age || !gender) {
+            this.setState({ errMsg: '* Kindly fill all the fields' });
+        }
+        else {
+            this.setState({ errMsg: '' })
+            const othersDetailsObj = {
+                type: 'others',
+                full_name: name,
+                age: parseInt(age),
+                gender
+            }
+            patDetailsArray.push(othersDetailsObj);
+            await this.setState({ patDetailsArray, updateButton: false });
+            await this.setState({ name: null, age: null, gender: null });
+        }
+    }
+    onPressOthersCheckBox = async () => {
+        const { isCheckedOthers, patDetailsArray } = this.state;
+        if (isCheckedOthers) {
+            this.addPatientList()
+        }
+        if (!isCheckedOthers) {
+            var removedOfOthersData = patDetailsArray.filter(ele => ele.type === 'self');
+            this.setState({ patDetailsArray: removedOfOthersData, errMsg: '' })
+        }
+    }
+    /*  remove the patient details item from list  */
+    onPressRemoveIcon(item, index) {
+        const baCupOfPatDetailsArray = this.state.patDetailsArray
+        baCupOfPatDetailsArray.splice(index, 1);
+        if (item.type === 'self') {
+            this.setState({ patDetailsArray: baCupOfPatDetailsArray, isCheckedSelf: false });
+        }
+        else if (item.type === 'others') {
+            const findHaveRemainingOthersData = baCupOfPatDetailsArray.find(ele => ele.type === 'others');
+            if (findHaveRemainingOthersData) {
+                this.setState({ patDetailsArray: baCupOfPatDetailsArray, errMsg: '' });
+            }
+            else {   // unchecked the Others Box when there is no patient data available (Exe when press the remove Icon in Others data)
+                this.setState({ patDetailsArray: baCupOfPatDetailsArray, isCheckedOthers: false, errMsg: '' });
+            }
+        }
+    }
+    async onPressConfirmProceedPayment() {
+        debugger
+        const { bookSlotDetails, patDetailsArray } = this.state;
+        if (!patDetailsArray.length) {
+            Toast.show({
+                text: 'Kindly select Self or Add other patient details',
+                type: 'warning',
+                duration: 3000
+            })
+            return false;
+        }
+        let patientData = [];
+        patDetailsArray.map(ele => {
+            patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
+        })
+        bookSlotDetails.patient_data = patientData;
+        console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+        const amount = bookSlotDetails.slotData.fee;
+        debugger
+        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount: amount })
+    }
+    async onPressPayAtHome() {
+        debugger
+        const { bookSlotDetails, patDetailsArray } = this.state;
+        if (!patDetailsArray.length) {
+            Toast.show({
+                text: 'Kindly select Self or Add other patient details',
+                type: 'warning',
+                duration: 3000
+            })
+            return false;
+        }
+        debugger
+
+        this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
+        let patientData = [];
+        patDetailsArray.map(ele => {
+            patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
+        })
+        debugger
+
+        bookSlotDetails.patient_data = patientData;
+        console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+        const userId = await AsyncStorage.getItem('userId');
+        this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.HOME_HEALTHCARE, userId, 'cash');
+        debugger
+        console.log('Book Appointment Payment Update Response ');
+        if (response.success) {
+            debugger
+            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo, isFromHomeHealthCareConfirmation: true });
+        } else {
+            Toast.show({
+                text: response.message,
+                type: 'warning',
+                duration: 3000
+            })
+        }
+        debugger
+
+        this.setState({ isLoading: false, spinnerText: ' ' });
+    }
+
+    render() {
+        const { bookSlotDetails, patDetails, errMsg, isLoading, spinnerText, isCheckedSelf, isCheckedOthers, name, age, gender, patDetailsArray } = this.state;
+        const extraCharges = bookSlotDetails.extraCharges || 0;
+        const amountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
+        const finalPaidAmount = amountBySelectedPersons + extraCharges;
+        return (
+            <Container>
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
+                    <Spinner
+                        visible={isLoading}
+                        textContent={spinnerText}
+                    />
+                    <View style={{ marginBottom: 30 }}>
+                        <View style={{ backgroundColor: '#fff', padding: 10 }}>
+                            <View>
+                                <Text style={styles.subHead}>For Whom do you need to take up the Checkup?</Text>
+
+                                <Row style={{ marginTop: 5 }}>
+                                    <Col size={10}>
+                                        <Row>
+                                            <Col size={3}>
+                                                <Row style={{ alignItems: 'center' }}>
+                                                    <CheckBox style={{ borderRadius: 5 }}
+                                                        checked={isCheckedSelf}
+                                                        onPress={async () => {
+                                                            await this.setState({ isCheckedSelf: !isCheckedSelf }),
+                                                                this.onPressSelfCheckBox()
+                                                        }}
+                                                    />
+                                                    <Text style={styles.firstCheckBox}>Self</Text>
+                                                </Row>
+                                            </Col>
+                                            <Col size={3}>
+                                                <Row style={{ alignItems: 'center' }}>
+                                                    <CheckBox style={{ borderRadius: 5 }}
+                                                        checked={isCheckedOthers}
+                                                        onPress={async () => {
+                                                            await this.setState({ isCheckedOthers: !isCheckedOthers }),
+                                                                this.onPressOthersCheckBox()
+                                                        }}
+                                                    />
+                                                    <Text style={styles.firstCheckBox}>Others</Text>
+                                                </Row>
+                                            </Col>
+                                            <Col size={4}>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                            </View>
+                            {isCheckedOthers ?
+                                <View style={{ marginTop: 10, marginLeft: 8 }}>
+                                    <Text style={styles.subHead}>Add other patient's details</Text>
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col size={6}>
+                                            <Row>
+                                                <Col size={2}>
+                                                    <Text style={styles.nameAndAge}>Name</Text>
+                                                </Col>
+                                                <Col size={8} >
+                                                    <Input placeholder="Enter patient's name" style={styles.inputText}
+                                                        returnKeyType={'next'}
+                                                        keyboardType={"default"}
+                                                        value={name}
+                                                        onChangeText={(name) => this.setState({ name })}
+                                                        blurOnSubmit={false}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                        <Col size={4} style={{ marginLeft: 5 }}>
+                                            <Row>
+                                                <Col size={2}>
+                                                    <Text style={styles.nameAndAge}>Age</Text>
+                                                </Col>
+                                                <Col size={7}>
+                                                    <Input placeholder="Enter patient's age" style={styles.inputText}
+                                                        returnKeyType={'done'}
+                                                        keyboardType="numeric"
+                                                        value={age}
+                                                        onChangeText={(age) => this.setState({ age })}
+                                                        blurOnSubmit={false}
+                                                    />
+                                                </Col>
+                                                <Col size={1}>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
+                                        <Text style={{
+                                            fontFamily: 'OpenSans', fontSize: 12, marginTop: 3
+                                        }}>Gender</Text>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
+                                            <Radio
+                                                standardStyle={true}
+                                                selected={gender === "M" ? true : false}
+                                                onPress={() => this.setState({ gender: "M" })} />
+                                            <Text style={styles.genderText}>Male</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
+                                            <Radio
+                                                standardStyle={true}
+                                                selected={gender === "F" ? true : false}
+                                                onPress={() => this.setState({ gender: "F" })} />
+                                            <Text style={styles.genderText}>Female</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
+                                            <Radio
+                                                standardStyle={true}
+                                                selected={gender === "O" ? true : false}
+                                                onPress={() => this.setState({ gender: "O" })} />
+                                            <Text style={styles.genderText}>Others</Text>
+                                        </View>
+                                    </View>
+                                </View> : null}
+                            {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
+                            {isCheckedOthers ?
+                                <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
+                                    <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()}>
+                                        <Text style={styles.touchText}>Add patient</Text>
+                                    </TouchableOpacity>
+                                </Row> : null}
+
+                            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                                <Text style={styles.subHead}>Patient Details</Text>
+                                <FlatList
+                                    data={patDetailsArray}
+                                    extraData={patDetailsArray}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.2, paddingBottom: 10 }}>
+                                            <Row style={{ marginTop: 10, }}>
+                                                <Col size={8}>
+                                                    <Row>
+                                                        <Col size={2}>
+                                                            <Text style={styles.commonText}>Name</Text>
+                                                        </Col>
+                                                        <Col size={.5}>
+                                                            <Text style={styles.commonText}>-</Text>
+                                                        </Col>
+                                                        <Col size={7}>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#000' }}>{item.full_name}</Text>
+                                                        </Col>
+                                                    </Row>
+                                                </Col>
+                                                <Col size={0.5}>
+                                                    <TouchableOpacity onPress={() => this.onPressRemoveIcon(item, index)}>
+                                                        <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 18 }} />
+                                                    </TouchableOpacity>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col size={10}>
+                                                    <Row>
+                                                        <Col size={2}>
+                                                            <Text style={styles.commonText}>Age</Text>
+                                                        </Col>
+                                                        <Col size={.5}>
+                                                            <Text style={styles.commonText}>-</Text>
+                                                        </Col>
+                                                        <Col size={7.5}>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
+                                                        </Col>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </View>
+                                    } />
+
+                            </View>
+                            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                                <Row>
+                                    <Col size={3}>
+                                        <Text style={styles.subHead}>Home Address</Text>
+                                    </Col>
+                                    <Col size={7}>
+                                        <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
+                                            <TouchableOpacity  >
+                                                <Text style={styles.changeText}>Change</Text>
+                                            </TouchableOpacity>
+                                        </Row>
+
+                                    </Col>
+                                </Row>
+                                <Text note style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
+                                {patDetails.address && patDetails.address.address ?
+                                    <Text note style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
+                                        patDetails.address.address.address_line_1 + ' , ' +
+                                        patDetails.address.address.city + ' - ' + patDetails.address.address.pin_code}</Text>
+                                    : null}
+                                <Text note style={styles.homeAdressTexts}>
+                                    Mobile - {patDetails.mobile_no || 'No number'}
+                                </Text>
+                            </View>
+                            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                                <Text style={styles.subHead}>Test Details</Text>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={1.5}>
+                                        <TouchableOpacity >
+                                            <Thumbnail circle source={renderDoctorImage(bookSlotDetails)} style={{ height: 40, width: 40, borderRadius: 60 / 2 }} />
+                                        </TouchableOpacity>
+                                    </Col>
+                                    <Col size={8.5}>
+                                        <Text style={styles.nameDetails}>{(bookSlotDetails.prefix ? bookSlotDetails.prefix + '. ' : '') + (bookSlotDetails.first_name || '') + ' ' + (bookSlotDetails.last_name || '')}</Text>
+                                        <Text note style={styles.doctorDegreeText}>{(getDoctorEducation(bookSlotDetails.education)) + ' ' + getDoctorSpecialist(bookSlotDetails.specialist)}</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 5 }}>
+                                    <Col size={6}>
+                                        <Text note style={styles.nameDetails}>Doctor Fees <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f' }}>{'(' + patDetailsArray.length + ' persons' + ')'} </Text></Text>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={[styles.rightAmountText, { color: '#8dc63f' }]}>₹ {amountBySelectedPersons}</Text>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col size={6}>
+                                        <Text note style={styles.nameDetails}>Extra Charges</Text>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={styles.rightAmountText}>₹{bookSlotDetails.extra_charges || 0}</Text>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col size={6}>
+                                        <Text style={[styles.nameDetails, { fontWeight: '500' }]}>Amount to be Paid </Text>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={[styles.rightAmountText, { color: '#8dc63f' }]}>₹ {finalPaidAmount}</Text>
+                                    </Col>
+                                </Row>
+                            </View>
+                        </View>
+                    </View>
+                </Content>
+                <Footer style={
+                    Platform.OS === "ios" ?
+                        { height: 30 } : { height: 45 }}>
+                    <FooterTab>
+                        <Row>
+                            <Col size={5} style={styles.totalAmount}>
+                                <TouchableOpacity onPress={() => this.onPressPayAtHome()} >
+                                    <Text style={styles.totalAmountText}>Pay at Home</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={5} style={styles.proceedButton}>
+                                <TouchableOpacity onPress={() => this.onPressConfirmProceedPayment()} >
+                                    <Text style={styles.proceedButtonText}>Proceed</Text>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
+                    </FooterTab>
+                </Footer>
+            </Container>
+        )
+    }
+}
+
+export default HomeTestConfirmation
+
