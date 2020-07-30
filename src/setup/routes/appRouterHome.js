@@ -116,6 +116,7 @@ import PublicForumDetail from '../../modules/screens/publicForum/publicForumDeta
 import SmartHealthLogin from '../../modules/screens/auth/corporateLogin'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu'
 import Ecard from '../../modules/screens/Ecard/Ecard'
+import Hospitals from '../../modules/screens/hospitalBookAppoinments/hospitals'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -533,13 +534,21 @@ const HomeStack = createStackNavigator({
       title: 'Public Health Forum'
     }
   },
-  //================  Ecard ===============
+  //================  Ecard  ===============
   "E Card": {
     screen: Ecard,
     navigationOptions: {
       title: 'Ecard Details'
     }
   },
+
+    //================  Appoinment Booking Through Hospitals ===============
+    Hospitals: {
+      screen: Hospitals,
+      navigationOptions: {
+        title: 'Hospital List'
+      }
+    },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
