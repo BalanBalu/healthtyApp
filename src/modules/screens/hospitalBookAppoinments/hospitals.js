@@ -22,9 +22,9 @@ class Hospitals extends PureComponent {
         ]
         return (
             <Container>
-                <Content style={{ padding: 10 }}>
+                <Content style={{ paddingTop: 10 }}>
                     <View style={{ marginBottom: 20 }}>
-                        <View style={{ paddingBottom: 10, height: 45 }}>
+                        <View style={{ paddingBottom: 5, paddingStart: 5, paddingEnd: 5,  height: 45 }}>
                             <Grid>
                                 <Col size={10}>
                                     <Item style={styles.specialismInput} >
@@ -45,7 +45,7 @@ class Hospitals extends PureComponent {
                             </Grid>
                         </View>
                         <View>
-                            <Row style={{ marginTop: 5, paddingBottom: 5, }}>
+                            <Row style={{ padding: 5, }}>
                                 <Col size={8}>
                                     <Text style={styles.showingDoctorText}>Showing Hospitals in the <Text style={styles.picodeText}>{" "}PinCode - 600051</Text></Text>
                                 </Col>
@@ -58,6 +58,8 @@ class Hospitals extends PureComponent {
                                 </Col>
                             </Row>
                         </View>
+                        
+                        
                         <FlatList
                             data={data}
                             renderItem={({ item }) =>
