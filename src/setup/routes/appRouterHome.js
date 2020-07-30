@@ -638,7 +638,7 @@ const HomeStack = createStackNavigator({
 
 
   // ============Home Test ========================
-  HomeHealthcareDoctorList: {
+  "Home Health Care": {
     screen: HomeHealthcareDoctorList,
     navigationOptions: {
       title: 'HomeHealthcare DoctorList'
@@ -1039,10 +1039,11 @@ const drawerNavigatorRoutes = {
   "E Card": {
     screen: Ecard,
     routeName: 'E Card'
-
   },
-
-
+  "Home Health Care": {
+    screen: HomeHealthcareDoctorList,
+    routeName: "Home Health Care"
+  }
 }
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -1069,7 +1070,13 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
         menuName: 'Services',
         subMenus: [
           {
-            name: 'Video and Chat Service',
+            name: 'Home Health Care',
+            routeName: drawerNavigatorRoutes["Home Health Care"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+
+          },
+          {
+            name: 'Video and Chat',
             routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
 

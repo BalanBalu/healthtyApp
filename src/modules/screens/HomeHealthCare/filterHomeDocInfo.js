@@ -97,7 +97,7 @@ class FilterDocInfo extends Component {
             },
         );
         console.log('filterDataObject::', filterDataObject)
-        this.props.navigation.navigate('HomeHealthcareDoctorList', {
+        this.props.navigation.navigate('Home Health Care', {
             filterData: filterDataObject,
             conditionFromFilterPage: true
         })
