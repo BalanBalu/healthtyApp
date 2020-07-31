@@ -104,6 +104,7 @@ class Ecard extends PureComponent {
                         <Text style={styles.innerText}>Member code</Text>
                         <Text style={styles.innerText}>Member Name</Text>
                         <Text style={styles.innerText}>Gender</Text>
+                        <Text style={styles.innerText}>Age</Text>
                         <Text style={styles.innerText}>Relationship</Text>
                         <Text style={styles.innerText}>Employee code</Text>
                         <Text style={styles.innerText}>Valid Upto</Text>
@@ -117,6 +118,8 @@ class Ecard extends PureComponent {
                         <Text style={styles.innerText}>:</Text>
                         <Text style={styles.innerText}>:</Text>
                         <Text style={styles.innerText}>:</Text>
+                        <Text style={styles.innerText}>:</Text>
+
 
                     </Col>
                     <Col size={5.5}>
@@ -124,7 +127,8 @@ class Ecard extends PureComponent {
                         <Text style={styles.innerText}>{data.health_india_Id || ' '}</Text>
                         <Text style={styles.innerText}>{data.MemberId}</Text>
                         <Text style={styles.innerText}>{data.MemberName}</Text>
-                        <Text style={styles.innerText}>{data.Gender} {"     "} Age : {data.Age} Years</Text>
+                        <Text style={styles.innerText}>{data.Gender}</Text>
+                        <Text style={styles.innerText}>{data.Age} Years</Text>
                         <Text style={styles.innerText}>{data.Relation}</Text>
                         <Text style={styles.innerText}>{data.EmployeeCode}</Text>
                         <Text style={styles.innerText}>{data.PolicyEndDate || ' '}</Text>
