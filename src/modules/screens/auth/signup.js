@@ -193,7 +193,7 @@ class Signup extends Component {
                         <View>
 
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={{ marginTop: 10, justifyContent: 'flex-end', alignContent: 'flex-end', alignSelf: 'flex-end' ,borderColor:'#fff',borderWidth:1,paddingLeft:10,paddingRight:10,paddingTop:2,paddingBottom:2,borderRadius:5,flexDirection:'row'}}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={styles.switchToCorporate}>
                                     <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
                                     <AntDesign name='doubleright' style={{color:'#fff',fontSize:15,marginTop:3,marginLeft:3}}/>
                             </TouchableOpacity>
