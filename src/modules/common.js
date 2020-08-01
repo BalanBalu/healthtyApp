@@ -460,7 +460,7 @@ export const  onPopupEvent = (eventName, index,navigation) => {
     } else if (data.gender == 'F') {
         source = require('../../assets/images/profile_female.png')
     } else {
-        source = require('../../assets/images/profile_common.png')
+        source = require('../../assets/images/common_avatar.png')
     }
     return (source)
 

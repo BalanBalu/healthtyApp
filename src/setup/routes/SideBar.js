@@ -119,7 +119,7 @@ async getBasicData() {
               />
             }
             renderItem={({ item }) =>
-            item.menuName==='Corporate user'&&is_corporate_user===false?null:
+              item.menuForCorporateUser === true && is_corporate_user === false ? null :
               <View>
                 
                 <ListItem 

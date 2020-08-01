@@ -13,6 +13,7 @@ import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import { SHOW_MOBILE_AND_EMAIL_ENTRIES } from '../../../setup/config';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 console.disableYellowBox = true
 class Signup extends Component {
     constructor(props) {
@@ -193,13 +194,12 @@ class Signup extends Component {
                         <View>
 
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={{ marginTop: 10, justifyContent: 'flex-end', alignContent: 'flex-end', alignSelf: 'flex-end' }}>
-                                <Button onPress={() => this.props.navigation.navigate('SmartHealthLogin')} style={{ backgroundColor: '#835BBA' }} >
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={styles.switchToCorporate}>
                                     <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
-                                </Button>
+                                    <AntDesign name='doubleright' style={{color:'#fff',fontSize:15,marginTop:3,marginLeft:3}}/>
                             </TouchableOpacity>
 
-                            <Card style={{ borderRadius: 10, padding: 5, marginTop: 15 }}>
+                            <Card style={{ borderRadius: 10, padding: 5, marginTop: 15,marginBottom:20 }}>
                                 <View style={{ flex: 1 }}>
                                     <ModalPopup
                                         errorMessageText={errorMsg}
@@ -267,7 +267,7 @@ class Signup extends Component {
                                             }
                                         </Item>
 
-                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Referral Code</Label>
+                                        <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Referral Code</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Input placeholder="Referral Code (Optional)" style={styles.authTransparentLabel}
                                                 ref={(input) => { this.userPassword = input; }}

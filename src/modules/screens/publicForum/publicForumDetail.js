@@ -53,12 +53,13 @@ class PublicForumDetail extends PureComponent {
                 }
                 if (userId != null) {
                     data.answer_provider_id = userId
-                }else{
+                } else {
                     delete data.answer_provider_id
                 }
                 this.setState({ isLoading: true })
                 let result = await forumInsertAnswer(data)
                 if (result.success) {
+                    this.props.navigation.setParams({ 'refreshPage': true });
                     Toast.show({
                         text: "Your answer posted successfully",
                         type: "success",
@@ -102,7 +103,7 @@ class PublicForumDetail extends PureComponent {
 
     }
     questionerName(item) {
-        let name = "unknown"
+        let name = "Anonymous"
         if (item && item.questionerInfo) {
             if (item.questionerInfo.first_name) {
                 name = item.questionerInfo.first_name + " " + item.questionerInfo.last_name
@@ -110,6 +111,17 @@ class PublicForumDetail extends PureComponent {
         }
         return name
     }
+    hasWhiteSpaceAnswerText(s) {
+        let regSpace = new RegExp(/^\s/g);
+        // Check for white space
+        if (regSpace.test(s)) {
+            return false;
+        } else {
+            this.setState({ answer_text: s })
+        }
+        return true;
+    }
+
     render() {
 
         const { answer_text, getsData, isLoading } = this.state
@@ -143,7 +155,9 @@ class PublicForumDetail extends PureComponent {
                                         returnKeyType={'go'}
                                         autoFocus={true}
                                         value={answer_text}
-                                        onChangeText={enteredText => this.setState({ answer_text: enteredText })}
+                                        onChangeText={text => {
+                                            this.hasWhiteSpaceAnswerText(text);
+                                        }}
                                         style={styles.textInput4} />
                                 </View>
                                 <TouchableOpacity style={styles.postAnswerButton} onPress={this.insertForumAnswers}>
