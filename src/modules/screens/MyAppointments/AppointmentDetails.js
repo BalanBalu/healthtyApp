@@ -239,7 +239,7 @@ if(temp.location[0]){
         }
 
         this.setState({ data: temp });
-        await AsyncStorage.setItem('hasReload', 'true');
+        this.props.navigation.setParams({ 'refreshPage': true });
       }
     }
     catch (e) {
@@ -275,7 +275,7 @@ if(temp.location[0]){
 
       await this.setState({ isLoading: true, modalVisible: false })
       if (val.updatedVisible == true) {
-        await AsyncStorage.setItem('hasReload', 'true');
+        this.props.navigation.setParams({ 'refreshPage': true });
         this.getUserReviews()
       }
     } catch (e) {

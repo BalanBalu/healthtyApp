@@ -29,7 +29,7 @@ class MyAppoinmentList extends Component {
 			upComingData: [],
 			pastData: [],
 			userId: null,
-			loading: true,
+		
 			isRefreshing: false,
 			isNavigation: true,
 			modalVisible: false,
@@ -70,18 +70,17 @@ class MyAppoinmentList extends Component {
 				await this.setState({
 					isLoading: true
 				})
-				let hasReload = await AsyncStorage.getItem('hasReload') || false;
+
 				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
-					if (hasReload) {
+
+					if (navigationData.lastState && navigationData.lastState.params && navigationData.lastState.params.refreshPage) {
 						if (this.state.selectedIndex == 0) {
+							await this.setState({ upComingData: [], skip: 0 })
 							await this.upCommingAppointment();
 
 						} else {
-							if (skip !== 0) {
-								let skip = skip - limit
-							}
-							let temp = pastData.splice(skip, limit);
-							await this.setState({ pastData: temp })
+
+							await this.setState({ pastData: [], skip: 0 })
 							await this.pastAppointment();
 
 						}
@@ -105,11 +104,10 @@ class MyAppoinmentList extends Component {
 				limit: this.state.limit,
 				sort: 1
 
-				// on_going_appointment: true
+
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-			console.log('upcomming==================================');
-			console.log(upCommingAppointmentResult)
+
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
