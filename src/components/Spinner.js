@@ -17,6 +17,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Text, Modal, ActivityIndicator } from 'react-native';
+import Quadrilateral from './QuadrilateralAnimator';
 
 const transparent = 'transparent';
 const styles = StyleSheet.create({
@@ -119,11 +120,8 @@ export default class Spinner extends React.PureComponent {
         {this.props.customIndicator ? (
           this.props.customIndicator
         ) : (
-          <ActivityIndicator
-            color={this.props.color}
-            size={this.props.size}
-            style={[styles.activityIndicator, { ...this.props.indicatorStyle }]}
-          />
+          <Quadrilateral>
+          </Quadrilateral>
         )}
         <View style={[styles.textContainer, { ...this.props.indicatorStyle }]}>
           <Text style={[styles.textContent, this.props.textStyle]}>

@@ -11,6 +11,41 @@ export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 export const SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER = 'BOOK/SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER';
 import { store } from '../../../setup/store';
 
+
+export const searchByHomeHealthcareDocDetailsService = async (type, reqData, skipCount, limit) => {
+    try {
+        const endPoint = `doctor/home_healthcare/${type}?skip=${skipCount}&limit=${limit}`;
+        const response = await postService(endPoint, reqData);
+        const respData = response.data;
+        return respData;
+    } catch (ex) {
+        return {
+            success: false,
+            message: `Error Occurred on :${ex.message}`
+        }
+    }
+}
+
+
+export async function fetchDocHomeHealthcareAvailabilitySlotsService(doctorIds, dateFilter) {
+    try {
+        const endPoint = 'doctors/home_healthcare/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate=' + dateFilter.endDate;
+        const response = await postService(endPoint, doctorIds);
+        const respData = response.data;
+        return respData;
+    } catch (Ex) {
+        console.log('Ex is getting on fetchAvailabilitySlots for Doctor====>', Ex)
+        return {
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on fetchAvailabilitySlots for Doctor : ${Ex}`
+        }
+    }
+}
+
+
+
 /*  Get multiple doctor details  */
 export const getMultipleDoctorDetails = async (doctorIds, fields) => {
     try {

@@ -16,12 +16,12 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from 'moment';
 
 
-let patientDetails = [];
+let patientDetails = [], totalAmount = 0;
 class LabConfirmation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: false,
+            isLoading: true,
             itemSelected: 'itemOne',
             selfChecked: false,
             othersChecked: false,
@@ -50,7 +50,6 @@ class LabConfirmation extends Component {
 
     }
     async componentDidMount() {
-        console.log("packageDetails", this.state.packageDetails);
         const { navigation } = this.props;
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
@@ -80,10 +79,11 @@ class LabConfirmation extends Component {
             array.splice(deSelectedIndex, 1);
         }
         this.setState({ patientType: array });
-        console.log("patientType", this.state.patientType)
     }
     getUserProfile = async () => {
         try {
+            this.setState({ isLoading: true });
+
             let fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
@@ -109,8 +109,6 @@ class LabConfirmation extends Component {
                 patientAddress.unshift(userAddressData);
             }
             await this.setState({ patientAddress, data: result })
-            console.log("data", this.defaultPatientDetails)
-            console.log("patientAddress", this.state.patientAddress)
 
         }
         catch (e) {
@@ -151,10 +149,6 @@ class LabConfirmation extends Component {
         await this.setState({ patientDetails })
     }
 
-
-
-
-
     addPatientData = async () => {
         if (!this.state.name || !this.state.age || !this.state.gender) {
             this.setState({ errMsg: '* Kindly fill all the fields' })
@@ -176,7 +170,7 @@ class LabConfirmation extends Component {
     }
     amountPaid() {
         const { packageDetails, patientDetails, itemSelected } = this.state;
-        let totalAmount = 0;
+       
         if (packageDetails.fee != undefined) {
             if (itemSelected == 'TEST_AT_HOME') {
                 totalAmount = ((packageDetails.fee * patientDetails.length) + (packageDetails.extra_charges))
@@ -216,7 +210,6 @@ class LabConfirmation extends Component {
 
             if (response.success == false) {
                 this.timeText = formatDate(response.data[0].appointment_starttime, 'hh:mm A')
-
                 Alert.alert(
                     "Appointment Warning",
                     `You already booked for the same Lab on ${this.timeText}, You want to book the appointment to continue`,
@@ -268,11 +261,8 @@ class LabConfirmation extends Component {
                 return false;
             } else {
                 selectedAddress = packageDetails.location;
-                console.log("selectedAddress", selectedAddress)
-
             }
             let patientData = [];
-
             this.state.patientDetails.map(ele => {
                 patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
             })
@@ -281,13 +271,13 @@ class LabConfirmation extends Component {
 
             let requestData = {
                 user_id: userId,
-                availability_id: packageDetails.selectedSlotItem.availabilityId,
+                availability_id: packageDetails.availability_id || packageDetails.selectedSlotItem.availabilityId || ' ',
                 patient_data: patientData,
                 lab_id: packageDetails.lab_id,
                 lab_name: packageDetails.lab_name,
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
                 lab_test_description: packageDetails.lab_test_description,
-                fee: packageDetails.fee,
+                fee: totalAmount,
                 startTime: startTime || packageDetails.appointment_starttime,
                 location: {
                     coordinates: selectedAddress.coordinates,
@@ -332,9 +322,9 @@ class LabConfirmation extends Component {
             } else {
                 let response = {};
                 if (packageDetails.appointment_status == 'PAYMENT_FAILED' || packageDetails.appointment_status == 'PAYMENT_IN_PROGRESS') {
-                    console.log("requestData", requestData)
                     let updateData = {
                         labId: requestData.lab_id,
+                        availability_id: requestData.availability_id,
                         userId: userId,
                         startTime: requestData.startTime,
                         endTime: requestData.endtime,
@@ -343,12 +333,22 @@ class LabConfirmation extends Component {
                         status_by: requestData.status_by
                     }
                     response = await updateLapAppointment(packageDetails.appointment_id, updateData);
+                    if (response.success === true) {
+                        requestData.labTestAppointmentId = response.appointmentId;
+                        this.props.navigation.navigate('paymentPage', {
+                            service_type: SERVICE_TYPES.LAB_TEST,
+                            bookSlotDetails: requestData,
+                            amount: totalAmount
+                        });
+                    } else {
+                        Toast.show({
+                            text: response.message,
+                            duration: 3000,
+                        })
+                    }
 
                 } else {
                     response = await insertAppointment(requestData);
-
-                    console.log("response", response);
-
                     if (response.success === true) {
                         requestData.labTestAppointmentId = response.appointmentId;
                         this.props.navigation.navigate('paymentPage', {
@@ -366,7 +366,6 @@ class LabConfirmation extends Component {
             }
         }
         catch (e) {
-
             console.log(e);
             Toast.show({
                 text: 'Exception While Creating the Appointment' + e,
@@ -385,8 +384,9 @@ class LabConfirmation extends Component {
     }
     handleDatePicked = date => {
         const { packageDetails: { selectedSlotItem: { slotEndDateAndTime, slotStartDateAndTime } } } = this.state;
-        const startDate = setDateTime(slotStartDateAndTime);
-        const endDate = setDateTime(slotEndDateAndTime);
+        const startDate = new Date(slotStartDateAndTime);//setDateTime(slotStartDateAndTime, date);
+        const endDate = new Date(slotEndDateAndTime);// setDateTime(slotEndDateAndTime, date);
+        date = setDateTime(slotStartDateAndTime, date)
         const valid = startDate <= date && endDate >= date;
         if (valid === false) {
             Toast.show({
@@ -394,18 +394,18 @@ class LabConfirmation extends Component {
                 duration: 2000,
                 type: 'danger'
             });
+            this.setState({ isTimePickerVisible: false });
             return;
+
         } else {
             this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
         }
 
-        function setDateTime(dateStr) {
+        function setDateTime(dateStr, customTime) {
             const date = new Date(dateStr);
-            const currentDate = new Date();
-            date.setDate(currentDate.getDate())
-            date.setMonth(currentDate.getMonth())
-            date.setFullYear(currentDate.getFullYear())
-            date.setSeconds(0)
+            date.setHours(customTime.getHours())
+            date.setMinutes(customTime.getMinutes());
+            date.setSeconds(1)
             return date;
         }
         function getTimeWithMeredian(dateTime) {
@@ -604,8 +604,7 @@ class LabConfirmation extends Component {
                                     <Row>
                                         <Col size={5} style={{ justifyContent: 'center' }}>
 
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
-
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time For {formatDate(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime, 'hh:mm a') + " to " + formatDate(this.state.packageDetails.selectedSlotItem.slotEndDateAndTime, 'hh:mm a')}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
                                                 <Icon name='ios-clock' style={styles.iconstyle1} />
                                                 {
@@ -735,16 +734,7 @@ class LabConfirmation extends Component {
 
                             </Col>
                         </Row>
-                        {/* <Row style={{ marginTop: 5 }}>
-                            <Col size={8}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Tax</Text>
-                            </Col>
-                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹ 50.00</Text>
-
-                            </Col>
-                        </Row> */}
                         {itemSelected === 'TEST_AT_HOME' ?
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={8}>

@@ -14,9 +14,11 @@ import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, RESET_INCOMING_
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
-const BloodImg = require('../../../../assets/images/blood.jpeg');
+const BloodImg = require('../../../../assets/images/blood.png');
 const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
+const HomeTestImg = require('../../../../assets/images/hometest.jpg');
+const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
@@ -415,7 +417,7 @@ class Home extends Component {
                     </Row>
 
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
-                        <Col style={{ width: '33%', }}>
+                        <Col style={{ width: '50%', }}>
                             <TouchableOpacity onPress={() =>
                                 this.props.navigation.navigate("Video and Chat Service")
                             }>
@@ -440,7 +442,7 @@ class Home extends Component {
                         </Col>
 
 
-                        <Col style={{ width: '33%', marginLeft: 5 }}>
+                        <Col style={{ width: '50%', marginLeft: 5 }}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
@@ -460,12 +462,15 @@ class Home extends Component {
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-                        <Col style={{ width: '33%', marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
+
+                    </Grid>
+                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
+                        <Col style={{ width: '50%' }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Home Health Care")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
-                                            source={BloodImg}
+                                            source={HomeTestImg}
                                             style={{
                                                 width: '100%', height: '100%', alignItems: 'center'
                                             }}
@@ -473,15 +478,35 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>{translate('Blood donors')}</Text>
-                                            <Text style={styles.subText}>{translate('Find Available blood donors')}</Text>
+                                            <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
+                                            <Text style={styles.subText}>{translate('Get Doctor Consultation at Your Home')} </Text>
                                         </Col>
 
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
                         </Col>
+                        <Col style={{ width: '50%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={LabTestImgs}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
+                                            <Text style={styles.subText}>Book Full Body Lab Test from The Safety Of Your Home</Text>
+                                        </Col>
 
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                         <Row style={{ marginTop: 5 }}>
@@ -505,16 +530,16 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 5 }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")} >
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>{translate('Book Lab tests')} </Text>
+                                                <Text style={styles.mainText}>{translate('Blood Donors')} </Text>
                                             </Col>
                                             <Col size={2.5}>
 
                                                 <Image
-                                                    source={LabTestImg}
+                                                    source={BloodImg}
                                                     style={{
                                                         width: 35, height: 35, alignItems: 'center'
                                                     }}
@@ -839,12 +864,12 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         width: '100%',
-        height:80,
+        height: 80,
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
         justifyContent: 'center',
-        alignItems:'center'
+        alignItems: 'center'
     },
     mainText: {
         fontSize: 10,

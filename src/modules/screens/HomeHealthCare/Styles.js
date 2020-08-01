@@ -8,6 +8,7 @@ export default styles = StyleSheet.create({
         color: '#7F49C3',
         fontWeight: 'bold'
     },
+
     firstCheckBox: {
         fontFamily: 'OpenSans',
         fontSize: 12,
@@ -669,5 +670,11 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         marginTop: 2,
         fontSize: 11
+    },
+    defaultBookingAvailableBtn: {
+        alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b'
+    },
+    enabledBookingAvailableBtn: {
+        alignItems: 'center', borderRadius: 10, backgroundColor: 'green'
     }
 });

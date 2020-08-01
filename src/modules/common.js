@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, Platform } from "react-native";
-import { Icon } from 'native-base';
+import { View, Text, AsyncStorage, Platform,StyleSheet,TouchableOpacity,ActivityIndicator } from "react-native";
+import { Icon,Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
 import { setI18nConfig  } from '../setup/translator.helper';
@@ -386,6 +386,39 @@ export async function validateFirstNameLastName(text) {
     }
 }
 
+export const RenderFooterLoader = (props) => {
+    return (
+      //Footer View with Load More button
+      <View style={styles.footer}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          // onPress={this.loadMoreData}
+  
+          style={styles.loadMoreBtn}>
+          {props.footerLoading ?
+  
+            <ActivityIndicator color="blue" style={styles.btnText} /> : null}
+  
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  
+  const styles = StyleSheet.create({
+    
+    footer: {
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+      },
+      btnText: {
+        color: 'blue',
+        fontSize: 15,
+        textAlign: 'center',
+      }
+  });
+  
 export function getUserGenderAndAge(data) {
     let genderAndAge = '';
     if (data) {
@@ -417,3 +450,29 @@ export const  onPopupEvent = (eventName, index,navigation) => {
         setI18nConfig('ma')
     }
   }
+
+  export function renderForumImage(data, infoNode) {
+    let source = null;
+    if (data[infoNode] && data[infoNode].profile_image) {
+        source = { uri: data[infoNode].profile_image.imageURL }
+    } else if (data.gender == 'M') {
+        source = require('../../assets/images/profile_male.png')
+    } else if (data.gender == 'F') {
+        source = require('../../assets/images/profile_female.png')
+    } else {
+        source = require('../../assets/images/common_avatar.png')
+    }
+    return (source)
+
+}
+
+export function toastMeassage(text,type,duration) {
+    
+    return (Toast.show({
+    text: text,
+    type: type,
+    duration: duration
+}))
+
+    
+}

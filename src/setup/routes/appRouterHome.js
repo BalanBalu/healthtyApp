@@ -52,11 +52,12 @@ import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppoin
 import AddReminder from '../../modules/screens/Reminder/AddReminder'
 import Reminder from '../../modules/screens/Reminder/Reminders'
 
-
+import SmartHealthLogin from '../../modules/screens/auth/corporateLogin'
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
 import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
+import ReOrder from '../../modules/screens/Pharmacy/PharmacyCart/ReOder';
 import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
@@ -107,12 +108,23 @@ import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmen
 import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
+
 import PopupMenu from './popUpMenu';
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
-import DoctorList from '../../modules/screens/HomeTest/doctorList';
-import HomeTestConfirmation from '../../modules/screens/HomeTest/homeTestConfirmation'
-import AppointmentList from '../../modules/screens/HomeTest/appoinmentList';
-import AppointmentDetail from '../../modules/screens/HomeTest/appoinmentDetail'
+import PublicForum from '../../modules/screens/publicForum/publicForum'
+import PostForum from '../../modules/screens/publicForum/postForum'
+import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail';
+
+import HomeHealthcareDoctorList from '../../modules/screens/HomeHealthCare/DoctorList/doctorList';
+import HomeHealthcareFilterPage from '../../modules/screens/HomeHealthCare/filterHomeDocInfo';
+import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Confirmation/confirmation';
+import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
+import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
+
+
+// import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
+import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
+import Ecard from '../../modules/screens/Ecard/Ecard'
 
 const AuthRoutes = {
   login: {
@@ -139,6 +151,9 @@ const AuthRoutes = {
   termsAndConditions: {
     screen: termsAndConditions,
   },
+  SmartHealthLogin: {
+    screen: SmartHealthLogin
+  }
 
 
 }
@@ -509,7 +524,32 @@ const HomeStack = createStackNavigator({
       title: 'Lab Test Cancel Appointment'
     }
   },
-
+  //================ PublicForum  ===============
+  "Public Forum": {
+    screen: PublicForum,
+    navigationOptions: {
+      title: 'Public Forum'
+    }
+  },
+  PostForum: {
+    screen: PostForum,
+    navigationOptions: {
+      title: 'Post your questions'
+    }
+  },
+  PublicForumDetail: {
+    screen: PublicForumDetail,
+    navigationOptions: {
+      title: 'Public Health Forum'
+    }
+  },
+  //================  Ecard ===============
+  "E Card": {
+    screen: Ecard,
+    navigationOptions: {
+      title: 'Ecard Details'
+    }
+  },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -598,28 +638,35 @@ const HomeStack = createStackNavigator({
 
 
   // ============Home Test ========================
-  DoctorList: {
-    screen: DoctorList,
+  "Home Health Care": {
+    screen: HomeHealthcareDoctorList,
     navigationOptions: {
-      title: 'Doctor List'
+      title: 'HomeHealthcare DoctorList'
     }
   },
-  HomeTestConfirmation: {
-    screen: HomeTestConfirmation,
+  HomeHealthcareFilterPage: {
+    screen: HomeHealthcareFilterPage,
     navigationOptions: {
-      title: 'Home Test Confirmation'
+      title: ' Home Filter Page'
     }
   },
-  AppointmentList: {
-    screen: AppointmentList,
+
+  HomeHealthcareConfirmation: {
+    screen: HomeHealthcareConfirmation,
     navigationOptions: {
-      title: 'Appointments'
+      title: 'Home Healthcare Confirmation'
     }
   },
-  AppointmentDetail: {
-    screen: AppointmentDetail,
+  HomeHealthcareAppointmentList: {
+    screen: HomeHealthcareAppointmentList,
     navigationOptions: {
-      title: 'Appointment info'
+      title: 'Home Healthcare AppointmentList'
+    }
+  },
+  HomeHealthcareAppointmentDetail: {
+    screen: HomeHealthcareAppointmentDetail,
+    navigationOptions: {
+      title: 'Home Healthcare Appointment info'
     }
   },
   // ============Chat ========================
@@ -679,8 +726,16 @@ const HomeStack = createStackNavigator({
             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
             {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
           </Col>
+
         </Grid>
       ),
+      headerRight: (
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Col style={{ justifyContent: 'flex-end' }}>
+            <DropDownMenu />
+          </Col>
+        </Grid>
+      )
     })
   },
 
@@ -802,6 +857,12 @@ const HomeStack = createStackNavigator({
     screen: ChosePharmacyList,
     navigationOptions: {
       title: ' Choose Pharmacy'
+    }
+  },
+  ReOrder: {
+    screen: ReOrder,
+    navigationOptions: {
+      title: ' Re Order'
     }
   },
   //=================== Medicine Order Details =============
@@ -970,6 +1031,18 @@ const drawerNavigatorRoutes = {
   "Blood Donors": {
     screen: BloodDonersList,
     routeName: 'Blood Donors'
+  },
+  "Public Forum": {
+    screen: PublicForum,
+    routeName: 'Public Forum'
+  },
+  "E Card": {
+    screen: Ecard,
+    routeName: 'E Card'
+  },
+  "Home Health Care": {
+    screen: HomeHealthcareDoctorList,
+    routeName: "Home Health Care"
   }
 }
 
@@ -984,10 +1057,26 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
         subMenus: []
       },
       {
+        menuName: 'Insurance Services',
+        menuForCorporateUser: true,
+        subMenus: [
+          {
+            name: 'E Card',
+            routeName: drawerNavigatorRoutes['E Card'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          }]
+      },
+      {
         menuName: 'Services',
         subMenus: [
           {
-            name: 'Video and Chat Service',
+            name: 'Home Health Care',
+            routeName: drawerNavigatorRoutes["Home Health Care"].routeName,
+            icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+
+          },
+          {
+            name: 'Video and Chat',
             routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
 
@@ -1007,6 +1096,11 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'Blood Donors',
             routeName: drawerNavigatorRoutes["Blood Donors"].routeName,
             icon: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+          },
+          {
+            name: 'Public Forum',
+            routeName: drawerNavigatorRoutes["Public Forum"].routeName,
+            icon: require('../../../assets/images/drawerIcons/forum.png'),
           }
         ]
       },
@@ -1053,6 +1147,7 @@ export const DragwerLogos = {
   Medicines: require('../../../assets/images/drawerIcons/Pharmacy.png'),
   "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
+  "Public Forum": require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),

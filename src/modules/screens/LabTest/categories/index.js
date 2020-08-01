@@ -161,7 +161,7 @@ class LabCategories extends PureComponent {
                     <Text style={styles.mainText}>{item.lab_test_category_info.category_name}</Text>
                     <Text style={styles.subText}>package starts from</Text>
                     <Row>
-                      <Text style={styles.rsText}>₹ {item.minPriceWithoutOffer}</Text>
+                      <Text style={styles.rsText}> {item.minPriceWithoutOffer != item.minPriceWithOffer ?('₹'+item.minPriceWithoutOffer):null}</Text>
                       <Text style={styles.finalRs}>₹ {Math.round(item.minPriceWithOffer)}</Text>
                     </Row>
                   </TouchableOpacity>

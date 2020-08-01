@@ -17,6 +17,7 @@ class PharmacyCart extends Component {
         this.state = {
             cartItems: [],
             isLoading: true,
+           
 
         }
 
@@ -24,77 +25,15 @@ class PharmacyCart extends Component {
 
     async componentDidMount() {
         try {
-            let reOrderData = this.props.navigation.getParam('reOrderData') || null;
-            if (reOrderData !== null) {
-                await this.getReOderData()
-            } else {
+         
+         
                 await this.getAddToCart();
-            }
+            
         } catch (e) {
             console.log(e)
         }
     }
-    getReOderData = async () => {
-        try {
-            let reOrderData = this.props.navigation.getParam('reOrderData') || null;
-            this.setState({ isLoading: true })
-            let temp=[];
-            let productmasterIds=[];
-            let pharmacyId=null
-            let type='MEDFLIC_PHARMACY_ID'
-            let productConfigPharmacy= await getCurrentVersion(type);
-    
-            if(productConfigPharmacy.success){
-                pharmacyId=productConfigPharmacy.data[0].value
-            }
    
-        
-            if(pharmacyId){
-            reOrderData.forEach(ele=>{
-                productmasterIds.push(ele.masterProductId)
-            
-            })
-            let productResult = await getproductDetailsByPharmacyId(pharmacyId, productmasterIds);
-           
-            if(productResult){
-                reOrderData.forEach( ele=>{
-                  let findData=  productResult.find(element=>{return element.masterProductId===ele.masterProductId})
-                  
-                  if(findData!==undefined){
-                    console.log(findData)
-                    let discountedValue = medicineRateAfterOffer(findData);
-                    let price =  ProductIncrementDecreMents(ele.quantity, discountedValue, 'add', ele.maxThreashold)
-                 
-                    ele.discountedAmount =findData.discount ? medicineDiscountedAmount(findData) : 0; 
-                    ele.totalPrice = Number(price.totalAmount)
-                    ele.unitPrice=Number(findData.price)
-                    temp.push({item:ele})
-                }
-                })
-              
-            this.setState({ cartItems: temp , isLoading: false});
-            }
-        }else{
-            Toast.show({
-                text: ' sorry unable to make a re order please try again later',
-                duration: 3000,
-                type: 'danger',
-              
-
-            })
-        }
-
-        }
-
-        catch (e) {
-            console.log(e);
-        }
-        finally {
-            this.setState({ isLoading: false });
-        }
-    }
-
-
     getAddToCart = async () => {
         try {
             this.setState({ isLoading: true })
@@ -128,7 +67,7 @@ class PharmacyCart extends Component {
     }
 
     async productQuantityOperator(item, operator, index) {
-        let reOrderData = this.props.navigation.getParam('reOrderData') || null;
+        
         let offeredAmount = this.unitOfPrice(item);
         let result = await ProductIncrementDecreMent(item.item.quantity, offeredAmount, operator, item.item.maxThreashold)
         let temp = item;
@@ -147,10 +86,10 @@ class PharmacyCart extends Component {
             })
             return false
         }
-        if (reOrderData === null) {
+      
             createCart(temp)
             await AsyncStorage.setItem('hasCartReload', 'true')
-        }
+      
 
 
 
@@ -161,9 +100,9 @@ class PharmacyCart extends Component {
         let cartItems = this.state.cartItems
         cartItems[index] == temp
         this.setState({ cartItems })
-        if (reOrderData === null) {
+      
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
-        }
+        
     }
 
     removeMedicine = async (index, removeData) => {
@@ -186,7 +125,7 @@ class PharmacyCart extends Component {
         if (this.state.cartItems) {
 
             this.state.cartItems.map(element => {
-
+          console.log( element.item.totalPrice)
 
                 total = total + element.item.totalPrice
             })
@@ -224,9 +163,10 @@ class PharmacyCart extends Component {
 
     }
     productDiscountedPrice(unitPrice,discountedAmount){
-      
-        let value=parseInt(unitPrice)-parseInt(discountedAmount)
-        return value
+         console.log(unitPrice)
+         console.log(discountedAmount)
+        let value=Number(unitPrice)-Number(discountedAmount)
+        return Number(Number(value).toFixed(2))
     }
     render() {
         const { isLoading, cartItems } = this.state;
@@ -262,7 +202,7 @@ class PharmacyCart extends Component {
                                     onPress={() =>
                                         this.props.navigation.pop()
                                     } testID='navigateToHome'>
-                                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Place Order</Text>
+                                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>{'Place Order'}</Text>
                                 </Button>
                             </Item>
                         </Card>

@@ -14,6 +14,7 @@
     "Home":"Home",
     "Services":"Services",
     "Video and Chat Service" :"Video and Chat Service",
+    "Video and Chat": "Video and Chat",
     "Medicines":"Medicines",
     "Reminder":"Reminder",
     "Blood Donors":"Blood Donors",
@@ -96,7 +97,12 @@
     "Selected Appointment on":"Selected Appointment on",
     "Language Spoken":"Language Spoken",
     "No reviews yet":"No reviews yet",
-    "BOOK APPOINTMENT":"BOOK APPOINTMENT"
-
+    "BOOK APPOINTMENT":"BOOK APPOINTMENT",
+    "Public Forum":"Public Forum",
+    "Corporate user":"Corporate user",
+    "E Card":"E Card",
+    "Insurance Services": "Insurance Services",
+    "Home Health Care": "Home Health Care",
+    "Get Doctor Consultation at Your Home": "Get Doctor Consultation at Your Home"
     
 }
