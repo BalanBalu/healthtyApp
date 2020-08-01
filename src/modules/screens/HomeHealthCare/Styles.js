@@ -1,7 +1,15 @@
 import { StyleSheet } from 'react-native'
 
 export default styles = StyleSheet.create({
-
+    containers: {
+        flex: 1,
+        justifyContent: "center"
+    },
+    horizontal: {
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: 10
+    },
     subHead: {
         fontFamily: 'OpenSans',
         fontSize: 14,
@@ -67,6 +75,21 @@ export default styles = StyleSheet.create({
         color: "white",
         fontSize: 12,
         textAlign: "center"
+    },
+    customButton: {
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 12,
+        backgroundColor: "#775DA3",
+        marginLeft: 15,
+        borderRadius: 10,
+        width: "auto",
+        height: 40,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center",
+        marginLeft: "auto",
+        marginRight: "auto"
     },
     bookAgain1: {
         fontSize: 13,

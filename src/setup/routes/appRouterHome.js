@@ -120,6 +120,7 @@ import HomeHealthcareFilterPage from '../../modules/screens/HomeHealthCare/filte
 import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Confirmation/confirmation';
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
+import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCare/Appointments/cancelAppointment';
 
 
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
@@ -657,10 +658,10 @@ const HomeStack = createStackNavigator({
       title: 'Home Healthcare Confirmation'
     }
   },
-  HomeHealthcareAppointmentList: {
+  'My Home Test Appointments': {
     screen: HomeHealthcareAppointmentList,
     navigationOptions: {
-      title: 'Home Healthcare AppointmentList'
+      title: 'My Home Test Appointments'
     }
   },
   HomeHealthcareAppointmentDetail: {
@@ -669,6 +670,13 @@ const HomeStack = createStackNavigator({
       title: 'Home Healthcare Appointment info'
     }
   },
+  "Home Healthcare Cancel Appointment": {
+    screen: HomeHealthcareCancelAppointment,
+    navigationOptions: {
+      title: 'Home Healthcare Cancel Appointment'
+    }
+  },
+
   // ============Chat ========================
   "Chat Service": {
     screen: AvailableDoctors4Chat,
@@ -1020,6 +1028,10 @@ const drawerNavigatorRoutes = {
     screen: LabAppointmentList,
     routeName: 'My Lab Test Appointments'
   },
+  'My Home Test Appointments': {
+    screen: HomeHealthcareAppointmentList,
+    routeName: 'My Home Test Appointments'
+  },
   "Medicine Orders": {
     screen: MyOrdersList,
     routeName: 'Medicine Orders'
@@ -1113,6 +1125,11 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
           {
+            name: 'My Home Test Appointments',
+            routeName: drawerNavigatorRoutes["My Home Test Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
             name: 'My Chat Consultations',
             routeName: drawerNavigatorRoutes["My Chats"].routeName,
             icon: require('../../../assets/images/drawerIcons/Chat.png'),
@@ -1153,6 +1170,8 @@ export const DragwerLogos = {
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
   'My Lab Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'My Home Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
+
 }
 export default createAppContainer(createSwitchNavigator(
   {
