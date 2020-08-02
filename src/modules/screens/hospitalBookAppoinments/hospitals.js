@@ -1,30 +1,79 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content, Card, Item, Input, Thumbnail } from 'native-base';
 import { Row, Col, Grid } from 'react-native-easy-grid';
-import { StyleSheet, View, TouchableOpacity, FlatList, Image, } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, FlatList, Image, AsyncStorage, TextInput } from 'react-native';
 import StarRating from 'react-native-star-rating';
+import { connect } from 'react-redux'
+import { getNearByHospitals } from '../../providers/hospitals/hospitals.action'
+import { MAX_DISTANCE_TO_COVER } from '../../../setup/config'
+import { getHospitalName, getKiloMeterCalculation } from '../../common'
+import { RenderEditingPincode } from '../../screens/CommonAll/components';
 
 class Hospitals extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
+            editingPincode: false,
+            hospitalData: [],
+            locationCordinates: null,
+            pin_code: ''
+        }
+        this.defaultPinCode4FetchHospList = '560066'
+    }
 
+    async componentDidMount() {
+        this.getNearByHospitalList()
+    }
+
+    getNearByHospitalList = async () => {
+        try {
+            const { bookappointment: { locationCordinates } } = this.props;
+
+            const locationData = {
+                "coordinates": locationCordinates,
+                maxDistance: MAX_DISTANCE_TO_COVER
+            }
+            // console.log(locationData)
+            this.setState({ locationCordinates: locationCordinates });
+
+            let reqData4ApiCall, type;
+            if (this.defaultPinCode4FetchHospList || this.state.pin_code) {
+                reqData4ApiCall = this.defaultPinCode4FetchHospList || this.state.pin_code
+                type = 'pinCode'
+            }
+            else if (locationCordinates) {
+                reqData4ApiCall = { ...locationData };
+                type = 'location'
+            }
+            let result = await getNearByHospitals(type, reqData4ApiCall);
+            // console.log(JSON.stringify(result))
+            if (result.success) {
+                this.setState({ hospitalData: result.data })
+            }
+        }
+        catch (e) {
+            console.log(e)
         }
     }
 
+    editingPincodeField = async (data) => {
+        this.defaultPinCode4FetchHospList = data
+        this.setState({ pin_code: this.defaultPinCode4FetchHospList })
+    }
+    editPinCode = async () => {
+        this.editingPincodeField(this.defaultPinCode4FetchHospList)
+        this.getNearByHospitalList()
+        this.setState({ editingPincode: false, pin_code: null })
+
+    }
+
     render() {
-        const data = [{ hosname: 'Rajiv Gandhi Hospital', Specialist: 'B.D.S.B.D.S Hearing Specialist', location: 'No 3, EVR Periyar Sali, Park Town,Chennai-600003,Oppaosite Central Railway Station', km: '1.5', rating: 0, favorite: 0 },
-        { hosname: 'Apollo Hospital', Specialist: 'B.D.S.B.D.S Hearing Specialist', location: 'No 3, EVR Periyar Sali, Park Town,Chennai-600003,Oppaosite Central Railway Station', km: '2.5', rating: 0, favorite: 0 },
-        { hosname: 'Mount Multispeciality Hospital ', Specialist: 'B.D.S.B.D.S Hearing Specialist', location: 'No 3, EVR Periyar Sali, Park Town,Chennai-600003,Oppaosite Central Railway Station', km: '4.5', rating: 0, favorite: 0 },
-        { hosname: 'prasHant hospital', Specialist: 'B.D.S.B.D.S Hearing Specialist', location: 'No 3, EVR Periyar Sali, Park Town,Chennai-600003,Oppaosite Central Railway Station', km: '6.5', rating: 0, favorite: 0 },
-        { hosname: 'SriRam hospital', Specialist: 'B.D.S.B.D.S Hearing Specialist', location: 'No 3, EVR Periyar Sali, Park Town,Chennai-600003,Oppaosite Central Railway Station', km: '9.5', rating: 0, favorite: 0 },
-        { hosname: 'Sri Balaji Hospital ', Specialist: 'B.D.S.B.D.S Hearing Specialist', location: 'No 3, EVR Periyar Sali, Park Town,Chennai-600003,Oppaosite Central Railway Station', km: '19.5', rating: 0, favorite: 0 }
-        ]
+        const { hospitalData, locationCordinates } = this.state
         return (
             <Container>
                 <Content style={{ paddingTop: 10 }}>
                     <View style={{ marginBottom: 20 }}>
-                        <View style={{ paddingBottom: 5, paddingStart: 5, paddingEnd: 5,  height: 45 }}>
+                        <View style={{ paddingBottom: 5, paddingStart: 5, paddingEnd: 5, height: 45 }}>
                             <Grid>
                                 <Col size={10}>
                                     <Item style={styles.specialismInput} >
@@ -45,92 +94,101 @@ class Hospitals extends PureComponent {
                             </Grid>
                         </View>
                         <View>
-                            <Row style={{ padding: 5, }}>
-                                <Col size={8}>
-                                    <Text style={styles.showingDoctorText}>Showing Hospitals in the <Text style={styles.picodeText}>{" "}PinCode - 600051</Text></Text>
-                                </Col>
-                                <Col size={2}>
-                                    <Row style={{ justifyContent: 'flex-end' }}>
-                                        <TouchableOpacity style={styles.editPincodeButton}>
-                                            <Text style={{ fontFamily: 'OpenSans', color: '#ff4e42', fontSize: 10, }}>Edit Pincode </Text>
-                                        </TouchableOpacity>
-                                    </Row>
-                                </Col>
-                            </Row>
+                            {this.state.editingPincode != true ?
+                                <Row style={{ padding: 5, }}>
+                                    <Col size={8}>
+                                        <Text style={styles.showingDoctorText}>Showing Hospitals in the <Text style={styles.picodeText}>{" "}PinCode - {this.defaultPinCode4FetchHospList}</Text></Text>
+                                    </Col>
+                                    <Col size={2}>
+                                        <Row style={{ justifyContent: 'flex-end' }}>
+                                            <TouchableOpacity style={styles.editPincodeButton} onPress={() => this.setState({ editingPincode: true })} >
+                                                <Text style={{ fontFamily: 'OpenSans', color: '#ff4e42', fontSize: 10, }}>Edit Pincode </Text>
+                                            </TouchableOpacity>
+                                        </Row>
+                                    </Col>
+                                </Row> :
+                                <View>
+                                    <RenderEditingPincode
+                                        value={this.state.pin_code}
+                                        onChangeText={text => this.editingPincodeField(text)}
+                                        onPressEditButton={this.editPinCode}
+                                    />
+                                </View>
+                            }
                         </View>
-                        
-                        
+
+
                         <FlatList
-                            data={data}
-                            renderItem={({ item }) =>
-                                <Card style={styles.doctorListStyle}>
-                                    <List style={{ borderBottomWidth: 0 }}>
-                                        <Grid >
-                                            <Row >
-                                                <Col size={2}>
-                                                    <TouchableOpacity>
-                                                        <Thumbnail circle source={require('../../../../assets/images/hospitalCommon.jpeg')} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
-                                                    </TouchableOpacity>
-                                                </Col>
-                                                <Col size={6}>
-                                                    <Row >
-                                                        <Text style={styles.commonStyle}>{item.hosname}</Text>
-                                                    </Row>
-                                                    <Row >
-                                                        <Text note style={styles.addressTexts}>
-                                                            {item.location}
-                                                        </Text>
-                                                    </Row>
-                                                    <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.3, marginTop: 10 }}>
+                            data={hospitalData}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item, index }) =>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { HospitalName: item.name })} >
+                                    <Card style={styles.doctorListStyle}>
+                                        <List style={{ borderBottomWidth: 0 }}>
+                                            <Grid >
+                                                <Row >
+                                                    <Col size={2}>
+                                                        <TouchableOpacity  >
+                                                            <Thumbnail circle source={require('../../../../assets/images/hospitalCommon.jpeg')} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
+                                                        </TouchableOpacity>
+                                                    </Col>
+                                                    <Col size={6}>
+                                                        <Row >
+                                                            <Text style={styles.commonStyle}>{item.name}</Text>
+                                                        </Row>
+                                                        <Row >
+                                                            <Text note style={styles.addressTexts}>
+                                                                {getHospitalName(item)}
+                                                            </Text>
+                                                        </Row>
+                                                        <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.3, marginTop: 10 }}>
 
-                                                        <Col size={5} style={{ marginTop: 10 }}>
-                                                            <Text note style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 12 }}> Rating</Text>
-                                                            <View style={{ flexDirection: 'row', marginLeft: 5 }}>
-                                                                <StarRating
-                                                                    fullStarColor='#FF9500'
-                                                                    starSize={12}
-                                                                    width={85}
-                                                                    containerStyle={{ marginTop: 2 }}
-                                                                    disabled={true}
-                                                                    rating={1}
-                                                                    maxStars={1}
-                                                                />
-                                                                <Text style={[styles.commonStyle, { marginLeft: 5 }]}>{item.rating}</Text>
-                                                            </View>
-                                                        </Col>
-                                                        <Col size={5} style={{ marginTop: 10 }}>
-                                                            <Text note style={[styles.commonStyle, { marginLeft: 5 }]}> Favourite</Text>
-                                                            <Text style={[styles.commonStyle, { marginLeft: 25, fontWeight: 'bold' }]}>{item.favorite}</Text>
-                                                        </Col>
-                                                        {/* <Col style={{ width: "20%", marginTop: 10 }}>
+                                                            <Col size={5} style={{ marginTop: 10 }}>
+                                                                <Text note style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 12 }}> Rating</Text>
+                                                                <View style={{ flexDirection: 'row', marginLeft: 5 }}>
+                                                                    <StarRating
+                                                                        fullStarColor='#FF9500'
+                                                                        starSize={12}
+                                                                        width={85}
+                                                                        containerStyle={{ marginTop: 2 }}
+                                                                        disabled={true}
+                                                                        rating={1}
+                                                                        maxStars={1}
+                                                                    />
+                                                                    <Text style={[styles.commonStyle, { marginLeft: 5 }]}>0</Text>
+                                                                </View>
+                                                            </Col>
+                                                            <Col size={5} style={{ marginTop: 10 }}>
+                                                                <Text note style={[styles.commonStyle, { marginLeft: 5 }]}> Favourite</Text>
+                                                                <Text style={[styles.commonStyle, { marginLeft: 25, fontWeight: 'bold' }]}>0</Text>
+                                                            </Col>
 
-                                                         </Col> */}
+                                                        </Row>
+                                                    </Col>
+                                                    <Col size={2}>
+                                                        <Row>
+                                                            <Col>
+                                                                <TouchableOpacity style={styles.heartIconButton} >
 
-                                                    </Row>
-                                                </Col>
-                                                <Col size={2}>
-                                                    <Row>
-                                                        <Col>
-                                                            <TouchableOpacity style={styles.heartIconButton} >
-
-                                                                <Icon name="heart"
-                                                                    style={{ marginLeft: 20, color: '#000', fontSize: 20 }}>
-                                                                </Icon>
-                                                            </TouchableOpacity>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 15, }}>{item.km} Km</Text>
-                                                        </Col>
-
-
-                                                    </Row>
-
-                                                </Col>
-                                            </Row>
+                                                                    <Icon name="heart"
+                                                                        style={{ marginLeft: 20, color: '#000', fontSize: 20 }}>
+                                                                    </Icon>
+                                                                </TouchableOpacity>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, marginLeft: 15, }}>{getKiloMeterCalculation(item.location.coordinates, locationCordinates)}</Text>
+                                                            </Col>
 
 
-                                        </Grid>
+                                                        </Row>
 
-                                    </List>
-                                </Card>
+                                                    </Col>
+                                                </Row>
+
+
+                                            </Grid>
+
+                                        </List>
+                                    </Card>
+                                </TouchableOpacity>
                             } />
 
                     </View>
@@ -139,6 +197,14 @@ class Hospitals extends PureComponent {
         )
     }
 }
+function hospitalsState(state) {
+
+    return {
+        bookappointment: state.bookappointment,
+    }
+}
+export default connect(hospitalsState)(Hospitals)
+
 const styles = StyleSheet.create({
     kmText: {
         fontFamily: 'OpenSans',
@@ -210,12 +276,12 @@ const styles = StyleSheet.create({
     heartIconButton: {
         paddingBottom: 10,
         paddingRight: 10,
-        paddingLeft: 10
+        paddingLeft: 10,
+        justifyContent: 'center'
     },
     commonText: {
         fontFamily: 'OpenSans',
         fontSize: 12,
     },
 })
-export default Hospitals
 

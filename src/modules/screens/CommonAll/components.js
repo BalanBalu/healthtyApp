@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import StarRating from 'react-native-star-rating';
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, TextInput } from 'react-native';
 import styles from './styles'
 
 
@@ -21,7 +21,7 @@ const RenderAddressInfo = (props) => {
 }
 
 const RenderPriceDetails = (props) => {
-   
+
     return (
         <>
             <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
@@ -34,11 +34,11 @@ const RenderPriceDetails = (props) => {
 }
 
 const RenderOfferDetails = (props) => {
-   
+
     return (
         <>
             <Text note style={props.isFromLabBookApp ? styles.offerText4LalBookApp : styles.offerText}>Offer</Text>
-            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo ?props.offerInfo:'0'}%</Text>
+            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo ? props.offerInfo : '0'}%</Text>
         </>
     )
 }
@@ -104,18 +104,44 @@ const RenderListNotFound = (props) => {
 
 
 const renderLabProfileImage = (data) => {
-   
+
     let source = null;
     if (!data) {
         return (source)
     }
-    if(data.profile_image) {
+    if (data.profile_image) {
         source = { uri: data.profile_image.imageURL }
     } else {
         source = require('../../../../assets/icon.png')
     }
-    
+
     return (source)
+}
+const RenderEditingPincode = (props) => {
+    return (
+        <Row style={{ padding: 5, height: 45 }}>
+            <Col size={7.5} style={{ borderColor: 'gray', borderWidth: 0.5 }}>
+                <TextInput
+                    placeholder='Enter PinCode'
+                    style={{ fontSize: 12 }}
+                    keyboardType="numeric"
+                    maxLength={7}
+                    style={{ fontSize: 12, marginLeft: 5, borderRadius: 5, }}
+                    placeholderTextColor="#C1C1C1"
+                    returnKeyType={'go'}
+                    autoFocus={true}
+                    value={props.value}
+                    onChangeText={props.onChangeText}
+                    multiline={false}
+                />
+            </Col>
+            <Col size={2}>
+                <TouchableOpacity style={{ paddingBottom: 10, paddingTop: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: 'green', borderRadius: 3, alignItems: 'center', marginLeft: 5 }} onPress={() => props.onPressEditButton()}>
+                    <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 12, textAlign: 'center' }}>Apply</Text>
+                </TouchableOpacity>
+            </Col>
+        </Row>
+    )
 }
 
 export {
@@ -127,5 +153,6 @@ export {
     RenderStarRatingCount,
     RenderPriceDetails,
     RenderOfferDetails,
-    RenderAddressInfo
+    RenderAddressInfo,
+    RenderEditingPincode
 }
