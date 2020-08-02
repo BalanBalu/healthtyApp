@@ -30,7 +30,8 @@ class Signup extends Component {
             isLoading: false,
             referralCode: null,
             isModalVisible: false,
-            corporateData: null
+            corporateData: null,
+            refresh:false
         }
         this.isShowMobileEntryView = true;
         this.isShowEmailEntryView = true;
@@ -60,7 +61,7 @@ class Signup extends Component {
                         this.isEnabledToSendOtpPage = true
                     }
                 });
-            ;
+            this.setState({refresh:true})
             }
         } catch (Ex) {
             console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
