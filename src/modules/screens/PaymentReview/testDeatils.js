@@ -251,7 +251,7 @@ class TestDetails extends PureComponent {
                     : null}
                 </View>
                 <View style={{ marginTop: 10 }}>
-                    {test === "other" ?
+                    {test ===  POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY ?
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                             <FlatList
@@ -260,7 +260,7 @@ class TestDetails extends PureComponent {
                                 renderItem={({ item, index }) =>
                                     this.patientDetails(item, index)
                                 } />
-                            {(test === 'other' && this.props.singlePatientSelect === false )  || (test === 'other' && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others' ).length === 0 )  ?
+                            {(test === POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY  && this.props.singlePatientSelect === false )  || (test ===  POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY  && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others' ).length === 0 )  ?
                                 <View style={{ marginTop: 10, marginLeft: 8 }}>
                                    {familyDetailsData.length !== 0 ?  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text> : null }
                                     <Text style={styles.subHead}>Add other patient's details</Text>
