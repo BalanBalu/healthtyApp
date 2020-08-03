@@ -676,5 +676,49 @@ export default styles = StyleSheet.create({
     },
     enabledBookingAvailableBtn: {
         alignItems: 'center', borderRadius: 10, backgroundColor: 'green'
-    }
+    },
+    
+    subTextBilling: {
+        fontFamily: 'Opensans',
+        fontSize: 12,
+        color: '#000',
+        marginLeft: 5
+    },
+    docName: {
+        fontSize: 15,
+        fontFamily: 'OpenSans',
+        color: '#7F49C3'
+    },
+    specialist: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        color: '#909090'
+    },
+    rupeesText: {
+        fontSize: 10,
+        fontFamily: 'OpenSans',
+        textAlign: 'right',
+        color: '#8EC63F'
+    },
+    redRupesText: {
+        fontSize: 10,
+        fontFamily: 'OpenSans',
+        textAlign: 'right',
+        color: 'red'
+    },
+    textInput: {
+        borderColor: 'gray',
+        borderRadius: 10,
+        borderWidth: 0.5,
+        height: 100,
+        fontSize: 12,
+        textAlignVertical: 'top',
+        width: '100%',
+        padding: 10,
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderRadius: 10,
+        paddingRight: 10,
+        marginTop: 15
+      },
 });
