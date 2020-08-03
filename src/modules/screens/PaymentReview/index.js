@@ -45,6 +45,7 @@ export default class PaymentReview extends Component {
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
+    const fromNavigation=navigation.getParam('fromNavigation');
     console.log('bookSlotDetails', bookSlotDetails);
     await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser });
     await this.getPatientInfo();
