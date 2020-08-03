@@ -25,7 +25,8 @@ export default class PaymentReview extends Component {
       age: '',
       isSelected: 'self',
       patientDetailsObj: {},
-      addPatientDataPoPupEnable: false
+      addPatientDataPoPupEnable: false,
+      isCorporateUser: false
     }
     this.defaultPatDetails = {};
   }
@@ -33,12 +34,15 @@ export default class PaymentReview extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const isLoggedIn = await hasLoggedIn(this.props);
+    console.log('IsCorporate User',  await AsyncStorage.getItem('is_corporate_user'));
+    const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+
     if (!isLoggedIn) {
       navigation.navigate('login');
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
-    await this.setState({ bookSlotDetails: bookSlotDetails });
+    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser });
     await this.getPatientInfo();
   }
   async confirmProceedPayment() {
@@ -145,27 +149,23 @@ export default class PaymentReview extends Component {
 
 
 
-  addPatientList = async () => {
+  addPatientList = async (patientData) => {
     const { name, age, gender } = this.state;
+    console.log('Patient Data==>', patientData);
     if (!name || !age || !gender) {
       this.setState({ errMsg: '* Kindly fill all the fields' });
     }
     else {
       this.setState({ errMsg: '' })
-      const othersDetailsObj = {
-        type: 'others',
-        full_name: name,
-        age: parseInt(age),
-        gender
-      }
+      const othersDetailsObj = patientData[0];
       await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
-      await this.setState({ name: null, age: null, gender: null });
     }
   }
 
 
   render() {
-    const { bookSlotDetails, patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender } = this.state;
+    const { bookSlotDetails, isCorporateUser ,patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender } = this.state;
+   console.log(isCorporateUser);
     return (
       <Container>
         <Content style={{ padding: 15, backgroundColor: '#F5F5F5' }}>
@@ -438,7 +438,10 @@ export default class PaymentReview extends Component {
 
             </View>
             <TestDetails
+              isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
+              singlePatientSelect={true}
+              addPatientDetails={(data) => this.addPatientList(data)}
 
             />
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
@@ -477,7 +480,7 @@ export default class PaymentReview extends Component {
                   <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Charges </Text>
                 </Col>
                 <Col>
-                  <Text style={styles.redRupesText}>₹ 50.00</Text>
+                  <Text style={styles.redRupesText}>₹ 0.00</Text>
                 </Col>
               </Row>
               <Row style={{ marginTop: 10 }}>

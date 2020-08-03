@@ -26,9 +26,9 @@ class TestDetails extends PureComponent {
             full_name: '',
             age: '',
             refreshCount: 0,
-            familyDetailsData: []
-
+            familyDetailsData: [],
         }
+        console.log(this.props);
         this.defaultPatDetails = {};
     }
 
@@ -61,27 +61,54 @@ class TestDetails extends PureComponent {
 
     addPatientList = async () => {
         const { name, age, gender } = this.state;
+        console.log('Adding Patient Data');
         if (!name || !age || !gender) {
+            console.log('is is coming to error');
             this.setState({ errMsg: '* Kindly fill all the fields' });
         }
+        
         else {
-            this.setState({ errMsg: '' })
             const othersDetailsObj = {
                 type: 'others',
                 full_name: name,
                 age: parseInt(age),
                 gender
             }
-            let familyData = []
-            familyData.push(othersDetailsObj)
-            await this.setState({ 
-                familyDetailsData: familyData, updateButton: false, addPatientDataPoPupEnable: false, refreshCount: this.state.refreshCount + 1,
-                name: null, age: null, gender: null
-            }); 
+           
+            if(this.props.singlePatientSelect === true ) {
+                let familyData = [];
+                familyData.push(othersDetailsObj);
+                this.setState({ familyDetailsData: familyData })
+                this.props.addPatientDetails(familyData); 
+            } else {
+                let familyData = this.state.familyDetailsData;
+                familyData.push(othersDetailsObj);
+                this.setState({ familyDetailsData: familyData })
+                this.props.addPatientDetails(familyData); 
+            }
         }
     }
+    onSelfPatientClicked() {
+        this.setState({ test: "self", patientDetailsObj: this.defaultPatDetails });
+        if(this.props.singlePatientSelect === true) {
+            console.log('this.defaultPatDetail', this.defaultPatDetails);
+            this.props.addPatientDetails([this.defaultPatDetails])
+        } else {
+            const familyDetailsData = this.state.familyDetailsData;
+            familyDetailsData.push(this.defaultPatDetail);
+            this.props.addPatientDetails(familyDetailsData); 
+        }
+    }
+    onRemovePatientClicked(index) {
+        console.log('index is ==>' +index)
+        console.log('Familty Details', this.state.familyDetailsData);
+        const familyDetailsData = this.state.familyDetailsData;
+        const  deletedFamilyData = familyDetailsData.splice(index, 1) ;
+        console.log(deletedFamilyData);
+        this.setState({ familyDetailsData: deletedFamilyData });
+    }
     patientDetails(data, index) {
-
+        const { isCorporateUser } = this.props;
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
                 <Row>
@@ -113,16 +140,23 @@ class TestDetails extends PureComponent {
                             </Col>
                         </Row>
                     </Col>
-                    <Col size={3.3}>
+
+                    {data.type === 'others' ?  
+                        <Col size={0.5}>
+                          <TouchableOpacity onPress={() => this.onRemovePatientClicked(index)  }>
+                            <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 20 }} />
+                          </TouchableOpacity>
+                        </Col>
+                    : null }
+                    {/* <Col size={3.3}>
                         <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                             <TouchableOpacity style={styles.selectButton}>
                                 <Text style={[styles.commonText, { color: '#fff' }]}>Select </Text>
                             </TouchableOpacity>
                         </Row>
-
-                    </Col>
+                    </Col> */}
                 </Row>
-                {this.state.test === "family" || this.state.test === "self"?
+                {isCorporateUser && (this.state.test === "family" || this.state.test === "self")?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
                         <TouchableOpacity style={styles.benefeciaryButton} onPress={() =>  this.setState({ expandedListIndex : this.state.expandedListIndex === index ? -1 : index })}>
@@ -147,6 +181,8 @@ class TestDetails extends PureComponent {
             full_name: 'S.Mukesh Kannan(self)', age: 21, gender: "male", phone_no: 8921595872,
             familyData: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "female", phone_no: 8921595872 }]
         }
+        const { isCorporateUser } = this.props;
+        console.log('On redner test details', isCorporateUser);
         const { addPatientDataPoPupEnable, patientDetailsObj, test, name, age, gender, familyDetailsData } = this.state
         return (
 
@@ -158,22 +194,23 @@ class TestDetails extends PureComponent {
                         <Radio
                             standardStyle={true}
                             selected={test === "self" ? true : false}
-                            onPress={() => this.setState({ test: "self", patientDetailsObj: this.defaultPatDetails })} />
+                            onPress={() => this.onSelfPatientClicked() } />
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>Self</Text>
                     </View>
+                    {isCorporateUser ? 
                     <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
                         <Radio
                             standardStyle={true}
                             selected={test === "family" ? true : false}
                             onPress={() => this.setState({ test: "family" })} />
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>Family With Insurance</Text>
-                    </View>
+                    </View> : null }
                     <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
                         <Radio
                             standardStyle={true}
                             selected={test === "other" ? true : false}
                             onPress={() => this.setState({ test: "other", addPatientDataPoPupEnable: true, patientDetailsObj: {} })} />
-                        <Text style={[styles.commonText, { marginLeft: 5 }]}>Family W/O Insurance</Text>
+                        <Text style={[styles.commonText, { marginLeft: 5 }]}>{ isCorporateUser ? 'Family W/O Insurance' : 'Family' } </Text>
                     </View>
                 </View>
 
@@ -182,12 +219,9 @@ class TestDetails extends PureComponent {
                     {test === "self" ?
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
-
                             <View>
                                 {this.patientDetails(this.defaultPatDetails)}
-
                             </View>
-
                         </View>
                         : null}
                 </View>
@@ -198,12 +232,12 @@ class TestDetails extends PureComponent {
                             <FlatList
                                 data={familyDetailsData}
                                 keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item }) =>
-                                    this.patientDetails(item)
+                                renderItem={({ item, index }) =>
+                                    this.patientDetails(item, index)
                                 } />
-                            {test === 'other' ?
+                            {(test === 'other' && this.props.singlePatientSelect === false )  || (test === 'other' && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others' ).length === 0 )  ?
                                 <View style={{ marginTop: 10, marginLeft: 8 }}>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text>
+                                   {familyDetailsData.length !== 0 ?  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text> : null }
                                     <Text style={styles.subHead}>Add other patient's details</Text>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={6}>
