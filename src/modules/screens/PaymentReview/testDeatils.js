@@ -105,8 +105,6 @@ class TestDetails extends PureComponent {
         });
         this.props.addPatientDetails(arr);
         this.setState({ familyDetailsData: arr });
-        
-         
     }
     patientDetails(data, index) {
         const { isCorporateUser } = this.props;
