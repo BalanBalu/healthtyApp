@@ -31,7 +31,8 @@ class HomeTestConfirmation extends Component {
             familyMembersSelections: [],
             
             isCheckedFamilyWithPay: false,
-            selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ]
+            selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ],
+            familyDetailsData: []
         }
        
     }
@@ -244,7 +245,8 @@ class HomeTestConfirmation extends Component {
                                    this.setState( { selectedPatientTypes: patientTypes })
                                 }}
                                 selectedPatientTypes={this.state.selectedPatientTypes}
-                                  
+                                familyDetailsData={this.state.familyDetailsData} 
+                                setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })} 
                                 payBy={this.state.selectedPayBy}
                                 addPatientDetails={(data, setSelfPatientData) => { 
                                     if(setSelfPatientData === true) {

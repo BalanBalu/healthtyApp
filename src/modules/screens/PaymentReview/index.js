@@ -30,8 +30,8 @@ export default class PaymentReview extends Component {
       isCorporateUser: false,
       selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
       familyMembersSelections: [],
-      
-      selectedPatientTypes : [ POSSIBLE_FAMILY_MEMBERS.SELF ] 
+      selectedPatientTypes : [ POSSIBLE_FAMILY_MEMBERS.SELF ] ,
+      familyDetailsData: []
     }
     this.defaultPatDetails = {};
   }
@@ -462,6 +462,8 @@ export default class PaymentReview extends Component {
                   this.setState( { patientDetailsObj: {},  selectedPatientTypes: [ patientType ] })
                 }
               }}
+              familyDetailsData={this.state.familyDetailsData} 
+              setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })} 
               selectedPatientTypes={this.state.selectedPatientTypes}
               payBy={this.state.selectedPayBy}
               addPatientDetails={(data, setDefaultPatentData) => {
