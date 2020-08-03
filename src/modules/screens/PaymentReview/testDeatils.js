@@ -61,7 +61,7 @@ class TestDetails extends PureComponent {
 
     addPatientList = async () => {
         const { name, age, gender } = this.state;
-        console.log('Adding Patient Data');
+        
         if (!name || !age || !gender) {
             console.log('is is coming to error');
             this.setState({ errMsg: '* Kindly fill all the fields' });
@@ -99,13 +99,14 @@ class TestDetails extends PureComponent {
             this.props.addPatientDetails(familyDetailsData); 
         }
     }
-    onRemovePatientClicked(index) {
-        console.log('index is ==>' +index)
-        console.log('Familty Details', this.state.familyDetailsData);
-        const familyDetailsData = this.state.familyDetailsData;
-        const  deletedFamilyData = familyDetailsData.splice(index, 1) ;
-        console.log(deletedFamilyData);
-        this.setState({ familyDetailsData: deletedFamilyData });
+    onRemovePatientClicked(indexNo) {
+        const arr =  this.state.familyDetailsData.filter(function(item, index) {
+            return index !== indexNo
+        });
+        this.props.addPatientDetails(arr);
+        this.setState({ familyDetailsData: arr });
+        
+         
     }
     patientDetails(data, index) {
         const { isCorporateUser } = this.props;
