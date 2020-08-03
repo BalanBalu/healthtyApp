@@ -13,6 +13,9 @@ const POSSIBLE_PAY_METHODS = {
 
 const PayBySelection = (props) => {
         const { selectedPayBy, isCorporateUser, onSelectionChange } = props
+        if(!isCorporateUser) {
+            return null
+        }
         return (
             <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
                 <Text style={styles.subHead}>Are You Paying By </Text>
