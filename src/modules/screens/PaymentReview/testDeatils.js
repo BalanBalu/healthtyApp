@@ -159,7 +159,7 @@ class TestDetails extends PureComponent {
                         </Row>
                     </Col> */}
                 </Row>
-                {isCorporateUser && payBy !== POSSIBLE_PAY_METHODS.SELF &&  (this.state.test === POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY || this.state.test === POSSIBLE_FAMILY_MEMBERS.SELF)?
+                {isCorporateUser && payBy !== POSSIBLE_PAY_METHODS.SELF ?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
                         <TouchableOpacity style={styles.benefeciaryButton} onPress={() =>  this.setState({ expandedListIndex : this.state.expandedListIndex === index ? -1 : index })}>
