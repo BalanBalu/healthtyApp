@@ -10,11 +10,13 @@ export const NOTIFICATION_RESET = 'NOTIFICATION/NOTIFICATION_RESET'
 import { store } from '../../../setup/store';
 
 /* Get Patient Notification List  */
-export const fetchUserNotification = async (userId) => {
+export const fetchUserNotification = async (userId,skip,limit) => {
     try {
        
         let endPoint = '/notifications/' + userId;
-            
+        if(limit){
+            endPoint+='?skip='+skip+'&limit='+limit
+        }
         let response = await getService(endPoint);
         let respData = response.data;
         if(respData.success){

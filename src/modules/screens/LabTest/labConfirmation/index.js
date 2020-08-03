@@ -16,7 +16,7 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from 'moment';
 
 
-let patientDetails = [];
+let patientDetails = [], totalAmount = 0;
 class LabConfirmation extends Component {
     constructor(props) {
         super(props);
@@ -170,7 +170,7 @@ class LabConfirmation extends Component {
     }
     amountPaid() {
         const { packageDetails, patientDetails, itemSelected } = this.state;
-        let totalAmount = 0;
+       
         if (packageDetails.fee != undefined) {
             if (itemSelected == 'TEST_AT_HOME') {
                 totalAmount = ((packageDetails.fee * patientDetails.length) + (packageDetails.extra_charges))
@@ -277,7 +277,7 @@ class LabConfirmation extends Component {
                 lab_name: packageDetails.lab_name,
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
                 lab_test_description: packageDetails.lab_test_description,
-                fee: packageDetails.fee,
+                fee: totalAmount,
                 startTime: startTime || packageDetails.appointment_starttime,
                 location: {
                     coordinates: selectedAddress.coordinates,
@@ -338,7 +338,7 @@ class LabConfirmation extends Component {
                         this.props.navigation.navigate('paymentPage', {
                             service_type: SERVICE_TYPES.LAB_TEST,
                             bookSlotDetails: requestData,
-                            amount: packageDetails.fee
+                            amount: totalAmount
                         });
                     } else {
                         Toast.show({
@@ -394,9 +394,9 @@ class LabConfirmation extends Component {
                 duration: 2000,
                 type: 'danger'
             });
-            this.setState({ isTimePickerVisible: false});
+            this.setState({ isTimePickerVisible: false });
             return;
-            
+
         } else {
             this.setState({ isTimePickerVisible: false, pickByStartTime: date, startDatePlaceholder: true });
         }
@@ -604,8 +604,7 @@ class LabConfirmation extends Component {
                                     <Row>
                                         <Col size={5} style={{ justifyContent: 'center' }}>
 
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time</Text>
-
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>Select Appointment Time For {formatDate(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime, 'hh:mm a') + " to " + formatDate(this.state.packageDetails.selectedSlotItem.slotEndDateAndTime, 'hh:mm a')}</Text>
                                             <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={{ flex: 1, flexDirection: 'row' }}>
                                                 <Icon name='ios-clock' style={styles.iconstyle1} />
                                                 {

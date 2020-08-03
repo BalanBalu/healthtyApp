@@ -329,6 +329,16 @@ class PaymentPage extends Component {
                     duration: 3000
                 })
             }
+            else if (serviceType === SERVICE_TYPES.HOME_HEALTHCARE) {
+                const reqHomeHealthCare = {
+                    successBookSlotDetails: bookSlotDetails,
+                    paymentMethod: paymentMethodTitleCase,
+                    tokenNo: response.tokenNo,
+                    isFromHomeHealthCareConfirmation: true
+                }
+                console.log(reqHomeHealthCare);
+                this.props.navigation.navigate('paymentsuccess', reqHomeHealthCare);
+            }
         }
         else {
             if (serviceType === SERVICE_TYPES.PHARMACY) {
