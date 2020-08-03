@@ -91,16 +91,23 @@ class TestDetails extends PureComponent {
             }
         }
     }
-    onSelfPatientClicked() {
-        this.props.onSelectionChange(POSSIBLE_FAMILY_MEMBERS.SELF);
+    onSelfPatientClicked(hasCheckedForMultiSelect) {
+        
         this.setState({ patientDetailsObj: this.defaultPatDetails });
         if(this.props.singlePatientSelect === true) {
             console.log('this.defaultPatDetail', this.defaultPatDetails);
             this.props.addPatientDetails([this.defaultPatDetails])
         } else {
             const familyDetailsData = this.state.familyDetailsData;
-            familyDetailsData.push(this.defaultPatDetail);
+            const index = familyDetailsData.findIndex(ele => ele.type === 'self');
+            if(hasCheckedForMultiSelect === false) {
+                familyDetailsData.push(this.defaultPatDetails);
+            } else {
+                familyDetailsData.splice(index, 1);
+            }
+            console.log(familyDetailsData);
             this.props.addPatientDetails(familyDetailsData); 
+            this.props.onCheckedSelfChange();
         }
     }
     onRemovePatientClicked(indexNo) {
@@ -133,7 +140,7 @@ class TestDetails extends PureComponent {
         } else {
             if(this.props.singlePatientSelect === true ) {
                 let familyData = [];
-                familyMembersSelections = [ payByFamilyIndex ]
+                familyMembersSelections = [ payByFamilyIndex ];
                 familyData.push(beneficiaryDetailsObj);
                 this.setState({ familyDetailsData: familyData })
                 this.props.addPatientDetails(familyData); 
@@ -145,16 +152,13 @@ class TestDetails extends PureComponent {
                 this.props.addPatientDetails(familyData); 
             }
         }
-
-        
-        console.log(index);
         await this.props.changeFamilyMembersSelections(familyMembersSelections);
        
 
 
     }
-    renderPatientDetails(data, index, enableSelectionBox) {
-        const { isCorporateUser, payBy, whomToTest } = this.props;
+    renderPatientDetails(data, index, enableSelectionBox, disableCheckBoxSelection) {
+        const { isCorporateUser, payBy } = this.props;
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
                 <Row>
@@ -200,6 +204,7 @@ class TestDetails extends PureComponent {
                              <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
                                     checked={this.props.familyMembersSelections.includes(payBy + '-' + index)}
+                                    disabled={disableCheckBoxSelection}
                                     onPress={() => this.addFamilyMembersForBooking(data, index, payBy) }
                                 />
                             </Row>
@@ -245,7 +250,7 @@ class TestDetails extends PureComponent {
             familyDataByInsurance: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "female", phone_no: 8921595872 }],
             familyDataByCorporate: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 } ]
         }
-        const { isCorporateUser, payBy, whomToTest, onSelectionChange } = this.props;
+        const { isCorporateUser, payBy, onSelectionChange, singlePatientSelect, isCheckedSelf, isCheckedFamilyWithPay,  onCheckedFamilyWithPayChange, selectedPatientTypes } = this.props;
        
         const { name, age, gender, familyDetailsData } = this.state
         return (
@@ -256,10 +261,21 @@ class TestDetails extends PureComponent {
                    
                    {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.SELF) ? 
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Radio
+                        {singlePatientSelect ? 
+                          <Radio
                             standardStyle={true}
-                            selected={whomToTest === POSSIBLE_FAMILY_MEMBERS.SELF ? true : false}
-                            onPress={() => this.onSelfPatientClicked() } />
+                            selected={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ? true : false}
+                            onPress={() => {
+                                this.props.onSelectionChange(POSSIBLE_FAMILY_MEMBERS.SELF);
+                                this.onSelfPatientClicked() 
+                            }}/> 
+                         :
+                            <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
+                                checked={isCheckedSelf}
+                                onPress={() => this.onSelfPatientClicked(isCheckedSelf)}
+                            /> 
+                        }
+                         
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>Self</Text>
                     </View>
                     : null }
@@ -267,24 +283,36 @@ class TestDetails extends PureComponent {
                     
                     {isCorporateUser && this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) === true ? 
                         <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
+                            {singlePatientSelect ?
                             <Radio
                                 standardStyle={true}
-                                selected={whomToTest === POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY ? true : false}
+                                selected={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ? true : false}
                                 onPress={() => onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)} />
+                            : 
+                             <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
+                                checked={isCheckedSelf}
+                                onPress={() => { }}
+                            />
+                            }
                             <Text style={[styles.commonText, { marginLeft: 5 }]}>Family </Text>
                         </View> 
                     : null }
 
-                    {isCorporateUser && this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) === true ? 
+                    {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) === true ? 
                      
                       <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
+                        {singlePatientSelect ? 
                         <Radio
                             standardStyle={true}
-                            selected={whomToTest === POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY ? true : false}
+                            selected={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ? true : false}
                             onPress={() => { 
                                 onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY); 
                                 this.setState({  patientDetailsObj: {} });
                             }}/>
+                        :   <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
+                                checked={isCheckedFamilyWithPay}
+                                onPress={() => { onCheckedFamilyWithPayChange()  }}
+                            />}
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>{ 'Family' } </Text>
                     </View> 
                     : null }
@@ -292,7 +320,7 @@ class TestDetails extends PureComponent {
 
 
                 <View style={{ marginTop: 10 }}>
-                    {whomToTest === POSSIBLE_FAMILY_MEMBERS.SELF ?
+                    {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                             <View>
@@ -302,7 +330,7 @@ class TestDetails extends PureComponent {
                     : null}
                 </View>
                 <View style={{ marginTop: 10 }}>
-                    {whomToTest ===  POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY ?
+                    {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ?
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                             <FlatList
@@ -311,7 +339,7 @@ class TestDetails extends PureComponent {
                                 renderItem={({ item, index }) =>
                                     this.renderPatientDetails(item, index, false)
                                 } />
-                            { (whomToTest === POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY  && this.props.singlePatientSelect === false )  || (whomToTest ===  POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY  && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others' ).length === 0 )  ?
+                            { (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)  && this.props.singlePatientSelect === false )  || (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others' ).length === 0 )  ?
                                 <View style={{ marginTop: 10, marginLeft: 8 }}>
                                    {familyDetailsData.length !== 0 ?  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text> : null }
                                     <Text style={styles.subHead}>Add other patient's details</Text>
@@ -388,7 +416,7 @@ class TestDetails extends PureComponent {
                         : null}
 
                     <View style={{ marginTop: 10 }}>
-                        {whomToTest === POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY ?
+                        {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ?
                             <View>
                                 <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                                 <FlatList

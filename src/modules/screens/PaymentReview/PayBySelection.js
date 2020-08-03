@@ -83,6 +83,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#000',
         marginLeft: 10
-      },
+    },
+    subHead: {
+      fontFamily: 'OpenSans',
+      fontSize: 12,
+      color: '#000',
+      marginTop: 10
+    },
 
 });

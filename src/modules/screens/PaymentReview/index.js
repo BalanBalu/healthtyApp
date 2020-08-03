@@ -29,8 +29,9 @@ export default class PaymentReview extends Component {
       addPatientDataPoPupEnable: false,
       isCorporateUser: false,
       selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
-      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
-      familyMembersSelections: [] 
+      familyMembersSelections: [],
+      
+      selectedPatientTypes : [ POSSIBLE_FAMILY_MEMBERS.SELF ] 
     }
     this.defaultPatDetails = {};
   }
@@ -444,7 +445,7 @@ export default class PaymentReview extends Component {
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
               onSelectionChange={(mode)=> {
-                  this.setState({ selectedPayBy: mode, whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF, patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] }) 
+                  this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] }) 
               }}
             />
             
@@ -454,14 +455,20 @@ export default class PaymentReview extends Component {
               singlePatientSelect={true}
               familyMembersSelections={this.state.familyMembersSelections}
               changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
-              whomToTest={this.state.whomToTest}
-              onSelectionChange={(whomToTest) => {
-                if(whomToTest === POSSIBLE_FAMILY_MEMBERS.SELF) {
-                   this.setState( { patientDetailsObj: this.defaultPatDetails,  whomToTest: whomToTest, familyMembersSelections: [] })
+              
+              
+              
+              onSelectionChange={(patientType) => {
+                if(patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
+                   this.setState( { patientDetailsObj: this.defaultPatDetails,  selectedPatientTypes: [ patientType ] , familyMembersSelections: [] })
                 } else {
-                  this.setState( { patientDetailsObj: {},  whomToTest: whomToTest })
+                  this.setState( { patientDetailsObj: {},  selectedPatientTypes: [ patientType ] })
                 }
               }}
+              
+              selectedPatientTypes={this.state.selectedPatientTypes}
+              
+
               payBy={this.state.selectedPayBy}
               addPatientDetails={(data) => this.addPatientList(data)}
 
