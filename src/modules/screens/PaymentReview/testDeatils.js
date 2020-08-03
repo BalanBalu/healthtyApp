@@ -30,7 +30,6 @@ class TestDetails extends PureComponent {
             age: '',
             refreshCount: 0,
             familyDetailsData: [],
-            familyMembersSelections : []
         }
         console.log(this.props);
         this.defaultPatDetails = {};
@@ -114,7 +113,7 @@ class TestDetails extends PureComponent {
     async addFamilyMembersForBooking(data, index, payBy) {
         console.log('PayBy', payBy);
         const payByFamilyIndex = payBy + '-' + index;
-        let familyMembersSelections = this.state.familyMembersSelections
+        let familyMembersSelections = this.props.familyMembersSelections
         
         const beneficiaryDetailsObj = {
             type: 'familymembers',
@@ -126,13 +125,12 @@ class TestDetails extends PureComponent {
         if(this.props.singlePatientSelect === true) {
           
         }
-        if(this.state.familyMembersSelections.includes(payByFamilyIndex)) {
+        if(this.props.familyMembersSelections.includes(payByFamilyIndex)) {
             familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
             let familyData = this.state.familyDetailsData;
             const finalFamilyData = familyData.filter(ele => ele.uniqueIndex !== payByFamilyIndex);
             this.props.addPatientDetails(finalFamilyData); 
         } else {
-            
             if(this.props.singlePatientSelect === true ) {
                 let familyData = [];
                 familyMembersSelections = [ payByFamilyIndex ]
@@ -150,7 +148,7 @@ class TestDetails extends PureComponent {
 
         
         console.log(index);
-        await this.setState({ familyMembersSelections: familyMembersSelections })
+        await this.props.changeFamilyMembersSelections(familyMembersSelections);
        
 
 
@@ -201,7 +199,7 @@ class TestDetails extends PureComponent {
                         <Col size={3.3}>
                              <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
-                                    checked={this.state.familyMembersSelections.includes(payBy + '-' + index)}
+                                    checked={this.props.familyMembersSelections.includes(payBy + '-' + index)}
                                     onPress={() => this.addFamilyMembersForBooking(data, index, payBy) }
                                 />
                             </Row>

@@ -29,7 +29,8 @@ export default class PaymentReview extends Component {
       addPatientDataPoPupEnable: false,
       isCorporateUser: false,
       selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
-      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF 
+      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
+      familyMembersSelections: [] 
     }
     this.defaultPatDetails = {};
   }
@@ -97,7 +98,6 @@ export default class PaymentReview extends Component {
     const { bookSlotDetails, patientDetailsObj } = this.state;
     let { diseaseDescription } = bookSlotDetails;
     console.log('final Patient Details ',patientDetailsObj);
-    return false;
     if (!Object.keys(patientDetailsObj).length) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
@@ -444,7 +444,7 @@ export default class PaymentReview extends Component {
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
               onSelectionChange={(mode)=> {
-                  this.setState({ selectedPayBy: mode, whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF, patientDetailsObj: this.defaultPatDetails }) 
+                  this.setState({ selectedPayBy: mode, whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF, patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] }) 
               }}
             />
             
@@ -452,10 +452,12 @@ export default class PaymentReview extends Component {
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
+              familyMembersSelections={this.state.familyMembersSelections}
+              changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
               whomToTest={this.state.whomToTest}
               onSelectionChange={(whomToTest) => {
                 if(whomToTest === POSSIBLE_FAMILY_MEMBERS.SELF) {
-                   this.setState( { patientDetailsObj: this.defaultPatDetails,  whomToTest: whomToTest })
+                   this.setState( { patientDetailsObj: this.defaultPatDetails,  whomToTest: whomToTest, familyMembersSelections: [] })
                 } else {
                   this.setState( { patientDetailsObj: {},  whomToTest: whomToTest })
                 }
