@@ -12,6 +12,7 @@ import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAp
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
 import TestDetails from './testDeatils'
+import {PayBySelection, POSSIBLE_PAY_METHODS } from './PayBySelection';
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
@@ -26,7 +27,8 @@ export default class PaymentReview extends Component {
       isSelected: 'self',
       patientDetailsObj: {},
       addPatientDataPoPupEnable: false,
-      isCorporateUser: false
+      isCorporateUser: false,
+      selectedPayBy: POSSIBLE_PAY_METHODS.SELF
     }
     this.defaultPatDetails = {};
   }
@@ -433,6 +435,13 @@ export default class PaymentReview extends Component {
               </Row>
 
             </View>
+            
+            <PayBySelection
+              isCorporateUser={isCorporateUser}
+              selectedPayBy={this.state.selectedPayBy}
+              onSelectionChange={(mode)=> this.setState({ selectedPayBy: mode }) }
+            />
+            
             <TestDetails
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, Platform,StyleSheet,TouchableOpacity,ActivityIndicator } from "react-native";
-import { Icon,Toast } from 'native-base';
+import { View, Text, AsyncStorage, Platform, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Icon, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
-import { setI18nConfig  } from '../setup/translator.helper';
+import { setI18nConfig } from '../setup/translator.helper';
 
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
@@ -388,37 +388,37 @@ export async function validateFirstNameLastName(text) {
 
 export const RenderFooterLoader = (props) => {
     return (
-      //Footer View with Load More button
-      <View style={styles.footer}>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          // onPress={this.loadMoreData}
-  
-          style={styles.loadMoreBtn}>
-          {props.footerLoading ?
-  
-            <ActivityIndicator color="blue" style={styles.btnText} /> : null}
-  
-        </TouchableOpacity>
-      </View>
+        //Footer View with Load More button
+        <View style={styles.footer}>
+            <TouchableOpacity
+                activeOpacity={0.9}
+                // onPress={this.loadMoreData}
+
+                style={styles.loadMoreBtn}>
+                {props.footerLoading ?
+
+                    <ActivityIndicator color="blue" style={styles.btnText} /> : null}
+
+            </TouchableOpacity>
+        </View>
     );
-  }
-  
-  const styles = StyleSheet.create({
-    
+}
+
+const styles = StyleSheet.create({
+
     footer: {
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-      },
-      btnText: {
+    },
+    btnText: {
         color: 'blue',
         fontSize: 15,
         textAlign: 'center',
-      }
-  });
-  
+    }
+});
+
 export function getUserGenderAndAge(data) {
     let genderAndAge = '';
     if (data) {
@@ -436,22 +436,20 @@ export function getUserGenderAndAge(data) {
     }
     return genderAndAge;
 }
-export const  onPopupEvent = (eventName, index,navigation) => {
+export const onPopupEvent = (eventName, index, navigation) => {
     if (eventName !== 'itemSelected') return
     if (index === 0) {
         setI18nConfig('en')
     }
-    else if (index === 1)
-    {
+    else if (index === 1) {
         setI18nConfig('ta')
     }
-    else if (index === 2)
-    {
+    else if (index === 2) {
         setI18nConfig('ma')
     }
-  }
+}
 
-  export function renderForumImage(data, infoNode) {
+export function renderForumImage(data, infoNode) {
     let source = null;
     if (data[infoNode] && data[infoNode].profile_image) {
         source = { uri: data[infoNode].profile_image.imageURL }
@@ -466,13 +464,43 @@ export const  onPopupEvent = (eventName, index,navigation) => {
 
 }
 
-export function toastMeassage(text,type,duration) {
-    
-    return (Toast.show({
-    text: text,
-    type: type,
-    duration: duration
-}))
+export function toastMeassage(text, type, duration) {
 
-    
+    return (Toast.show({
+        text: text,
+        type: type,
+        duration: duration
+    }))
+
+
+}
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    let R = 6371; // Radius of the earth in km
+    let dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    let dLon = deg2rad(lon2 - lon1);
+    let a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ;
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c; // Distance in km
+    return d;
+}
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
+}
+export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
+    console.log(gpsLocation)
+    if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
+        let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
+
+        return result.toFixed(1) + ' Km'
+
+
+    }
+    else {
+        return '0 km '
+    }
+
 }
