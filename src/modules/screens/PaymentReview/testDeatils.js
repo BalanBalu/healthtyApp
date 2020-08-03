@@ -13,6 +13,7 @@ import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { dateDiff } from '../../../setup/helpers';
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
+import { getRandomInt } from '../../common';
 const POSSIBLE_FAMILY_MEMBERS = {
     SELF: 'SELF',
     FAMILY_WITH_PAY: 'FAMILY_WITH_PAY',
@@ -30,6 +31,7 @@ class TestDetails extends PureComponent {
             age: '',
             refreshCount: 0,
             familyDetailsData: [],
+            onlyFamilyWithPayDetailsData : []
         }
         console.log(this.props);
         this.defaultPatDetails = {};
@@ -54,7 +56,8 @@ class TestDetails extends PureComponent {
                 age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years')),
                 phone_no:patInfoResp.mobile_no
             }
-            this.setState({ refreshCount: this.state.refreshCount + 1 })
+            this.props.addPatientDetails( [ this.defaultPatDetails ], true);
+            this.setState({ refreshCount: this.state.refreshCount + 1, familyDetailsData: [ this.defaultPatDetails ] })
 
         }
         catch (Ex) {
@@ -75,19 +78,23 @@ class TestDetails extends PureComponent {
                 type: 'others',
                 full_name: name,
                 age: parseInt(age),
-                gender
+                gender,
+                uniqueId: 'others-' + getRandomInt(1000) 
             }
-           
+            const onlyFamilyWithPayDetailsData = this.state.onlyFamilyWithPayDetailsData;
+            debugger
             if(this.props.singlePatientSelect === true ) {
                 let familyData = [];
                 familyData.push(othersDetailsObj);
-                this.setState({ familyDetailsData: familyData })
+                this.setState({ familyDetailsData: familyData, onlyFamilyWithPayDetailsData: familyData })
                 this.props.addPatientDetails(familyData); 
             } else {
                 let familyData = this.state.familyDetailsData;
                 familyData.push(othersDetailsObj);
-                this.setState({ familyDetailsData: familyData })
+                onlyFamilyWithPayDetailsData.push(othersDetailsObj);
+                this.setState({ familyDetailsData: familyData, onlyFamilyWithPayDetailsData: onlyFamilyWithPayDetailsData });
                 this.props.addPatientDetails(familyData); 
+                
             }
         }
     }
@@ -106,16 +113,36 @@ class TestDetails extends PureComponent {
                 familyDetailsData.splice(index, 1);
             }
             console.log(familyDetailsData);
+            this.setPatientType(POSSIBLE_FAMILY_MEMBERS.SELF);
             this.props.addPatientDetails(familyDetailsData); 
-            this.props.onCheckedSelfChange();
         }
     }
+    setPatientType(changedPatientType) {
+        const selectedPatientTypes = this.props.selectedPatientTypes;
+        if (selectedPatientTypes.includes(changedPatientType)) {
+            selectedPatientTypes.splice(selectedPatientTypes.indexOf(changedPatientType), 1);
+            this.props.onSelectionChange(selectedPatientTypes);
+        } else {
+            selectedPatientTypes.push(changedPatientType);
+            this.props.onSelectionChange(selectedPatientTypes);
+        } 
+    }
+
     onRemovePatientClicked(indexNo) {
-        const arr =  this.state.familyDetailsData.filter(function(item, index) {
+        let uniqueId = null;
+        const filteredData =  this.state.onlyFamilyWithPayDetailsData.filter(function(item, index) {
+            if(index === indexNo) {
+                uniqueId = item.uniqueId;
+            }
             return index !== indexNo
         });
+        console.log('uniqueId', uniqueId);
+        const arr = this.state.familyDetailsData.filter(function(item, index) {
+            return item.uniqueId !== uniqueId
+        });
+
         this.props.addPatientDetails(arr);
-        this.setState({ familyDetailsData: arr });
+        this.setState({ familyDetailsData: arr, onlyFamilyWithPayDetailsData: filteredData });
     }
     async addFamilyMembersForBooking(data, index, payBy) {
         console.log('PayBy', payBy);
@@ -250,9 +277,9 @@ class TestDetails extends PureComponent {
             familyDataByInsurance: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "female", phone_no: 8921595872 }],
             familyDataByCorporate: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 } ]
         }
-        const { isCorporateUser, payBy, onSelectionChange, singlePatientSelect, isCheckedSelf, isCheckedFamilyWithPay,  onCheckedFamilyWithPayChange, selectedPatientTypes } = this.props;
+        const { isCorporateUser, payBy, onSelectionChange, singlePatientSelect, selectedPatientTypes } = this.props;
        
-        const { name, age, gender, familyDetailsData } = this.state
+        const { name, age, gender, familyDetailsData , onlyFamilyWithPayDetailsData } = this.state
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
@@ -271,8 +298,8 @@ class TestDetails extends PureComponent {
                             }}/> 
                          :
                             <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
-                                checked={isCheckedSelf}
-                                onPress={() => this.onSelfPatientClicked(isCheckedSelf)}
+                                checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ? true : false}
+                                onPress={() => this.onSelfPatientClicked(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF))}
                             /> 
                         }
                          
@@ -290,7 +317,7 @@ class TestDetails extends PureComponent {
                                 onPress={() => onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)} />
                             : 
                              <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
-                                checked={isCheckedSelf}
+                                checked={''}
                                 onPress={() => { }}
                             />
                             }
@@ -309,10 +336,13 @@ class TestDetails extends PureComponent {
                                 onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY); 
                                 this.setState({  patientDetailsObj: {} });
                             }}/>
-                        :   <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
-                                checked={isCheckedFamilyWithPay}
-                                onPress={() => { onCheckedFamilyWithPayChange()  }}
-                            />}
+                        :    <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
+                                checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ? true : false}
+                                onPress={() => {
+                                       this.setPatientType(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY); 
+                                  //  this.onSelfPatientClicked(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF)
+                                }}
+                            /> }
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>{ 'Family' } </Text>
                     </View> 
                     : null }
@@ -334,7 +364,7 @@ class TestDetails extends PureComponent {
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                             <FlatList
-                                data={familyDetailsData}
+                                data={onlyFamilyWithPayDetailsData}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
                                     this.renderPatientDetails(item, index, false)

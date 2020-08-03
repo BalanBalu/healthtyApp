@@ -138,17 +138,17 @@ export default class PaymentReview extends Component {
 
   getPatientInfo = async () => {
     try {
-      const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
-      const userId = await AsyncStorage.getItem('userId');
-      const patInfoResp = await fetchUserProfile(userId, fields);
-      console.log('patInfoResp====>', patInfoResp)
-      this.defaultPatDetails = {
-        type: 'self',
-        full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
-        gender: patInfoResp.gender,
-        age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
-      }
-      this.setState({ patientDetailsObj: this.defaultPatDetails });
+      // const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+      // const userId = await AsyncStorage.getItem('userId');
+      // const patInfoResp = await fetchUserProfile(userId, fields);
+      // console.log('patInfoResp====>', patInfoResp)
+      // this.defaultPatDetails = {
+      //   type: 'self',
+      //   full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+      //   gender: patInfoResp.gender,
+      //   age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
+      // }
+      // this.setState({ patientDetailsObj: this.defaultPatDetails });
     }
     catch (Ex) {
       console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
@@ -455,9 +455,6 @@ export default class PaymentReview extends Component {
               singlePatientSelect={true}
               familyMembersSelections={this.state.familyMembersSelections}
               changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
-              
-              
-              
               onSelectionChange={(patientType) => {
                 if(patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
                    this.setState( { patientDetailsObj: this.defaultPatDetails,  selectedPatientTypes: [ patientType ] , familyMembersSelections: [] })
@@ -465,13 +462,14 @@ export default class PaymentReview extends Component {
                   this.setState( { patientDetailsObj: {},  selectedPatientTypes: [ patientType ] })
                 }
               }}
-              
               selectedPatientTypes={this.state.selectedPatientTypes}
-              
-
               payBy={this.state.selectedPayBy}
-              addPatientDetails={(data) => this.addPatientList(data)}
-
+              addPatientDetails={(data, setDefaultPatentData) => {
+                if(setDefaultPatentData === true) {
+                   this.defaultPatDetails = data[0];
+                }
+                this.addPatientList(data)
+              }}
             />
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
               <Row>
