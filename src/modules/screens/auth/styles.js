@@ -253,6 +253,20 @@ export default StyleSheet.create({
         fontSize: 14,
         color: '#000',
         marginLeft: 5
+    },
+    switchToCorporate:{
+        marginTop: 10, 
+        justifyContent: 'flex-end', 
+        alignContent: 'flex-end', 
+        alignSelf: 'flex-end' ,
+        borderColor:'#fff',
+        borderWidth:1,
+        paddingLeft:10,
+        paddingRight:10,
+        paddingTop:2,
+        paddingBottom:2,
+        borderRadius:5,
+        flexDirection:'row'
     }
 })
 

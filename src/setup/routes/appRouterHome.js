@@ -1081,7 +1081,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           {
             name: 'Home Health Care',
             routeName: drawerNavigatorRoutes["Home Health Care"].routeName,
-            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            icon: require('../../../assets/images/drawerIcons/homeTest.png'),
 
           },
           {
