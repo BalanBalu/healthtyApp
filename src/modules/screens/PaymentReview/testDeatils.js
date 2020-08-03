@@ -114,12 +114,41 @@ class TestDetails extends PureComponent {
     async addFamilyMembersForBooking(data, index, payBy) {
         console.log('PayBy', payBy);
         const payByFamilyIndex = payBy + '-' + index;
-        const familyMembersSelections = this.state.familyMembersSelections
-        if(this.state.familyMembersSelections.includes(payByFamilyIndex)) {
-            familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1)
-        } else {
-            familyMembersSelections.push(payByFamilyIndex);
+        let familyMembersSelections = this.state.familyMembersSelections
+        
+        const beneficiaryDetailsObj = {
+            type: 'familymembers',
+            full_name: data.name,
+            age: parseInt(data.age),
+            gender: data.gender,
+            uniqueIndex: payByFamilyIndex
         }
+        if(this.props.singlePatientSelect === true) {
+          
+        }
+        if(this.state.familyMembersSelections.includes(payByFamilyIndex)) {
+            familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
+            let familyData = this.state.familyDetailsData;
+            const finalFamilyData = familyData.filter(ele => ele.uniqueIndex !== payByFamilyIndex);
+            this.props.addPatientDetails(finalFamilyData); 
+        } else {
+            
+            if(this.props.singlePatientSelect === true ) {
+                let familyData = [];
+                familyMembersSelections = [ payByFamilyIndex ]
+                familyData.push(beneficiaryDetailsObj);
+                this.setState({ familyDetailsData: familyData })
+                this.props.addPatientDetails(familyData); 
+            } else {
+                familyMembersSelections.push(payByFamilyIndex);
+                let familyData = this.state.familyDetailsData;
+                familyData.push(beneficiaryDetailsObj);
+                this.setState({ familyDetailsData: familyData })
+                this.props.addPatientDetails(familyData); 
+            }
+        }
+
+        
         console.log(index);
         await this.setState({ familyMembersSelections: familyMembersSelections })
        

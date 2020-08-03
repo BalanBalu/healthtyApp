@@ -96,6 +96,8 @@ export default class PaymentReview extends Component {
   async processToPayLater() {
     const { bookSlotDetails, patientDetailsObj } = this.state;
     let { diseaseDescription } = bookSlotDetails;
+    console.log('final Patient Details ',patientDetailsObj);
+    return false;
     if (!Object.keys(patientDetailsObj).length) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
@@ -442,7 +444,7 @@ export default class PaymentReview extends Component {
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
               onSelectionChange={(mode)=> {
-                  this.setState({ selectedPayBy: mode, whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF }) 
+                  this.setState({ selectedPayBy: mode, whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF, patientDetailsObj: this.defaultPatDetails }) 
               }}
             />
             
@@ -451,7 +453,13 @@ export default class PaymentReview extends Component {
               navigation={this.props.navigation}
               singlePatientSelect={true}
               whomToTest={this.state.whomToTest}
-              onSelectionChange={(whomToTest) => this.setState({ whomToTest: whomToTest })}
+              onSelectionChange={(whomToTest) => {
+                if(whomToTest === POSSIBLE_FAMILY_MEMBERS.SELF) {
+                   this.setState( { patientDetailsObj: this.defaultPatDetails,  whomToTest: whomToTest })
+                } else {
+                  this.setState( { patientDetailsObj: {},  whomToTest: whomToTest })
+                }
+              }}
               payBy={this.state.selectedPayBy}
               addPatientDetails={(data) => this.addPatientList(data)}
 
