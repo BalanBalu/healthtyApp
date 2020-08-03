@@ -503,7 +503,10 @@ export default class PaymentReview extends Component {
           Platform.OS === "ios" ?
             { height: 30 } : { height: 45 }}>
           <FooterTab>
+           
             <Row>
+            {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ?
+            <>
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
                 <TouchableOpacity 
                   onPress={() => this.processToPayLater()}
@@ -514,10 +517,20 @@ export default class PaymentReview extends Component {
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8EC63F' }}>
                 <TouchableOpacity
                    onPress={() => this.confirmProceedPayment()}
-                   style={styles.buttonTouch1} >
+                   style={styles.buttonTouch1}>
                   <Text style={styles.footerButtonText}>Pay Online</Text>
                 </TouchableOpacity>
               </Col>
+            </>  
+           : 
+            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5'  }}>
+              <TouchableOpacity
+                onPress={() => this.processToPayLater()}
+                style={styles.buttonTouch}>
+                <Text style={styles.footerButtonText}>Book an Appoiintment </Text>
+             </TouchableOpacity>
+         </Col> 
+            }
             </Row>
           </FooterTab>
         </Footer>
