@@ -446,6 +446,7 @@ export default class PaymentReview extends Component {
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
+              payBy={this.state.selectedPayBy}
               addPatientDetails={(data) => this.addPatientList(data)}
 
             />
