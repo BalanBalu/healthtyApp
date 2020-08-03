@@ -122,6 +122,15 @@ class PublicForumDetail extends PureComponent {
         return true;
     }
 
+    answerGivenName(item) {
+        let name = "Anonymous"
+        if (item && item.is_logged_in == true ) {
+            if (item.answererInfo.first_name) {
+                name = item.answererInfo.first_name + " " + item.answererInfo.last_name
+            }
+        }
+        return name
+    }
     render() {
 
         const { answer_text, getsData, isLoading } = this.state
@@ -179,7 +188,7 @@ class PublicForumDetail extends PureComponent {
                                                             <Col size={9}>
                                                                 <Row>
                                                                     <Col size={8}>
-                                                                        <Text style={styles.symptomsText}>{item.answererInfo.first_name + ' ' + item.answererInfo.last_name}</Text>
+                                                                        <Text style={styles.symptomsText}>{this.answerGivenName(item)}</Text>
                                                                     </Col>
                                                                     <Col size={2}>
                                                                         <Text style={styles.answerText}>{formatDate(item.created_date, 'MMMM DD,YYYY')}</Text>
