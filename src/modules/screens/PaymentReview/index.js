@@ -71,7 +71,7 @@ export default class PaymentReview extends Component {
       startTime: bookingSlotData.slotData.slotStartDateAndTime,
       endTime: bookingSlotData.slotData.slotEndDateAndTime,
     }
-    validationResult = await validateBooking(reqData)
+    let validationResult = await validateBooking(reqData)
     this.setState({ isLoading: false, spinnerText: ' ' });
     if (validationResult.success) {
       const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
@@ -141,6 +141,7 @@ export default class PaymentReview extends Component {
         gender: patInfoResp.gender,
         age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
       }
+      this.setState({ patientDetailsObj: this.defaultPatDetails });
     }
     catch (Ex) {
       console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
@@ -150,16 +151,10 @@ export default class PaymentReview extends Component {
 
 
   addPatientList = async (patientData) => {
-    const { name, age, gender } = this.state;
-    console.log('Patient Data==>', patientData);
-    if (!name || !age || !gender) {
-      this.setState({ errMsg: '* Kindly fill all the fields' });
-    }
-    else {
+      console.log('Patient Data==>', patientData);
       this.setState({ errMsg: '' })
       const othersDetailsObj = patientData[0];
       await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
-    }
   }
 
 
@@ -169,10 +164,7 @@ export default class PaymentReview extends Component {
     return (
       <Container>
         <Content style={{ padding: 15, backgroundColor: '#F5F5F5' }}>
-          {/* <Spinner
-            visible={isLoading}
-            textContent={spinnerText}
-          />
+          {/*
           <View style={{ marginBottom: 20 }}>
             <Card transparent >
               <CardItem header style={styles.cardItem}>
@@ -401,6 +393,10 @@ export default class PaymentReview extends Component {
               </Button>
             </Row>
           </View> */}
+           <Spinner
+            visible={isLoading}
+            textContent={spinnerText}
+          />
           <View style={{ paddingBottom: 50 }}>
             <View style={{ backgroundColor: '#fff', padding: 10 }}>
               <Row>
@@ -472,7 +468,7 @@ export default class PaymentReview extends Component {
                   <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Consultation Fees</Text>
                 </Col>
                 <Col>
-                  <Text style={styles.rupeesText}>₹ 100.00</Text>
+                  <Text style={styles.rupeesText}>{'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
                 </Col>
               </Row>
               <Row style={{ marginTop: 10 }}>
@@ -480,7 +476,7 @@ export default class PaymentReview extends Component {
                   <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Charges </Text>
                 </Col>
                 <Col>
-                  <Text style={styles.redRupesText}>₹ 0.00</Text>
+                  <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
                 </Col>
               </Row>
               <Row style={{ marginTop: 10 }}>
@@ -488,7 +484,7 @@ export default class PaymentReview extends Component {
                   <Text style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
                 </Col>
                 <Col>
-                  <Text style={styles.rupeesText}>₹ 150.00</Text>
+                  <Text style={styles.rupeesText}>{'\u20B9'} {(bookSlotDetails.slotData && bookSlotDetails.slotData.fee || 0) + 0 }</Text>
                 </Col>
               </Row>
             </View>
@@ -500,12 +496,16 @@ export default class PaymentReview extends Component {
           <FooterTab>
             <Row>
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
-                <TouchableOpacity style={styles.buttonTouch}>
-                  <Text style={styles.footerButtonText}>Pay at Hospital  </Text>
+                <TouchableOpacity 
+                  onPress={() => this.processToPayLater()}
+                  style={styles.buttonTouch}>
+                  <Text style={styles.footerButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
                 </TouchableOpacity>
               </Col>
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8EC63F' }}>
-                <TouchableOpacity style={styles.buttonTouch1} >
+                <TouchableOpacity
+                   onPress={() => this.confirmProceedPayment()}
+                   style={styles.buttonTouch1} >
                   <Text style={styles.footerButtonText}>Pay Online</Text>
                 </TouchableOpacity>
               </Col>
