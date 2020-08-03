@@ -11,7 +11,7 @@ import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
-import TestDetails from './testDeatils'
+import { TestDetails, POSSIBLE_FAMILY_MEMBERS } from './testDeatils'
 import {PayBySelection, POSSIBLE_PAY_METHODS } from './PayBySelection';
 export default class PaymentReview extends Component {
   constructor(props) {
@@ -28,7 +28,8 @@ export default class PaymentReview extends Component {
       patientDetailsObj: {},
       addPatientDataPoPupEnable: false,
       isCorporateUser: false,
-      selectedPayBy: POSSIBLE_PAY_METHODS.SELF
+      selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
+      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF 
     }
     this.defaultPatDetails = {};
   }
@@ -44,6 +45,7 @@ export default class PaymentReview extends Component {
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
+    console.log('bookSlotDetails', bookSlotDetails);
     await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser });
     await this.getPatientInfo();
   }
@@ -439,13 +441,17 @@ export default class PaymentReview extends Component {
             <PayBySelection
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
-              onSelectionChange={(mode)=> this.setState({ selectedPayBy: mode }) }
+              onSelectionChange={(mode)=> {
+                  this.setState({ selectedPayBy: mode, whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF }) 
+              }}
             />
             
             <TestDetails
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
+              whomToTest={this.state.whomToTest}
+              onSelectionChange={(whomToTest) => this.setState({ whomToTest: whomToTest })}
               payBy={this.state.selectedPayBy}
               addPatientDetails={(data) => this.addPatientList(data)}
 
