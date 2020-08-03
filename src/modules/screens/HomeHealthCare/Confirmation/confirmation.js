@@ -230,8 +230,9 @@ class HomeTestConfirmation extends Component {
                                 isCorporateUser={isCorporateUser}
                                 selectedPayBy={this.state.selectedPayBy}
                                 onSelectionChange={(mode)=> {
-                                    this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], familyMembersSelections: [] }) 
-                            }}/>
+                                    this.addPatientList(this.selfPatientData); 
+                                    this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], familyMembersSelections: [] });
+                                }}/>
 
                             <TestDetails
                                 isCorporateUser={isCorporateUser}
@@ -245,7 +246,12 @@ class HomeTestConfirmation extends Component {
                                 selectedPatientTypes={this.state.selectedPatientTypes}
                                   
                                 payBy={this.state.selectedPayBy}
-                                addPatientDetails={(data) => this.addPatientList(data)}
+                                addPatientDetails={(data, setSelfPatientData) => { 
+                                    if(setSelfPatientData === true) {
+                                        this.selfPatientData = data
+                                    }
+                                    this.addPatientList(data);
+                                }}
                             />
 
                             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>

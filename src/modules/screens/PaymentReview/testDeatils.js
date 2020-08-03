@@ -122,6 +122,7 @@ class TestDetails extends PureComponent {
         if (selectedPatientTypes.includes(changedPatientType)) {
             selectedPatientTypes.splice(selectedPatientTypes.indexOf(changedPatientType), 1);
             this.props.onSelectionChange(selectedPatientTypes);
+        
         } else {
             selectedPatientTypes.push(changedPatientType);
             this.props.onSelectionChange(selectedPatientTypes);
@@ -144,6 +145,14 @@ class TestDetails extends PureComponent {
         this.props.addPatientDetails(arr);
         this.setState({ familyDetailsData: arr, onlyFamilyWithPayDetailsData: filteredData });
     }
+    removeAllPatient() {
+        const uniqueIds =  this.state.onlyFamilyWithPayDetailsData.map((item, index) => item.uniqueId);
+         const arr = this.state.familyDetailsData.filter(function(item, index) {
+             return uniqueIds.includes(item.uniqueId) === false
+         });
+         this.props.addPatientDetails(arr);
+         this.setState({ familyDetailsData: arr, onlyFamilyWithPayDetailsData: [ ] });
+    }
     async addFamilyMembersForBooking(data, index, payBy) {
         console.log('PayBy', payBy);
         const payByFamilyIndex = payBy + '-' + index;
@@ -156,29 +165,38 @@ class TestDetails extends PureComponent {
             gender: data.gender,
             uniqueIndex: payByFamilyIndex
         }
+
         if(this.props.singlePatientSelect === true) {
-          
-        }
-        if(this.props.familyMembersSelections.includes(payByFamilyIndex)) {
-            familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
-            let familyData = this.state.familyDetailsData;
-            const finalFamilyData = familyData.filter(ele => ele.uniqueIndex !== payByFamilyIndex);
-            this.props.addPatientDetails(finalFamilyData); 
-        } else {
-            if(this.props.singlePatientSelect === true ) {
+            if(this.props.familyMembersSelections.includes(payByFamilyIndex)) {
+                familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
+                let familyData = this.state.familyDetailsData;
+                const finalFamilyData = familyData.filter(ele => ele.uniqueIndex !== payByFamilyIndex);
+                this.setState({ familyDetailsData: finalFamilyData });
+                this.props.addPatientDetails(finalFamilyData);
+            } else {
                 let familyData = [];
                 familyMembersSelections = [ payByFamilyIndex ];
                 familyData.push(beneficiaryDetailsObj);
-                this.setState({ familyDetailsData: familyData })
+                this.setState({ familyDetailsData: familyData });
                 this.props.addPatientDetails(familyData); 
-            } else {
-                familyMembersSelections.push(payByFamilyIndex);
+            }
+        } else {
+            let familyFindIndex = this.state.familyDetailsData.findIndex(ele => ele.uniqueIndex === payByFamilyIndex);
+            if(familyFindIndex === -1) {
                 let familyData = this.state.familyDetailsData;
                 familyData.push(beneficiaryDetailsObj);
-                this.setState({ familyDetailsData: familyData })
+                familyMembersSelections.push(payByFamilyIndex);
+                this.setState({ familyDetailsData: familyData });
+                this.props.addPatientDetails(familyData); 
+            } else {
+                let familyData = this.state.familyDetailsData;
+                familyData.splice(familyFindIndex, 1);
+                familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
+                this.setState({ familyDetailsData: familyData });
                 this.props.addPatientDetails(familyData); 
             }
         }
+
         await this.props.changeFamilyMembersSelections(familyMembersSelections);
        
 
@@ -317,8 +335,10 @@ class TestDetails extends PureComponent {
                                 onPress={() => onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)} />
                             : 
                              <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
-                                checked={''}
-                                onPress={() => { }}
+                                checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ? true : false}
+                                onPress={() => {
+                                    this.setPatientType(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY);
+                                }}
                             />
                             }
                             <Text style={[styles.commonText, { marginLeft: 5 }]}>Family </Text>
@@ -339,8 +359,10 @@ class TestDetails extends PureComponent {
                         :    <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
                                 checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ? true : false}
                                 onPress={() => {
-                                       this.setPatientType(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY); 
-                                  //  this.onSelfPatientClicked(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF)
+                                      if(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)) {
+                                        this.removeAllPatient();
+                                      }
+                                      this.setPatientType(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY); 
                                 }}
                             /> }
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>{ 'Family' } </Text>
