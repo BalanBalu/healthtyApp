@@ -121,7 +121,7 @@ import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Con
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 
-
+import PaymentReviewHospital from '../../modules/screens/PaymentReview/paymentReviewHosptal'
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
@@ -603,6 +603,13 @@ const HomeStack = createStackNavigator({
 
   "Payment Review": {
     screen: PaymentReview,
+    navigationOptions: {
+      title: 'Payment Review'
+    }
+  },
+  
+  PaymentReviewHospital: {
+    screen: PaymentReviewHospital,
     navigationOptions: {
       title: 'Payment Review'
     }
