@@ -1,7 +1,15 @@
 import { StyleSheet } from 'react-native'
 
 export default styles = StyleSheet.create({
-
+    containers: {
+        flex: 1,
+        justifyContent: "center"
+    },
+    horizontal: {
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: 10
+    },
     subHead: {
         fontFamily: 'OpenSans',
         fontSize: 14,
@@ -67,6 +75,21 @@ export default styles = StyleSheet.create({
         color: "white",
         fontSize: 12,
         textAlign: "center"
+    },
+    customButton: {
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 12,
+        backgroundColor: "#775DA3",
+        marginLeft: 15,
+        borderRadius: 10,
+        width: "auto",
+        height: 40,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center",
+        marginLeft: "auto",
+        marginRight: "auto"
     },
     bookAgain1: {
         fontSize: 13,
@@ -676,5 +699,49 @@ export default styles = StyleSheet.create({
     },
     enabledBookingAvailableBtn: {
         alignItems: 'center', borderRadius: 10, backgroundColor: 'green'
-    }
+    },
+    
+    subTextBilling: {
+        fontFamily: 'Opensans',
+        fontSize: 12,
+        color: '#000',
+        marginLeft: 5
+    },
+    docName: {
+        fontSize: 15,
+        fontFamily: 'OpenSans',
+        color: '#7F49C3'
+    },
+    specialist: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        color: '#909090'
+    },
+    rupeesText: {
+        fontSize: 10,
+        fontFamily: 'OpenSans',
+        textAlign: 'right',
+        color: '#8EC63F'
+    },
+    redRupesText: {
+        fontSize: 10,
+        fontFamily: 'OpenSans',
+        textAlign: 'right',
+        color: 'red'
+    },
+    textInput: {
+        borderColor: 'gray',
+        borderRadius: 10,
+        borderWidth: 0.5,
+        height: 100,
+        fontSize: 12,
+        textAlignVertical: 'top',
+        width: '100%',
+        padding: 10,
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderRadius: 10,
+        paddingRight: 10,
+        marginTop: 15
+      },
 });

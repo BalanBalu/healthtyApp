@@ -11,7 +11,8 @@ import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
-import TestDetails from './testDeatils'
+import { TestDetails, POSSIBLE_FAMILY_MEMBERS } from './testDeatils'
+import {PayBySelection, POSSIBLE_PAY_METHODS } from './PayBySelection';
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
@@ -25,7 +26,15 @@ export default class PaymentReview extends Component {
       age: '',
       isSelected: 'self',
       patientDetailsObj: {},
-      addPatientDataPoPupEnable: false
+      addPatientDataPoPupEnable: false,
+      isCorporateUser: false,
+      selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
+      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
+      familyMembersSelections: [],
+      fromNavigation:null ,
+      familyMembersSelections: [],
+      selectedPatientTypes : [ POSSIBLE_FAMILY_MEMBERS.SELF ] ,
+      familyDetailsData: []
     }
     this.defaultPatDetails = {};
   }
@@ -33,12 +42,17 @@ export default class PaymentReview extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const isLoggedIn = await hasLoggedIn(this.props);
+    console.log('IsCorporate User',  await AsyncStorage.getItem('is_corporate_user'));
+    const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+
     if (!isLoggedIn) {
       navigation.navigate('login');
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
-    await this.setState({ bookSlotDetails: bookSlotDetails });
+    const fromNavigation=navigation.getParam('fromNavigation')||null
+    console.log('bookSlotDetails', bookSlotDetails);
+    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser,fromNavigation });
     await this.getPatientInfo();
   }
   async confirmProceedPayment() {
@@ -67,7 +81,7 @@ export default class PaymentReview extends Component {
       startTime: bookingSlotData.slotData.slotStartDateAndTime,
       endTime: bookingSlotData.slotData.slotEndDateAndTime,
     }
-    validationResult = await validateBooking(reqData)
+    let validationResult = await validateBooking(reqData)
     this.setState({ isLoading: false, spinnerText: ' ' });
     if (validationResult.success) {
       const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
@@ -88,6 +102,7 @@ export default class PaymentReview extends Component {
   async processToPayLater() {
     const { bookSlotDetails, patientDetailsObj } = this.state;
     let { diseaseDescription } = bookSlotDetails;
+    console.log('final Patient Details ',patientDetailsObj);
     if (!Object.keys(patientDetailsObj).length) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
@@ -127,16 +142,17 @@ export default class PaymentReview extends Component {
 
   getPatientInfo = async () => {
     try {
-      const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
-      const userId = await AsyncStorage.getItem('userId');
-      const patInfoResp = await fetchUserProfile(userId, fields);
-      console.log('patInfoResp====>', patInfoResp)
-      this.defaultPatDetails = {
-        type: 'self',
-        full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
-        gender: patInfoResp.gender,
-        age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
-      }
+      // const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+      // const userId = await AsyncStorage.getItem('userId');
+      // const patInfoResp = await fetchUserProfile(userId, fields);
+      // console.log('patInfoResp====>', patInfoResp)
+      // this.defaultPatDetails = {
+      //   type: 'self',
+      //   full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+      //   gender: patInfoResp.gender,
+      //   age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
+      // }
+      // this.setState({ patientDetailsObj: this.defaultPatDetails });
     }
     catch (Ex) {
       console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
@@ -145,34 +161,21 @@ export default class PaymentReview extends Component {
 
 
 
-  addPatientList = async () => {
-    const { name, age, gender } = this.state;
-    if (!name || !age || !gender) {
-      this.setState({ errMsg: '* Kindly fill all the fields' });
-    }
-    else {
+  addPatientList = async (patientData) => {
+      console.log('Patient Data==>', patientData);
       this.setState({ errMsg: '' })
-      const othersDetailsObj = {
-        type: 'others',
-        full_name: name,
-        age: parseInt(age),
-        gender
-      }
+      const othersDetailsObj = patientData[0];
       await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
-      await this.setState({ name: null, age: null, gender: null });
-    }
   }
 
 
   render() {
-    const { bookSlotDetails, patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender } = this.state;
+    const { bookSlotDetails, isCorporateUser ,patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender,fromNavigation } = this.state;
+   console.log(isCorporateUser);
     return (
       <Container>
         <Content style={{ padding: 15, backgroundColor: '#F5F5F5' }}>
-          {/* <Spinner
-            visible={isLoading}
-            textContent={spinnerText}
-          />
+          {/*
           <View style={{ marginBottom: 20 }}>
             <Card transparent >
               <CardItem header style={styles.cardItem}>
@@ -401,9 +404,26 @@ export default class PaymentReview extends Component {
               </Button>
             </Row>
           </View> */}
+           <Spinner
+            visible={isLoading}
+            textContent={spinnerText}
+          />
           <View style={{ paddingBottom: 50 }}>
             <View style={{ backgroundColor: '#fff', padding: 10 }}>
+           { fromNavigation!==null?
               <Row>
+                <Col size={1.6}>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                    <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
+                  </TouchableOpacity>
+                </Col>
+                <Col size={8.4}>
+                  <Text style={styles.docName}>{bookSlotDetails.name }</Text>
+                  <Text note style={styles.hosAddress}>{bookSlotDetails.location.address.no_and_street + ', '}
+                    {bookSlotDetails.location.address.city + ', '}
+                    {bookSlotDetails.location.address.state + '-'} {bookSlotDetails.location.address.pin_code}.</Text>
+                </Col>
+              </Row>:   <Row>
                 <Col size={1.6}>
                   <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
                     <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
@@ -413,7 +433,7 @@ export default class PaymentReview extends Component {
                   <Text style={styles.docName}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
                   <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                 </Col>
-              </Row>
+              </Row>}
               {bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>
@@ -437,9 +457,38 @@ export default class PaymentReview extends Component {
               </Row>
 
             </View>
+            
+            <PayBySelection
+              isCorporateUser={isCorporateUser}
+              selectedPayBy={this.state.selectedPayBy}
+              onSelectionChange={(mode)=> {
+                  this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] }) 
+              }}
+            />
+            
             <TestDetails
+              isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
-
+              singlePatientSelect={true}
+              familyMembersSelections={this.state.familyMembersSelections}
+              changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
+              onSelectionChange={(patientType) => {
+                if(patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
+                   this.setState( { patientDetailsObj: this.defaultPatDetails,  selectedPatientTypes: [ patientType ] , familyMembersSelections: [] })
+                } else {
+                  this.setState( { patientDetailsObj: {},  selectedPatientTypes: [ patientType ] })
+                }
+              }}
+              familyDetailsData={this.state.familyDetailsData} 
+              setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })} 
+              selectedPatientTypes={this.state.selectedPatientTypes}
+              payBy={this.state.selectedPayBy}
+              addPatientDetails={(data, setDefaultPatentData) => {
+                if(setDefaultPatentData === true) {
+                   this.defaultPatDetails = data[0];
+                }
+                this.addPatientList(data)
+              }}
             />
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
               <Row>
@@ -469,7 +518,7 @@ export default class PaymentReview extends Component {
                   <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Consultation Fees</Text>
                 </Col>
                 <Col>
-                  <Text style={styles.rupeesText}>₹ 100.00</Text>
+                  <Text style={styles.rupeesText}>{'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
                 </Col>
               </Row>
               <Row style={{ marginTop: 10 }}>
@@ -477,7 +526,7 @@ export default class PaymentReview extends Component {
                   <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Charges </Text>
                 </Col>
                 <Col>
-                  <Text style={styles.redRupesText}>₹ 50.00</Text>
+                  <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
                 </Col>
               </Row>
               <Row style={{ marginTop: 10 }}>
@@ -485,7 +534,7 @@ export default class PaymentReview extends Component {
                   <Text style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
                 </Col>
                 <Col>
-                  <Text style={styles.rupeesText}>₹ 150.00</Text>
+                  <Text style={styles.rupeesText}>{'\u20B9'} {(bookSlotDetails.slotData && bookSlotDetails.slotData.fee || 0) + 0 }</Text>
                 </Col>
               </Row>
             </View>
@@ -495,17 +544,34 @@ export default class PaymentReview extends Component {
           Platform.OS === "ios" ?
             { height: 30 } : { height: 45 }}>
           <FooterTab>
+           
             <Row>
+            {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ?
+            <>
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
-                <TouchableOpacity style={styles.buttonTouch}>
-                  <Text style={styles.footerButtonText}>Pay at Hospital  </Text>
+                <TouchableOpacity 
+                  onPress={() => this.processToPayLater()}
+                  style={styles.buttonTouch}>
+                  <Text style={styles.footerButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
                 </TouchableOpacity>
               </Col>
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8EC63F' }}>
-                <TouchableOpacity style={styles.buttonTouch1} >
+                <TouchableOpacity
+                   onPress={() => this.confirmProceedPayment()}
+                   style={styles.buttonTouch1}>
                   <Text style={styles.footerButtonText}>Pay Online</Text>
                 </TouchableOpacity>
               </Col>
+            </>  
+           : 
+            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5'  }}>
+              <TouchableOpacity
+                onPress={() => this.processToPayLater()}
+                style={styles.buttonTouch}>
+                <Text style={styles.footerButtonText}>Book an Appoiintment </Text>
+             </TouchableOpacity>
+         </Col> 
+            }
             </Row>
           </FooterTab>
         </Footer>

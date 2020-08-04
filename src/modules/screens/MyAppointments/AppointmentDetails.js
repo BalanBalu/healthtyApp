@@ -239,6 +239,7 @@ if(temp.location[0]){
         }
 
         this.setState({ data: temp });
+        this.props.navigation.setParams({ 'refreshPage': true });
       }
     }
     catch (e) {
@@ -274,6 +275,7 @@ if(temp.location[0]){
 
       await this.setState({ isLoading: true, modalVisible: false })
       if (val.updatedVisible == true) {
+        this.props.navigation.setParams({ 'refreshPage': true });
         this.getUserReviews()
       }
     } catch (e) {
@@ -799,22 +801,14 @@ if(temp.location[0]){
                 </View>
               </Grid>
             </View>}
-          <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              containerStyle={{ justifyContent: 'flex-end' }}
-              visible={this.state.modalVisible}
-            >
+           { this.state.modalVisible===true?
               <InsertReview
                 data={this.state.data}
                 popupVisible={(data) => this.getvisble(data)}
 
-              >
+              />:null}
 
-              </InsertReview>
-            </Modal>
-          </View>
+              
           <Modal
             visible={this.state.proposedVisible}
             transparent={true}

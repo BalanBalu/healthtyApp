@@ -19,6 +19,8 @@ const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
 const HomeTestImg = require('../../../../assets/images/hometest.jpg');
 const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
+const hospitalLogoImg = require('../../../../assets/images/hospitalLogo.png');
+const prescriptionLogoImg = require('../../../../assets/images/PresciptionUploadImage.png');
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
@@ -509,6 +511,46 @@ class Home extends Component {
                         </Col>
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
+                        <Row style={{ marginTop: 5 }}>
+                            <Col size={5}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Hospitals")}>
+                                    <Card style={{ padding: 5, borderRadius: 2 }}>
+                                        <Row>
+                                            <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                <Text style={styles.mainText}>{translate('Hospitals')}</Text>
+                                            </Col>
+                                            <Col size={2.5}>
+                                                <Image
+                                                    source={hospitalLogoImg}
+                                                    style={{
+                                                        width: 35, height: 35, alignItems: 'center'
+                                                    }}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={5} style={{ marginLeft: 5 }}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Public Forum")} >
+                                    <Card style={{ padding: 5, borderRadius: 2 }}>
+                                        <Row>
+                                            <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                <Text style={styles.mainText}>{translate('Public Forum')} </Text>
+                                            </Col>
+                                            <Col size={2.5}>
+                                                <Image
+                                                    source={prescriptionLogoImg}
+                                                    style={{
+                                                        width: 35, height: 35, alignItems: 'center'
+                                                    }}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
                         <Row style={{ marginTop: 5 }}>
                             <Col size={5}>
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
