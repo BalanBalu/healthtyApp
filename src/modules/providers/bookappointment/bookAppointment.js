@@ -14,7 +14,7 @@ export default class BookAppointmentPaymentUpdate {
     async updatePaymentDetails(isSuccess, razorPayRespData, modeOfPayment, bookSlotDetails, serviceType, userId, paymentMethod) {
         debugger
         try {
-            let paymentId = razorPayRespData.razorpay_payment_id ? razorPayRespData.razorpay_payment_id : modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime();
+            let paymentId = razorPayRespData.razorpay_payment_id ? razorPayRespData.razorpay_payment_id : modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : modeOfPayment === 'corporate' ? 'corporate_' + new Date().getTime() : modeOfPayment === 'insurance' ? 'insurance_' + new Date().getTime() : 'pay_err_' + new Date().getTime();
             let paymentData = null;
             if (serviceType === SERVICE_TYPES.APPOINTMENT) {
                 paymentData = {
@@ -24,8 +24,8 @@ export default class BookAppointmentPaymentUpdate {
                     amount: bookSlotDetails.slotData.fee,
                     credit_point_discount_amount: bookSlotDetails.creditPointDiscountAmount,
                     coupon_code_discount_amount: bookSlotDetails.couponCodeDiscountAmount,
-                    amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.finalAmountToPayByOnline,
-                    amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.slotData.fee : 0,
+                    amount_paid: !isSuccess || (modeOfPayment === 'cash' || modeOfPayment === 'corporate' || modeOfPayment === 'insurance') ? 0 : bookSlotDetails.finalAmountToPayByOnline,
+                    amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.slotData.fee : (modeOfPayment === 'corporate' || modeOfPayment === 'insurance') ? 0 : 0,
                     currency: 'INR',
                     service_type: serviceType,
                     booking_from: 'APPLICATION',
@@ -34,6 +34,7 @@ export default class BookAppointmentPaymentUpdate {
                     payment_mode: modeOfPayment,
                     payment_method: paymentMethod
                 }
+                console.log(paymentData);
                 let resultData = await createPaymentRazor(paymentData);
                 console.log(resultData);
                 if (resultData.success) {
@@ -253,7 +254,6 @@ export default class BookAppointmentPaymentUpdate {
                 userId: userId,
                 user_appointment_event_id: eventId,
                 patient_data: bookSlotDetails.patient_data,
-                doctorId: bookSlotDetails.doctorId,
                 description: bookSlotDetails.diseaseDescription || '',
                 fee: bookSlotDetails.slotData.fee,
                 startTime: bookSlotDetails.slotData.slotStartDateAndTime,
@@ -261,10 +261,18 @@ export default class BookAppointmentPaymentUpdate {
                 status: "PENDING",
                 status_by: "USER",
                 statusUpdateReason: "NEW_BOOKING",
-                hospital_id: bookSlotDetails.slotData.location.hospital_id,
                 booked_from: "Mobile",
                 payment_id: paymentId
             }
+            if (bookSlotDetails.doctorId) {
+                bookAppointmentData.doctorId = bookSlotDetails.doctorId
+                bookAppointmentData.hospital_id= bookSlotDetails.slotData.location.hospital_id
+            }
+            if(bookSlotDetails.hospital_admin_id){
+                bookAppointmentData.hospital_admin_id = bookSlotDetails.hospital_admin_id
+
+            }
+           
             let resultData = await bookAppointment(bookAppointmentData);
             console.log(resultData)
             if (resultData.success) {

@@ -120,13 +120,13 @@ export function getDoctorExperience(calulatedExperience) {
         return 'N/A'
     }
     if (calulatedExperience.year == 0) {
-        month = calulatedExperience.month;
+       let  month = calulatedExperience.month;
         if (month == 0) {
             return 'N/A'
         }
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-       let year = calulatedExperience.year;
+        let  year = calulatedExperience.year;
         return `${year} Year` + (year <= 1 ? '' : 's')
     }
 }
@@ -501,7 +501,7 @@ function deg2rad(deg) {
 }
 export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
     console.log(gpsLocation)
-    if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
+    if (!!gpsLocation && !!pharmacyLocation) {
         let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 
         return result.toFixed(1) + ' Km'
