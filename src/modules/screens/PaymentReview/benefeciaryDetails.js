@@ -17,7 +17,7 @@ class BenefeciaryDetails extends PureComponent {
         }
     }
     getCorporateBenificeryName(element) {
-        return element.firstName ||''+element.middleName||''+element.lastName||'';
+        return (element.firstName ? element.firstName + ' ' :'') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ': '');
     }
 
 

@@ -65,7 +65,7 @@ class TestDetails extends PureComponent {
                     result.forEach(element => {
                         let obj= {
                             type: 'familymembers',
-                            full_name: element.firstName ||''+element.middleName||''+element.lastName||'',
+                            full_name: (element.firstName ? element.firstName + ' ' :'') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ': ''),
                             gender: element.gender,
                             age: element.ageInYrs,
                             phone_no: element.mobileNo,
@@ -79,7 +79,6 @@ class TestDetails extends PureComponent {
                     });
                     data.familyDataByCorporate = temp;
                     data.familyDataByInsurance= temp;
-              
               }
                 console.log('getCorporateUserFamilyDetailsgetCorporateUserFamilyDetails',JSON.stringify(result))
             }
