@@ -245,8 +245,7 @@ class HomeTestConfirmation extends Component {
                                    this.setState( { selectedPatientTypes: patientTypes })
                                 }}
                                 selectedPatientTypes={this.state.selectedPatientTypes}
-                                familyDetailsData={this.state.familyDetailsData} 
-                                setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })} 
+                                familyDetailsData={this.state.patDetailsArray}
                                 payBy={this.state.selectedPayBy}
                                 addPatientDetails={(data, setSelfPatientData) => { 
                                     if(setSelfPatientData === true) {

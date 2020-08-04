@@ -56,10 +56,8 @@ class TestDetails extends PureComponent {
                 age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years')),
                 phone_no:patInfoResp.mobile_no
             }
-            this.props.addPatientDetails( [ this.defaultPatDetails ], true);
             this.setState({ refreshCount: this.state.refreshCount + 1 })
-            this.props.setFamilyDetailsData([ this.defaultPatDetails ])
-
+            this.props.addPatientDetails( [ this.defaultPatDetails ], true);
         }
         catch (Ex) {
             console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
@@ -88,13 +86,11 @@ class TestDetails extends PureComponent {
                 let familyData = [];
                 familyData.push(othersDetailsObj);
                 this.setState({ onlyFamilyWithPayDetailsData: familyData })
-                this.props.setFamilyDetailsData(familyData);
                 this.props.addPatientDetails(familyData); 
             } else {
                 let familyData = this.props.familyDetailsData;
                 familyData.push(othersDetailsObj);
                 onlyFamilyWithPayDetailsData.push(othersDetailsObj);
-                this.props.setFamilyDetailsData(familyData);
                 this.setState({ onlyFamilyWithPayDetailsData: onlyFamilyWithPayDetailsData });
                 this.props.addPatientDetails(familyData); 
                 
@@ -146,18 +142,21 @@ class TestDetails extends PureComponent {
         });
 
         this.props.addPatientDetails(arr);
-        this.props.setFamilyDetailsData(arr);
         this.setState({ onlyFamilyWithPayDetailsData: filteredData });
     }
-    removeAllPatient() {
-        const uniqueIds =  this.state.onlyFamilyWithPayDetailsData.map((item, index) => item.uniqueId);
+    removeAllWithoutPayFamilyDetails() {
+         const uniqueIds =  this.state.onlyFamilyWithPayDetailsData.map((item, index) => item.uniqueId);
          const arr = this.props.familyDetailsData.filter(function(item, index) {
-             return uniqueIds.includes(item.uniqueId) === false
+             return item.type !== 'others'
          });
          this.props.addPatientDetails(arr);
-         this.props.setFamilyDetailsData(arr);
-         this.setState({ onlyFamilyWithPayDetailsData: [ ] });
+         // this.setState({ onlyFamilyWithPayDetailsData: [ ] });
     }
+    addAllWithoutPayFamilyMembersToPatientDetails() {
+        const existingPatDetails = this.props.familyDetailsData || [];
+        this.props.addPatientDetails(existingPatDetails.concat(this.state.onlyFamilyWithPayDetailsData));
+    }
+
     async addFamilyMembersForBooking(data, index, payBy) {
         console.log('PayBy', payBy);
         const payByFamilyIndex = payBy + '-' + index;
@@ -170,43 +169,46 @@ class TestDetails extends PureComponent {
             gender: data.gender,
             uniqueIndex: payByFamilyIndex
         }
+        console.log('beneficiaryDetailsObj', beneficiaryDetailsObj);
 
         if(this.props.singlePatientSelect === true) {
             if(this.props.familyMembersSelections.includes(payByFamilyIndex)) {
                 familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
                 let familyData = this.props.familyDetailsData;
                 const finalFamilyData = familyData.filter(ele => ele.uniqueIndex !== payByFamilyIndex);
-                this.props.setFamilyDetailsData(finalFamilyData);
                 this.props.addPatientDetails(finalFamilyData);
             } else {
                 let familyData = [];
                 familyMembersSelections = [ payByFamilyIndex ];
                 familyData.push(beneficiaryDetailsObj);
-                this.props.setFamilyDetailsData(familyData);
                 this.props.addPatientDetails(familyData); 
             }
         } else {
+            
             let familyFindIndex = this.props.familyDetailsData.findIndex(ele => ele.uniqueIndex === payByFamilyIndex);
-            if(familyFindIndex === -1) {
-                let familyData = this.props.familyDetailsData;
-                familyData.push(beneficiaryDetailsObj);
+            console.log('familyFindIndex', familyFindIndex);
+            console.log('familyData', this.props.familyDetailsData);
+            console.log(this.props.familyMembersSelections.includes(payByFamilyIndex) === false);
+            if(/*familyFindIndex === -1*/ this.props.familyMembersSelections.includes(payByFamilyIndex) === false) {
+                let familyData = [...this.props.familyDetailsData, beneficiaryDetailsObj];
                 familyMembersSelections.push(payByFamilyIndex);
-                this.props.setFamilyDetailsData(familyData);
                 this.props.addPatientDetails(familyData); 
             } else {
                 let familyData = this.props.familyDetailsData;
                 familyData.splice(familyFindIndex, 1);
                 familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
-                this.props.setFamilyDetailsData(familyData);
                 this.props.addPatientDetails(familyData); 
             }
         }
 
         await this.props.changeFamilyMembersSelections(familyMembersSelections);
-       
-
-
     }
+    removeAllPatientFromCorporateEmployeeDetails() {
+        const updatedFamilyDetails = this.props.familyDetailsData.filter(ele => ele.type !== 'familymembers')
+        this.props.addPatientDetails(updatedFamilyDetails);
+        this.props.changeFamilyMembersSelections([]);
+    }
+
     renderPatientDetails(data, index, enableSelectionBox, disableCheckBoxSelection) {
         const { isCorporateUser, payBy } = this.props;
         return (
@@ -274,7 +276,6 @@ class TestDetails extends PureComponent {
                                    payBy={payBy}  
                                 />
                             </View> 
-                        
                     </View>
                     : null}
             </View>
@@ -342,6 +343,9 @@ class TestDetails extends PureComponent {
                              <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
                                 checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ? true : false}
                                 onPress={() => {
+                                    if(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)) {
+                                        this.removeAllPatientFromCorporateEmployeeDetails();
+                                    }
                                     this.setPatientType(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY);
                                 }}
                             />
@@ -365,7 +369,9 @@ class TestDetails extends PureComponent {
                                 checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ? true : false}
                                 onPress={() => {
                                       if(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)) {
-                                        this.removeAllPatient();
+                                        this.removeAllWithoutPayFamilyDetails();
+                                      } else {
+                                          this.addAllWithoutPayFamilyMembersToPatientDetails()
                                       }
                                       this.setPatientType(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY); 
                                 }}
