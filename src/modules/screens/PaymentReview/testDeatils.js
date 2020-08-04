@@ -1,16 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Radio, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox } from 'native-base';
-import { messageShow, messageHide } from '../../providers/common/common.action';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler, AsyncStorage } from 'react-native';
-import { formatDate } from '../../../setup/helpers';
-import { ScrollView, FlatList } from 'react-native-gesture-handler';
-import { data } from 'react-native-connectycube';
+import {  Text,  Radio,  Icon, Input, CheckBox } from 'native-base';
+import { Col, Row } from 'react-native-easy-grid';
+import { StyleSheet, TouchableOpacity, View, AsyncStorage } from 'react-native';
+import {  FlatList } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import BenefeciaryDetails from './benefeciaryDetails'
 import { fetchUserProfile } from '../../providers/profile/profile.action';
-import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { dateDiff } from '../../../setup/helpers';
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
 import { getRandomInt } from '../../common';
@@ -145,12 +140,10 @@ class TestDetails extends PureComponent {
         this.setState({ onlyFamilyWithPayDetailsData: filteredData });
     }
     removeAllWithoutPayFamilyDetails() {
-         const uniqueIds =  this.state.onlyFamilyWithPayDetailsData.map((item, index) => item.uniqueId);
          const arr = this.props.familyDetailsData.filter(function(item, index) {
              return item.type !== 'others'
          });
          this.props.addPatientDetails(arr);
-         // this.setState({ onlyFamilyWithPayDetailsData: [ ] });
     }
     addAllWithoutPayFamilyMembersToPatientDetails() {
         const existingPatDetails = this.props.familyDetailsData || [];
@@ -158,19 +151,16 @@ class TestDetails extends PureComponent {
     }
 
     async addFamilyMembersForBooking(data, index, payBy) {
-        console.log('PayBy', payBy);
         const payByFamilyIndex = payBy + '-' + index;
         let familyMembersSelections = this.props.familyMembersSelections
         
         const beneficiaryDetailsObj = {
             type: 'familymembers',
-            full_name: data.name,
+            full_name: data.full_name,
             age: parseInt(data.age),
             gender: data.gender,
             uniqueIndex: payByFamilyIndex
         }
-        console.log('beneficiaryDetailsObj', beneficiaryDetailsObj);
-
         if(this.props.singlePatientSelect === true) {
             if(this.props.familyMembersSelections.includes(payByFamilyIndex)) {
                 familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
@@ -186,9 +176,6 @@ class TestDetails extends PureComponent {
         } else {
             
             let familyFindIndex = this.props.familyDetailsData.findIndex(ele => ele.uniqueIndex === payByFamilyIndex);
-            console.log('familyFindIndex', familyFindIndex);
-            console.log('familyData', this.props.familyDetailsData);
-            console.log(this.props.familyMembersSelections.includes(payByFamilyIndex) === false);
             if(/*familyFindIndex === -1*/ this.props.familyMembersSelections.includes(payByFamilyIndex) === false) {
                 let familyData = [...this.props.familyDetailsData, beneficiaryDetailsObj];
                 familyMembersSelections.push(payByFamilyIndex);
@@ -298,8 +285,8 @@ class TestDetails extends PureComponent {
     render() {
         const datas = {
             full_name: 'S.Mukesh Kannan(self)', age: 21, gender: "male", phone_no: 8921595872,
-            familyDataByInsurance: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "female", phone_no: 8921595872 }],
-            familyDataByCorporate: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 } ]
+            familyDataByInsurance: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "M", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "F", phone_no: 8921595872 }],
+            familyDataByCorporate: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "M", phone_no: 8921595872 } ]
         }
         const { isCorporateUser, payBy, onSelectionChange, singlePatientSelect, selectedPatientTypes, familyDetailsData } = this.props;
        

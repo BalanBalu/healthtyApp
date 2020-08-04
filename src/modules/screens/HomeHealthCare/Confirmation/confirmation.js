@@ -70,7 +70,7 @@ class HomeTestConfirmation extends Component {
             const patDetailsArray = patDetails.map(ele => {
                 const othersDetailsObj = {
                     type: ele.type,
-                    full_name: ele.name,
+                    full_name: ele.name || ele.full_name,
                     age: parseInt(ele.age),
                     gender: ele.gender
                 }
@@ -89,23 +89,7 @@ class HomeTestConfirmation extends Component {
             this.setState({ patDetailsArray: removedOfOthersData, errMsg: '' })
         }
     }
-    /*  remove the patient details item from list  */
-    onPressRemoveIcon(item, index) {
-        const baCupOfPatDetailsArray = this.state.patDetailsArray
-        baCupOfPatDetailsArray.splice(index, 1);
-        if (item.type === 'self') {
-            this.setState({ patDetailsArray: baCupOfPatDetailsArray, isCheckedSelf: false });
-        }
-        else if (item.type === 'others') {
-            const findHaveRemainingOthersData = baCupOfPatDetailsArray.find(ele => ele.type === 'others');
-            if (findHaveRemainingOthersData) {
-                this.setState({ patDetailsArray: baCupOfPatDetailsArray, errMsg: '' });
-            }
-            else {   // unchecked the Others Box when there is no patient data available (Exe when press the remove Icon in Others data)
-                this.setState({ patDetailsArray: baCupOfPatDetailsArray, isCheckedOthers: false, errMsg: '' });
-            }
-        }
-    }
+    
     async onPressConfirmProceedPayment() {
         debugger
         const { bookSlotDetails, patDetailsArray } = this.state;
@@ -120,9 +104,9 @@ class HomeTestConfirmation extends Component {
         let patientData = [];
         patDetailsArray.map(ele => {
             patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
-        })
+        });
+        
         bookSlotDetails.patient_data = patientData;
-        console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
         const amount = bookSlotDetails.slotData.fee;
         debugger
         this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount: amount })
@@ -148,7 +132,6 @@ class HomeTestConfirmation extends Component {
         debugger
 
         bookSlotDetails.patient_data = patientData;
-        console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.HOME_HEALTHCARE, userId, 'cash');
@@ -540,6 +523,8 @@ class HomeTestConfirmation extends Component {
                         { height: 30 } : { height: 45 }}>
                     <FooterTab>
                         <Row>
+                           {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ? 
+                            <>
                             <Col size={5} style={styles.totalAmount}>
                                 <TouchableOpacity onPress={() => this.onPressPayAtHome()} >
                                     <Text style={styles.totalAmountText}>Pay at Home</Text>
@@ -550,6 +535,14 @@ class HomeTestConfirmation extends Component {
                                     <Text style={styles.proceedButtonText}>Proceed</Text>
                                 </TouchableOpacity>
                             </Col>
+                            </>
+                            :
+                              <Col size={5} style={styles.proceedButton}>
+                                <TouchableOpacity onPress={() => this.onPressPayAtHome()} >
+                                    <Text style={styles.proceedButtonText}>Book Appointment</Text>
+                                </TouchableOpacity>
+                              </Col> 
+                            }
                         </Row>
                     </FooterTab>
                 </Footer>
