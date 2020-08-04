@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Button, ListItem, CheckBox, Radio, Card, Thumbnail, List, Item, Input, Left, Right, Icon, Footer, FooterTab } from 'native-base';
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, Platform, FlatList, ImageBackground, Alert, Linking } from 'react-native';
+import { Container, Form, Content, Text, Toast, Button, ListItem, CheckBox, Radio, Card, Thumbnail, List, Item, Input, Left, Right, Icon, Footer, FooterTab } from 'native-base';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, Platform, FlatList, ImageBackground, Alert, Linking ,TextInput } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import styles from '../Styles'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
@@ -10,6 +10,8 @@ import { renderDoctorImage, getDoctorEducation, getDoctorSpecialist, getUserGend
 import Spinner from '../../../../components/Spinner';
 import { SERVICE_TYPES } from '../../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
+import { PayBySelection, POSSIBLE_PAY_METHODS } from '../../PaymentReview/PayBySelection';
+import { POSSIBLE_FAMILY_MEMBERS, TestDetails } from '../../PaymentReview/testDeatils';
 
 class HomeTestConfirmation extends Component {
     constructor(props) {
@@ -23,9 +25,16 @@ class HomeTestConfirmation extends Component {
             full_name: '',
             age: '',
             patDetailsArray: [],
-            patDetails: {}
+            patDetails: {},
+            isCorporateUser: false,
+            selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
+            familyMembersSelections: [],
+            
+            isCheckedFamilyWithPay: false,
+            selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ],
+            familyDetailsData: []
         }
-        this.defaultPatDetails = {};
+       
     }
 
     async componentDidMount() {
@@ -35,9 +44,10 @@ class HomeTestConfirmation extends Component {
             navigation.navigate('login');
             return
         }
+        this.getPatientInfo();
         const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
-        await this.setState({ bookSlotDetails: bookSlotDetails });
-        await this.getPatientInfo();
+        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+        await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser: isCorporateUser });
     }
 
     getPatientInfo = async () => {
@@ -45,48 +55,29 @@ class HomeTestConfirmation extends Component {
             const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
             const userId = await AsyncStorage.getItem('userId');
             const patInfoResp = await fetchUserProfile(userId, fields);
-            this.defaultPatDetails = {
-                type: 'self',
-                full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
-                gender: patInfoResp.gender,
-                age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
-            }
-            this.setState({ patDetails: patInfoResp, patDetailsArray: [this.defaultPatDetails] });
+            this.setState({ patDetails: patInfoResp });
         }
         catch (Ex) {
             console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
         }
     }
 
-    onPressSelfCheckBox = async () => {
-        const { isCheckedSelf, patDetailsArray } = this.state;
-        if (isCheckedSelf) {
-            patDetailsArray.unshift(this.defaultPatDetails);
-        }
-        else if (!isCheckedSelf) {
-            const findIndexOfSelfItem = patDetailsArray.findIndex(ele => ele.type === 'self')
-            if (findIndexOfSelfItem !== -1) patDetailsArray.splice(findIndexOfSelfItem, 1)
-        }
-        await this.setState({ patDetailsArray });
-    }
+   
 
-    addPatientList = async () => {
-        const { name, age, gender, patDetailsArray } = this.state;
-        if (!name || !age || !gender) {
-            this.setState({ errMsg: '* Kindly fill all the fields' });
-        }
-        else {
-            this.setState({ errMsg: '' })
-            const othersDetailsObj = {
-                type: 'others',
-                full_name: name,
-                age: parseInt(age),
-                gender
-            }
-            patDetailsArray.push(othersDetailsObj);
-            await this.setState({ patDetailsArray, updateButton: false });
-            await this.setState({ name: null, age: null, gender: null });
-        }
+    addPatientList = async (patDetails) => {
+           console.log(' Patient Details Length --> '+ patDetails.length);
+           console.log(patDetails);
+            const patDetailsArray = patDetails.map(ele => {
+                const othersDetailsObj = {
+                    type: ele.type,
+                    full_name: ele.name,
+                    age: parseInt(ele.age),
+                    gender: ele.gender
+                }
+                return othersDetailsObj 
+            })
+            await this.setState({ patDetailsArray, updateButton: false, errMsg: '' });
+        
     }
     onPressOthersCheckBox = async () => {
         const { isCheckedOthers, patDetailsArray } = this.state;
@@ -179,7 +170,7 @@ class HomeTestConfirmation extends Component {
     }
 
     render() {
-        const { bookSlotDetails, patDetails, errMsg, isLoading, spinnerText, isCheckedSelf, isCheckedOthers, name, age, gender, patDetailsArray } = this.state;
+        const { bookSlotDetails, patDetails, errMsg, isLoading, spinnerText, isCheckedSelf, isCheckedOthers, name, age, gender, patDetailsArray, isCorporateUser, isCheckedFamilyWithPay } = this.state;
         const extraCharges = bookSlotDetails.extraCharges || 0;
         const amountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
         const finalPaidAmount = amountBySelectedPersons + extraCharges;
@@ -190,7 +181,137 @@ class HomeTestConfirmation extends Component {
                         visible={isLoading}
                         textContent={spinnerText}
                     />
-                    <View style={{ marginBottom: 30 }}>
+                     <View style={{ paddingBottom: 50 }}>
+                         <View style={{ backgroundColor: '#fff', padding: 10 }}>
+                         <Row>
+                            <Col size={1.6}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                                    <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={8.4}>
+                                <Text style={styles.docName}>{(bookSlotDetails.prefix ? bookSlotDetails.prefix + '. ' : '') + (bookSlotDetails.first_name || '') + ' ' + (bookSlotDetails.last_name || '')} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                                 <Text style={styles.specialist}>{getDoctorSpecialist(bookSlotDetails.specialist)}</Text>
+                            </Col>
+                        </Row>
+                        {bookSlotDetails.slotData ?
+                            <View style={{ marginTop: 10 }}>
+                                
+                            </View>
+                        : null }
+                         </View>
+
+                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                                <Row>
+                                    <Col size={3}>
+                                        <Text style={styles.subHead}>Home Address</Text>
+                                    </Col>
+                                    <Col size={7}>
+                                        <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
+                                            <TouchableOpacity  >
+                                                <Text style={styles.changeText}>Change</Text>
+                                            </TouchableOpacity>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                                <Text note style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
+                                  {
+                                   patDetails.address && patDetails.address.address ?
+                                      <Text note style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
+                                        patDetails.address.address.address_line_1 + ' , ' +
+                                        patDetails.address.address.city + ' - ' + patDetails.address.address.pin_code}</Text>
+                                    : 
+                                   null }
+                                <Text note style={styles.homeAdressTexts}>
+                                    Mobile - {patDetails.mobile_no || 'No number'}
+                                </Text>
+                            </View>
+
+                            <PayBySelection
+                                isCorporateUser={isCorporateUser}
+                                selectedPayBy={this.state.selectedPayBy}
+                                onSelectionChange={(mode)=> {
+                                    this.addPatientList(this.selfPatientData); 
+                                    this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], familyMembersSelections: [] });
+                                }}/>
+
+                            <TestDetails
+                                isCorporateUser={isCorporateUser}
+                                navigation={this.props.navigation}
+                                singlePatientSelect={false}
+                                familyMembersSelections={this.state.familyMembersSelections}
+                                changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
+                                onSelectionChange={(patientTypes) => {
+                                   this.setState( { selectedPatientTypes: patientTypes })
+                                }}
+                                selectedPatientTypes={this.state.selectedPatientTypes}
+                                familyDetailsData={this.state.familyDetailsData} 
+                                setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })} 
+                                payBy={this.state.selectedPayBy}
+                                addPatientDetails={(data, setSelfPatientData) => { 
+                                    if(setSelfPatientData === true) {
+                                        this.selfPatientData = data
+                                    }
+                                    this.addPatientList(data);
+                                }}
+                            />
+
+                            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                                <Row>
+                                    <Icon name="create" style={{ fontSize: 15, color: '#000' }} />
+                                    <Text style={styles.subTextBilling}> Your Reason For Checkup</Text>
+                                </Row>
+                                <Form style={{ marginRight: 1, marginLeft: -13 }}>
+                                    <Item style={{ borderBottomWidth: 0 }}>
+                                        <TextInput
+                                            onChangeText={(diseaseDescription) => {
+                                            var bookSlotDetails = { ...this.state.bookSlotDetails }
+                                            bookSlotDetails.diseaseDescription = diseaseDescription;
+                                            this.setState({ bookSlotDetails })
+                                        }}
+                                        multiline={true} placeholder="Write Reason...."
+                                        style={styles.textInput} />
+                                    </Item>
+                                </Form>
+            </View>
+
+                            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                                <Row>
+                                  <Icon name="ios-cash" style={{ fontSize: 15, color: '#784EBC' }} />
+                                    <Text style={styles.subTextBilling}> Billing Details</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col>
+                                        <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Consultation Fees</Text>
+                                    </Col>
+                                    <Col>
+                                         <Text style={styles.rupeesText}>{'\u20B9'}{Number(amountBySelectedPersons).toFixed(2)}</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col>
+                                        <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Charges </Text>
+                                    </Col>
+                                    <Col>
+                                        <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
+                                    </Col>
+                                </Row>
+              
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col>
+                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
+                                    </Col>
+                                    <Col>
+                                        <Text style={styles.rupeesText}>{'\u20B9'} {Number(finalPaidAmount).toFixed(2)}</Text>
+                                    </Col>
+                                </Row>
+            </View>
+          </View>
+                            
+
+                    
+                 
+                 {/*   <View style={{ marginBottom: 30 }}>
                         <View style={{ backgroundColor: '#fff', padding: 10 }}>
                             <View>
                                 <Text style={styles.subHead}>For Whom do you need to take up the Checkup?</Text>
@@ -413,7 +534,8 @@ class HomeTestConfirmation extends Component {
                             </View>
                         </View>
                     </View>
-                </Content>
+                                */}
+                    </Content>
                 <Footer style={
                     Platform.OS === "ios" ?
                         { height: 30 } : { height: 45 }}>

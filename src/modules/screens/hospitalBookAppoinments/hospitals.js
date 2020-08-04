@@ -13,6 +13,7 @@ class Hospitals extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
+            expandData:false,
             editingPincode: false,
             hospitalData: [],
             locationCordinates: null,
@@ -65,6 +66,20 @@ class Hospitals extends PureComponent {
         this.getNearByHospitalList()
         this.setState({ editingPincode: false, pin_code: null })
 
+    }
+    onPressToContinue4PaymentReview = async (haspitalValue) => {
+        // if (!selectedSlotItemByDoctor) {
+        //     Toast.show({
+        //         text: 'Please Select a Slot to continue booking',
+        //         type: 'warning',
+        //         duration: 3000
+        //     })
+        //     return;
+        // }
+        this.setState({expandData:true})
+        this.props.navigation.setParams({ 'conditionFromFilterPage': false });
+       
+        this.props.navigation.navigate('Payment Review', {fromNavigation:'HOSPITAL', resultconfirmSlotDetails: haspitalValue })
     }
 
     render() {
@@ -162,6 +177,10 @@ class Hospitals extends PureComponent {
                                                                 <Text note style={[styles.commonStyle, { marginLeft: 5 }]}> Favourite</Text>
                                                                 <Text style={[styles.commonStyle, { marginLeft: 25, fontWeight: 'bold' }]}>0</Text>
                                                             </Col>
+                                                            {this.state.expandData===true?
+                                                            <TouchableOpacity onPress={() => this.onPressToContinue4PaymentReview(item)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, width: 66, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
+                                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                                            </TouchableOpacity>:null}
 
                                                         </Row>
                                                     </Col>

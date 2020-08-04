@@ -31,7 +31,10 @@ export default class PaymentReview extends Component {
       selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
       whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
       familyMembersSelections: [],
-      fromNavigation:null 
+      fromNavigation:null ,
+      familyMembersSelections: [],
+      selectedPatientTypes : [ POSSIBLE_FAMILY_MEMBERS.SELF ] ,
+      familyDetailsData: []
     }
     this.defaultPatDetails = {};
   }
@@ -139,17 +142,17 @@ export default class PaymentReview extends Component {
 
   getPatientInfo = async () => {
     try {
-      const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
-      const userId = await AsyncStorage.getItem('userId');
-      const patInfoResp = await fetchUserProfile(userId, fields);
-      console.log('patInfoResp====>', patInfoResp)
-      this.defaultPatDetails = {
-        type: 'self',
-        full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
-        gender: patInfoResp.gender,
-        age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
-      }
-      this.setState({ patientDetailsObj: this.defaultPatDetails });
+      // const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+      // const userId = await AsyncStorage.getItem('userId');
+      // const patInfoResp = await fetchUserProfile(userId, fields);
+      // console.log('patInfoResp====>', patInfoResp)
+      // this.defaultPatDetails = {
+      //   type: 'self',
+      //   full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+      //   gender: patInfoResp.gender,
+      //   age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
+      // }
+      // this.setState({ patientDetailsObj: this.defaultPatDetails });
     }
     catch (Ex) {
       console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
@@ -459,7 +462,7 @@ export default class PaymentReview extends Component {
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
               onSelectionChange={(mode)=> {
-                  this.setState({ selectedPayBy: mode, whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF, patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] }) 
+                  this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] }) 
               }}
             />
             
@@ -469,17 +472,23 @@ export default class PaymentReview extends Component {
               singlePatientSelect={true}
               familyMembersSelections={this.state.familyMembersSelections}
               changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
-              whomToTest={this.state.whomToTest}
-              onSelectionChange={(whomToTest) => {
-                if(whomToTest === POSSIBLE_FAMILY_MEMBERS.SELF) {
-                   this.setState( { patientDetailsObj: this.defaultPatDetails,  whomToTest: whomToTest, familyMembersSelections: [] })
+              onSelectionChange={(patientType) => {
+                if(patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
+                   this.setState( { patientDetailsObj: this.defaultPatDetails,  selectedPatientTypes: [ patientType ] , familyMembersSelections: [] })
                 } else {
-                  this.setState( { patientDetailsObj: {},  whomToTest: whomToTest })
+                  this.setState( { patientDetailsObj: {},  selectedPatientTypes: [ patientType ] })
                 }
               }}
+              familyDetailsData={this.state.familyDetailsData} 
+              setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })} 
+              selectedPatientTypes={this.state.selectedPatientTypes}
               payBy={this.state.selectedPayBy}
-              addPatientDetails={(data) => this.addPatientList(data)}
-
+              addPatientDetails={(data, setDefaultPatentData) => {
+                if(setDefaultPatentData === true) {
+                   this.defaultPatDetails = data[0];
+                }
+                this.addPatientList(data)
+              }}
             />
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
               <Row>

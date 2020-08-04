@@ -501,6 +501,8 @@ export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
     }
     else {
         return '0 km '
-    }
-
+    }    
+}
+export const getRandomInt = (max = 1000) => {
+    return Math.floor(Math.random() * Math.floor(max));
 }

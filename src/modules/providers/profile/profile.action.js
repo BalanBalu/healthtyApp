@@ -10,7 +10,7 @@ export const SET_REFER_CODE = 'PROFILE/SET_REFER_CODE';
 export const SET_USER_DATA_FOR_PREPARATION = 'PROFILE/SET_USER_DATA_FOR_PREPARATION';
 
 import { store } from '../../../setup/store'
-import { getService, putService, postService } from '../../../setup/services/httpservices';
+import { getService, putService, postService,smartHealthGetService } from '../../../setup/services/httpservices';
 import { AuthService } from '../../screens/VideoConsulation/services';
 import NotifService from '../../../setup/NotifService';
 import { SET_USER } from '../auth/auth.actions';
@@ -238,7 +238,20 @@ export function setUserDataForPreparation(result) {
 }
 
 
+export async function getCorporateUserFamilyDetails(empCode) {
+  try {
+    let endPoint = 'employee/' + empCode;
+    let response = await smartHealthGetService(endPoint);
+    let respData = response.data;
+    return respData;
 
+  } catch (e) {
+    return {
+      message: 'exception1' + e,
+      success: false
+    }
+  }
+}
 
 
 
