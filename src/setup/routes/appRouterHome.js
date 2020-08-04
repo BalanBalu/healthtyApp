@@ -126,6 +126,7 @@ import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCar
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
+import Hospitals from '../../modules/screens/hospitalBookAppoinments/hospitals'
 
 const AuthRoutes = {
   login: {
@@ -544,13 +545,21 @@ const HomeStack = createStackNavigator({
       title: 'Public Health Forum'
     }
   },
-  //================  Ecard ===============
+  //================  Ecard  ===============
   "E Card": {
     screen: Ecard,
     navigationOptions: {
       title: 'Ecard Details'
     }
   },
+
+    //================  Appoinment Booking Through Hospitals ===============
+    Hospitals: {
+      screen: Hospitals,
+      navigationOptions: {
+        title: 'Hospital List'
+      }
+    },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
