@@ -5,6 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
+import { formatDate } from '../../../setup/helpers';
 
 class BenefeciaryDetails extends PureComponent {
     constructor(props) {
@@ -15,12 +16,16 @@ class BenefeciaryDetails extends PureComponent {
 
         }
     }
+    getCorporateBenificeryName(element) {
+        return (element.firstName ? element.firstName + ' ' :'') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ': '');
+    }
 
 
 
     render() {
-        const { expand } = this.props;
-        if(!expand) return null;
+        const { expand, data } = this.props;
+
+        if (!expand) return null;
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, }}>
@@ -47,12 +52,12 @@ class BenefeciaryDetails extends PureComponent {
 
                     </Col>
                     <Col size={5.5}>
-                        <Text note style={styles.innerText}>Mr.U.Robert</Text>
+                        <Text note style={styles.innerText}>{this.getCorporateBenificeryName(data)}</Text>
                         <Text note style={styles.innerText}>Group Health Policy</Text>
-                        <Text note style={styles.innerText}>5462465675635</Text>
-                        <Text note style={styles.innerText}>21/12/2019</Text>
-                        <Text note style={styles.innerText}>21/12/2029</Text>
-                        <Text note style={styles.innerText}>2500000</Text>
+                        <Text note style={styles.innerText}>{data.policyNumber}</Text>
+                        <Text note style={styles.innerText}>{formatDate(data.enrollmentStartDate,'DD/MM/YYYY')}</Text>
+                        <Text note style={styles.innerText}>{formatDate(data.enrollmentEndDate,'DD/MM/YYYY')}</Text>
+                        <Text note style={styles.innerText}>{data.sumInsured}</Text>
                         <Text note style={styles.innerText}>2500000</Text>
                         <Text note style={styles.innerText}> ₹ 0.00</Text>
                     </Col>

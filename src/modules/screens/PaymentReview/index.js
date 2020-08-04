@@ -11,7 +11,8 @@ import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
-import TestDetails from './testDeatils'
+import { TestDetails, POSSIBLE_FAMILY_MEMBERS } from './testDeatils'
+import {PayBySelection, POSSIBLE_PAY_METHODS } from './PayBySelection';
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
@@ -26,7 +27,14 @@ export default class PaymentReview extends Component {
       isSelected: 'self',
       patientDetailsObj: {},
       addPatientDataPoPupEnable: false,
-      isCorporateUser: false
+      isCorporateUser: false,
+      selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
+      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
+      familyMembersSelections: [],
+      fromNavigation:null ,
+      familyMembersSelections: [],
+      selectedPatientTypes : [ POSSIBLE_FAMILY_MEMBERS.SELF ] ,
+      familyDetailsData: []
     }
     this.defaultPatDetails = {};
   }
@@ -42,7 +50,9 @@ export default class PaymentReview extends Component {
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
-    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser });
+    const fromNavigation=navigation.getParam('fromNavigation')||null
+    console.log('bookSlotDetails', bookSlotDetails);
+    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser,fromNavigation });
     await this.getPatientInfo();
   }
   async confirmProceedPayment() {
@@ -92,6 +102,7 @@ export default class PaymentReview extends Component {
   async processToPayLater() {
     const { bookSlotDetails, patientDetailsObj } = this.state;
     let { diseaseDescription } = bookSlotDetails;
+    console.log('final Patient Details ',patientDetailsObj);
     if (!Object.keys(patientDetailsObj).length) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
@@ -131,17 +142,17 @@ export default class PaymentReview extends Component {
 
   getPatientInfo = async () => {
     try {
-      const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
-      const userId = await AsyncStorage.getItem('userId');
-      const patInfoResp = await fetchUserProfile(userId, fields);
-      console.log('patInfoResp====>', patInfoResp)
-      this.defaultPatDetails = {
-        type: 'self',
-        full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
-        gender: patInfoResp.gender,
-        age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
-      }
-      this.setState({ patientDetailsObj: this.defaultPatDetails });
+      // const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+      // const userId = await AsyncStorage.getItem('userId');
+      // const patInfoResp = await fetchUserProfile(userId, fields);
+      // console.log('patInfoResp====>', patInfoResp)
+      // this.defaultPatDetails = {
+      //   type: 'self',
+      //   full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+      //   gender: patInfoResp.gender,
+      //   age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
+      // }
+      // this.setState({ patientDetailsObj: this.defaultPatDetails });
     }
     catch (Ex) {
       console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
@@ -159,7 +170,7 @@ export default class PaymentReview extends Component {
 
 
   render() {
-    const { bookSlotDetails, isCorporateUser ,patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender } = this.state;
+    const { bookSlotDetails, isCorporateUser ,patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender,fromNavigation } = this.state;
    console.log(isCorporateUser);
     return (
       <Container>
@@ -399,7 +410,20 @@ export default class PaymentReview extends Component {
           />
           <View style={{ paddingBottom: 50 }}>
             <View style={{ backgroundColor: '#fff', padding: 10 }}>
+           { fromNavigation!==null?
               <Row>
+                <Col size={1.6}>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                    <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
+                  </TouchableOpacity>
+                </Col>
+                <Col size={8.4}>
+                  <Text style={styles.docName}>{bookSlotDetails.name }</Text>
+                  <Text note style={styles.hosAddress}>{bookSlotDetails.location.address.no_and_street + ', '}
+                    {bookSlotDetails.location.address.city + ', '}
+                    {bookSlotDetails.location.address.state + '-'} {bookSlotDetails.location.address.pin_code}.</Text>
+                </Col>
+              </Row>:   <Row>
                 <Col size={1.6}>
                   <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
                     <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
@@ -409,7 +433,7 @@ export default class PaymentReview extends Component {
                   <Text style={styles.docName}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
                   <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                 </Col>
-              </Row>
+              </Row>}
               {bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>
@@ -433,12 +457,38 @@ export default class PaymentReview extends Component {
               </Row>
 
             </View>
+            
+            <PayBySelection
+              isCorporateUser={isCorporateUser}
+              selectedPayBy={this.state.selectedPayBy}
+              onSelectionChange={(mode)=> {
+                  this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] }) 
+              }}
+            />
+            
             <TestDetails
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
-              addPatientDetails={(data) => this.addPatientList(data)}
-
+              familyMembersSelections={this.state.familyMembersSelections}
+              changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
+              onSelectionChange={(patientType) => {
+                if(patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
+                   this.setState( { patientDetailsObj: this.defaultPatDetails,  selectedPatientTypes: [ patientType ] , familyMembersSelections: [] })
+                } else {
+                  this.setState( { patientDetailsObj: {},  selectedPatientTypes: [ patientType ] })
+                }
+              }}
+              familyDetailsData={this.state.familyDetailsData} 
+              setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })} 
+              selectedPatientTypes={this.state.selectedPatientTypes}
+              payBy={this.state.selectedPayBy}
+              addPatientDetails={(data, setDefaultPatentData) => {
+                if(setDefaultPatentData === true) {
+                   this.defaultPatDetails = data[0];
+                }
+                this.addPatientList(data)
+              }}
             />
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
               <Row>
@@ -494,7 +544,10 @@ export default class PaymentReview extends Component {
           Platform.OS === "ios" ?
             { height: 30 } : { height: 45 }}>
           <FooterTab>
+           
             <Row>
+            {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ?
+            <>
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
                 <TouchableOpacity 
                   onPress={() => this.processToPayLater()}
@@ -505,10 +558,20 @@ export default class PaymentReview extends Component {
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8EC63F' }}>
                 <TouchableOpacity
                    onPress={() => this.confirmProceedPayment()}
-                   style={styles.buttonTouch1} >
+                   style={styles.buttonTouch1}>
                   <Text style={styles.footerButtonText}>Pay Online</Text>
                 </TouchableOpacity>
               </Col>
+            </>  
+           : 
+            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5'  }}>
+              <TouchableOpacity
+                onPress={() => this.processToPayLater()}
+                style={styles.buttonTouch}>
+                <Text style={styles.footerButtonText}>Book an Appoiintment </Text>
+             </TouchableOpacity>
+         </Col> 
+            }
             </Row>
           </FooterTab>
         </Footer>
