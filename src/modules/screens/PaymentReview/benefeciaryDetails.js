@@ -16,6 +16,9 @@ class BenefeciaryDetails extends PureComponent {
 
         }
     }
+    getCorporateBenificeryName(element) {
+        return element.firstName ||''+element.middleName||''+element.lastName||'';
+    }
 
 
 
@@ -49,10 +52,10 @@ class BenefeciaryDetails extends PureComponent {
 
                     </Col>
                     <Col size={5.5}>
-        <Text note style={styles.innerText}>{this.getCorporateBenificeryName(data)}</Text>
+                        <Text note style={styles.innerText}>{this.getCorporateBenificeryName(data)}</Text>
                         <Text note style={styles.innerText}>Group Health Policy</Text>
                         <Text note style={styles.innerText}>{data.policyNumber}</Text>
-        <Text note style={styles.innerText}>{formatDate(data.enrollmentStartDate,'DD/MM/YYYY')}</Text>
+                        <Text note style={styles.innerText}>{formatDate(data.enrollmentStartDate,'DD/MM/YYYY')}</Text>
                         <Text note style={styles.innerText}>{formatDate(data.enrollmentEndDate,'DD/MM/YYYY')}</Text>
                         <Text note style={styles.innerText}>{data.sumInsured}</Text>
                         <Text note style={styles.innerText}>2500000</Text>
