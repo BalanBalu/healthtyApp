@@ -76,19 +76,28 @@ export default class PaymentReview extends Component {
     }
     this.setState({ isLoading: true, spinnerText: "Please Wait" });
     const bookingSlotData = bookSlotDetails
+    let validationResult 
+    if(this.state.fromNavigation==='HOSPITAL'){
+      validationResult={
+        success:true
+      }
+
+    }else{
     const reqData = {
       doctorId: bookingSlotData.doctorId,
       startTime: bookingSlotData.slotData.slotStartDateAndTime,
       endTime: bookingSlotData.slotData.slotEndDateAndTime,
     }
-    let validationResult = await validateBooking(reqData)
+     validationResult = await validateBooking(reqData)
+  }
     this.setState({ isLoading: false, spinnerText: ' ' });
+  
     if (validationResult.success) {
       const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
       bookSlotDetails.patient_data = patientDataObj;
       console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
       const amount = this.state.bookSlotDetails.slotData.fee;
-      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount,fromNavigation:this.state.fromNavigation })
     } else {
       console.log(validationResult);
       Toast.show({
@@ -99,8 +108,8 @@ export default class PaymentReview extends Component {
     }
 
   }
-  async processToPayLater() {
-    const { bookSlotDetails, patientDetailsObj } = this.state;
+  async processToPayLater(paymentMethod) {
+    const { bookSlotDetails, patientDetailsObj,fromNavigation } = this.state;
     let { diseaseDescription } = bookSlotDetails;
     console.log('final Patient Details ',patientDetailsObj);
     if (!Object.keys(patientDetailsObj).length) {
@@ -125,10 +134,17 @@ export default class PaymentReview extends Component {
     console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, 'cash');
+    let modesOfPayment='cash';
+    if(paymentMethod===POSSIBLE_PAY_METHODS.CORPORATE){
+      modesOfPayment='corporate';
+    }else if(paymentMethod===POSSIBLE_PAY_METHODS.INSURANCE){
+      modesOfPayment='insurance;'
+    }
+
+    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, modesOfPayment, bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, modesOfPayment);
     console.log('Book Appointment Payment Update Response ');
     if (response.success) {
-      this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
+      this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: paymentMethod, tokenNo: response.tokenNo,fromNavigation:fromNavigation });
     } else {
       Toast.show({
         text: response.message,
@@ -419,9 +435,9 @@ export default class PaymentReview extends Component {
                 </Col>
                 <Col size={8.4}>
                   <Text style={styles.docName}>{bookSlotDetails.name }</Text>
-                  <Text note style={styles.hosAddress}>{bookSlotDetails.location.address.no_and_street + ', '}
-                    {bookSlotDetails.location.address.city + ', '}
-                    {bookSlotDetails.location.address.state + '-'} {bookSlotDetails.location.address.pin_code}.</Text>
+                  <Text note style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                    {bookSlotDetails.slotData.location.location.address.city + ', '}
+                    {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
                 </Col>
               </Row>:   <Row>
                 <Col size={1.6}>
@@ -434,7 +450,7 @@ export default class PaymentReview extends Component {
                   <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                 </Col>
               </Row>}
-              {bookSlotDetails.slotData ?
+              {fromNavigation===null&&bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>
                     <Icon name="ios-pin" style={{ fontSize: 15 }} />
@@ -550,7 +566,7 @@ export default class PaymentReview extends Component {
             <>
               <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
                 <TouchableOpacity 
-                  onPress={() => this.processToPayLater()}
+                  onPress={() => this.processToPayLater('cash')}
                   style={styles.buttonTouch}>
                   <Text style={styles.footerButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
                 </TouchableOpacity>
@@ -566,7 +582,7 @@ export default class PaymentReview extends Component {
            : 
             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5'  }}>
               <TouchableOpacity
-                onPress={() => this.processToPayLater()}
+                onPress={() => this.processToPayLater(this.state.selectedPayBy)}
                 style={styles.buttonTouch}>
                 <Text style={styles.footerButtonText}>Book an Appoiintment </Text>
              </TouchableOpacity>
