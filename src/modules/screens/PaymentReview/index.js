@@ -29,6 +29,9 @@ export default class PaymentReview extends Component {
       addPatientDataPoPupEnable: false,
       isCorporateUser: false,
       selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
+      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
+      familyMembersSelections: [],
+      fromNavigation:null ,
       familyMembersSelections: [],
       selectedPatientTypes : [ POSSIBLE_FAMILY_MEMBERS.SELF ] ,
       familyDetailsData: []
@@ -47,8 +50,9 @@ export default class PaymentReview extends Component {
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
+    const fromNavigation=navigation.getParam('fromNavigation')||null
     console.log('bookSlotDetails', bookSlotDetails);
-    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser });
+    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser,fromNavigation });
     await this.getPatientInfo();
   }
   async confirmProceedPayment() {
@@ -166,7 +170,7 @@ export default class PaymentReview extends Component {
 
 
   render() {
-    const { bookSlotDetails, isCorporateUser ,patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender } = this.state;
+    const { bookSlotDetails, isCorporateUser ,patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender,fromNavigation } = this.state;
    console.log(isCorporateUser);
     return (
       <Container>
@@ -406,7 +410,20 @@ export default class PaymentReview extends Component {
           />
           <View style={{ paddingBottom: 50 }}>
             <View style={{ backgroundColor: '#fff', padding: 10 }}>
+           { fromNavigation!==null?
               <Row>
+                <Col size={1.6}>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                    <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
+                  </TouchableOpacity>
+                </Col>
+                <Col size={8.4}>
+                  <Text style={styles.docName}>{bookSlotDetails.name }</Text>
+                  <Text note style={styles.hosAddress}>{bookSlotDetails.location.address.no_and_street + ', '}
+                    {bookSlotDetails.location.address.city + ', '}
+                    {bookSlotDetails.location.address.state + '-'} {bookSlotDetails.location.address.pin_code}.</Text>
+                </Col>
+              </Row>:   <Row>
                 <Col size={1.6}>
                   <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
                     <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
@@ -416,7 +433,7 @@ export default class PaymentReview extends Component {
                   <Text style={styles.docName}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
                   <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                 </Col>
-              </Row>
+              </Row>}
               {bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>

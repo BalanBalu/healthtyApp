@@ -5,7 +5,8 @@ import { StyleSheet, TouchableOpacity, View, AsyncStorage } from 'react-native';
 import {  FlatList } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import BenefeciaryDetails from './benefeciaryDetails'
-import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { fetchUserProfile, getCorporateUserFamilyDetails } from '../../providers/profile/profile.action';
+import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { dateDiff } from '../../../setup/helpers';
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
 import { getRandomInt } from '../../common';
@@ -21,15 +22,22 @@ class TestDetails extends PureComponent {
         this.state = {
             benefeciaryDeails: false,
             patientDetailsObj: {},
+            data:{
+                familyDataByInsurance:[] ,
+                familyDataByCorporate:[]
+            },
             gender: 'M',
             full_name: '',
             age: '',
             refreshCount: 0,
+            familyDetailsData: [],
+            benefeciaryUserDeails:null,
           //  familyDetailsData: [],
             onlyFamilyWithPayDetailsData : []
         }
         console.log(this.props);
         this.defaultPatDetails = {};
+       
     }
 
     async componentDidMount() {
@@ -39,20 +47,45 @@ class TestDetails extends PureComponent {
 
     getPatientInfo = async () => {
         try {
-            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address,employee_code"
             const userId = await AsyncStorage.getItem('userId');
             const patInfoResp = await fetchUserProfile(userId, fields);
-
-            console.log('patInfoResp====>', patInfoResp)
+            let data=this.state.data;
+            let benefeciaryUserDeails=null
+            console.log('patInfoResp====>', patInfoResp.employee_code)
+       
             this.defaultPatDetails = {
                 type: 'self',
                 full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
                 gender: patInfoResp.gender,
                 age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years')),
-                phone_no:patInfoResp.mobile_no
+                phone_no: patInfoResp.mobile_no
             }
-            this.setState({ refreshCount: this.state.refreshCount + 1 })
+            if (patInfoResp.employee_code) {
+                let result = await getCorporateUserFamilyDetails(patInfoResp.employee_code)
+                if(result&&result[0]){
+                    let temp=[];
+                    result.forEach(element => {
+                        let obj= {
+                            type: 'Other',
+                            full_name: element.firstName||''+element.middleName||''+element.firstName||'',
+                            gender: element.gender,
+                            age: element.ageInYrs,
+                            phone_no: element.mobileNo
+                           }
+                           temp.push(obj)
+                        
+                    });
+                
+                data.familyDataByCorporate=temp
+                data.familyDataByInsurance=temp;
+                benefeciaryUserDeails=result.find(ele=>ele.relationShip==='EMPLOYEE');
+              }
+                console.log('getCorporateUserFamilyDetailsgetCorporateUserFamilyDetails',JSON.stringify(result))
+            }
             this.props.addPatientDetails( [ this.defaultPatDetails ], true);
+            await this.setState({ refreshCount: this.state.refreshCount + 1 ,data,benefeciaryUserDeails})
+           
         }
         catch (Ex) {
             console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
@@ -61,12 +94,12 @@ class TestDetails extends PureComponent {
 
     addPatientList = async () => {
         const { name, age, gender } = this.state;
-        
+
         if (!name || !age || !gender) {
             console.log('is is coming to error');
             this.setState({ errMsg: '* Kindly fill all the fields' });
         }
-        
+
         else {
             const othersDetailsObj = {
                 type: 'others',
@@ -95,7 +128,7 @@ class TestDetails extends PureComponent {
     onSelfPatientClicked(hasCheckedForMultiSelect) {
         
         this.setState({ patientDetailsObj: this.defaultPatDetails });
-        if(this.props.singlePatientSelect === true) {
+        if (this.props.singlePatientSelect === true) {
             console.log('this.defaultPatDetail', this.defaultPatDetails);
             this.props.addPatientDetails([this.defaultPatDetails])
         } else {
@@ -153,7 +186,7 @@ class TestDetails extends PureComponent {
     async addFamilyMembersForBooking(data, index, payBy) {
         const payByFamilyIndex = payBy + '-' + index;
         let familyMembersSelections = this.props.familyMembersSelections
-        
+
         const beneficiaryDetailsObj = {
             type: 'familymembers',
             full_name: data.full_name,
@@ -202,7 +235,7 @@ class TestDetails extends PureComponent {
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
                 <Row>
                     <Col>
-                        <Text style={styles.NameText}>{data.full_name + (data.relation? ` (${data.relation})` : '') }</Text>
+                        <Text style={styles.NameText}>{data.full_name + (data.relation ? ` (${data.relation})` : '')}</Text>
                     </Col>
                     <Col>
                         <Text style={styles.ageText}>{data.age} years</Text>
@@ -230,17 +263,17 @@ class TestDetails extends PureComponent {
                         </Row>
                     </Col>
 
-                    {data.type === 'others' ?  
+                    {data.type === 'others' ?
                         <Col size={0.5}>
-                          <TouchableOpacity onPress={() => this.onRemovePatientClicked(index)  }>
-                            <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 20 }} />
-                          </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.onRemovePatientClicked(index)}>
+                                <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 20 }} />
+                            </TouchableOpacity>
                         </Col>
-                    : null }
-                    
-                    {enableSelectionBox === true ? 
+                        : null}
+
+                    {enableSelectionBox === true ?
                         <Col size={3.3}>
-                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                            <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
                                     checked={this.props.familyMembersSelections.includes(payBy + '-' + index)}
                                     disabled={disableCheckBoxSelection}
@@ -248,21 +281,23 @@ class TestDetails extends PureComponent {
                                 />
                             </Row>
                         </Col>
-                   : null }
+                        : null}
                 </Row>
                 {isCorporateUser && payBy !== POSSIBLE_PAY_METHODS.SELF ?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
-                        <TouchableOpacity style={styles.benefeciaryButton} onPress={() =>  this.setState({ expandedListIndex : this.state.expandedListIndex === index ? -1 : index })}>
+                        <TouchableOpacity style={styles.benefeciaryButton} onPress={() => this.setState({ expandedListIndex: this.state.expandedListIndex === index ? -1 : index })}>
                             <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'OpenSans', }}>Show Benefeciary Details</Text>
                             <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
                         </TouchableOpacity>
-                            <View>
-                                <BenefeciaryDetails 
-                                   expand={this.state.expandedListIndex === index}
-                                   payBy={payBy}  
-                                />
-                            </View> 
+                        <View>
+                            <BenefeciaryDetails
+                                expand={this.state.expandedListIndex === index}
+                                data={this.state.benefeciaryUserDeails}
+                                payBy={payBy}
+                            />
+                        </View>
+
                     </View>
                     : null}
             </View>
@@ -270,27 +305,31 @@ class TestDetails extends PureComponent {
     }
 
     getPossiblePaymentMethods(payBy) {
-        if(payBy === POSSIBLE_PAY_METHODS.SELF) {
-            return [ 'SELF', 'FAMILY_WITH_PAY' ]
+        if (payBy === POSSIBLE_PAY_METHODS.SELF) {
+            return ['SELF', 'FAMILY_WITH_PAY']
         }
-        if(payBy === POSSIBLE_PAY_METHODS.INSURANCE) {
-            return [ 'SELF', 'FAMILY_WITHOUT_PAY' ]
+        if (payBy === POSSIBLE_PAY_METHODS.INSURANCE) {
+            return ['SELF', 'FAMILY_WITHOUT_PAY']
         }
-        if(payBy === POSSIBLE_PAY_METHODS.CORPORATE) {
-            return [ 'SELF', 'FAMILY_WITHOUT_PAY' ]
+        if (payBy === POSSIBLE_PAY_METHODS.CORPORATE) {
+            return ['SELF', 'FAMILY_WITHOUT_PAY']
         }
     }
 
 
     render() {
-        const datas = {
-            full_name: 'S.Mukesh Kannan(self)', age: 21, gender: "male", phone_no: 8921595872,
-            familyDataByInsurance: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "M", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "F", phone_no: 8921595872 }],
-            familyDataByCorporate: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "M", phone_no: 8921595872 } ]
-        }
-        const { isCorporateUser, payBy, onSelectionChange, singlePatientSelect, selectedPatientTypes, familyDetailsData } = this.props;
-       
-        const { name, age, gender , onlyFamilyWithPayDetailsData } = this.state
+      
+        // const datas = {
+        //     full_name: 'S.Mukesh Kannan(self)', age: 21, gender: "male", phone_no: 8921595872,
+        //     familyDataByInsurance: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "female", phone_no: 8921595872 }],
+        //     familyDataByCorporate: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }]
+        // }
+        const { isCorporateUser, payBy, onSelectionChange,selectedPatientTypes, familyDetailsData,singlePatientSelect  } = this.props;
+
+        const { name, age, gender,onlyFamilyWithPayDetailsData ,data} = this.state
+   
+      
+     
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
@@ -377,7 +416,7 @@ class TestDetails extends PureComponent {
                                 {this.renderPatientDetails(this.defaultPatDetails, 0)}
                             </View>
                         </View>
-                    : null}
+                        : null}
                 </View>
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ?
@@ -391,7 +430,7 @@ class TestDetails extends PureComponent {
                                 } />
                             { (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)  && this.props.singlePatientSelect === false )  || (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others' ).length === 0 )  ?
                                 <View style={{ marginTop: 10, marginLeft: 8 }}>
-                                   {familyDetailsData.length !== 0 ?  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text> : null }
+                                    {familyDetailsData.length !== 0 ? <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text> : null}
                                     <Text style={styles.subHead}>Add other patient's details</Text>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={6}>
@@ -470,14 +509,14 @@ class TestDetails extends PureComponent {
                             <View>
                                 <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                                 <FlatList
-                                    data={payBy === POSSIBLE_PAY_METHODS.INSURANCE ? datas.familyDataByInsurance: datas.familyDataByCorporate }
+                                    data={payBy === POSSIBLE_PAY_METHODS.INSURANCE ? data.familyDataByInsurance : data.familyDataByCorporate}
                                     keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item , index }) =>
+                                    renderItem={({ item, index }) =>
                                         this.renderPatientDetails(item, index, true)
                                     } />
                             </View>
-                            
-                           : null
+
+                            : null
                         }
                     </View>
 
