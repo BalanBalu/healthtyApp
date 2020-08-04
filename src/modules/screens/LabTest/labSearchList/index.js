@@ -316,6 +316,7 @@ class labSearchList extends Component {
             return;
         }
         let fee = (parseInt(labCatInfo.branch_details.price) - ((parseInt(labCatInfo.branch_details.offer) / 100) * parseInt(labCatInfo.branch_details.price)))
+        console.log('labInfo', labInfo);
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo.lab_test_categories_id,
@@ -324,10 +325,12 @@ class labSearchList extends Component {
             extra_charges: labInfo.extra_charges || 0,
             mobile_no: labInfo.mobile_no || null,
             lab_name: labInfo.lab_name,
+            profile_image: labInfo.profile_image,
             category_name: labCatInfo.category_name,
             selectedSlotItem: selectedSlotItem,
             slotData: this.slotData,
-            "location": labInfo.location
+            "location": labInfo.location,
+
         }
         this.props.navigation.navigate('labConfirmation', { packageDetails })
     }

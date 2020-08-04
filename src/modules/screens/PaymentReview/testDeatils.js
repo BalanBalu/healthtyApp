@@ -334,7 +334,7 @@ class TestDetails extends PureComponent {
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
-                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', }}>For ,Whom do you need to take up the test? </Text>
+                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Whom do you need to take up the test?</Text>
                 <View style={{ flexDirection: 'row', marginTop: 5 }}>
                    
                    {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.SELF) ? 
