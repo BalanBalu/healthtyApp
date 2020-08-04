@@ -103,7 +103,7 @@ class PublicForumDetail extends PureComponent {
 
     }
     questionerName(item) {
-        let name = "Anonymous"
+        let name = "Guest User"
         if (item && item.questionerInfo) {
             if (item.questionerInfo.first_name) {
                 name = item.questionerInfo.first_name + " " + item.questionerInfo.last_name
