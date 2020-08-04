@@ -29,7 +29,7 @@ class MyAppoinmentList extends Component {
 			upComingData: [],
 			pastData: [],
 			userId: null,
-			loading: true,
+		
 			isRefreshing: false,
 			isNavigation: true,
 			modalVisible: false,
@@ -64,20 +64,31 @@ class MyAppoinmentList extends Component {
 	}
 
 	backNavigation = async (navigationData) => {
+		const { pastData, skip, limit } = this.state;
 		if (!this.state.isNavigation) {
 			if (navigationData.action) {
 				await this.setState({
 					isLoading: true
 				})
+
 				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
-					if (this.state.selectedIndex == 0) {
-						await this.upCommingAppointment();
 
-					} else {
-						await this.pastAppointment();
+					if (navigationData.lastState && navigationData.lastState.params && navigationData.lastState.params.refreshPage) {
+						if (this.state.selectedIndex == 0) {
+							await this.setState({ upComingData: [], skip: 0 })
+							await this.upCommingAppointment();
 
+						} else {
+
+							await this.setState({ pastData: [], skip: 0 })
+							await this.pastAppointment();
+
+						}
 					}
 				}
+				await this.setState({
+					isLoading: false
+				})
 			}
 		}
 	}
@@ -93,11 +104,10 @@ class MyAppoinmentList extends Component {
 				limit: this.state.limit,
 				sort: 1
 
-				// on_going_appointment: true
+
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-			console.log('upcomming==================================');
-			console.log(upCommingAppointmentResult)
+
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
@@ -136,9 +146,7 @@ class MyAppoinmentList extends Component {
 						profile_image: details.profile_image
 					});
 				})
-				// upcommingInfo.sort(function (firstVarlue, secandValue) {
-				// 	return firstVarlue.appointmentResult.appointment_starttime < secandValue.appointmentResult.appointment_starttime ? -1 : 0
-				// })
+
 				let tempData = this.state.upComingData.concat(upcommingInfo)
 				this.setState({
 					upComingData: tempData,
@@ -165,23 +173,23 @@ class MyAppoinmentList extends Component {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
 				skip: this.state.skip,
-				limit:this.state.limit,
+				limit: this.state.limit,
 				sort: -1,
-				reviewInfo:true
+				reviewInfo: true
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
 			console.log("===========================================================")
 			console.log(JSON.stringify(pastAppointmentResult))
-	
+
 
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
-			
+
 
 				let doctorInfo = new Map();
-			
-				
+
+
 				let doctorIds = getAllId(pastAppointmentResult)
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
@@ -217,7 +225,7 @@ class MyAppoinmentList extends Component {
 					});
 				}
 				)
-			
+
 				let tempData = this.state.pastData.concat(pastDoctorDetails)
 				await this.setState({
 					pastData: tempData, data: tempData, isLoading: false
@@ -241,8 +249,10 @@ class MyAppoinmentList extends Component {
 		})
 	}
 	async getvisble(val) {
+		const { reviewIndex, data } = this.state
 		this.setState({ modalVisible: false });
 		if (val.updatedVisible == true) {
+			await this.setState({ skip: 0, pastData: [] })
 			await this.pastAppointment();
 		}
 	}
@@ -252,6 +262,7 @@ class MyAppoinmentList extends Component {
 		await this.setState({
 			selectedIndex: index,
 			skip: 0,
+			isLoading: true
 
 		});
 
@@ -276,7 +287,8 @@ class MyAppoinmentList extends Component {
 
 		this.setState({
 			...this.state,
-			data
+			data,
+			isLoading: false
 
 		});
 	};
@@ -466,7 +478,7 @@ class MyAppoinmentList extends Component {
 																</Text>
 
 																{selectedIndex == 1 &&
-																	item.appointmentResult.reviewInfo != undefined &&item.appointmentResult.reviewInfo.overall_rating!==undefined&& (
+																	item.appointmentResult.reviewInfo != undefined && item.appointmentResult.reviewInfo.overall_rating !== undefined && (
 
 																		<StarRating
 																			fullStarColor="#FF9500"
@@ -548,22 +560,15 @@ class MyAppoinmentList extends Component {
 								)
 						)}
 				</Card>
-				<View style={{ height: 300, position: 'absolute', bottom: 0 }}>
-					<Modal
-						animationType="slide"
-						transparent={true}
-						containerStyle={{ justifyContent: 'flex-end' }}
-						visible={this.state.modalVisible}
-					>
-						<InsertReview
-							props={this.props}
-							data={this.state.reviewData}
-							popupVisible={(data) => this.getvisble(data)}
-						>
+				{this.state.modalVisible === true ?
+					<InsertReview
+						props={this.props}
+						data={this.state.reviewData}
+						popupVisible={(data) => this.getvisble(data)}
+					/>
 
-						</InsertReview>
-					</Modal>
-				</View>
+
+					: null}
 
 			</View>
 
