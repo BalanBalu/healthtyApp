@@ -126,7 +126,7 @@ export function getDoctorExperience(calulatedExperience) {
         }
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-        year = calulatedExperience.year;
+       let year = calulatedExperience.year;
         return `${year} Year` + (year <= 1 ? '' : 's')
     }
 }
@@ -150,6 +150,13 @@ export function getName(data) {
     }
     return name
 
+}
+export function getUserLocation(location) {
+    if (!location.address) return ''
+    if (location.address)
+        return `${location.address.address.no_and_street}, ${location.address.address.city}, ${location.address.address.state}, ${location.address.address.pin_code}`;
+    else
+        return ''
 }
 
 
@@ -329,6 +336,8 @@ export function getHospitalName(location) {
         return ''
 }
 export function getAddress(location) {
+    console.log("location", location);
+    
     if (!location) return ''
     if (location)
         return `${location.address.no_and_street},${location.address.address_line_1 || ''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
