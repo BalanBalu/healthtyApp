@@ -128,6 +128,7 @@ import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
 import Hospitals from '../../modules/screens/hospitalBookAppoinments/hospitals'
 import TextTicker from 'react-native-text-ticker';
+import { IS_ANDROID } from '../config';
 const AuthRoutes = {
   login: {
     screen: login,
@@ -173,19 +174,19 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Home',
       header: (
+        
         <View
         style={{
-          height: 88,
-          
+          height: IS_ANDROID ?  60 : 90,
           backgroundColor: '#7F49C3',
           justifyContent: 'center',
         }}>
          <View
-        style={{
-          marginTop: 30,
-          height: 60,
-          justifyContent:'center',
-        }}>
+          style={{
+            marginTop: IS_ANDROID ? 0 : 30,
+            height: 60,
+            justifyContent:'center',
+          }}>
           <Row  size={12} style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
             <Col size={10} style={{ flexDirection: 'row', alignItems: 'center' }}>
               <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
@@ -230,6 +231,7 @@ const HomeStack = createStackNavigator({
        
         </View>
       </View>
+      
       ),
 
     /*  headerLeft: (
