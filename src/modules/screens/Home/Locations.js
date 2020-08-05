@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, FlatList, AsyncStorage } from 'react-native';
 
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
@@ -129,13 +129,16 @@ class Locations extends PureComponent {
                                         <ListItem
                                             button
                                             onPress={() => {
-                                                store.dispatch({
+                                                const data = {
                                                     type: SET_PATIENT_LOCATION_DATA,
                                                     center: item.coordinates,
                                                     locationName: item.location,
                                                     isSearchByCurrentLocation: false,
                                                     isLocationSelected: true
-                                                })
+                                                }
+                                                store.dispatch(data)
+                                                AsyncStorage.setItem('manuallyEnabledLocation', JSON.stringify(data))
+                                       
                                                 this.props.navigation.pop()
                                             }}
                                             button>
@@ -153,9 +156,11 @@ class Locations extends PureComponent {
                     </View>
                 </Content>
                 <View>
-                    <TouchableOpacity style={styles.fab} onPress={() => {
+                    <TouchableOpacity style={styles.fab} onPress={async () => {
+                        await AsyncStorage.removeItem('manuallyEnabledLocation');
                         CurrentLocation.getCurrentPosition();
-                        this.props.navigation.navigate("Home")
+                        this.props.navigation.navigate("Home");
+                       
                     }}>
                         <Icon name="locate" style={styles.text}></Icon>
                     </TouchableOpacity>
