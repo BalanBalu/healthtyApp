@@ -19,8 +19,8 @@ const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
 const HomeTestImg = require('../../../../assets/images/hometest.jpg');
 const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
-const hospitalLogoImg = require('../../../../assets/images/hospitalLogo.png');
-const prescriptionLogoImg = require('../../../../assets/images/PresciptionUploadImage.png');
+const hospitalLogoImg = require('../../../../assets/images/hospital.png');
+const publicForum = require('../../../../assets/images/public_forum.png');
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
@@ -540,7 +540,7 @@ class Home extends Component {
                                             </Col>
                                             <Col size={2.5}>
                                                 <Image
-                                                    source={prescriptionLogoImg}
+                                                    source={publicForum}
                                                     style={{
                                                         width: 35, height: 35, alignItems: 'center'
                                                     }}
