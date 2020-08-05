@@ -4,12 +4,14 @@ import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, Imag
 import { Col, Row, Grid } from 'react-native-easy-grid'
 import StarRating from 'react-native-star-rating';
 import styles from '../Styles'
+import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action';
 import { renderDoctorImage, getUserGenderAndAge, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getUserLocation, getAddress } from '../../../common'
 import { formatDate, dateDiff, statusValue, getMoment } from '../../../../setup/helpers';
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
-import { getHomeTestappointmentByID, updateDocHomeTestappointment } from '../../../providers/homeHelthCare/action';
+import { getHomeTestappointmentByID, updateDocHomeTestappointment, getUserReviews4homeTest } from '../../../providers/homeHelthCare/action';
 import Spinner from "../../../../components/Spinner";
+import InsertReview from '../Reviews/insertReviews';
 
 class AppointmentDetails extends PureComponent {
     constructor(props) {
@@ -43,6 +45,8 @@ class AppointmentDetails extends PureComponent {
             await new Promise.all([
                 this.appointmentDetailsGetById(),
                 this.getUserReport(),
+                this.getUserReviews(),
+
             ]);
         }
         else {
@@ -61,6 +65,7 @@ class AppointmentDetails extends PureComponent {
                 this.getPaymentInfo(appointmentData.payment_id),
                 this.getDoctorDetails(),
                 this.getUserReport(),
+                this.getUserReviews(),
             ])
             if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
                 await this.setState({ modalVisible: true })
@@ -73,6 +78,14 @@ class AppointmentDetails extends PureComponent {
         }
 
         await this.setState({ isLoading: false })
+    }
+    async backNavigation() {
+        const { navigation } = this.props;
+        if (navigation.state.params) {
+            if (navigation.state.params.hasReloadReportIssue) {
+                this.getUserReport();  // Reload the Reported issues when they reload
+            }
+        };
     }
 
     getDoctorDetails = async () => {
@@ -126,9 +139,28 @@ class AppointmentDetails extends PureComponent {
         }
 
     }
+    getUserReviews = async () => {
+        try {
+            let reviewResult = await getUserReviews4homeTest('appointment', this.state.appointmentId)
+            if (reviewResult.success) {
+                this.setState({ reviewData: reviewResult.data });
+            }
+
+        }
+        catch (e) {
+            console.error(e);
+        }
+    }
+
+    async getvisible(val) {
+        this.setState({ modalVisible: false });
+        if (val.updatedVisible == true) {
+            this.getUserReviews()
+        }
+    }
     updateAppointmentStatus = async (data, updatedStatus) => {
         try {
-           
+
             this.setState({ isLoading: true });
             let requestData = {
                 doctorId: data.doctor_id,
@@ -140,7 +172,7 @@ class AppointmentDetails extends PureComponent {
             };
             let result = await updateDocHomeTestappointment(data._id, requestData);
             console.log("result", result);
-           
+
             this.setState({ isLoading: false })
 
             if (result.success) {
@@ -154,7 +186,7 @@ class AppointmentDetails extends PureComponent {
                     this.setState({ proposedVisible: false });
                 }
 
-               await this.setState({ data: temp });
+                await this.setState({ data: temp });
             }
         }
         catch (e) {
@@ -218,6 +250,12 @@ class AppointmentDetails extends PureComponent {
         this.setState({ proposedVisible: false })
     }
 
+    navigateAddReview() {
+        this.setState({
+            modalVisible: true
+        });
+
+    }
 
     render() {
 
@@ -226,6 +264,9 @@ class AppointmentDetails extends PureComponent {
         return (
             <Container>
                 <Content style={{ margin: 10 }}>
+                    <NavigationEvents
+                        onWillFocus={payload => { this.backNavigation(payload) }}
+                    />
                     {isLoading == true ?
                         (
                             <Spinner
@@ -443,53 +484,76 @@ class AppointmentDetails extends PureComponent {
                                                     } />
                                             </Col>
                                         </Row> : null}
-                                    {/* <Row style={styles.rowSubText}>
+                                    <Row style={styles.rowSubText}>
                                         <Col style={{ width: '8%', paddingTop: 5 }}>
                                             <Icon name="ios-document" style={{ fontSize: 20, }} />
                                         </Col>
                                         <Col style={{ width: '92%', paddingTop: 5 }}>
                                             <Text style={styles.innerSubText}>Payment Report</Text>
-                                        {reportData != null ?
-                                            <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                                                <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'HOME_TEST' }) }}>
-                                                    <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
-                                                    <Row>
-                                                        <Col size={9}>
-                                                            <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
+                                            {reportData != null ?
+                                                <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+                                                    <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'HOME_TEST' }) }}>
+                                                        <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
+                                                        <Row>
+                                                            <Col size={9}>
+                                                                <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
 
-                                                        </Col>
-                                                        <Col size={1}>
-                                                            <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
-                                                        </Col>
-                                                    </Row>
-                                                </TouchableOpacity>
-                                            </View> :
+                                                            </Col>
+                                                            <Col size={1}>
+                                                                <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
+                                                            </Col>
+                                                        </Row>
+                                                    </TouchableOpacity>
+                                                </View> :
 
-                                            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
-                                                <TouchableOpacity block success
-                                                style={styles.reviewButton} onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'HOME_TEST' }) }}>
-                                                    <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
-                                                        Report Issue
-                                                </Text>
-                                                </TouchableOpacity>
-                                            </View>}
+                                                <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                                                    <TouchableOpacity block success
+                                                        style={styles.reviewButton} onPress={() => {
+                                                            this.props.navigation.push('ReportIssue', {
+                                                                issueFor: { serviceType: 'HOME_TEST', reportedId: data._id, status: data.appointment_status },
+                                                                prevState: this.props.navigation.state
+                                                            })
+                                                        }}>
+                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>Report Issue</Text>
+                                                    </TouchableOpacity>
+                                                </View>}
                                         </Col>
-                                    </Row> */}
-                                    {/* <Row style={styles.rowSubText}>
-                                        <Col style={{ width: '8%', paddingTop: 5 }}>
-                                            <Icon name="ios-medkit" style={{ fontSize: 20, }} />
-                                        </Col>
-                                        <Col style={{ width: '92%', paddingTop: 5 }}>
-                                            <Text style={styles.innerSubText}>Review</Text>
+                                    </Row>
+                                    { reviewData.length !== 0 ?
 
-                                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                                                disabled={false}
-                                                maxStars={5}
-                                            //   rating={reviewData[0] && reviewData[0].overall_rating}
-                                            />
-                                            <Text note style={styles.subTextInner1}>0</Text>
-                                        </Col>
-                                    </Row> */}
+                                        <Row style={styles.rowSubText}>
+                                            <Col style={{ width: '8%', paddingTop: 5 }}>
+                                                <Icon name="ios-medkit" style={{ fontSize: 20, }} />
+                                            </Col>
+                                            <Col style={{ width: '92%', paddingTop: 5 }}>
+                                                <Text style={styles.innerSubText}>Review</Text>
+
+                                                <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                                                    disabled={false}
+                                                    maxStars={5}
+                                                    rating={reviewData[0] && reviewData[0].overall_rating}
+                                                />
+                                                <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
+                                            </Col>
+                                        </Row> :
+                                        reviewData.length == 0 ?
+                                            <Row style={styles.rowSubText}>
+                                                <Col style={{ width: '8%', paddingTop: 5 }}>
+                                                    <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
+
+                                                </Col>
+                                                <Col style={{ width: '92%', paddingTop: 5 }}>
+                                                    <Text style={styles.innerSubText}>Add Feedback"</Text>
+                                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                        <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+
+                                                            <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>Add Feedback</Text>
+                                                            <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                </Col>
+                                            </Row> : null
+                                    }
                                     <Row style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}>
                                         <Col style={{ width: '8%', paddingTop: 5 }}>
                                             <Icon name="ios-cash" style={{ fontSize: 20, }} />
@@ -548,6 +612,12 @@ class AppointmentDetails extends PureComponent {
                                 </View>
                             </Grid>
                         </View>}
+                    {this.state.modalVisible === true ?
+                        <InsertReview
+                            data={this.state.data}
+                            popupVisible={(data) => this.getvisible(data)}
+
+                        /> : null}
                     <Modal
                         visible={this.state.proposedVisible}
                         transparent={true}

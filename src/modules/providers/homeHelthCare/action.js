@@ -2,7 +2,10 @@ import { postService, getService, putService } from '../../../setup/services/htt
 
 export async function getAppointment4Healthcare(userId, filters, isLoading = true) {
     try {
-        const endPoint = 'home_healthcare/appointment/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;;
+        let endPoint = 'home_healthcare/appointment/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;;
+        if (filters.reviewInfo) {
+            endPoint = endPoint + '&reviewInfo=1'
+        }
         const response = await getService(endPoint);
         const respData = response.data;
         return respData;
@@ -33,8 +36,6 @@ export async function getHomeTestappointmentByID(appointmentId) {
 
 export async function updateDocHomeTestappointment(appointmentId, reqData) {
     try {
-        console.log(reqData);
-
         const endPoint = 'home_healthcare/appointments/' + appointmentId;
         const response = await putService(endPoint, reqData);
         const respData = response.data;
@@ -51,7 +52,35 @@ export async function updateDocHomeTestappointment(appointmentId, reqData) {
 }
 
 
+export async function insertReviews(userId, insertUserReviews) {
+    try {
+        let endPoint = '/doctor/home_healthcare/user/' + userId;
+        let response = await postService(endPoint, insertUserReviews);
+        let respData = response.data;
+        return respData;
+    }
+    catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
 
 
+export async function getUserReviews4homeTest(type, Id) {
+    try {
+        let endPoint = '/doctor/home_healthcare/user/' + type + '/' + Id;
+        let response = await getService(endPoint);
+        let respData = response.data;
+        return respData;
+
+    } catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
 
 
