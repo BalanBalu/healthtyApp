@@ -92,7 +92,7 @@ class CallCurrentLocation {
       let currentLocationCity = '';
       if (locationData) {
         if (locationData.context) {
-          locationData.context.forEach(placeData => {
+          locationData.context.forEach((placeData )=> {
             currentLocationCity += placeData && placeData.text ? placeData.text + ', ' : '';
           })  
         }
@@ -102,7 +102,7 @@ class CallCurrentLocation {
         type: SET_PATIENT_LOCATION_DATA,
         center: origin_coordinates,
         isSearchByCurrentLocation: true,
-        locationName: currentLocationCity,
+        locationName: String(currentLocationCity).slice(0, -2),
         isLocationSelected: true
       })
     }), error => {
