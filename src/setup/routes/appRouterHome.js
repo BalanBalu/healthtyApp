@@ -128,7 +128,6 @@ import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
 import Hospitals from '../../modules/screens/hospitalBookAppoinments/hospitals'
 import TextTicker from 'react-native-text-ticker';
-import MarqueeText from 'react-native-marquee';
 const AuthRoutes = {
   login: {
     screen: login,
@@ -198,7 +197,11 @@ const HomeStack = createStackNavigator({
                <TouchableOpacity style={{flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
                   <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
                   <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', marginRight: 15 }}>
-                    <TextTicker style={{  marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={3000} loop bounce repeatSpacer={50} marqueeDelay={1000}>
+                    <TextTicker style={{  marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={3000} 
+                        loop 
+                        bounce 
+                        repeatSpacer={50} 
+                        marqueeDelay={1000}>
                       {navigation.getParam('appBar', { locationName: ' ' }).locationName}
                     </TextTicker>
                     <Text uppercase={false} 
@@ -218,9 +221,10 @@ const HomeStack = createStackNavigator({
                 </View>
               </TouchableOpacity>
             </Col>         
+            {Platform.OS != "ios" ?
             <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
               <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
-            </TouchableOpacity>
+            </TouchableOpacity> : null }
           </Row>
          
        
