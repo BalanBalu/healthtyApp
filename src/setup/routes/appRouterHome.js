@@ -14,7 +14,7 @@ import Updateheightweight from "../../modules/screens/userprofile/Updateheightwe
 import UpdateFamilyMembers from "../../modules/screens/userprofile/UpdateFamilyMembers";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
-import { Icon, View, Thumbnail, Item, Input } from 'native-base';
+import { Icon, View, Thumbnail, Item, Input, Left, Right } from 'native-base';
 import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
@@ -127,7 +127,8 @@ import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCar
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
 import Hospitals from '../../modules/screens/hospitalBookAppoinments/hospitals'
-
+import TextTicker from 'react-native-text-ticker';
+import { IS_ANDROID } from '../config';
 const AuthRoutes = {
   login: {
     screen: login,
@@ -171,9 +172,78 @@ const HomeStack = createStackNavigator({
     screen: Home,
 
     navigationOptions: ({ navigation }) => ({
-      title: null,
-      headerLeft: (
+      title: 'Home',
+      header: (
+        
+        <View
+        style={{
+          height: IS_ANDROID ?  60 : 90,
+          backgroundColor: '#7F49C3',
+          justifyContent: 'center',
+        }}>
+         <View
+          style={{
+            marginTop: IS_ANDROID ? 0 : 30,
+            height: 60,
+            justifyContent:'center',
+          }}>
+          <Row  size={12} style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+            <Col size={10} style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
+                <Image
+                  style={{ marginLeft: 18, tintColor: '#fff' }}
+                  source={menuIcon}
+               />
+               </TouchableOpacity>
+               <TouchableOpacity style={{flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
+                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems:  'flex-start', marginRight: 15 }}>
+                    <TextTicker style={{  marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={3000} 
+                        loop 
+                        bounce 
+                        repeatSpacer={50} 
+                        marqueeDelay={1000}>
+                      {navigation.getParam('appBar', { locationName: ' ' }).locationName}
+                    </TextTicker>
+                    <TextTicker style={{  alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2  }} duration={3000} 
+                        loop 
+                        bounce 
+                        repeatSpacer={200} 
+                        marqueeDelay={1000}>
+                      
+                      {navigation.getParam('appBar', { locationCapta: 'Searching Near by Hospitals' }).locationCapta}
+                    
+                    </TextTicker>
+                    
+                   
+                  </View>
+              </TouchableOpacity>
+            </Col>
+           
+            <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
+              <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
+                <View>
+                  <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                    {navigation.getParam('notificationBadgeCount') ?
+                      <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
+                </View>
+              </TouchableOpacity>
+            </Col>         
+            {Platform.OS != "ios" ?
+            <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+              <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
+            </TouchableOpacity> : null }
+          </Row>
+         
+       
+        </View>
+      </View>
+      
+      ),
 
+    /*  headerLeft: (
+
+        
         <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
             <Image
@@ -187,6 +257,7 @@ const HomeStack = createStackNavigator({
               <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
                 <View style={{ flexDirection: 'row' }}>
                   <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                 
                   <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>{navigation.getParam('appBar', { locationName: ' ' }).locationName}</Text>
                   <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
                 </View>
@@ -196,7 +267,7 @@ const HomeStack = createStackNavigator({
           </Row>
 
 
-        </Row>
+         </Row>
       ),
       headerRight: (
 
@@ -207,14 +278,10 @@ const HomeStack = createStackNavigator({
               {navigation.getParam('notificationBadgeCount') != null ?
                 <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
                 : null}
-              {/* <Badge /> */}
+              
             </View>
 
-            {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
-              <View>
-                <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-              </View>
-            </TouchableOpacity> */}
+           
           </TouchableOpacity>
           {Platform.OS != "ios" ?
             <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
@@ -229,7 +296,7 @@ const HomeStack = createStackNavigator({
 
 
 
-      ),
+      ), */
       headerStyle: {
         backgroundColor: '#7F49C3',
       },
