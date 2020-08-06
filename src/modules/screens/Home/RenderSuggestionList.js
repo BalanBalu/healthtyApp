@@ -80,7 +80,6 @@ class RenderSuggestionsList extends PureComponent {
         LocationWarning.checkLocationWarning(this.navigateDoctorSearchList.bind(this), [ item ]);
     }
     navigateDoctorSearchList = (item) => {
-        console.log('Calling Navigate Doctor Search List FN', item);
         const { bookappointment: { isLocationSelected, locationCordinates } } = this.props;
         let reqData4SearchDocList = {
             locationDataFromSearch: {

@@ -6,8 +6,6 @@ export default class CheckLocationWarning {
 
     static async checkLocationWarning(fn, args) {
         const { bookappointment: { isLocationSelected, locationCordinates } } = store.getState();
-        console.log('Getting to Location Warning', isLocationSelected);
-        console.log(locationCordinates);
         if (!isLocationSelected) {
             Alert.alert(
                 "Location Warning",
@@ -21,7 +19,6 @@ export default class CheckLocationWarning {
             );
             return
         } else {
-            console.log(args);
             fn.apply(this, args);
         }
     }

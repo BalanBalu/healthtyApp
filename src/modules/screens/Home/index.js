@@ -252,7 +252,6 @@ class Home extends Component {
     };
    
     navigateToCateSearch = (categoryName) => {
-        console.log('Category Name is ', categoryName);
         const { bookappointment: { locationCordinates } } = this.props;
         this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
             inputKeywordFromSearch: categoryName,
