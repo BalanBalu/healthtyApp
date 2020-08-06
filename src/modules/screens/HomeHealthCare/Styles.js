@@ -34,6 +34,17 @@ export default styles = StyleSheet.create({
         fontSize: 12,
         marginLeft: 10
     },
+    shareButton: {
+        marginTop: 10,
+        backgroundColor: "gray",
+        marginRight: 1,
+        borderRadius: 10,
+        width: "auto",
+        height: 30,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center"
+    },
     commonText: {
         fontFamily: 'OpenSans',
         fontSize: 12,

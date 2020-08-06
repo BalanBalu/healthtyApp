@@ -5,6 +5,7 @@ import { NavigationEvents } from 'react-navigation';
 import { Col, Row, Grid } from 'react-native-easy-grid'
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import styles from '../Styles'
+import StarRating from "react-native-star-rating";
 import { getAppointment4Healthcare } from '../../../providers/homeHelthCare/action'
 import { formatDate, addTimeUnit, subTimeUnit, statusValue, getAllId } from "../../../../setup/helpers";
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
@@ -12,6 +13,7 @@ import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getUserL
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 import Spinner from "../../../../components/Spinner";
 import { getMultipleDoctorDetails } from "../../../providers/bookappointment/bookappointment.action";
+import InsertReview from '../Reviews/insertReviews';
 
 class AppointmentList extends PureComponent {
     constructor(props) {
@@ -135,9 +137,9 @@ class AppointmentList extends PureComponent {
             let filters = {
                 startDate: subTimeUnit(new Date(), 1, "years").toISOString(),
                 endDate: subTimeUnit(new Date(), 1, 'days').toISOString(),
+                reviewInfo: true
             };
             let result = await getAppointment4Healthcare(userId, filters);
-
             if (result.success) {
                 result = result.data;
                 let doctorInfo = new Map();
@@ -227,6 +229,11 @@ class AppointmentList extends PureComponent {
 
         });
     };
+    navigateAddReview(item, index) {
+        this.setState({
+            modalVisible: true, reviewData: item.appointmentResult, reviewIndex: index
+        })
+    }
 
     async getvisble(val) {
         this.setState({ modalVisible: false });
@@ -239,7 +246,6 @@ class AppointmentList extends PureComponent {
     render() {
         // const data = [{ token_no: 1234, name: 'Nurse Hamington MBBS', date: "Sunday,June 28-2020  11:10 am" }]
         const { data, selectedIndex, isLoading } = this.state;
-        console.log("data render", data);
 
         return (
             <Container>
@@ -329,6 +335,30 @@ class AppointmentList extends PureComponent {
                                                                 <Text style={styles.nameText}>{(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}</Text>
                                                             </Col>
                                                         </Row>
+                                                        <Row style={{ borderBottomWidth: 0 }}>
+                                                            <Text
+                                                                style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
+                                                            >
+                                                                {item.specialist}
+                                                            </Text>
+
+                                                            {selectedIndex == 1 &&
+                                                                item.appointmentResult.reviewInfo != undefined && item.appointmentResult.reviewInfo.overall_rating !== undefined && (
+
+                                                                    <StarRating
+                                                                        fullStarColor="#FF9500"
+                                                                        starSize={15}
+                                                                        containerStyle={{
+                                                                            width: 80,
+                                                                            marginLeft: "auto",
+                                                                        }}
+                                                                        disabled={false}
+                                                                        maxStars={5}
+                                                                        rating={item.appointmentResult.reviewInfo.overall_rating}
+
+                                                                    />
+                                                                )}
+                                                        </Row>
                                                         <Text style={styles.mainText}>{item.degree}</Text>
                                                         <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visit home address :</Text>
                                                         <Text style={styles.subinnerText} note>{getUserLocation(item.appointmentResult.userInfo)}</Text>
@@ -340,21 +370,58 @@ class AppointmentList extends PureComponent {
                                                                 <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>
                                                                 {/* <Text style={styles.completedText}>{item.appointment_status}</Text> */}
                                                             </Col>
-                                                            <Col size={6}>
-                                                                <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
-                                                                    <Button style={[styles.bookingButton, styles.customButton]}
-                                                                        testID='navigateToHome'>
-                                                                        <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
-                                                                    </Button>
-                                                                </Row>
-                                                            </Col>
+                                                           
                                                         </Row>
+                                                        {selectedIndex == 1 &&
+                                                            item.appointmentResult.appointment_status == "COMPLETED" && (item.appointmentResult.is_review_added == undefined || item.appointmentResult.is_review_added == false) ? (
+                                                                <Row style={{ borderBottomWidth: 0 }}>
+                                                                    <Right style={(styles.marginRight = -2)}>
+                                                                        <Button style={styles.shareButton}
+                                                                            onPress={() => this.navigateAddReview(item, index)}
+                                                                            testID='navigateInsertReview'>
+                                                                            <Text style={styles.bookAgain1}>Add Review</Text>
+                                                                        </Button>
+                                                                    </Right>
+
+                                                                    <Right style={(styles.marginRight = 5)}>
+                                                                        <Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
+                                                                            <Text style={styles.bookAgain1} testID='navigateBookAppointment'>Book Again</Text>
+                                                                        </Button>
+                                                                    </Right>
+                                                                </Row>
+
+                                                            ) : (
+                                                                selectedIndex === 1 && (
+
+
+                                                                    <Row style={{ borderBottomWidth: 0 }}>
+                                                                        <Right style={(styles.marginRight = 10)}>
+                                                                            <Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
+                                                                                <Text style={styles.bookAgain1}>
+                                                                                    Book Again
+																		           </Text>
+                                                                            </Button>
+                                                                        </Right>
+                                                                    </Row>
+
+                                                                )
+                                                            )}
                                                     </Col>
                                                 </Row>
                                             </TouchableOpacity>
                                         </Card>
                                     } />
                             )}
+                        {this.state.modalVisible === true ?
+                            <InsertReview
+                                props={this.props}
+                                data={this.state.reviewData}
+                                popupVisible={(data) => this.getvisble(data)}
+                            />
+
+
+                            : null}
+
                     </View>
                 </Content>
             </Container>
