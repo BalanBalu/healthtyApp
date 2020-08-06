@@ -17,8 +17,10 @@ const PayBySelection = (props) => {
             return null
         }
         return (
-            <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
-                <Text style={styles.subHead}>Are You Paying By </Text>
+            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                
+               <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Are You Paying By</Text>
+               
                 <Row style={{ marginTop: 5 }}>
                   <Col size={10}>
                     <Row>
