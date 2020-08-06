@@ -31,6 +31,7 @@ import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
 import NextAppoinmentPreparation from './nextAppoinmentPreparation'
+import CheckLocationWarning from './LocationWarning';
 class Home extends Component {
 
     locationUpdatedCount = 0;
@@ -247,6 +248,11 @@ class Home extends Component {
     }
 
     navigateToCategorySearch(categoryName) {
+         CheckLocationWarning.checkLocationWarning(this.navigateToCateSearch.bind(this), [ categoryName ]);
+    };
+   
+    navigateToCateSearch = (categoryName) => {
+        console.log('Category Name is ', categoryName);
         const { bookappointment: { locationCordinates } } = this.props;
         this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
             inputKeywordFromSearch: categoryName,
@@ -256,19 +262,8 @@ class Home extends Component {
                 maxDistance: MAX_DISTANCE_TO_COVER
             }
         })
-        // let serachInputvalues = [{
-        //     type: 'category',
-        //     value: categoryName
-        // },
-        // {
-        //     type: 'geo',
-        //     value: {
-        //         coordinates: locationCordinates,
-        //         maxDistance: MAX_DISTANCE_TO_COVER
-        //     }
-        // }]
-        // this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
+   
 
     getMarkedAsReadedNotification = async (userId) => {
         try {
