@@ -24,7 +24,7 @@ class BenefeciaryDetails extends PureComponent {
 
     render() {
         const { expand, data } = this.props;
-
+        console.log('benificeryDetails', data)
         if (!expand) return null;
         return (
 
@@ -53,10 +53,10 @@ class BenefeciaryDetails extends PureComponent {
                     </Col>
                     <Col size={5.5}>
                         <Text note style={styles.innerText}>{this.getCorporateBenificeryName(data)}</Text>
-                        <Text note style={styles.innerText}>Group Health Policy</Text>
+                        <Text note style={styles.innerText}>{data.productType}</Text>
                         <Text note style={styles.innerText}>{data.policyNumber}</Text>
-                        <Text note style={styles.innerText}>{formatDate(data.enrollmentStartDate,'DD/MM/YYYY')}</Text>
-                        <Text note style={styles.innerText}>{formatDate(data.enrollmentEndDate,'DD/MM/YYYY')}</Text>
+                        <Text note style={styles.innerText}>{formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY')}</Text>
+                        <Text note style={styles.innerText}>{formatDate(data.policyEffectiveTo, 'DD/MM/YYYY')}</Text>
                         <Text note style={styles.innerText}>{data.sumInsured}</Text>
                         <Text note style={styles.innerText}>2500000</Text>
                         <Text note style={styles.innerText}> ₹ 0.00</Text>

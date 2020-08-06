@@ -171,9 +171,12 @@ export function getAllId(data) {
 
   let dataIds = [];
   data.map((element, index) => {
+    if(element.doctor_id){
     if (!dataIds.includes(element.doctor_id)) {
+   
       dataIds.push(element.doctor_id)
     }
+  }
 
 
   })

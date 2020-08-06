@@ -12,7 +12,7 @@ import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAp
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
 import { TestDetails, POSSIBLE_FAMILY_MEMBERS } from './testDeatils'
-import {PayBySelection, POSSIBLE_PAY_METHODS } from './PayBySelection';
+import { PayBySelection, POSSIBLE_PAY_METHODS } from './PayBySelection';
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
@@ -31,9 +31,9 @@ export default class PaymentReview extends Component {
       selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
       whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
       familyMembersSelections: [],
-      fromNavigation:null ,
+      fromNavigation: null,
       familyMembersSelections: [],
-      selectedPatientTypes : [ POSSIBLE_FAMILY_MEMBERS.SELF ] ,
+      selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
       familyDetailsData: []
     }
     this.defaultPatDetails = {};
@@ -42,7 +42,7 @@ export default class PaymentReview extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const isLoggedIn = await hasLoggedIn(this.props);
-    console.log('IsCorporate User',  await AsyncStorage.getItem('is_corporate_user'));
+    console.log('IsCorporate User', await AsyncStorage.getItem('is_corporate_user'));
     const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
 
     if (!isLoggedIn) {
@@ -50,9 +50,9 @@ export default class PaymentReview extends Component {
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
-    const fromNavigation=navigation.getParam('fromNavigation')||null
+    const fromNavigation = navigation.getParam('fromNavigation') || null
     console.log('bookSlotDetails', bookSlotDetails);
-    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser,fromNavigation });
+    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser, fromNavigation });
     await this.getPatientInfo();
   }
   async confirmProceedPayment() {
@@ -76,19 +76,31 @@ export default class PaymentReview extends Component {
     }
     this.setState({ isLoading: true, spinnerText: "Please Wait" });
     const bookingSlotData = bookSlotDetails
-    const reqData = {
-      doctorId: bookingSlotData.doctorId,
-      startTime: bookingSlotData.slotData.slotStartDateAndTime,
-      endTime: bookingSlotData.slotData.slotEndDateAndTime,
+    let validationResult
+    if (this.state.fromNavigation === 'HOSPITAL') {
+      validationResult = {
+        success: true
+      }
+
+    } else {
+      const reqData = {
+        doctorId: bookingSlotData.doctorId,
+        startTime: bookingSlotData.slotData.slotStartDateAndTime,
+        endTime: bookingSlotData.slotData.slotEndDateAndTime,
+      }
+      validationResult = await validateBooking(reqData)
     }
-    let validationResult = await validateBooking(reqData)
     this.setState({ isLoading: false, spinnerText: ' ' });
+
     if (validationResult.success) {
       const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
+      if (patientDetailsObj.policy_no) {
+        patientDataObj.policy_number = patientDetailsObj.policy_no
+      }
       bookSlotDetails.patient_data = patientDataObj;
       console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
       const amount = this.state.bookSlotDetails.slotData.fee;
-      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount, fromNavigation: this.state.fromNavigation })
     } else {
       console.log(validationResult);
       Toast.show({
@@ -99,10 +111,10 @@ export default class PaymentReview extends Component {
     }
 
   }
-  async processToPayLater() {
-    const { bookSlotDetails, patientDetailsObj } = this.state;
+  async processToPayLater(paymentMethod) {
+    const { bookSlotDetails, patientDetailsObj, fromNavigation, isCorporateUser } = this.state;
     let { diseaseDescription } = bookSlotDetails;
-    console.log('final Patient Details ',patientDetailsObj);
+    console.log('final Patient Details ', patientDetailsObj);
     if (!Object.keys(patientDetailsObj).length) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
@@ -121,14 +133,25 @@ export default class PaymentReview extends Component {
     }
     this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
     const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
+    if (patientDetailsObj.policy_no) {
+      patientDataObj.policy_number = patientDetailsObj.policy_no
+    }
+ 
     bookSlotDetails.patient_data = patientDataObj;
     console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, 'cash');
+    let modesOfPayment = 'cash';
+    if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
+      modesOfPayment = 'corporate';
+    } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
+      modesOfPayment = 'insurance;'
+    }
+
+    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, modesOfPayment, bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, modesOfPayment);
     console.log('Book Appointment Payment Update Response ');
     if (response.success) {
-      this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
+      this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: paymentMethod, tokenNo: response.tokenNo, fromNavigation: fromNavigation });
     } else {
       Toast.show({
         text: response.message,
@@ -162,16 +185,16 @@ export default class PaymentReview extends Component {
 
 
   addPatientList = async (patientData) => {
-      console.log('Patient Data==>', patientData);
-      this.setState({ errMsg: '' })
-      const othersDetailsObj = patientData[0];
-      await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
+    console.log('Patient Data==>', patientData);
+    this.setState({ errMsg: '' })
+    const othersDetailsObj = patientData[0];
+    await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
   }
 
 
   render() {
-    const { bookSlotDetails, isCorporateUser ,patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender,fromNavigation } = this.state;
-   console.log(isCorporateUser);
+    const { bookSlotDetails, isCorporateUser, patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender, fromNavigation } = this.state;
+    console.log(isCorporateUser);
     return (
       <Container>
         <Content style={{ padding: 15, backgroundColor: '#F5F5F5' }}>
@@ -404,37 +427,37 @@ export default class PaymentReview extends Component {
               </Button>
             </Row>
           </View> */}
-           <Spinner
+          <Spinner
             visible={isLoading}
             textContent={spinnerText}
           />
           <View style={{ paddingBottom: 50 }}>
             <View style={{ backgroundColor: '#fff', padding: 10 }}>
-           { fromNavigation!==null?
-              <Row>
-                <Col size={1.6}>
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
-                    <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
-                  </TouchableOpacity>
-                </Col>
-                <Col size={8.4}>
-                  <Text style={styles.docName}>{bookSlotDetails.name }</Text>
-                  <Text note style={styles.hosAddress}>{bookSlotDetails.location.address.no_and_street + ', '}
-                    {bookSlotDetails.location.address.city + ', '}
-                    {bookSlotDetails.location.address.state + '-'} {bookSlotDetails.location.address.pin_code}.</Text>
-                </Col>
-              </Row>:   <Row>
-                <Col size={1.6}>
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
-                    <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
-                  </TouchableOpacity>
-                </Col>
-                <Col size={8.4}>
-                  <Text style={styles.docName}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
-                  <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
-                </Col>
-              </Row>}
-              {bookSlotDetails.slotData ?
+              {fromNavigation !== null ?
+                <Row>
+                  <Col size={1.6}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                      <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={8.4}>
+                    <Text style={styles.docName}>{bookSlotDetails.name}</Text>
+                    <Text note style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                      {bookSlotDetails.slotData.location.location.address.city + ', '}
+                      {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
+                  </Col>
+                </Row> : <Row>
+                  <Col size={1.6}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                      <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={8.4}>
+                    <Text style={styles.docName}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                    <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
+                  </Col>
+                </Row>}
+              {fromNavigation === null && bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>
                     <Icon name="ios-pin" style={{ fontSize: 15 }} />
@@ -457,35 +480,39 @@ export default class PaymentReview extends Component {
               </Row>
 
             </View>
-            
+
             <PayBySelection
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
-              onSelectionChange={(mode)=> {
-                  this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] }) 
+              onSelectionChange={(mode) => {
+
+                this.setState({ selectedPayBy: mode, selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF], patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] })
+
               }}
             />
-            
+
             <TestDetails
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
               familyMembersSelections={this.state.familyMembersSelections}
-              changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
+              changeFamilyMembersSelections={(familyMemberSelections) => this.setState({ familyMembersSelections: familyMemberSelections })}
               onSelectionChange={(patientType) => {
-                if(patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
-                   this.setState( { patientDetailsObj: this.defaultPatDetails,  selectedPatientTypes: [ patientType ] , familyMembersSelections: [] })
+                if (patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
+
+                  this.setState({ patientDetailsObj: this.defaultPatDetails, selectedPatientTypes: [patientType], familyMembersSelections: [] })
+
                 } else {
-                  this.setState( { patientDetailsObj: {},  selectedPatientTypes: [ patientType ] })
+                  this.setState({ patientDetailsObj: {}, selectedPatientTypes: [patientType] })
                 }
               }}
-              familyDetailsData={this.state.familyDetailsData} 
-              setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })} 
+              familyDetailsData={this.state.familyDetailsData}
+              setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })}
               selectedPatientTypes={this.state.selectedPatientTypes}
               payBy={this.state.selectedPayBy}
               addPatientDetails={(data, setDefaultPatentData) => {
-                if(setDefaultPatentData === true) {
-                   this.defaultPatDetails = data[0];
+                if (setDefaultPatentData === true) {
+                  this.defaultPatDetails = data[0];
                 }
                 this.addPatientList(data)
               }}
@@ -534,7 +561,7 @@ export default class PaymentReview extends Component {
                   <Text style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
                 </Col>
                 <Col>
-                  <Text style={styles.rupeesText}>{'\u20B9'} {(bookSlotDetails.slotData && bookSlotDetails.slotData.fee || 0) + 0 }</Text>
+                  <Text style={styles.rupeesText}>{'\u20B9'} {(bookSlotDetails.slotData && bookSlotDetails.slotData.fee || 0) + 0}</Text>
                 </Col>
               </Row>
             </View>
@@ -544,34 +571,34 @@ export default class PaymentReview extends Component {
           Platform.OS === "ios" ?
             { height: 30 } : { height: 45 }}>
           <FooterTab>
-           
+
             <Row>
-            {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ?
-            <>
-              <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
-                <TouchableOpacity 
-                  onPress={() => this.processToPayLater()}
-                  style={styles.buttonTouch}>
-                  <Text style={styles.footerButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
-                </TouchableOpacity>
-              </Col>
-              <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8EC63F' }}>
-                <TouchableOpacity
-                   onPress={() => this.confirmProceedPayment()}
-                   style={styles.buttonTouch1}>
-                  <Text style={styles.footerButtonText}>Pay Online</Text>
-                </TouchableOpacity>
-              </Col>
-            </>  
-           : 
-            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5'  }}>
-              <TouchableOpacity
-                onPress={() => this.processToPayLater()}
-                style={styles.buttonTouch}>
-                <Text style={styles.footerButtonText}>Book an Appoiintment </Text>
-             </TouchableOpacity>
-         </Col> 
-            }
+              {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ?
+                <>
+                  <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
+                    <TouchableOpacity
+                      onPress={() => this.processToPayLater('cash')}
+                      style={styles.buttonTouch}>
+                      <Text style={styles.footerButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8EC63F' }}>
+                    <TouchableOpacity
+                      onPress={() => this.confirmProceedPayment()}
+                      style={styles.buttonTouch1}>
+                      <Text style={styles.footerButtonText}>Pay Online</Text>
+                    </TouchableOpacity>
+                  </Col>
+                </>
+                :
+                <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
+                  <TouchableOpacity
+                    onPress={() => this.processToPayLater(this.state.selectedPayBy)}
+                    style={styles.buttonTouch}>
+                    <Text style={styles.footerButtonText}>Book an Appoiintment </Text>
+                  </TouchableOpacity>
+                </Col>
+              }
             </Row>
           </FooterTab>
         </Footer>

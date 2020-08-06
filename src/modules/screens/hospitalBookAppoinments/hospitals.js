@@ -8,12 +8,13 @@ import { getNearByHospitals } from '../../providers/hospitals/hospitals.action'
 import { MAX_DISTANCE_TO_COVER } from '../../../setup/config'
 import { getHospitalName, getKiloMeterCalculation } from '../../common'
 import { RenderEditingPincode } from '../../screens/CommonAll/components';
+import { addTimeUnit } from '../../../setup/helpers';
 
 class Hospitals extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            expandData:false,
+            expandData: -1,
             editingPincode: false,
             hospitalData: [],
             locationCordinates: null,
@@ -67,7 +68,7 @@ class Hospitals extends PureComponent {
         this.setState({ editingPincode: false, pin_code: null })
 
     }
-    onPressToContinue4PaymentReview = async (haspitalValue) => {
+    onPressToContinue4PaymentReview = async (haspitalValue, index) => {
         // if (!selectedSlotItemByDoctor) {
         //     Toast.show({
         //         text: 'Please Select a Slot to continue booking',
@@ -76,10 +77,24 @@ class Hospitals extends PureComponent {
         //     })
         //     return;
         // }
-        this.setState({expandData:true})
-        this.props.navigation.setParams({ 'conditionFromFilterPage': false });
        
-        this.props.navigation.navigate('Payment Review', {fromNavigation:'HOSPITAL', resultconfirmSlotDetails: haspitalValue })
+        this.setState({ expandData: index })
+        this.props.navigation.setParams({ 'conditionFromFilterPage': false });
+        let slotData = {
+            slotStartDateAndTime: new Date(),
+            fee: 200,
+            slotEndDateAndTime: addTimeUnit(new Date(), 10, 'minutes'),
+            booked_for:'HOSPITAL',
+            location:{
+                location:haspitalValue.location
+            } 
+
+        }
+        let data = haspitalValue
+        data.slotData = slotData
+        data.slotData.location.type = 'Hospital';
+        console.log(JSON.stringify(data))
+        this.props.navigation.navigate('Payment Review', { fromNavigation: 'HOSPITAL', resultconfirmSlotDetails: data })
     }
 
     render() {
@@ -177,10 +192,10 @@ class Hospitals extends PureComponent {
                                                                 <Text note style={[styles.commonStyle, { marginLeft: 5 }]}> Favourite</Text>
                                                                 <Text style={[styles.commonStyle, { marginLeft: 25, fontWeight: 'bold' }]}>0</Text>
                                                             </Col>
-                                                            {this.state.expandData===true?
-                                                            <TouchableOpacity onPress={() => this.onPressToContinue4PaymentReview(item)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, width: 66, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
-                                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
-                                                            </TouchableOpacity>:null}
+                                                            {this.state.expandData !== index ?
+                                                                <TouchableOpacity onPress={() => this.onPressToContinue4PaymentReview(item, index)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, width: 66, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
+                                                                    <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                                                </TouchableOpacity> : null}
 
                                                         </Row>
                                                     </Col>

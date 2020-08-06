@@ -26,7 +26,7 @@ class AppointmentDetails extends Component {
     this.state = {
       data: {},
       appointmentId: '',
-      doctorId: '',
+      doctorId: null,
       userId: '',
       reviewData: [],
       reportData: null,
@@ -62,7 +62,7 @@ class AppointmentDetails extends Component {
       ]);
     }
     else {
-      let doctorId = appointmentData.doctor_id;
+      let doctorId = appointmentData.doctor_id||null;
       let appointmentId = appointmentData._id;
       const selectedTab = navigation.getParam('selectedIndex');
       // this.props.navigation.setParams({ reportedId: appointmentId });
@@ -97,6 +97,7 @@ class AppointmentDetails extends Component {
     try {
 
       let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
+      if(this.state.doctorId!==null){
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
       if (resultDetails.success) {
@@ -116,6 +117,7 @@ class AppointmentDetails extends Component {
           specialist: specialistDetails.toString(),
         })
       }
+    }
 
     }
     catch (e) {
@@ -206,7 +208,7 @@ class AppointmentDetails extends Component {
       this.setState({ isLoading: true });
       let userId = await AsyncStorage.getItem('userId');
       let requestData = {
-        doctorId: data.doctor_id,
+      
         userId: userId,
         startTime: data.appointment_starttime,
         endTime: data.appointment_endtime,
@@ -214,8 +216,13 @@ class AppointmentDetails extends Component {
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
+      if(data.booked_for==='HOSPITAL'){
+        requestData.hospitalAminId=data.location[0].hospital_admin_id
+      }else{
+        requestData.doctorId= data.doctor_id
+      }
 
-      let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+      let result = await appointmentStatusUpdate(this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
 
       if (result.success) {
@@ -339,7 +346,7 @@ class AppointmentDetails extends Component {
                     <Col style={{ width: '77%', marginTop: 10 }}>
                       <Row>
                         <Col size={9}>
-                          <Text style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
+                          <Text style={styles.Textname} >{data.booked_for==='HOSPITAL'?getHospitalHeadeName(data.location[0]):(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
                           <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color: '#4c4c4c' }}>{education}</Text>
                           <Text style={styles.specialistTextStyle} >{specialist} </Text>
                         </Col>
