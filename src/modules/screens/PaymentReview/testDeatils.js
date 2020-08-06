@@ -67,7 +67,7 @@ class TestDetails extends PureComponent {
                     result.forEach(element => {
                         let obj= {
                             type: 'familymembers',
-                            full_name: element.firstName ||''+element.middleName||''+element.lastName||'',
+                            full_name: (element.firstName ? element.firstName + ' ' :'') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ': ''),
                             gender: element.gender,
                             age: element.ageInYrs,
                             phone_no: element.mobileNo,
@@ -87,7 +87,6 @@ class TestDetails extends PureComponent {
                     });
                     data.familyDataByCorporate = temp;
                     data.familyDataByInsurance= temp;
-              
               }
                 console.log('getCorporateUserFamilyDetailsgetCorporateUserFamilyDetails',JSON.stringify(result))
             }
@@ -344,7 +343,7 @@ class TestDetails extends PureComponent {
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
-                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', }}>For ,Whom do you need to take up the test? </Text>
+                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Whom do you need to take up the test?</Text>
                 <View style={{ flexDirection: 'row', marginTop: 5 }}>
                    
                    {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.SELF) ? 
