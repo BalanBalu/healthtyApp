@@ -583,12 +583,12 @@ const styles = StyleSheet.create({
     inputText: {
         backgroundColor: '#f2f2f2',
         color: '#000',
-        fontSize: 10,
+        fontSize: 12,
         height: 33,
     },
     nameAndAge: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         color: '#000',
         marginTop: 5
     },
@@ -600,17 +600,17 @@ const styles = StyleSheet.create({
         // fontWeight: 'bold'
     },
     NameText: {
-        fontSize: 10,
+        fontSize: 12,
         fontFamily: 'OpenSans',
         color: '#7F49C3'
     },
     ageText: {
-        fontSize: 10,
+        fontSize: 12,
         fontFamily: 'OpenSans',
         textAlign: 'right'
     },
     commonText: {
-        fontSize: 10,
+        fontSize: 12,
         fontFamily: 'OpenSans'
     },
     selectButton: {
