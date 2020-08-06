@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, AsyncStorage, FlatList } from 'react-native';
-import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, Toast, CardItem, Right, Body, Content, Input, Item, Row, Col, Form, Footer } from 'native-base';
-import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
+import { StyleSheet, TextInput, FlatList } from 'react-native';
+import { Container, Radio, Button, View, Text, Toast, Content, Row, Col, Form, Footer } from 'native-base';
 import { getCurrentVersion } from '../../providers/profile/profile.action';
-import { formatDate } from '../../../setup/helpers';
 import { onlySpaceNotAllowed } from '../../common';
-import { Loader } from '../../../components/ContentLoader'
 import Spinner from '../../../components/Spinner';
 
 

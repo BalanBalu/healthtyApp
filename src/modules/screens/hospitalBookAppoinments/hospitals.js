@@ -9,7 +9,7 @@ import { MAX_DISTANCE_TO_COVER } from '../../../setup/config'
 import { getHospitalName, getKiloMeterCalculation } from '../../common'
 import { RenderEditingPincode } from '../../screens/CommonAll/components';
 import { addTimeUnit } from '../../../setup/helpers';
-
+import DateTimePicker from 'react-native-modal-datetime-picker';
 class Hospitals extends PureComponent {
     constructor(props) {
         super(props)
@@ -18,7 +18,9 @@ class Hospitals extends PureComponent {
             editingPincode: false,
             hospitalData: [],
             locationCordinates: null,
-            pin_code: ''
+            pin_code: '',
+            isOnlyDateTimePickerVisible: false,
+            appointmentDateTime: new Date()
         }
         this.defaultPinCode4FetchHospList = '560066'
     }
@@ -66,29 +68,27 @@ class Hospitals extends PureComponent {
         this.editingPincodeField(this.defaultPinCode4FetchHospList)
         this.getNearByHospitalList()
         this.setState({ editingPincode: false, pin_code: null })
-
     }
-    onPressToContinue4PaymentReview = async (haspitalValue, index) => {
-        // if (!selectedSlotItemByDoctor) {
-        //     Toast.show({
-        //         text: 'Please Select a Slot to continue booking',
-        //         type: 'warning',
-        //         duration: 3000
-        //     })
-        //     return;
-        // }
-       
+    openDateTimePicker= (haspitalValue, index) => {
+        this.selectedHospitalsForBooking = {
+            haspitalValue,
+            index
+        };
+        this.setState({ isOnlyDateTimePickerVisible: true });
+    }
+    
+    onPressToContinue4PaymentReview = async (date) => {
+        const { haspitalValue, index } = this.selectedHospitalsForBooking;
         this.setState({ expandData: index })
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         let slotData = {
-            slotStartDateAndTime: new Date(),
             fee: 200,
-            slotEndDateAndTime: addTimeUnit(new Date(), 10, 'minutes'),
+            slotStartDateAndTime: date,
+            slotEndDateAndTime: addTimeUnit(date, 30, 'minutes'),
             booked_for:'HOSPITAL',
             location:{
                 location:haspitalValue.location
-            } 
-
+            }
         }
         let data = haspitalValue
         data.slotData = slotData
@@ -96,6 +96,7 @@ class Hospitals extends PureComponent {
         console.log(JSON.stringify(data))
         this.props.navigation.navigate('Payment Review', { fromNavigation: 'HOSPITAL', resultconfirmSlotDetails: data })
     }
+    
 
     render() {
         const { hospitalData, locationCordinates } = this.state
@@ -192,10 +193,10 @@ class Hospitals extends PureComponent {
                                                                 <Text note style={[styles.commonStyle, { marginLeft: 5 }]}> Favourite</Text>
                                                                 <Text style={[styles.commonStyle, { marginLeft: 25, fontWeight: 'bold' }]}>0</Text>
                                                             </Col>
-                                                            {this.state.expandData !== index ?
-                                                                <TouchableOpacity onPress={() => this.onPressToContinue4PaymentReview(item, index)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, width: 66, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
+                                                               
+                                                                <TouchableOpacity onPress={() => this.openDateTimePicker(item, index)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, width: 66, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
                                                                     <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
-                                                                </TouchableOpacity> : null}
+                                                                </TouchableOpacity>
 
                                                         </Row>
                                                     </Col>
@@ -224,8 +225,21 @@ class Hospitals extends PureComponent {
                                     </Card>
                                 </TouchableOpacity>
                             } />
+                            
 
                     </View>
+
+                    <DateTimePicker
+                        mode={'datetime'}
+                        minimumDate={new Date(2020, 2, 2)}
+                        date={new Date()}
+                        isVisible={this.state.isOnlyDateTimePickerVisible}
+                        onConfirm={(date) => {
+                            this.setState({ appointmentDateTime: date, isOnlyDateTimePickerVisible: false });
+                            this.onPressToContinue4PaymentReview(date);   
+                        }}
+                        onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
+                    />
                 </Content>
             </Container>
         )
