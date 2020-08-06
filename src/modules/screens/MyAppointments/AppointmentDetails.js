@@ -9,13 +9,13 @@ import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff, statusValue,getMoment } from '../../../setup/helpers';
+import { formatDate, dateDiff, statusValue, getMoment } from '../../../setup/helpers';
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
 import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName } from '../../common'
 import { translate } from "../../../setup/translator.helper";
-import {updateEvent}from "../../../setup/calendarEvent";
+import { updateEvent } from "../../../setup/calendarEvent";
 
 const hasReviewButtonShow = true
 
@@ -220,15 +220,15 @@ class AppointmentDetails extends Component {
 
       if (result.success) {
         let temp = this.state.data
-        let appointment_starttime=getMoment(data.appointment_starttime).toISOString();
-       let appointment_endtime=getMoment(data.appointment_endtime).toISOString();
-let   address=''
-if(temp.location[0]){
-  address=temp.location[0].location.address.city||temp.location[0].location.address.state
-}
+        let appointment_starttime = getMoment(data.appointment_starttime).toISOString();
+        let appointment_endtime = getMoment(data.appointment_endtime).toISOString();
+        let address = ''
+        if (temp.location[0]) {
+          address = temp.location[0].location.address.city || temp.location[0].location.address.state
+        }
 
-        await updateEvent(temp.user_appointment_event_id, "Appointment booked with "+temp.location[0].name+" "+temp.location[0].type,appointment_starttime,appointment_endtime,address,temp.disease_description)
-           
+        await updateEvent(temp.user_appointment_event_id, "Appointment booked with " + temp.location[0].name + " " + temp.location[0].type, appointment_starttime, appointment_endtime, address, temp.disease_description)
+
         temp.appointment_status = result.appointmentData.appointment_status
         Toast.show({
           text: result.message,
@@ -801,14 +801,14 @@ if(temp.location[0]){
                 </View>
               </Grid>
             </View>}
-           { this.state.modalVisible===true?
-              <InsertReview
-                data={this.state.data}
-                popupVisible={(data) => this.getvisble(data)}
+          {this.state.modalVisible === true ?
+            <InsertReview
+              data={this.state.data}
+              popupVisible={(data) => this.getvisble(data)}
 
-              />:null}
+            /> : null}
 
-              
+
           <Modal
             visible={this.state.proposedVisible}
             transparent={true}

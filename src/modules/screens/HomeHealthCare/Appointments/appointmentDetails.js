@@ -5,11 +5,11 @@ import { Col, Row, Grid } from 'react-native-easy-grid'
 import StarRating from 'react-native-star-rating';
 import styles from '../Styles'
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action';
 import { renderDoctorImage, getUserGenderAndAge, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getUserLocation, getAddress } from '../../../common'
 import { formatDate, dateDiff, statusValue, getMoment } from '../../../../setup/helpers';
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
-import { getHomeTestappointmentByID, updateDocHomeTestappointment, getUserReviews4homeTest } from '../../../providers/homeHelthCare/action';
+import { getHomeTestappointmentByID, updateDocHomeTestappointment } from '../../../providers/homeHelthCare/action';
 import Spinner from "../../../../components/Spinner";
 import InsertReview from '../Reviews/insertReviews';
 
@@ -141,7 +141,9 @@ class AppointmentDetails extends PureComponent {
     }
     getUserReviews = async () => {
         try {
-            let reviewResult = await getUserReviews4homeTest('appointment', this.state.appointmentId)
+            let reviewResult = await viewUserReviews('appointment', this.state.appointmentId,'?skip=0')
+            console.log("reviewResult", reviewResult);
+            
             if (reviewResult.success) {
                 this.setState({ reviewData: reviewResult.data });
             }
