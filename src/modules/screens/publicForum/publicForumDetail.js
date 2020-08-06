@@ -124,7 +124,7 @@ class PublicForumDetail extends PureComponent {
 
     answerGivenName(item) {
         let name = "Anonymous"
-        if (item && item.is_logged_in == true ) {
+        if (item && item.is_logged_in == true) {
             if (item.answererInfo.first_name) {
                 name = item.answererInfo.first_name + " " + item.answererInfo.last_name
             }
@@ -134,6 +134,7 @@ class PublicForumDetail extends PureComponent {
     render() {
 
         const { answer_text, getsData, isLoading } = this.state
+        console.log(JSON.stringify(getsData))
         return (
             <Container style={styles.container}>
 
@@ -153,7 +154,9 @@ class PublicForumDetail extends PureComponent {
                                         <Text note style={styles.dateText}>Raised by  {this.questionerName(item)}</Text>
                                     </Col>
                                 </Row>
-                                <Text style={[styles.postText], { marginTop: 10 }} >Leave Your Answer</Text>
+                                <Text style={[styles.symptomsText, { marginTop: 10 }]} >{item.description}</Text>
+
+                                <Text style={[styles.postText, { marginTop: 15 }]} >Leave Your Answer</Text>
                                 <View style={{ marginTop: 15 }}>
                                     <Text style={styles.smallHeading}>Your Answer</Text>
                                     <TextInput

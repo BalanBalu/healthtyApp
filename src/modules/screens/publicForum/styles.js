@@ -105,7 +105,7 @@ export default StyleSheet.create({
   },
   postText: {
     fontFamily: 'OpenSans',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600'
   },
   postAnswerButton: {
@@ -156,7 +156,7 @@ export default StyleSheet.create({
   },
   smallHeading: {
     fontFamily: 'OpenSans',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600'
   },
   borderView: {
