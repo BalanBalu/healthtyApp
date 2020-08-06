@@ -42,13 +42,13 @@ export default StyleSheet.create({
   },
   dateText: {
     fontFamily: 'OpenSans',
-    fontSize: 10
+    fontSize: 10,
   },
   descriptionText: {
     fontFamily: 'OpenSans',
     fontSize: 10,
     color: '#909090',
-    marginTop: 5
+    marginTop: 8
   },
   pageCount: {
     paddingLeft: 5,
@@ -73,7 +73,7 @@ export default StyleSheet.create({
   },
   textInput1: {
     borderColor: 'gray',
-    borderRadius: 2,
+    borderRadius: 5,
     borderWidth: 0.5,
     height: 40,
     fontSize: 14,
@@ -89,7 +89,7 @@ export default StyleSheet.create({
   },
   textInput2: {
     borderColor: 'gray',
-    borderRadius: 2,
+    borderRadius: 5,
     borderWidth: 0.5,
     height: 300,
     fontSize: 14,
@@ -124,7 +124,7 @@ export default StyleSheet.create({
   },
   textInput3: {
     borderColor: 'gray',
-    borderRadius: 2,
+    borderRadius: 5,
     borderWidth: 0.5,
     height: 35,
     fontSize: 12,
@@ -140,7 +140,7 @@ export default StyleSheet.create({
   },
   textInput4: {
     borderColor: 'gray',
-    borderRadius: 2,
+    borderRadius: 5,
     borderWidth: 0.5,
     height: 100,
     fontSize: 12,
