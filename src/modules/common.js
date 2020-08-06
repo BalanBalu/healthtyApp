@@ -126,7 +126,7 @@ export function getDoctorExperience(calulatedExperience) {
         }
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-       let year = calulatedExperience.year;
+        let  year = calulatedExperience.year;
         return `${year} Year` + (year <= 1 ? '' : 's')
     }
 }
