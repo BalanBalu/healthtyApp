@@ -21,7 +21,7 @@ const HomeTestImg = require('../../../../assets/images/hometest.jpg');
 const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
 const hospitalLogoImg = require('../../../../assets/images/hospital.png');
 const publicForum = require('../../../../assets/images/public_forum.png');
-const hospitalImg = require('../../../../assets/images/hospital.jpg');
+const hospitalImg = require('../../../../assets/images/hospitalimg.jpg');
 
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
