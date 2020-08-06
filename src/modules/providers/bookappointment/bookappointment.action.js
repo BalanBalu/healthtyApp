@@ -309,7 +309,7 @@ export async function appointmentDetails(appointmentId, isLoading = true) {
 
 /* Update Appoiontment Status */
 
-export async function appointmentStatusUpdate(doctorId, appointmentId, requestData, isLoading = true) {
+export async function appointmentStatusUpdate( appointmentId, requestData, isLoading = true) {
   try {
     let endPoint = 'appointment/' + appointmentId
     let response = await putService(endPoint, requestData);

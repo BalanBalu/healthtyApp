@@ -84,6 +84,7 @@ class Hospitals extends PureComponent {
             slotStartDateAndTime: new Date(),
             fee: 200,
             slotEndDateAndTime: addTimeUnit(new Date(), 10, 'minutes'),
+            booked_for:'HOSPITAL',
             location:{
                 location:haspitalValue.location
             } 

@@ -201,7 +201,10 @@ class TestDetails extends PureComponent {
             gender: data.gender,
             uniqueIndex: payByFamilyIndex
         }
-        // alert(JSON.stringify(beneficiaryDetailsObj))
+        
+         if(payBy===POSSIBLE_PAY_METHODS.CORPORATE||payBy===POSSIBLE_PAY_METHODS.INSURANCE){
+            beneficiaryDetailsObj.policy_no=data.benefeciaryUserDeails.policyNumber
+         }
         if(this.props.singlePatientSelect === true) {
             if(this.props.familyMembersSelections.includes(payByFamilyIndex)) {
                 familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);

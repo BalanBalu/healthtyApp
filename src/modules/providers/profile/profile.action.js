@@ -247,12 +247,27 @@ export async function getCorporateUserFamilyDetails(empCode) {
 
   } catch (e) {
     return {
-      message: 'exception1' + e,
+      message: 'exception' + e,
       success: false
     }
   }
 }
 
+
+export async function getPolicYDetailsByid(corporateUserId) {
+  try {
+    let endPoint = 'policy/employee/' + corporateUserId;
+    let response = await smartHealthGetService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 
 

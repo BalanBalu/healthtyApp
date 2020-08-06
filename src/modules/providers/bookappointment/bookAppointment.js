@@ -272,6 +272,9 @@ export default class BookAppointmentPaymentUpdate {
                 bookAppointmentData.hospital_admin_id = bookSlotDetails.hospital_admin_id
 
             }
+            if(bookSlotDetails.slotData.booked_for){
+                bookAppointmentData.booked_for=bookSlotDetails.slotData.booked_for
+            }
            
             let resultData = await bookAppointment(bookAppointmentData);
             console.log(resultData)

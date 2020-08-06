@@ -12,7 +12,7 @@ import { formatDate, addTimeUnit, subTimeUnit, getAllId, statusValue } from "../
 import { getUserAppointments, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderDoctorImage, getAllEducation, getAllSpecialist, getName } from '../../common'
+import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
@@ -29,7 +29,7 @@ class MyAppoinmentList extends Component {
 			upComingData: [],
 			pastData: [],
 			userId: null,
-		
+
 			isRefreshing: false,
 			isNavigation: true,
 			modalVisible: false,
@@ -113,38 +113,46 @@ class MyAppoinmentList extends Component {
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
 
 				let doctorIds = getAllId(upCommingAppointmentResult)
-				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
+				if (doctorIds) {
+					let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
-				speciallistResult.data.forEach(doctorData => {
-					let educationDetails = ' ';
-					let speaciallistDetails = '';
+					speciallistResult.data.forEach(doctorData => {
+						let educationDetails = ' ';
+						let speaciallistDetails = '';
 
-					if (doctorData.education != undefined) {
-						educationDetails = getAllEducation(doctorData.education)
-					}
-					if (doctorData.specialist != undefined) {
-						speaciallistDetails = getAllSpecialist(doctorData.specialist)
-					}
+						if (doctorData.education != undefined) {
+							educationDetails = getAllEducation(doctorData.education)
+						}
+						if (doctorData.specialist != undefined) {
+							speaciallistDetails = getAllSpecialist(doctorData.specialist)
+						}
 
-					doctorInfo.set(doctorData.doctor_id, {
-						degree: educationDetails,
-						specialist: speaciallistDetails,
-						prefix: doctorData.prefix,
-						profile_image: doctorData.profile_image,
-						gender: doctorData.gender
-					})
-				});
+						doctorInfo.set(doctorData.doctor_id, {
+							degree: educationDetails,
+							specialist: speaciallistDetails,
+							prefix: doctorData.prefix,
+							profile_image: doctorData.profile_image,
+							gender: doctorData.gender
+						})
+					});
+				}
 
 				let upcommingInfo = [];
 				upCommingAppointmentResult.map(doctorData => {
 					let details = doctorInfo.get(doctorData.doctor_id)
-					upcommingInfo.push({
-						appointmentResult: doctorData,
-						specialist: details.specialist,
-						degree: details.degree,
-						prefix: details.prefix,
-						profile_image: details.profile_image
-					});
+					if (details) {
+						upcommingInfo.push({
+							appointmentResult: doctorData,
+							specialist: details.specialist,
+							degree: details.degree,
+							prefix: details.prefix,
+							profile_image: details.profile_image
+						});
+					} else {
+						upcommingInfo.push({
+							appointmentResult: doctorData
+						});
+					}
 				})
 
 				let tempData = this.state.upComingData.concat(upcommingInfo)
@@ -191,40 +199,49 @@ class MyAppoinmentList extends Component {
 
 
 				let doctorIds = getAllId(pastAppointmentResult)
-				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
+				if (doctorIds) {
 
-				speciallistResult.data.forEach(doctorData => {
+					let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
-					let educationDetails = ' ',
-						speaciallistDetails = '';
+					speciallistResult.data.forEach(doctorData => {
 
-					if (doctorData.education != undefined) {
-						educationDetails = getAllEducation(doctorData.education)
-					}
-					if (doctorData.specialist != undefined) {
-						speaciallistDetails = getAllSpecialist(doctorData.specialist)
-					}
-					doctorInfo.set(doctorData.doctor_id, {
-						degree: educationDetails,
-						specialist: speaciallistDetails.toString(),
-						prefix: doctorData.prefix,
-						profile_image: doctorData.profile_image,
-						gender: doctorData.gender
-					})
-				});
+						let educationDetails = ' ',
+							speaciallistDetails = '';
+
+						if (doctorData.education != undefined) {
+							educationDetails = getAllEducation(doctorData.education)
+						}
+						if (doctorData.specialist != undefined) {
+							speaciallistDetails = getAllSpecialist(doctorData.specialist)
+						}
+						doctorInfo.set(doctorData.doctor_id, {
+							degree: educationDetails,
+							specialist: speaciallistDetails.toString(),
+							prefix: doctorData.prefix,
+							profile_image: doctorData.profile_image,
+							gender: doctorData.gender
+						})
+					});
+				}
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
 					let details = doctorInfo.get(doctorData.doctor_id)
-
-					pastDoctorDetails.push({
-						appointmentResult: doctorData,
-						specialist: details.specialist,
-						degree: details.degree,
-						prefix: details.prefix,
-						profile_image: details.profile_image
-					});
+					if (details) {
+						pastDoctorDetails.push({
+							appointmentResult: doctorData,
+							specialist: details.specialist,
+							degree: details.degree,
+							prefix: details.prefix,
+							profile_image: details.profile_image
+						});
+					} else {
+						pastDoctorDetails.push({
+							appointmentResult: doctorData,
+						});
+					}
 				}
 				)
+
 
 				let tempData = this.state.pastData.concat(pastDoctorDetails)
 				await this.setState({
@@ -452,7 +469,7 @@ class MyAppoinmentList extends Component {
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Col size={9}>
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																		{(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}
+																		{item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalHeadeName(item.appointmentResult.location[0]) : (item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}
 																	</Text>
 																	<Text
 																		style={{
@@ -474,7 +491,7 @@ class MyAppoinmentList extends Component {
 																<Text
 																	style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
 																>
-																	{item.specialist}
+																	{item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalName(item.appointmentResult.location[0]) : item.specialist}
 																</Text>
 
 																{selectedIndex == 1 &&
