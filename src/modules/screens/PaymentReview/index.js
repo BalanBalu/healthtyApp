@@ -446,7 +446,8 @@ export default class PaymentReview extends Component {
                       {bookSlotDetails.slotData.location.location.address.city + ', '}
                       {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
                   </Col>
-                </Row> : <Row>
+                </Row> 
+                : <Row>
                   <Col size={1.6}>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
                       <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
@@ -542,7 +543,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Consultation Fees</Text>
+                  <Text note style={{ fontSize: 14, fontFamily: 'OpenSans', }}>Consultation Fees</Text>
                 </Col>
                 <Col>
                   <Text style={styles.rupeesText}>{'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
@@ -550,7 +551,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Charges </Text>
+                  <Text note style={{ fontSize: 14, fontFamily: 'OpenSans', }}>Charges </Text>
                 </Col>
                 <Col>
                   <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
@@ -558,7 +559,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
                 </Col>
                 <Col>
                   <Text style={styles.rupeesText}>{'\u20B9'} {(bookSlotDetails.slotData && bookSlotDetails.slotData.fee || 0) + 0}</Text>
@@ -810,6 +811,7 @@ const styles = StyleSheet.create({
   },
   docName: {
     fontSize: 15,
+    marginLeft: 10,
     fontFamily: 'OpenSans',
     color: '#7F49C3'
   },
@@ -824,10 +826,10 @@ const styles = StyleSheet.create({
     marginLeft: 5
   },
   hosAddress: {
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: 'OpenSans',
     color: '#C1C1C1',
-    marginLeft: 15
+    marginLeft: 10
   },
   calDate: {
     fontSize: 12,
@@ -842,13 +844,13 @@ const styles = StyleSheet.create({
     marginLeft: 5
   },
   rupeesText: {
-    fontSize: 10,
+    fontSize: 14,
     fontFamily: 'OpenSans',
     textAlign: 'right',
     color: '#8EC63F'
   },
   redRupesText: {
-    fontSize: 10,
+    fontSize: 14,
     fontFamily: 'OpenSans',
     textAlign: 'right',
     color: 'red'
