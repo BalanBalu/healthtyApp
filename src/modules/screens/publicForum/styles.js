@@ -42,13 +42,13 @@ export default StyleSheet.create({
   },
   dateText: {
     fontFamily: 'OpenSans',
-    fontSize: 10
+    fontSize: 10,
   },
   descriptionText: {
     fontFamily: 'OpenSans',
     fontSize: 10,
     color: '#909090',
-    marginTop: 5
+    marginTop: 8
   },
   pageCount: {
     paddingLeft: 5,

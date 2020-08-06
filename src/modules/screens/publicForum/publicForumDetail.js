@@ -189,10 +189,10 @@ class PublicForumDetail extends PureComponent {
                                                             </Col>
                                                             <Col size={9}>
                                                                 <Row>
-                                                                    <Col size={8}>
+                                                                    <Col size={7}>
                                                                         <Text style={styles.symptomsText}>{this.answerGivenName(item)}</Text>
                                                                     </Col>
-                                                                    <Col size={2}>
+                                                                    <Col size={3}>
                                                                         <Text style={styles.answerText}>{formatDate(item.created_date, 'MMMM DD,YYYY')}</Text>
                                                                     </Col>
                                                                 </Row>
