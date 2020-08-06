@@ -417,7 +417,6 @@ class Home extends Component {
                             />
                         </Col>
                     </Row>
-
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '50%', }}>
                             <TouchableOpacity onPress={() =>
@@ -442,8 +441,6 @@ class Home extends Component {
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-
-
                         <Col style={{ width: '50%', marginLeft: 5 }}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>

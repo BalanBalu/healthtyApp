@@ -124,7 +124,7 @@ class PublicForumDetail extends PureComponent {
 
     answerGivenName(item) {
         let name = "Anonymous"
-        if (item && item.is_logged_in == true ) {
+        if (item && item.is_logged_in == true) {
             if (item.answererInfo.first_name) {
                 name = item.answererInfo.first_name + " " + item.answererInfo.last_name
             }
