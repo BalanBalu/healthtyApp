@@ -10,6 +10,7 @@ import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
 import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
+import CheckLocationWarning from '../Home/LocationWarning';
 
 
 class Categories extends Component {
@@ -42,8 +43,13 @@ class Categories extends Component {
       this.setState({ isLoading: false });
     }
   }
+  navigate = (categoryName) => {
+    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this),[categoryName ]);
+  }
 
   navigateToCategorySearch(categoryName) {
+    console.log(categoryName);
+    console.log(this.props);
     const { bookappointment: { locationCordinates } } = this.props;
     this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
       inputKeywordFromSearch: categoryName,
@@ -123,7 +129,7 @@ class Categories extends Component {
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>
-                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
+                  <TouchableOpacity onPress={() => this.navigate(item.category_name)}
                     style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                     <FastImage
                       source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
@@ -163,7 +169,7 @@ function appoinmentsState(state) {
     bookappointment: state.bookappointment
   }
 }
-export default connect(appoinmentsState, { login, messageShow, messageHide })(Categories)
+export default connect(appoinmentsState)(Categories)
 
 
 const styles = StyleSheet.create({

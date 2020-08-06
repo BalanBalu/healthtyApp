@@ -19,8 +19,8 @@ const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
 const HomeTestImg = require('../../../../assets/images/hometest.jpg');
 const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
-const hospitalLogoImg = require('../../../../assets/images/hospitalLogo.png');
-const prescriptionLogoImg = require('../../../../assets/images/PresciptionUploadImage.png');
+const hospitalLogoImg = require('../../../../assets/images/hospital.png');
+const publicForum = require('../../../../assets/images/public_forum.png');
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
@@ -31,6 +31,7 @@ import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
 import NextAppoinmentPreparation from './nextAppoinmentPreparation'
+import CheckLocationWarning from './LocationWarning';
 class Home extends Component {
 
     locationUpdatedCount = 0;
@@ -247,6 +248,10 @@ class Home extends Component {
     }
 
     navigateToCategorySearch(categoryName) {
+         CheckLocationWarning.checkLocationWarning(this.navigateToCateSearch.bind(this), [ categoryName ]);
+    };
+   
+    navigateToCateSearch = (categoryName) => {
         const { bookappointment: { locationCordinates } } = this.props;
         this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
             inputKeywordFromSearch: categoryName,
@@ -256,19 +261,8 @@ class Home extends Component {
                 maxDistance: MAX_DISTANCE_TO_COVER
             }
         })
-        // let serachInputvalues = [{
-        //     type: 'category',
-        //     value: categoryName
-        // },
-        // {
-        //     type: 'geo',
-        //     value: {
-        //         coordinates: locationCordinates,
-        //         maxDistance: MAX_DISTANCE_TO_COVER
-        //     }
-        // }]
-        // this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
+   
 
     getMarkedAsReadedNotification = async (userId) => {
         try {
@@ -417,7 +411,6 @@ class Home extends Component {
                             />
                         </Col>
                     </Row>
-
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '50%', }}>
                             <TouchableOpacity onPress={() =>
@@ -442,8 +435,6 @@ class Home extends Component {
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-
-
                         <Col style={{ width: '50%', marginLeft: 5 }}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
@@ -540,7 +531,7 @@ class Home extends Component {
                                             </Col>
                                             <Col size={2.5}>
                                                 <Image
-                                                    source={prescriptionLogoImg}
+                                                    source={publicForum}
                                                     style={{
                                                         width: 35, height: 35, alignItems: 'center'
                                                     }}

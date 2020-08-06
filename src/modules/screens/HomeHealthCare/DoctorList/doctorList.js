@@ -16,6 +16,7 @@ import {
     fetchDocHomeHealthcareAvailabilitySlotsService,
     getFavoriteListCount4PatientService,
     SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
+    fetchDoctorAvailabilitySlotsService,
 } from '../../../providers/BookAppointmentFlow/action';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import { Loader } from '../../../../components/ContentLoader';
@@ -27,8 +28,11 @@ import { RenderListNotFound, RenderNoSlotsAvailable } from '../../CommonAll/comp
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
 import RenderDatesList from './RenderDateList'
+import { fetchAvailableDoctors4Chat } from '../../../providers/chat/chat.action';
 const CALL_AVAILABILITY_SLOTS_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 8;
+let doctorListOrder = 'ASC';
+
 class DoctorList extends Component {
     weekWiseDatesList = [];
     docInfoAndAvailableSlotsMapByDoctorId = new Map();
@@ -273,6 +277,36 @@ class DoctorList extends Component {
         this.incrementPaginationCount = 0;
         this.callGetDocListService();  // Call the search list API with Debounce method
     }
+
+    renderDocListByTopRated(doctorDataList) {
+        const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
+        const doctorDataListBySort = doctorDataList.sort(function (a, b) {
+            let ratingA = 0;
+            let ratingB = 0;
+            if (docReviewListCountOfDoctorIDs[a.doctor_id]) {
+                ratingA = docReviewListCountOfDoctorIDs[a.doctor_id].average_rating || 0
+            };
+            if (docReviewListCountOfDoctorIDs[b.doctor_id]) {
+                ratingB = docReviewListCountOfDoctorIDs[b.doctor_id].average_rating || 0
+            }
+            if (doctorListOrder === 'ASC') {
+                return ratingB - ratingA;
+            } else if (doctorListOrder === 'DESC') {
+                return ratingA - ratingB;
+            }
+        });
+        store.dispatch({
+            type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+            data: doctorDataListBySort
+        });
+        if (doctorListOrder === 'ASC') {
+            doctorListOrder = 'DESC';
+        } else if (doctorListOrder === 'DESC') {
+            doctorListOrder = 'ASC';
+        }
+        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+    }
+
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, } } = this.props;
         const { searchedInputTextValue, searchedInputPinCodeValue, isLoading, isLoadingMoreDocList, isLoadingOnChangeDocList } = this.state;
@@ -285,7 +319,7 @@ class DoctorList extends Component {
                 <Content>
                     <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
                         <Row style={{ height: 35, alignItems: 'center' }}>
-                            <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(doctorInfoListAndSlotsData)}>
+                            <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.renderDocListByTopRated(doctorInfoListAndSlotsData)}>
                                 <Col size={2.0} >
                                     <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
                                 </Col>
