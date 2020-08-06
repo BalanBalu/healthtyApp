@@ -16,11 +16,13 @@ const VideoConultationImg = require('../../../../assets/images/videConsultation.
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
 const BloodImg = require('../../../../assets/images/blood.png');
 const ReminderImg = require('../../../../assets/images/reminder.png');
-const LabTestImg = require('../../../../assets/images/lab-test.png');
+const doctorConsultations = require('../../../../assets/images/doc_consultaiton.jpg');
 const HomeTestImg = require('../../../../assets/images/hometest.jpg');
 const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
 const hospitalLogoImg = require('../../../../assets/images/hospital.png');
 const publicForum = require('../../../../assets/images/public_forum.png');
+const hospitalImg = require('../../../../assets/images/hospital.jpg');
+
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
@@ -411,6 +413,54 @@ class Home extends Component {
                             />
                         </Col>
                     </Row>
+                    
+                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
+                        <Col style={{ width: '50%', }}>
+                            <TouchableOpacity onPress={() =>
+                                this.props.navigation.navigate("Categories")
+                            }>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={doctorConsultations}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Doctor Consultions')}</Text>
+                                            <Text style={styles.subText}>{translate('Book an One Click appointment and Consult doctors')}</Text>
+                                        </Col>
+
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                        <Col style={{ width: '50%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Hospitals")}>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={hospitalImg}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Hospitals')}</Text>
+                                            <Text style={styles.subText}>{translate('Search Hospitals and Consult Doctors')} </Text>
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+
+                    </Grid>
+                    
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '50%', }}>
                             <TouchableOpacity onPress={() =>
