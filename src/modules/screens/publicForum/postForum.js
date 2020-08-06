@@ -97,10 +97,10 @@ class PostForum extends PureComponent {
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
           <View style={{ marginTop: 10 }}>
-            <Text style={styles.postText}>Enter Question Title</Text>
+            <Text style={styles.postText}>Enter Question </Text>
             <TextInput
               multiline={false}
-              placeholder="Type question title"
+              placeholder=" Type your question"
               placeholderTextColor="#696969"
               keyboardType={'default'}
               returnKeyType={'go'}
@@ -112,10 +112,10 @@ class PostForum extends PureComponent {
               style={styles.textInput1} />
           </View>
           <View style={{ marginTop: 15 }}>
-            <Text style={styles.postText}>Enter Question</Text>
+            <Text style={styles.postText}>Question Description</Text>
             <TextInput
               multiline={true}
-              placeholder="Type Description"
+              placeholder="Type your description"
               placeholderTextColor="#696969"
               keyboardType={'default'}
               returnKeyType={'go'}

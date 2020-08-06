@@ -123,7 +123,7 @@ class PublicForumDetail extends PureComponent {
     }
 
     answerGivenName(item) {
-        let name = "Anonymous"
+        let name = "Guest User"
         if (item && item.is_logged_in == true) {
             if (item.answererInfo.first_name) {
                 name = item.answererInfo.first_name + " " + item.answererInfo.last_name
@@ -157,8 +157,7 @@ class PublicForumDetail extends PureComponent {
                                 <Text style={[styles.symptomsText, { marginTop: 10 }]} >{item.description}</Text>
 
                                 <Text style={[styles.postText, { marginTop: 15 }]} >Leave Your Answer</Text>
-                                <View style={{ marginTop: 15 }}>
-                                    <Text style={styles.smallHeading}>Your Answer</Text>
+                                <View style={{ marginTop: 10 }}>
                                     <TextInput
                                         multiline={true}
                                         placeholder="Type your answer"

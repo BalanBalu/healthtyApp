@@ -41,7 +41,9 @@ class PublicForum extends PureComponent {
         // this.handleLoadMore()
     }
     SearchKeyWordFunction = async (enteredText) => {
-        if (enteredText) {
+        if (enteredText == '') {
+            this.setState({query_text: enteredText , skip: 0})
+        }else{
             await this.setState({ query_text: enteredText, skip: 0 })
             this.callquerysearchService(enteredText, true);
         }
@@ -96,7 +98,7 @@ class PublicForum extends PureComponent {
 
     }
     questionerName(item) {
-        let name = "Anonymous"
+        let name = "Guest User"
         if (item && item.questionerInfoUser) {
             if (item.questionerInfoUser.first_name) {
                 name = item.questionerInfoUser.first_name + " " + item.questionerInfoUser.last_name
@@ -123,9 +125,9 @@ class PublicForum extends PureComponent {
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 13, marginLeft: 10 }}>Ask Query To Qualified Doctors</Text>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold', marginTop: 5, marginLeft: 10 }}>To Get Your Solution</Text>
                                 <Row>
-                                    <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 3, paddingBottom: 3, borderColor: '#7F49C3', borderWidth: 2, marginLeft: 10, height: 30, borderRadius: 2, }}
+                                    <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 3, paddingBottom: 3, borderColor: '#7F49C3', borderWidth: 2, marginLeft: 10, height: 30, borderRadius: 2,marginTop:10 }}
                                         onPress={() => this.props.navigation.navigate("PostForum")} >
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', color: '#7F49C3' }}>Post Your Questions</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', color: '#7F49C3' }}>Post your questions</Text>
                                     </TouchableOpacity>
                                 </Row>
                             </View>
@@ -163,9 +165,7 @@ class PublicForum extends PureComponent {
 
                     </View>
 
-                    <View style={{ flex: 1 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginBottom: 10 }}>Ask Query To Qualfied Doctors</Text>
-
+                    <View style={{ flex: 1 ,marginTop:10}}>
                         <FlatList
                             data={data}
                             extraData={data}
