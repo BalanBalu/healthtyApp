@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, View, AsyncStorage } from 'react-native';
 import {  FlatList } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import BenefeciaryDetails from './benefeciaryDetails'
-import { fetchUserProfile, getCorporateUserFamilyDetails } from '../../providers/profile/profile.action';
+import { fetchUserProfile, getCorporateUserFamilyDetails,getPolicYDetailsByid } from '../../providers/profile/profile.action';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { dateDiff } from '../../../setup/helpers';
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
@@ -45,7 +45,7 @@ class TestDetails extends PureComponent {
 
     getPatientInfo = async () => {
         try {
-            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address,employee_code"
+            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address,employee_code,corporate_user_id"
             const userId = await AsyncStorage.getItem('userId');
             const patInfoResp = await fetchUserProfile(userId, fields);
             let data=this.state.data;
@@ -60,6 +60,8 @@ class TestDetails extends PureComponent {
             }
             if (patInfoResp.employee_code) {
                 let result = await getCorporateUserFamilyDetails(patInfoResp.employee_code)
+                let benificeryDetailsResult=await getPolicYDetailsByid(patInfoResp.corporate_user_id)
+                console.log(JSON.stringify(benificeryDetailsResult[0]))
                 if(result&&result[0]){
                     let temp=[];
                     result.forEach(element => {
@@ -69,10 +71,16 @@ class TestDetails extends PureComponent {
                             gender: element.gender,
                             age: element.ageInYrs,
                             phone_no: element.mobileNo,
-                            benefeciaryUserDeails: element
+                            benefeciaryUserDeails: {
+                                ...element,
+                                ...benificeryDetailsResult[0]
+                            }
                         }
                         if(element.relationShip === 'EMPLOYEE') {
-                            this.defaultPatDetails.benefeciaryUserDeails = element
+                            this.defaultPatDetails.benefeciaryUserDeails ={
+                                ... element,
+                                ...benificeryDetailsResult[0]
+                            }
                         } else {
                             temp.push(obj)
                         }
@@ -193,6 +201,10 @@ class TestDetails extends PureComponent {
             gender: data.gender,
             uniqueIndex: payByFamilyIndex
         }
+        
+         if(payBy===POSSIBLE_PAY_METHODS.CORPORATE||payBy===POSSIBLE_PAY_METHODS.INSURANCE){
+            beneficiaryDetailsObj.policy_no=data.benefeciaryUserDeails.policyNumber
+         }
         if(this.props.singlePatientSelect === true) {
             if(this.props.familyMembersSelections.includes(payByFamilyIndex)) {
                 familyMembersSelections.splice(familyMembersSelections.indexOf(payByFamilyIndex), 1);
@@ -571,12 +583,12 @@ const styles = StyleSheet.create({
     inputText: {
         backgroundColor: '#f2f2f2',
         color: '#000',
-        fontSize: 10,
+        fontSize: 12,
         height: 33,
     },
     nameAndAge: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         color: '#000',
         marginTop: 5
     },
@@ -588,17 +600,17 @@ const styles = StyleSheet.create({
         // fontWeight: 'bold'
     },
     NameText: {
-        fontSize: 10,
+        fontSize: 12,
         fontFamily: 'OpenSans',
         color: '#7F49C3'
     },
     ageText: {
-        fontSize: 10,
+        fontSize: 12,
         fontFamily: 'OpenSans',
         textAlign: 'right'
     },
     commonText: {
-        fontSize: 10,
+        fontSize: 12,
         fontFamily: 'OpenSans'
     },
     selectButton: {

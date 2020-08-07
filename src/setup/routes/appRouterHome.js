@@ -609,7 +609,7 @@ const HomeStack = createStackNavigator({
   PublicForumDetail: {
     screen: PublicForumDetail,
     navigationOptions: {
-      title: 'Public Health Forum'
+      title: 'Post your answer'
     }
   },
   //================  Ecard  ===============

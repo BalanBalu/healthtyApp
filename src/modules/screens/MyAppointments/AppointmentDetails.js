@@ -9,13 +9,13 @@ import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff, statusValue,getMoment } from '../../../setup/helpers';
+import { formatDate, dateDiff, statusValue, getMoment } from '../../../setup/helpers';
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
 import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName } from '../../common'
 import { translate } from "../../../setup/translator.helper";
-import {updateEvent}from "../../../setup/calendarEvent";
+import { updateEvent } from "../../../setup/calendarEvent";
 
 const hasReviewButtonShow = true
 
@@ -26,7 +26,7 @@ class AppointmentDetails extends Component {
     this.state = {
       data: {},
       appointmentId: '',
-      doctorId: '',
+      doctorId: null,
       userId: '',
       reviewData: [],
       reportData: null,
@@ -62,7 +62,7 @@ class AppointmentDetails extends Component {
       ]);
     }
     else {
-      let doctorId = appointmentData.doctor_id;
+      let doctorId = appointmentData.doctor_id||null;
       let appointmentId = appointmentData._id;
       const selectedTab = navigation.getParam('selectedIndex');
       // this.props.navigation.setParams({ reportedId: appointmentId });
@@ -97,6 +97,7 @@ class AppointmentDetails extends Component {
     try {
 
       let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
+      if(this.state.doctorId!==null){
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
       if (resultDetails.success) {
@@ -116,6 +117,7 @@ class AppointmentDetails extends Component {
           specialist: specialistDetails.toString(),
         })
       }
+    }
 
     }
     catch (e) {
@@ -206,7 +208,7 @@ class AppointmentDetails extends Component {
       this.setState({ isLoading: true });
       let userId = await AsyncStorage.getItem('userId');
       let requestData = {
-        doctorId: data.doctor_id,
+      
         userId: userId,
         startTime: data.appointment_starttime,
         endTime: data.appointment_endtime,
@@ -214,21 +216,26 @@ class AppointmentDetails extends Component {
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
+      if(data.booked_for==='HOSPITAL'){
+        requestData.hospitalAminId=data.location[0].hospital_admin_id
+      }else{
+        requestData.doctorId= data.doctor_id
+      }
 
-      let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+      let result = await appointmentStatusUpdate(this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
 
       if (result.success) {
         let temp = this.state.data
-        let appointment_starttime=getMoment(data.appointment_starttime).toISOString();
-       let appointment_endtime=getMoment(data.appointment_endtime).toISOString();
-let   address=''
-if(temp.location[0]){
-  address=temp.location[0].location.address.city||temp.location[0].location.address.state
-}
+        let appointment_starttime = getMoment(data.appointment_starttime).toISOString();
+        let appointment_endtime = getMoment(data.appointment_endtime).toISOString();
+        let address = ''
+        if (temp.location[0]) {
+          address = temp.location[0].location.address.city || temp.location[0].location.address.state
+        }
 
-        await updateEvent(temp.user_appointment_event_id, "Appointment booked with "+temp.location[0].name+" "+temp.location[0].type,appointment_starttime,appointment_endtime,address,temp.disease_description)
-           
+        await updateEvent(temp.user_appointment_event_id, "Appointment booked with " + temp.location[0].name + " " + temp.location[0].type, appointment_starttime, appointment_endtime, address, temp.disease_description)
+
         temp.appointment_status = result.appointmentData.appointment_status
         Toast.show({
           text: result.message,
@@ -339,7 +346,7 @@ if(temp.location[0]){
                     <Col style={{ width: '77%', marginTop: 10 }}>
                       <Row>
                         <Col size={9}>
-                          <Text style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
+                          <Text style={styles.Textname} >{data.booked_for==='HOSPITAL'?getHospitalHeadeName(data.location[0]):(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
                           <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color: '#4c4c4c' }}>{education}</Text>
                           <Text style={styles.specialistTextStyle} >{specialist} </Text>
                         </Col>
@@ -801,14 +808,14 @@ if(temp.location[0]){
                 </View>
               </Grid>
             </View>}
-           { this.state.modalVisible===true?
-              <InsertReview
-                data={this.state.data}
-                popupVisible={(data) => this.getvisble(data)}
+          {this.state.modalVisible === true ?
+            <InsertReview
+              data={this.state.data}
+              popupVisible={(data) => this.getvisble(data)}
 
-              />:null}
+            /> : null}
 
-              
+
           <Modal
             visible={this.state.proposedVisible}
             transparent={true}

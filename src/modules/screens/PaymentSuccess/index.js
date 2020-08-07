@@ -19,7 +19,8 @@ class PaymentSuccess extends Component {
 
             },
             paymentMethod: null,
-            tokenNo: null
+            tokenNo: null,
+            fromNavigation: null
 
         }
         this.isFromHomeHealthCareConfirmation = false;
@@ -31,9 +32,10 @@ class PaymentSuccess extends Component {
         const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
         console.log(successBookSlotDetails);
         const paymentMethod = navigation.getParam('paymentMethod');
+        const fromNavigation = navigation.getParam('fromNavigation') || null
         const tokenNo = navigation.getParam('tokenNo');
         this.isFromHomeHealthCareConfirmation = navigation.getParam('isFromHomeHealthCareConfirmation') || false;
-        await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo });
+        await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo, fromNavigation });
         console.log(paymentMethod);
     }
     componentWillUnmount() {
@@ -57,7 +59,7 @@ class PaymentSuccess extends Component {
     }
     render() {
         const { navigation } = this.props;
-        const { successBookSlotDetails, paymentMethod, tokenNo } = this.state;
+        const { successBookSlotDetails, paymentMethod, tokenNo, fromNavigation } = this.state;
         return (
             <Container style={styles.container}>
                 <ScrollView>
@@ -76,14 +78,24 @@ class PaymentSuccess extends Component {
                                     </TouchableOpacity>
                                 </Col>
                                 <Col style={{ width: '75%', marginTop: 10 }}>
-                                    <Row>
-                                        <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} {' '}
-                                            <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text> </Text>
-                                    </Row>
-                                    <Row>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
+                                    {fromNavigation === 'HOSPITAL' ?
+                                     <Row style={styles.rowDetail1}>
 
-                                    </Row>
+                                     <Right>
+                                         <Text style={styles.subText}>{successBookSlotDetails.slotData.location.name}</Text>
+                                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
+                                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
+                                     </Right>
+                                 </Row> :
+                                        <Row>
+                                            <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} {' '}
+                                                <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text> </Text>
+                                        </Row>
+    }
+                                        <Row>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
+
+                                        </Row>
                                 </Col>
                             </Row>
                             <Row style={styles.rowDetail}>
@@ -92,7 +104,7 @@ class PaymentSuccess extends Component {
                                     <Text style={[styles.subText, { fontWeight: 'bold' }]}> {tokenNo} </Text>
                                 </Right>
                             </Row>
-                            {successBookSlotDetails.slotData && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
+                            {successBookSlotDetails.slotData &&fromNavigation===null&& this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
 
 
                             <Row style={styles.rowDetail}>
