@@ -29,12 +29,12 @@ const LabHeader = (props) => {
         </Col>
       </Row> 
         <Row style={{ marginTop: 10, }}>
-            <Col size={5} style={{ flexDirection: 'row' }}>
+            <Col size={4} style={{ flexDirection: 'row' }}>
                   <Icon name="md-calendar" style={{ fontSize: 15, color: '#0054A5' }} />
                   <Text style={styles.calDate}>{props.packageDetails && props.packageDetails.selectedSlotItem && formatDate(props.packageDetails.selectedSlotItem.slotStartDateAndTime, 'Do MMMM, YYYY') }</Text>
             </Col>
 
-            <Col size={5} style={{ flexDirection: 'row' }}>
+            <Col size={6} style={{ flexDirection: 'row' }}>
                 {props.packageDetails.appointment_status !== 'PAYMENT_FAILED' && props.packageDetails.appointment_status !== 'PAYMENT_IN_PROGRESS' ?
                      <TouchableOpacity onPress={() => onDatePickerPressed()} 
                                        style={{ flex: 1, flexDirection: 'row' }}>
@@ -50,6 +50,9 @@ const LabHeader = (props) => {
                             <Icon name="md-clock" style={{ fontSize: 15, color: '#8EC63F' }} />
                             <Text style={styles.clockTime}>Select time </Text>
                         </> } 
+                            <Text style={styles.calDate}>({props.packageDetails && props.packageDetails.selectedSlotItem && formatDate(props.packageDetails.selectedSlotItem.slotStartDateAndTime, 'hh:mm a')+' -'}</Text>
+                            <Text style={styles.calDate}>{props.packageDetails && props.packageDetails.selectedSlotItem && formatDate(props.packageDetails.selectedSlotItem.slotEndDateAndTime, 'hh:mm a')})</Text>
+
                         <DateTimePicker
                             mode={'time'}
                             display="spinner"
