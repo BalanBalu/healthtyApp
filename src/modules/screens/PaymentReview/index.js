@@ -115,7 +115,7 @@ export default class PaymentReview extends Component {
     const { bookSlotDetails, patientDetailsObj, fromNavigation, isCorporateUser } = this.state;
     let { diseaseDescription } = bookSlotDetails;
     console.log('final Patient Details ', patientDetailsObj);
-    if (!Object.keys(patientDetailsObj).length) {
+    if (!patientDetailsObj || (patientDetailsObj && !Object.keys(patientDetailsObj).length)) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
         type: 'warning',
