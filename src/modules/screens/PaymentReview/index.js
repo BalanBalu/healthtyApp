@@ -596,7 +596,7 @@ export default class PaymentReview extends Component {
                   <TouchableOpacity
                     onPress={() => this.processToPayLater(this.state.selectedPayBy)}
                     style={styles.buttonTouch}>
-                    <Text style={styles.footerButtonText}>Book an Appoiintment </Text>
+                    <Text style={styles.footerButtonText}>Book an Appointment </Text>
                   </TouchableOpacity>
                 </Col>
               }
