@@ -145,7 +145,7 @@ export default class PaymentReview extends Component {
     if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
       modesOfPayment = 'corporate';
     } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
-      modesOfPayment = 'insurance;'
+      modesOfPayment = 'insurance'
     }
 
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, modesOfPayment, bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, modesOfPayment);
