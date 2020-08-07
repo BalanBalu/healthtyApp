@@ -25,6 +25,7 @@ import { store } from '../../../../setup/store';
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
 import RenderDatesList from './RenderDateList'
+import { RenderEditingPincode } from '../../CommonAll/components';
 const CALL_AVAILABILITY_SLOTS_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 8;
 let doctorListOrder = 'ASC';
@@ -52,9 +53,10 @@ class DoctorList extends Component {
             isLoadingMoreDocList: false,
             doctorInfoListAndSlotsData1: [],
             pinCode: '',
-            searchedInputTextValue: 'Primary',
+            searchedInputTextValue:  props.navigation.getParam('categoryName') || 'Primary',
             searchedInputPinCodeValue: '600001',
             isLoadingOnChangeDocList: false,
+            isOnEditPincode: false,
         }
         this.conditionFromFilterPage = false,
             this.isEnabledLoadMoreData = true;
@@ -265,11 +267,7 @@ class DoctorList extends Component {
             this.setState({ isLoadingOnChangeDocList: false });
         }
     }
-    onChangeInputPinCodeValue = async (enteredPinCode) => {
-        await this.setState({ searchedInputPinCodeValue: enteredPinCode });
-        this.callGetDocListService();  // Call the search list API with Debounce method
-    }
-
+    
     renderDocListByTopRated(doctorDataList) {
         const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
         const doctorDataListBySort = doctorDataList.sort(function (a, b) {
@@ -330,47 +328,18 @@ class DoctorList extends Component {
                         </Col>
                     </Row>
                 </Card>
-                <View style={{ padding: 10, paddingBottom: 10, height: 45 }}>
-                    <Grid>
-                        <Col size={10}>
-                            <Item style={styles.specialismInput} >
-                                <Input
-                                    placeholder='Search by Specialism ...'
-                                    style={{ fontSize: 12, width: '100%', }}
-                                    placeholderTextColor="#C1C1C1"
-                                    keyboardType={'default'}
-                                    onChangeText={(text) => { this.onChangeInputTextValue(text) }}
-                                    value={searchedInputTextValue}
-                                    returnKeyType={'go'}
-                                    multiline={false} />
-                                <TouchableOpacity style={{ alignItems: 'flex-end' }}>
-                                    <Icon name='ios-search' style={{ color: '#909090', fontSize: 20 }} />
-                                </TouchableOpacity>
-                            </Item>
-                        </Col>
-                    </Grid>
-                </View>
-                <View>
-                    <Row style={{ marginTop: 5, padding: 10, }}>
-                        <Col size={7}>
-                            <Text style={styles.showingDoctorText}>Showing Doctors in the <Text style={styles.picodeText}> PinCode -  {searchedInputPinCodeValue ? searchedInputPinCodeValue : ''}</Text></Text>
-                        </Col>
-                        <Col size={3}>
-                            <View style={{ borderRadius: 5, height: 20, justifyContent: 'center', backgroundColor: '#F0F0F0' }}>
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Input placeholder='Enter PinCode'
-                                        style={{ fontSize: 12 }}
-                                        keyboardType="numeric"
-                                        maxLength={7}
-                                        onChangeText={pinCode => acceptNumbersOnly(pinCode) == true || pinCode === '' ? this.onChangeInputPinCodeValue(pinCode) : null}
-                                        value={searchedInputPinCodeValue}
-                                    />
-                                </Item>
-                            </View>
-                        </Col>
-                    </Row>
-                </View>
-                {/* <View style={{ marginTop: 15 }}> */}
+                
+                <RenderEditingPincode
+                    isPincodeEditVisible={this.state.isOnEditPincode}
+                    onChangeSelection={(value) => this.setState({   isOnEditPincode: value })}
+                    value={this.state.searchedInputPinCodeValue}
+                    onChangeText={pinCode => acceptNumbersOnly(pinCode) == true || pinCode === '' ? this.setState({ searchedInputPinCodeValue: pinCode } ) : null}
+                    onPressEditButton={() => {
+                        this.setState({ isOnEditPincode: false })
+                        this.callGetDocListService(); 
+                    }}
+                />
+                   
                 {isLoadingOnChangeDocList ?
                     <View style={{ marginTop: 60 }}>
                         <ActivityIndicator

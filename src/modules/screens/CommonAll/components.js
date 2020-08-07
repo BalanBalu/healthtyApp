@@ -118,12 +118,32 @@ const renderLabProfileImage = (data) => {
     return (source)
 }
 const RenderEditingPincode = (props) => {
+    const { value, onChangeSelection, isPincodeEditVisible  } = props;
     return (
+        
+   
+      isPincodeEditVisible === false ?
+        <Row style={{ padding: 5, height: 40 }}>
+                <Col size={8}>
+                    <Text style={styles.showingDoctorText}>Showing Hospitals in the 
+                        <Text style={styles.picodeText}>{" "}PinCode - {value}</Text>
+                    </Text>
+                </Col>
+                <Col size={2}>
+                    <Row style={{ justifyContent: 'flex-end' }}>
+                        <TouchableOpacity style={styles.editPincodeButton} onPress={() => onChangeSelection(true)} >
+                            <Text style={{ fontFamily: 'OpenSans', color: '#ff4e42', fontSize: 10, }}>Edit Pincode </Text>
+                        </TouchableOpacity>
+                    </Row>
+                </Col>
+        </Row>
+        
+        :
         <Row style={{ padding: 5, height: 45 }}>
             <Col size={7.5} style={{ borderColor: 'gray', borderWidth: 0.5 }}>
                 <TextInput
                     placeholder='Enter PinCode'
-                    style={{ fontSize: 12 }}
+                    style={{ fontSize: 12, textAlign: 'center', justifyContent: 'center', alignContent: 'center', alignSelf: 'center' }}
                     keyboardType="numeric"
                     maxLength={7}
                     style={{ fontSize: 12, marginLeft: 5, borderRadius: 5, }}
@@ -141,6 +161,8 @@ const RenderEditingPincode = (props) => {
                 </TouchableOpacity>
             </Col>
         </Row>
+        
+      
     )
 }
 

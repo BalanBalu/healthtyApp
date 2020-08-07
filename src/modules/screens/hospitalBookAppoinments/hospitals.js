@@ -127,27 +127,17 @@ class Hospitals extends PureComponent {
                             </Grid>
                         </View>
                         <View>
-                            {this.state.editingPincode != true ?
-                                <Row style={{ padding: 5, }}>
-                                    <Col size={8}>
-                                        <Text style={styles.showingDoctorText}>Showing Hospitals in the <Text style={styles.picodeText}>{" "}PinCode - {this.defaultPinCode4FetchHospList}</Text></Text>
-                                    </Col>
-                                    <Col size={2}>
-                                        <Row style={{ justifyContent: 'flex-end' }}>
-                                            <TouchableOpacity style={styles.editPincodeButton} onPress={() => this.setState({ editingPincode: true })} >
-                                                <Text style={{ fontFamily: 'OpenSans', color: '#ff4e42', fontSize: 10, }}>Edit Pincode </Text>
-                                            </TouchableOpacity>
-                                        </Row>
-                                    </Col>
-                                </Row> :
+                                 
                                 <View>
                                     <RenderEditingPincode
-                                        value={this.state.pin_code}
+                                        isPincodeEditVisible={this.state.editingPincode}
+                                        onChangeSelection={(value) => this.setState({   editingPincode: value })}
+                                        value={this.defaultPinCode4FetchHospList || this.state.pin_code}
                                         onChangeText={text => this.editingPincodeField(text)}
                                         onPressEditButton={this.editPinCode}
                                     />
                                 </View>
-                            }
+                            
                         </View>
 
 

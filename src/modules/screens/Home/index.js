@@ -462,7 +462,7 @@ class Home extends Component {
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
                         <Col style={{ width: '50%' }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Home Health Care")}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories",{fromNavigation:"HOME_HEALTH_CARE"})}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
