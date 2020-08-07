@@ -7,7 +7,6 @@ import styles from '../CommonAll/styles'
 import {
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
     SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS,
-    SET_FILTERED_DOCTOR_DATA,
     SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
     BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER,
     searchByDocDetailsService,
@@ -17,7 +16,6 @@ import {
     fetchDoctorAvailabilitySlotsService,
     serviceOfUpdateDocSponsorViewCountByUser,
     getFavoriteListCount4PatientService,
-    SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
 } from '../../providers/BookAppointmentFlow/action';
 import { formatDate, addMoment, getMoment } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
@@ -73,9 +71,10 @@ class DoctorList extends Component {
             this.selectedDataFromFilterPage = navigation.getParam('filterData');
             this.conditionFromFilterPage = navigation.getParam('conditionFromFilterPage');
             const { bookAppointmentData: { getPreviousDocListWhenClearFilter } } = this.props;
-            debugger
-            debugger
-            if (this.conditionFromFilterPage && getPreviousDocListWhenClearFilter || this.conditionFromFilterPage && this.selectedDataFromFilterPage) { //Call Initial search service  when clear the Filter data from filter page Or Call Filter service by  selected Input filtered data
+            if (this.conditionFromFilterPage && getPreviousDocListWhenClearFilter) {  //Call Initial search service  when clear the Filter data from filter page
+                await this.callInitialSearchOrFilterServiceWithClearedData(true);
+            }
+            else if (this.conditionFromFilterPage && this.selectedDataFromFilterPage && !getPreviousDocListWhenClearFilter) {  // Call Filter service when have selected filtered data from Filter Page
                 await this.callInitialSearchOrFilterServiceWithClearedData();
             }
         }
@@ -106,8 +105,12 @@ class DoctorList extends Component {
             this.setState({ isLoading: false });
         }
     }
-    callInitialSearchOrFilterServiceWithClearedData = async () => {
+    callInitialSearchOrFilterServiceWithClearedData = async (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) => {
         this.setState({ isLoading: true });
+        if (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) {
+            this.props.navigation.setParams({ 'conditionFromFilterPage': false });
+            this.conditionFromFilterPage = false;
+        }
         this.isEnabledLoadMoreData = true;
         this.incrementPaginationCount = 0;
         this.onEndReachedIsTriggedFromRenderDateList = false;
@@ -144,19 +147,9 @@ class DoctorList extends Component {
             type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
             data: []
         });
-        if (!this.conditionFromFilterPage) {
-            await store.dispatch(
-                {
-                    type: SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
-                    data: false
-                },
-            );
-        }
-
     }
     searchByDoctorDetails = async (activeSponsor) => {
         try {
-            console.log(activeSponsor);
             const locationDataFromSearch = this.props.navigation.getParam('locationDataFromSearch');
             const inputKeywordFromSearch = this.props.navigation.getParam('inputKeywordFromSearch');
             const { bookAppointmentData: { getPreviousDocListWhenClearFilter } } = this.props;
@@ -164,7 +157,7 @@ class DoctorList extends Component {
             let reqData4ServiceCall = {
                 locationData: locationDataFromSearch
             }
-            if (inputKeywordFromSearch) reqData4ServiceCall.inputText = inputKeywordFromSearch;
+            if (!this.conditionFromFilterPage && inputKeywordFromSearch) reqData4ServiceCall.inputText = inputKeywordFromSearch;
 
             if (this.conditionFromFilterPage && !getPreviousDocListWhenClearFilter) {
                 type = 'filter';
@@ -176,7 +169,8 @@ class DoctorList extends Component {
             else {
                 type = 'search';
             }
-
+            console.log('type=====>', type);
+            // console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
             const docListResponse = await searchByDocDetailsService(type, activeSponsor, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
             if (docListResponse.success) {
