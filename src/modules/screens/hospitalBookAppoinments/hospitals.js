@@ -145,7 +145,7 @@ class Hospitals extends PureComponent {
                             data={hospitalData}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) =>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { HospitalName: item.name })} >
+                               
                                     <Card style={styles.doctorListStyle}>
                                         <List style={{ borderBottomWidth: 0 }}>
                                             <Grid >
@@ -215,7 +215,7 @@ class Hospitals extends PureComponent {
 
                                         </List>
                                     </Card>
-                                </TouchableOpacity>
+                               
                             } />
                             
 
