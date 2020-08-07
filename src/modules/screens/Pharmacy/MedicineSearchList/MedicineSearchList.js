@@ -286,9 +286,9 @@ class MedicineSearchList extends Component {
                                                             {item.h1Product&&<Text style={{ color: 'red', fontFamily: 'OpenSans', fontSize: 10, marginTop: 12,marginLeft:5  }}>{'* Prescription'}</Text> }
                                                             </Row>
                                                             {getIsAvailable(item, this.state.medicineDataAvailable) === false ?
-                                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
+                                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginBottom: 25 }}>Currently Out of stock</Text> :
                                                                 <Row >
-                                                                    <Col size={5} style={{ flexDirection: 'row',alignItems:'center',marginTop:-10}}>
+                                                                    <Col size={5} style={{ flexDirection: 'row',alignItems:'center',}}>
                                                                         <Text style={{ fontSize: 10, color: "#ff4e42" }}>{'MRP'}</Text>
                                                                         {item.discount !== undefined && item.discount !== null ?
                                                                             <Row style={{alignItems:'center'}}>
@@ -299,7 +299,7 @@ class MedicineSearchList extends Component {
                                                                         }
                                                                     </Col>
                                                                     {cartItems.length === 0 || cartItems.findIndex(ele => ele.item.productId == item.id) === -1 ?
-                                                                        <Col size={3.2} style={{ height: 20,marginTop:15 }}>
+                                                                        <Col size={3.2} style={{ height: 20,marginTop:25 }}>
                                                                             <Row>
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25,  paddingBottom: 5, paddingTop: 2,paddingLeft:5,paddingRight:5 }}
                                                                                     onPress={() => this.selectedItems(item, 'Add to Cart')} >
@@ -311,7 +311,7 @@ class MedicineSearchList extends Component {
                                                                             </Row>
                                                                         </Col> :
 
-                                                                        <Col size={3.2} style={{ height: 20, marginTop:15  }}>
+                                                                        <Col size={3.2} style={{ height: 20, marginTop:25  }}>
                                                                             <Row >
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25,  paddingBottom: 5, paddingTop: 2,paddingLeft:5,paddingRight:5 }}
                                                                                     onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.find(ele => ele.item.productId === item.id))} >
@@ -324,7 +324,7 @@ class MedicineSearchList extends Component {
                                                                                 </TouchableOpacity>
                                                                             </Row>
                                                                         </Col>}
-                                                                    <Col size={3.2} style={{ height: 20, marginLeft: 7,marginTop:15 }}>
+                                                                    <Col size={3.2} style={{ height: 20, marginLeft: 7,marginTop:25 }}>
                                                                         <Row>
                                                                             <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25,  paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f',paddingLeft:5,paddingRight:5 }}
                                                                                 onPress={() => this.selectedItems(item, 'Buy Now')}>
