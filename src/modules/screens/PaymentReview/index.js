@@ -20,7 +20,7 @@ export default class PaymentReview extends Component {
       bookSlotDetails: {
         diseaseDescription: ''
       },
-      isLoading: false,
+      isLoading: true,
       gender: 'M',
       full_name: '',
       age: '',
@@ -46,14 +46,15 @@ export default class PaymentReview extends Component {
     const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
 
     if (!isLoggedIn) {
+      this.setState({ isLoading: false });
       navigation.navigate('login');
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
     const fromNavigation = navigation.getParam('fromNavigation') || null
     console.log('bookSlotDetails', bookSlotDetails);
-    await this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser, fromNavigation });
-    await this.getPatientInfo();
+    this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser, fromNavigation, isLoading: false });
+    this.getPatientInfo();
   }
   async confirmProceedPayment() {
     const { bookSlotDetails, patientDetailsObj } = this.state;
