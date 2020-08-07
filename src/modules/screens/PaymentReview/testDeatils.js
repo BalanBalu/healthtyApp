@@ -245,31 +245,37 @@ class TestDetails extends PureComponent {
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
                 <Row>
-                    <Col>
+                    <Col size={5}>
                         <Text style={styles.NameText}>{data.full_name + (data.relation ? ` (${data.relation})` : '')}</Text>
                     </Col>
-                    <Col>
+                    <Col size={5}>
                         <Text style={styles.ageText}>{data.age} years</Text>
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 10 }}>
                     <Col size={3}>
                         <Row>
-                            <Col size={5}>
-                                <Text style={styles.commonText}>Gender - </Text>
+                            <Col size={4}>
+                                <Text style={styles.commonText}>Gender</Text>
                             </Col>
-                            <Col size={5}>
-                                <Text note style={styles.commonText}>{data.gender}</Text>
+                            <Col size={2}>
+                                <Text style={styles.commonText}>-</Text>
+                            </Col>
+                            <Col size={4}>
+                                <Text  style={[styles.commonText,{color:'#909090'}]}>{data.gender}</Text>
                             </Col>
                         </Row>
                     </Col>
                     <Col size={3.3}>
                         <Row>
-                            <Col size={5}>
-                                <Text style={styles.commonText}>Mobile - </Text>
+                            <Col size={4}>
+                                <Text style={styles.commonText}>Mobile</Text>
                             </Col>
-                            <Col size={5}>
-                                <Text note style={styles.commonText}>{data.phone_no}</Text>
+                            <Col size={2}>
+                                <Text style={styles.commonText}>-</Text>
+                            </Col>
+                            <Col size={4}>
+                                <Text  style={[styles.commonText,{color:'#909090'}]}>{data.phone_no}</Text>
                             </Col>
                         </Row>
                     </Col>
@@ -424,7 +430,7 @@ class TestDetails extends PureComponent {
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                             <View>
                                 {this.renderPatientDetails(this.defaultPatDetails, 0, false, POSSIBLE_FAMILY_MEMBERS.SELF)}
                             </View>
@@ -434,7 +440,9 @@ class TestDetails extends PureComponent {
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ?
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                             {onlyFamilyWithPayDetailsData.length !== 0 ?
+                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                            :  null}
                             <FlatList
                                 data={onlyFamilyWithPayDetailsData}
                                 keyExtractor={(item, index) => index.toString()}
@@ -442,16 +450,16 @@ class TestDetails extends PureComponent {
                                     this.renderPatientDetails(item, index, false, POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)
                                 } />
                             { (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)  && this.props.singlePatientSelect === false )  || (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others' ).length === 0 )  ?
-                                <View style={{ marginTop: 10, marginLeft: 8 }}>
+                                <View style={{ marginTop: 8, }}>
                                     {familyDetailsData.length !== 0 ? <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text> : null}
                                     <Text style={styles.subHead}>Add other patient's details</Text>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={6}>
                                             <Row>
-                                                <Col size={2}>
+                                                <Col size={2} style={{justifyContent:'center'}}>
                                                     <Text style={styles.nameAndAge}>Name</Text>
                                                 </Col>
-                                                <Col size={8} >
+                                                <Col size={8} style={{justifyContent:'center'}}>
                                                     <Input placeholder="Enter patient's name" style={styles.inputText}
                                                         returnKeyType={'next'}
                                                         keyboardType={"default"}
@@ -464,10 +472,10 @@ class TestDetails extends PureComponent {
                                         </Col>
                                         <Col size={4} style={{ marginLeft: 5 }}>
                                             <Row>
-                                                <Col size={2}>
+                                                <Col size={2} style={{justifyContent:'center'}}>
                                                     <Text style={styles.nameAndAge}>Age</Text>
                                                 </Col>
-                                                <Col size={7}>
+                                                <Col size={7} style={{justifyContent:'center'}}>
                                                     <Input placeholder="Enter patient's age" style={styles.inputText}
                                                         returnKeyType={'done'}
                                                         keyboardType="numeric"
@@ -585,6 +593,7 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 12,
         height: 33,
+        marginTop:8
     },
     nameAndAge: {
         fontFamily: 'OpenSans',
@@ -596,7 +605,6 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#000',
-        marginTop: 10
         // fontWeight: 'bold'
     },
     NameText: {
@@ -607,11 +615,12 @@ const styles = StyleSheet.create({
     ageText: {
         fontSize: 12,
         fontFamily: 'OpenSans',
-        textAlign: 'right'
+        textAlign: 'right',
+        marginRight:4
     },
     commonText: {
         fontSize: 12,
-        fontFamily: 'OpenSans'
+        fontFamily: 'OpenSans',
     },
     selectButton: {
         paddingLeft: 15,
