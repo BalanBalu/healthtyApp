@@ -24,7 +24,7 @@ export default class BookAppointmentPaymentUpdate {
                     amount: bookSlotDetails.slotData.fee,
                     credit_point_discount_amount: bookSlotDetails.creditPointDiscountAmount,
                     coupon_code_discount_amount: bookSlotDetails.couponCodeDiscountAmount,
-                    amount_paid: !isSuccess || (modeOfPayment === 'cash' || modeOfPayment === 'corporate' || modeOfPayment === 'insurance') ? 0 : bookSlotDetails.finalAmountToPayByOnline,
+                    amount_paid: !isSuccess || modeOfPayment === 'cash' || modeOfPayment === 'corporate' || modeOfPayment === 'insurance' ? 0 : bookSlotDetails.finalAmountToPayByOnline,
                     amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.slotData.fee : (modeOfPayment === 'corporate' || modeOfPayment === 'insurance') ? 0 : 0,
                     currency: 'INR',
                     service_type: serviceType,
@@ -267,6 +267,9 @@ export default class BookAppointmentPaymentUpdate {
             if (bookSlotDetails.doctorId) {
                 bookAppointmentData.doctorId = bookSlotDetails.doctorId
                 bookAppointmentData.hospital_id= bookSlotDetails.slotData.location.hospital_id
+            }
+            if(bookSlotDetails.slotData.category_id){
+                bookAppointmentData.category_id=bookSlotDetails.slotData.category_id
             }
             if(bookSlotDetails.hospital_admin_id){
                 bookAppointmentData.hospital_admin_id = bookSlotDetails.hospital_admin_id
