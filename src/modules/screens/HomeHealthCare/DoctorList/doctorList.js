@@ -56,8 +56,8 @@ class DoctorList extends Component {
             isLoadingMoreDocList: false,
             doctorInfoListAndSlotsData1: [],
             pinCode: '',
-            searchedInputTextValue: '',
-            searchedInputPinCodeValue: '',
+            searchedInputTextValue: 'Primary',
+            searchedInputPinCodeValue: '600001',
             isLoadingOnChangeDocList: false,
 
         }
@@ -66,8 +66,6 @@ class DoctorList extends Component {
         this.selectedDataFromFilterPage = null;
         this.incrementPaginationCount = 0;
         this.onEndReachedIsTriggedFromRenderDateList = false;
-        this.defaultInputText4FetchDocList = 'Primary';
-        this.defaultPinCode4FetchDocList = '600001';
         this.callGetDocListService = debounce(this.callGetDocListService, 300);
     }
 
@@ -162,32 +160,42 @@ class DoctorList extends Component {
     searchByDoctorDetails = async () => {
         try {
             const { bookAppointmentData: { getPreviousDocListWhenClearFilter } } = this.props;
+            const { searchedInputTextValue, searchedInputPinCodeValue } = this.state;
             debugger
             let type;
             let reqData4ServiceCall = {}
-            reqData4ServiceCall.locationData = this.defaultPinCode4FetchDocList ? { from_pincode: this.defaultPinCode4FetchDocList, to_pincode: this.defaultPinCode4FetchDocList } : { from_pincode: this.state.searchedInputPinCodeValue, to_pincode: this.state.searchedInputPinCodeValue };
-            reqData4ServiceCall.inputText = this.defaultInputText4FetchDocList ? this.defaultInputText4FetchDocList : this.state.searchedInputTextValue;
+            if (searchedInputPinCodeValue) {
+                reqData4ServiceCall.locationData = { from_pincode: searchedInputPinCodeValue, to_pincode: searchedInputPinCodeValue }
+            }
+            if (!this.conditionFromFilterPage && searchedInputTextValue) {
+                reqData4ServiceCall.inputText = searchedInputTextValue
+            }
             debugger
             if (this.conditionFromFilterPage && !getPreviousDocListWhenClearFilter) {
                 type = 'filter';
                 reqData4ServiceCall = { ...reqData4ServiceCall, ...this.selectedDataFromFilterPage }
             }
-            else if (!this.defaultInputText4FetchDocList && !this.defaultPinCode4FetchDocList && !this.state.searchedInputTextValue) {
+            else if (!searchedInputTextValue) {
                 type = 'location'
             }
             else {
                 type = 'search';
             }
             debugger
+            console.log('type=====>', type);
+            console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
             const docListResponse = await searchByHomeHealthcareDocDetailsService(type, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
             debugger
             if (docListResponse.success) {
                 debugger
+                console.log(' this.incrementPaginationCount===>', this.incrementPaginationCount)
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
                 const searchedDoctorIdsArray = [];
                 const docListData = docListResponse.data || [];
                 docListData.map(item => {
+                    item.specialist = item.specialistInfo;
+                    delete item.specialistInfo;
                     searchedDoctorIdsArray.push(item.doctor_id);
                     this.docInfoAndAvailableSlotsMapByDoctorId.set(item.doctor_id, item);
                 })
@@ -246,7 +254,6 @@ class DoctorList extends Component {
 
     onChangeInputTextValue = async (enteredText) => {
         await this.setState({ searchedInputTextValue: enteredText });
-        this.defaultInputText4FetchDocList = '';
         this.incrementPaginationCount = 0;
         this.callGetDocListService();  // Call the search list API with Debounce method
     }
@@ -273,7 +280,6 @@ class DoctorList extends Component {
     }
     onChangeInputPinCodeValue = async (enteredPinCode) => {
         await this.setState({ searchedInputPinCodeValue: enteredPinCode });
-        this.defaultPinCode4FetchDocList = '';
         this.incrementPaginationCount = 0;
         this.callGetDocListService();  // Call the search list API with Debounce method
     }
@@ -316,108 +322,108 @@ class DoctorList extends Component {
                 <NavigationEvents
                     onWillFocus={payload => { this.componentNavigationMount() }}
                 />
-                <Content>
-                    <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
-                        <Row style={{ height: 35, alignItems: 'center' }}>
-                            <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.renderDocListByTopRated(doctorInfoListAndSlotsData)}>
-                                <Col size={2.0} >
-                                    <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
-                                </Col>
-                                <Col size={8.0} style={{ justifyContent: 'center' }}>
-                                    <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
-                                </Col>
+                {/* <Content> */}
+                <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
+                    <Row style={{ height: 35, alignItems: 'center' }}>
+                        <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.renderDocListByTopRated(doctorInfoListAndSlotsData)}>
+                            <Col size={2.0} >
+                                <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
-                            <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 1, justifyContent: 'center' }} onPress={() => this.navigateToFilters()}>
+                            <Col size={8.0} style={{ justifyContent: 'center' }}>
+                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
+                            </Col>
+                        </Col>
+                        <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 1, justifyContent: 'center' }} onPress={() => this.navigateToFilters()}>
 
-                                <Col size={8.0} style={{ justifyContent: 'center' }}>
-                                    <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
-                                </Col>
-                                <Col size={2.0} style={{ marginLeft: 5 }}>
-                                    <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25 }} />
-                                </Col>
+                            <Col size={8.0} style={{ justifyContent: 'center' }}>
+                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
                             </Col>
-                        </Row>
-                    </Card>
-                    <View style={{ padding: 10, paddingBottom: 10, height: 45 }}>
-                        <Grid>
-                            <Col size={10}>
-                                <Item style={styles.specialismInput} >
-                                    <Input
-                                        placeholder='Search by Specialism ...'
-                                        style={{ fontSize: 12, width: '100%', }}
-                                        placeholderTextColor="#C1C1C1"
-                                        keyboardType={'default'}
-                                        onChangeText={(text) => { this.onChangeInputTextValue(text) }}
-                                        value={searchedInputTextValue}
-                                        returnKeyType={'go'}
-                                        multiline={false} />
-                                    <TouchableOpacity style={{ alignItems: 'flex-end' }}>
-                                        <Icon name='ios-search' style={{ color: '#909090', fontSize: 20 }} />
-                                    </TouchableOpacity>
-                                </Item>
+                            <Col size={2.0} style={{ marginLeft: 5 }}>
+                                <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25 }} />
                             </Col>
-                        </Grid>
-                    </View>
-                    <View>
-                        <Row style={{ marginTop: 5, padding: 10, }}>
-                            <Col size={7}>
-                                <Text style={styles.showingDoctorText}>Showing Doctors in the <Text style={styles.picodeText}> PinCode -  {this.defaultPinCode4FetchDocList ? this.defaultPinCode4FetchDocList : searchedInputPinCodeValue}</Text></Text>
-                            </Col>
-                            <Col size={3}>
-                                <View style={{ borderRadius: 5, height: 20, justifyContent: 'center', backgroundColor: '#F0F0F0' }}>
-                                    <Item style={{ borderBottomWidth: 0 }}>
-                                        <Input placeholder='Enter PinCode'
-                                            style={{ fontSize: 12 }}
-                                            keyboardType="numeric"
-                                            maxLength={7}
-                                            onChangeText={pinCode => acceptNumbersOnly(pinCode) == true || pinCode === '' ? this.onChangeInputPinCodeValue(pinCode) : null}
-                                            value={searchedInputPinCodeValue}
-                                        />
-                                    </Item>
-                                </View>
-                            </Col>
-                        </Row>
-                    </View>
-                    {/* <View style={{ marginTop: 15 }}> */}
-                    {isLoadingOnChangeDocList ?
-                        <View style={{ marginTop: 60 }}>
-                            <ActivityIndicator
-                                animating={isLoadingOnChangeDocList}
-                                size="large"
-                                color='blue'
-                            />
-                        </View>
-                        :
-                        doctorInfoListAndSlotsData.length ?
-                            < FlatList
-                                data={doctorInfoListAndSlotsData}
-                                onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
-                                onEndReached={() => {
-                                    if (this.isEnabledLoadMoreData) {
-                                        this.loadMoreData();
-                                    }
-                                }}
-                                renderItem={({ item, index }) => this.renderDoctorCard(item, index)
-                                }
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                            :
-                            <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
+                        </Col>
+                    </Row>
+                </Card>
+                <View style={{ padding: 10, paddingBottom: 10, height: 45 }}>
+                    <Grid>
+                        <Col size={10}>
+                            <Item style={styles.specialismInput} >
+                                <Input
+                                    placeholder='Search by Specialism ...'
+                                    style={{ fontSize: 12, width: '100%', }}
+                                    placeholderTextColor="#C1C1C1"
+                                    keyboardType={'default'}
+                                    onChangeText={(text) => { this.onChangeInputTextValue(text) }}
+                                    value={searchedInputTextValue}
+                                    returnKeyType={'go'}
+                                    multiline={false} />
+                                <TouchableOpacity style={{ alignItems: 'flex-end' }}>
+                                    <Icon name='ios-search' style={{ color: '#909090', fontSize: 20 }} />
+                                </TouchableOpacity>
                             </Item>
-                    }
-                    {/* </View> */}
-                    {isLoadingMoreDocList ?
-                        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                            <ActivityIndicator
-                                style={{ marginBottom: 17 }}
-                                animating={isLoadingMoreDocList}
-                                size="large"
-                                color='blue'
-                            />
-                        </View>
-                        : null}
-                </Content>
+                        </Col>
+                    </Grid>
+                </View>
+                <View>
+                    <Row style={{ marginTop: 5, padding: 10, }}>
+                        <Col size={7}>
+                            <Text style={styles.showingDoctorText}>Showing Doctors in the <Text style={styles.picodeText}> PinCode -  {searchedInputPinCodeValue ? searchedInputPinCodeValue : ''}</Text></Text>
+                        </Col>
+                        <Col size={3}>
+                            <View style={{ borderRadius: 5, height: 20, justifyContent: 'center', backgroundColor: '#F0F0F0' }}>
+                                <Item style={{ borderBottomWidth: 0 }}>
+                                    <Input placeholder='Enter PinCode'
+                                        style={{ fontSize: 12 }}
+                                        keyboardType="numeric"
+                                        maxLength={7}
+                                        onChangeText={pinCode => acceptNumbersOnly(pinCode) == true || pinCode === '' ? this.onChangeInputPinCodeValue(pinCode) : null}
+                                        value={searchedInputPinCodeValue}
+                                    />
+                                </Item>
+                            </View>
+                        </Col>
+                    </Row>
+                </View>
+                {/* <View style={{ marginTop: 15 }}> */}
+                {isLoadingOnChangeDocList ?
+                    <View style={{ marginTop: 60 }}>
+                        <ActivityIndicator
+                            animating={isLoadingOnChangeDocList}
+                            size="large"
+                            color='blue'
+                        />
+                    </View>
+                    :
+                    doctorInfoListAndSlotsData.length ?
+                        < FlatList
+                            data={doctorInfoListAndSlotsData}
+                            onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
+                            onEndReached={() => {
+                                if (this.isEnabledLoadMoreData) {
+                                    this.loadMoreData();
+                                }
+                            }}
+                            renderItem={({ item, index }) => this.renderDoctorCard(item, index)
+                            }
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                        :
+                        <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
+                        </Item>
+                }
+                {/* </View> */}
+                {isLoadingMoreDocList ?
+                    <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                        <ActivityIndicator
+                            style={{ marginBottom: 17 }}
+                            animating={isLoadingMoreDocList}
+                            size="large"
+                            color='blue'
+                        />
+                    </View>
+                    : null}
+                {/* </Content> */}
             </Container>
         )
     }
