@@ -12,7 +12,7 @@ import { formatDate, addTimeUnit, subTimeUnit, getAllId, statusValue } from "../
 import { getUserAppointments, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName } from '../../common'
+import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName,getDoctorNameOrHospitalName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
@@ -469,7 +469,7 @@ class MyAppoinmentList extends Component {
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Col size={9}>
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																		{item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalHeadeName(item.appointmentResult.location[0]) : (item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}
+																		{ getDoctorNameOrHospitalName(item.appointmentResult)}
 																	</Text>
 																	<Text
 																		style={{
@@ -491,7 +491,7 @@ class MyAppoinmentList extends Component {
 																<Text
 																	style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
 																>
-																	{item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalName(item.appointmentResult.location[0]) : item.specialist}
+																	{item.specialist?item.specialist:item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalName(item.appointmentResult.location[0]) : null}
 																</Text>
 
 																{selectedIndex == 1 &&

@@ -43,22 +43,34 @@ class Categories extends Component {
       this.setState({ isLoading: false });
     }
   }
-  navigate = (categoryName) => {
-    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this),[categoryName ]);
+  navigate = (categoryName,category_id) => {
+    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this), [categoryName,category_id]);
   }
 
-  navigateToCategorySearch(categoryName) {
+  navigateToCategorySearch(categoryName,category_id) {
     console.log(categoryName);
+
     console.log(this.props);
     const { bookappointment: { locationCordinates } } = this.props;
-    this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
-      inputKeywordFromSearch: categoryName,
-      locationDataFromSearch: {
-        type: 'geo',
-        "coordinates": locationCordinates,
-        maxDistance: MAX_DISTANCE_TO_COVER
-      }
-    })
+
+   let  fromNavigation = this.props.navigation.getParam('fromNavigation') || null
+    
+  
+    if (fromNavigation === "HOSPITAl") {
+      this.props.navigation.navigate("Hospitals", {   // New Enhancement Router path
+        category_id: category_id 
+      })
+
+    } else {
+      this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+        inputKeywordFromSearch: categoryName,
+        locationDataFromSearch: {
+          type: 'geo',
+          "coordinates": locationCordinates,
+          maxDistance: MAX_DISTANCE_TO_COVER
+        }
+      })
+    }
     // let serachInputvalues = [{
     //   type: 'category',
     //   value: categoryName
@@ -129,7 +141,7 @@ class Categories extends Component {
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>
-                  <TouchableOpacity onPress={() => this.navigate(item.category_name)}
+                  <TouchableOpacity onPress={() => this.navigate(item.category_name,item.category_id)}
                     style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                     <FastImage
                       source={{ uri: item.imageBaseURL + item.category_id + '.png' }}

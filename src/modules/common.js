@@ -120,13 +120,13 @@ export function getDoctorExperience(calulatedExperience) {
         return 'N/A'
     }
     if (calulatedExperience.year == 0) {
-       let  month = calulatedExperience.month;
+        let month = calulatedExperience.month;
         if (month == 0) {
             return 'N/A'
         }
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-        let  year = calulatedExperience.year;
+        let year = calulatedExperience.year;
         return `${year} Year` + (year <= 1 ? '' : 's')
     }
 }
@@ -337,7 +337,7 @@ export function getHospitalName(location) {
 }
 export function getAddress(location) {
     console.log("location", location);
-    
+
     if (!location) return ''
     if (location)
         return `${location.address.no_and_street},${location.address.address_line_1 || ''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
@@ -510,8 +510,26 @@ export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
     }
     else {
         return '0 km '
-    }    
+    }
 }
 export const getRandomInt = (max = 1000) => {
     return Math.floor(Math.random() * Math.floor(max));
+}
+
+export function getDoctorNameOrHospitalName(data) {
+    let name = 'unKnown'
+    if (data) {
+        if (data.doctorInfo) {
+            if (data.doctorInfo.first_name != undefined || data.doctorInfo.last_name != undefined) {
+                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')} ${data.doctorInfo.first_name || ''} ${data.doctorInfo.last_name || ''}`
+
+            }
+        } else {
+            if(data.booked_for === 'HOSPITAL') {
+                name=getHospitalHeadeName(data.location[0])
+            }
+        }
+    }
+    return name
+
 }
