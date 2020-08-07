@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     },
     innerText: {
         fontFamily: 'OpenSans',
-        fontSize: 14,
+        fontSize: 12,
         marginTop: 5
 
     },
