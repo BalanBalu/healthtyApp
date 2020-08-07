@@ -460,7 +460,51 @@ class Home extends Component {
                         </Col>
 
                     </Grid>
-                    
+                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
+                        <Col style={{ width: '50%' }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Home Health Care")}>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={HomeTestImg}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
+                                            <Text style={styles.subText}>{translate('Get Doctor Consultation at Your Home')} </Text>
+                                        </Col>
+
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                        <Col style={{ width: '50%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={LabTestImgs}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
+                                            <Text style={styles.subText}>Book Full Body Lab Test from The Safety Of Your Home</Text>
+                                        </Col>
+
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                    </Grid>
+                  
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '50%', }}>
                             <TouchableOpacity onPress={() =>
@@ -506,50 +550,6 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
 
-                    </Grid>
-                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
-                        <Col style={{ width: '50%' }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Home Health Care")}>
-                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                    <Row style={styles.rowStyle}>
-                                        <Image
-                                            source={HomeTestImg}
-                                            style={{
-                                                width: '100%', height: '100%', alignItems: 'center'
-                                            }}
-                                        />
-                                    </Row>
-                                    <Row style={styles.secondRow}>
-                                        <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
-                                            <Text style={styles.subText}>{translate('Get Doctor Consultation at Your Home')} </Text>
-                                        </Col>
-
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col style={{ width: '50%', marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
-                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                    <Row style={styles.rowStyle}>
-                                        <Image
-                                            source={LabTestImgs}
-                                            style={{
-                                                width: '100%', height: '100%', alignItems: 'center'
-                                            }}
-                                        />
-                                    </Row>
-                                    <Row style={styles.secondRow}>
-                                        <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
-                                            <Text style={styles.subText}>Book Full Body Lab Test from The Safety Of Your Home</Text>
-                                        </Col>
-
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                         <Row style={{ marginTop: 5 }}>
