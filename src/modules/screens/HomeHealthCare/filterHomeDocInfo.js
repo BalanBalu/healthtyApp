@@ -20,8 +20,6 @@ class FilterDocInfo extends Component {
             selectAvailabilityIndex: 0,
             selectExperinceIndex: 0,
         }
-        this.selectedSpecialistId = '';
-        this.selectedSpecialist = [];
     }
 
     async componentDidMount() {
@@ -47,7 +45,6 @@ class FilterDocInfo extends Component {
                 }
                 if (filterData.specialist) {
                     this.onSelectedSpecialistChange([filterData.specialist], true);
-                    this.onSelectedSpecialistObjChange(filterData.specialist)
                 }
                 if (filterData.availabilityDatesCount) {
                     this.clickFilterByAvailabilityDates(filterData.availabilityDatesCount, false, true);
@@ -96,7 +93,7 @@ class FilterDocInfo extends Component {
                 data: false
             },
         );
-        console.log('filterDataObject::', filterDataObject)
+        // console.log('filterDataObject::', filterDataObject)
         this.props.navigation.navigate('Home Health Care', {
             filterData: filterDataObject,
             conditionFromFilterPage: true
@@ -153,6 +150,7 @@ class FilterDocInfo extends Component {
     }
 
     onSelectedLanguagesChange = async (languages, isFilteredData) => {
+
         if (this.state.languages.length < languages.length) {
             if (!isFilteredData) {
                 selectedCount++;
@@ -178,16 +176,11 @@ class FilterDocInfo extends Component {
                 }
             }
         }
-        this.selectedSpecialist = selectedSpecialist;
-        this.setState({ selectedSpecialist });
-    }
-    onSelectedSpecialistObjChange = (selectedSpecialistId) => {
-        if (this.selectedSpecialist.length) {
-            filterDataObject.specialist = selectedSpecialistId;
-        }
-        else {
-            delete filterDataObject.specialist;
-        }
+        const selectedSpecialistItem = String(selectedSpecialist);
+        await this.setState({ selectedSpecialist });
+        if (selectedSpecialistItem) filterDataObject.specialist = selectedSpecialistItem;
+        else delete filterDataObject.specialist;
+        console.log('this.state.filterDataObject====>', filterDataObject);
     }
     clearSelectedData = async () => {  // Clear All selected Data when clicked the Clear filter option
         this.setState({
@@ -198,7 +191,6 @@ class FilterDocInfo extends Component {
             selectAvailabilityIndex: 0,
             selectExperinceIndex: 0,
         });
-        this.selectedSpecialist = [];
         selectedCount = 0;
         filterDataObject = {};
         await store.dispatch(
@@ -382,8 +374,6 @@ class FilterDocInfo extends Component {
                                 showChips={false}
                                 single={true}
                                 readOnlyHeadings={false}
-                                // onSelectedItemObjectsChange={this.onSelectedSpecialistObjChange}
-                                onSelectedItemObjectsChange={(selectedSpecialistObj) => { this.onSelectedSpecialistObjChange(selectedSpecialistObj[0].id) }}
                                 onSelectedItemsChange={this.onSelectedSpecialistChange}
                                 selectedItems={selectedSpecialist}
                                 colors={{ primary: '#18c971' }}

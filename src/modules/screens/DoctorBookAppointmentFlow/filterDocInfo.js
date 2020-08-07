@@ -22,8 +22,6 @@ class FilterDocInfo extends Component {
             selectExperinceIndex: 0,
             selectedHospitalNames: [],
         }
-        this.selectedSpecialistId = '';
-        this.selectedSpecialist = [];
     }
 
     async componentDidMount() {
@@ -49,7 +47,6 @@ class FilterDocInfo extends Component {
                 }
                 if (filterData.specialist) {
                     this.onSelectedSpecialistChange([filterData.specialist], true);
-                    this.onSelectedSpecialistObjChange(filterData.specialist)
                 }
                 if (filterData.hospitalName) {
                     this.onSelectedHospitalChange([filterData.hospitalName], true)
@@ -113,7 +110,7 @@ class FilterDocInfo extends Component {
                 data: false
             },
         );
-        console.log('filterDataObject::', filterDataObject)
+        // console.log('filterDataObject::', filterDataObject)
         this.props.navigation.navigate('Doctor Search List', {
             filterData: filterDataObject,
             conditionFromFilterPage: true
@@ -212,17 +209,12 @@ class FilterDocInfo extends Component {
                 }
             }
         }
-        this.selectedSpecialist = selectedSpecialist;
-        this.setState({ selectedSpecialist });
+        const selectedSpecialistItem = String(selectedSpecialist);
+        await this.setState({ selectedSpecialist });
+        if (selectedSpecialistItem) filterDataObject.specialist = selectedSpecialistItem;
+        else delete filterDataObject.specialist;
     }
-    onSelectedSpecialistObjChange = (selectedSpecialistId) => {
-        if (this.selectedSpecialist.length) {
-            filterDataObject.specialist = selectedSpecialistId;
-        }
-        else {
-            delete filterDataObject.specialist;
-        }
-    }
+
     clearSelectedData = async () => {  // Clear All selected Data when clicked the Clear filter option
         this.setState({
             genderSelected: '',
@@ -233,7 +225,6 @@ class FilterDocInfo extends Component {
             selectExperinceIndex: 0,
             selectedHospitalNames: [],
         });
-        this.selectedSpecialist = [];
         selectedCount = 0;
         filterDataObject = {};
         await store.dispatch(
@@ -417,11 +408,6 @@ class FilterDocInfo extends Component {
                                 showChips={false}
                                 single={true}
                                 readOnlyHeadings={false}
-                                // onSelectedItemObjectsChange={this.onSelectedSpecialistObjChange}
-
-                                onSelectedItemObjectsChange={(selectedSpecialistObj) => { this.onSelectedSpecialistObjChange(selectedSpecialistObj[0].id) }}
-
-
                                 onSelectedItemsChange={this.onSelectedSpecialistChange}
                                 selectedItems={selectedSpecialist}
                                 colors={{ primary: '#18c971' }}

@@ -15,8 +15,6 @@ import {
     addFavoritesToDocByUserService,
     fetchDocHomeHealthcareAvailabilitySlotsService,
     getFavoriteListCount4PatientService,
-    SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
-    fetchDoctorAvailabilitySlotsService,
 } from '../../../providers/BookAppointmentFlow/action';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import { Loader } from '../../../../components/ContentLoader';
@@ -24,11 +22,9 @@ import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 import { acceptNumbersOnly, debounce } from '../../../common';
 import { store } from '../../../../setup/store';
-import { RenderListNotFound, RenderNoSlotsAvailable } from '../../CommonAll/components';
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
 import RenderDatesList from './RenderDateList'
-import { fetchAvailableDoctors4Chat } from '../../../providers/chat/chat.action';
 const CALL_AVAILABILITY_SLOTS_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 8;
 let doctorListOrder = 'ASC';
@@ -59,7 +55,6 @@ class DoctorList extends Component {
             searchedInputTextValue: 'Primary',
             searchedInputPinCodeValue: '600001',
             isLoadingOnChangeDocList: false,
-
         }
         this.conditionFromFilterPage = false,
             this.isEnabledLoadMoreData = true;
@@ -97,9 +92,10 @@ class DoctorList extends Component {
             this.selectedDataFromFilterPage = navigation.getParam('filterData');
             this.conditionFromFilterPage = navigation.getParam('conditionFromFilterPage');
             const { bookAppointmentData: { getPreviousDocListWhenClearFilter } } = this.props;
-            debugger
-            debugger
-            if (this.conditionFromFilterPage && getPreviousDocListWhenClearFilter || this.conditionFromFilterPage && this.selectedDataFromFilterPage) { //Call Initial search service  when clear the Filter data from filter page Or Call Filter service by  selected Input filtered data
+            if (this.conditionFromFilterPage && getPreviousDocListWhenClearFilter) {  //Call Initial search service  when clear the Filter data from filter page
+                await this.callInitialSearchOrFilterServiceWithClearedData(true);
+            }
+            else if (this.conditionFromFilterPage && this.selectedDataFromFilterPage && !getPreviousDocListWhenClearFilter) {  // Call Filter service when have selected filtered data from Filter Page
                 await this.callInitialSearchOrFilterServiceWithClearedData();
             }
         }
@@ -107,9 +103,13 @@ class DoctorList extends Component {
             console.log('Ex is getting on Filter by Doctor details ===>', Ex.message);
         }
     }
-    callInitialSearchOrFilterServiceWithClearedData = async () => {
+    callInitialSearchOrFilterServiceWithClearedData = async (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) => {
         debugger
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, });
+        if (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) {
+            this.props.navigation.setParams({ 'conditionFromFilterPage': false });
+            this.conditionFromFilterPage = false;
+        }
         this.isEnabledLoadMoreData = true;
         this.incrementPaginationCount = 0;
         this.onEndReachedIsTriggedFromRenderDateList = false;
@@ -117,11 +117,7 @@ class DoctorList extends Component {
         this.docInfoAndAvailableSlotsMapByDoctorId.clear();
         await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props;
         await this.searchByDoctorDetails();
-        debugger
-
         this.setState({ isLoading: false, renderRefreshCount: this.state.renderRefreshCount + 1 });
-        debugger
-
     }
 
     navigateToFilters() {
@@ -147,21 +143,11 @@ class DoctorList extends Component {
             type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
             data: []
         });
-        if (!this.conditionFromFilterPage) {
-            await store.dispatch(
-                {
-                    type: SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER,
-                    data: false
-                },
-            );
-        }
-
     }
     searchByDoctorDetails = async () => {
         try {
             const { bookAppointmentData: { getPreviousDocListWhenClearFilter } } = this.props;
             const { searchedInputTextValue, searchedInputPinCodeValue } = this.state;
-            debugger
             let type;
             let reqData4ServiceCall = {}
             if (searchedInputPinCodeValue) {
@@ -170,7 +156,6 @@ class DoctorList extends Component {
             if (!this.conditionFromFilterPage && searchedInputTextValue) {
                 reqData4ServiceCall.inputText = searchedInputTextValue
             }
-            debugger
             if (this.conditionFromFilterPage && !getPreviousDocListWhenClearFilter) {
                 type = 'filter';
                 reqData4ServiceCall = { ...reqData4ServiceCall, ...this.selectedDataFromFilterPage }
@@ -183,13 +168,13 @@ class DoctorList extends Component {
             }
             debugger
             console.log('type=====>', type);
-            console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
+            // console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
             const docListResponse = await searchByHomeHealthcareDocDetailsService(type, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
             debugger
             if (docListResponse.success) {
                 debugger
-                console.log(' this.incrementPaginationCount===>', this.incrementPaginationCount)
+                // console.log(' this.incrementPaginationCount===>', this.incrementPaginationCount)
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
                 const searchedDoctorIdsArray = [];
                 const docListData = docListResponse.data || [];
@@ -254,13 +239,15 @@ class DoctorList extends Component {
 
     onChangeInputTextValue = async (enteredText) => {
         await this.setState({ searchedInputTextValue: enteredText });
-        this.incrementPaginationCount = 0;
         this.callGetDocListService();  // Call the search list API with Debounce method
     }
 
     callGetDocListService = async () => {
         try {
             this.isEnabledLoadMoreData = true;
+            this.incrementPaginationCount = 0;
+            this.conditionFromFilterPage = false;
+            this.selectedDataFromFilterPage = null;
             this.setState({ isLoadingOnChangeDocList: true })
             await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props
             this.docInfoAndAvailableSlotsMapByDoctorId.clear();
@@ -280,7 +267,6 @@ class DoctorList extends Component {
     }
     onChangeInputPinCodeValue = async (enteredPinCode) => {
         await this.setState({ searchedInputPinCodeValue: enteredPinCode });
-        this.incrementPaginationCount = 0;
         this.callGetDocListService();  // Call the search list API with Debounce method
     }
 
