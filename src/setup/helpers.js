@@ -301,6 +301,11 @@ export const notificationNavigation = {
   {
     navigationOption: 'LabAppointmentInfo'
   },
+  "HOME_TEST_APPOINTMENT":
+  {
+    navigationOption: 'HomeHealthcareAppointmentDetail'
+  },
+  
 }
 
 

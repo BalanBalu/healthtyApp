@@ -40,10 +40,12 @@ class AppointmentDetails extends PureComponent {
         const { navigation } = this.props;
         const appointmentData = navigation.getParam('data');
         if (appointmentData == undefined) {
-            const appointmentId = navigation.getParam('appointmentId');
-            await this.setState({ appointmentId: appointmentId });
+            const appointmentId = navigation.getParam('serviceId');
+            console.log("appointmentId", appointmentId);
+
+            await this.setState({ appointmentId });
             await new Promise.all([
-                this.appointmentDetailsGetById(),
+                this.appointmentDetailsGetById(appointmentId),
                 this.getUserReport(),
                 this.getUserReviews(),
 
@@ -141,9 +143,9 @@ class AppointmentDetails extends PureComponent {
     }
     getUserReviews = async () => {
         try {
-            let reviewResult = await viewUserReviews('appointment', this.state.appointmentId,'?skip=0')
+            let reviewResult = await viewUserReviews('appointment', this.state.appointmentId, '?skip=0')
             console.log("reviewResult", reviewResult);
-            
+
             if (reviewResult.success) {
                 this.setState({ reviewData: reviewResult.data });
             }
@@ -197,10 +199,12 @@ class AppointmentDetails extends PureComponent {
     }
 
 
-    appointmentDetailsGetById = async () => {
+    appointmentDetailsGetById = async (appointmentId) => {
         try {
             this.setState({ isLoading: true })
-            let result = await getHomeTestappointmentByID(this.state.appointmentId);
+            let result = await getHomeTestappointmentByID(appointmentId);
+            console.log("result", result);
+
             if (result.success) {
                 await this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
                     await new Promise.all([
@@ -521,7 +525,7 @@ class AppointmentDetails extends PureComponent {
                                                 </View>}
                                         </Col>
                                     </Row>
-                                    { reviewData.length !== 0 ?
+                                    {reviewData.length !== 0 ?
 
                                         <Row style={styles.rowSubText}>
                                             <Col style={{ width: '8%', paddingTop: 5 }}>

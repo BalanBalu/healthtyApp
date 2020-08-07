@@ -81,9 +81,11 @@ class Hospitals extends PureComponent {
         const { haspitalValue, index } = this.selectedHospitalsForBooking;
         this.setState({ expandData: index })
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
+        let category_id = this.props.navigation.getParam('category_id') || null
         let slotData = {
             fee: 200,
             slotStartDateAndTime: date,
+            category_id:category_id,
             slotEndDateAndTime: addTimeUnit(date, 30, 'minutes'),
             booked_for:'HOSPITAL',
             location:{
