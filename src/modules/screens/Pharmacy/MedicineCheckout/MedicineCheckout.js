@@ -463,7 +463,6 @@ class MedicineCheckout extends Component {
     render() {
         const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, prescriptionDetails, isH1Product, h1ProductData } = this.state
 
-
         return (
             <Container style={{ flex: 1 }}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
@@ -510,7 +509,7 @@ class MedicineCheckout extends Component {
                                                     keyExtractor={(item, index) => index.toString()}
                                                     renderItem={({ item }) =>
                                                         <View style={{ backgroundColor: '#fff' }}>
-                                                            <Row style={{ borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 5, marginLeft: 5, justifyContent: 'center' }}>
+                                                            <Row style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 5, marginLeft: 5, justifyContent: 'center',borderBottomColor:'gray' }}>
                                                                 <Col size={1} style={{ justifyContent: 'center' }}>
                                                                     <Radio
                                                                         standardStyle={true}
@@ -666,26 +665,26 @@ class MedicineCheckout extends Component {
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
                                     <Row style={{ marginTop: 10 }}>
-                                        <Col size={8}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{item.file_name}
-
+                                        <Col size={9}>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>
+                                                {item.file_name}
                                             </Text>
                                         </Col>
 
-                                        <Col size={3} style={{justifyContent: 'flex-end'}}>
+                                        <Col size={1} style={{justifyContent: 'flex-end',alignItems:'flex-end'}}>
                                             <Icon onPress={() => this.delete(index)} name={IS_IOS ? 'ios-close-circle' : 'md-close-circle'}
-                                                style={{ color: 'red', fontSize: 15 }} />
+                                                style={{ color: 'red', fontSize: 20 }} />
                                         </Col>
                                     </Row>
                                 } />
-                            <Button transparent onPress={() => this.setState({ isH1Product: true })}>
-                                <Icon name='add' style={{ color: 'gray' }} />
+                            <TouchableOpacity  onPress={() => this.setState({ isH1Product: true })} style={{flexDirection:'row',marginTop:10}}>
+                                <Icon name='add' style={{ color: 'gray',fontSize: 20 }} />
                                 <Text uppercase={false} style={styles.customText}>Add More Prescription</Text>
-                            </Button>
+                            </TouchableOpacity>
                         </View>
-                        : null
+                         : null
 
-                    }
+                    } 
 
                     <AwesomeAlert
                         show={false}
@@ -757,19 +756,23 @@ class MedicineCheckout extends Component {
                 </Content>
                 <Footer style={
                     Platform.OS === "ios" ?
-                        { height: 30 } : { height: 45 }}>
+                        { height: 40 } : { height: 45 }}>
                     <FooterTab>
                         <Row>
-                            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
+                            <Col size={5} style={{ backgroundColor: '#fff' }}>
+                                <Row style={{alignItems: 'center', justifyContent: 'center', }}>
                                 <TouchableOpacity style={styles.buttonTouch} onPress={() => this.processToPayLater()} >
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 0 ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
                                 </TouchableOpacity>
+                                </Row>
                             </Col>
                             {isPrescription === false ?
-                                <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                    <TouchableOpacity style={styles.buttonTouch1} onPress={() => this.onProceedToPayment(true)}>
+                                <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
+                                    <Row style={{alignItems: 'center', justifyContent: 'center', }}>
+                                    <TouchableOpacity style={styles.buttonTouch} onPress={() => this.onProceedToPayment(true)}>
                                         <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                     </TouchableOpacity>
+                                    </Row>
                                 </Col> : null}
                         </Row>
                     </FooterTab>
@@ -839,7 +842,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontFamily: 'OpenSans',
         fontSize: 13,
-        marginTop: 3,
+        marginTop: 2,
         color: 'gray'
     },
     customSubText: {
@@ -873,21 +876,12 @@ const styles = StyleSheet.create({
     },
     buttonTouch: {
         flexDirection: 'row',
-        paddingTop: 4,
-        paddingBottom: 15,
-        paddingLeft: 25,
-        paddingRight: 20,
-        borderRadius: 10
+        borderRadius: 10,
+        width:'100%',
+        justifyContent:'center',
+        alignItems:'center'
     },
-    buttonTouch1: {
-
-        flexDirection: 'row',
-        paddingTop: 4,
-        paddingBottom: 15,
-        paddingLeft: 50,
-        paddingRight: 50,
-        borderRadius: 10
-    },
+ 
 });
 
 
