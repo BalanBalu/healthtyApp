@@ -187,6 +187,8 @@ class DoctorList extends Component {
                 const activeSponsorDocIdsArry = [];
                 const docListData = docListResponse.data || [];
                 docListData.map(item => {
+                    item.specialist = item.specialistInfo;
+                    delete item.specialistInfo;
                     const doctorIdHostpitalId = item.hospitalInfo.doctorIdHostpitalId;
                     item.doctorIdHostpitalId = doctorIdHostpitalId;
                     if (!this.totalSearchedDoctorIdsArray.includes(item.doctor_id)) {
