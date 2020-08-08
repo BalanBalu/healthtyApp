@@ -4,9 +4,36 @@ import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Le
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import StarRating from 'react-native-star-rating';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, TextInput } from 'react-native';
+import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import styles from './styles'
 
 
+const RenderNoAppointmentsFounds = (props) => {
+    return (
+        <Card transparent style={{
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "20%"
+        }}>
+            <Thumbnail
+                square
+                source={noAppointmentImage}
+                style={{ height: 100, width: 100, marginTop: "10%" }}
+            />
+            <Text style={{
+                fontFamily: "OpenSans",
+                fontSize: 15,
+                marginTop: "10%"
+            }}>{props.text}
+            </Text>
+            <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
+                <Button style={[styles.bookingButton, styles.customButton]} testID='navigateToHome'>
+                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
+                </Button>
+            </Item>
+        </Card>
+    )
+}
 const RenderAddressInfo = (props) => {
     return (
         props.addressInfo ?
@@ -154,5 +181,6 @@ export {
     RenderPriceDetails,
     RenderOfferDetails,
     RenderAddressInfo,
-    RenderEditingPincode
+    RenderEditingPincode,
+    RenderNoAppointmentsFounds
 }

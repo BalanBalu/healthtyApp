@@ -94,6 +94,18 @@ export function getMoment(date) {
 export function getUnixTimeStamp(date) {
   return moment(date).unix();
 }
+export function setCurrentISOTime4GivenDate(date) {
+  let currentTime = new Date();
+  const splitByDate = date.split("-");
+  currentTime.setDate(splitByDate[2]);
+  currentTime.setMonth(splitByDate[1]);
+  currentTime.setYear(splitByDate[0]);
+  const isoDateAndTime = currentTime.toISOString();
+  return isoDateAndTime;
+}
+
+
+
 export function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
@@ -171,12 +183,12 @@ export function getAllId(data) {
 
   let dataIds = [];
   data.map((element, index) => {
-    if(element.doctor_id){
-    if (!dataIds.includes(element.doctor_id)) {
-   
-      dataIds.push(element.doctor_id)
+    if (element.doctor_id) {
+      if (!dataIds.includes(element.doctor_id)) {
+
+        dataIds.push(element.doctor_id)
+      }
     }
-  }
 
 
   })
@@ -305,7 +317,7 @@ export const notificationNavigation = {
   {
     navigationOption: 'HomeHealthcareAppointmentDetail'
   },
-  
+
 }
 
 

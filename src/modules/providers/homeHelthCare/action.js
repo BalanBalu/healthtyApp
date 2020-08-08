@@ -1,9 +1,9 @@
 import { postService, getService, putService } from '../../../setup/services/httpservices';
 
-export async function getAppointment4Healthcare(userId, filters, isLoading = true) {
+export async function serviceOfGetHealthcareAppointmentList(userId, reqQueryData) {
     try {
-        let endPoint = 'home_healthcare/appointment/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;;
-        if (filters.reviewInfo) {
+        let endPoint = 'home_healthcare/appointment/user/' + userId + '?startDate=' + reqQueryData.startDate + '&endDate=' + reqQueryData.endDate;;
+        if (reqQueryData.reviewInfo) {
             endPoint = endPoint + '&reviewInfo=1'
         }
         const response = await getService(endPoint);

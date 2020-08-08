@@ -5,7 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import styles from '../Styles'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
-import { dateDiff } from '../../../../setup/helpers';
+import { formatDate } from '../../../../setup/helpers';
 import { renderDoctorImage, getDoctorEducation, getDoctorSpecialist, getUserGenderAndAge } from '../../../common';
 import Spinner from '../../../../components/Spinner';
 import { SERVICE_TYPES } from '../../../../setup/config';
@@ -197,7 +197,24 @@ class HomeTestConfirmation extends Component {
                                 </View>
                                 : null}
                         </View>
-
+                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                            <Row>
+                                <Col size={4}>
+                                    <Text style={styles.subHead}>Appointment Date</Text>
+                                </Col>
+                                <Col size={6}>
+                                    <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
+                                        <Icon name="md-calendar" style={{ fontSize: 15, color: '#0054A5' }} />
+                                        <Text style={{
+                                            marginLeft: 4,
+                                            fontFamily: 'OpenSans',
+                                            color: '#0054A5',
+                                            fontSize: 13,
+                                        }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotDate, 'Do MMMM, YYYY')}</Text>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </View>
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                             <Row>
                                 <Col size={3}>
