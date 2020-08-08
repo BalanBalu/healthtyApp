@@ -1159,8 +1159,11 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
         subMenus: [
           {
             name: 'Home Health Care',
-            routeName: drawerNavigatorRoutes["Home Health Care"].routeName,
+            routeName: 'Categories', // drawerNavigatorRoutes["Home Health Care"].routeName,
             icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+            params: { 
+                fromNavigation:"HOME_HEALTH_CARE" 
+            }
 
           },
           {

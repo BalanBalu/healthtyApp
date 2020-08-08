@@ -283,18 +283,19 @@ export default styles = StyleSheet.create({
         fontSize: 13,
     },
     editPincodeButton: {
-        paddingBottom: 1,
-        paddingTop: 1,
-        paddingLeft: 2,
-        paddingRight: 2,
         borderColor: '#ff4e42',
         borderWidth: 1,
-        borderRadius: 2
+        alignItems: 'center',
+        alignSelf: 'center',
+        padding: 5,
+        borderRadius: 5
     },
     showingDoctorText: {
         fontFamily: 'OpenSans',
         color: '#000',
         fontSize: 13,
+        marginTop: 5 
+       
     },
     specialismInput: {
         backgroundColor: '#fff',

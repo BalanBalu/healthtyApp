@@ -134,7 +134,13 @@ async getBasicData() {
                    renderItem={({ item }) =>
                       <ListItem style={{borderBottomWidth:0,   backgroundColor: '#FFF'  }}
                             small
-                            onPress={() => this.props.navigation.navigate(item.routeName)}>
+                            onPress={() => { 
+                              if(item.params) {
+                                this.props.navigation.navigate(item.routeName, { ...item.params })
+                              } else {  
+                                this.props.navigation.navigate(item.routeName)}
+                              }
+                            }>
                             <Image square source={item.icon} 
                               style={{ height: 20, width: 20,}}
                             />  
