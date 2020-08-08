@@ -11,7 +11,8 @@ export default class RenderSlots extends Component {
         super(props)
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.shouldUpdate !== this.props.shouldUpdate;
+        if(nextProps.shouldUpdate == this.props.shouldUpdate) return false
+        return true
     }
 
     render() {
