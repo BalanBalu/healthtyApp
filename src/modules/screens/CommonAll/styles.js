@@ -306,7 +306,32 @@ export default styles = StyleSheet.create({
         borderLeftWidth: 1,
         borderRightWidth: 1
     },
-
+    customButton: {
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 12,
+        backgroundColor: "#775DA3",
+        marginLeft: 15,
+        borderRadius: 10,
+        width: "auto",
+        height: 40,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center",
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    bookingButton: {
+        marginTop: 10,
+        backgroundColor: "#775DA3",
+        marginRight: 1,
+        borderRadius: 10,
+        width: "auto",
+        height: 30,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center"
+    }
 })
 
 

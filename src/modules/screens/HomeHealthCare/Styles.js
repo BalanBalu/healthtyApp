@@ -76,32 +76,6 @@ export default styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold'
     },
-    bookingButton: {
-        marginTop: 10,
-        backgroundColor: "#775DA3",
-        marginRight: 1,
-        borderRadius: 10,
-        width: "auto",
-        height: 30,
-        color: "white",
-        fontSize: 12,
-        textAlign: "center"
-    },
-    customButton: {
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 12,
-        backgroundColor: "#775DA3",
-        marginLeft: 15,
-        borderRadius: 10,
-        width: "auto",
-        height: 40,
-        color: "white",
-        fontSize: 12,
-        textAlign: "center",
-        marginLeft: "auto",
-        marginRight: "auto"
-    },
     bookAgain1: {
         fontSize: 13,
         fontFamily: 'OpenSans',
@@ -490,17 +464,7 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontWeight: 'bold'
     },
-    bookingButton: {
-        marginTop: 10,
-        backgroundColor: "#775DA3",
-        marginRight: 1,
-        borderRadius: 10,
-        width: "auto",
-        height: 30,
-        color: "white",
-        fontSize: 12,
-        textAlign: "center"
-    },
+
     appoinmentPrepareStyle2: {
         backgroundColor: "#775DA3",
         paddingTop: 8,
@@ -711,7 +675,7 @@ export default styles = StyleSheet.create({
     enabledBookingAvailableBtn: {
         alignItems: 'center', borderRadius: 10, backgroundColor: 'green'
     },
-    
+
     subTextBilling: {
         fontFamily: 'Opensans',
         fontSize: 12,
@@ -754,5 +718,11 @@ export default styles = StyleSheet.create({
         borderRadius: 10,
         paddingRight: 10,
         marginTop: 15
-      },
+    },
+    appointmentDateStyle: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        color: '#0054A5',
+        marginLeft: 5
+    },
 });
