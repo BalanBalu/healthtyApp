@@ -2,7 +2,7 @@ import React from 'react';
 import {
   AsyncStorage, Text, View
 } from 'react-native';
-import { setUserLocally } from '../../modules/providers/auth/auth.actions';
+import { setUserLocally, APP_LOADED } from '../../modules/providers/auth/auth.actions';
 import { store } from '../store';
 import SplashScreen from 'react-native-splash-screen';
 class AuthLoadingScreen extends React.Component {
@@ -22,6 +22,9 @@ class AuthLoadingScreen extends React.Component {
     }
     this.props.navigation.navigate(token ? 'App' : 'App');
     SplashScreen.hide();
+    store.dispatch({
+      type: APP_LOADED
+    })
   };
 
 
