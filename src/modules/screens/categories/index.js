@@ -26,7 +26,7 @@ class Categories extends Component {
   }
   getCatagries = async () => {
     try {
-      let result = await catagries();
+      let result = await catagries('services=0');
       if (result.success) {
         this.setState({ data: result.data, categoriesMain: result.data })
         for (let i = 0; i < result.data.length; i++) {

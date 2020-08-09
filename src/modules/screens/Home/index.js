@@ -213,11 +213,19 @@ class Home extends Component {
 
     getCatagries = async () => {
         try {
-            const searchQueris = 'services=0&skip=0&limit=9';
+            const searchQueris = 'services=0';
             let result = await catagries(searchQueris);
 
             if (result.success) {
-                this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
+                 let data = [];   
+                 result.data.some((ele, index) => {
+                    if(index < 9) {
+                        data.push(ele);  
+                    } else {
+                        return true
+                    } 
+                 });   
+                this.setState({ catagary: data, categryCount: this.state.categryCount + 1 })
             }
         } catch (e) {
             console.log(e);
