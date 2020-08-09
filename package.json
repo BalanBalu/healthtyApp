@@ -58,6 +58,7 @@
     "react-native-sectioned-multi-select": "^0.7.6",
     "react-native-segmented-control-tab": "^3.4.1",
     "react-native-sound": "^0.11.0",
+    "react-native-splash-screen": "^3.2.0",
     "react-native-star-rating": "^1.1.0",
     "react-native-svg": "^12.1.0",
     "react-native-swiper": "^1.6.0",
