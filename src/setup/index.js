@@ -24,6 +24,7 @@ YellowBox.ignoreWarnings([
 ]);
 import { setI18nConfig, translate  } from './translator.helper';
 import * as RNLocalize from "react-native-localize";
+import OfflineNotice from '../components/offlineNotice';
 
 
 
@@ -127,10 +128,12 @@ export default class App extends Component {
       <Provider store={store} key="provider">
         <Root>
         <VideoAlertModel> </VideoAlertModel>
+        
           <StyleProvider style={getTheme(material)}>
               <RoutesHome ref={NavigationService.navigationRef}> 
             </RoutesHome> 
           </StyleProvider>
+          <OfflineNotice/>
         </Root>
       </Provider>
     )

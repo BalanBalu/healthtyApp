@@ -22,8 +22,6 @@ const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
 const hospitalLogoImg = require('../../../../assets/images/hospital.png');
 const publicForum = require('../../../../assets/images/public_forum.png');
 const hospitalImg = require('../../../../assets/images/hospitalimg.jpg');
-
-import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
 import { CallService, CallKeepService } from '../VideoConsulation/services';
@@ -393,7 +391,7 @@ class Home extends Component {
         return (
 
             <Container style={styles.container}>
-                <OfflineNotice />
+               
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
