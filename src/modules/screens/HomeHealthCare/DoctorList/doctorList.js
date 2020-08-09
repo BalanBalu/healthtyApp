@@ -423,7 +423,6 @@ class DoctorList extends Component {
         doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
         doctorData.doctorId = doctorData.doctor_id;
         const isoFormatOfSelectedDate = setCurrentISOTime4GivenDate(selectedSlotItemByDoctor.slotDate);  // send only selected slot date and get with ISO format;
-        alert(isoFormatOfSelectedDate);
         selectedSlotItemByDoctor.slotDate = isoFormatOfSelectedDate;
         const confirmSlotDetails = { ...doctorData, slotData: selectedSlotItemByDoctor };
         this.props.navigation.navigate('HomeHealthcareConfirmation', { resultconfirmSlotDetails: confirmSlotDetails })

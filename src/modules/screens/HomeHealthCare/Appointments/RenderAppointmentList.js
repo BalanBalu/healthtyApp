@@ -21,7 +21,7 @@ export default class RenderAppointmentList extends Component {
     render() {
         const { appointmentData: { item, selectedIndex, index, navigation }, onPressNavigateToInsertReviewPage, onPressGoToBookAppointmentPage } = this.props;
         return (
-            <Card transparent style={styles.cardStyle}>
+            <Card transparent style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
                 <TouchableOpacity onPress={() =>
                     navigation.navigate("HomeHealthcareAppointmentDetail", {
                         data: item.appointmentResult, selectedIndex

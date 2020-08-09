@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, ListItem, Card, Thumbnail, List, Item, Input, Left, Right, Icon } from 'native-base';
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking, ActivityIndicator } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import styles from '../Styles'
@@ -13,7 +13,8 @@ import { getMultipleDoctorDetails } from "../../../providers/bookappointment/boo
 import InsertReview from '../Reviews/insertReviews';
 import { RenderNoAppointmentsFounds } from '../../CommonAll/components';
 import RenderAppointmentList from './RenderAppointmentList';
-
+import { fetchDocHomeHealthcareAvailabilitySlotsService } from '../../../providers/BookAppointmentFlow/action';
+const PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST = 8;
 const DOCTOR_FIELDS = "specialist,education,prefix,profile_image,gender";
 export default class AppointmentList extends Component {
     constructor(props) {
@@ -26,26 +27,34 @@ export default class AppointmentList extends Component {
             pastData: [],
             isVisibleAddReviewPop: false,
             reviewData: {},
+            isLoadingMoreAppList: false
         }
+        this.isCalledScrollBegin = true;
+        this.incrementPaginationCount = 0;
     }
     async componentDidMount() {
+        this.setState({ isLoading: true });
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate("login");
             return;
         }
         await this.getUpComingAppointmentList();
+        this.setState({ isLoading: false });
     }
 
 
     pageRefresh = async (navigationData) => {
         if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
+                this.incrementPaginationCount = 0;
+                this.setState({ isLoading: true });
                 if (this.state.selectedIndex == 0) {
                     await this.getUpComingAppointmentList();
                 } else {
                     await this.getPastAppointmentList();
                 }
+                this.setState({ isLoading: false });
             }
         }
 
@@ -53,10 +62,12 @@ export default class AppointmentList extends Component {
 
     getUpComingAppointmentList = async () => {
         try {
-            this.setState({ isLoading: true });
             const reqQueryData = {
                 startDate: new Date().toISOString(),
                 endDate: addTimeUnit(new Date(), 1, "years").toISOString(),
+                limit: PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST,
+                skip: this.incrementPaginationCount,
+                sort: 1
             };
             await this.setUpComingAndPastDataListByCommon(reqQueryData);
         } catch (Ex) {
@@ -68,17 +79,16 @@ export default class AppointmentList extends Component {
                 message: `Exception while getting getUpComingAppointmentList for Patient : ${Ex.message}`
             }
         }
-        finally {
-            this.setState({ isLoading: false });
-        }
     }
 
     getPastAppointmentList = async () => {
         try {
-            this.setState({ isLoading: true })
             const reqQueryData = {
                 startDate: subTimeUnit(new Date(), 1, "years").toISOString(),
                 endDate: subTimeUnit(new Date(), 1, 'days').toISOString(),
+                limit: PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST,
+                skip: this.incrementPaginationCount,
+                sort: -1,
                 reviewInfo: true
             };
             await this.setUpComingAndPastDataListByCommon(reqQueryData);
@@ -91,13 +101,9 @@ export default class AppointmentList extends Component {
                 message: `Exception while getting getPastAppointmentList for Patient : ${Ex.message}`
             }
         }
-        finally {
-            this.setState({ isLoading: false });
-        }
     }
     setUpComingAndPastDataListByCommon = async (reqQueryData) => {
         try {
-            this.setState({ isLoading: true });
             const userId = await AsyncStorage.getItem("userId");
             let appointmentListResp = await serviceOfGetHealthcareAppointmentList(userId, reqQueryData);
             if (appointmentListResp.success) {
@@ -146,7 +152,7 @@ export default class AppointmentList extends Component {
                 }
             }
             else {
-                this.setState({ data: [] });
+                this.setState({});
             }
         } catch (Ex) {
             console.log('Ex is getting on set UpComingAndPastDataList By Common  for Patient====>', Ex.message)
@@ -160,7 +166,8 @@ export default class AppointmentList extends Component {
     }
 
     onChangeUpComingOrPastTabs = async (index) => {
-        await this.setState({ selectedIndex: index });
+        this.incrementPaginationCount = 0;
+        await this.setState({ selectedIndex: index, isLoading: true });
         if (index === 0 && !this.state.upComingData.length) {
             await this.getUpComingAppointmentList();
         } else if (index === 1 && !this.state.pastData.length) {
@@ -169,6 +176,7 @@ export default class AppointmentList extends Component {
         else {
             await this.setState({ data: index === 0 ? this.state.upComingData : this.state.pastData });
         }
+        this.setState({ isLoading: false });
     }
 
     onPressNavigateToInsertReviewPage(item, index) {
@@ -177,82 +185,125 @@ export default class AppointmentList extends Component {
 
     insertReviewPopVisible = async (data) => {
         this.setState({ isVisibleAddReviewPop: false });
-        if (data.updatedVisible == true) await this.getPastAppointmentList();
+        if (data.updatedVisible == true) {
+            this.incrementPaginationCount = 0;
+            await this.getPastAppointmentList();
+        }
     }
     onPressGoToBookAppointmentPage = () => {
         console.log('Need to Implement===>')
     }
     renderAppointmentList(item, index) {
         return (
-            <View>
-                <RenderAppointmentList
-                    appointmentData={{ item, index, selectedIndex: this.state.selectedIndex, navigation: this.props.navigation }}
-                    onPressNavigateToInsertReviewPage={(item, index) => { this.onPressNavigateToInsertReviewPage(item, index) }}
-                    onPressGoToBookAppointmentPage={(item) => { this.onPressGoToBookAppointmentPage(item) }}
-                // shouldUpdate={`${item}`}
-                >
-                </RenderAppointmentList>
-            </View>
+            <RenderAppointmentList
+                appointmentData={{ item, index, selectedIndex: this.state.selectedIndex, navigation: this.props.navigation }}
+                onPressNavigateToInsertReviewPage={(item, index) => { this.onPressNavigateToInsertReviewPage(item, index) }}
+                onPressGoToBookAppointmentPage={(item) => { this.onPressGoToBookAppointmentPage(item) }}
+            // shouldUpdate={`${item}`}
+            >
+            </RenderAppointmentList>
         )
     }
 
 
+    renderFooter() {
+        return (
+            <View >
+                {this.state.isLoadingMoreAppList ?
+                    <ActivityIndicator animating={true}
+                        size="large"
+                        color="green" />
+                    : null}
+            </View>
+        );
+    }
+
+
+    loadMoreData = async () => {
+        try {
+            this.isCalledScrollBegin = true;
+            this.setState({ isLoadingMoreAppList: true });
+            console.log('incrementPaginationCount===>', this.incrementPaginationCount)
+            this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST;
+            if (this.state.selectedIndex === 0) await this.getUpComingAppointmentList()
+            else await this.getPastAppointmentList();
+        } catch (error) {
+            console.log("Ex is getting on load more doctor ist data", error.message);
+        }
+        finally {
+            this.setState({ isLoadingMoreAppList: false })
+        }
+    }
     render() {
         const { data, reviewData, selectedIndex, isVisibleAddReviewPop, isLoading } = this.state;
         return (
-            <Container>
-                <Content style={{ margin: 10 }}>
-                    <NavigationEvents
-                        onWillFocus={payload => { this.pageRefresh(payload) }}
-                    />
-                    <Card transparent>
-                        <SegmentedControlTab
-                            tabsContainerStyle={{
-                                width: 250,
-                                marginLeft: "auto",
-                                marginRight: "auto",
-                                marginTop: "auto"
-                            }}
-                            values={["Upcoming", "Past"]}
-                            selectedIndex={selectedIndex}
-                            onTabPress={this.onChangeUpComingOrPastTabs}
-                            activeTabStyle={{
-                                backgroundColor: "#775DA3",
-                                borderColor: "#775DA3"
-                            }}
-                            tabStyle={{ borderColor: "#775DA3" }} />
-                    </Card>
-                    <View style={{ marginTop: 5 }}>
-                        {isLoading == true ?
-                            (
-                                <Spinner
-                                    color="blue"
-                                    style={[styles.containers, styles.horizontal]}
-                                    visible={true}
-                                    size={"large"}
-                                    overlayColor="none"
-                                    cancelable={false}
-                                />
-                            ) :
-                            (!data.length ? (
-                                < RenderNoAppointmentsFounds text={"No Appointments are scheduled !"} />
-                            ) :
-                                <FlatList
-                                    data={data}
-                                    renderItem={({ item, index }) => this.renderAppointmentList(item, index)}
-                                    keyExtractor={(item, index) => index.toString()}
-                                />
-                            )}
-                        {isVisibleAddReviewPop === true ?
-                            <InsertReview
-                                props={this.props}
-                                data={reviewData}
-                                popupVisible={(data) => this.insertReviewPopVisible(data)}
+            <View style={{
+                backgroundColor: "#ffffff",
+                margin: 10
+            }}>
+                <NavigationEvents
+                    onWillFocus={payload => { this.pageRefresh(payload) }}
+                />
+                <Card transparent>
+                    <SegmentedControlTab
+                        tabsContainerStyle={{
+                            width: 250,
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            marginTop: "auto"
+                        }}
+                        values={["Upcoming", "Past"]}
+                        selectedIndex={selectedIndex}
+                        onTabPress={this.onChangeUpComingOrPastTabs}
+                        activeTabStyle={{
+                            backgroundColor: "#775DA3",
+                            borderColor: "#775DA3"
+                        }}
+                        tabStyle={{ borderColor: "#775DA3" }} />
+                </Card>
+                <View style={{ marginTop: 5 }}>
+                    {isLoading == true ?
+                        (
+                            <Spinner
+                                color="blue"
+                                style={[styles.containers, styles.horizontal]}
+                                visible={true}
+                                size={"large"}
+                                overlayColor="none"
+                                cancelable={false}
                             />
-                            : null}
-                    </View>
-                </Content>
-            </Container>
+                        ) :
+                        (!data.length ? (
+                            < RenderNoAppointmentsFounds text={"No Appointments are scheduled !"} />
+                        ) :
+                            (<FlatList
+                                data={data}
+                                extraData={data}
+                                ListFooterComponent={this.renderFooter.bind(this)}
+                                onEndReached={() => {
+                                    if (!this.isCalledScrollBegin) {
+                                        this.loadMoreData();
+                                    }
+                                }}
+                                onEndReachedThreshold={0.5}
+                                onMomentumScrollBegin={() => { this.isCalledScrollBegin = false; }}
+                                renderItem={({ item, index }) => this.renderAppointmentList(item, index)}
+                                keyExtractor={(item, index) => index.toString()}
+                            />)
+                        )}
+                    {/* <ActivityIndicator animating={true}
+                        size="large"
+                        color="green" />
+                  */}
+                </View>
+                {isVisibleAddReviewPop === true ?
+                    <InsertReview
+                        props={this.props}
+                        data={reviewData}
+                        popupVisible={(data) => this.insertReviewPopVisible(data)}
+                    />
+                    : null}
+            </View>
         )
     }
 }
