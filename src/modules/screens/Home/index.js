@@ -22,8 +22,6 @@ const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
 const hospitalLogoImg = require('../../../../assets/images/hospital.png');
 const publicForum = require('../../../../assets/images/public_forum.png');
 const hospitalImg = require('../../../../assets/images/hospitalimg.jpg');
-
-import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
 import { CallService, CallKeepService } from '../VideoConsulation/services';
@@ -215,11 +213,19 @@ class Home extends Component {
 
     getCatagries = async () => {
         try {
-            const searchQueris = 'services=0&skip=0&limit=9';
+            const searchQueris = 'services=0';
             let result = await catagries(searchQueris);
 
             if (result.success) {
-                this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
+                 let data = [];   
+                 result.data.some((ele, index) => {
+                    if(index < 9) {
+                        data.push(ele);  
+                    } else {
+                        return true
+                    } 
+                 });   
+                this.setState({ catagary: data, categryCount: this.state.categryCount + 1 })
             }
         } catch (e) {
             console.log(e);
@@ -393,7 +399,7 @@ class Home extends Component {
         return (
 
             <Container style={styles.container}>
-                <OfflineNotice />
+               
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}

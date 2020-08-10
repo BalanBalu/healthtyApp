@@ -297,7 +297,7 @@ class labSearchList extends Component {
                     // selectedDate={selectedDate}
                     slotData={slotsData}
                     labId={labId}
-                    shouldUpdate={`${labId}-${selectedSlotIndex}`}
+                    shouldUpdate={`${labId}-${selectedSlotIndex}-${this.selectedDateObj[labId]}`}
                     onSlotItemPress={(labId, selectedSlot, selectedSlotIndex) => this.onSlotItemPress(labId, selectedSlot, selectedSlotIndex)}
                 >
                 </RenderSlots>
@@ -655,7 +655,7 @@ class labSearchList extends Component {
                                     <Col style={{ width: '55%', flexDirection: 'row', marginLeft: 5, }} onPress={() => this.topRatingLabs(labListItemData)}>
                                         <Row>
                                             <Col style={{ width: '15%' }}>
-                                                <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
+                                                <Icon name={labListOrder === 'ASC' ? 'ios-arrow-down' : 'ios-arrow-up'} style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
                                             </Col>
                                             <Col style={{ width: '85%' }}>
                                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>

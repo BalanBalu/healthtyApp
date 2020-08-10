@@ -42,7 +42,7 @@ class LabConfirmation extends Component {
             isCorporateUser: false,
             selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
             familyMembersSelections: [],
-            selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ],
+            selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
         };
 
     }
@@ -54,7 +54,7 @@ class LabConfirmation extends Component {
             return
         }
         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
-        this.setState({ isCorporateUser  });
+        this.setState({ isCorporateUser });
         console.log('packageDetails', this.state.packageDetails);
         await this.getUserProfile();
     }
@@ -67,7 +67,7 @@ class LabConfirmation extends Component {
         }
     }
 
-   
+
     getUserProfile = async () => {
         try {
             this.setState({ isLoading: true });
@@ -111,7 +111,7 @@ class LabConfirmation extends Component {
         addressType = { addressType: addressType, mobile_no: this.state.mobile_no, full_name: this.state.full_name }
         this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType: addressType })
     }
-   
+
     addPatientData = async (patDetails) => {
         const patientDetails = patDetails.map(ele => {
             const othersDetailsObj = {
@@ -120,13 +120,13 @@ class LabConfirmation extends Component {
                 age: parseInt(ele.age),
                 gender: ele.gender
             }
-            return othersDetailsObj 
+            return othersDetailsObj
         })
         await this.setState({ patientDetails, updateButton: false, errMsg: '' });
     }
     amountPaid() {
         const { packageDetails, patientDetails, itemSelected } = this.state;
-       
+
         if (packageDetails.fee != undefined) {
             if (itemSelected == 'TEST_AT_HOME') {
                 totalAmount = ((packageDetails.fee * patientDetails.length) + (packageDetails.extra_charges))
@@ -333,13 +333,25 @@ class LabConfirmation extends Component {
             this.setState({ isLoading: false });
         }
     }
-   
+
     handleDatePicked = date => {
         const { packageDetails: { selectedSlotItem: { slotEndDateAndTime, slotStartDateAndTime } } } = this.state;
+        const currentDate = new Date();
         const startDate = new Date(slotStartDateAndTime);//setDateTime(slotStartDateAndTime, date);
         const endDate = new Date(slotEndDateAndTime);// setDateTime(slotEndDateAndTime, date);
         date = setDateTime(slotStartDateAndTime, date)
+        const crossedDate = date <= currentDate;
         const valid = startDate <= date && endDate >= date;
+        if (date <= currentDate) {
+            Toast.show({
+                text: 'Your selected time is not valid, Please try again',
+                duration: 2000,
+                type: 'danger'
+            });
+            this.setState({ isTimePickerVisible: false });
+            return;
+
+        }
         if (valid === false) {
             Toast.show({
                 text: 'Please choose the time between ' + getTimeWithMeredian(startDate) + ' and ' + getTimeWithMeredian(endDate),
@@ -375,12 +387,12 @@ class LabConfirmation extends Component {
         const { patientDetails, itemSelected, packageDetails, patientAddress, buttonEnable, isCorporateUser } = this.state;
 
         return (
-          <Container>
+            <Container>
                 <NavigationEvents
                     onWillFocus={payload => { this.backNavigation(payload); }}
                 />
-            <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
-                <LabHeader packageDetails={packageDetails}
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
+                    <LabHeader packageDetails={packageDetails}
                         onDatePickerPressed={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })}
                         hideStartDatePlaceholder={this.state.startDatePlaceholder}
                         minimumDate={this.state.packageDetails && this.state.packageDetails.selectedSlotItem && new Date(this.state.packageDetails.selectedSlotItem.slotStartDateAndTime)}
@@ -389,49 +401,49 @@ class LabConfirmation extends Component {
                         isVisible={this.state.isTimePickerVisible}
                         onTimeConfirm={this.handleDatePicked}
                         onTimePickerCancel={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })}
-                />
+                    />
 
-                <PayBySelection
-                    isCorporateUser={isCorporateUser}
-                    selectedPayBy={this.state.selectedPayBy}
-                    onSelectionChange={(mode)=> {
-                        this.addPatientData(this.selfPatientData); 
-                        this.setState({ selectedPayBy: mode, selectedPatientTypes: [ POSSIBLE_FAMILY_MEMBERS.SELF ], familyMembersSelections: [] });
-                    }}/>
+                    <PayBySelection
+                        isCorporateUser={isCorporateUser}
+                        selectedPayBy={this.state.selectedPayBy}
+                        onSelectionChange={(mode) => {
+                            this.addPatientData(this.selfPatientData);
+                            this.setState({ selectedPayBy: mode, selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF], familyMembersSelections: [] });
+                        }} />
 
 
-                <TestDetails
-                    isCorporateUser={isCorporateUser}
-                    navigation={this.props.navigation}
-                    singlePatientSelect={false}
-                    familyMembersSelections={this.state.familyMembersSelections}
-                    selectedPatientTypes={this.state.selectedPatientTypes}
-                    familyDetailsData={this.state.patientDetails}
-                    payBy={this.state.selectedPayBy}
-                    changeFamilyMembersSelections={(familyMemberSelections) => this.setState({familyMembersSelections: familyMemberSelections }) }
-                    onSelectionChange={(patientTypes) => {
-                        this.setState( { selectedPatientTypes: patientTypes })
-                    }}
-                    addPatientDetails={(data, setSelfPatientData) => { 
-                        if(setSelfPatientData === true) {
-                            this.selfPatientData = data
-                        }
-                        this.addPatientData(data);
-                    }}/>            
+                    <TestDetails
+                        isCorporateUser={isCorporateUser}
+                        navigation={this.props.navigation}
+                        singlePatientSelect={false}
+                        familyMembersSelections={this.state.familyMembersSelections}
+                        selectedPatientTypes={this.state.selectedPatientTypes}
+                        familyDetailsData={this.state.patientDetails}
+                        payBy={this.state.selectedPayBy}
+                        changeFamilyMembersSelections={(familyMemberSelections) => this.setState({ familyMembersSelections: familyMemberSelections })}
+                        onSelectionChange={(patientTypes) => {
+                            this.setState({ selectedPatientTypes: patientTypes })
+                        }}
+                        addPatientDetails={(data, setSelfPatientData) => {
+                            if (setSelfPatientData === true) {
+                                this.selfPatientData = data
+                            }
+                            this.addPatientData(data);
+                        }} />
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Row size={12}>
-                            
-                            <Col size={5} style={{ flexDirection: 'row'  }}>
+
+                            <Col size={5} style={{ flexDirection: 'row' }}>
                                 <Radio
                                     standardStyle={true}
                                     selected={itemSelected === 'TEST_AT_LAP' ? true : false}
                                     onPress={() => this.setState({ itemSelected: 'TEST_AT_LAP' })} />
-                                
+
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500', paddingTop: 2, paddingLeft: 5 }}>Test at Lab</Text>
-                            
+
                             </Col>
-                            
+
                             <Col size={5} style={{ flexDirection: 'row' }}>
                                 <Radio
                                     standardStyle={true}
@@ -439,22 +451,22 @@ class LabConfirmation extends Component {
                                     onPress={() => this.setState({ itemSelected: 'TEST_AT_HOME' })} />
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500', paddingTop: 2, paddingLeft: 5 }}>Test at home </Text>
                             </Col>
-                            
-                            <Col size={2}/>
+
+                            <Col size={2} />
 
 
-                            
-                            
+
+
                         </Row>
                     </View>
                     {itemSelected === 'TEST_AT_HOME' ?
                         <PatientAddress
                             patientAddress={patientAddress}
-                            onPressAddNewAddress={() =>  this.editProfile('MapBox', 'lab_delivery_Address')}   
+                            onPressAddNewAddress={() => this.editProfile('MapBox', 'lab_delivery_Address')}
                             selectedAddress={this.state.selectedAddress}
-                            onChangeAddress={(item)=> this.setState({ selectedAddress: item })}
+                            onChangeAddress={(item) => this.setState({ selectedAddress: item })}
                         />
-                       : null}
+                        : null}
 
                     {itemSelected === 'TEST_AT_LAP' ?
                         <View>
@@ -469,7 +481,7 @@ class LabConfirmation extends Component {
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(packageDetails.location)}</Text>
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (packageDetails.mobile_no || 'Nil')}</Text>
                         </View> :
-                    null }
+                        null}
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Package Details</Text>
@@ -496,8 +508,8 @@ class LabConfirmation extends Component {
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹{packageDetails.extra_charges ? packageDetails.extra_charges : 0}</Text>
                                 </Col>
-                            </Row> 
-                        : null}
+                            </Row>
+                            : null}
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '500' }}>Amount to be Paid</Text>
@@ -516,28 +528,28 @@ class LabConfirmation extends Component {
                         { height: 30 } : { height: 45 }}>
                     <FooterTab>
                         <Row>
-                         {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ? 
-                          <>
-                            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
-                                    this.validateAppointment('cash') : this.proceedToLabTestAppointment('cash')}>
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
-                                </TouchableOpacity>
-                            </Col>
-                            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
-                                    this.validateAppointment('online') : this.proceedToLabTestAppointment('online')}>
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
-                                </TouchableOpacity>
-                            </Col>
-                           </> : 
-                            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f'  }}>
-                                <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
-                                    this.validateAppointment('cash') : this.proceedToLabTestAppointment('cash')}>
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>{'Book Appointment'} </Text>
-                                </TouchableOpacity>
-                            </Col>
-                        }
+                            {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ?
+                                <>
+                                    <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
+                                        <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
+                                            this.validateAppointment('cash') : this.proceedToLabTestAppointment('cash')}>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
+                                        </TouchableOpacity>
+                                    </Col>
+                                    <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
+                                        <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
+                                            this.validateAppointment('online') : this.proceedToLabTestAppointment('online')}>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
+                                        </TouchableOpacity>
+                                    </Col>
+                                </> :
+                                <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
+                                    <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
+                                        this.validateAppointment('cash') : this.proceedToLabTestAppointment('cash')}>
+                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>{'Book Appointment'} </Text>
+                                    </TouchableOpacity>
+                                </Col>
+                            }
                         </Row>
                     </FooterTab>
                 </Footer>

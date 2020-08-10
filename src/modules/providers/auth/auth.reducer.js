@@ -2,7 +2,7 @@
 import { store} from '../../../setup/store';
 import {
   SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD,
-  REDIRECT_NOTICE, RESET_REDIRECT_NOTICE
+  REDIRECT_NOTICE, RESET_REDIRECT_NOTICE,APP_LOADED
 } from './auth.actions';
 
 // Initial State
@@ -16,7 +16,8 @@ export const userInitialState = {
   isPasswordChanged: false,
   redirectNotice: {},
   needToRedirect: false,
-  isOTPGenerated: false
+  isOTPGenerated: false,
+  appLoaded: false
 }
 // State
 export default (state = userInitialState, action) => {
@@ -99,7 +100,11 @@ export default (state = userInitialState, action) => {
       }
     case LOGOUT:
       return userInitialState;
-        
+    case APP_LOADED: 
+        return {
+          ...state,
+          appLoaded: true
+        }    
       
   
 

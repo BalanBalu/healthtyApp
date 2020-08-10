@@ -27,7 +27,7 @@ class LabCategories extends PureComponent {
       if (!isLocationSelected) {
         Alert.alert(
           "Location Warning",
-          "The Location is Not choose, To continue Please choose your Location",
+          "Please select the location to continue...!",
           [
             { text: "Cancel" },
             {
@@ -58,7 +58,7 @@ class LabCategories extends PureComponent {
     if (!isLocationSelected) {
       Alert.alert(
         "Location Warning",
-        "The Location is Not choose, To continue Please choose your Location",
+        "Please select the location to continue...!",
         [
           { text: "Cancel" },
           {

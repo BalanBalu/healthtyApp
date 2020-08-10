@@ -16,7 +16,7 @@ import {
     fetchDocHomeHealthcareAvailabilitySlotsService,
     getFavoriteListCount4PatientService,
 } from '../../../providers/BookAppointmentFlow/action';
-import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
+import { formatDate, addMoment, getMoment, setCurrentISOTime4GivenDate } from '../../../../setup/helpers';
 import { Loader } from '../../../../components/ContentLoader';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
@@ -422,6 +422,8 @@ class DoctorList extends Component {
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
         doctorData.doctorId = doctorData.doctor_id;
+        const isoFormatOfSelectedDate = setCurrentISOTime4GivenDate(selectedSlotItemByDoctor.slotDate);  // send only selected slot date and get with ISO format;
+        selectedSlotItemByDoctor.slotDate = isoFormatOfSelectedDate;
         const confirmSlotDetails = { ...doctorData, slotData: selectedSlotItemByDoctor };
         this.props.navigation.navigate('HomeHealthcareConfirmation', { resultconfirmSlotDetails: confirmSlotDetails })
     }
