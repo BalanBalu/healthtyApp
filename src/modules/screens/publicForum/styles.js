@@ -14,7 +14,7 @@ export default StyleSheet.create({
   {
     color: '#000',
     fontFamily: 'OpenSans',
-    fontSize: 12
+    fontSize: 14
   },
   transparentLabel1:
   {
@@ -24,7 +24,7 @@ export default StyleSheet.create({
     height: 30,
     borderRadius: 2,
     fontFamily: 'OpenSans',
-    fontSize: 12
+    fontSize: 14
   },
   footerStyle: {
     backgroundColor: '#fff',
@@ -33,20 +33,20 @@ export default StyleSheet.create({
   },
   symptomsText: {
     fontFamily: 'OpenSans',
-    fontSize: 12
+    fontSize: 14
   },
   answerText: {
     textAlign: 'right',
     color: '#7F49C3',
-    fontSize: 10
+    fontSize: 12
   },
   dateText: {
     fontFamily: 'OpenSans',
-    fontSize: 10,
+    fontSize: 12,
   },
   descriptionText: {
     fontFamily: 'OpenSans',
-    fontSize: 10,
+    fontSize: 12,
     color: '#909090',
     marginTop: 8
   },
@@ -127,7 +127,7 @@ export default StyleSheet.create({
     borderRadius: 5,
     borderWidth: 0.5,
     height: 35,
-    fontSize: 12,
+    fontSize: 14,
     textAlignVertical: 'top',
     width: '60%',
     padding: 10,
@@ -143,7 +143,7 @@ export default StyleSheet.create({
     borderRadius: 5,
     borderWidth: 0.5,
     height: 100,
-    fontSize: 12,
+    fontSize: 14,
     textAlignVertical: 'top',
     width: '60%',
     padding: 10,
@@ -169,12 +169,12 @@ export default StyleSheet.create({
   },
   pageCountText: {
     color: '#7F49C3',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold'
   },
   NameText: {
     fontFamily: 'OpenSans',
-    fontSize: 10,
+    fontSize: 12,
     color: '#909090'
   },
 })
