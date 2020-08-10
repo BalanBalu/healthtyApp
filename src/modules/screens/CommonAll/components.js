@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import StarRating from 'react-native-star-rating';
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, TextInput } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, TextInput,Platform } from 'react-native';
 import styles from './styles'
 
 
@@ -143,10 +143,10 @@ const RenderEditingPincode = (props) => {
             <Col size={7.5} style={{ borderColor: 'gray', borderWidth: 0.5 }}>
                 <TextInput
                     placeholder='Enter PinCode'
-                    style={{ fontSize: 12, textAlign: 'center', justifyContent: 'center', alignContent: 'center', alignSelf: 'center' }}
+                    style={ Platform.OS === "ios" ?{ fontSize: 12, marginLeft: 5, borderRadius: 5,marginTop:9  } :
+                    {fontSize: 12, marginLeft: 5, borderRadius: 5, textAlign: 'center', justifyContent: 'center', alignContent: 'center', alignSelf: 'center' }}
                     keyboardType="numeric"
                     maxLength={7}
-                    style={{ fontSize: 12, marginLeft: 5, borderRadius: 5, }}
                     placeholderTextColor="#C1C1C1"
                     returnKeyType={'go'}
                     autoFocus={true}
@@ -157,7 +157,7 @@ const RenderEditingPincode = (props) => {
             </Col>
             <Col size={2}>
                 <TouchableOpacity style={{ paddingBottom: 10, paddingTop: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: 'green', borderRadius: 3, alignItems: 'center', marginLeft: 5 }} onPress={() => props.onPressEditButton()}>
-                    <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 12, textAlign: 'center' }}>Apply</Text>
+                    <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 12, textAlign: 'center',fontWeight:'bold' }}>Apply</Text>
                 </TouchableOpacity>
             </Col>
         </Row>
