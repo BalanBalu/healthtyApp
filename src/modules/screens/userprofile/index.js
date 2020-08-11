@@ -33,8 +33,8 @@ class Profile extends Component {
             file_name: '',
             isLoading: false,
             selectOptionPoopup: false,
-            is_blood_donor: false
-
+            is_blood_donor: false,
+            family_members: []
         };
 
     }
@@ -68,7 +68,7 @@ class Profile extends Component {
             let result = await fetchUserProfile(userId, fields);
             console.log("result", result)
             if (result) {
-                this.setState({ data: result, is_blood_donor: result.is_blood_donor });
+                this.setState({ data: result, is_blood_donor: result.is_blood_donor, family_members: result.family_members });
                 storeBasicProfile(result);
 
                 if (result.profile_image) {
@@ -101,7 +101,8 @@ class Profile extends Component {
         const userId = await AsyncStorage.getItem('userId')
         try {
             let requestData = {
-                is_blood_donor: this.state.is_blood_donor
+                is_blood_donor: this.state.is_blood_donor,
+                family_members: this.state.family_members
             };
             let response = await userFiledsUpdate(userId, requestData);
             if (this.state.data.address !== undefined) {
@@ -288,10 +289,15 @@ class Profile extends Component {
         }
     }
 
+    removeSelected = async (index) => {
+        let temp = this.state.family_members;
+        temp.splice(index, 1);
+        this.setState({ family_members: temp, updateButton: false });
+    }
 
     render() {
         const { profile: { isLoading } } = this.props;
-        const { data, imageSource } = this.state;
+        const { data, imageSource, family_members } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -449,10 +455,10 @@ class Profile extends Component {
                                     <Text style={styles.customText}>Family details</Text>
 
                                     <FlatList
-                                        data={data.family_members}
-                                        renderItem={({ item }) =>
+                                        data={family_members}
+                                        renderItem={({ item,index }) =>
                                             <View>
-                                             
+
                                                 <Row style={{ marginTop: 10, }}>
                                                     <Col size={8}>
                                                         <Row>
@@ -462,15 +468,20 @@ class Profile extends Component {
                                                             <Col size={.5}>
                                                                 <Text note style={styles.customText1}>-</Text>
                                                             </Col>
-                                                            <Col size={7}>
+                                                            <Col size={6}>
                                                                 <Text note style={styles.customText1}>{item.name}</Text>
 
                                                             </Col>
                                                         </Row>
                                                     </Col>
-                                                    <Col size={0.5}>
+                                                    <Col size={1}>
                                                         <TouchableOpacity onPress={() => this.editProfile('UpdateFamilyMembers')}>
                                                             <Icon active name="create" style={{ color: 'black', fontSize: 20, marginRight: 5 }} />
+                                                        </TouchableOpacity>
+                                                    </Col>
+                                                    <Col size={0.5}>
+                                                        <TouchableOpacity onPress={() => this.removeSelected(index)}>
+                                                            <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 18 }} />
                                                         </TouchableOpacity>
                                                     </Col>
                                                 </Row>
@@ -512,7 +523,7 @@ class Profile extends Component {
                                         } />
                                     <Button transparent>
                                         <Icon name='add' style={{ color: 'gray' }} />
-                                        <Text uppercase={false} style={styles.customText2} onPress={() => this.props.navigation.navigate('UpdateFamilyMembers')} testID="onPressAddFamilyMembers">Add your family details</Text>
+                                        <Text uppercase={false} style={styles.customText2} onPress={() => this.editProfile('UpdateFamilyMembers')} testID="onPressAddFamilyMembers">Add your family details</Text>
                                     </Button>
                                 </Body>
 
@@ -696,9 +707,9 @@ class Profile extends Component {
                                         renderItem={({ item }) => (
                                             <ListItem avatar noBorder>
                                                 <Left>
-                                                    <TouchableOpacity style={{paddingRight:5,paddingBottom:5,paddingTop:5,}} onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item.doctorInfo), title: 'Profile photo' })}>
-                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60, borderRadius: 60 }} />
-                                                   </TouchableOpacity>
+                                                    <TouchableOpacity style={{ paddingRight: 5, paddingBottom: 5, paddingTop: 5, }} onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item.doctorInfo), title: 'Profile photo' })}>
+                                                        <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60, borderRadius: 60 }} />
+                                                    </TouchableOpacity>
                                                 </Left>
                                                 <Body>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, width: '100%' }}>{item.doctorInfo.prefix ? item.doctorInfo.prefix + '.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
