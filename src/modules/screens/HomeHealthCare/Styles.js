@@ -522,7 +522,7 @@ export default styles = StyleSheet.create({
     },
     filterCol: {
         flexDirection: 'row',
-        borderLeftColor: '#909090',
+        borderLeftColor: '#909498',
         borderLeftWidth: 0.3
     },
     filterIcon: {
@@ -625,6 +625,7 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         marginTop: 5,
         fontSize: 11,
+        color:'#909498'
     },
     changeText: {
         fontFamily: 'OpenSans',
@@ -690,7 +691,7 @@ export default styles = StyleSheet.create({
     specialist: {
         fontSize: 12,
         fontFamily: 'OpenSans',
-        color: '#909090'
+        color: '#909498'
     },
     rupeesText: {
         fontSize: 10,
@@ -705,7 +706,7 @@ export default styles = StyleSheet.create({
         color: 'red'
     },
     textInput: {
-        borderColor: 'gray',
+        borderColor: '#909498',
         borderRadius: 10,
         borderWidth: 0.5,
         height: 100,
