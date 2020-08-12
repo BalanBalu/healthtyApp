@@ -164,7 +164,6 @@ class PublicForumDetail extends PureComponent {
                                         placeholderTextColor="#696969"
                                         keyboardType={'default'}
                                         returnKeyType={'go'}
-                                        autoFocus={true}
                                         value={answer_text}
                                         onChangeText={text => {
                                             this.hasWhiteSpaceAnswerText(text);
@@ -177,7 +176,7 @@ class PublicForumDetail extends PureComponent {
                                 <View style={styles.borderView}>
                                     {isLoading ? <ActivityIndicator /> :
                                         <View>
-                                            <Text style={{ color: '#7F49C3', fontSize: 12, fontFamily: 'OpenSans', }}>{item.answersData.length} answers</Text>
+                                            <Text style={{ color: '#7F49C3', fontSize: 14, fontFamily: 'OpenSans', }}>{item.answersData.length} answers</Text>
                                             <FlatList
                                                 data={item.answersData}
                                                 keyExtractor={(item, index) => index.toString()}

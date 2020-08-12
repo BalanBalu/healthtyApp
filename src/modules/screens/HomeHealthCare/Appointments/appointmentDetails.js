@@ -129,7 +129,10 @@ class AppointmentDetails extends PureComponent {
 
     insertReviewPopVisible = async (data) => {
         this.setState({ isVisibleAddReviewPop: false });
-        if (data.updatedVisible == true) await this.getUserReviews();
+        if (data.updatedVisible == true) {
+            await this.getUserReviews();
+            this.props.navigation.setParams({ 'isEnablePageRefresh4HomeAppointmentList': true });
+        }
     }
     onPressUpdateAppointmentStatus = async (data, updatingStatus) => {
         try {
@@ -143,7 +146,6 @@ class AppointmentDetails extends PureComponent {
                 status_by: 'USER'
             };
             const updateResp = await updateDocHomeTestappointment(data._id, reqAppointmentData);
-            alert(JSON.stringify(updateResp));
             if (updateResp.success) {
                 const baCupOfAppointmentData = this.state.data;
                 baCupOfAppointmentData.appointment_status = updateResp.appointmentData.appointment_status;
@@ -155,6 +157,7 @@ class AppointmentDetails extends PureComponent {
                     this.setState({ isVisibleProposePop: false });
                 }
                 await this.setState({ data: baCupOfAppointmentData });
+                this.props.navigation.setParams({ 'isEnablePageRefresh4HomeAppointmentList': true });
             }
         }
         catch (e) {
@@ -206,6 +209,7 @@ class AppointmentDetails extends PureComponent {
             this.state.data.prefix = this.state.doctorData.prefix;
             await this.setState({ isVisibleProposePop: false });
             this.props.navigation.navigate('Home Healthcare Cancel Appointment', { appointmentDetail: this.state.data });
+            this.props.navigation.setParams({ 'isEnablePageRefresh4HomeAppointmentList': true });
         }
         catch (e) {
             console.log(e)

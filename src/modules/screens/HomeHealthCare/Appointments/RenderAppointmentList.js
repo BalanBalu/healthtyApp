@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon, Right } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import StarRating from "react-native-star-rating";
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { renderDoctorImage, getName, getUserLocation } from '../../../common';
 import { formatDate, statusValue } from "../../../../setup/helpers";
 import styles from '../Styles'
@@ -20,6 +20,7 @@ export default class RenderAppointmentList extends Component {
 
     render() {
         const { appointmentData: { item, selectedIndex, index, navigation }, onPressNavigateToInsertReviewPage, onPressGoToBookAppointmentPage } = this.props;
+        console.log('Rendering Appointment list =====>')
         return (
             <Card transparent style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
                 <TouchableOpacity onPress={() =>

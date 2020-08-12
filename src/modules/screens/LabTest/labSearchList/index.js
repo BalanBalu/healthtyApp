@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Form, CheckBox, Picker, Item, List, ListItem, Left, Thumbnail, Icon, Right } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, Modal } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, ScrollView, Image, Modal,Dimensions } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
 import { enumerateStartToEndDates } from '../../CommonAll/functions'
@@ -825,15 +825,15 @@ class labSearchList extends Component {
                                                                     <Text style={styles.innerTexts}>{this.state.minPrice}</Text>
                                                                 </TouchableOpacity>
                                                             </Col>
-                                                            <Col size={8} style={{ marginTop: -12, marginLeft: 8 }}>
+                                                            <Col size={8} style={{ marginTop: -12, marginLeft: 20 }}>
                                                                 <MultiSlider
                                                                     values={[this.state.minPrice, this.state.maxPrice]}
-                                                                    sliderLength={275}
+                                                                    sliderLength={Dimensions.get('window').width - 160}
                                                                     onValuesChange={(value) => this.multiSliderValuesChange(value)}
                                                                     min={this.minPrice || 0}
                                                                     max={this.maxPrice || 0}
                                                                     step={this.priceTagStep}
-                                                                    touchDimensions={{ height: 50, width: 50, borderRadius: 15, slipDisplacement: 200 }}
+                                                                    touchDimensions={{ height: 100, width: 100, borderRadius: 15, slipDisplacement: 200 }}
                                                                     customMarkerRight={(e) => {
                                                                         return (<CustomSliderMarkerRight
                                                                             currentValue={e.currentValue} />)

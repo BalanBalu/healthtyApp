@@ -337,10 +337,10 @@ class LabConfirmation extends Component {
     handleDatePicked = date => {
         const { packageDetails: { selectedSlotItem: { slotEndDateAndTime, slotStartDateAndTime } } } = this.state;
         const currentDate = new Date();
-        const startDate = new Date(slotStartDateAndTime);//setDateTime(slotStartDateAndTime, date);
+        let startDate = new Date(slotStartDateAndTime);//setDateTime(slotStartDateAndTime, date);
         const endDate = new Date(slotEndDateAndTime);// setDateTime(slotEndDateAndTime, date);
         date = setDateTime(slotStartDateAndTime, date)
-        const crossedDate = date <= currentDate;
+        startDate =  currentDate > startDate ? currentDate : startDate;
         const valid = startDate <= date && endDate >= date;
         if (date <= currentDate) {
             Toast.show({

@@ -38,7 +38,9 @@ class OfflineNotice extends React.PureComponent {
       if(store.getState().user.appLoaded) {
         this.setState({ connectionStatus: "Online" })
         setTimeout(() => {
-          this.setState({ connectionStatus: "" })
+          if(this.state.connectionStatus === 'Online') {
+            this.setState({ connectionStatus: "" })
+          }
         }, 2000);
       }
     }
@@ -48,10 +50,12 @@ class OfflineNotice extends React.PureComponent {
   };
 
   render() {
+   
     const { connectionStatus } = this.state;
+    console.log('Rending with connecttion Status', connectionStatus);
     if (connectionStatus == 'Offline') return <RenderOffline />
-    if (connectionStatus == 'Online') return <RenderOnline />
-    return null
+    else if (connectionStatus == 'Online') return <RenderOnline />
+    else return null
   }
 }
 const styles = StyleSheet.create({

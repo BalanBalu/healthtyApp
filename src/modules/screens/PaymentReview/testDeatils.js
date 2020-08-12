@@ -61,7 +61,7 @@ class TestDetails extends PureComponent {
             if (patInfoResp.employee_code) {
                 let result = await getCorporateUserFamilyDetails(patInfoResp.employee_code)
                 let benificeryDetailsResult=await getPolicYDetailsByid(patInfoResp.corporate_user_id)
-                console.log(JSON.stringify(benificeryDetailsResult[0]))
+                console.log(JSON.stringify('benificeryDetailsResult===> ', benificeryDetailsResult[0]))
                 if(result&&result[0]){
                     let temp=[];
                     result.forEach(element => {
@@ -299,7 +299,7 @@ class TestDetails extends PureComponent {
                         </Col>
                         : null}
                 </Row>
-                {isCorporateUser && payBy !== POSSIBLE_PAY_METHODS.SELF ?
+                {isCorporateUser && payBy !== POSSIBLE_PAY_METHODS.SELF && data.benefeciaryUserDeails ?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
                         <TouchableOpacity style={styles.benefeciaryButton} onPress={() => {
@@ -346,7 +346,7 @@ class TestDetails extends PureComponent {
         const { isCorporateUser, payBy, onSelectionChange,selectedPatientTypes, familyDetailsData,singlePatientSelect  } = this.props;
 
         const { name, age, gender,onlyFamilyWithPayDetailsData ,data} = this.state
-   
+        const familyData = payBy === POSSIBLE_PAY_METHODS.INSURANCE ? data.familyDataByInsurance : data.familyDataByCorporate
       
      
         return (
@@ -379,8 +379,11 @@ class TestDetails extends PureComponent {
                     
                     {isCorporateUser && this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) === true ? 
                         <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
+                           {familyData.length !== 0 ?
+                           <> 
                             {singlePatientSelect ?
-                            <Radio
+                             
+                              <Radio
                                 standardStyle={true}
                                 selected={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ? true : false}
                                 onPress={() => onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)} />
@@ -396,6 +399,8 @@ class TestDetails extends PureComponent {
                             />
                             }
                             <Text style={[styles.commonText, { marginLeft: 5 }]}>Family </Text>
+                           </>
+                            : null }
                         </View> 
                     : null }
 
@@ -527,6 +532,7 @@ class TestDetails extends PureComponent {
 
                     <View style={{ marginTop: 10 }}>
                         {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ?
+                            
                             <View>
                                 <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                                 <FlatList
