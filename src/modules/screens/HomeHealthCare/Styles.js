@@ -76,11 +76,6 @@ export default styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold'
     },
-    bookAgain1: {
-        fontSize: 13,
-        fontFamily: 'OpenSans',
-        fontWeight: 'bold'
-    },
     bodyContent: {
         padding: 5
     },
@@ -724,5 +719,16 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         color: '#0054A5',
         marginLeft: 5
+    },
+    bookingButton: {
+        marginTop: 10,
+        backgroundColor: "#775DA3",
+        marginRight: 1,
+        borderRadius: 10,
+        width: "auto",
+        height: 30,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center"
     },
 });

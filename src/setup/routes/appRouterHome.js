@@ -174,129 +174,129 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Home',
       header: (
-        
+
         <View
-        style={{
-          height: IS_ANDROID ?  60 : 90,
-          backgroundColor: '#7F49C3',
-          justifyContent: 'center',
-        }}>
-         <View
           style={{
-            marginTop: IS_ANDROID ? 0 : 30,
-            height: 60,
-            justifyContent:'center',
+            height: IS_ANDROID ? 60 : 90,
+            backgroundColor: '#7F49C3',
+            justifyContent: 'center',
           }}>
-          <Row  size={12} style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
-            <Col size={10} style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
-                <Image
-                  style={{ marginLeft: 18, tintColor: '#fff' }}
-                  source={menuIcon}
-               />
-               </TouchableOpacity>
-               <TouchableOpacity style={{flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
+          <View
+            style={{
+              marginTop: IS_ANDROID ? 0 : 30,
+              height: 60,
+              justifyContent: 'center',
+            }}>
+            <Row size={12} style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+              <Col size={10} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
+                  <Image
+                    style={{ marginLeft: 18, tintColor: '#fff' }}
+                    source={menuIcon}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
                   <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
-                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems:  'flex-start', marginRight: 15 }}>
-                    <TextTicker style={{  marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={3000} 
-                        loop 
-                        bounce 
-                        repeatSpacer={50} 
-                        marqueeDelay={1000}>
+                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
+                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={3000}
+                      loop
+                      bounce
+                      repeatSpacer={50}
+                      marqueeDelay={1000}>
                       {navigation.getParam('appBar', { locationName: ' ' }).locationName}
                     </TextTicker>
-                    <TextTicker style={{  alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2  }} duration={3000} 
-                        loop 
-                        bounce 
-                        repeatSpacer={200} 
-                        marqueeDelay={1000}>
-                      
+                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }} duration={3000}
+                      loop
+                      bounce
+                      repeatSpacer={200}
+                      marqueeDelay={1000}>
+
                       {navigation.getParam('appBar', { locationCapta: 'Searching Near by Hospitals' }).locationCapta}
-                    
+
                     </TextTicker>
-                    
-                   
+
+
                   </View>
-              </TouchableOpacity>
-            </Col>
-           
-            <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
-              <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
-                <View>
-                  <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                </TouchableOpacity>
+              </Col>
+
+              <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
+                <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
+                  <View>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
                       <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
-                </View>
-              </TouchableOpacity>
-            </Col>         
-            {Platform.OS != "ios" ?
-            <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
-              <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
-            </TouchableOpacity> : null }
-          </Row>
-         
-       
+                  </View>
+                </TouchableOpacity>
+              </Col>
+              {Platform.OS != "ios" ?
+                <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+                  <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
+                </TouchableOpacity> : null}
+            </Row>
+
+
+          </View>
         </View>
-      </View>
-      
+
       ),
 
-    /*  headerLeft: (
-
-        
-        <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
-            <Image
-              style={{ marginLeft: 18, tintColor: '#fff' }}
-              source={menuIcon}
-            />
-          </TouchableOpacity>
-
-          <Row style={{ marginBottom: 5, marginTop: 5, marginLeft: 5 }}>
-            <Col size={10}>
-              <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
-                 
-                  <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>{navigation.getParam('appBar', { locationName: ' ' }).locationName}</Text>
-                  <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
-                </View>
-              </TouchableOpacity>
-              <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }}>{navigation.getParam('appBar', { locationCapta: 'You are searching Near by Hospitals' }).locationCapta}</Text>
-            </Col>
-          </Row>
-
-
-         </Row>
-      ),
-      headerRight: (
-
-        <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
-            <View>
-              <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
-              {navigation.getParam('notificationBadgeCount') != null ?
-                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
-                : null}
-              
-            </View>
-
-           
-          </TouchableOpacity>
-          {Platform.OS != "ios" ?
-            <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
-              <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
+      /*  headerLeft: (
+  
+          
+          <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
+              <Image
+                style={{ marginLeft: 18, tintColor: '#fff' }}
+                source={menuIcon}
+              />
             </TouchableOpacity>
-            :
-            null
-          }
-
-
-        </Row>
-
-
-
-      ), */
+  
+            <Row style={{ marginBottom: 5, marginTop: 5, marginLeft: 5 }}>
+              <Col size={10}>
+                <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                   
+                    <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>{navigation.getParam('appBar', { locationName: ' ' }).locationName}</Text>
+                    <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
+                  </View>
+                </TouchableOpacity>
+                <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }}>{navigation.getParam('appBar', { locationCapta: 'You are searching Near by Hospitals' }).locationCapta}</Text>
+              </Col>
+            </Row>
+  
+  
+           </Row>
+        ),
+        headerRight: (
+  
+          <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
+              <View>
+                <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                {navigation.getParam('notificationBadgeCount') != null ?
+                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
+                  : null}
+                
+              </View>
+  
+             
+            </TouchableOpacity>
+            {Platform.OS != "ios" ?
+              <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+                <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
+              </TouchableOpacity>
+              :
+              null
+            }
+  
+  
+          </Row>
+  
+  
+  
+        ), */
       headerStyle: {
         backgroundColor: '#7F49C3',
       },
@@ -620,13 +620,13 @@ const HomeStack = createStackNavigator({
     }
   },
 
-    //================  Appoinment Booking Through Hospitals ===============
-    Hospitals: {
-      screen: Hospitals,
-      navigationOptions: {
-        title: 'Hospital List'
-      }
-    },
+  //================  Appoinment Booking Through Hospitals ===============
+  Hospitals: {
+    screen: Hospitals,
+    navigationOptions: {
+      title: 'Hospital List'
+    }
+  },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -734,10 +734,10 @@ const HomeStack = createStackNavigator({
       title: 'Home Healthcare Confirmation'
     }
   },
-  'My Home Test Appointments': {
+  'My Home Healthcare Appointments': {
     screen: HomeHealthcareAppointmentList,
     navigationOptions: {
-      title: 'My Home Test Appointments'
+      title: 'My Home Healthcare Appointments'
     }
   },
   HomeHealthcareAppointmentDetail: {
@@ -1104,9 +1104,9 @@ const drawerNavigatorRoutes = {
     screen: LabAppointmentList,
     routeName: 'My Lab Test Appointments'
   },
-  'My Home Test Appointments': {
+  'My Home Healthcare Appointments': {
     screen: HomeHealthcareAppointmentList,
-    routeName: 'My Home Test Appointments'
+    routeName: 'My Home Healthcare Appointments'
   },
   "Medicine Orders": {
     screen: MyOrdersList,
@@ -1161,8 +1161,8 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'Home Health Care',
             routeName: 'Categories', // drawerNavigatorRoutes["Home Health Care"].routeName,
             icon: require('../../../assets/images/drawerIcons/homeTest.png'),
-            params: { 
-                fromNavigation:"HOME_HEALTH_CARE" 
+            params: {
+              fromNavigation: "HOME_HEALTH_CARE"
             }
 
           },
@@ -1204,8 +1204,8 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
           {
-            name: 'My Home Test Appointments',
-            routeName: drawerNavigatorRoutes["My Home Test Appointments"].routeName,
+            name: 'My Home Healthcare Appointments',
+            routeName: drawerNavigatorRoutes["My Home Healthcare Appointments"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
           {
@@ -1249,7 +1249,7 @@ export const DragwerLogos = {
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
   'My Lab Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
-  'My Home Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'My Home Healthcare Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
 
 }
 export default createAppContainer(createSwitchNavigator(

@@ -47,7 +47,6 @@ export default class AppointmentList extends Component {
     pageRefresh = async (navigationData) => {
         if (this.isCalledBackNavigation && navigationData.action) {
             if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
-                alert(navigationData.lastState && navigationData.lastState.params && navigationData.lastState.params.isEnablePageRefresh4HomeAppointmentList)
                 if (navigationData.lastState && navigationData.lastState.params && navigationData.lastState.params.isEnablePageRefresh4HomeAppointmentList) {
                     this.isEnabledLoadMoreData = true;
                     this.incrementPaginationCount = 0;
