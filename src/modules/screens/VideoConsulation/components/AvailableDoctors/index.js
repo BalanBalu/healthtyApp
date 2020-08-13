@@ -33,7 +33,8 @@ class AvailableDoctors4Video extends Component {
             descriptionVisible: false,
             description: '',
             serviceType: '',
-            bookDetails: {}
+            doctorId: '',
+            fees:''
         }
         this.bookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
@@ -194,14 +195,14 @@ class AvailableDoctors4Video extends Component {
                         });
                     }
                 } else {
-                    const bookDetails = {
-                        doctorId: doctorId,
-                        fee: amount,
-                        chatId: createChatResponse.conversation_id,
-                        amount: amount
-                    }
-                    await this.setState({ descriptionVisible: true, serviceType: SERVICE_TYPES.CHAT, bookDetails: bookDetails })
-
+                    this.props.navigation.navigate('paymentPage', {
+                        service_type: SERVICE_TYPES.CHAT,
+                        bookSlotDetails: {
+                            doctorId: doctorId,
+                            fee: amount,
+                            chatId: createChatResponse.conversation_id
+                        }, amount: amount
+                    });
                 }
             } else {
                 Toast.show({
@@ -269,13 +270,14 @@ class AvailableDoctors4Video extends Component {
                     console.log('AfterVIdeo Creating', response)
                 } else {
                     this.setState({ isLoading: false });
-                    const bookDetails = {
-                        doctorId: doctorId,
-                        fee: amount,
-                        consultationId: createVideoConsultingResponse.consultationId,
-                        amount: amount
-                    }
-                    await this.setState({ descriptionVisible: true, serviceType: SERVICE_TYPES.VIDEO_CONSULTING, bookDetails: bookDetails })
+                    this.props.navigation.navigate('paymentPage', { 
+                        service_type: SERVICE_TYPES.VIDEO_CONSULTING,
+                        bookSlotDetails: {
+                            doctorId : doctorId,
+                            fee: amount,
+                            consultationId: createVideoConsultingResponse.consultationId    
+                        }, amount: amount }
+                );
                 }
             } else {
                 this.setState({ isLoading: false });
@@ -380,10 +382,13 @@ class AvailableDoctors4Video extends Component {
         }
 
     }
+    descriptionModalOpen = async (doctorId, fee,serviceType) => {
+        await this.setState({descriptionVisible:true,doctorId:doctorId,fees:fee,serviceType:serviceType})
+    }
 
     descritionSubmission = async (serviceType) => {
-        const { bookDetails, description } = this.state
-        if (serviceType === "CHAT" && Object.keys(bookDetails).length != 0) {
+        const {  description,doctorId,fees } = this.state
+        if (serviceType === "CHAT" ) {
             if (description === '') {
                 Toast.show({
                     text: 'Kindly fill  the fields',
@@ -394,9 +399,9 @@ class AvailableDoctors4Video extends Component {
             else {
                 const createChatRequest = {
                     user_id: this.userId,
-                    doctor_id: bookDetails.doctorId,
+                    doctor_id: doctorId,
                     status: possibleChatStatus.PAYMENT_IN_PROGRESS,
-                    fee: bookDetails.fee,
+                    fee: fees,
                     status_by: 'USER',
                     statusUpdateReason: 'NEW CONVERSATION',
                     day: new Date().getDay(),
@@ -405,15 +410,8 @@ class AvailableDoctors4Video extends Component {
                 const createChatResponse = await createChat(createChatRequest)
                 this.setState({ isLoading: false });
                 if (createChatResponse.success) {
-                    this.props.navigation.navigate('paymentPage', {
-                        service_type: serviceType,
-                        bookSlotDetails: {
-                            doctorId: bookDetails.doctorId,
-                            fee: bookDetails.fee,
-                            chatId: bookDetails.chatId
-                        }, amount: bookDetails.amount
-                    });
-                    await this.setState({ descriptionVisible: false })
+                    await this.onBookButtonPress4PaymentChat(doctorId, fees)
+                    await this.setState({ descriptionVisible: false,description:'' })
                     Toast.show({
                         text: "Your reason posted successfully",
                         type: "success",
@@ -424,7 +422,7 @@ class AvailableDoctors4Video extends Component {
 
 
         }
-        if (serviceType === "VIDEO_CONSULTING" && Object.keys(bookDetails).length != 0) {
+        if (serviceType === "VIDEO_CONSULTING" ) {
             if (description === '') {
                 Toast.show({
                     text: 'Kindly fill  the fields',
@@ -435,26 +433,20 @@ class AvailableDoctors4Video extends Component {
             else {
                 const videoConsultRequest = {
                     user_id: this.userId,
-                    doctor_id: bookDetails.doctorId,
+                    doctor_id: doctorId,
                     status: POSSIBLE_VIDEO_CONSULTING_STATUS.PAYMENT_IN_PROGRESS,
-                    fee: bookDetails.fee,
+                    fee: fees,
                     status_by: 'USER',
                     statusUpdateReason: 'NEW VIDEO CONSULTATION',
+                    description:description
                 }
 
                 const createVideoConsultingResponse = await createVideoConsuting(videoConsultRequest)
+
                 this.setState({ isLoading: false });
                 if (createVideoConsultingResponse.success) {
-                    this.props.navigation.navigate('paymentPage', {
-                        service_type: serviceType,
-                        bookSlotDetails: {
-                            doctorId: bookDetails.doctorId,
-                            fee: bookDetails.fee,
-                            consultationId: bookDetails.consultationId
-                        }, amount: bookDetails.amount
-                    }
-                    );
-                    await this.setState({ descriptionVisible: false })
+                    await this.onBookButtonPress4PaymentVideo(doctorId,fees)
+                    await this.setState({ descriptionVisible: false,description:''})
                     Toast.show({
                         text: "Your reason posted successfully",
                         type: "success",
@@ -548,7 +540,7 @@ class AvailableDoctors4Video extends Component {
                             : null}
                         {item.availableForChat === true ?
                             <Col style={[isBothPremium ? { width: '25%' } : { width: '35%' }, { marginRight: 5 }]}>
-                                <TouchableOpacity onPress={() => this.onBookButtonPress4PaymentChat(item.doctor_id, item.chat_service_config.chat_fee)}
+                                <TouchableOpacity onPress={() => this.descriptionModalOpen(item.doctor_id, item.chat_service_config.chat_fee,SERVICE_TYPES.CHAT)}
                                     style={isBothPremium ? styles.ButtonStyle : isChatFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
                                     <Icon name="ios-chatboxes" style={!isBothPremium && isChatFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
                                     <Text style={isBothPremium && isChatFree ? styles.TextStyle : isChatFree ? styles.SponsorText : styles.TextStyle}>
@@ -559,7 +551,7 @@ class AvailableDoctors4Video extends Component {
 
                         {item.availableForVideo === true && item.hasCurrentlyAvailable === true ?
                             <Col style={isBothPremium ? { width: '25%' } : { width: '35%' }}>
-                                <TouchableOpacity onPress={() => this.onBookButtonPress4PaymentVideo(item.doctor_id, this.getVideoConsultFee(item))}
+                                <TouchableOpacity onPress={() => this.descriptionModalOpen(item.doctor_id, this.getVideoConsultFee(item),SERVICE_TYPES.VIDEO_CONSULTING)}
                                     style={isBothPremium ? styles.ButtonStyle : isVideoFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
                                     <Icon name="ios-videocam" style={!isBothPremium && isVideoFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
                                     <Text style={isBothPremium ? styles.TextStyle : isVideoFree ? styles.SponsorText : styles.TextStyle}>
