@@ -164,7 +164,12 @@ class PublicForum extends PureComponent {
                         </Form>
 
                     </View>
-
+                    {data.length === 0 ?
+							<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
+								<Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
+									No Questions 
+							</Text>
+							</View>:
                     <View style={{ flex: 1 ,marginTop:10}}>
                         <FlatList
                             data={data}
@@ -200,6 +205,7 @@ class PublicForum extends PureComponent {
                             }
                             keyExtractor={(item, index) => index.toString()} />
                     </View>
+    }
                 </View>
 
             </Container>

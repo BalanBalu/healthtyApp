@@ -114,8 +114,7 @@ class CancelService extends Component {
             cancelable={false}
           /> : null}
           <View style={{ marginBottom: 40, }}>
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>{type}</Text>
-
+            <Text style={{ fontFamily: 'OpenSans', fontSize: 18, textAlign: 'center', fontWeight: 'bold' }}>{type}</Text>
             <Form>
               <View >
                 <FlatList data={cancelReasonList}

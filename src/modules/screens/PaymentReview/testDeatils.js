@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import {  Text,  Radio,  Icon, Input, CheckBox } from 'native-base';
+import {  Text,  Radio,  Icon, Input, CheckBox, Right } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, AsyncStorage } from 'react-native';
 import {  FlatList } from 'react-native-gesture-handler';
@@ -244,13 +244,23 @@ class TestDetails extends PureComponent {
         const { isCorporateUser, payBy } = this.props;
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
-                <Row>
+               <Row>
+               {data.type === 'others' ?
+               <Right style={{marginTop:-10}}>
+                <TouchableOpacity onPress={() => this.onRemovePatientClicked(index)}>
+                     <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 25 }} />
+                </TouchableOpacity>
+               </Right>
+                        : null}
+               </Row>
+               <Row>
                     <Col size={5}>
                         <Text style={styles.NameText}>{data.full_name + (data.relation ? ` (${data.relation})` : '')}</Text>
                     </Col>
                     <Col size={5}>
                         <Text style={styles.ageText}>{data.age} years</Text>
                     </Col>
+                  
                 </Row>
                 <Row style={{ marginTop: 10 }}>
                     <Col size={3}>
@@ -262,7 +272,7 @@ class TestDetails extends PureComponent {
                                 <Text style={styles.commonText}>-</Text>
                             </Col>
                             <Col size={4}>
-                                <Text  style={[styles.commonText,{color:'#909090'}]}>{data.gender}</Text>
+                                <Text  style={[styles.commonText,{color:'#909498'}]}>{data.gender}</Text>
                             </Col>
                         </Row>
                     </Col>
@@ -275,19 +285,10 @@ class TestDetails extends PureComponent {
                                 <Text style={styles.commonText}>-</Text>
                             </Col>
                             <Col size={4}>
-                                <Text  style={[styles.commonText,{color:'#909090'}]}>{data.phone_no}</Text>
+                                <Text  style={[styles.commonText,{color:'#909498'}]}>{data.phone_no}</Text>
                             </Col>
                         </Row>
                     </Col>
-
-                    {data.type === 'others' ?
-                        <Col size={0.5}>
-                            <TouchableOpacity onPress={() => this.onRemovePatientClicked(index)}>
-                                <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 20 }} />
-                            </TouchableOpacity>
-                        </Col>
-                        : null}
-
                     {enableSelectionBox === true ?
                         <Col size={3.3}>
                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
@@ -465,7 +466,7 @@ class TestDetails extends PureComponent {
                                                     <Text style={styles.nameAndAge}>Name</Text>
                                                 </Col>
                                                 <Col size={8} style={{justifyContent:'center'}}>
-                                                    <Input placeholder="Enter patient's name" style={styles.inputText}
+                                                    <Input placeholder="Enter name" style={styles.inputText}
                                                         returnKeyType={'next'}
                                                         keyboardType={"default"}
                                                         value={name}
@@ -481,7 +482,7 @@ class TestDetails extends PureComponent {
                                                     <Text style={styles.nameAndAge}>Age</Text>
                                                 </Col>
                                                 <Col size={7} style={{justifyContent:'center'}}>
-                                                    <Input placeholder="Enter patient's age" style={styles.inputText}
+                                                    <Input placeholder="Enter age" style={styles.inputText}
                                                         returnKeyType={'done'}
                                                         keyboardType="numeric"
                                                         value={age}
