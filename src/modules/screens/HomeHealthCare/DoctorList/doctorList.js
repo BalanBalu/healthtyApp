@@ -20,7 +20,7 @@ import { formatDate, addMoment, getMoment, setCurrentISOTime4GivenDate } from '.
 import { Loader } from '../../../../components/ContentLoader';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
-import { acceptNumbersOnly, debounce } from '../../../common';
+import { acceptNumbersOnly } from '../../../common';
 import { store } from '../../../../setup/store';
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
@@ -34,7 +34,6 @@ class DoctorList extends Component {
     weekWiseDatesList = [];
     docInfoAndAvailableSlotsMapByDoctorId = new Map();
     selectedDate4DocIdHostpitalIdToStoreInObj = {};
-    selectedSlotIndex4DocIdHostpitalIdToStoreInObj = {};
     selectedSlotItem4DocIdHostpitalIdToStoreInObj = {};
     selectedCurrentDateSlotItem4DocIdToStoreInObj = {};
     storeFeeBySelectedSlotOfDocIdHostpitalIdInObj = {};
@@ -53,7 +52,7 @@ class DoctorList extends Component {
             isLoadingMoreDocList: false,
             doctorInfoListAndSlotsData1: [],
             pinCode: '',
-            searchedInputTextValue:  props.navigation.getParam('categoryName') || 'Primary',
+            searchedInputTextValue: props.navigation.getParam('categoryName') || 'Primary',
             searchedInputPinCodeValue: '600001',
             isLoadingOnChangeDocList: false,
             isOnEditPincode: false,
@@ -63,7 +62,6 @@ class DoctorList extends Component {
         this.selectedDataFromFilterPage = null;
         this.incrementPaginationCount = 0;
         this.onEndReachedIsTriggedFromRenderDateList = false;
-        this.callGetDocListService = debounce(this.callGetDocListService, 300);
     }
 
     async componentDidMount() {
@@ -239,11 +237,6 @@ class DoctorList extends Component {
         }
     }
 
-    onChangeInputTextValue = async (enteredText) => {
-        await this.setState({ searchedInputTextValue: enteredText });
-        this.callGetDocListService();  // Call the search list API with Debounce method
-    }
-
     callGetDocListService = async () => {
         try {
             this.isEnabledLoadMoreData = true;
@@ -267,7 +260,7 @@ class DoctorList extends Component {
             this.setState({ isLoadingOnChangeDocList: false });
         }
     }
-    
+
     renderDocListByTopRated(doctorDataList) {
         const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
         const doctorDataListBySort = doctorDataList.sort(function (a, b) {
@@ -306,7 +299,6 @@ class DoctorList extends Component {
                 <NavigationEvents
                     onWillFocus={payload => { this.componentNavigationMount() }}
                 />
-                {/* <Content> */}
                 <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
                     <Row style={{ height: 35, alignItems: 'center' }}>
                         <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.renderDocListByTopRated(doctorInfoListAndSlotsData)}>
@@ -328,44 +320,47 @@ class DoctorList extends Component {
                         </Col>
                     </Row>
                 </Card>
-                
                 <RenderEditingPincode
+                    showPinCodeResultByType={"Doctors"}
                     isPincodeEditVisible={this.state.isOnEditPincode}
-                    onChangeSelection={(value) => this.setState({   isOnEditPincode: value })}
+                    onChangeSelection={(value) => this.setState({ isOnEditPincode: value })}
                     value={this.state.searchedInputPinCodeValue}
-                    onChangeText={pinCode => acceptNumbersOnly(pinCode) == true || pinCode === '' ? this.setState({ searchedInputPinCodeValue: pinCode } ) : null}
+                    onChangeText={pinCode => acceptNumbersOnly(pinCode) == true || pinCode === '' ? this.setState({ searchedInputPinCodeValue: pinCode }) : null}
                     onPressEditButton={() => {
                         this.setState({ isOnEditPincode: false })
-                        this.callGetDocListService(); 
+                        this.callGetDocListService();
                     }}
                 />
-                   
-                {isLoadingOnChangeDocList ?
-                    <View style={{ marginTop: 60 }}>
-                        <ActivityIndicator
-                            animating={isLoadingOnChangeDocList}
-                            size="large"
-                            color='blue'
-                        />
-                    </View>
-                    :
-                    doctorInfoListAndSlotsData.length ?
-                        < FlatList
-                            data={doctorInfoListAndSlotsData}
-                            onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
-                            onEndReached={() => {
-                                if (this.isEnabledLoadMoreData) {
-                                    this.loadMoreData();
-                                }
-                            }}
-                            renderItem={({ item, index }) => this.renderDoctorCard(item, index)
-                            }
-                            keyExtractor={(item, index) => index.toString()}
-                        />
+                {searchedInputPinCodeValue ?
+                    isLoadingOnChangeDocList ?
+                        <View style={{ marginTop: 60 }}>
+                            <ActivityIndicator
+                                animating={isLoadingOnChangeDocList}
+                                size="large"
+                                color='blue'
+                            />
+                        </View>
                         :
-                        <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
-                        </Item>
+                        doctorInfoListAndSlotsData.length ?
+                            < FlatList
+                                data={doctorInfoListAndSlotsData}
+                                onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
+                                onEndReached={() => {
+                                    if (this.isEnabledLoadMoreData) {
+                                        this.loadMoreData();
+                                    }
+                                }}
+                                renderItem={({ item, index }) => this.renderDoctorCard(item, index)
+                                }
+                                keyExtractor={(item, index) => index.toString()}
+                            />
+                            :
+                            <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
+                            </Item>
+                    : <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center', color: "red" }} >Kindly Enter your Pincode</Text>
+                    </Item>
                 }
                 {/* </View> */}
                 {isLoadingMoreDocList ?
@@ -541,7 +536,6 @@ class DoctorList extends Component {
     onDateChanged = async (selectedDate, doctor_id, indexOfItem, selectedSlotItem) => {
         this.onEndReachedIsTriggedFromRenderDateList = false
         this.selectedDate4DocIdHostpitalIdToStoreInObj[doctor_id] = selectedDate;
-        this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[doctor_id] = -1;
         this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[doctor_id] = selectedSlotItem;
         if (this.weekWiseDatesList.includes(selectedDate) === false) {
             const endDateByMoment = addMoment(getMoment(selectedDate), 7, 'days');

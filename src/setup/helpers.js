@@ -95,15 +95,15 @@ export function getUnixTimeStamp(date) {
   return moment(date).unix();
 }
 export function setCurrentISOTime4GivenDate(date) {
-  let currentTime = new Date();
-  const splitByDate = date.split("-");
-  currentTime.setDate(splitByDate[2]);
-  currentTime.setMonth(splitByDate[1]);
-  currentTime.setYear(splitByDate[0]);
-  const isoDateAndTime = currentTime.toISOString();
-  return isoDateAndTime;
+  const timestamp = date.valueOf();
+  const current = moment();
+  const selectedSlotDateWithCurrentTime = moment(timestamp).set({
+    'hour': current.hour(),
+    'minute': current.minute(),
+    'second': current.second()
+  });
+  return selectedSlotDateWithCurrentTime;
 }
-
 
 
 export function toTitleCase(str) {
