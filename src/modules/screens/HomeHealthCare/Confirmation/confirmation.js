@@ -70,6 +70,7 @@ class HomeTestConfirmation extends Component {
         console.log(patDetails);
         const patDetailsArray = patDetails.map(ele => {
             const othersDetailsObj = {
+                ...ele,
                 type: ele.type,
                 full_name: ele.name || ele.full_name,
                 age: parseInt(ele.age),

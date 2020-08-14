@@ -115,6 +115,7 @@ class LabConfirmation extends Component {
     addPatientData = async (patDetails) => {
         const patientDetails = patDetails.map(ele => {
             const othersDetailsObj = {
+                ...ele,
                 type: ele.type,
                 full_name: ele.name || ele.full_name,
                 age: parseInt(ele.age),
