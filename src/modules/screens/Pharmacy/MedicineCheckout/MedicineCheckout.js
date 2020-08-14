@@ -226,21 +226,25 @@ class MedicineCheckout extends Component {
     }
 
     async getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription) {
-        if (medicineDetails.length !== 0 && isPrescription === false) {
-            let amount = this.state.medicineDetails.map(ele => {
-                return ele.item.totalPrice
-            }).reduce(
-                (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
+        try {
+            if (medicineDetails.length !== 0 && isPrescription === false) {
+                let amount = this.state.medicineDetails.map(ele => {
+                    return ele.item.totalPrice
+                }).reduce(
+                    (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
 
-            this.setState({
-                medicineTotalAmount: amount,
+                await this.setState({
+                    medicineTotalAmount: amount,
 
-            })
-        } else {
-            this.setState({
-                medicineTotalAmount: 0,
-            })
+                })
+            } else {
+                await this.setState({
+                    medicineTotalAmount: 0,
+                })
 
+            }
+        } catch (e) {
+            console.log(e)
         }
 
     }
@@ -288,12 +292,12 @@ class MedicineCheckout extends Component {
                     pharmacyInfo.full_name = pharmacyInfo.name;
                     if (this.state.isPrescription === false) {
                         const medicineDetails = navigation.getParam('medicineDetails') || [];
-                        this.setState({ medicineDetails })
+                        await this.setState({ medicineDetails })
                         await this.getdeliveryWithMedicineAmountCalculation(medicineDetails, this.state.isPrescription)
-                        
+
                     }
 
-                   await  this.setState({ pharmacyInfo: pharmacyInfo, selectedAddress: pharmacyInfo, itemSelected: 1 })
+                    await this.setState({ pharmacyInfo: pharmacyInfo, selectedAddress: pharmacyInfo, itemSelected: 1 })
                     this.selectedItem(1)
                 }
             };
@@ -453,10 +457,10 @@ class MedicineCheckout extends Component {
         this.setState({ h1ProductData: temp })
 
     }
- async changePharmacy() {
-         await this.setState({ pharmacyInfo: null });
+    async changePharmacy() {
+        await this.setState({ pharmacyInfo: null });
         this.selectedItem(1)
-        
+
 
     }
 
@@ -509,7 +513,7 @@ class MedicineCheckout extends Component {
                                                     keyExtractor={(item, index) => index.toString()}
                                                     renderItem={({ item }) =>
                                                         <View style={{ backgroundColor: '#fff' }}>
-                                                            <Row style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 5, marginLeft: 5, justifyContent: 'center',borderBottomColor:'gray' }}>
+                                                            <Row style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 5, marginLeft: 5, justifyContent: 'center', borderBottomColor: 'gray' }}>
                                                                 <Col size={1} style={{ justifyContent: 'center' }}>
                                                                     <Radio
                                                                         standardStyle={true}
@@ -577,7 +581,7 @@ class MedicineCheckout extends Component {
 
 
 
-                                <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5,marginBottom:20 }}>
+                                <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5, marginBottom: 20 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Order Details</Text>
                                     {isPrescription === false ?
                                         this.state.medicineDetails.length != 0 ?
@@ -647,7 +651,7 @@ class MedicineCheckout extends Component {
                                         </Col>
                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                             {isPrescription === false ?
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + (medicineTotalAmountwithDeliveryChage || ' ')} </Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + (medicineTotalAmountwithDeliveryChage || 0)} </Text>
                                                 : itemSelected === 0 ?
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{(deliveryDetails != null ? 'Medicine Charges by Pharmacy + ' + (deliveryDetails.delivery_tax + deliveryDetails.delivery_charges) : ' ')} </Text>
                                                     : <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'Medicine Charges by Pharmacy'} </Text>
@@ -658,7 +662,7 @@ class MedicineCheckout extends Component {
                             </View> : <Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a', marginTop: "40%", marginLeft: 55, alignContent: 'center' }}>No orders Available</Text>
                     }
                     {h1ProductData.length !== 0 ?
-                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5}}>
+                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                             <FlatList
                                 data={this.state.h1ProductData}
                                 extraData={this.state.h1ProductData}
@@ -671,20 +675,20 @@ class MedicineCheckout extends Component {
                                             </Text>
                                         </Col>
 
-                                        <Col size={1} style={{justifyContent: 'flex-end',alignItems:'flex-end'}}>
+                                        <Col size={1} style={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
                                             <Icon onPress={() => this.delete(index)} name={IS_IOS ? 'ios-close-circle' : 'md-close-circle'}
                                                 style={{ color: 'red', fontSize: 20 }} />
                                         </Col>
                                     </Row>
                                 } />
-                            <TouchableOpacity  onPress={() => this.setState({ isH1Product: true })} style={{flexDirection:'row',marginTop:10}}>
-                                <Icon name='add' style={{ color: 'gray',fontSize: 20 }} />
+                            <TouchableOpacity onPress={() => this.setState({ isH1Product: true })} style={{ flexDirection: 'row', marginTop: 10 }}>
+                                <Icon name='add' style={{ color: 'gray', fontSize: 20 }} />
                                 <Text uppercase={false} style={styles.customText}>Add More Prescription</Text>
                             </TouchableOpacity>
                         </View>
-                         : null
+                        : null
 
-                    } 
+                    }
 
                     <AwesomeAlert
                         show={false}
@@ -760,18 +764,18 @@ class MedicineCheckout extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ backgroundColor: '#fff' }}>
-                                <Row style={{alignItems: 'center', justifyContent: 'center', }}>
-                                <TouchableOpacity style={styles.buttonTouch} onPress={() => this.processToPayLater()} >
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 0 ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
-                                </TouchableOpacity>
+                                <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
+                                    <TouchableOpacity style={styles.buttonTouch} onPress={() => this.processToPayLater()} >
+                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 0 ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
+                                    </TouchableOpacity>
                                 </Row>
                             </Col>
-                            {isPrescription === false ?
+                            {isPrescription === false && medicineTotalAmountwithDeliveryChage ?
                                 <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
-                                    <Row style={{alignItems: 'center', justifyContent: 'center', }}>
-                                    <TouchableOpacity style={styles.buttonTouch} onPress={() => this.onProceedToPayment(true)}>
-                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
-                                    </TouchableOpacity>
+                                    <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
+                                        <TouchableOpacity style={styles.buttonTouch} onPress={() => this.onProceedToPayment(true)}>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
+                                        </TouchableOpacity>
                                     </Row>
                                 </Col> : null}
                         </Row>
@@ -877,11 +881,11 @@ const styles = StyleSheet.create({
     buttonTouch: {
         flexDirection: 'row',
         borderRadius: 10,
-        width:'100%',
-        justifyContent:'center',
-        alignItems:'center'
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
- 
+
 });
 
 

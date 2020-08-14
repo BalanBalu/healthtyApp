@@ -434,7 +434,7 @@ export default class PaymentReview extends Component {
           />
           <View style={{ paddingBottom: 50 }}>
             <View style={{ backgroundColor: '#fff', padding: 10 }}>
-              {fromNavigation !== null ?
+              {fromNavigation === 'HOSPITAL' ?
                 <Row>
                   <Col size={1.6}>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
@@ -459,7 +459,7 @@ export default class PaymentReview extends Component {
                     <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                   </Col>
                 </Row>}
-              {fromNavigation === null && bookSlotDetails.slotData ?
+              {fromNavigation !== 'HOSPITAL' && bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>
                     <Icon name="ios-pin" style={{ fontSize: 20,marginLeft:2}} />
