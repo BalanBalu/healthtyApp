@@ -263,28 +263,28 @@ class TestDetails extends PureComponent {
                   
                 </Row>
                 <Row style={{ marginTop: 10 }}>
-                    <Col size={3}>
+                    <Col size={3.3}>
                         <Row>
-                            <Col size={4}>
+                            <Col size={3}>
                                 <Text style={styles.commonText}>Gender</Text>
                             </Col>
                             <Col size={2}>
                                 <Text style={styles.commonText}>-</Text>
                             </Col>
-                            <Col size={4}>
+                            <Col size={5} >
                                 <Text  style={[styles.commonText,{color:'#909498'}]}>{data.gender}</Text>
                             </Col>
                         </Row>
                     </Col>
                     <Col size={3.3}>
                         <Row>
-                            <Col size={4}>
+                            <Col size={3}>
                                 <Text style={styles.commonText}>Mobile</Text>
                             </Col>
                             <Col size={2}>
                                 <Text style={styles.commonText}>-</Text>
                             </Col>
-                            <Col size={4}>
+                            <Col size={5} style={{alignItems:'flex-end'}}>
                                 <Text  style={[styles.commonText,{color:'#909498'}]}>{data.phone_no}</Text>
                             </Col>
                         </Row>
@@ -623,7 +623,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontFamily: 'OpenSans',
         textAlign: 'right',
-        marginRight:4
     },
     commonText: {
         fontSize: 12,
