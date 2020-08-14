@@ -336,8 +336,6 @@ export function getHospitalName(location) {
         return ''
 }
 export function getAddress(location) {
-    console.log("location", location);
-
     if (!location) return ''
     if (location)
         return `${location.address.no_and_street},${location.address.address_line_1 || ''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;

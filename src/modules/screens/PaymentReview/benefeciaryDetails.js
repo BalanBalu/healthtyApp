@@ -52,14 +52,14 @@ class BenefeciaryDetails extends PureComponent {
 
                     </Col>
                     <Col size={5.5}>
-                        <Text  style={[styles.innerText,{color:'#909090'}]}>{this.getCorporateBenificeryName(data)}</Text>
-                        <Text  style={[styles.innerText,{color:'#909090'}]}>{data.productType}</Text>
-                        <Text  style={[styles.innerText,{color:'#909090'}]}>{data.policyNumber}</Text>
-                        <Text  style={[styles.innerText,{color:'#909090'}]}>{formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY')}</Text>
-                        <Text  style={[styles.innerText,{color:'#909090'}]}>{formatDate(data.policyEffectiveTo, 'DD/MM/YYYY')}</Text>
-                        <Text  style={[styles.innerText,{color:'#909090'}]}>{data.sumInsured}</Text>
-                        <Text  style={[styles.innerText,{color:'#909090'}]}>2500000</Text>
-                        <Text  style={[styles.innerText,{color:'#909090'}]}> ₹ 0.00</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{this.getCorporateBenificeryName(data)}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.productType}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.policyNumber}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY')}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{formatDate(data.policyEffectiveTo, 'DD/MM/YYYY')}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.sumInsured}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>2500000</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}> ₹ 0.00</Text>
                     </Col>
                 </Row>
             </View>

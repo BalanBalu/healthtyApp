@@ -149,7 +149,7 @@ class AvailableDoctors4Video extends Component {
     onBookButtonPress4PaymentChat = async (doctorId, fee) => {
         try {
             this.setState({ isLoading: true });
-
+            const {description} = this.state
             const amount = fee;
             console.log(fee);
             let freeService = false;
@@ -165,6 +165,7 @@ class AvailableDoctors4Video extends Component {
                 status_by: 'USER',
                 statusUpdateReason: 'NEW CONVERSATION',
                 day: new Date().getDay(),
+                description: description
             }
 
             const createChatResponse = await createChat(createChatRequest)
@@ -222,14 +223,13 @@ class AvailableDoctors4Video extends Component {
     }
     onBookButtonPress4PaymentVideo = async (doctorId, fee) => {
         try {
-
             this.setState({ isLoading: true });
             const amount = fee;
             let freeService = false;
             if (fee == 0) {
                 freeService = true;
             }
-
+            const {description} = this.state
             const videoConsultRequest = {
                 user_id: this.userId,
                 doctor_id: doctorId,
@@ -237,6 +237,7 @@ class AvailableDoctors4Video extends Component {
                 fee: fee,
                 status_by: 'USER',
                 statusUpdateReason: 'NEW VIDEO CONSULTATION',
+                description:description
             }
 
             const createVideoConsultingResponse = await createVideoConsuting(videoConsultRequest)
@@ -397,31 +398,11 @@ class AvailableDoctors4Video extends Component {
                 });
             }
             else {
-                const createChatRequest = {
-                    user_id: this.userId,
-                    doctor_id: doctorId,
-                    status: possibleChatStatus.PAYMENT_IN_PROGRESS,
-                    fee: fees,
-                    status_by: 'USER',
-                    statusUpdateReason: 'NEW CONVERSATION',
-                    day: new Date().getDay(),
-                    description: description
-                }
-                const createChatResponse = await createChat(createChatRequest)
-                this.setState({ isLoading: false });
-                if (createChatResponse.success) {
                     await this.onBookButtonPress4PaymentChat(doctorId, fees)
                     await this.setState({ descriptionVisible: false,description:'' })
-                    Toast.show({
-                        text: "Your reason posted successfully",
-                        type: "success",
-                        duration: 3000,
-                    })
                 }
             }
-
-
-        }
+            
         if (serviceType === "VIDEO_CONSULTING" ) {
             if (description === '') {
                 Toast.show({
@@ -431,30 +412,10 @@ class AvailableDoctors4Video extends Component {
                 });
             }
             else {
-                const videoConsultRequest = {
-                    user_id: this.userId,
-                    doctor_id: doctorId,
-                    status: POSSIBLE_VIDEO_CONSULTING_STATUS.PAYMENT_IN_PROGRESS,
-                    fee: fees,
-                    status_by: 'USER',
-                    statusUpdateReason: 'NEW VIDEO CONSULTATION',
-                    description:description
-                }
-
-                const createVideoConsultingResponse = await createVideoConsuting(videoConsultRequest)
-
-                this.setState({ isLoading: false });
-                if (createVideoConsultingResponse.success) {
                     await this.onBookButtonPress4PaymentVideo(doctorId,fees)
                     await this.setState({ descriptionVisible: false,description:''})
-                    Toast.show({
-                        text: "Your reason posted successfully",
-                        type: "success",
-                        duration: 3000,
-                    })
                 }
             }
-        }
     }
 
     hasWhiteSpaceDescription(s) {

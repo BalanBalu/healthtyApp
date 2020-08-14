@@ -70,6 +70,7 @@ class HomeTestConfirmation extends Component {
         console.log(patDetails);
         const patDetailsArray = patDetails.map(ele => {
             const othersDetailsObj = {
+                ...ele,
                 type: ele.type,
                 full_name: ele.name || ele.full_name,
                 age: parseInt(ele.age),
@@ -228,15 +229,15 @@ class HomeTestConfirmation extends Component {
                                     </Row>
                                 </Col>
                             </Row>
-                            <Text note style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
+                            <Text  style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
                             {
                                 patDetails.address && patDetails.address.address ?
-                                    <Text note style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
+                                    <Text  style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
                                         patDetails.address.address.address_line_1 + ' , ' +
                                         patDetails.address.address.city + ' - ' + patDetails.address.address.pin_code}</Text>
                                     :
                                     null}
-                            <Text note style={styles.homeAdressTexts}>
+                            <Text  style={styles.homeAdressTexts}>
                                 Mobile - {patDetails.mobile_no || 'No number'}
                             </Text>
                         </View>
@@ -283,6 +284,7 @@ class HomeTestConfirmation extends Component {
                                             this.setState({ enteredDiseaseText, bookSlotDetails })
                                         }}
                                         multiline={true} placeholder="Write Reason...."
+                                        placeholderTextColor={'#909498'}
                                         style={styles.textInput} />
                                 </Item>
                             </Form>
@@ -295,7 +297,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Consultation Fees</Text>
+                                    <Text  style={{ fontSize: 12, fontFamily: 'OpenSans',color:'#909498' }}>Consultation Fees</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'}{Number(amountBySelectedPersons).toFixed(2)}</Text>
@@ -303,7 +305,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text note style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Charges </Text>
+                                    <Text  style={{ fontSize: 12, fontFamily: 'OpenSans',color:'#909498' }}>Charges </Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
@@ -312,7 +314,7 @@ class HomeTestConfirmation extends Component {
 
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 10, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'} {Number(finalPaidAmount).toFixed(2)}</Text>
@@ -403,7 +405,7 @@ class HomeTestConfirmation extends Component {
                                     </Row>
                                     <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
                                         <Text style={{
-                                            fontFamily: 'OpenSans', fontSize: 12, marginTop: 3
+                                            fontFamily: 'OpenSans', fontSize: 14, marginTop: 3
                                         }}>Gender</Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                                             <Radio
@@ -428,7 +430,7 @@ class HomeTestConfirmation extends Component {
                                         </View>
                                     </View>
                                 </View> : null}
-                            {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
+                            {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 12, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
                             {isCheckedOthers ?
                                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
                                     <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()}>
@@ -454,7 +456,7 @@ class HomeTestConfirmation extends Component {
                                                             <Text style={styles.commonText}>-</Text>
                                                         </Col>
                                                         <Col size={7}>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#000' }}>{item.full_name}</Text>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{item.full_name}</Text>
                                                         </Col>
                                                     </Row>
                                                 </Col>
@@ -474,7 +476,7 @@ class HomeTestConfirmation extends Component {
                                                             <Text style={styles.commonText}>-</Text>
                                                         </Col>
                                                         <Col size={7.5}>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
                                                         </Col>
                                                     </Row>
                                                 </Col>
@@ -522,7 +524,7 @@ class HomeTestConfirmation extends Component {
                                 </Row>
                                 <Row style={{ marginTop: 5 }}>
                                     <Col size={6}>
-                                        <Text note style={styles.nameDetails}>Doctor Fees <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f' }}>{'(' + patDetailsArray.length + ' persons' + ')'} </Text></Text>
+                                        <Text note style={styles.nameDetails}>Doctor Fees <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(' + patDetailsArray.length + ' persons' + ')'} </Text></Text>
                                     </Col>
                                     <Col size={4}>
                                         <Text style={[styles.rightAmountText, { color: '#8dc63f' }]}>₹ {amountBySelectedPersons}</Text>

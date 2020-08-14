@@ -434,7 +434,7 @@ export default class PaymentReview extends Component {
           />
           <View style={{ paddingBottom: 50 }}>
             <View style={{ backgroundColor: '#fff', padding: 10 }}>
-              {fromNavigation !== null ?
+              {fromNavigation === 'HOSPITAL' ?
                 <Row>
                   <Col size={1.6}>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
@@ -459,10 +459,10 @@ export default class PaymentReview extends Component {
                     <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                   </Col>
                 </Row>}
-              {fromNavigation === null && bookSlotDetails.slotData ?
+              {fromNavigation !== 'HOSPITAL' && bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>
-                    <Icon name="ios-pin" style={{ fontSize: 15 }} />
+                    <Icon name="ios-pin" style={{ fontSize: 20,marginLeft:2}} />
                     <Text style={styles.hospName}>{bookSlotDetails.slotData.location.name}</Text>
                   </Row>
                   <Text  style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
@@ -472,11 +472,11 @@ export default class PaymentReview extends Component {
                 : null}
               <Row style={{ marginTop: 10, }}>
                 <Col size={5} style={{ flexDirection: 'row' }}>
-                  <Icon name="md-calendar" style={{ fontSize: 15, color: '#0054A5' }} />
+                  <Icon name="md-calendar" style={{ fontSize: 20, color: '#0054A5' }} />
                   <Text style={styles.calDate}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                 </Col>
                 <Col size={5} style={{ flexDirection: 'row' }}>
-                  <Icon name="md-clock" style={{ fontSize: 15, color: '#8EC63F' }} />
+                  <Icon name="md-clock" style={{ fontSize: 20, color: '#8EC63F' }} />
                   <Text style={styles.clockTime}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                 </Col>
               </Row>
@@ -533,6 +533,7 @@ export default class PaymentReview extends Component {
                       this.setState({ bookSlotDetails })
                     }}
                     multiline={true} placeholder="Write Reason...."
+                    placeholderTextColor={"#909498"}
                     style={styles.textInput} />
                 </Item>
               </Form>
@@ -544,7 +545,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text  style={{ fontSize: 14, fontFamily: 'OpenSans',color:'#909090' }}>Consultation Fees</Text>
+                  <Text  style={{ fontSize: 14, fontFamily: 'OpenSans',color:'#909498' }}>Consultation Fees</Text>
                 </Col>
                 <Col>
                   <Text style={styles.rupeesText}>{'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
@@ -552,7 +553,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text  style={{ fontSize: 14, fontFamily: 'OpenSans',color:'#909090' }}>Charges </Text>
+                  <Text  style={{ fontSize: 14, fontFamily: 'OpenSans',color:'#909498' }}>Charges </Text>
                 </Col>
                 <Col>
                   <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
@@ -709,7 +710,7 @@ const styles = StyleSheet.create({
     marginLeft: 5
   },
   textInput: {
-    borderColor: '#909090',
+    borderColor: '#909498',
     borderRadius: 10,
     borderWidth: 0.5,
     height: 100,
@@ -819,19 +820,19 @@ const styles = StyleSheet.create({
   specialist: {
     fontSize: 14,
     fontFamily: 'OpenSans',
-    color: '#909090',
+    color: '#909498',
     marginLeft: 10,
   },
   hospName: {
     fontSize: 14,
     fontFamily: 'OpenSans',
-    marginLeft: 5
+    marginLeft: 10
   },
   hosAddress: {
     fontSize: 13,
     fontFamily: 'OpenSans',
-    color: '#909090',
-    marginLeft: 15
+    color: '#909498',
+    marginLeft: 23
   },
   calDate: {
     fontSize: 14,
