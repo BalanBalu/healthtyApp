@@ -117,9 +117,10 @@ class HomeTestConfirmation extends Component {
         });
 
         bookSlotDetails.patient_data = patientData;
-        const amount = bookSlotDetails.slotData.fee;
+        const finalAmountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
+        const amount = finalAmountBySelectedPersons;
         debugger
-        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount: amount })
+        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount })
     }
     async onPressPayAtHome() {
         const { bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
@@ -229,15 +230,15 @@ class HomeTestConfirmation extends Component {
                                     </Row>
                                 </Col>
                             </Row>
-                            <Text  style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
+                            <Text style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
                             {
                                 patDetails.address && patDetails.address.address ?
-                                    <Text  style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
+                                    <Text style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
                                         patDetails.address.address.address_line_1 + ' , ' +
                                         patDetails.address.address.city + ' - ' + patDetails.address.address.pin_code}</Text>
                                     :
                                     null}
-                            <Text  style={styles.homeAdressTexts}>
+                            <Text style={styles.homeAdressTexts}>
                                 Mobile - {patDetails.mobile_no || 'No number'}
                             </Text>
                         </View>
@@ -297,7 +298,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text  style={{ fontSize: 12, fontFamily: 'OpenSans',color:'#909498' }}>Consultation Fees</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909498' }}>Consultation Fees</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'}{Number(amountBySelectedPersons).toFixed(2)}</Text>
@@ -305,7 +306,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text  style={{ fontSize: 12, fontFamily: 'OpenSans',color:'#909498' }}>Charges </Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909498' }}>Charges </Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
