@@ -104,32 +104,11 @@ class LabAppointmentList extends Component {
             let filters = {
                 startDate: subTimeUnit(new Date(), 1, "years").toISOString(),
                 endDate: subTimeUnit(new Date(), 1, 'days').toISOString(),
+                reviewInfo: true
             };
             let result = await getLapAppointments(userId, filters);
-
-            let reviewResult = await getUserReviews("user", userId)
             if (result.success) {
                 result = result.data;
-                if (reviewResult.success) {
-                    reviewResult = reviewResult.data;
-
-                    let reviewRate = new Map();
-                    if (reviewResult != undefined) {
-                        reviewResult.map(ele => {
-                            reviewRate.set(ele.appointment_id, {
-                                ratting: ele.overall_rating
-                            })
-
-                        })
-                    }
-                    result.map(ele => {
-                        if (ele.is_review_added == true) {
-                            let temp = reviewRate.get(ele._id);
-                            ele.ratting = temp.ratting;
-                        }
-
-                    })
-                }
                 result.sort(function (firstDateValue, secondDateValue) {
                     return firstDateValue.appointment_starttime > secondDateValue.appointment_starttime ? -1 : 0
                 })
@@ -138,6 +117,7 @@ class LabAppointmentList extends Component {
                     data: result,
                     isLoading: false
                 });
+                
             }
         } catch (ex) {
             console.log(ex);
@@ -295,7 +275,7 @@ class LabAppointmentList extends Component {
                                                                 {item.labCategoryInfo && item.labCategoryInfo.category_name}
                                                             </Text>
                                                             {selectedIndex == 1 &&
-                                                                item.ratting != undefined && (
+                                                                    item.reviewInfo != undefined && item.reviewInfo.overall_rating !== undefined && (
                                                                     <StarRating
                                                                         fullStarColor="#FF9500"
                                                                         starSize={15}
@@ -306,7 +286,7 @@ class LabAppointmentList extends Component {
                                                                         }}
                                                                         disabled={false}
                                                                         maxStars={5}
-                                                                        rating={item.ratting}
+                                                                        rating={item.reviewInfo.overall_rating}
                                                                     />
                                                                 )}
                                                         </Row>
