@@ -197,20 +197,19 @@ const HomeStack = createStackNavigator({
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
                   <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
-                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
-                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={3000}
-                      loop
-                      bounce
-                      repeatSpacer={50}
-                      marqueeDelay={1000}>
+                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems:  'flex-start', marginRight: 15 }}>
+                    <TextTicker style={{  marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000} 
+                        loop 
+                        bounce 
+                        repeatSpacer={50} 
+                        marqueeDelay={1000}>
                       {navigation.getParam('appBar', { locationName: ' ' }).locationName}
                     </TextTicker>
-                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }} duration={3000}
-                      loop
-                      bounce
-                      repeatSpacer={200}
-                      marqueeDelay={1000}>
-
+                    <TextTicker style={{  alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2  }} duration={10000} 
+                        loop 
+                        bounce 
+                        repeatSpacer={200} 
+                        marqueeDelay={1000}>
                       {navigation.getParam('appBar', { locationCapta: 'Searching Near by Hospitals' }).locationCapta}
 
                     </TextTicker>

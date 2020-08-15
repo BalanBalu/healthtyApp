@@ -277,6 +277,7 @@ class TestDetails extends PureComponent {
                         </Row>
                     </Col>
                     <Col size={3.3}>
+                        {data.phone_no != undefined?
                         <Row>
                             <Col size={3}>
                                 <Text style={styles.commonText}>Mobile</Text>
@@ -288,6 +289,7 @@ class TestDetails extends PureComponent {
                                 <Text  style={[styles.commonText,{color:'#909498'}]}>{data.phone_no}</Text>
                             </Col>
                         </Row>
+                       :null}
                     </Col>
                     {enableSelectionBox === true ?
                         <Col size={3.3}>

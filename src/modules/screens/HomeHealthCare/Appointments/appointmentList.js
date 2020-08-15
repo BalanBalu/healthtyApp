@@ -26,26 +26,21 @@ export default class AppointmentList extends Component {
             reviewData: {},
             isLoadingMoreAppList: false
         }
-        this.isCalledScrollBegin = true;
         this.incrementPaginationCount = 0;
-        this.isCalledBackNavigation = false;
         this.isEnabledLoadMoreData = true;
     }
     async componentDidMount() {
-        this.setState({ isLoading: true });
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate("login");
             return;
         }
-        await this.getUpComingAppointmentList();
-        this.setState({ isLoading: false });
-        this.isCalledBackNavigation = true;
+        await this.onChangeUpComingOrPastTabs(0);
     }
 
 
     pageRefresh = async (navigationData) => {
-        if (this.isCalledBackNavigation && navigationData.action) {
+        if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
                 if (navigationData.lastState && navigationData.lastState.params && navigationData.lastState.params.isEnablePageRefresh4HomeAppointmentList) {
                     this.isEnabledLoadMoreData = true;
@@ -68,8 +63,8 @@ export default class AppointmentList extends Component {
         try {
             debugger
             const reqQueryData = {
-                startDate: new Date().toISOString(),
-                endDate: addTimeUnit(new Date(), 1, "years").toISOString(),
+                startDate: new Date(),
+                endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
                 limit: PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST,
                 skip: this.incrementPaginationCount,
                 sort: 1
@@ -91,7 +86,7 @@ export default class AppointmentList extends Component {
         try {
             const reqQueryData = {
                 startDate: subTimeUnit(new Date(), 1, "years").toISOString(),
-                endDate: subTimeUnit(new Date(), 1, 'days').toISOString(),
+                endDate: new Date().toISOString(),
                 limit: PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST,
                 skip: this.incrementPaginationCount,
                 sort: -1,
@@ -229,7 +224,6 @@ export default class AppointmentList extends Component {
     loadMoreData = async () => {
         try {
             debugger
-            this.isCalledScrollBegin = true;
             this.setState({ isLoadingMoreAppList: true });
             if (this.state.selectedIndex === 0) await this.getUpComingAppointmentList()
             else await this.getPastAppointmentList();

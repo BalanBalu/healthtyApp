@@ -90,7 +90,7 @@ class DoctorDetailsPreview extends Component {
                 await this.getFavoriteCounts4PatByUserId(userId);
             }
             const doctorId = navigation.getParam('doctorId');
-            this.callVideAndChat(doctorId);
+            await this.callVideAndChat(doctorId);
             const [doctorDetailsResp, wishListResp, rattingResp] = await Promise.all([
                 getMultipleDoctorDetails(doctorId, fields).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
                 ServiceOfGetDoctorFavoriteListCount4Pat(doctorId).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -116,7 +116,7 @@ class DoctorDetailsPreview extends Component {
             this.weekWiseDatesList = navigation.getParam('weekWiseDatesList');
             const doctorItemData = navigation.getParam('singleDoctorItemData');
             this.doctorDetailsObj = doctorItemData;
-            this.callVideAndChat(this.doctorDetailsObj.doctor_id);
+            await this.callVideAndChat(this.doctorDetailsObj.doctor_id);
             debugger
             this.setDocInfoAndAvailableSlotsData = doctorItemData;
 
