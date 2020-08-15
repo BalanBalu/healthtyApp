@@ -516,7 +516,7 @@ class MyAppoinmentList extends Component {
 																{item.appointmentResult.appointment_status == "APPROVED" && item.appointmentResult.onGoingAppointment ?
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: 'green', fontWeight: 'bold' }} note>{'Appointment Ongoing'}</Text>
 																	:
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status]? statusValue[item.appointmentResult.appointment_status].color:'red', fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status]?statusValue[item.appointmentResult.appointment_status].text:item.appointmentResult.appointment_status}</Text>
 																}
 
 
