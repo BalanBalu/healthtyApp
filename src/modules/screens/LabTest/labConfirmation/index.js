@@ -470,7 +470,7 @@ class LabConfirmation extends Component {
                         : null}
 
                     {itemSelected === 'TEST_AT_LAP' ?
-                        <View>
+                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                             <Row>
                                 <Col size={5}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Lab Address</Text>
