@@ -22,8 +22,6 @@ const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
 const hospitalLogoImg = require('../../../../assets/images/hospital.png');
 const publicForum = require('../../../../assets/images/public_forum.png');
 const hospitalImg = require('../../../../assets/images/hospitalimg.jpg');
-
-import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
 import { CallService, CallKeepService } from '../VideoConsulation/services';
@@ -215,11 +213,19 @@ class Home extends Component {
 
     getCatagries = async () => {
         try {
-            const searchQueris = 'services=0&skip=0&limit=9';
+            const searchQueris = 'services=0';
             let result = await catagries(searchQueris);
 
             if (result.success) {
-                this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
+                 let data = [];   
+                 result.data.some((ele, index) => {
+                    if(index < 9) {
+                        data.push(ele);  
+                    } else {
+                        return true
+                    } 
+                 });   
+                this.setState({ catagary: data, categryCount: this.state.categryCount + 1 })
             }
         } catch (e) {
             console.log(e);
@@ -393,7 +399,7 @@ class Home extends Component {
         return (
 
             <Container style={styles.container}>
-                <OfflineNotice />
+               
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
@@ -460,7 +466,51 @@ class Home extends Component {
                         </Col>
 
                     </Grid>
-                    
+                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
+                        <Col style={{ width: '50%' }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories",{fromNavigation:"HOME_HEALTH_CARE"})}>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={HomeTestImg}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
+                                            <Text style={styles.subText}>{translate('Get Doctor Consultation at Your Home')} </Text>
+                                        </Col>
+
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                        <Col style={{ width: '50%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={LabTestImgs}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
+                                            <Text style={styles.subText}>Book Full Body Lab Test from The Safety Of Your Home</Text>
+                                        </Col>
+
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                    </Grid>
+                  
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '50%', }}>
                             <TouchableOpacity onPress={() =>
@@ -506,50 +556,6 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
 
-                    </Grid>
-                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
-                        <Col style={{ width: '50%' }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Home Health Care")}>
-                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                    <Row style={styles.rowStyle}>
-                                        <Image
-                                            source={HomeTestImg}
-                                            style={{
-                                                width: '100%', height: '100%', alignItems: 'center'
-                                            }}
-                                        />
-                                    </Row>
-                                    <Row style={styles.secondRow}>
-                                        <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
-                                            <Text style={styles.subText}>{translate('Get Doctor Consultation at Your Home')} </Text>
-                                        </Col>
-
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col style={{ width: '50%', marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
-                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                    <Row style={styles.rowStyle}>
-                                        <Image
-                                            source={LabTestImgs}
-                                            style={{
-                                                width: '100%', height: '100%', alignItems: 'center'
-                                            }}
-                                        />
-                                    </Row>
-                                    <Row style={styles.secondRow}>
-                                        <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
-                                            <Text style={styles.subText}>Book Full Body Lab Test from The Safety Of Your Home</Text>
-                                        </Col>
-
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                         <Row style={{ marginTop: 5 }}>

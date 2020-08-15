@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import {  Text,  Radio,  Icon, Input, CheckBox } from 'native-base';
+import {  Text,  Radio,  Icon, Input, CheckBox, Right } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, AsyncStorage } from 'react-native';
 import {  FlatList } from 'react-native-gesture-handler';
@@ -247,44 +247,53 @@ class TestDetails extends PureComponent {
         const { isCorporateUser, payBy } = this.props;
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
-                <Row>
-                    <Col>
+               <Row>
+               {data.type === 'others' ?
+               <Right style={{marginTop:-10}}>
+                <TouchableOpacity onPress={() => this.onRemovePatientClicked(index)}>
+                     <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 25 }} />
+                </TouchableOpacity>
+               </Right>
+                        : null}
+               </Row>
+               <Row>
+                    <Col size={5}>
                         <Text style={styles.NameText}>{data.full_name + (data.relation ? ` (${data.relation})` : '')}</Text>
                     </Col>
-                    <Col>
+                    <Col size={5}>
                         <Text style={styles.ageText}>{data.age} years</Text>
                     </Col>
+                  
                 </Row>
                 <Row style={{ marginTop: 10 }}>
-                    <Col size={3}>
+                    <Col size={3.3}>
                         <Row>
-                            <Col size={5}>
-                                <Text style={styles.commonText}>Gender - </Text>
+                            <Col size={3}>
+                                <Text style={styles.commonText}>Gender</Text>
                             </Col>
-                            <Col size={5}>
-                                <Text note style={styles.commonText}>{data.gender}</Text>
+                            <Col size={2}>
+                                <Text style={styles.commonText}>-</Text>
+                            </Col>
+                            <Col size={5} >
+                                <Text  style={[styles.commonText,{color:'#909498'}]}>{data.gender}</Text>
                             </Col>
                         </Row>
                     </Col>
                     <Col size={3.3}>
+                        {data.phone_no != undefined?
                         <Row>
-                            <Col size={5}>
-                                <Text style={styles.commonText}>Mobile - </Text>
+                            <Col size={3}>
+                                <Text style={styles.commonText}>Mobile</Text>
                             </Col>
-                            <Col size={5}>
-                                <Text note style={styles.commonText}>{data.phone_no}</Text>
+                            <Col size={2}>
+                                <Text style={styles.commonText}>-</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end'}}>
+                                <Text  style={[styles.commonText,{color:'#909498'}]}>{data.phone_no}</Text>
                             </Col>
                         </Row>
+                       :null}
                     </Col>
-
-                    {data.type === 'others' ?
-                        <Col size={0.5}>
-                            <TouchableOpacity onPress={() => this.onRemovePatientClicked(index)}>
-                                <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 20 }} />
-                            </TouchableOpacity>
-                        </Col>
-                        : null}
-
                     {enableSelectionBox === true ?
                         <Col size={3.3}>
                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
@@ -296,7 +305,7 @@ class TestDetails extends PureComponent {
                         </Col>
                         : null}
                 </Row>
-                {isCorporateUser && payBy !== POSSIBLE_PAY_METHODS.SELF ?
+                {isCorporateUser && payBy !== POSSIBLE_PAY_METHODS.SELF && data.benefeciaryUserDeails ?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
                         <TouchableOpacity style={styles.benefeciaryButton} onPress={() => {
@@ -343,7 +352,7 @@ class TestDetails extends PureComponent {
         const { isCorporateUser, payBy, onSelectionChange,selectedPatientTypes, familyDetailsData,singlePatientSelect  } = this.props;
 
         const { name, age, gender,onlyFamilyWithPayDetailsData ,data} = this.state
-   
+        const familyData = payBy === POSSIBLE_PAY_METHODS.INSURANCE ? data.familyDataByInsurance : data.familyDataByCorporate
       
      
         return (
@@ -376,8 +385,11 @@ class TestDetails extends PureComponent {
                     
                     {isCorporateUser && this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) === true ? 
                         <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
+                           {familyData.length !== 0 ?
+                           <> 
                             {singlePatientSelect ?
-                            <Radio
+                             
+                              <Radio
                                 standardStyle={true}
                                 selected={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ? true : false}
                                 onPress={() => onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)} />
@@ -393,6 +405,8 @@ class TestDetails extends PureComponent {
                             />
                             }
                             <Text style={[styles.commonText, { marginLeft: 5 }]}>Family </Text>
+                           </>
+                            : null }
                         </View> 
                     : null }
 
@@ -427,7 +441,7 @@ class TestDetails extends PureComponent {
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                             <View>
                                 {this.renderPatientDetails(this.defaultPatDetails, 0, false, POSSIBLE_FAMILY_MEMBERS.SELF)}
                             </View>
@@ -437,7 +451,9 @@ class TestDetails extends PureComponent {
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ?
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                             {onlyFamilyWithPayDetailsData.length !== 0 ?
+                             <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                            :  null}
                             <FlatList
                                 data={onlyFamilyWithPayDetailsData}
                                 keyExtractor={(item, index) => index.toString()}
@@ -445,17 +461,17 @@ class TestDetails extends PureComponent {
                                     this.renderPatientDetails(item, index, false, POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)
                                 } />
                             { (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)  && this.props.singlePatientSelect === false )  || (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others' ).length === 0 )  ?
-                                <View style={{ marginTop: 10, marginLeft: 8 }}>
+                                <View style={{ marginTop: 8, }}>
                                     {familyDetailsData.length !== 0 ? <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text> : null}
                                     <Text style={styles.subHead}>Add other patient's details</Text>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={6}>
                                             <Row>
-                                                <Col size={2}>
+                                                <Col size={2} style={{justifyContent:'center'}}>
                                                     <Text style={styles.nameAndAge}>Name</Text>
                                                 </Col>
-                                                <Col size={8} >
-                                                    <Input placeholder="Enter patient's name" style={styles.inputText}
+                                                <Col size={8} style={{justifyContent:'center'}}>
+                                                    <Input placeholder="Enter name" style={styles.inputText}
                                                         returnKeyType={'next'}
                                                         keyboardType={"default"}
                                                         value={name}
@@ -467,11 +483,11 @@ class TestDetails extends PureComponent {
                                         </Col>
                                         <Col size={4} style={{ marginLeft: 5 }}>
                                             <Row>
-                                                <Col size={2}>
+                                                <Col size={2} style={{justifyContent:'center'}}>
                                                     <Text style={styles.nameAndAge}>Age</Text>
                                                 </Col>
-                                                <Col size={7}>
-                                                    <Input placeholder="Enter patient's age" style={styles.inputText}
+                                                <Col size={7} style={{justifyContent:'center'}}>
+                                                    <Input placeholder="Enter age" style={styles.inputText}
                                                         returnKeyType={'done'}
                                                         keyboardType="numeric"
                                                         value={age}
@@ -522,6 +538,7 @@ class TestDetails extends PureComponent {
 
                     <View style={{ marginTop: 10 }}>
                         {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ?
+                            
                             <View>
                                 <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
                                 <FlatList
@@ -588,6 +605,7 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 12,
         height: 33,
+        marginTop:8
     },
     nameAndAge: {
         fontFamily: 'OpenSans',
@@ -599,7 +617,6 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#000',
-        marginTop: 10
         // fontWeight: 'bold'
     },
     NameText: {
@@ -610,11 +627,11 @@ const styles = StyleSheet.create({
     ageText: {
         fontSize: 12,
         fontFamily: 'OpenSans',
-        textAlign: 'right'
+        textAlign: 'right',
     },
     commonText: {
         fontSize: 12,
-        fontFamily: 'OpenSans'
+        fontFamily: 'OpenSans',
     },
     selectButton: {
         paddingLeft: 15,

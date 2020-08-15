@@ -76,37 +76,6 @@ export default styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold'
     },
-    bookingButton: {
-        marginTop: 10,
-        backgroundColor: "#775DA3",
-        marginRight: 1,
-        borderRadius: 10,
-        width: "auto",
-        height: 30,
-        color: "white",
-        fontSize: 12,
-        textAlign: "center"
-    },
-    customButton: {
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 12,
-        backgroundColor: "#775DA3",
-        marginLeft: 15,
-        borderRadius: 10,
-        width: "auto",
-        height: 40,
-        color: "white",
-        fontSize: 12,
-        textAlign: "center",
-        marginLeft: "auto",
-        marginRight: "auto"
-    },
-    bookAgain1: {
-        fontSize: 13,
-        fontFamily: 'OpenSans',
-        fontWeight: 'bold'
-    },
     bodyContent: {
         padding: 5
     },
@@ -490,17 +459,7 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontWeight: 'bold'
     },
-    bookingButton: {
-        marginTop: 10,
-        backgroundColor: "#775DA3",
-        marginRight: 1,
-        borderRadius: 10,
-        width: "auto",
-        height: 30,
-        color: "white",
-        fontSize: 12,
-        textAlign: "center"
-    },
+
     appoinmentPrepareStyle2: {
         backgroundColor: "#775DA3",
         paddingTop: 8,
@@ -558,7 +517,7 @@ export default styles = StyleSheet.create({
     },
     filterCol: {
         flexDirection: 'row',
-        borderLeftColor: '#909090',
+        borderLeftColor: '#909498',
         borderLeftWidth: 0.3
     },
     filterIcon: {
@@ -661,6 +620,7 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         marginTop: 5,
         fontSize: 11,
+        color:'#909498'
     },
     changeText: {
         fontFamily: 'OpenSans',
@@ -711,7 +671,7 @@ export default styles = StyleSheet.create({
     enabledBookingAvailableBtn: {
         alignItems: 'center', borderRadius: 10, backgroundColor: 'green'
     },
-    
+
     subTextBilling: {
         fontFamily: 'Opensans',
         fontSize: 12,
@@ -726,7 +686,7 @@ export default styles = StyleSheet.create({
     specialist: {
         fontSize: 12,
         fontFamily: 'OpenSans',
-        color: '#909090'
+        color: '#909498'
     },
     rupeesText: {
         fontSize: 10,
@@ -741,7 +701,7 @@ export default styles = StyleSheet.create({
         color: 'red'
     },
     textInput: {
-        borderColor: 'gray',
+        borderColor: '#909498',
         borderRadius: 10,
         borderWidth: 0.5,
         height: 100,
@@ -754,5 +714,22 @@ export default styles = StyleSheet.create({
         borderRadius: 10,
         paddingRight: 10,
         marginTop: 15
-      },
+    },
+    appointmentDateStyle: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        color: '#0054A5',
+        marginLeft: 5
+    },
+    bookingButton: {
+        marginTop: 10,
+        backgroundColor: "#775DA3",
+        marginRight: 1,
+        borderRadius: 10,
+        width: "auto",
+        height: 30,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center"
+    },
 });

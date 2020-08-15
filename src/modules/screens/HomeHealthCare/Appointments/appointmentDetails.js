@@ -12,72 +12,65 @@ import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssu
 import { getHomeTestappointmentByID, updateDocHomeTestappointment } from '../../../providers/homeHelthCare/action';
 import Spinner from "../../../../components/Spinner";
 import InsertReview from '../Reviews/insertReviews';
+import { RenderProposeNewPopPage } from '../../CommonAll/components';
+const DOCTOR_FIELDS = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
 
 class AppointmentDetails extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
             data: {},
-            appointmentId: '',
-            doctorId: '',
-            userId: '',
             reviewData: [],
             reportData: null,
             doctorData: {},
             isLoading: true,
-            statusUpdateReason: ' ',
             education: '',
             specialist: '',
             selectedTab: 0,
-            paymentDetails: {},
-            modalVisible: false,
-            proposedVisible: false,
+            paymentDetailsObj: {},
+            isVisibleAddReviewPop: false,
+            isVisibleProposePop: false,
         }
+        this.appointmentId = '';
     }
 
     async componentDidMount() {
-        const userId = await AsyncStorage.getItem('userId');
         const { navigation } = this.props;
         const appointmentData = navigation.getParam('data');
         if (appointmentData == undefined) {
-            const appointmentId = navigation.getParam('appointmentId');
-            await this.setState({ appointmentId: appointmentId });
+            const appointmentId = navigation.getParam('serviceId');
+            this.appointmentId = appointmentId;
             await new Promise.all([
-                this.appointmentDetailsGetById(),
+                this.appointmentDetailsGetById(appointmentId),
                 this.getUserReport(),
                 this.getUserReviews(),
-
             ]);
         }
         else {
-            let doctorId = appointmentData.doctor_id;
-            let appointmentId = appointmentData._id;
-            const selectedTab = navigation.getParam('selectedIndex');
-            // this.props.navigation.setParams({ reportedId: appointmentId });
-
-
-            await this.setState({
-                data: appointmentData, doctorId: doctorId, appointmentId: appointmentId,
-                userId: userId, selectedTab, isLoading: false
-            })
-
-            await new Promise.all([
-                this.getPaymentInfo(appointmentData.payment_id),
-                this.getDoctorDetails(),
-                this.getUserReport(),
-                this.getUserReviews(),
-            ])
-            if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
-                await this.setState({ modalVisible: true })
-            }
-            let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
-            if (appointmentData.appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime != 'SKIP') {
-                await this.setState({ proposedVisible: true })
-            }
-
+            this.exeWhenHaveAppointmentData(appointmentData);
         }
+        this.setState({ isLoading: false });
+    }
 
-        await this.setState({ isLoading: false })
+    exeWhenHaveAppointmentData = async (appointmentData) => {
+        const doctorId = appointmentData.doctor_id;
+        this.appointmentId = appointmentData._id;
+        const selectedTab = this.props.navigation.getParam('selectedIndex');
+        // this.props.navigation.setParams({ reportedId: appointmentId });
+        await this.setState({ data: appointmentData, selectedTab });
+        await new Promise.all([
+            this.getPaymentInfo(appointmentData.payment_id),
+            this.getDoctorDetails(doctorId),
+            this.getUserReport(),
+            this.getUserReviews(),
+        ])
+        if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
+            this.setState({ isVisibleAddReviewPop: true })
+        }
+        const checkProposedNewTime = await AsyncStorage.getItem(this.appointmentId);
+        if (appointmentData.appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime != 'SKIP') {
+            this.setState({ isVisibleProposePop: true })
+        }
     }
     async backNavigation() {
         const { navigation } = this.props;
@@ -88,181 +81,148 @@ class AppointmentDetails extends PureComponent {
         };
     }
 
-    getDoctorDetails = async () => {
+    getDoctorDetails = async (doctorId) => {
         try {
-            this.setState({ isLoading: true })
-            let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
-            let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
-
-            if (resultDetails.success) {
-                let educationDetails = '';
-                if (resultDetails.data.education != undefined) {
-                    educationDetails = getAllEducation(resultDetails.data.education)
+            const docDetailsResp = await bindDoctorDetails(doctorId, DOCTOR_FIELDS);
+            if (docDetailsResp.success) {
+                if (docDetailsResp.data.education != undefined) {
+                    var educationData = getAllEducation(docDetailsResp.data.education)
                 }
-                let specialistDetails = '';
-                if (resultDetails.data.specialist != undefined) {
-                    specialistDetails = getAllSpecialist(resultDetails.data.specialist)
+                if (docDetailsResp.data.specialist != undefined) {
+                    var specialistData = getAllSpecialist(docDetailsResp.data.specialist)
                 }
-
-
                 this.setState({
-                    education: educationDetails,
-                    doctorData: resultDetails.data,
-                    specialist: specialistDetails.toString(),
+                    education: educationData || '',
+                    doctorData: docDetailsResp.data,
+                    specialist: specialistData.toString() || '',
                 })
-
             }
-
         }
         catch (e) {
-            this.setState({ isLoading: false })
             console.log(e);
-        }
-        finally {
-            this.setState({ isLoading: false })
         }
     }
 
     getUserReport = async () => {
         try {
             const userId = await AsyncStorage.getItem('userId');
-            let resultReport = await getUserRepportDetails('homeTestAppointment', userId, this.state.appointmentId);
-
-            if (resultReport.success) {
-
-                this.setState({ reportData: resultReport.data });
+            const reportResp = await getUserRepportDetails('homeTestAppointment', userId, this.appointmentId);
+            if (reportResp.success) {
+                this.setState({ reportData: reportResp.data });
             }
         }
-
         catch (e) {
             console.error(e);
         }
-
     }
     getUserReviews = async () => {
         try {
-            let reviewResult = await viewUserReviews('appointment', this.state.appointmentId,'?skip=0')
-            console.log("reviewResult", reviewResult);
-            
-            if (reviewResult.success) {
-                this.setState({ reviewData: reviewResult.data });
+            const reviewsResp = await viewUserReviews('appointment', this.appointmentId, '?skip=0');
+            if (reviewsResp.success) {
+                this.setState({ reviewData: reviewsResp.data });
             }
-
         }
         catch (e) {
             console.error(e);
         }
     }
 
-    async getvisible(val) {
-        this.setState({ modalVisible: false });
-        if (val.updatedVisible == true) {
-            this.getUserReviews()
+    insertReviewPopVisible = async (data) => {
+        this.setState({ isVisibleAddReviewPop: false });
+        if (data.updatedVisible == true) {
+            await this.getUserReviews();
+            this.props.navigation.setParams({ 'isEnablePageRefresh4HomeAppointmentList': true });
         }
     }
-    updateAppointmentStatus = async (data, updatedStatus) => {
+    onPressUpdateAppointmentStatus = async (data, updatingStatus) => {
         try {
-
             this.setState({ isLoading: true });
-            let requestData = {
+            const reqAppointmentData = {
                 doctorId: data.doctor_id,
                 userId: data.user_id,
                 appointment_date: data.appointment_date,
-                status: updatedStatus,
-                statusUpdateReason: this.state.statusUpdateReason,
+                status: updatingStatus,
+                statusUpdateReason: data.status_update_reason,
                 status_by: 'USER'
             };
-            let result = await updateDocHomeTestappointment(data._id, requestData);
-            console.log("result", result);
-
-            this.setState({ isLoading: false })
-
-            if (result.success) {
-                let temp = this.state.data
-                temp.appointment_status = result.appointmentData.appointment_status
+            const updateResp = await updateDocHomeTestappointment(data._id, reqAppointmentData);
+            if (updateResp.success) {
+                const baCupOfAppointmentData = this.state.data;
+                baCupOfAppointmentData.appointment_status = updateResp.appointmentData.appointment_status;
                 Toast.show({
-                    text: result.message,
+                    text: updateResp.message,
                     duration: 3000
                 })
-                if (this.state.proposedVisible == true) {
-                    this.setState({ proposedVisible: false });
+                if (this.state.isVisibleProposePop == true) {
+                    this.setState({ isVisibleProposePop: false });
                 }
-
-                await this.setState({ data: temp });
+                await this.setState({ data: baCupOfAppointmentData });
+                this.props.navigation.setParams({ 'isEnablePageRefresh4HomeAppointmentList': true });
             }
         }
         catch (e) {
             console.log(e);
         }
-    }
-
-
-    appointmentDetailsGetById = async () => {
-        try {
-            this.setState({ isLoading: true })
-            let result = await getHomeTestappointmentByID(this.state.appointmentId);
-            if (result.success) {
-                await this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
-                    await new Promise.all([
-                        this.getDoctorDetails(),
-                        this.getPaymentInfo(result.data[0].payment_id)])
-
-
-                if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
-                    await this.setState({ modalVisible: true })
-                }
-                let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
-                if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
-                    await this.setState({ proposedVisible: true })
-                }
-            }
-        } catch (error) {
-            console.error(error);
-            this.setState({ isLoading: false })
-        }
         finally {
             this.setState({ isLoading: false })
         }
     }
+
+
+    appointmentDetailsGetById = async (appointmentId) => {
+        try {
+            let appointmentResp = await getHomeTestappointmentByID(appointmentId);
+            if (appointmentResp.success) {
+                const appointmentData = appointmentResp.data[0];
+                const doctorId = appointmentData.doctor_id;
+                await this.setState({ data: appointmentData }),
+                    await new Promise.all([
+                        this.getDoctorDetails(doctorId),
+                        this.getPaymentInfo(appointmentData.payment_id)])
+
+
+                if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
+                    await this.setState({ isVisibleAddReviewPop: true })
+                }
+                let checkProposedNewTime = await AsyncStorage.getItem(this.appointmentId)
+                if (appointmentData.appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
+                    await this.setState({ isVisibleProposePop: true })
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
     getPaymentInfo = async (paymentId) => {
         try {
-            let result = await getPaymentInfomation(paymentId);
-
-            if (result.success) {
-                this.setState({ paymentDetails: result.data[0] })
+            const paymentResp = await getPaymentInfomation(paymentId);
+            if (paymentResp.success) {
+                this.setState({ paymentDetailsObj: paymentResp.data[0] });
             }
         }
         catch (e) {
             console.log(e)
         }
     }
-    async navigateCancelAppoointment() {
+    async onPressNavigateToCancelAppointment() {
         try {
             this.state.data.prefix = this.state.doctorData.prefix;
-            await this.setState({ proposedVisible: false })
-            this.props.navigation.navigate('Home Healthcare Cancel Appointment', { appointmentDetail: this.state.data })
+            await this.setState({ isVisibleProposePop: false });
+            this.props.navigation.navigate('Home Healthcare Cancel Appointment', { appointmentDetail: this.state.data });
+            this.props.navigation.setParams({ 'isEnablePageRefresh4HomeAppointmentList': true });
         }
         catch (e) {
             console.log(e)
         }
     }
-    async SkipAction() {
-        await AsyncStorage.setItem(this.state.appointmentId, 'SKIP')
-
-        this.setState({ proposedVisible: false })
+    async skipAction() {
+        await AsyncStorage.setItem(this.appointmentId, 'SKIP');
+        this.setState({ isVisibleProposePop: false })
     }
 
-    navigateAddReview() {
-        this.setState({
-            modalVisible: true
-        });
-
-    }
 
     render() {
-
-        const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
-        const patDetailsData = data.patient_data;
+        const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetailsObj, appointmentId } = this.state;
         return (
             <Container>
                 <Content style={{ margin: 10 }}>
@@ -281,14 +241,13 @@ class AppointmentDetails extends PureComponent {
                             />
                         ) :
                         <View style={{ marginBottom: 20 }}>
-
                             <Card style={{
                                 borderRadius: 10,
                             }}>
                                 <Grid style={styles.cardItem}>
                                     <Row style={{ justifyContent: 'flex-end', marginRight: 10, marginTop: 10 }}>
                                         {data.token_no ?
-                                            <Text style={{ textAlign: 'right', fontSize: 14, }} >{"Ref no :" + data.token_no}</Text> : null}
+                                            <Text style={{ textAlign: 'right', fontSize: 14, }} >{"Ref no : " + data.token_no}</Text> : null}
                                     </Row>
                                     <Row style={{ marginLeft: 10, marginRight: 10 }}>
                                         <Col style={{ width: '22%', justifyContent: 'center', marginTop: 10 }}>
@@ -322,7 +281,7 @@ class AppointmentDetails extends PureComponent {
                                             <Row style={{ marginTop: 10, marginLeft: 5 }}>
                                                 <Text style={styles.subText1}>Payment Method</Text>
                                                 <Text style={styles.subText2}>-</Text>
-                                                <Text note style={styles.subText2}>{paymentDetails.payment_method || 0}</Text>
+                                                <Text note style={styles.subText2}>{paymentDetailsObj.payment_method || 0}</Text>
                                             </Row>
                                         </Col>
                                         {data.appointment_status == 'APPROVED' && data.onGoingAppointment === true ?
@@ -345,19 +304,16 @@ class AppointmentDetails extends PureComponent {
                                             </Col>
                                         }
                                     </Row>
-
-                                    {selectedTab == 0 ? data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
+                                    {selectedTab == 0 ? data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING') ?
                                         <Row>
                                             <Col size={7}>
                                                 <Row style={{ marginTop: 10 }}>
-
                                                     <Text note style={styles.subText3}>Do you need to cancel this appointment ?</Text>
-
                                                 </Row>
                                             </Col>
                                             <Col size={3}>
                                                 <Row style={{ marginTop: 10 }}>
-                                                    <Button danger style={[styles.postponeButton]} onPress={() => this.navigateCancelAppoointment()}>
+                                                    <Button danger style={[styles.postponeButton]} onPress={() => this.onPressNavigateToCancelAppointment()}>
                                                         <Text style={styles.ButtonText}>CANCEL</Text>
                                                     </Button>
                                                 </Row>
@@ -367,22 +323,19 @@ class AppointmentDetails extends PureComponent {
                                             <Row>
                                                 <Col size={4}>
                                                     <Row style={{ marginTop: 10 }}>
-
                                                         <Text note style={styles.subText3}>Do you want to accept ?</Text>
-
                                                     </Row>
                                                 </Col>
-
                                                 <Col size={3}>
                                                     <Row style={{ marginTop: 10 }}>
-                                                        <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
+                                                        <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressUpdateAppointmentStatus(data, 'APPROVED')}>
                                                             <Text style={styles.ButtonText}>ACCEPT</Text>
                                                         </Button>
                                                     </Row>
                                                 </Col>
                                                 <Col size={3}>
                                                     <Row style={{ marginTop: 10 }}>
-                                                        <Button danger style={[styles.postponeButton]} onPress={() => this.navigateCancelAppoointment()}>
+                                                        <Button danger style={[styles.postponeButton]} onPress={() => this.onPressNavigateToCancelAppointment()}>
                                                             <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
                                                         </Button>
                                                     </Row>
@@ -397,7 +350,6 @@ class AppointmentDetails extends PureComponent {
                                                     <Text style={styles.timeText}>{formatDate(data.appointment_date, "dddd,MMMM DD-YYYY")}</Text>
                                                 </Row>
                                             </Col>
-
                                         </Row>
                                     </Grid>
                                 </CardItem>
@@ -406,9 +358,7 @@ class AppointmentDetails extends PureComponent {
                                 {/* <Row style={styles.rowStyle}>
                                     <Col size={6}>
                                         <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId, DoctorData: doctorData, Data: data.doctorInfo }) }}>
-
                                             <Text style={styles.touchableText1}>Appointment Preparation</Text>
-
                                         </TouchableOpacity>
                                     </Col>
                                     <Col size={4} style={{ marginLeft: 5 }}>
@@ -424,7 +374,7 @@ class AppointmentDetails extends PureComponent {
                                         </Col>
                                         <Col style={{ width: '92%', paddingTop: 5 }}>
                                             <Text style={styles.innerSubText}>Disease</Text>
-                                            <Text note style={styles.subTextInner1}>{data.disease_description}</Text>
+                                            <Text note style={styles.subTextInner1}>{data.disease_description || ''}</Text>
                                         </Col>
                                     </Row>
                                     <Row style={styles.rowSubText}>
@@ -436,8 +386,7 @@ class AppointmentDetails extends PureComponent {
                                             <Text note style={styles.subTextInner1}>{getUserLocation(data.userInfo)}</Text>
                                         </Col>
                                     </Row>
-
-                                    {patDetailsData && Object.keys(patDetailsData).length ?
+                                    {data.patient_data.length ?
                                         <Row style={styles.rowSubText}>
                                             <Col style={{ width: '8%', paddingTop: 5 }}>
                                                 <Icon name="ios-pin" style={{ fontSize: 20, }} />
@@ -445,13 +394,12 @@ class AppointmentDetails extends PureComponent {
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
                                                 <Text style={styles.innerSubText}>Patient Details</Text>
                                                 <FlatList
-                                                    data={patDetailsData}
+                                                    data={data.patient_data}
                                                     renderItem={({ item, index }) =>
                                                         <View style={styles.PatientDetailList} >
                                                             <Row >
                                                                 <Col size={8}>
                                                                     <Row>
-
                                                                         <Col size={2}>
                                                                             <Text style={styles.commonText}>Name</Text>
                                                                         </Col>
@@ -460,16 +408,13 @@ class AppointmentDetails extends PureComponent {
                                                                         </Col>
                                                                         <Col size={8}>
                                                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{item.patient_name}</Text>
-
                                                                         </Col>
                                                                     </Row>
                                                                 </Col>
                                                             </Row>
-
                                                             <Row>
                                                                 <Col size={10}>
                                                                     <Row>
-
                                                                         <Col size={2}>
                                                                             <Text style={styles.commonText}>Age</Text>
                                                                         </Col>
@@ -507,7 +452,6 @@ class AppointmentDetails extends PureComponent {
                                                         </Row>
                                                     </TouchableOpacity>
                                                 </View> :
-
                                                 <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
                                                     <TouchableOpacity block success
                                                         style={styles.reviewButton} onPress={() => {
@@ -521,15 +465,13 @@ class AppointmentDetails extends PureComponent {
                                                 </View>}
                                         </Col>
                                     </Row>
-                                    { reviewData.length !== 0 ?
-
+                                    {reviewData.length ?
                                         <Row style={styles.rowSubText}>
                                             <Col style={{ width: '8%', paddingTop: 5 }}>
                                                 <Icon name="ios-medkit" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
                                                 <Text style={styles.innerSubText}>Review</Text>
-
                                                 <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                                     disabled={false}
                                                     maxStars={5}
@@ -538,23 +480,21 @@ class AppointmentDetails extends PureComponent {
                                                 <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
                                             </Col>
                                         </Row> :
-                                        reviewData.length == 0 ?
-                                            <Row style={styles.rowSubText}>
-                                                <Col style={{ width: '8%', paddingTop: 5 }}>
-                                                    <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
-
-                                                </Col>
-                                                <Col style={{ width: '92%', paddingTop: 5 }}>
-                                                    <Text style={styles.innerSubText}>Add Feedback"</Text>
-                                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                        <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
-
-                                                            <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>Add Feedback</Text>
-                                                            <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                </Col>
-                                            </Row> : null
+                                        <Row style={styles.rowSubText}>
+                                            <Col style={{ width: '8%', paddingTop: 5 }}>
+                                                <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
+                                            </Col>
+                                            <Col style={{ width: '92%', paddingTop: 5 }}>
+                                                <Text style={styles.innerSubText}>Add Feedback"</Text>
+                                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                    <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.setState({ isVisibleAddReviewPop: true })}
+                                                        testID='addFeedBack'>
+                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>Add Feedback</Text>
+                                                        <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </Col>
+                                        </Row>
                                     }
                                     <Row style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}>
                                         <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -571,7 +511,7 @@ class AppointmentDetails extends PureComponent {
                                                     <Text style={styles.downText}>-</Text>
                                                 </Col>
                                                 <Col style={{ width: '25%' }}>
-                                                    <Text note style={styles.downText}>{"Rs." + (paymentDetails.amount != undefined ? paymentDetails.amount : 0) + "/-"}</Text>
+                                                    <Text note style={styles.downText}>{"Rs." + (paymentDetailsObj.amount ? paymentDetailsObj.amount : 0) + "/-"}</Text>
                                                 </Col>
                                             </Row>
                                             <Row style={{ marginTop: 10 }}>
@@ -583,7 +523,7 @@ class AppointmentDetails extends PureComponent {
                                                     <Text style={styles.downText}>-</Text>
                                                 </Col>
                                                 <Col style={{ width: '25%' }}>
-                                                    <Text note style={styles.downText}>{"Rs." + (paymentDetails.amount_paid != undefined ? paymentDetails.amount_paid : 0) + "/-"}</Text>
+                                                    <Text note style={styles.downText}>{"Rs." + (paymentDetailsObj.amount_paid ? paymentDetailsObj.amount_paid : 0) + "/-"}</Text>
                                                 </Col>
                                             </Row>
                                             <Row style={{ marginTop: 10 }}>
@@ -595,7 +535,7 @@ class AppointmentDetails extends PureComponent {
                                                     <Text style={styles.downText}>-</Text>
                                                 </Col>
                                                 <Col style={{ width: '25%' }}>
-                                                    <Text note style={styles.downText}>{"Rs." + (paymentDetails.amount_due != undefined ? paymentDetails.amount_due : 0) + "/-"}</Text>
+                                                    <Text note style={styles.downText}>{"Rs." + (paymentDetailsObj.amount_due ? paymentDetailsObj.amount_due : 0) + "/-"}</Text>
                                                 </Col>
                                             </Row>
                                             <Row style={{ marginTop: 10 }}>
@@ -606,7 +546,7 @@ class AppointmentDetails extends PureComponent {
                                                     <Text style={styles.downText}>-</Text>
                                                 </Col>
                                                 <Col style={{ width: '25%' }}>
-                                                    <Text note style={styles.downText}>{paymentDetails.payment_method || 0}</Text>
+                                                    <Text note style={styles.downText}>{paymentDetailsObj.payment_method || 0}</Text>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -614,91 +554,23 @@ class AppointmentDetails extends PureComponent {
                                 </View>
                             </Grid>
                         </View>}
-                    {this.state.modalVisible === true ?
+                    {this.state.isVisibleAddReviewPop === true ?
                         <InsertReview
-                            data={this.state.data}
-                            popupVisible={(data) => this.getvisible(data)}
-
+                            data={data}
+                            popupVisible={(data) => this.insertReviewPopVisible(data)}
                         /> : null}
                     <Modal
-                        visible={this.state.proposedVisible}
+                        visible={this.state.isVisibleProposePop}
                         transparent={true}
                         animationType={'fade'}
                     >
-                        <View style={{
-                            flex: 1,
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: 'rgba(0,0,0,0.5)'
-                        }}>
-                            <View style={{
-                                width: '95%',
-                                height: '25%',
-                                backgroundColor: '#fff',
-                                borderColor: 'gray',
-                                borderWidth: 3,
-                                padding: 10,
-                                borderRadius: 10
-                            }}>
-
-                                <CardItem header style={styles.cardItem3}>
-                                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: -5, color: '#FFF', marginLeft: -5 }}>{'Doctor has Rescheduled the appointment !'}</Text></CardItem>
-                                <Row style={{ justifyContent: 'center' }}>
-                                    <Col style={{ width: '25%' }}>
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.appointment_date, "DD/MM/YYYY") : null}</Text>
-                                    </Col>
-                                    {/* <Col style={{ width: '75%' }}>
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "hh:mm a") + formatDate(data.previous_data.endDateTime, "-hh:mm a") : null}</Text>
-                                    </Col> */}
-
-                                </Row>
-                                <Row style={{ justifyContent: 'center' }}>
-                                    <Col style={{ width: '30%' }}>
-                                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_date, "DD/MM/YYYY")}</Text>
-                                    </Col>
-                                    {/* <Col style={{ width: '70%' }}>
-                                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "hh:mm a") + formatDate(data.appointment_endtime, "-hh:mm a")}</Text>
-                                    </Col> */}
-
-                                </Row>
-                                <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 15 }}>
-                                    <Col size={2}></Col>
-                                    <Col size={8} >
-                                        <Row>
-
-                                            <Col size={3} style={{ marginRight: 3 }}>
-                                                <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
-                                                    onPress={() => this.SkipAction()} testID='confirmButton'>
-
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
-                                                </TouchableOpacity>
-                                            </Col>
-                                            <Col size={3.4} style={{ marginRight: 3 }} >
-                                                <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, }} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='confirmButton'>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}>{'ACCEPT'}</Text>
-                                                </TouchableOpacity>
-                                            </Col>
-                                            <Col size={3.6}>
-                                                <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: 'red' }} onPress={() => this.navigateCancelAppoointment()} testID='cancelButton'>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}> {'CANCEL'}</Text>
-                                                </TouchableOpacity>
-                                            </Col>
-                                        </Row>
-
-
-
-
-
-                                    </Col>
-
-                                </Row>
-                            </View>
-
-                        </View>
+                        <RenderProposeNewPopPage
+                            data={data}
+                            skipAction={() => { this.skipAction() }}
+                            onPressUpdateAppointmentStatus={(data, updatingStatus) => { this.onPressUpdateAppointmentStatus(data, updatingStatus) }}
+                            onPressNavigateToCancelAppointment={() => { this.onPressNavigateToCancelAppointment() }}
+                        />
                     </Modal>
-
-
                 </Content>
             </Container>
         )

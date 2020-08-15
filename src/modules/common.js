@@ -236,7 +236,7 @@ export function getAllSpecialist(data) {
 }
 
 export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
-export const relationship = ['Select Retionship', 'Father', 'Mother', 'Husband', 'Wife', 'Son', 'Daughter']
+export const relationship = ['Select Relationship', 'Father', 'Mother', 'Husband', 'Wife', 'Son', 'Daughter']
 
 export const appointmentIssue = [
     { id: 0, value: 'If you see "Your payment was declined due to an issue with your account"' },
@@ -336,8 +336,6 @@ export function getHospitalName(location) {
         return ''
 }
 export function getAddress(location) {
-    console.log("location", location);
-
     if (!location) return ''
     if (location)
         return `${location.address.no_and_street},${location.address.address_line_1 || ''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;

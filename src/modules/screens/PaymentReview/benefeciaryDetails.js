@@ -24,7 +24,7 @@ class BenefeciaryDetails extends PureComponent {
 
     render() {
         const { expand, data } = this.props;
-        console.log('benificeryDetails', data)
+        // console.log('benificeryDetails', data)
         if (!expand) return null;
         return (
 
@@ -52,14 +52,14 @@ class BenefeciaryDetails extends PureComponent {
 
                     </Col>
                     <Col size={5.5}>
-                        <Text note style={styles.innerText}>{this.getCorporateBenificeryName(data)}</Text>
-                        <Text note style={styles.innerText}>{data.productType}</Text>
-                        <Text note style={styles.innerText}>{data.policyNumber}</Text>
-                        <Text note style={styles.innerText}>{formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY')}</Text>
-                        <Text note style={styles.innerText}>{formatDate(data.policyEffectiveTo, 'DD/MM/YYYY')}</Text>
-                        <Text note style={styles.innerText}>{data.sumInsured}</Text>
-                        <Text note style={styles.innerText}>2500000</Text>
-                        <Text note style={styles.innerText}> ₹ 0.00</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{this.getCorporateBenificeryName(data)}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.productType}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.policyNumber}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY')}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{formatDate(data.policyEffectiveTo, 'DD/MM/YYYY')}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.sumInsured}</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}>2500000</Text>
+                        <Text  style={[styles.innerText,{color:'#909498'}]}> ₹ 0.00</Text>
                     </Col>
                 </Row>
             </View>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     },
     innerText: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         marginTop: 5
 
     },

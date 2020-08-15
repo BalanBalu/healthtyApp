@@ -12,6 +12,7 @@ export const AUTH_RESPONSE = 'AUTH_RESPONSE'
 export const NEW_PASSWORD = 'AUTH/NEW_PASSWORD';
 export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
 export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
+export const APP_LOADED = 'APP/LOADED';
 import { NOTIFICATION_RESET } from '../notification/notification.actions'
 import { AuthService } from '../../screens/VideoConsulation/services'
 import { store } from '../../../setup/store';

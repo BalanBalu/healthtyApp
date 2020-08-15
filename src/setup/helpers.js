@@ -94,6 +94,18 @@ export function getMoment(date) {
 export function getUnixTimeStamp(date) {
   return moment(date).unix();
 }
+export function setCurrentISOTime4GivenDate(date) {
+  const timestamp = date.valueOf();
+  const current = moment();
+  const selectedSlotDateWithCurrentTime = moment(timestamp).set({
+    'hour': current.hour(),
+    'minute': current.minute(),
+    'second': current.second()
+  });
+  return selectedSlotDateWithCurrentTime;
+}
+
+
 export function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
@@ -171,12 +183,12 @@ export function getAllId(data) {
 
   let dataIds = [];
   data.map((element, index) => {
-    if(element.doctor_id){
-    if (!dataIds.includes(element.doctor_id)) {
-   
-      dataIds.push(element.doctor_id)
+    if (element.doctor_id) {
+      if (!dataIds.includes(element.doctor_id)) {
+
+        dataIds.push(element.doctor_id)
+      }
     }
-  }
 
 
   })
@@ -301,6 +313,11 @@ export const notificationNavigation = {
   {
     navigationOption: 'LabAppointmentInfo'
   },
+  "HOME_TEST_APPOINTMENT":
+  {
+    navigationOption: 'HomeHealthcareAppointmentDetail'
+  },
+
 }
 
 

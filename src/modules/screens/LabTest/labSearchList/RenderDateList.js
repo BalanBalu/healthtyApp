@@ -12,12 +12,13 @@ export default class RenderDates extends Component {
         super(props)
     }
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.selectedDate !== this.props.selectedDate) {
+        if (nextProps.shouldUpdate !== this.props.shouldUpdate) {
             return true
         }
-        else if (this.props.availabilitySlotsDatesArry.length == nextProps.availabilitySlotsDatesArry.length) {
-            return true
+        if (nextProps.shouldUpdate == this.props.shouldUpdate) {
+            return false
         }
+        return false
     }
 
     render() {

@@ -26,7 +26,7 @@ class Categories extends Component {
   }
   getCatagries = async () => {
     try {
-      let result = await catagries();
+      let result = await catagries('services=0');
       if (result.success) {
         this.setState({ data: result.data, categoriesMain: result.data })
         for (let i = 0; i < result.data.length; i++) {
@@ -60,7 +60,17 @@ class Categories extends Component {
       this.props.navigation.navigate("Hospitals", {   // New Enhancement Router path
         category_id: category_id 
       })
-
+    }
+    else if(fromNavigation === 'HOME_HEALTH_CARE') {
+        this.props.navigation.navigate("Home Health Care", { 
+                categoryName: categoryName, 
+                categoryId: category_id,
+                locationDataFromSearch: {
+                    type: 'geo',
+                    "coordinates": locationCordinates,
+                    maxDistance: MAX_DISTANCE_TO_COVER
+                }
+        });
     } else {
       this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
         inputKeywordFromSearch: categoryName,

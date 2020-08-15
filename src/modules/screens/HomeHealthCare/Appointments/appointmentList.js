@@ -1,433 +1,301 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, ListItem, Card, Thumbnail, List, Item, Input, Left, Right, Icon } from 'native-base';
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking, ActivityIndicator, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { Col, Row, Grid } from 'react-native-easy-grid'
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import styles from '../Styles'
-import StarRating from "react-native-star-rating";
-import { getAppointment4Healthcare } from '../../../providers/homeHelthCare/action'
-import { formatDate, addTimeUnit, subTimeUnit, statusValue, getAllId } from "../../../../setup/helpers";
+import { serviceOfGetHealthcareAppointmentList } from '../../../providers/homeHelthCare/action'
+import { addTimeUnit, subTimeUnit, getAllId } from "../../../../setup/helpers";
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
-import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getUserLocation } from '../../../common'
-import noAppointmentImage from "../../../../../assets/images/noappointment.png";
+import { getAllEducation, getAllSpecialist } from '../../../common'
 import Spinner from "../../../../components/Spinner";
 import { getMultipleDoctorDetails } from "../../../providers/bookappointment/bookappointment.action";
 import InsertReview from '../Reviews/insertReviews';
-
-class AppointmentList extends PureComponent {
+import { RenderNoAppointmentsFounds } from '../../CommonAll/components';
+import RenderAppointmentList from './RenderAppointmentList';
+const PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST = 6;
+const DOCTOR_FIELDS = "specialist,education,prefix,profile_image,gender";
+export default class AppointmentList extends Component {
     constructor(props) {
         super(props)
         this.state = {
             data: [],
             isLoading: false,
             selectedIndex: 0,
-            upComingData: [],
-            pastData: [],
-            userId: null,
-            loading: true,
-            modalVisible: false,
+            isVisibleAddReviewPop: false,
             reviewData: {},
-            reviewIndex: -1
-
-
+            isLoadingMoreAppList: false
         }
+        this.incrementPaginationCount = 0;
+        this.isEnabledLoadMoreData = true;
     }
     async componentDidMount() {
-        await this.setState({ isLoading: true })
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate("login");
             return;
         }
-        this.upCommingAppointment();
+        await this.onChangeUpComingOrPastTabs(0);
     }
 
 
     pageRefresh = async (navigationData) => {
         if (navigationData.action) {
-            await this.setState({
-                isLoading: true
-            })
             if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
-                if (this.state.selectedIndex == 0) {
-                    await this.upCommingAppointment();
-
-                } else {
-                    await this.pastAppointment();
-
+                if (navigationData.lastState && navigationData.lastState.params && navigationData.lastState.params.isEnablePageRefresh4HomeAppointmentList) {
+                    this.isEnabledLoadMoreData = true;
+                    this.incrementPaginationCount = 0;
+                    if (this.state.selectedIndex == 0) {
+                        this.setState({ data: [], isLoading: true });
+                        await this.getUpComingAppointmentList();
+                    } else {
+                        this.setState({ data: [], isLoading: true });
+                        await this.getPastAppointmentList();
+                    }
+                    this.setState({ isLoading: false });
                 }
             }
         }
 
     }
 
-    upCommingAppointment = async () => {
+    getUpComingAppointmentList = async () => {
         try {
-            this.setState({ isLoading: true })
-            let userId = await AsyncStorage.getItem("userId");
-            let filters = {
-                startDate: new Date().toISOString(),
-                endDate: addTimeUnit(new Date(), 1, "years").toISOString(),
+            debugger
+            const reqQueryData = {
+                startDate: new Date(),
+                endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
+                limit: PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST,
+                skip: this.incrementPaginationCount,
+                sort: 1
             };
-            let result = await getAppointment4Healthcare(userId, filters);
-            if (result.success) {
-                let doctorInfo = new Map();
-                result = result.data;
-
-                let doctorIds = getAllId(result)
-                let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
-
-                speciallistResult.data.forEach(doctorData => {
-                    let educationDetails = ' ';
-                    let speaciallistDetails = '';
-
-                    if (doctorData.education != undefined) {
-                        educationDetails = getAllEducation(doctorData.education)
-                    }
-                    if (doctorData.specialist != undefined) {
-                        speaciallistDetails = getAllSpecialist(doctorData.specialist)
-                    }
-
-                    doctorInfo.set(doctorData.doctor_id, {
-                        degree: educationDetails,
-                        specialist: speaciallistDetails,
-                        prefix: doctorData.prefix,
-                        profile_image: doctorData.profile_image,
-                        gender: doctorData.gender
-                    })
-                });
-
-                let upcommingInfo = [];
-                result.map(doctorData => {
-                    let details = doctorInfo.get(doctorData.doctor_id)
-                    upcommingInfo.push({
-                        appointmentResult: doctorData,
-                        specialist: details.specialist,
-                        degree: details.degree,
-                        prefix: details.prefix,
-                        profile_image: details.profile_image
-                    });
-                })
-                upcommingInfo.sort(function (firstVarlue, secandValue) {
-                    return firstVarlue.appointmentResult.appointment_starttime < secandValue.appointmentResult.appointment_starttime ? -1 : 0
-                })
-
-                this.setState({
-                    upComingData: upcommingInfo,
-                    data: upcommingInfo,
-                    isLoading: false
-                });
+            await this.setUpComingAndPastDataListByCommon(reqQueryData);
+            debugger
+        } catch (Ex) {
+            console.log('Ex is getting on getUpComingAppointmentList for Patient====>', Ex.message)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting getUpComingAppointmentList for Patient : ${Ex.message}`
             }
-
-        } catch (ex) {
-            console.log(ex);
-        } finally {
-            this.setState({
-                isLoading: false
-            })
-
         }
     }
 
-    pastAppointment = async () => {
+    getPastAppointmentList = async () => {
         try {
-            this.setState({ isLoading: true })
-            let userId = await AsyncStorage.getItem("userId");
-            let filters = {
+            const reqQueryData = {
                 startDate: subTimeUnit(new Date(), 1, "years").toISOString(),
-                endDate: subTimeUnit(new Date(), 1, 'days').toISOString(),
+                endDate: new Date().toISOString(),
+                limit: PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST,
+                skip: this.incrementPaginationCount,
+                sort: -1,
                 reviewInfo: true
             };
-            let result = await getAppointment4Healthcare(userId, filters);
-            if (result.success) {
-                result = result.data;
-                let doctorInfo = new Map();
-                let doctorIds = getAllId(result)
-                let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
-
-                speciallistResult.data.forEach(doctorData => {
-
-                    let educationDetails = ' ',
-                        speaciallistDetails = '';
-
+            await this.setUpComingAndPastDataListByCommon(reqQueryData);
+        } catch (Ex) {
+            console.log('Ex is getting on getPastAppointmentList for Patient====>', Ex.message)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting getPastAppointmentList for Patient : ${Ex.message}`
+            }
+        }
+    }
+    setUpComingAndPastDataListByCommon = async (reqQueryData) => {
+        try {
+            debugger
+            const userId = await AsyncStorage.getItem("userId");
+            let appointmentListResp = await serviceOfGetHealthcareAppointmentList(userId, reqQueryData);
+            if (appointmentListResp.success) {
+                this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST;
+                let doctorInfoMap = new Map();
+                appointmentListResp = appointmentListResp.data;
+                const stringOfDoctorIds = getAllId(appointmentListResp)
+                let docMulDetailsList = await getMultipleDoctorDetails(stringOfDoctorIds, DOCTOR_FIELDS);
+                docMulDetailsList.data.forEach(doctorData => {
+                    let educationData = '';
+                    let specialistData = '';
                     if (doctorData.education != undefined) {
-                        educationDetails = getAllEducation(doctorData.education)
+                        educationData = getAllEducation(doctorData.education)
                     }
                     if (doctorData.specialist != undefined) {
-                        speaciallistDetails = getAllSpecialist(doctorData.specialist)
+                        specialistData = getAllSpecialist(doctorData.specialist)
                     }
-                    doctorInfo.set(doctorData.doctor_id, {
-                        degree: educationDetails,
-                        specialist: speaciallistDetails.toString(),
+                    doctorInfoMap.set(String(doctorData.doctor_id), {
+                        degree: educationData,
+                        specialist: specialistData,
                         prefix: doctorData.prefix,
                         profile_image: doctorData.profile_image,
                         gender: doctorData.gender
                     })
                 });
-                let pastDoctorDetails = [];
-                result.map((doctorData, index) => {
-                    let details = doctorInfo.get(doctorData.doctor_id)
-
-                    pastDoctorDetails.push({
-                        appointmentResult: doctorData,
-                        specialist: details.specialist,
-                        degree: details.degree,
-                        prefix: details.prefix,
-                        profile_image: details.profile_image
+                debugger
+                let upcomingOrPastInfo = [];
+                appointmentListResp.map(appointmentItem => {
+                    const baCupOfDocInfoObj = doctorInfoMap.get(String(appointmentItem.doctor_id))
+                    upcomingOrPastInfo.push({
+                        appointmentResult: appointmentItem,
+                        ...baCupOfDocInfoObj
                     });
-                }
-                )
-                pastDoctorDetails.sort(function (firstDateValue, secondDateValue) {
-                    return firstDateValue.appointment_starttime > secondDateValue.appointment_starttime ? -1 : 0
-                })
-                this.setState({
-                    pastData: pastDoctorDetails,
-                    data: pastDoctorDetails,
-                    isLoading: false
                 });
-
-            }
-
-        } catch (ex) {
-            console.log(ex);
-        } finally {
-            this.setState({
-                isLoading: false
-            })
-
-        }
-    }
-
-
-    handleIndexChange = async (index) => {
-        let data = []
-        await this.setState({
-            selectedIndex: index,
-        });
-
-        if (index === 0) {
-            if (this.state.upComingData.length == 0) {
-                await this.upCommingAppointment()
-            } else {
-                data = this.state.upComingData
-            }
-
-        } else if (index === 1) {
-            if (this.state.pastData.length == 0) {
-                await this.pastAppointment()
-                data = this.state.pastData
+                debugger
+                const upcomingOrPastInfoList = [...this.state.data, ...upcomingOrPastInfo];  //  Merge previous  and current  UpComing Or Past data list
+                if (upcomingOrPastInfoList > 4) {
+                    this.isEnabledLoadMoreData = false;
+                }
+                if (this.state.selectedIndex === 0) {
+                    upcomingOrPastInfoList.sort((firstObj, secObj) => firstObj.appointmentResult.appointment_date < secObj.appointmentResult.appointment_date ? -1 : 0);
+                    this.setState({ data: upcomingOrPastInfoList, });
+                }
+                else {
+                    upcomingOrPastInfoList.sort((firstObj, secObj) => firstObj.appointmentResult.appointment_date > secObj.appointmentResult.appointment_date ? -1 : 0);
+                    this.setState({ data: upcomingOrPastInfoList });
+                }
             }
             else {
-                data = this.state.pastData
+                this.isEnabledLoadMoreData = false;
+                if (this.state.data.length > 4) {
+                    Toast.show({
+                        text: 'No more Appointments Available!',
+                        duration: 4000,
+                        type: "success"
+                    })
+                }
+            }
+            debugger
+        } catch (Ex) {
+            console.log('Ex is getting on set UpComingAndPastDataList By Common  for Patient====>', Ex.message)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting on set UpComingAndPastDataList By Common for Patient : ${Ex.message}`
             }
         }
-
-        await this.setState({
-            ...this.state,
-            data
-
-        });
-    };
-    navigateAddReview(item, index) {
-        this.setState({
-            modalVisible: true, reviewData: item.appointmentResult, reviewIndex: index
-        })
     }
 
-    async getvisble(val) {
-        this.setState({ modalVisible: false });
-        if (val.updatedVisible == true) {
-            await this.pastAppointment();
+    onChangeUpComingOrPastTabs = async (index) => {
+        debugger
+        this.isEnabledLoadMoreData = true;
+        this.incrementPaginationCount = 0;
+        await this.setState({ data: [], selectedIndex: index, isLoading: true });
+        if (index === 0) {
+            debugger
+            await this.getUpComingAppointmentList();
+        } else {
+            debugger
+            await this.getPastAppointmentList();
+        }
+        this.setState({ isLoading: false });
+        debugger
+    }
+
+    onPressNavigateToInsertReviewPage(item, index) {
+        this.setState({ isVisibleAddReviewPop: true, reviewData: item.appointmentResult })
+    }
+
+    insertReviewPopVisible = async (data) => {
+        this.isEnabledLoadMoreData = true;
+        this.setState({ isVisibleAddReviewPop: false });
+        if (data.updatedVisible == true) {
+            this.incrementPaginationCount = 0;
+            this.setState({ data: [] });
+            await this.getPastAppointmentList();
         }
     }
-
-
-    render() {
-        // const data = [{ token_no: 1234, name: 'Nurse Hamington MBBS', date: "Sunday,June 28-2020  11:10 am" }]
-        const { data, selectedIndex, isLoading } = this.state;
-
+    onPressGoToBookAppointmentPage = () => {
+        console.log('Need to Implement===>')
+    }
+    renderAppointmentList(item, index) {
         return (
-            <Container>
-                <Content style={{ margin: 10 }}>
-                    <NavigationEvents
-                        onWillFocus={payload => { this.pageRefresh(payload) }}
+            <RenderAppointmentList
+                appointmentData={{ item, index, selectedIndex: this.state.selectedIndex, navigation: this.props.navigation }}
+                onPressNavigateToInsertReviewPage={(item, index) => { this.onPressNavigateToInsertReviewPage(item, index) }}
+                onPressGoToBookAppointmentPage={(item) => { this.onPressGoToBookAppointmentPage(item) }}
+            // shouldUpdate={`${item}`}
+            >
+            </RenderAppointmentList>
+        )
+    }
+
+
+    loadMoreData = async () => {
+        try {
+            debugger
+            this.setState({ isLoadingMoreAppList: true });
+            if (this.state.selectedIndex === 0) await this.getUpComingAppointmentList()
+            else await this.getPastAppointmentList();
+            debugger
+        } catch (error) {
+            console.log("Ex is getting on load more doctor ist data", error.message);
+        }
+        finally {
+            this.setState({ isLoadingMoreAppList: false })
+        }
+    }
+    render() {
+        const { data, reviewData, selectedIndex, isVisibleAddReviewPop, isLoading } = this.state;
+        if (isLoading) return <Spinner
+            color="blue"
+            style={[styles.containers, styles.horizontal]}
+            visible={true}
+            size={"large"}
+            overlayColor="none"
+            cancelable={false}
+        />;
+        return (
+            <Container style={{ backgroundColor: '#ffffff', }}>
+                <NavigationEvents
+                    onWillFocus={payload => { this.pageRefresh(payload) }}
+                />
+                <Card transparent>
+                    <SegmentedControlTab
+                        tabsContainerStyle={{
+                            width: 250,
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            marginTop: "auto"
+                        }}
+                        values={["Upcoming", "Past"]}
+                        selectedIndex={selectedIndex}
+                        onTabPress={this.onChangeUpComingOrPastTabs}
+                        activeTabStyle={{
+                            backgroundColor: "#775DA3",
+                            borderColor: "#775DA3"
+                        }}
+                        tabStyle={{ borderColor: "#775DA3" }} />
+                </Card>
+                {data.length ?
+                    <FlatList
+                        data={data}
+                        onEndReached={() => { if (this.isEnabledLoadMoreData) this.loadMoreData(); }}
+                        onEndReachedThreshold={0.5}
+                        renderItem={({ item, index }) => this.renderAppointmentList(item, index)}
+                        keyExtractor={(item, index) => index.toString()}
                     />
-                    <Card transparent>
-                        <SegmentedControlTab
-                            tabsContainerStyle={{
-                                width: 250,
-                                marginLeft: "auto",
-                                marginRight: "auto",
-                                marginTop: "auto"
-                            }}
-                            values={["Upcoming", "Past"]}
-                            selectedIndex={this.state.selectedIndex}
-                            onTabPress={this.handleIndexChange}
-                            activeTabStyle={{
-                                backgroundColor: "#775DA3",
-                                borderColor: "#775DA3"
-                            }}
-                            tabStyle={{ borderColor: "#775DA3" }} />
-                    </Card>
-                    <View style={{ marginTop: 5 }}>
-                        {isLoading == true ?
-                            (
-                                <Spinner
-                                    color="blue"
-                                    style={[styles.containers, styles.horizontal]}
-                                    visible={true}
-                                    size={"large"}
-                                    overlayColor="none"
-                                    cancelable={false}
-                                />
-                            ) :
-                            (data.length === 0 ? (
-                                <Card transparent style={{
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    marginTop: "20%"
-                                }}>
-                                    <Thumbnail
-                                        square
-                                        source={noAppointmentImage}
-                                        style={{ height: 100, width: 100, marginTop: "10%" }}
-                                    />
-
-                                    <Text style={{
-                                        fontFamily: "OpenSans",
-                                        fontSize: 15,
-                                        marginTop: "10%"
-                                    }}>No appoinments are scheduled
-								</Text>
-                                    <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
-                                        <Button style={[styles.bookingButton, styles.customButton]} testID='navigateToHome'>
-                                            <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
-                                        </Button>
-                                    </Item>
-                                </Card>
-                            ) :
-                                <FlatList
-                                    data={data}
-                                    renderItem={({ item, index }) =>
-                                        <Card transparent style={styles.cardStyle}>
-                                            <TouchableOpacity onPress={() =>
-                                                this.props.navigation.navigate("HomeHealthcareAppointmentDetail", {
-                                                    data: item.appointmentResult, selectedIndex: selectedIndex
-                                                })}
-                                                testID='navigateLabAppointmentInfo'>
-
-                                                <Text style={styles.tokenText} >{"Ref no :" + item.appointmentResult.token_no}</Text>
-
-                                                <Row style={{ marginTop: 10 }}>
-                                                    <Col size={2}>
-                                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
-                                                            <Thumbnail
-                                                                circular
-                                                                source={renderDoctorImage(item)}
-                                                                style={{ height: 60, width: 60 }}
-                                                            />
-                                                        </TouchableOpacity>
-                                                    </Col>
-                                                    <Col size={8}>
-                                                        <Row style={{ borderBottomWidth: 0 }}>
-                                                            <Col size={9}>
-                                                                <Text style={styles.nameText}>{(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}</Text>
-                                                            </Col>
-                                                        </Row>
-                                                        <Row style={{ borderBottomWidth: 0 }}>
-                                                            <Text
-                                                                style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
-                                                            >
-                                                                {item.specialist}
-                                                            </Text>
-
-                                                            {selectedIndex == 1 &&
-                                                                item.appointmentResult.reviewInfo != undefined && item.appointmentResult.reviewInfo.overall_rating !== undefined && (
-
-                                                                    <StarRating
-                                                                        fullStarColor="#FF9500"
-                                                                        starSize={15}
-                                                                        containerStyle={{
-                                                                            width: 80,
-                                                                            marginLeft: "auto",
-                                                                        }}
-                                                                        disabled={false}
-                                                                        maxStars={5}
-                                                                        rating={item.appointmentResult.reviewInfo.overall_rating}
-
-                                                                    />
-                                                                )}
-                                                        </Row>
-                                                        <Text style={styles.mainText}>{item.degree}</Text>
-                                                        <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visit home address :</Text>
-                                                        <Text style={styles.subinnerText} note>{getUserLocation(item.appointmentResult.userInfo)}</Text>
-                                                        <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visited On :</Text>
-                                                        <Text style={styles.subinnerText} note>
-                                                            {formatDate(item.appointmentResult.appointment_date, "dddd,MMMM DD-YYYY")} </Text>
-                                                        <Row>
-                                                            <Col size={4} style={{ justifyContent: 'center' }}>
-                                                                <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>
-                                                                {/* <Text style={styles.completedText}>{item.appointment_status}</Text> */}
-                                                            </Col>
-                                                           
-                                                        </Row>
-                                                        {selectedIndex == 1 &&
-                                                            item.appointmentResult.appointment_status == "COMPLETED" && (item.appointmentResult.is_review_added == undefined || item.appointmentResult.is_review_added == false) ? (
-                                                                <Row style={{ borderBottomWidth: 0 }}>
-                                                                    <Right style={(styles.marginRight = -2)}>
-                                                                        <Button style={styles.shareButton}
-                                                                            onPress={() => this.navigateAddReview(item, index)}
-                                                                            testID='navigateInsertReview'>
-                                                                            <Text style={styles.bookAgain1}>Add Review</Text>
-                                                                        </Button>
-                                                                    </Right>
-
-                                                                    <Right style={(styles.marginRight = 5)}>
-                                                                        <Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
-                                                                            <Text style={styles.bookAgain1} testID='navigateBookAppointment'>Book Again</Text>
-                                                                        </Button>
-                                                                    </Right>
-                                                                </Row>
-
-                                                            ) : (
-                                                                selectedIndex === 1 && (
-
-
-                                                                    <Row style={{ borderBottomWidth: 0 }}>
-                                                                        <Right style={(styles.marginRight = 10)}>
-                                                                            <Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
-                                                                                <Text style={styles.bookAgain1}>
-                                                                                    Book Again
-																		           </Text>
-                                                                            </Button>
-                                                                        </Right>
-                                                                    </Row>
-
-                                                                )
-                                                            )}
-                                                    </Col>
-                                                </Row>
-                                            </TouchableOpacity>
-                                        </Card>
-                                    } />
-                            )}
-                        {this.state.modalVisible === true ?
-                            <InsertReview
-                                props={this.props}
-                                data={this.state.reviewData}
-                                popupVisible={(data) => this.getvisble(data)}
-                            />
-
-
-                            : null}
-
+                    : < RenderNoAppointmentsFounds text={"No Appointments are scheduled !"} />
+                }
+                {isVisibleAddReviewPop === true ?
+                    <InsertReview
+                        props={this.props}
+                        data={reviewData}
+                        popupVisible={(data) => this.insertReviewPopVisible(data)}
+                    />
+                    : null}
+                {this.state.isLoadingMoreAppList ?
+                    <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                        <ActivityIndicator
+                            style={{ marginBottom: 17 }}
+                            animating={true}
+                            size="small"
+                            color='green'
+                        />
                     </View>
-                </Content>
+                    : null}
             </Container>
         )
     }
 }
-
-export default AppointmentList
 

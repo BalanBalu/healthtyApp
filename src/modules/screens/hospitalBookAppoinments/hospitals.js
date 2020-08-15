@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content, Card, Item, Input, Thumbnail } from 'native-base';
+import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content, Card, Item, Input, Thumbnail, Toast } from 'native-base';
 import { Row, Col, Grid } from 'react-native-easy-grid';
 import { StyleSheet, View, TouchableOpacity, FlatList, Image, AsyncStorage, TextInput } from 'react-native';
 import StarRating from 'react-native-star-rating';
@@ -8,7 +8,7 @@ import { getNearByHospitals } from '../../providers/hospitals/hospitals.action'
 import { MAX_DISTANCE_TO_COVER } from '../../../setup/config'
 import { getHospitalName, getKiloMeterCalculation } from '../../common'
 import { RenderEditingPincode } from '../../screens/CommonAll/components';
-import { addTimeUnit } from '../../../setup/helpers';
+import { addTimeUnit, formatDate } from '../../../setup/helpers';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 class Hospitals extends PureComponent {
     constructor(props) {
@@ -23,6 +23,9 @@ class Hospitals extends PureComponent {
             appointmentDateTime: new Date()
         }
         this.defaultPinCode4FetchHospList = '560066'
+        const threshholdTime = new Date();
+        threshholdTime.setHours(threshholdTime.getHours() + 1)
+        this.minimumDate = threshholdTime;
     }
 
     async componentDidMount() {
@@ -78,6 +81,14 @@ class Hospitals extends PureComponent {
     }
     
     onPressToContinue4PaymentReview = async (date) => {
+        if(date < this.minimumDate) {
+            Toast.show({
+                text: 'Please select the time greater than ' + formatDate(this.minimumDate, 'Do MMM HH:mm A'),
+                duration: 3000,
+                type: 'warning'   
+            });
+            return false;
+        }
         const { haspitalValue, index } = this.selectedHospitalsForBooking;
         this.setState({ expandData: index })
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
@@ -127,27 +138,17 @@ class Hospitals extends PureComponent {
                             </Grid>
                         </View>
                         <View>
-                            {this.state.editingPincode != true ?
-                                <Row style={{ padding: 5, }}>
-                                    <Col size={8}>
-                                        <Text style={styles.showingDoctorText}>Showing Hospitals in the <Text style={styles.picodeText}>{" "}PinCode - {this.defaultPinCode4FetchHospList}</Text></Text>
-                                    </Col>
-                                    <Col size={2}>
-                                        <Row style={{ justifyContent: 'flex-end' }}>
-                                            <TouchableOpacity style={styles.editPincodeButton} onPress={() => this.setState({ editingPincode: true })} >
-                                                <Text style={{ fontFamily: 'OpenSans', color: '#ff4e42', fontSize: 10, }}>Edit Pincode </Text>
-                                            </TouchableOpacity>
-                                        </Row>
-                                    </Col>
-                                </Row> :
+                                 
                                 <View>
                                     <RenderEditingPincode
-                                        value={this.state.pin_code}
+                                        isPincodeEditVisible={this.state.editingPincode}
+                                        onChangeSelection={(value) => this.setState({   editingPincode: value })}
+                                        value={this.defaultPinCode4FetchHospList || this.state.pin_code}
                                         onChangeText={text => this.editingPincodeField(text)}
                                         onPressEditButton={this.editPinCode}
                                     />
                                 </View>
-                            }
+                            
                         </View>
 
 
@@ -155,7 +156,7 @@ class Hospitals extends PureComponent {
                             data={hospitalData}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) =>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { HospitalName: item.name })} >
+                               
                                     <Card style={styles.doctorListStyle}>
                                         <List style={{ borderBottomWidth: 0 }}>
                                             <Grid >
@@ -225,7 +226,7 @@ class Hospitals extends PureComponent {
 
                                         </List>
                                     </Card>
-                                </TouchableOpacity>
+                               
                             } />
                             
 
@@ -233,7 +234,7 @@ class Hospitals extends PureComponent {
 
                     <DateTimePicker
                         mode={'datetime'}
-                        minimumDate={new Date(2020, 2, 2)}
+                        minimumDate={this.minimumDate}
                         date={new Date()}
                         isVisible={this.state.isOnlyDateTimePickerVisible}
                         onConfirm={(date) => {

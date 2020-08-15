@@ -19,7 +19,11 @@ export async function getLabTestCateries(coordinates) {
 export const getLapAppointments = async (userId, filters) => {
     try {
         let endPoint = 'lab-test/appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+        if (filters.reviewInfo) {
+            endPoint = endPoint + '&reviewInfo=1'
+        }
         console.log(endPoint);
+
         let response = await getService(endPoint);
         let respData = response.data;
         return respData;
