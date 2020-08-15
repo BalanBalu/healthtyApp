@@ -94,7 +94,16 @@ class HomeTestConfirmation extends Component {
 
     async onPressConfirmProceedPayment() {
         debugger
-        const { bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
+        const { selectedPatientTypes, bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
+        const findFamilyDetailsInPatDetailsArray = patDetailsArray.find(item => item.type === 'others');
+        if (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && !findFamilyDetailsInPatDetailsArray) {
+            Toast.show({
+                text: 'You have selected family details, kindly add family members to continue',
+                type: 'warning',
+                duration: 3000
+            })
+            return false;
+        }
         if (!patDetailsArray.length) {
             Toast.show({
                 text: 'Kindly select Self or Add other patient details',
@@ -123,7 +132,16 @@ class HomeTestConfirmation extends Component {
         this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount })
     }
     async onPressPayAtHome() {
-        const { bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
+        const { selectedPatientTypes, bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
+        const findFamilyDetailsInPatDetailsArray = patDetailsArray.find(item => item.type === 'others');
+        if (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && !findFamilyDetailsInPatDetailsArray) {
+            Toast.show({
+                text: 'You have selected family details, kindly add family members to continue',
+                type: 'warning',
+                duration: 3000
+            })
+            return false;
+        }
         if (!patDetailsArray.length) {
             Toast.show({
                 text: 'Kindly select Self or Add other patient details',
