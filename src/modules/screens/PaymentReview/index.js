@@ -133,24 +133,7 @@ export default class PaymentReview extends Component {
       })
       return
     }
-    let modesOfPayment = 'cash';
-    if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
-      if(patientDetailsObj.benefeciaryUserDeails){
-        if(patientDetailsObj.benefeciaryUserDeails.eligibleForCorporateEntitlement===true&&bookSlotDetails.slotData.fee<patientDetailsObj.benefeciaryUserDeails.eligibleAmountPerAppointmentByCorporate){
-          toastMeassage('your not eligible','warning',3000)
-          return 
-        }
-      }
-      modesOfPayment = 'corporate';
-    } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
-      if(patientDetailsObj.benefeciaryUserDeails){
-        if(patientDetailsObj.eligibleForInsuranceEntitlement===true&&bookSlotDetails.slotData.fee<patientDetailsObj.benefeciaryUserDeails.eligibleAmountPerAppointmentByInsurance){
-          toastMeassage('this person  not eligible for booking appointment','warning',3000)
-          return 
-        }
-      }
-      modesOfPayment = 'insurance'
-    }
+   
     this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
    
     const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
@@ -163,7 +146,17 @@ export default class PaymentReview extends Component {
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
    
+    let modesOfPayment = 'cash';
 
+    if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
+
+      modesOfPayment = 'corporate';
+
+    } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
+
+      modesOfPayment = 'insurance'
+
+    }
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, modesOfPayment, bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, modesOfPayment);
     console.log('Book Appointment Payment Update Response ');
     if (response.success) {

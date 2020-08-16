@@ -258,7 +258,7 @@ class TestDetails extends PureComponent {
                </Row>
                <Row>
                     <Col size={5}>
-                        <Text style={styles.NameText}>{data.full_name + (data.relation ? ` (${data.relation})` : '')}</Text>
+                        <Text style={styles.NameText}>{data.full_name ||' '+ (data.relation ? ` (${data.relation})` : '')}</Text>
                     </Col>
                     <Col size={5}>
                         <Text style={styles.ageText}>{data.age} years</Text>
