@@ -42,6 +42,7 @@
     "react-native-gesture-handler": "^1.6.1",
     "react-native-image-crop-picker": "^0.28.0",
     "react-native-image-pan-zoom": "^2.1.11",
+    "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-incall-manager": "^3.2.7",
     "react-native-launch-application": "^1.0.1",
     "react-native-linear-gradient": "^2.5.6",

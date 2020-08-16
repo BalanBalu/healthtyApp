@@ -121,7 +121,7 @@ import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Con
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCare/Appointments/cancelAppointment';
-
+import MedicineRecords from '../../modules/screens/medicalRecords'
 
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
@@ -129,6 +129,7 @@ import Ecard from '../../modules/screens/Ecard/Ecard'
 import Hospitals from '../../modules/screens/hospitalBookAppoinments/hospitals'
 import TextTicker from 'react-native-text-ticker';
 import { IS_ANDROID } from '../config';
+import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 const AuthRoutes = {
   login: {
     screen: login,
@@ -618,7 +619,13 @@ const HomeStack = createStackNavigator({
       title: 'Ecard Details'
     }
   },
-
+//================  MedicineRecords ===============
+  MedicineRecords: {
+    screen: MedicineRecords,
+    navigationOptions: {
+      title: 'Medicine Records'
+    }
+  },
   //================  Appoinment Booking Through Hospitals ===============
   Hospitals: {
     screen: Hospitals,
@@ -710,6 +717,12 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: navigation.getParam("title"),
     }),
+  },
+  ZoomImageViewer: {
+    screen: ZoomImageViewer,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("title") || 'Image',
+    })
   },
 
 
