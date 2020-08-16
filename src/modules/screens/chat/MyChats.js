@@ -104,6 +104,10 @@ getAllChatsByUserId = async(userId) => {
                 obj.message = `You have Initiated the Chat with ${(convoData.doctorInfo.prefix ? convoData.doctorInfo.prefix + '. ' : '')} ${convoData.doctorInfo.doctor_name} Please Wait for Approval`;
                 obj.messageUpdated_time = getRelativeTime(convoData.last_chat_updated)
             }
+            if(convoData.status === possibleChatStatus.COMPLETED) {
+                obj.message = `Doctor complete the chat`;
+                obj.messageUpdated_time = getRelativeTime(convoData.last_chat_updated)
+            }
         }
         return  obj
     }
