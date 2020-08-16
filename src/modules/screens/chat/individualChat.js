@@ -354,7 +354,7 @@ class IndividualChat extends Component {
         } else if (status === possibleChatStatus.PENDING) {
             return 'You have initiated the chat, please wait for Doctor Approval. thank you for your patience'
         }else if (status === possibleChatStatus.COMPLETED) {
-            return 'Doctor complete the chat '
+            return 'Conversation Completed'
         }
     }
 }
