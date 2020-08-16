@@ -129,6 +129,7 @@ import Ecard from '../../modules/screens/Ecard/Ecard'
 import Hospitals from '../../modules/screens/hospitalBookAppoinments/hospitals'
 import TextTicker from 'react-native-text-ticker';
 import { IS_ANDROID } from '../config';
+import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 const AuthRoutes = {
   login: {
     screen: login,
@@ -716,6 +717,12 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: navigation.getParam("title"),
     }),
+  },
+  ZoomImageViewer: {
+    screen: ZoomImageViewer,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("title") || 'Image',
+    })
   },
 
 

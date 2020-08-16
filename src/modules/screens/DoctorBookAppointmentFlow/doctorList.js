@@ -283,7 +283,9 @@ class DoctorList extends Component {
                     </Row>
                 </Card>
                 {doctorInfoListAndSlotsData.length ?
-                    < FlatList
+                    <FlatList
+                        
+                        scrollEventThrottle={26}
                         data={doctorInfoListAndSlotsData}
                         onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
                         onEndReached={() => {
@@ -651,7 +653,7 @@ class DoctorList extends Component {
     renderDoctorCard(item, indexOfItem) {
         const { currentDate, expandItemOfDocIdHospitalsToShowSlotsData, isLoadingDatesAndSlots } = this.state;
         return (
-            <View>
+           
                 <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
                     <List style={{ borderBottomWidth: 0 }}>
                         <ListItem>
@@ -718,7 +720,7 @@ class DoctorList extends Component {
                         </ListItem>
                     </List>
                 </Card>
-            </View>
+           
         )
     }
 

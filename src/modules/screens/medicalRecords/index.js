@@ -5,27 +5,20 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, BackHandler, Dimensions } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
-
+import ImageViewer from 'react-native-image-zoom-viewer';
+import ZoomImageViewer from '../../elements/ImageViewer/ZoomImageViewer';
 class MedicineRecords extends PureComponent {
     constructor(props) {
         super(props)
 
         this.state = {
-
+            imageZoomViewer: false
 
         }
     }
-
-
-    render() {
-        const images = [{ image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'MRI Scan' },
-        { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'CT Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'ECG Scan' },
-        { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'X ray Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'MRI Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'ECG Scan' },
-        { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'CT Scan' },]
-        return (
-            <Container style={styles.container}>
-                <Content>
-                    <View style={{ padding: 10, }}>
+    headerComponent() {
+        return  (
+            <View style={{ padding: 10, }}>
                         <Row style={styles.SearchRow}>
 
                             <Col size={9.1} style={{ justifyContent: 'center', }}>
@@ -52,12 +45,39 @@ class MedicineRecords extends PureComponent {
                                 </TouchableOpacity>
                             </Right>
                         </Row>
-                        <View style={{ marginTop: 10 }}>
+                        </View>
+        )
+    }
+
+
+    render() {
+        const { imageZoomViewer } = this.state;
+        const images = [{ image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'MRI Scan' },
+        { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'CT Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'ECG Scan' },
+        { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'X ray Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'MRI Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'ECG Scan' },
+        { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'CT Scan' },]
+        return (
+            <Container style={styles.container}>
+                {/* <Content> */}
+                    
+                        <View style={{ flex: 1 }}>
                             <FlatList horizontal={false} numColumns={2}
-                                data={images}
+                                data={images.concat(images)}
+                                ListHeaderComponent={() => this.headerComponent()}
+                                scrollEventThrottle={16}
                                 renderItem={({ item, index }) =>
-                                    <View style={{ width: '50%', borderRadius: 5 }}>
-                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.image, title: 'Profile photo' })}>
+                                   
+                                         <TouchableOpacity onPress={() => {
+                                            this.props.navigation.navigate('ZoomImageViewer', { images: images.map(ele => {
+                                                return {
+                                                    url: '',
+                                                    props: {
+                                                        source: ele.image
+                                                    }     
+                                                 }
+                                            })  })
+                                           // this.setState({ imageZoomViewer : true })
+                                        }}> 
                                             <Card style={{ borderRadius: 5, overflow: 'hidden' }}>
                                                 <Row style={styles.rowStyle}>
                                                     <Image
@@ -75,13 +95,13 @@ class MedicineRecords extends PureComponent {
                                                 </Row>
                                             </Card>
                                         </TouchableOpacity>
-                                    </View>
+                                  
 
                                 } />
 
-                        </View>
-                    </View>
-                </Content>
+                     
+                  </View>
+                {/* </Content> */}
             </Container>
 
 
