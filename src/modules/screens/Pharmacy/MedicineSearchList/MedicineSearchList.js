@@ -295,7 +295,7 @@ class MedicineSearchList extends Component {
                                                                                 <Text style={{ fontSize: 10, marginLeft: 1.5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price || ''}</Text>
                                                                                 <Text style={{ fontSize: 13, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {medicineRateAfterOffer(item)}</Text>
                                                                             </Row> :
-                                                                            <Text style={{ fontSize: 13, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {item.price}</Text>
+                                                                            <Text style={{ fontSize: 13, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {item.price||0}</Text>
                                                                         }
                                                                     </Col>
                                                                     {cartItems.length === 0 || cartItems.findIndex(ele => ele.item.productId == item.id) === -1 ?

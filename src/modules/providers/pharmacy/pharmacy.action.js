@@ -37,11 +37,10 @@ export async function getMedicinesSearchList(keyword, pagination, isLoading = tr
   try {
     console.log(typeof keyword)
     let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + pagination + '&c=' + 10;
-    console.log(endPoint);
+   
 
     let response = await inventoryGetService(endPoint);
-    console.log('hi==================')
-    console.log(JSON.stringify(response.data))
+
     let respData = response.data.content;
     return respData;
   } catch (e) {
