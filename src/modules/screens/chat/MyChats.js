@@ -105,7 +105,7 @@ getAllChatsByUserId = async(userId) => {
                 obj.messageUpdated_time = getRelativeTime(convoData.last_chat_updated)
             }
             if(convoData.status === possibleChatStatus.COMPLETED) {
-                obj.message = `Doctor complete the chat`;
+                obj.message = `Conversation Completed`;
                 obj.messageUpdated_time = getRelativeTime(convoData.last_chat_updated)
             }
         }
