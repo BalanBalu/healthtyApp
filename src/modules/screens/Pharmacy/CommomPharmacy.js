@@ -80,7 +80,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
 
-  let totalAmount = price * quantity;
+  let totalAmount = Number(price) * Number(quantity);
   let threshold_message = null;
   let threshold_limit = threshold_limits || itemQuantity + 1
   if (threshold_limits) {
@@ -90,7 +90,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
     if (itemQuantity < threshold_limit) {
       quantity = ++itemQuantity;
-      totalAmount = quantity * price
+      totalAmount = Number(quantity) * Number(price)
     } else {
 
       threshold_message = `You can't add more than  ${String(threshold_limit)} items`

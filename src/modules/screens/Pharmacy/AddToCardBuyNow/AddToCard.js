@@ -88,7 +88,7 @@ export class AddToCard extends Component {
             quantity: Number(temp.userAddedMedicineQuantity),
             tax: 0,
             totalPrice: Number(temp.userAddedTotalMedicineAmount),
-            unitPrice: Number(temp.price),
+            unitPrice:temp.price? Number(temp.price):0,
             image: CartMedicineImage(temp.productImages)
         }
         if (temp.maxThreashold) {

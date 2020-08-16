@@ -100,8 +100,6 @@ class LabBookAppointment extends Component {
   /* get Lab Test Availability Slots service */
   getLabTestAvailabilitySlots = async (labIdFromItem, startDateByMoment, endDateByMoment) => {
     try {
-      this.setState({ isLoading: true });
-
       this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
       const reqData4Availability = {
         "labIds": [labIdFromItem]

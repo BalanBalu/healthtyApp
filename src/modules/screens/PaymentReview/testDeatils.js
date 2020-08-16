@@ -61,7 +61,7 @@ class TestDetails extends PureComponent {
             if (patInfoResp.employee_code) {
                 let result = await getCorporateUserFamilyDetails(patInfoResp.employee_code)
                 let benificeryDetailsResult=await getPolicYDetailsByid(patInfoResp.corporate_user_id)
-                console.log(JSON.stringify('benificeryDetailsResult===> ', benificeryDetailsResult[0]))
+               
                 if(result&&result[0]){
                     let temp=[];
                     result.forEach(element => {
@@ -193,8 +193,10 @@ class TestDetails extends PureComponent {
     async addFamilyMembersForBooking(data, index, payBy) {
         const payByFamilyIndex = payBy + '-' + index;
         let familyMembersSelections = this.props.familyMembersSelections
+    
 
         const beneficiaryDetailsObj = {
+    
             type: 'familymembers',
             full_name: data.full_name,
             age: parseInt(data.age),
@@ -204,6 +206,7 @@ class TestDetails extends PureComponent {
         
          if(payBy===POSSIBLE_PAY_METHODS.CORPORATE||payBy===POSSIBLE_PAY_METHODS.INSURANCE){
             beneficiaryDetailsObj.policy_no=data.benefeciaryUserDeails.policyNumber
+            beneficiaryDetailsObj.benefeciaryUserDeails=data.benefeciaryUserDeails
          }
         if(this.props.singlePatientSelect === true) {
             if(this.props.familyMembersSelections.includes(payByFamilyIndex)) {
@@ -255,7 +258,7 @@ class TestDetails extends PureComponent {
                </Row>
                <Row>
                     <Col size={5}>
-                        <Text style={styles.NameText}>{data.full_name + (data.relation ? ` (${data.relation})` : '')}</Text>
+                        <Text style={styles.NameText}>{data.full_name ||' '+ (data.relation ? ` (${data.relation})` : '')}</Text>
                     </Col>
                     <Col size={5}>
                         <Text style={styles.ageText}>{data.age} years</Text>
@@ -277,6 +280,7 @@ class TestDetails extends PureComponent {
                         </Row>
                     </Col>
                     <Col size={3.3}>
+                        {data.phone_no != undefined?
                         <Row>
                             <Col size={3}>
                                 <Text style={styles.commonText}>Mobile</Text>
@@ -288,6 +292,7 @@ class TestDetails extends PureComponent {
                                 <Text  style={[styles.commonText,{color:'#909498'}]}>{data.phone_no}</Text>
                             </Col>
                         </Row>
+                       :null}
                     </Col>
                     {enableSelectionBox === true ?
                         <Col size={3.3}>

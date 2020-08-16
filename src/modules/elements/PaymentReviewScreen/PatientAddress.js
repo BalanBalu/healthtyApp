@@ -22,11 +22,11 @@ import { getAddress } from '../../common';
 const PatientAddress = (props) => {
     const { patientAddress, onPressAddNewAddress, selectedAddress, onChangeAddress } = props;
     return (
-        <View>
+        <View >
             {patientAddress.length != 0 ?
-                <Row style={{ marginTop: 5 }}>
+                <Row style={{ marginTop: 8,marginBottom:8 }}>
                     <Col size={5}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Saved Address</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3',marginLeft:10 }}>Saved Address</Text>
                     </Col>
                     <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                         <TouchableOpacity onPress={() => onPressAddNewAddress()}>
@@ -41,7 +41,7 @@ const PatientAddress = (props) => {
                 extraData={patientAddress}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) =>
-                    <View style={{ backgroundColor: '#fff' }}>
+                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Row style={{ borderBottomColor: '#909090', borderBottomWidth: 0.3, paddingBottom: 15 }}>
 
                             <Col size={10}>

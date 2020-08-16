@@ -6,7 +6,7 @@ import { StyleSheet, AsyncStorage, Image, View, TextInput, TouchableOpacity, Fla
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge } from '../../common';
+import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge,toastMeassage } from '../../common';
 import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
@@ -94,6 +94,7 @@ export default class PaymentReview extends Component {
     this.setState({ isLoading: false, spinnerText: ' ' });
 
     if (validationResult.success) {
+ 
       const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
       if (patientDetailsObj.policy_no) {
         patientDataObj.policy_number = patientDetailsObj.policy_no
@@ -132,7 +133,9 @@ export default class PaymentReview extends Component {
       })
       return
     }
+   
     this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
+   
     const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
     if (patientDetailsObj.policy_no) {
       patientDataObj.policy_number = patientDetailsObj.policy_no
@@ -142,13 +145,18 @@ export default class PaymentReview extends Component {
     console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+   
     let modesOfPayment = 'cash';
-    if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
-      modesOfPayment = 'corporate';
-    } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
-      modesOfPayment = 'insurance'
-    }
 
+    if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
+
+      modesOfPayment = 'corporate';
+
+    } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
+
+      modesOfPayment = 'insurance'
+
+    }
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, modesOfPayment, bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, modesOfPayment);
     console.log('Book Appointment Payment Update Response ');
     if (response.success) {

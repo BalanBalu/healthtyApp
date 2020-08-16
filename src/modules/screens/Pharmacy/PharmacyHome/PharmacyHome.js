@@ -360,7 +360,7 @@ class PharmacyHome extends Component {
                                                     </Row>
                                             
                                                     <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                        <Text style={item.discount !== undefined && item.discount !== null ? styles.oldRupees : styles.newRupees}>₹{item.price}</Text>
+                                                        <Text style={item.discount !== undefined && item.discount !== null ? styles.oldRupees : styles.newRupees}>₹{item.price||0}</Text>
                                                         {item.discount !== undefined && item.discount !== null ?
                                                             <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item)}</Text> : null}
                                                     </Row>
