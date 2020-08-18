@@ -300,7 +300,7 @@ export default class MapBox extends React.Component {
                     })
                     this.props.navigation.navigate('Profile');
                 } else if (this.state.navigationOption) {
-                    this.props.navigation.navigate(navigationOption);
+                    this.props.navigation.navigate(this.state.navigationOption,{hasReloadAddress:true});
 
                 }
                 else {
@@ -579,7 +579,7 @@ export default class MapBox extends React.Component {
                                 value={this.state.locationFullText}
                                 style={styles.inputfield}
                                 placeholderTextColor="black"
-                                onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.state.navigationOption ? this.props.navigation.navigate('UserAddress', { navigationOption: navigationOption }) : this.props.navigation.navigate('UserAddress') }}
+                                onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.state.navigationOption ? this.props.navigation.navigate('UserAddress', { navigationOption: this.state.navigationOption }) : this.props.navigation.navigate('UserAddress') }}
                                 onChangeText={locationFullText => this.setState({ locationFullText })} />
                         </View>
                     </Row>

@@ -1,5 +1,85 @@
-import { postService, getService, putService, deleteService } from '../../../setup/services/httpservices';
+import { postService, getService, putService, deleteService, inventoryPostService, inventoryGetService, inventoryPutService, inventoryDeleteService } from '../../../setup/services/httpservices';
 
+
+
+
+export async function getSuggestionMedicines(keyword, data, isLoading = true) {
+  try {
+    let endPoint = 'products/search?s=' + keyword;
+    let response = await inventoryGetService(endPoint);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function searchRecentItemsByPharmacy(limit) {
+  try {
+    let endPoint = '/products/top-search-product?l=' + limit;
+    let response = await inventoryGetService(endPoint);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getMedicinesSearchList(keyword, pagination, isLoading = true) {
+  try {
+    console.log(typeof keyword)
+    let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + pagination + '&c=' + 10;
+   
+
+    let response = await inventoryGetService(endPoint);
+
+    let respData = response.data.content;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getProductDetailById(medicineId) {
+  try {
+
+    let endPoint = `/products/detail/${medicineId}`;
+    console.log(endPoint)
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getAllPromotions() {
+  try {
+    let endPoint = 'promotions';
+    let response = await inventoryGetService(endPoint);
+    console.log(JSON.stringify(response))
+    // let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 /* Search Medicine in pharmacy module  */
 export async function getSearchedMedicines(keyword, isLoading = true) {
   try {
@@ -16,46 +96,41 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
   }
 }
 
-export async function getOrderUserReviews(user_id,order_id) {
-  try {
-    let endPoint = '/medicine_orders/user/'+user_id+'/order_review/'+order_id   
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
-
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
-export async function InsertOrderReviews(user_id, data) {
-  try {
-    let endPoint = '/medicine_orders/user/' + user_id + '/order_review'
-    let response = await postService(endPoint, data);
-    let respData = response.data;
-    return respData;
-
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 
 /* Medicine Order List */
 
-export async function getMedicineOrderList(userId) {
+export async function getMedicineOrderList(userId, pagination, count) {
   try {
 
-    let endPoint = '/medicine_orders/user/' + userId;
-    let response = await getService(endPoint);
-    let respData = response.data;
+    let endPoint = `transaction/order/user/${userId}?p=${pagination}&c=${10}`;
+    let response = await inventoryGetService(endPoint);
+    console.log('req========================')
+    let respData = response.data.content
+
     return respData;
   } catch (e) {
+    console.log('hi======')
+    console.log(e)
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getAvailableStockForListOfProducts(productIds) {
+  try {
+
+    let endPoint = `/products/available-stocks?ids=${productIds}`;
+    let response = await inventoryGetService(endPoint);
+    console.log('req========================')
+    console.log(response)
+    let respData = response.data
+
+    return respData;
+  } catch (e) {
+    console.log('hi======')
+    console.log(e)
     return {
       message: 'exception' + e,
       success: false
@@ -67,13 +142,30 @@ export async function getMedicineOrderList(userId) {
 
 /* Medicine Order details */
 
-export async function getMedicineOrderDetails(order_id, userId) {
+export async function getMedicineOrderDetails(orderId) {
   try {
 
-    let endPoint = '/medicine_orders/order/' + order_id + '/user/' + userId;
-    console.log(endPoint);
-    let response = await getService(endPoint);
-    console.log(response);
+    let endPoint = `/transaction/order-number/${orderId}`;
+ 
+    let response = await inventoryGetService(endPoint);
+ 
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getMedicineOrderDetailsByOrderId(orderId) {
+  try {
+
+    let endPoint = `/transaction/order/${orderId}`;
+ 
+    let response = await inventoryGetService(endPoint);
+ 
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -85,6 +177,22 @@ export async function getMedicineOrderDetails(order_id, userId) {
 }
 
 
+export async function getOrderTracking(orderNumber) {
+  try {
+
+    let endPoint = `/transaction/track/${orderNumber}`;
+ 
+    let response = await inventoryGetService(endPoint);
+ 
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 /*get pharmacy list*/
 export async function getpharmacy(pharmacy_id) {
   try {
@@ -102,12 +210,13 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
-export async function getSelectedMedicineDetails(medicineId, pharmacyId) {
+export async function deletePrescriptionByUserId(userId) {
   try {
 
-    let endPoint = '/medicine/' + medicineId + '/pharmacy/' + pharmacyId;
-    console.log(endPoint)
-    let response = await getService(endPoint);
+    let endPoint = '/medicine_orders/prescription/user/' + userId
+    console.log(endPoint);
+    let response = await deleteService(endPoint);
+    console.log(JSON.stringify(response.data))
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -119,39 +228,13 @@ export async function getSelectedMedicineDetails(medicineId, pharmacyId) {
 }
 
 
-export async function getSuggestionMedicines(keyword, data, isLoading = true) {
-  try {
-    let endPoint = 'medicines/suggestions/' + keyword;
-    let response = await postService(endPoint, data);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
-export async function getMedicinesSearchList(data, isLoading = true) {
+export async function getMedicinesSearchListByPharmacyId(pharmacyId, pagination, isLoading = true) {
   try {
-    let endPoint = '/medicines/search/healthCareProducts';
-    let response = await postService(endPoint, data);
-
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
-export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading = true) {
-  try {
-    let endPoint = '/medicines/pharmacy/' + pharmacyId;
-    let response = await getService(endPoint);
-    let respData = response.data;
+    let endPoint = `/products/pharmacy/${pharmacyId}?p=${pagination}&c=${10}`;
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data.content;
+    
     return respData;
   } catch (e) {
     return {
@@ -171,10 +254,9 @@ export async function getNearOrOrderPharmacy(user_id, coordinates) {
       var endPoint = '/recommendation/recentOrNearByPharmacies?location=' + encodeURIComponent(coordinates);
     }
 
-    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
-    console.log(respData);
+
     return respData;
   } catch (e) {
     console.log(e);
@@ -206,11 +288,28 @@ export async function getPopularMedicine(userId, coordinates) {
 
 export async function createMedicineOrder(data) {
   try {
-    let endPoint = '/medicine_orders/order';
+    let endPoint = '/transaction';
     console.log(endPoint)
-    let response = await postService(endPoint, data);
+    let response = await inventoryPutService(endPoint, data);
+    console.log(JSON.stringify(response))
     let respData = response.data;
     return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function updateTopSearchedItems(pid) {
+  try {
+    let endPoint = `/products/top-search-product/${pid}`;
+    console.log(endPoint)
+    let response = await inventoryPutService(endPoint, data);
+
+
   } catch (e) {
     return {
       message: 'exception' + e,
@@ -289,20 +388,7 @@ export async function getMedicineReviewsCount(medicine_id) {
 }
 
 
-export async function removePrescriptionImage(prescriptionData, userId) {
-  try {
 
-    let endPoint = '/medicine_orders/prescription/' + prescriptionData.prescription_image_id + '/user/' + userId
-    let response = await deleteService(endPoint);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 export async function getPurcharseRecomentation(data) {
   try {
@@ -334,13 +420,30 @@ export async function getmedicineAvailableStatus(data, isLoading = true) {
   }
 }
 
-export async function upDateOrderData(orderId, data) {
+export async function upDateOrderData(data) {
   try {
-    let endPoint = '/medicine_orders/order/user/' + orderId;
-    let response = await putService(endPoint, data);
+    let endPoint = '/transaction/cancel-order';
+    let response = await inventoryPutService(endPoint, data);
 
     let respData = response.data;
     console.log('updateData====================================')
+    console.log(JSON.stringify(respData))
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function capturePayment(paymentId) {
+  try {
+    let endPoint = '/payment/capture/' + paymentId;
+    let response = await putService(endPoint, data);
+
+    let respData = response.data;
+    console.log('capturePayment====================================')
     console.log(JSON.stringify(respData))
     return respData;
 
@@ -366,3 +469,160 @@ export async function getUploadPrescription(userId) {
     }
   }
 }
+
+
+
+export async function getOrderUserReviews(user_id, order_id) {
+  try {
+    let endPoint = '/medicine_orders/user/' + user_id + '/order_review/' + order_id
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function InsertOrderReviews(user_id, data) {
+  try {
+    let endPoint = '/transaction/review'
+    let response = await inventoryPutService(endPoint, data);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function removePrescriptionImage(prescriptionData, userId) {
+  try {
+
+    let endPoint = '/medicine_orders/prescription/' + prescriptionData.prescription_image_id + '/user/' + userId
+    let response = await deleteService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+//cart
+export async function createCart(data) {
+  try {
+
+    let endPoint = '/cart'
+    let response = await inventoryPutService(endPoint, data);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function deleteCartByIds(cardIds) {
+  try {
+
+
+    let endPoint = '/cart?ids=' + cardIds
+    let response = await inventoryDeleteService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getCartListByUserId(userId) {
+  try {
+    let endPoint = `/cart/user/${userId}`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function deleteCartById(userId) {
+  try {
+
+
+    let endPoint = `/cart/${userId}`
+    let response = await inventoryDeleteService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+
+export async function getCartCount(userId) {
+  try {
+
+
+    let endPoint = `/cart/user/${userId}/count`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function getproductDetailsByPharmacyIds(pharmacyIds,masterProductIds) {
+  try {
+
+
+    let endPoint = `/products/master/pharmacy?pid=${pharmacyIds}&ids=${masterProductIds}`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getproductDetailsByPharmacyId(pharmacyId,masterProductIds) {
+  try {
+
+
+    let endPoint = `/products/master/${pharmacyId}?ids=${masterProductIds}`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+

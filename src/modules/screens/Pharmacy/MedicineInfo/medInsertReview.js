@@ -216,8 +216,8 @@ export class OrderInsertReview extends Component {
       const { data, is_anonymous, rating, comments } = this.state;
       let userId = await AsyncStorage.getItem('userId');
       let reviewInsertData = {
-        order_id: data._id,
-        user_id: userId
+        orderNumber: data.orderNumber,
+        userId: userId
       };
       if (reviewType == 'ADD') {
         if (rating === 0) {
@@ -231,24 +231,29 @@ export class OrderInsertReview extends Component {
 
         this.setState({ errorMsg: '' });
 
-        console.log("data", userId)
-        reviewInsertData.is_review_added = true,
-          reviewInsertData.is_anonymous = is_anonymous,
-          reviewInsertData.overall_rating = rating,
-          reviewInsertData.comments = comments
+
+        reviewInsertData.isReviewSkipped = false,
+          reviewInsertData.rating = rating,
+          reviewInsertData.raviewComment = comments
+
       }
       else {
-        reviewInsertData.is_review_added = false
+        reviewInsertData.isReviewSkipped = true
       }
-
+     
       let result = await InsertOrderReviews(userId, reviewInsertData);
+     
 
-      if (result.success) {
-        Toast.show({
-          text: result.message,
-          type: "success",
-          duration: 3000
-        });
+      if (result) {
+      
+         if( reviewInsertData.isReviewSkipped!==true){
+          Toast.show({
+            text: 'review added successfully',
+            type: "success",
+            duration: 3000
+          });
+         }
+        
         this.props.popupVisible({
           visible: false,
           reviewUpdated: true
@@ -257,7 +262,7 @@ export class OrderInsertReview extends Component {
 
       else {
         Toast.show({
-          text: result.message,
+          text: 'review failed',
           type: "danger",
           duration: 3000
         });
@@ -286,18 +291,7 @@ export class OrderInsertReview extends Component {
     return (
       <Container style={{ flex: 1 }}>
         <Content style={{ backgroundColor: '#EAE6E6', padding: 10, flex: 1 }}>
-          {/* <View>
-              <Row>
-                <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
-                  onPress={() => {
-                    this.setModalVisible(true);
-                  }}>
-                  <Row style={{ alignItems: 'center' }}>
-                    <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Insert Reviews</Text>
-                  </Row>
-                </TouchableOpacity>
-              </Row>
-            </View> */}
+
           <View style={{ height: 200, position: 'absolute', bottom: 0 }}>
             <Modal
               animationType="slide"
@@ -370,30 +364,8 @@ export class OrderInsertReview extends Component {
                       </Col>
                     </Row>
                   </View>
-                  {errorMsg ?
-                    <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{errorMsg}</Text> : null}
-                  <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
 
-                    <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
 
-                      <CheckBox
-                        status={is_anonymous ? true : false}
-                        style={{ borderRadius: 5 }}
-                        checked={this.state.is_anonymous}
-                        onPress={() => { this.setState({ is_anonymous: !is_anonymous }); }}
-                      />
-                      <Text style={{ color: '#3C98EC', marginTop: 10, fontSize: 12 }}>Anonymous</Text>
-                    </Col>
-                  </Row>
-                  <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, marginBottom: 20 }}>
-
-                    <Col style={{ width: '50%' }}>
-                    </Col>
-                    <Col style={{ width: '50%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                      <TouchableOpacity style={{ backgroundColor: '#959595', paddingLeft: 20, paddingRight: 20, paddingTop: 3, paddingBottom: 3, borderRadius: 2 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12, }} onPress={() => this.submitReview('CANCEL')} >Cancel</Text></TouchableOpacity>
-                      <TouchableOpacity style={{ backgroundColor: '#349631', paddingLeft: 20, paddingRight: 20, paddingTop: 3, paddingBottom: 3, borderRadius: 2, marginLeft: 10 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12 }} onPress={() => this.submitReview('ADD')}>Submit</Text></TouchableOpacity>
-                    </Col>
-                  </Row>
                 </View>
               </Grid>
             </Modal>

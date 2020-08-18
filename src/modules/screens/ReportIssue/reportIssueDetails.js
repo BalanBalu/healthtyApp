@@ -31,7 +31,6 @@ class reportIssueDetails extends Component {
       const userId = await AsyncStorage.getItem('userId');
       let serviceType = this.props.navigation.getParam('serviceType')
       let resultReport = await getUserRepportDetails(serviceType, userId, this.state.reportedId, true);
-
       if (resultReport.success) {
 
         this.setState({ data: resultReport.data, replyData: resultReport.data.reply_data || [] });
@@ -132,7 +131,7 @@ class reportIssueDetails extends Component {
                   </Row>
                   <View style={{ marginTop: 10 }}>
                     <Text style={styles.contentText}>{data.issue_type}</Text>
-                    <Text note style={styles.contentText}>{data.complaint} <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#4c4c4c'}}>{' Reported on ' +formatDate(data.created_date, 'DD/MM/YYYY ')}</Text> </Text>
+                    <Text note style={styles.contentText}>{data.complaint} <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#4c4c4c' }}>{' Reported on ' + formatDate(data.created_date, 'DD/MM/YYYY ')}</Text> </Text>
                   </View>
                 </View>
                 {replyData.length != 0 &&

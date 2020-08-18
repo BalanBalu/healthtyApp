@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, Linking, Platform } from 'react-native';
 import Mapbox from '../../screens/bookappoinment/Mapbox';
 
-import { Text, Card, List, ListItem, Left, Body, Icon } from 'native-base';
+import { Text, Card, List, ListItem, Left, Body, Icon, Right } from 'native-base';
 import { Row, Grid } from 'react-native-easy-grid';
 
 
@@ -10,6 +10,16 @@ export default class RenderLabLocation extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.number === nextProps.number) return false;
         else return true;
+    }
+    openMap = (lat, lng, name) => {
+        const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+        const latLng = `${lat},${lng}`;
+        const label = name;
+        const url = Platform.select({
+            ios: `${scheme}${label}@${latLng}`,
+            android: `${scheme}${latLng}(${label})`
+        }); 
+        Linking.openURL(url); 
     }
 
     render() {
@@ -39,8 +49,24 @@ export default class RenderLabLocation extends Component {
                                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.state}</Text>
                                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.pin_code}</Text>
                                 </Body>
+                                <Right>
+                                <TouchableOpacity style={{flexDirection: 'row' }} >
+                                    <Icon name="directions" type="MaterialIcons" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
+                                    <Text onPress={()=> this.openMap(locationData.coordinates[0], locationData.coordinates[1], name)}
+                                        style={{ fontFamily: 'OpenSans',
+                                                 fontSize:13,
+                                                 marginLeft: 2,
+                                                }}>{'View Directions'}
+                                    </Text>
+                             </TouchableOpacity>
+                                </Right>
+
+                                
                             </ListItem>
-                        </List>
+                          </List>
+                          
+                          
+                       
                     </Card>
                 </Card>
             </View>

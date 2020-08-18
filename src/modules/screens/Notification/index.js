@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import React, { Component, PureComponent } from 'react';
+import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, ScrollView, YellowBox } from 'react-native';
 // import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import {
@@ -12,18 +12,22 @@ import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, dateDiff, notificationNavigation } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
 import { store } from '../../../setup/store';
-
-class Notification extends Component {
+import { RenderFooterLoader } from '../../common';
+YellowBox.ignoreWarnings(['Async']);
+class Notification extends PureComponent {
     constructor(props) {
 
         super(props);
         this.state = {
             data: [],
             notificationId: null,
+            isLoading: false,
 
-            isLoading: false
         };
-
+        this.skip = 0;
+        this.limit = 10
+        this.onEndReachedCalledDuringMomentum = true;
+        this.isAllNotificationLoaded = false;
     }
 
     async componentDidMount() {
@@ -48,8 +52,9 @@ class Notification extends Component {
             await this.setState({ isLoading: false })
             if (navigationData.action) {
                 if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/POP') {
-
-                    await this.getUserNotification();
+                    // this.skip = 0;
+                    // await this.setState({ data: [] })
+                    // await this.getUserNotification();
 
                 }
             }
@@ -59,13 +64,13 @@ class Notification extends Component {
         }
 
     }
-    updateNavigation = async (item) => {
+    updateNavigation = async (item,index) => {
 
 
         await this.setState({ notificationId: item._id })
         if (item.notification_type === 'APPOINTMENT') {
             if (!item.mark_as_viewed) {
-                await this.upDateNotification('mark_as_viewed')
+                 this.upDateNotification('mark_as_viewed',index)
                 this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id, fromNotification: true })
 
             }
@@ -75,7 +80,7 @@ class Notification extends Component {
         }
         else if (item.notification_type !== 'VIDEO_CONSULTATION') {
             if (!item.mark_as_viewed) {
-                await this.upDateNotification('mark_as_viewed')
+                 this.upDateNotification('mark_as_viewed')
                 this.props.navigation.push(notificationNavigation[item.notification_type].navigationOption, { serviceId: item.service_id, fromNotification: true })
 
             }
@@ -84,12 +89,23 @@ class Notification extends Component {
             }
         }
     }
-    upDateNotification = async (node) => {
+    upDateNotification = async (node,index) => {
         try {
 
             if (this.state.notificationId) {
 
-                let result = await UpDateUserNotification(node, this.state.notificationId);
+                UpDateUserNotification(node, this.state.notificationId);
+                if(node==='mark_as_viewed'){
+                    
+                    if(index){
+                        let data=this.state.data
+                        let temp=this.state.data[index]
+                        temp.mark_as_viewed=true
+                        data.splice(index, 1, temp);
+                        await this.setState({data})
+                    }
+                }
+
 
             }
         }
@@ -101,119 +117,109 @@ class Notification extends Component {
 
     getUserNotification = async () => {
         try {
-
             let userId = await AsyncStorage.getItem('userId');
-
-            let result = await fetchUserNotification(userId);
-
+            let result = await fetchUserNotification(userId, this.skip, this.limit);
             if (result.success) {
-                this.setState({ data: result.data })
+
+                let temp = this.state.data.concat(result.data);
+                console.log('Total Count ' + result.totalCount + ' Loaded Notification Count:' + temp.length);
+                if (temp.length === result.totalCount) {
+                    this.isAllNotificationLoaded = true;
+                }
+                this.setState({ data: temp, footerLoading: false });
             }
-
-
-
-
-
-
         }
         catch (e) {
             console.log(e);
         }
-
-
     }
 
-
+    renderFooter() {
+        return (
+            <RenderFooterLoader footerLoading={this.state.footerLoading} />
+        );
+    }
+    handleLoadMore = async () => {
+        if (this.isAllNotificationLoaded === false) {
+            this.onEndReachedCalledDuringMomentum = true;
+            this.skip = this.skip + this.limit;
+            this.setState({ footerLoading: true });
+            await this.getUserNotification()
+        }
+    }
 
     render() {
         const { data, isLoading } = this.state;
-
-
         return (
             < Container style={styles.container} >
                 {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}
-                <Content>
-                    {isLoading === false ?
-                        <Spinner
-                            color="blue"
-                            style={[styles.containers, styles.horizontal]}
-                            visible={true}
-                            size={"large"}
-                            overlayColor="none"
-                            cancelable={false}
-                        /> : data === undefined ? null : data.length == 0 ?
 
-                            <View style={{
-                                flex: 1,
-                                justifyContent: 'center', alignItems: 'center', marginTop: 200,
-                            }}>
+                {isLoading === false ?
+                    <Spinner
+                        color="blue"
+                        style={[styles.containers, styles.horizontal]}
+                        visible={true}
+                        size={"large"}
+                        overlayColor="none"
+                        cancelable={false}
+                    /> : data === undefined ? null : data.length == 0 ?
 
-                                <Icon style={{ fontSize: 25 }} name='ios-notifications-off' />
-                                <Text>No Notification Found</Text>
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'center', alignItems: 'center', marginTop: 200,
+                        }}>
 
-                            </View>
+                            <Icon style={{ fontSize: 25 }} name='ios-notifications-off' />
+                            <Text>No Notification Found</Text>
 
-                            :
+                        </View>
 
-                            < ScrollView horizontal={false}>
-                                <NavigationEvents
-                                    onWillFocus={payload => { this.backNavigation(payload) }}
-                                />
+                        :
+                        <View style={{ flex: 1 }}>
+                            <NavigationEvents
+                                onWillFocus={payload => { this.backNavigation(payload) }}
+                            />
 
-                                <List noBorder>
-                                    <FlatList
-                                        // horizontal={true}
-                                        data={data}
-                                        extraData={this.state}
-                                        renderItem={({ item, index }) =>
+                            <FlatList
+                                // horizontal={true}
+                                data={data}
+                                 extraData={this.state}
+                                onEndReached={() => this.handleLoadMore()}
+                                onEndReachedThreshold={0.5}
+                                // onMomentumScrollBegin={() => { 
+                                //     console.log('On Momentum Scroll begin');
+                                //     this.onEndReachedCalledDuringMomentum = false; 
+                                // }}
+                                ListFooterComponent={this.renderFooter.bind(this)}
+                                renderItem={({ item, index }) =>
+                                    <Card style={{ borderRadius: 5, width: 'auto', padding: 15, backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
+                                        <TouchableOpacity onPress={() => this.updateNavigation(item,index)} testID='notificationView'>
+                                            <View>
+                                                {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
+                                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'right', marginTop: 5, }}>
+                                                        {formatDate(new Date(item.created_date), "DD-MM-YYYY")}
+                                                    </Text> :
 
+                                                    <Text style={{
+                                                        fontSize: 12, fontFamily: 'OpenSans',
+                                                        marginTop: 5, textAlign: 'right',
+                                                    }}>
+                                                        {moment(new Date(item.created_date), "YYYYMMDD").fromNow()}
+                                                    </Text>
+                                                }
+                                                <Text style={{
+                                                    fontSize: 14, fontFamily: 'OpenSans', marginTop: 10,
+                                                    color: '#000', textAlign: 'auto', lineHeight: 20
+                                                }}>{item.notification_message} </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </Card>
+                                }
+                                keyExtractor={(item, index) => index.toString()} />
+                        </View>
 
+                }
 
-                                            <Card style={{ borderRadius: 5, width: 'auto', padding: 15, backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
-                                                {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
-                                                <TouchableOpacity onPress={() => this.updateNavigation(item)} testID='notificationView'>
-                                                    <View >
-
-
-                                                        {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
-
-                                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'right', marginTop: 5, }}>
-                                                                {formatDate(new Date(item.created_date), "DD-MM-YYYY")}
-                                                            </Text> :
-
-                                                            <Text style={{
-                                                                fontSize: 12, fontFamily: 'OpenSans',
-                                                                marginTop: 5, textAlign: 'right',
-                                                            }}>
-                                                                {moment(new Date(item.created_date), "YYYYMMDD").fromNow()}
-                                                            </Text>
-                                                        }
-
-
-
-
-                                                        <Text style={{
-                                                            fontSize: 14, fontFamily: 'OpenSans', marginTop: 10,
-                                                            color: '#000', textAlign: 'auto', lineHeight: 20
-                                                        }}>{item.notification_message} </Text>
-
-
-
-
-
-                                                    </View>
-                                                </TouchableOpacity>
-                                            </Card>
-
-                                        }
-                                        keyExtractor={(item, index) => index.toString()} />
-                                </List>
-
-                            </ ScrollView>
-
-
-                    }
-                </Content>
             </Container >
         );
     }
@@ -222,8 +228,8 @@ class Notification extends Component {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
-        padding: 5
-
+        padding: 5,
+        flex: 1
     },
 
     card: {

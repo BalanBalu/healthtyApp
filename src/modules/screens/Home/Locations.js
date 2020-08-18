@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, FlatList, AsyncStorage } from 'react-native';
 
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
@@ -27,7 +27,7 @@ class Locations extends PureComponent {
         this.setState({ isLoading: true })
         if (navigationOption != null) {
             const pharmacyResult = await getPharmacyLocations();
-          
+
             this.setState({ isLoading: false })
             if (pharmacyResult.success) {
                 this.setState({ locations: pharmacyResult.data });
@@ -41,11 +41,11 @@ class Locations extends PureComponent {
         }
     }
     getPopularCities = async () => {
-       const result = await getPopularCities();
-       
-       if (result.success) {
-           this.setState({ popularLocations: result.data });
-       }
+        const result = await getPopularCities();
+
+        if (result.success) {
+            this.setState({ popularLocations: result.data });
+        }
     }
     itemSaperatedByListView = () => {
         return (
@@ -59,12 +59,12 @@ class Locations extends PureComponent {
         );
     };
     onPressList = (cityInfo) => {
-        let value=this.props.navigation.getParam('navigationOption')||null
-        this.props.navigation.navigate("LocationDetail", { cityData : cityInfo,navigationOption:value })
+        let value = this.props.navigation.getParam('navigationOption') || null
+        this.props.navigation.navigate("LocationDetail", { cityData: cityInfo, navigationOption: value })
     }
     render() {
-        const { locations, isLoading , popularLocations } = this.state
-        
+        const { locations, isLoading, popularLocations } = this.state
+
         return (
             <Container>
 
@@ -102,6 +102,7 @@ class Locations extends PureComponent {
                                 <FlatList
                                     data={popularLocations}
                                     extraData={popularLocations}
+
                                     renderItem={({ item }) => (
                                         <ListItem
                                             button
@@ -115,7 +116,8 @@ class Locations extends PureComponent {
                                             </Right>
                                         </ListItem>
 
-                                    )} />
+                                    )}
+                                    keyExtractor={(item, index) => index.toString()} />
                             </List>
                             <List>
                                 <ListItem itemDivider>
@@ -126,31 +128,39 @@ class Locations extends PureComponent {
                                     renderItem={({ item }) => (
                                         <ListItem
                                             button
-                                            onPress={() =>{
-                                                store.dispatch({
+                                            onPress={() => {
+                                                const data = {
                                                     type: SET_PATIENT_LOCATION_DATA,
                                                     center: item.coordinates,
                                                     locationName: item.location,
-                                                    isSearchByCurrentLocation: false
-                                                })
+                                                    isSearchByCurrentLocation: false,
+                                                    isLocationSelected: true
+                                                }
+                                                store.dispatch(data)
+                                                AsyncStorage.setItem('manuallyEnabledLocation', JSON.stringify(data))
+                                       
                                                 this.props.navigation.pop()
                                             }}
                                             button>
-                                           
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.location}</Text>
-                                            
+
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.location}</Text>
+
                                         </ListItem>
 
 
-                                    )} />
+                                    )}
+                                    keyExtractor={(item, index) => index.toString()}
+                                />
                             </List>
                         </View>
                     </View>
                 </Content>
                 <View>
-                    <TouchableOpacity style={styles.fab} onPress={() => {
+                    <TouchableOpacity style={styles.fab} onPress={async () => {
+                        await AsyncStorage.removeItem('manuallyEnabledLocation');
                         CurrentLocation.getCurrentPosition();
-                        this.props.navigation.navigate("Home")
+                        this.props.navigation.navigate("Home");
+                       
                     }}>
                         <Icon name="locate" style={styles.text}></Icon>
                     </TouchableOpacity>

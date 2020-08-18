@@ -1,4 +1,4 @@
-import { postService, putService, getService } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
@@ -12,12 +12,29 @@ export const AUTH_RESPONSE = 'AUTH_RESPONSE'
 export const NEW_PASSWORD = 'AUTH/NEW_PASSWORD';
 export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
 export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
+export const APP_LOADED = 'APP/LOADED';
 import { NOTIFICATION_RESET } from '../notification/notification.actions'
 import { AuthService } from '../../screens/VideoConsulation/services'
 import { store } from '../../../setup/store';
 import axios from 'axios';
 
 
+
+export async function ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes) {
+  try {
+    const endPoint = 'admin/productConfig/multiple/' + productConfigTypes;
+    const response = await getService(endPoint);
+    return response.data;
+  } catch (Ex) {
+    console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+      message: `Exception while occurred on Get Email and Mobile Otp product config details : ${Ex}`
+    }
+  }
+}
 
 export async function generateOtpForEmailAndMobile(reqData, userId) {
   try {
@@ -80,6 +97,7 @@ export async function login(userCredentials, isLoading = true) {
     let response = await postService(endPoint, userCredentials);
 
     let respData = response.data;
+    
 
 
     if (respData.error || !respData.success) {
@@ -102,6 +120,7 @@ export async function login(userCredentials, isLoading = true) {
     }
 
   } catch (e) {
+   
     store.dispatch({
       type: LOGIN_HAS_ERROR,
       message: e + ' Occured! Please Try again'
@@ -204,6 +223,7 @@ export async function logout() {
   await AsyncStorage.removeItem('basicProfileData');
   await AsyncStorage.removeItem('updatedDeviceToken');
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
+  await AsyncStorage.removeItem('is_corporate_user')
 
   store.dispatch({
     type: LOGOUT
@@ -217,7 +237,11 @@ export async function logout() {
 
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
-
+  try{
+   
+if(userData.is_corporate_user){
+  await AsyncStorage.setItem('is_corporate_user', 'true')
+}
   await AsyncStorage.setItem('token', token)
   await AsyncStorage.setItem('userId', userData.userId)
   await AsyncStorage.setItem('isLoggedIn', 'true');
@@ -229,6 +253,9 @@ export async function setUserLocally(token, userData) {
     type: SET_USER,
     details: userData
   })
+}catch(e){
+  console.log(e)
+}
 
 }
 export const hasLoggedIn = async (props) => {
@@ -371,6 +398,37 @@ export async function userEmailUpdate(userId, data, type) {
   }
 }
 
+
+export async function getAllCompanyList() {
+  try {
+    let endPoint = 'corporates';
+    let response = await smartHealthGetService(endPoint);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+export async function verifyEmployeeDetails(empCode, authCode) {
+  try {
+    let endPoint = `employee/${empCode}/${authCode}`;
+
+    let response = await smartHealthGetService(endPoint);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exception' + e.message,
+      success: false
+    }
+  }
+}
 
 
 

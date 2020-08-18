@@ -5,6 +5,8 @@ import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import { bloodDonationFilter, bloodDonationList } from '../../providers/profile/profile.action'
 import { object } from 'prop-types';
+import { translate } from "../../../setup/translator.helper"
+
 class BloodDonerFilters extends Component {
   constructor(props) {
     super(props)
@@ -21,9 +23,9 @@ class BloodDonerFilters extends Component {
       stateSelect: null,
       citySelect: null,
       districtSelect: null,
-      bloodgroupbutton:false
+      bloodgroupbutton: false
     }
-  this.filterData = [];
+    this.filterData = [];
   }
 
   async componentDidMount() {
@@ -61,10 +63,10 @@ class BloodDonerFilters extends Component {
       let result = await bloodDonationFilter(data);
       if (result.success) {
         result.data.bloodGroupList.unshift("None")
-      result.data.stateList.unshift("None")
-      result.data.countryList.unshift("None")
-      result.data.cityList.unshift("None")
-      result.data.districtList.unshift("None")
+        result.data.stateList.unshift("None")
+        result.data.countryList.unshift("None")
+        result.data.cityList.unshift("None")
+        result.data.districtList.unshift("None")
         if (bloodSelect == null) {
           this.setState({
             bloodList: result.data.bloodGroupList
@@ -119,8 +121,8 @@ class BloodDonerFilters extends Component {
 
       this.filterData.splice(bloodlist, 1)
     }
-    if(value != "None"){
-    this.filterData.push(object);
+    if (value != "None") {
+      this.filterData.push(object);
     }
 
     if (type == 'blood_group') {
@@ -219,7 +221,26 @@ class BloodDonerFilters extends Component {
         this.filterData.splice(bloodlist, 1)
       }
     }
-    await this.getBlooddonationfilterList(this.filterData);
+
+    let position = this.filterData
+    position.map((t) => {
+      if (t.type === "blood_group") {
+        this.setState({ selectedOne: "COUNTRY" })
+      }
+      else if (t.type === "address.address.country") {
+        this.setState({ selectedOne: "STATE" })
+      }
+      else if (t.type === "address.address.state") {
+        this.setState({ selectedOne: "DISTRICT" })
+      }
+      else if (t.type === "address.address.district") {
+        this.setState({ selectedOne: "CITY" })
+      }
+
+    })
+
+
+    await this.getBlooddonationfilterList(position);
 
   }
 
@@ -227,7 +248,7 @@ class BloodDonerFilters extends Component {
     let user = [],
       doctor = [];
     let result = await bloodDonationList(this.filterData);
-    
+
     if (result.success) {
       user = result.data.userList
       doctor = result.data.doctorList
@@ -238,11 +259,8 @@ class BloodDonerFilters extends Component {
       })
     }
     this.props.navigation.navigate('Blood Donors', {
-      filteredData:user,filerCount: this.filterData.length
+      filteredData: user, filerCount: this.filterData.length
     })
-
-
-
   }
 
 
@@ -259,31 +277,29 @@ class BloodDonerFilters extends Component {
                 {this.state.selectedOne == 'BLOODGROUP' ?
                   <View>
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>Blood Group</Text>
+                      <Text style={styles.textHead}>{translate("Blood Group")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.bloodList}
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item, index }) =>
                         <ListItem>
-                         
-
-                            <TouchableOpacity
-                              onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
-                              style={{ flexDirection: 'row' }}>
-                              <Left>
-                                <Text style={styles.subText}>{item}</Text>
-                              </Left>
-                              <Right>
-                              <Radio  
+                          <TouchableOpacity
+                            onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
+                            style={{ flexDirection: 'row' }}>
+                            <Left>
+                              <Text style={styles.subText}>{item}</Text>
+                            </Left>
+                            <Right>
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
-                                selected={this.state.bloodSelect === item ? true : false} 
-                                />
-                              
-                              </Right>
-                            </TouchableOpacity>
-                      
+                                selected={this.state.bloodSelect === item ? true : false}
+                              />
+
+                            </Right>
+                          </TouchableOpacity>
+
                         </ListItem>
                       } />
                   </View> : null}
@@ -291,7 +307,7 @@ class BloodDonerFilters extends Component {
                 {this.state.selectedOne == 'COUNTRY' ?
                   <View>
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>Country</Text>
+                      <Text style={styles.textHead}>{translate("Country")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.countryList}
@@ -305,11 +321,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <Radio  
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.country')}
-                                selected={this.state.countrySelect === item ? true : false} 
-                                />
+                                selected={this.state.countrySelect === item ? true : false}
+                              />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -319,7 +335,7 @@ class BloodDonerFilters extends Component {
                 {this.state.selectedOne == 'STATE' ?
                   <View>
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>State</Text>
+                      <Text style={styles.textHead}>{translate("State")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.stateList}
@@ -332,12 +348,12 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              
-                              <Radio  
+
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.state')}
-                                selected={this.state.stateSelect === item ? true : false} 
-                                />
+                                selected={this.state.stateSelect === item ? true : false}
+                              />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -347,7 +363,7 @@ class BloodDonerFilters extends Component {
                 {this.state.selectedOne == 'DISTRICT' ?
                   <View>
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>District</Text>
+                      <Text style={styles.textHead}>{translate("District")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.districtList}
@@ -361,11 +377,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <Radio  
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.district')}
-                                selected={this.state.districtSelect === item ? true : false} 
-                                />
+                                selected={this.state.districtSelect === item ? true : false}
+                              />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -377,7 +393,7 @@ class BloodDonerFilters extends Component {
                   <View>
 
                     <ListItem style={{ justifyContent: 'center' }}>
-                      <Text style={styles.textHead}>City</Text>
+                      <Text style={styles.textHead}>{translate("City")}</Text>
                     </ListItem>
                     <FlatList
                       data={this.state.cityList}
@@ -392,11 +408,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <Radio  
+                              <Radio
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.city')}
-                                selected={this.state.citySelect === item ? true : false} 
-                                />
+                                selected={this.state.citySelect === item ? true : false}
+                              />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -412,13 +428,13 @@ class BloodDonerFilters extends Component {
         <View style={styles.ViewStyle}>
           <List style={{ marginLeft: -20 }}>
             <ListItem>
-              <Text style={styles.textHead}>Categories</Text>
+              <Text style={styles.textHead}>{translate("Categories")}</Text>
             </ListItem>
 
             <ListItem style={selectedOne === 'BLOODGROUP' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('BLOODGROUP')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>Blood Group</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("Blood Group")} </Text>
 
                 </Left>
                 <Right>
@@ -429,7 +445,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'COUNTRY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('COUNTRY')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>Country</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{translate("Country")}</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -439,7 +455,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'STATE' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('STATE')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>State</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{translate("State")}</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -449,7 +465,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'DISTRICT' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('DISTRICT')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>District</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("District")}</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -459,7 +475,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'CITY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('CITY')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>City</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("City")}</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -471,7 +487,7 @@ class BloodDonerFilters extends Component {
         <TouchableOpacity onPress={() => this.filteredTotalDataList1()} style={{ backgroundColor: '#7E49C3' }}>
           <Footer style={{ backgroundColor: '#7E49C3', justifyContent: 'center', alignItems: 'center' }}>
 
-            <Text uppercase={true} style={styles.searchText}>search</Text>
+            <Text uppercase={true} style={styles.searchText}>{translate("search")}</Text>
 
           </Footer>
         </TouchableOpacity>

@@ -4,9 +4,8 @@ import { logout } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
-
 import { getReferalPoints, getCurrentVersion } from '../../providers/profile/profile.action';
-import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
+import { catagries } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
@@ -15,32 +14,24 @@ import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, RESET_INCOMING_
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
-const BloodImg = require('../../../../assets/images/blood.jpeg');
+const BloodImg = require('../../../../assets/images/blood.png');
 const ReminderImg = require('../../../../assets/images/reminder.png');
-const LabTestImg = require('../../../../assets/images/lab-test.png');
-import OfflineNotice from '../../../components/offlineNotice';
+const doctorConsultations = require('../../../../assets/images/doc_consultaiton.jpg');
+const HomeTestImg = require('../../../../assets/images/hometest.jpg');
+const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
+const hospitalLogoImg = require('../../../../assets/images/hospital.png');
+const publicForum = require('../../../../assets/images/public_forum.png');
+const hospitalImg = require('../../../../assets/images/hospitalimg.jpg');
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
-import { CallService, CallKeepService  } from '../VideoConsulation/services';
+import { CallService, CallKeepService } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
-import { getReminderData } from '../../providers/reminder/reminder.action.js';
 import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
-
-
-const debounce = (fun, delay) => {
-    let timer = null;
-    return function (...args) {
-        const context = this;
-        timer && clearTimeout(timer);
-        timer = setTimeout(() => {
-            fun.apply(context, args);
-        }, delay);
-    };
-}
-
+import NextAppoinmentPreparation from './nextAppoinmentPreparation'
+import CheckLocationWarning from './LocationWarning';
 class Home extends Component {
 
     locationUpdatedCount = 0;
@@ -50,13 +41,12 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: null,
-            totalSpecialistDataArry: [],
-            visibleClearIcon: '',
-            categryCount: 0
+            categryCount: 0,
+            AppoinmentData: [],
+            updatedDate: '',
+            AppointmentId: '',
+            doctorInfo: {}
         };
-        this.callSuggestionService = debounce(this.callSuggestionService, 500);
-      
     }
 
     navigetToCategories() {
@@ -170,7 +160,6 @@ class Home extends Component {
                 navigation.setParams({
                     notificationBadgeCount: notificationCount
                 });
-                getReminderData(userId);
                 this.getAllChatsByUserId(userId);
                 this.getMarkedAsReadedNotification(userId);
             }
@@ -224,11 +213,19 @@ class Home extends Component {
 
     getCatagries = async () => {
         try {
-            const searchQueris = 'services=0&skip=0&limit=9';
+            const searchQueris = 'services=0';
             let result = await catagries(searchQueris);
 
             if (result.success) {
-                this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
+                 let data = [];   
+                 result.data.some((ele, index) => {
+                    if(index < 9) {
+                        data.push(ele);  
+                    } else {
+                        return true
+                    } 
+                 });   
+                this.setState({ catagary: data, categryCount: this.state.categryCount + 1 })
             }
         } catch (e) {
             console.log(e);
@@ -258,70 +255,23 @@ class Home extends Component {
         }
     }
 
-
     navigateToCategorySearch(categoryName) {
+         CheckLocationWarning.checkLocationWarning(this.navigateToCateSearch.bind(this), [ categoryName ]);
+    };
+   
+    navigateToCateSearch = (categoryName) => {
         const { bookappointment: { locationCordinates } } = this.props;
-
-        let serachInputvalues = [{
-            type: 'category',
-            value: categoryName
-        },
-        {
-            type: 'geo',
-            value: {
-                coordinates: locationCordinates,
+        this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+            inputKeywordFromSearch: categoryName,
+            locationDataFromSearch: {
+                type: 'geo',
+                "coordinates": locationCordinates,
                 maxDistance: MAX_DISTANCE_TO_COVER
             }
-        }]
-        this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
+        })
     }
-    count = 0;
-    callSuggestionService = async (enteredText) => {
-        console.log('clicked :' + this.count++)
-        const userId = await AsyncStorage.getItem('userId');
-        const { bookappointment: { locationCordinates } } = this.props;
-        locationData = {
-            "coordinates": locationCordinates,
-            "maxDistance": MAX_DISTANCE_TO_COVER
-        }
+   
 
-        let specialistResultData = await getSpecialistDataSuggestions(userId, enteredText, locationData);
-        // console.log('specialistResultData.data' + JSON.stringify(specialistResultData.data))
-        if (specialistResultData.success) {
-            this.setState({
-                totalSpecialistDataArry: specialistResultData.data,
-                searchValue: enteredText,
-            });
-        } else {
-
-            this.setState({
-                totalSpecialistDataArry: [],
-                searchValue: enteredText
-            });
-        }
-    }
-    /* Filter the Specialist and Services on Search Box  */
-
-    SearchKeyWordFunction = async (enteredText) => {
-        await this.setState({ visibleClearIcon: enteredText })
-        this.callSuggestionService(enteredText);  // Call the Suggestion API with Debounce method
-    }
-
-    clearTotalText = () => {
-        this.setState({ visibleClearIcon: null, totalSpecialistDataArry: null, searchValue: null })
-    };
-
-    itemSaperatedByListView = () => {
-        return (
-            <View
-                style={{
-                    padding: 4,
-                    borderBottomColor: 'gray',
-                    borderBottomWidth: 0.5
-                }}
-            />
-        );
-    };
     getMarkedAsReadedNotification = async (userId) => {
         try {
             await fetchUserMarkedAsReadedNotification(userId);
@@ -341,7 +291,7 @@ class Home extends Component {
                 ConnectyCube.videochat.onCallListener = this._onCallListener;
                 ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
                 ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-                ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
+                ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
                 this.getMarkedAsReadedNotification(userId);
             }
         } catch (e) {
@@ -352,22 +302,22 @@ class Home extends Component {
     /*      
         Video Calling Service             
     */
-   async _setUpListeners() {
+    async _setUpListeners() {
         let userId = await AsyncStorage.getItem('userId')
-        const { chat : { loggedIntoConnectyCube }} = this.props;
-        if (userId && loggedIntoConnectyCube === false ) {
-           this.authorized = await authorizeConnectyCube();
-           console.log('loggedIntoConnectyCube '+ loggedIntoConnectyCube + ' Authorized: ' + this.authorized);
-           if(this.authorized) {
-                 ConnectyCube.videochat.onCallListener = this._onCallListener;
-                 ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
-                 ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-                 ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
-               setTimeout(() => {
+        const { chat: { loggedIntoConnectyCube } } = this.props;
+        if (userId && loggedIntoConnectyCube === false) {
+            this.authorized = await authorizeConnectyCube();
+            console.log('loggedIntoConnectyCube ' + loggedIntoConnectyCube + ' Authorized: ' + this.authorized);
+            if (this.authorized) {
+                ConnectyCube.videochat.onCallListener = this._onCallListener;
+                ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+                ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
+                setTimeout(() => {
                     setUserLoggedIn();
-               }, 5000)
-                
-           }
+                }, 5000)
+
+            }
         }
     }
     _onCallListener = (session, extension) => {
@@ -389,50 +339,52 @@ class Home extends Component {
     };
     _onStopCallListener = (session, userId, extension) => {
         const isStoppedByInitiator = session.initiatorID === userId;
-    
+
         CallService.processOnStopCallListener(userId, isStoppedByInitiator)
-          .then(() => {
-            if (isStoppedByInitiator) {
-                  store.dispatch({
-                    type: SET_VIDEO_SESSION,
-                    data: null
-                  });
-                  CallService.setSession(null);
-                  CallService.setExtention(null);
-                  store.dispatch({
+            .then(() => {
+                if (isStoppedByInitiator) {
+                    store.dispatch({
+                        type: SET_VIDEO_SESSION,
+                        data: null
+                    });
+                    CallService.setSession(null);
+                    CallService.setExtention(null);
+                    store.dispatch({
+                        type: RESET_INCOMING_VIDEO_CALL,
+                    })
+                }
+            })
+            .catch(
+                store.dispatch({
                     type: RESET_INCOMING_VIDEO_CALL,
-                  })
-            }
-          })
-          .catch(
-            store.dispatch({
-                type: RESET_INCOMING_VIDEO_CALL,
-          }));
-      };
+                }));
+    };
     _onRejectCallListener = (session, userId, extension) => {
         CallService.processOnRejectCallListener(session, userId, extension)
-          .then(() => {
-            store.dispatch({
-                type: SET_VIDEO_SESSION,
-                data: null
-            });
-            CallService.setSession(null);
-            CallService.setExtention(null);
-          })
-          .catch(store.dispatch({
-            type: RESET_INCOMING_VIDEO_CALL,
-          }));
-      };
-    
+            .then(() => {
+                store.dispatch({
+                    type: SET_VIDEO_SESSION,
+                    data: null
+                });
+                CallService.setSession(null);
+                CallService.setExtention(null);
+            })
+            .catch(store.dispatch({
+                type: RESET_INCOMING_VIDEO_CALL,
+            }));
+    };
+
     showInomingCallModal = (session, extension) => {
         CallService.setSession(session);
         CallService.setExtention(extension);
-        CallKeepService.displayIncomingCall('12345', 'Doctor' );
+        CallKeepService.displayIncomingCall('12345', 'Doctor');
     };
-    
+
+
+
+
     render() {
-        const { fromAppointment } = this.state;
-        const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
+        const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
 
         if (locationUpdatedCount !== this.locationUpdatedCount) {
             navigation.setParams({
@@ -447,86 +399,122 @@ class Home extends Component {
         return (
 
             <Container style={styles.container}>
-                <OfflineNotice />
+               
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
-
                     <Row style={styles.SearchRow}>
                         <Col size={0.9} style={styles.SearchStyle}>
-                            <TouchableOpacity style={{ justifyContent: 'center' }}>
-                                <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-                            </TouchableOpacity>
+                            <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
                         </Col>
                         <Col size={8.1} style={{ justifyContent: 'center', }}>
                             <Input
+                                onFocus={() => { this.props.navigation.navigate("RenderSuggestionList") }}
                                 placeholder="Search for Symptoms/Services,etc"
                                 style={styles.inputfield}
                                 placeholderTextColor="#e2e2e2"
-                                keyboardType={'email-address'}
-                                autoFocus={fromAppointment}
-                                value={this.state.visibleClearIcon}
-                                onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
+                                editable={true}
                                 underlineColorAndroid="transparent"
-                                blurOnSubmit={false}
                             />
                         </Col>
-                        <Col size={1.0} style={{ justifyContent: 'center' }}>
-                            {this.state.visibleClearIcon != '' ?
-                                <Button transparent onPress={() => this.clearTotalText()} style={{ justifyContent: 'flex-start', marginLeft: -10 }}>
-                                    <Icon name="ios-close" style={{ fontSize: 25, color: 'gray' }} />
-                                </Button>
-                                : null}
+                    </Row>
+                    
+                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
+                        <Col style={{ width: '50%', }}>
+                            <TouchableOpacity onPress={() =>
+                                this.props.navigation.navigate("Categories")
+                            }>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={doctorConsultations}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Doctor Consultions')}</Text>
+                                            <Text style={styles.subText}>{translate('Book an One Click appointment and Consult doctors')}</Text>
+                                        </Col>
+
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                        <Col style={{ width: '50%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories",{fromNavigation:"HOSPITAl"})}>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={hospitalImg}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Hospitals')}</Text>
+                                            <Text style={styles.subText}>{translate('Search Hospitals and Consult Doctors')} </Text>
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
                         </Col>
 
-                    </Row>
+                    </Grid>
+                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
+                        <Col style={{ width: '50%' }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories",{fromNavigation:"HOME_HEALTH_CARE"})}>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={HomeTestImg}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
+                                            <Text style={styles.subText}>{translate('Get Doctor Consultation at Your Home')} </Text>
+                                        </Col>
 
-                    {this.state.searchValue != null ?
-                        <FlatList
-                            data={this.state.totalSpecialistDataArry ? [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }].concat(this.state.totalSpecialistDataArry) : [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }]}
-                            extraData={[this.state.searchValue, this.state.totalSpecialistDataArry]}
-                            ItemSeparatorComponent={this.itemSaperatedByListView}
-                            renderItem={({ item, index }) => (
-                                <Row
-                                    onPress={() => {
-                                        let requestData = [{
-                                            type: 'geo',
-                                            value: {
-                                                coordinates: locationCordinates,
-                                                maxDistance: MAX_DISTANCE_TO_COVER
-                                            }
-                                        }]
-                                        if (index !== 0) {
-                                            requestData.push({
-                                                type: item.type,
-                                                value: item.type === 'symptoms' ? [item.value] : item.value
-                                            })
-                                        }
-                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
-                                    }}
-                                >
-                                    <Col size={7}>
-                                        <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#775DA3', paddingLeft: 10, }}>{item.value}</Text>
-                                        {item.address ? <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#9c9b9f', paddingLeft: 10, }}>{item.address}</Text> : null}
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                        <Col style={{ width: '50%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={LabTestImgs}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
+                                            <Text style={styles.subText}>Book Full Body Lab Test from The Safety Of Your Home</Text>
+                                        </Col>
 
-                                    </Col>
-                                    <Col size={3}>
-                                        <Text uppercase={true} style={{ color: 'gray', marginTop: 2, marginRight: 10, color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold', paddingLeft: 10, }}>{item.type}</Text>
-                                    </Col>
-                                </Row>
-                            )}
-                            enableEmptySections={true}
-                            style={{ marginTop: 10 }}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
-                        : null}
-
-
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                    </Grid>
+                  
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
-                    <Col style={{ width: '33%',}}>
-                            <TouchableOpacity onPress={() => 
-                                 this.props.navigation.navigate("Video and Chat Service")
+                        <Col style={{ width: '50%', }}>
+                            <TouchableOpacity onPress={() =>
+                                this.props.navigation.navigate("Video and Chat Service")
                             }>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
@@ -539,17 +527,15 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>Chat and Video</Text>
-                                            <Text style={styles.subText}>Consult doctors through chat or video</Text>
+                                            <Text style={styles.mainText}>{translate('Chat and Video')}</Text>
+                                            <Text style={styles.subText}>{translate('Consult doctors through chat or video')}</Text>
                                         </Col>
 
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-
-                  
-                        <Col style={{ width: '33%', marginLeft: 5 }}>
+                        <Col style={{ width: '50%', marginLeft: 5 }}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
@@ -562,44 +548,63 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
-                                            <Text style={styles.subText}> Get medicines delivered to home</Text>
+                                            <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
+                                            <Text style={styles.subText}>{translate('Get medicines delivered to home')} </Text>
                                         </Col>
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-                        <Col style={{ width: '33%', marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
-                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                    <Row style={styles.rowStyle}>
-                                        <Image
-                                            source={BloodImg}
-                                            style={{
-                                                width: '100%', height: '100%', alignItems: 'center'
-                                            }}
-                                        />
-                                    </Row>
-                                    <Row style={styles.secondRow}>
-                                        <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>Blood donors</Text>
-                                            <Text style={styles.subText}>Find Available blood donors</Text>
-                                        </Col>
 
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
-                 
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                         <Row style={{ marginTop: 5 }}>
-                        <Col size={5}>
+                            <Col size={5}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories",{fromNavigation:"HOSPITAl"})}>
+                                    <Card style={{ padding: 5, borderRadius: 2 }}>
+                                        <Row>
+                                            <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                <Text style={styles.mainText}>{translate('Hospitals')}</Text>
+                                            </Col>
+                                            <Col size={2.5}>
+                                                <Image
+                                                    source={hospitalLogoImg}
+                                                    style={{
+                                                        width: 35, height: 35, alignItems: 'center'
+                                                    }}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={5} style={{ marginLeft: 5 }}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Public Forum")} >
+                                    <Card style={{ padding: 5, borderRadius: 2 }}>
+                                        <Row>
+                                            <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                <Text style={styles.mainText}>{translate('Public Forum')} </Text>
+                                            </Col>
+                                            <Col size={2.5}>
+                                                <Image
+                                                    source={publicForum}
+                                                    style={{
+                                                        width: 35, height: 35, alignItems: 'center'
+                                                    }}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
+                        <Row style={{ marginTop: 5 }}>
+                            <Col size={5}>
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>Medicine Reminder</Text>
+                                                <Text style={styles.mainText}>{translate('Medicine Reminder')}</Text>
                                             </Col>
                                             <Col size={2.5}>
                                                 <Image
@@ -614,16 +619,16 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 5 }}>
-                                <TouchableOpacity onPress={()=> this.props.navigation.navigate('Lab Test')}> 
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")} >
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>Book Lab tests</Text>
+                                                <Text style={styles.mainText}>{translate('Blood Donors')} </Text>
                                             </Col>
                                             <Col size={2.5}>
 
                                                 <Image
-                                                    source={LabTestImg}
+                                                    source={BloodImg}
                                                     style={{
                                                         width: 35, height: 35, alignItems: 'center'
                                                     }}
@@ -638,11 +643,11 @@ class Home extends Component {
                     <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 20 }}>
                         <Row style={{ marginTop: 10, marginBottom: 5 }}>
                             <Left>
-                                <Text style={styles.mainHead}>Categories</Text>
+                                <Text style={styles.mainHead}>{translate('Categories')}</Text>
                             </Left>
                             <Right>
                                 <TouchableOpacity onPress={() => this.navigetToCategories()} style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 5, paddingTop: 5, borderRadius: 5, color: '#fff', flexDirection: 'row' }}>
-                                    <Text style={{ color: '#775DA3', fontSize: 13, textAlign: 'center', fontWeight: 'bold' }}>View All</Text>
+                                    <Text style={{ color: '#775DA3', fontSize: 13, textAlign: 'center', fontWeight: 'bold' }}>{translate('View All')}</Text>
                                 </TouchableOpacity>
                             </Right>
                         </Row>
@@ -676,7 +681,7 @@ class Home extends Component {
 
                         <Row style={{ marginTop: 10, marginBottom: 5 }}>
                             <Left>
-                                <Text style={styles.mainHead}>Refer and Earn!</Text>
+                                <Text style={styles.mainHead}>{translate('Refer and Earn!')} </Text>
                             </Left>
                         </Row>
                         <View>
@@ -707,7 +712,14 @@ class Home extends Component {
                                     </Row>
                                 </TouchableOpacity>
                             </Card>
+                            <NextAppoinmentPreparation
+                                navigation={this.props.navigation}
+                            />
                         </View>
+
+
+
+
                     </View>
 
                 </Content>
@@ -941,10 +953,12 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         width: '100%',
+        height: 80,
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     mainText: {
         fontSize: 10,

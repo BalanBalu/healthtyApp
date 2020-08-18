@@ -7,8 +7,32 @@ import { CallKeepService , REMOTE_USER_END_CALL_REASONS} from './index';
 import {  AppState  } from 'react-native';
 import { store } from '../../../../setup/store';
 import { IS_ANDROID } from '../../../../setup/config';
+import { DeviceEventEmitter, NativeModules, NativeEventEmitter } from 'react-native';
+let activityStarter;
+let eventEmitter;
+
+
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
+
+ 
+ constructor() {
+  console.log('Calling here ....'); 
+   this.getWiredPlugedIn()
+   if(IS_ANDROID) {
+    activityStarter = NativeModules.InCallManager;
+    eventEmitter = new NativeEventEmitter(activityStarter);
+    eventEmitter.addListener('onAudioFocusChange', function (data) {
+     // --- do something with events
+     console.log('Wired Headset State', data);
+ });
+}
+ }
+ async getWiredPlugedIn() {
+ const isPluggedIn = await InCallManager.getIsWiredHeadsetPluggedIn();
+ console.log('is Plugged in ' + isPluggedIn); 
+
+ }
 
   _session = null;
   _extension = null;
@@ -104,9 +128,16 @@ export default class CallService {
   };
 
   rejectCall = (session, extension) => {
+    console.log('On Reject Session', session);
+    console.log('On Reject Extentsion', extension);
     this.stopSounds();
     if(session) {
-      session.reject(extension);
+      if(extension) {
+        session.reject(extension);
+      } else {
+        session.reject();
+      }
+      this._session = null;
       CallKeepService.rejectCall();
     }
   };

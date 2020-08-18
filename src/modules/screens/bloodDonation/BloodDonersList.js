@@ -5,6 +5,8 @@ import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import { bloodDonationList } from '../../providers/profile/profile.action';
 import Spinner from '../../../components/Spinner'
+import { translate } from "../../../setup/translator.helper"
+
 class BloodDonersList extends Component {
   constructor(props) {
     super(props)
@@ -179,10 +181,10 @@ class BloodDonersList extends Component {
             marginRight: 20
           }}>
             <Col style={{ width: '70%' }}>
-              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>Interested in Blood Donation?</Text>
+              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>{translate("Interested in Blood Donation?")}</Text>
             </Col>
             <Col>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')} style={{ paddingTop: 5, paddingBottom: 5, paddingLeft: 10, paddingRight: 10, backgroundColor: '#08BF01', borderRadius: 5 }}><Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#fff', textAlign: 'center' }}>Register Now</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')} style={{ paddingTop: 5, paddingBottom: 5, paddingLeft: 10, paddingRight: 10, backgroundColor: '#08BF01', borderRadius: 5 }}><Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#fff', textAlign: 'center' }}>{translate("Register Now")}</Text></TouchableOpacity>
             </Col>
           </Row>
         </Footer>

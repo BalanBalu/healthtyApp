@@ -3,7 +3,8 @@ import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, Toast, CardItem, Right, Body, Content, Input, Item, Row, Col } from 'native-base';
 import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
-import{onlySpaceNotAllowed } from '../../common';
+import {reomveEvent} from '../../../setup/calendarEvent'
+import{onlySpaceNotAllowed ,getName,getHospitalHeadeName} from '../../common';
 import { Loader } from '../../../components/ContentLoader'
 import Spinner from '../../../components/Spinner';
 
@@ -46,23 +47,31 @@ class CancelAppointment extends Component {
   cancelAppointment = async (data, updatedStatus) => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-    
+ 
       if (onlySpaceNotAllowed(this.state.statusUpdateReason) == true) {
         this.setState({ isLoading: true });
         let requestData = {
-          doctorId: data.doctor_id,
+          doctorId: data.doctor_id||null,
           userId: userId,
           startTime: data.appointment_starttime,
           endTime: data.appointment_endtime,
           status: updatedStatus,
           statusUpdateReason: this.state.statusUpdateReason,
-          status_by: 'USER'
+          status_by: 'USER',
+          booked_for:data.booked_for||'DOCTOR'
         };
+        if(data.booked_for==='HOSPITAL'){
+          delete requestData.doctorId
+
+          requestData.hospitalAdminId=data.location[0].hospital_admin_id
+        }
 
    
-        let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+        let result = await appointmentStatusUpdate( this.state.appointmentId, requestData);
            console.log(result)
         if (result.success) {
+        await reomveEvent(data.user_appointment_event_id)
+      
           Toast.show({
             text: 'Your appointment has been canceled',
             duration: 3000,
@@ -127,7 +136,7 @@ class CancelAppointment extends Component {
                         {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
                           formatDate(data.appointment_starttime, 'hh:mm A')}
                      
-                      </Text> with {(data && data.prefix || '') + " " + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
+                      </Text> with {data.booked_for==='HOSPITAL'?getHospitalHeadeName(data.location[0]):(data && data.prefix || '') + " " + getName(data.doctorInfo)}</Text>
                     <Text style={{ marginTop: 20,fontFamily:'OpenSans',fontSize:15 }}>What is the reason for Cancellation?</Text>
 
 

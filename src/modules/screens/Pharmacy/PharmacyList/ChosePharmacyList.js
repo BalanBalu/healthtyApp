@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Container, Content, Text,  Item, ListItem, Input,  Icon, Footer, FooterTab, 
- 
-   View, CheckBox as CheckedBox,
-    Badge, 
-    Toast } from 'native-base';
+import {
+    Container, Content, Text, Item, ListItem, Input, Icon, Footer, FooterTab,
+    View, CheckBox,
+    Badge,
+    Toast
+} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
-import { getMedicinesSearchList, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action';
+import { getMedicinesSearchList, getNearOrOrderPharmacy, getproductDetailsByPharmacyIds } from '../../../providers/pharmacy/pharmacy.action';
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
-import { getAddress, getKiloMeterCalculation, renderPharmacyImage } from '../CommomPharmacy'
+import { getAddress, getKiloMeterCalculation, renderPharmacyImage, medicineRateAfterOffer, medicineDiscountedAmount, getMedicineName, CartMedicineImage, ProductIncrementDecreMents, getMedicineNameByProductName } from '../CommomPharmacy'
 import Spinner from "../../../../components/Spinner";
 import { connect } from 'react-redux'
 class ChosePharmacyList extends Component {
@@ -20,39 +21,85 @@ class ChosePharmacyList extends Component {
             isLoading: true,
             locationCordinates: null,
             selectedPharmacy: -1,
+            showDetailsSelectedIndex: -1,
             checked: false,
             prescriptionDetails: null,
+            medicineOrderData: [],
+            productAvailableData: [],
+            pharmacyMedicineData: []
         }
     }
     componentDidMount() {
-      let   prescriptionDetails = this.props.navigation.getParam('prescriptionDetails') || null;
-        this.setState({ prescriptionDetails })
+        let medicineOrderData = this.props.navigation.getParam('medicineOrderData') || [];
+
+        this.setState({ medicineOrderData })
         this.getNearByPharmacyList()
     }
     getNearByPharmacyList = async () => {
         try {
             const { bookappointment: { locationCordinates } } = this.props;
-            locationData = {
+            let locationData = {
                 "coordinates": locationCordinates,
                 "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
-            console.log('JSON.stringify(locationData)')
-            console.log(JSON.stringify(locationData))
+
             this.setState({ locationCordinates: locationCordinates })
-            userId = await AsyncStorage.getItem('userId')
-            let postData = [
-                {
-                    type: 'geo',
-                    value: locationData
-                }
-            ]
-            // let result = await getMedicinesSearchList(postData);
+
+
+
             let result = await getNearOrOrderPharmacy(null, JSON.stringify(locationData));
-            console.log(JSON.stringify(result))
+
 
 
             if (result.success) {
                 await this.setState({ pharmacyData: result.data, pharmacyMainData: result.data })
+                if (this.state.medicineOrderData.length !== 0) {
+                    let pharmacyIds = []
+                    let productmasterIds = []
+                    result.data.forEach(element => {
+                        pharmacyIds.push(element.pharmacyInfo.pharmacy_id)
+
+                    });
+                    this.state.medicineOrderData.forEach(ele => {
+                        productmasterIds.push(ele.item.masterProductId)
+                    })
+
+                    let productResult = await getproductDetailsByPharmacyIds(pharmacyIds, productmasterIds);
+
+                    if (productResult) {
+                        let modifiedData = {}
+                        let pharmacyData = []
+                        result.data.forEach(element => {
+                       
+                            let pharmacyProductData = productResult.find(ele => {
+                                return ele.pharmacyId === element.pharmacyInfo.pharmacy_id
+                            })
+
+                            if (pharmacyProductData !== undefined && (pharmacyProductData.products !== undefined && pharmacyProductData.products.length !== 0)) {
+
+                                modifiedData = this.medicineDataModify(pharmacyProductData, true)
+
+
+
+
+                            } else {
+                                modifiedData = this.medicineDataModify(pharmacyProductData, false)
+                            }
+                            pharmacyData.push({
+                                ...element,
+                                pharmacyAvailable: modifiedData.productWithItemData,
+                                pharmacyAvailableData: modifiedData.medicineDataModify,
+                                unavailableMedicineData: modifiedData.unavailableMedicineData,
+                                totalAmount: modifiedData.totalAmount
+                            })
+
+
+                        });
+
+                        this.setState({ pharmacyData: pharmacyData,pharmacyMainData: pharmacyData})
+                    }
+                }
+
             }
         }
         catch (e) {
@@ -73,7 +120,8 @@ class ChosePharmacyList extends Component {
         }
     }
     onProceedToPayment = () => {
-        const { selectedPharmacy, pharmacyData, prescriptionDetails } = this.state;
+      try{
+        const { selectedPharmacy, pharmacyData } = this.state;
 
         if (selectedPharmacy === -1) {
             Toast.show({
@@ -82,17 +130,16 @@ class ChosePharmacyList extends Component {
                 duration: 3000
             })
         } else {
-            let temp = [];
-
-            let value = pharmacyData[selectedPharmacy]
-            value.PrescriptionId = prescriptionDetails._id
-            value.prescription_ref_no = prescriptionDetails.prescription_ref_no
-
-            temp.push(value)
+            let value = pharmacyData[selectedPharmacy];
+            console.log('cmncv,jzmcnvbmcv')
+       console.log(JSON.stringify(value))
             this.props.navigation.navigate("MedicineCheckout", {
-                medicineDetails: temp, isPrescription: true
-            })
+                pharmacyInfo: value.pharmacyInfo, isPrescription: true, hasChosePharmacyReload: true, medicineDetails: value.pharmacyAvailable
+            });
         }
+    }catch(e){
+        console.log(e)
+    }
     }
     filterPharmacies(searchValue) {
 
@@ -123,9 +170,9 @@ class ChosePharmacyList extends Component {
                             blurOnSubmit={false}
                         />
                     </Col>
-                    <Col size={0.9} style={styles.SearchStyle}>
+                    <Col size={0.9} style={{ justifyContent: 'center' }}>
                         <TouchableOpacity style={{ justifyContent: 'center' }}>
-                            <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
+                            <Icon name="ios-search" style={{ color: 'gray', fontSize: 25, }} />
                         </TouchableOpacity>
                     </Col>
 
@@ -134,12 +181,85 @@ class ChosePharmacyList extends Component {
         )
     }
 
+    medicineDataModify(data, isAvailable) {
+        let medicineDataModify = [];
+        let unavailableMedicineData = [];
+        let productWithItemData=[];
+        let totalAmount = 0
+        if (isAvailable) {
+            this.state.medicineOrderData.forEach(element => {
+
+                let temp = element.item
+                let index = data.products.findIndex(ele => {
+                    return ele.masterProductId === temp.masterProductId
+                })
+                if (index !== -1) {
+                    let element = data.products[index]
+                
+                    let item = {
+                        discountedAmount: element.discount ? medicineDiscountedAmount(element) : 0,
+                        productName: getMedicineName(element),
+                        productId: String(element.id),
+                        masterProductId: String(element.masterProductId),
+                        quantity: temp.quantity,
+                        tax: 0,
+                        unitPrice: Number(element.price),
+                        image: CartMedicineImage(element.productImages)
+                    }
+                    if (temp.maxThreashold) {
+                        item.maxThreashold = temp.maxThreashold
+                    }
+                    if (temp.h1Product) {
+                        item.isH1Product = temp.h1Product
+                    }
+
+                    let discountedValue = medicineRateAfterOffer(element);
+
+                    let price = ProductIncrementDecreMents(temp.quantity, discountedValue, 'null', temp.maxThreashold)
+                    //   
+                    item.totalPrice = price.totalAmount
+                    totalAmount = +price.totalAmount
+                    productWithItemData.push({ item })
+                    medicineDataModify.push(item)
+                   
+                } else {
+                    
+                    let data = {
+                        productName: temp.productName,
+                        status: 'unavailable'
+                    }
+                    unavailableMedicineData.push(data)
+
+                }
+            })
+        } else {
+            this.state.medicineOrderData.forEach(element => {
+                let temp = {
+                    productName: element.item.productName,
+                    status: 'unavailable'
+                }
+                unavailableMedicineData.push(temp)
+            })
+
+        }
+        return {
+            productWithItemData:productWithItemData,
+            medicineDataModify: medicineDataModify,
+            unavailableMedicineData: unavailableMedicineData,
+            totalAmount: totalAmount
+        }
+
+
+
+    }
+
+
     render() {
         const { pharmacyData, isLoading, locationCordinates, selectedPharmacy, checked, prescriptionDetails } = this.state;
         const nearPharmacy = [{ name: 'Apollo Pharmacy', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }]
 
         return (
-           
+
             <Container style={{ backgroundColor: '#f2f2f2' }}>
                 <Content style={{ padding: 10 }}>
                     {isLoading == true ?
@@ -152,7 +272,7 @@ class ChosePharmacyList extends Component {
                             overlayColor="none"
                             cancelable={false}
                         /> :
-                        <View>
+                        <View style={{ marginBottom: 20 }}>
                             {pharmacyData.length === 0 ?
                                 <View>
                                     {this.renderStickeyHeader()}
@@ -168,7 +288,7 @@ class ChosePharmacyList extends Component {
                                         ListHeaderComponent={this.renderStickeyHeader()}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
-                                            <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10, }}>
+                                            <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10, borderRadius: 2.5, }}>
                                                 <Row style={{ paddingBottom: 2 }}>
                                                     <Col size={2}>
                                                         <Image
@@ -184,30 +304,84 @@ class ChosePharmacyList extends Component {
                                                                 <Text style={styles.mednames}>{item.pharmacyInfo.name}</Text>
                                                                 <Text style={styles.addressText}>{getAddress(item.pharmacyInfo.location)}</Text>
                                                             </Col>
-                                                            <Col size={3}>
-                                                                <Text style={styles.kmText}>{getKiloMeterCalculation(item.pharmacyInfo.location.coordinates, locationCordinates)}</Text>
+                                                            <Col size={3} >
+                                                                <View style={{ alignItems: 'flex-end', }}>
+                                                                    <Text style={styles.kmText}>{getKiloMeterCalculation(item.pharmacyInfo.location.coordinates, locationCordinates)}</Text>
+                                                                </View>
+                                                                
+                                                                {selectedPharmacy === index ?
+                                                                    <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
+                                                                        <CheckBox style={{ borderRadius: 5 }}
+                                                                            checked={true}
+                                                                            onPress={() => this.pharmacySelected(index)}
+                                                                        />
+                                                                    </View>
+                                                                    :
+                                                                    <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
+                                                                        <CheckBox style={{ borderRadius: 5 }}
+                                                                            checked={false}
+                                                                            onPress={() => this.pharmacySelected(index)}
+                                                                        />
+                                                                    </View>
+                                                                }
                                                             </Col>
+
                                                         </Row>
-                                                        <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 5 }}>
-                                                            {selectedPharmacy === index ?
-                                                                <View>
-                                                                    <CheckedBox 
-                                                                        checked={true}
-                                                                        onPress={() => this.pharmacySelected(index)}
-                                                                    />
+                                                        <Row style={{ marginTop: 5 }}>
+
+                                                            {/* vetri */}
+                                                            {item.pharmacyAvailableData !== undefined ?
+
+                                                                <View style={{ width: '100%' }} >
+                                                                    <Row>
+                                                                        <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
+                                                                            {item.pharmacyAvailableData !== undefined && item.pharmacyAvailableData.length !== 0 ?
+                                                                                item.pharmacyAvailableData.length === this.state.medicineOrderData.length ?
+                                                                                    <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: 'green', fontWeight: '400' }}>{'All product available'} </Text>
+                                                                                    :
+                                                                                    <Row>
+                                                                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: 'green', fontWeight: '400' }}>{item.pharmacyAvailableData.length === 1 ? item.pharmacyAvailableData.length + 'product available' : item.pharmacyAvailableData.length + 'products available'} </Text>
+                                                                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: 'green', fontWeight: '400' }}>{item.unavailableMedicineData.length === 1 ? item.unavailableMedicineData.length + 'product un available' : item.unavailableMedicineData.length + 'products un available'} </Text>
+                                                                                    </Row>
+                                                                                :
+                                                                                <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: 'red', fontWeight: '400' }}>{'product un available'} </Text>}
+
+                                                                        </Col>
+                                                                        {item.pharmacyAvailableData !== undefined && item.pharmacyAvailableData.length !== 0 ?
+                                                                            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
+
+                                                                                <TouchableOpacity onPress={() => this.state.showDetailsSelectedIndex === index ? this.setState({ showDetailsSelectedIndex: -1 }) : this.setState({ showDetailsSelectedIndex: index })}>
+                                                                                    <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>{this.state.showDetailsSelectedIndex === index ? 'show hide' : 'show details'}</Text>
+                                                                                </TouchableOpacity>
+                                                                            </Col> : null}
+                                                                    </Row>
+                                                                    <View>
+                                                                        {this.state.showDetailsSelectedIndex === index ?
+                                                                            <FlatList
+                                                                                data={item.pharmacyAvailableData}
+                                                                                extraData={item.pharmacyAvailableData}
+                                                                                keyExtractor={(item, index) => index.toString()}
+                                                                                renderItem={({ item }) =>
+                                                                                    <Row style={{ marginTop: 10 }}>
+                                                                                        <Col size={8}>
+                                                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{item.productName || '' + ' -'}
+                                                                                                {item.isH1Product && <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '400', color: 'red' }}>
+                                                                                                    {'*prescription'}</Text>}
+                                                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(X' + item.quantity + ')'}</Text> </Text>
+                                                                                            {/* </Text> */}
+                                                                                        </Col>
+                                                                                        <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+
+                                                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + item.totalPrice || ''} </Text>
+
+                                                                                        </Col>
+                                                                                    </Row>
+                                                                                } />
+                                                                            : null}
+                                                                    </View>
+
                                                                 </View>
-                                                                :
-                                                                <View>
-                                                                    <CheckedBox
-                                                                        checked={false}
-                                                                        onPress={() => this.pharmacySelected(index)}
-                                                                    />
-                                                                </View>
-                                                            }
-
-
-
-
+                                                                : null}
 
                                                         </Row>
                                                     </Col>
@@ -225,8 +399,10 @@ class ChosePharmacyList extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                {prescriptionDetails !== null ?
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{'Ref_no:' + prescriptionDetails.prescription_ref_no} </Text> : null}
+                                <TouchableOpacity onPress={() =>
+                                    this.props.navigation.navigate("MedicineCheckout")}>
+                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{'Home Delivery'} </Text>
+                                </TouchableOpacity>
 
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
@@ -266,7 +442,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: '#909090',
         marginTop: 3,
-        textAlign: 'right'
+
     },
     addressText: {
         fontFamily: 'OpenSans',
@@ -291,7 +467,13 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "center",
         padding: 10
-    }
+    },
+    SearchRow: {
+        backgroundColor: 'white',
+        borderColor: '#000',
+        marginTop: 10,
+        marginBottom: 20, height: 40
+    },
 
 
 });

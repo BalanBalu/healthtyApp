@@ -8,7 +8,7 @@ import { SET_INCOMING_VIDEO_CALL, SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND } from 
 import SajjadLaunchApplication  from 'react-native-launch-application';
 import PushNotification from 'react-native-push-notification';
 import NotifService from '../../../../setup/NotifService';
-const INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION = 29;
+const INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION = 28;
 let activityStarter;
 let eventEmitter;
 if(IS_ANDROID) {
@@ -54,7 +54,7 @@ export default class CallKeepService {
             console.log('Errror Permission '+ err);
         })
       }
-      /*  if (IS_ANDROID) {
+     if (IS_ANDROID) {
             console.log('hasAlreadyPermissionGrantedToShowVideoScreen ', await activityStarter.hasAlreadyPermissionGrantedToShowVideoScreen());
             if(await activityStarter.hasAlreadyPermissionGrantedToShowVideoScreen() === false) {
                 console.log('Overlay Permission False, So Requesting Once');
@@ -71,7 +71,8 @@ export default class CallKeepService {
                     { cancelable: false }
                 );
             }
-        } */
+        }
+
     } catch (error) {
            console.error('Error while Setting to be Available ', error)
         }
@@ -103,7 +104,7 @@ export default class CallKeepService {
                 const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
                 console.log(buildAPIVersion);
                 if(buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
-                    console.log('Android API Version 29 or Higher')
+                    console.log(`Android API Version ${INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION} or Higher`)
                     NotifService.localNotif('Medflic: New Video Call from Doctor', 'Doctor is Calling You', {
                         tag: 'VIDEO_NOTIFICATION',
                         ongoing: true,
@@ -201,12 +202,38 @@ export default class CallKeepService {
             type: SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND,
         });  
     }
-    onRejectCallAction = () => {
+    onRejectCallAction = async () => {
         console.log('On Reject the Incoming Call...');
-        RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
         RNCallKeep.endAllCalls();
         if(IS_ANDROID) {
-           
+            if (RootNavigation.getContainerRef()) {
+                RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
+            } else {
+                const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
+                if(buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
+                    SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
+                    console.log('Navigation Container is  Not Present....');
+                    var interval = setInterval(() => {
+                        if (RootNavigation.getContainerRef()) {
+                            console.log('Excuting to Navigate To Video Screen...');
+                            RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
+                            clearInterval(interval);
+                        }
+                    },100);
+                } else {
+                    RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
+                }
+            }
+        } else {
+            if (!RootNavigation.getContainerRef()) {
+                console.log('On Reference False');
+                store.dispatch({
+                    type: SET_INCOMING_VIDEO_CALL,
+                    data: true
+                });
+            } else {
+                RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
+            }
         }
     }
 

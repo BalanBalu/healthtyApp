@@ -54,8 +54,8 @@ class HospitalizationAndSurgeries extends PureComponent {
             let data = {
                 medical_procedure: checkBoxClick
             }
-
             this.setState({ isLoading: true })
+            if(data.medical_procedure != undefined){
             let response = await userFiledsUpdate(userId, data)
             console.log(JSON.stringify(response))
             if (response.success) {
@@ -67,6 +67,13 @@ class HospitalizationAndSurgeries extends PureComponent {
                 this.skippingButton(false);
                 this.props.navigation.navigate('SocialHistory', { AppointmentId: appointmentId });
             }
+        }else{
+            Toast.show({
+                text: 'select any one',
+                type: "danger",
+                duration: 3000,
+            })   
+        }
         }
         catch (e) {
             console.log(e)

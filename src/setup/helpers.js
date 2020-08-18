@@ -85,7 +85,7 @@ export function subTimeUnit(date, amount, unit) {
   return moment(date).subtract(amount, unit).toDate();
 }
 export function getRelativeTime(dateTime) {
- return  moment(dateTime).fromNow()
+  return moment(dateTime).fromNow()
 }
 
 export function getMoment(date) {
@@ -94,12 +94,24 @@ export function getMoment(date) {
 export function getUnixTimeStamp(date) {
   return moment(date).unix();
 }
+export function setCurrentISOTime4GivenDate(date) {
+  const timestamp = date.valueOf();
+  const current = moment();
+  const selectedSlotDateWithCurrentTime = moment(timestamp).set({
+    'hour': current.hour(),
+    'minute': current.minute(),
+    'second': current.second()
+  });
+  return selectedSlotDateWithCurrentTime;
+}
+
+
 export function toTitleCase(str) {
   return str.replace(
-      /\w\S*/g,
-      function(txt) {
-          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      }
+    /\w\S*/g,
+    function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
   );
 }
 export function findArrayObj(array, findNode, findValue) {
@@ -157,41 +169,44 @@ export function intersection() {
 }
 
 export function isOnlyLetter(inputtxt) {
-   var letters = /^[A-Za-z, ]+$/;
-   if(!inputtxt) return  false;
-   if(inputtxt.match(letters)) {
-      return true;
-   } else {
-     return false;
-   }
+  var letters = /^[A-Za-z, ]+$/;
+  if (!inputtxt) return false;
+  if (inputtxt.match(letters)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 
 export function getAllId(data) {
 
-let dataIds =[];
- data.map((element, index) => {
- if( !dataIds.includes(element.doctor_id)){
-  dataIds.push( element.doctor_id)
- }
-  
-  
-})
-let value=dataIds.join(",");
+  let dataIds = [];
+  data.map((element, index) => {
+    if (element.doctor_id) {
+      if (!dataIds.includes(element.doctor_id)) {
 
-return value
+        dataIds.push(element.doctor_id)
+      }
+    }
+
+
+  })
+  let value = dataIds.join(",");
+
+  return value
 
 }
 
 export function toDataUrl(url) {
   return new Promise((resolve, reject) => {
     var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-        var reader = new FileReader();
-        reader.onloadend = function() {
-          resolve(reader.result);
-        }
-        reader.readAsDataURL(xhr.response);
+    xhr.onload = function () {
+      var reader = new FileReader();
+      reader.onloadend = function () {
+        resolve(reader.result);
+      }
+      reader.readAsDataURL(xhr.response);
     };
     xhr.open('GET', url);
     xhr.responseType = 'blob';
@@ -200,7 +215,7 @@ export function toDataUrl(url) {
 }
 
 
-export const statusValue={
+export const statusValue = {
   "PAYMENT_IN_PROGRESS":
   {
     text: 'waiting for  Payment process',
@@ -210,60 +225,60 @@ export const statusValue={
   },
   "PENDING":
   {
-    text:'waiting for confirmation',
-    color:'red',
+    text: 'waiting for confirmation',
+    color: 'red',
     icon: 'checkmark-circle',
-    type:'REPORT_ISSUE_APPOINTMENT_PENDING',
+    type: 'REPORT_ISSUE_APPOINTMENT_PENDING',
   },
   "APPROVED":
- {
-    text:'Appointment confirmed',
-    color:'green',
+  {
+    text: 'Appointment confirmed',
+    color: 'green',
     icon: 'checkmark-circle',
-    type:'REPORT_ISSUE_APPOINTMENT_APPROVED',
+    type: 'REPORT_ISSUE_APPOINTMENT_APPROVED',
   },
   "COMPLETED":
   {
-    text:'Appointment completed',
-    color:'green',
+    text: 'Appointment completed',
+    color: 'green',
     icon: 'checkmark-circle',
-    type:'REPORT_ISSUE_APPOINTMENT_COMPLETED'
+    type: 'REPORT_ISSUE_APPOINTMENT_COMPLETED'
   },
   "PENDING_REVIEW":
   {
-    text:'Appointment completed',
-    color:'green',
+    text: 'Appointment completed',
+    color: 'green',
     icon: 'checkmark-circle',
-    type:'REPORT_ISSUE_APPOINTMENT_PENDING_REVIEW'
+    type: 'REPORT_ISSUE_APPOINTMENT_PENDING_REVIEW'
   },
-   "PROPOSED_NEW_TIME":
-     {
-    text:'PROPOSED NEW TIME',
-    color:'#3d70ff',
+  "PROPOSED_NEW_TIME":
+  {
+    text: 'PROPOSED NEW TIME',
+    color: '#3d70ff',
     icon: 'md-timer',
-    type:'REPORT_ISSUE_APPOINTMENT_PROPOSED_NEW_TIME'
+    type: 'REPORT_ISSUE_APPOINTMENT_PROPOSED_NEW_TIME'
   },
   "CLOSED":
   {
-    text:'No Response',
-    color:'red',
+    text: 'No Response',
+    color: 'red',
     icon: 'ios-close-circle',
-    type:'REPORT_ISSUE_APPOINTMENT_CANCELED'
-    
+    type: 'REPORT_ISSUE_APPOINTMENT_CANCELED'
+
   },
-   "CANCELED":
+  "CANCELED":
   {
-    text:'Appointment cancelled',
-    color:'red',
+    text: 'Appointment cancelled',
+    color: 'red',
     icon: 'ios-close-circle',
-    type:'REPORT_ISSUE_APPOINTMENT_CANCELED'
+    type: 'REPORT_ISSUE_APPOINTMENT_CANCELED'
   },
-   "REJECTED":
+  "REJECTED":
   {
     text: 'Appointment rejected',
     color: 'red',
     icon: 'ios-close-circle',
-     type: 'REPORT_ISSUE_APPOINTMENT_REJECTED'
+    type: 'REPORT_ISSUE_APPOINTMENT_REJECTED'
   },
   "PAYMENT_FAILED":
   {
@@ -271,26 +286,38 @@ export const statusValue={
     color: 'red',
     icon: 'ios-close-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_FAILED'
-  }
+  },
+  "DRAFT":
+  {
+    text: 'DRAFT',
+    color: '#3d70ff',
+    icon: 'md-timer',
+    type: 'REPORT_ISSUE_APPOINTMENT_DRAFT'
+  },
 }
 
 
 
-export const notificationNavigation={
-  
+export const notificationNavigation = {
+
   "PHARMACY_ORDERS":
   {
-    navigationOption:'OrderDetails',
+    navigationOption: 'OrderDetails',
 
   },
   "APPOINTMENT":
- {
-  navigationOption:'AppointmentInfo',
+  {
+    navigationOption: 'AppointmentInfo',
   },
   "LAB_APPOINTMENT":
   {
-    navigationOption:'LabAppointmentInfo'
-  }, 
+    navigationOption: 'LabAppointmentInfo'
+  },
+  "HOME_TEST_APPOINTMENT":
+  {
+    navigationOption: 'HomeHealthcareAppointmentDetail'
+  },
+
 }
 
 

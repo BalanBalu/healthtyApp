@@ -7,44 +7,90 @@ export function medicineRateAfterOffer(item) {
 
 
   let amount = ''//for binding purpose used empty string
-  if (item === undefined) {
+  if (item === undefined || item === null) {
     return amount
   }
-  if (item.discount_value === undefined) {
+  if (item.discount === undefined || item.discount === null) {
 
-    amount = parseInt(item.price)
+    amount = Number(item.price)
     return amount
   }
-  if (item.discount_type) {
+  if (item.discount.type) {
 
-    if (item.discount_type === 'PERCENTAGE') {
-      let divided = (parseInt(item.discount_value) / 100) * parseInt(item.price)
-      amount = parseInt(item.price) - divided
-      return amount
-    } else if (item.discount_type === 'AMOUNT') {
-      amount = parseInt(item.price) - parseInt(item.discount_value);
-      return amount
+    if (item.discount.type === 'PERCENT') {
+      let divided = (Number(item.discount.value) / 100) * Number(item.price)
+      amount = Number(item.price) - divided
+     
+    } else if (item.discount.type === 'Amount') {
+      amount = Number(item.price) - Number(item.discount.value);
+     
+    } else if (item.discount.type === 'AMOUNT') {
+      amount = Number(item.price) - Number(item.discount.value);
+    
     }
   }
-  else {
-    return amount
+  if(amount<0){
+    return 0
   }
 
+  return Number(Number(amount).toFixed(2))
+
+
 }
+
+export function medicineDiscountedAmount(item) {
+
+
+  let amount = 0
+  if (item === undefined || item === null) {
+    
+    return amount
+  }
+  if (item.discount === undefined || item.discount === null) {
+
+  
+    return amount
+  }
+  if (item.discount.type) {
+
+    if (item.discount.type === 'PERCENT') {
+      let divided = (parseInt(item.discount.value) / 100) * parseInt(item.price)
+      amount = divided
+  
+    } else if (item.discount.type === 'Amount') {
+      amount = parseInt(item.discount.value);
+
+    } else if (item.discount.type === 'AMOUNT') {
+      amount = parseInt(item.discount.value);
+    
+    }
+  }
+  if(amount<0){
+    return 0
+  }
+
+  return amount
+
+
+}
+
 
 
 export async function ProductIncrementDecreMent(quantity, price, operation, threshold_limits) {
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
 
-  let totalAmount = price;
+  let totalAmount = Number(price) * Number(quantity);
   let threshold_message = null;
   let threshold_limit = threshold_limits || itemQuantity + 1
+  if (threshold_limits) {
+    threshold_limit = threshold_limits || itemQuantity + 1
+  }
   if (operation === "add") {
 
     if (itemQuantity < threshold_limit) {
       quantity = ++itemQuantity;
-      totalAmount = quantity * price
+      totalAmount = Number(quantity) * Number(price)
     } else {
 
       threshold_message = `You can't add more than  ${String(threshold_limit)} items`
@@ -74,31 +120,69 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
 
 export function renderMedicineImage(data) {
-  console.log(data)
-  let source = require('../../../../assets/images/paracetamol.jpg')
-  if (data) {
-    if (data.medicine_images) {
-      if (data.medicine_images[0]) {
-        console.log(data.medicine_images[0].imageURL)
-        source = { uri: data.medicine_images[0].imageURL }
+
+  let source = require('../../../../assets/images/noImage.jpg');
+
+  if (data !== null && data !== undefined) {
+
+    if (Array.isArray(data) && data.length !== 0) {
+      let defaultImage = data.find(ele => {
+        return ele.isDefault === true
+      })
+      if (defaultImage) {
+        source = { uri: defaultImage.imageURL }
+      } else {
+        source = { uri: data[0].imageURL }
       }
     }
   }
   return (source)
 }
+export function CartMedicineImage(data) {
+
+  let source =  null;
+  
+  if (data !== null && data !== undefined) {
+
+    if (Array.isArray(data) && data.length !== 0) {
+      let defaultImage = data.find(ele => {
+        return ele.isDefault === true
+      })
+     
+      if (defaultImage) {
+
+        source =  defaultImage.imageURL 
+      } else {
+        source = data[0].imageURL 
+      }
+    }
+  }
+  
+  return (source)
+}
 export function renderMedicineImageAnimation(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source =  require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data.imageURL }
+  }
+  return (source)
+}
+
+export function renderMedicineImageByimageUrl(data) {
+
+
+  let source = require('../../../../assets/images/noImage.jpg')
+  if (data&&data.image) {
+    source = { uri: data.image }
   }
   return (source)
 }
 export function renderMedicineImageView(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source =  require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data }
   }
@@ -107,14 +191,14 @@ export function renderMedicineImageView(data) {
 export function renderPrescriptionImageAnimation(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source =  require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data.prescription_path }
   }
   return (source)
 }
 export function renderPharmacyImage(data) {
-  let source = require('../../../../assets/images/apollopharmacy.jpeg')
+  let source = require('../../../../assets/images/Logo.png')
   if (data) {
     source = { uri: data.imageURL }
   }
@@ -164,11 +248,7 @@ export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
     let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 
     return result.toFixed(1) + ' Km'
-    // squareNarthCorinate = Math.pow((gpsLocation[0] - pharmacyLocation[0]), 2);
-    // squareeastCorinate = Math.pow((gpsLocation[1] - pharmacyLocation[1]), 2)
-    // add = squareNarthCorinate + squareeastCorinate
-    // let km = Math.sqrt(add).toFixed(1) + ' Km'
-    // return km
+  
 
   }
   else {
@@ -194,19 +274,45 @@ function deg2rad(deg) {
   return deg * (Math.PI / 180)
 }
 
+export function getMedicineNameByProductName(data) {
+  let medicineName = ' '
+  if (!data && !data.item) {
+    return medicineName
+  }
+  if (data && data.item) {
+    medicineName = `${(data.item.productName)}`;
+    return medicineName
+  }
+  else {
+    return medicineName
+  }
+}
 export function getMedicineName(data) {
   let medicineName = ' '
   if (!data) {
     return medicineName
   }
   if (data) {
-    medicineName = `${(data.medicine_name || '') + ' ' + (data.medicine_dose || '') + ' ' + (data.medicine_unit || '')}`;
+    medicineName = `${(data.description || '') + ' ' + (data.unit || '') + ' ' + (data.uomName || '')}`;
     return medicineName
   }
   else {
     return medicineName
   }
 
+}
+
+export function getIsAvailable(data, availableData) {
+  let isAvailable = false
+  let item = availableData.find(ele => {
+    return ele.productId === data.id
+  })
+  if (item !== undefined) {
+    if (item.available > 1) {
+      isAvailable = true
+    }
+  }
+  return isAvailable
 }
 export function getMedicineWeightUnit(weight, unit) {
   let medicineWeightUnit = ' '
@@ -222,23 +328,47 @@ export function getMedicineWeightUnit(weight, unit) {
   }
 }
 
-export function quantityPriceSort(data) {
-  data.forEach(element => {
-    if (element.medPharDetailInfo) {
-      if (element.medPharDetailInfo.variations) {
 
-        element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
+export  function ProductIncrementDecreMents(quantity, price, operation, threshold_limits) {
 
+  let itemQuantity = (quantity === undefined ? 0 : quantity);
 
-          if (firstVarlue.total_quantity === 0) return 1;
-          else if (secandValue.total_quantity === 0) return -1;
-          else return firstVarlue.price - secandValue.price;
-        });
+  let totalAmount = price * quantity;
+  let threshold_message = null;
+  let threshold_limit = threshold_limits || itemQuantity + 1
+  if (threshold_limits) {
+    threshold_limit = threshold_limits || itemQuantity + 1
+  }
+  if (operation === "add") {
 
-      }
+    if (itemQuantity < threshold_limit) {
+      quantity = ++itemQuantity;
+      totalAmount = quantity * price
+    } else {
+
+      threshold_message = `You can't add more than  ${String(threshold_limit)} items`
+
     }
-  })
-  return data
+
+  } else {
+    if (quantity > 1) {
+      quantity = --itemQuantity;
+      totalAmount = quantity * price
+    }
+  }
+  if (Number.isInteger(totalAmount) === false) {
+    let temp = Number(totalAmount).toFixed(2)
+    return {
+      quantity: quantity,
+      totalAmount: Number(temp),
+      threshold_message: threshold_message
+    }
+  }
+  return {
+    quantity: quantity,
+    totalAmount: Number(totalAmount),
+    threshold_message: threshold_message
+  }
 }
 
 
@@ -246,62 +376,126 @@ export const statusBar = {
 
   "PENDING":
   {
-    status: 'Ordered and Approved',
+    status: 'Ordered',
     checked: true,
     color: 'red'
   },
   "APPROVED":
   {
-    status: 'Packed and Out for Delivery',
+    status: 'Approved',
     checked: true,
     color: 'green'
   },
-  "CANCELED":
+  "CANCELLED":
   {
-    status: 'Canceled the order',
+    status: 'Canceled',
     checked: true,
     color: 'red'
   },
   "REJECTED":
   {
-    status: 'Rejected  the order',
+    status: 'Rejected',
     checked: true,
     color: 'red'
   },
   "OUT_FOR_DELIVERY":
-    { status: 'Order is on the way',
-     checked: true ,
-    color:'green'},
-  "READY_FOR_DELIVERY":
-    { status: 'The order is ready for delivery',
-     checked: true,
-     color:'green'
-     },
-  "DELIVERED":
-    { status: 'The order is delivered', 
+  {
+    status: 'out for delivery',
     checked: true,
-    color:'green' },
+    color: 'green'
+  },
+  "READY_FOR_DELIVERY":
+  {
+    status: 'Ready for delivery',
+    checked: true,
+    color: 'green'
+  },
+  "DELIVERED":
+  {
+    status: 'Delivered',
+    checked: true,
+    color: 'green'
+  },
   "null":
-    { status: 'status  mismatching',
-     checked: true ,
-     color:'red'
-    },
+  {
+    status: 'status  mismatching',
+    checked: true,
+    color: 'red'
+  },
   "FAILED":
-    { status: 'order is failed try again',
-     checked: true ,
-     color:'green'
-    },
+  {
+    status: 'order is failed try again',
+    checked: true,
+    color: 'green'
+  },
+  "undefined":
+  {
+    status: 'status  mismatching undefined',
+    checked: true,
+    color: 'red'
+  },
+  "ADD_TO_CART": {
+    status: 'order is cart',
+    checked: true,
+    color: 'red'
+  },
+  "REMOVE_FROM_CART": {
+    status: 'order is remove fromthe cart ',
+    checked: true,
+    color: 'red'
+  },
+  "CONFIRM_ORDER": {
+    status: 'confirm the order',
+    checked: true,
+    color: 'red'
+  },
+
+  "RETURNED": {
+    status: 'order is returned',
+    checked: true,
+    color: 'red'
+  },
+  "EXCHANGED": {
+    status: 'order is exchanged',
+    checked: true,
+    color: 'red'
+  },
+  "PACKED": {
+    status: 'packed',
+    checked: true,
+    color: 'green'
+  },
+
 }
 
 
 export function getName(data) {
   let name = 'unKnown'
   if (data) {
-      if (data.first_name != undefined || data.last_name != undefined) {
-          name = `${data.first_name || ''} ${data.last_name || ''}`
+    if (data.first_name != undefined || data.last_name != undefined) {
+      name = `${data.first_name || ''} ${data.last_name || ''}`
 
-      }
+    }
   }
   return name
+
+}
+
+export function getselectedCartData(data, selected, cartData) {
+  let temp
+
+
+
+  if (cartData !== undefined) {
+
+    temp = {
+      cartData: cartData,
+      ...data
+    }
+  } else {
+    temp = data
+  }
+  temp.selectedType = selected;
+  return temp
 
 }

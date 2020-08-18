@@ -25,10 +25,10 @@ class AllergiesAndMedications extends PureComponent {
             allergy_reaction_string: '',
             refreshCount: 1,
             appointmentId: props.navigation.getParam('AppointmentId'),
-            alergicDetails: having_any_allergies || [{ 
+            alergicDetails: having_any_allergies || [{
                 allergy_name: null,
                 allergy_reaction: null
-            } ],
+            }],
             medicineTakingDetails: taking_medications || [
                 {
                     medicine_name: null,
@@ -36,14 +36,18 @@ class AllergiesAndMedications extends PureComponent {
                 }]
         }
     }
-    skippingButton = async (hasSkip = true) => {
+    skippingButton = async () => {
         try {
+            
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_allergies_and_Medications: hasSkip
+                has_skip_allergies_and_medications:false
             }
-            let result = await prepareAppointmentUpdate(appointmentId, data);
+            
+            let result = await prepareAppointmentUpdate(appointmentId,data);
+            
+        
             if (result.success) {
                 Toast.show({
                     text: result.message,
@@ -59,25 +63,35 @@ class AllergiesAndMedications extends PureComponent {
     }
     addAllergiesAndMedications = async () => {
         try {
+            
             const { appointmentId, alergicDetails, medicineTakingDetails } = this.state
             let userId = await AsyncStorage.getItem('userId');
+
             let data = {
                 having_any_allergies: alergicDetails,
                 taking_medications: medicineTakingDetails
             }
-
+            
             this.setState({ isLoading: true })
+            if(alergicDetails[0]['allergy_name']==null&&alergicDetails[0]['allergy_reaction']==null&& medicineTakingDetails[0]['medicine_name']==null&&medicineTakingDetails[0]['medicine_dosage']==null){
+               Toast.show({
+                text: 'Please fill  the  field',
+                type: "danger",
+                duration: 3000,
+            })  
+            }
             let response = await userFiledsUpdate(userId, data)
-
             if (response.success) {
                 Toast.show({
                     text: response.message,
                     type: "success",
                     duration: 3000,
                 })
-                this.skippingButton(false);
+                this.skippingButton();
                 this.props.navigation.navigate('FamilyMedicalConditions', { AppointmentId: appointmentId });
             }
+
+            
         }
         catch (e) {
             console.log(e)
@@ -87,15 +101,26 @@ class AllergiesAndMedications extends PureComponent {
         }
     }
     onAddNewAlergics = async () => {
+        
         const { alergicDetails, refreshCount } = this.state;
-
+        const getLastItemInAllergicArry = alergicDetails.slice(-1)[0];
+        
+        if (getLastItemInAllergicArry != undefined) {
+            if (!getLastItemInAllergicArry.allergy_name || !getLastItemInAllergicArry.allergy_reaction) {
+                
+                return false
+            }
+        }
+        
         alergicDetails.push({
             allergy_name: null,
             allergy_reaction: null
         });
+        
         await this.setState({ alergicDetails, refreshCount: refreshCount + 1 })
-
+        
     }
+
     deleteTable(index) {
         const { alergicDetails } = this.state;
         alergicDetails.splice(index, 1)
@@ -105,7 +130,15 @@ class AllergiesAndMedications extends PureComponent {
     }
     onAddNewMedicineInfo = async () => {
         const { medicineTakingDetails, refreshCount } = this.state;
+        const getLastItemInMedicineTakingDetails = medicineTakingDetails.slice(-1)[0];
 
+        if (getLastItemInMedicineTakingDetails != undefined) {
+            if (!getLastItemInMedicineTakingDetails.medicine_name || !getLastItemInMedicineTakingDetails.medicine_dosage) {
+                
+
+                return false
+            }
+        }
         medicineTakingDetails.push({
             medicine_name: null,
             medicine_dosage: null
@@ -119,7 +152,6 @@ class AllergiesAndMedications extends PureComponent {
     }
     render() {
         const { alergicDetails, medicineTakingDetails } = this.state
-
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
@@ -145,7 +177,7 @@ class AllergiesAndMedications extends PureComponent {
                             <View>
                                 <Form>
                                     <FlatList
-                                        style={{ flex: 1 }}
+                                        containerstyle={{ flex: 1 }}
                                         data={alergicDetails}
                                         extraData={alergicDetails}
                                         renderItem={({ item, index }) => {
@@ -227,7 +259,7 @@ class AllergiesAndMedications extends PureComponent {
                                 <View>
                                     <Form>
                                         <FlatList
-                                            style={{ flex: 1 }}
+                                            containerstyle={{ flex: 1 }}
                                             data={medicineTakingDetails}
                                             extraData={medicineTakingDetails}
                                             renderItem={({ item, index }) => {
@@ -296,7 +328,7 @@ class AllergiesAndMedications extends PureComponent {
                             <View style={{ width: '40%', }}>
                                 <TouchableOpacity style={styles.skipButton}
                                     onPress={() => {
-                                        prepareAppointmentUpdate(this.state.appointmentId, { has_skip_allergies_and_Medications: true });
+                                        prepareAppointmentUpdate(this.state.appointmentId, { has_skip_allergies_and_medications: true });
                                         this.props.navigation.navigate('FamilyMedicalConditions', { AppointmentId: this.state.appointmentId });
 
                                     }}>

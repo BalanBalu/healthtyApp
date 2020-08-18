@@ -26,9 +26,10 @@ class PrepareAppointmentLastStep extends PureComponent {
                 let data = {
                     agreed_for_send_forms: agreed_for_send_forms
                 }
-
                 this.setState({ isLoading: true })
+              
                 let response = await prepareAppointmentUpdate(appointmentId, data)
+
                 if (response.success) {
                     Toast.show({
                         text: response.message,

@@ -3,7 +3,7 @@ import {
     Container, Content, Text, View, Badge, Toast, Radio, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform, Alert } from 'react-native';
 import Spinner from '../../../../components/Spinner';
 import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bookappointment.action'
@@ -39,6 +39,7 @@ class MedicalHistory extends PureComponent {
 
 
             this.setState({ isLoading: true })
+    
             let response = await userFiledsUpdate(userId, data)
             if (response.success) {
                 Toast.show({
@@ -46,9 +47,10 @@ class MedicalHistory extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.props.navigation.navigate('PhysicianInfo', { AppointmentId: appointmentId });
+                this.props.navigation.navigate('PhysicianInfo', { AppointmentId: this.state.appointmentId });
             }
         }
+        
         catch (e) {
             console.log(e)
         }
@@ -61,16 +63,20 @@ class MedicalHistory extends PureComponent {
 
     addMedicalHistory = async () => {
         try {
-            const { reason_description, any_other_concerns, appointmentId } = this.state
+            const { radioButton,reason_description, any_other_concerns, appointmentId } = this.state
+          
+
             let data = {
                 reason_for_visit: {
                     description: reason_description,
                     any_other_concerns: any_other_concerns,
-                    has_skip_general_health_info: false
-
-                }
+                },
+                has_skip_general_health_info: false
             }
+
             this.setState({ isLoading: true })
+           
+            if( data.reason_for_visit.description != "" || data.reason_for_visit.any_other_concerns != "" || radioButton != undefined ){
             this.addgeneralHealthInfo()
             let response = await prepareAppointmentUpdate(appointmentId, data)
             if (response.success) {
@@ -80,8 +86,16 @@ class MedicalHistory extends PureComponent {
                     duration: 3000,
                 })
 
-                this.props.navigation.navigate('PhysicianInfo');
+                this.props.navigation.navigate('PhysicianInfo', { AppointmentId: this.state.appointmentId });
             }
+        }
+        else{
+            Toast.show({
+                text: 'Please fill atleast one of the  field',
+                type: 'danger',
+                duration: 3000
+              });
+        }
         }
         catch (e) {
             console.log(e)

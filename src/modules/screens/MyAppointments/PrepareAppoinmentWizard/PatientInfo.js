@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-    Container, Content, Text, View, Badge, Toast, Radio, Form, CheckBox, Item, Picker, Icon
+    Container, Content, Text, View, Badge, Toast, Radio, DatePicker, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
@@ -22,7 +22,7 @@ class PatientInfo extends PureComponent {
         this.state = {
             user_name: first_name,
             mobile_no: secondary_mobile,
-            date_of_birth: formatDate(dob,'DD/MM/YYYY'),
+            date_of_birth: formatDate(dob,'YYYY/MM/DD'),
             gender: gender,
             marital_status: marital_status,
             selectedBloodGroup: blood_group,
@@ -47,6 +47,12 @@ class PatientInfo extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
+            }else{
+                Toast.show({
+                    text: 'Please fill all the fields',
+                    type: "danger",
+                    duration: 3000,
+                })  
             }
 
         }
@@ -68,19 +74,30 @@ class PatientInfo extends PureComponent {
                 blood_group: selectedBloodGroup,
                 marital_status: marital_status
             }
-
+        
             this.setState({ isLoading: true })
-            let response = await userFiledsUpdate(userId, data)
 
+            if(data.first_name != "" || data.dob  != "" || data.secondary_mobile  != "" || data.gender != undefined  || data.blood_group != undefined  || data.marital_status != undefined){
+            let response = await userFiledsUpdate(userId, data)
+         
+            console.log(response);
             if (response.success) {
                 Toast.show({
                     text: response.message,
                     type: "success",
                     duration: 3000,
                 })
+                
                 this.skippingButton(false)
                 this.props.navigation.navigate('AllergiesAndMedications', { AppointmentId: appointmentId });
             }
+        }else{
+            Toast.show({
+                text: 'Please fill atleast one of the  field',
+                type: "danger",
+                duration: 3000,
+            })  
+        }
         }
         catch (e) {
             console.log(e)
@@ -122,15 +139,22 @@ class PatientInfo extends PureComponent {
 
                             <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Date of birth</Text>
                             <Form style={styles.formStyle2}>
-                                <TextInput
-                                    placeholder="Enter your date of birth"
-                                    style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                    placeholderTextColor="#C1C1C1"
-                                    keyboardType={'default'}
-                                    returnKeyType={'go'}
-                                    value={date_of_birth}
-                                    onChangeText={(enteredText) => this.setState({ date_of_birth: enteredText })}
-                                />
+                                
+                                                <DatePicker
+                                                    defaultDate={new Date()}
+                                                    timeZoneOffsetInMinutes={undefined}
+                                                    modalTransparent={false}
+                                                    minimumDate={new Date(1940, 0, 1)}
+                                                    animationType={"fade"}
+                                                    androidMode={"default"}
+                                                    placeHolderText={ date_of_birth ? date_of_birth : 'Select Your DOB'}
+                                                    textStyle={{ color: "#5A5A5A",  textAlign: 'left', marginTop: -5 }}
+                                                    value={date_of_birth}
+                                                    placeHolderTextStyle={{ color: "#5A5A5A", marginTop: -5 }}
+                                                    onDateChange={date_of_birth => {  this.setState({ date_of_birth }) }}
+                                                    disabled={false}
+                                                />
+                                           
                             </Form>
                         </View>
 
