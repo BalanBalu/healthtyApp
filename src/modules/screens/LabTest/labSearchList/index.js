@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Form, CheckBox, Picker, Item, List, ListItem, Left, Thumbnail, Icon, Right } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, ScrollView, Image, Modal,Dimensions } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, ScrollView, Image, Modal, Dimensions } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
 import { enumerateStartToEndDates } from '../../CommonAll/functions'
@@ -48,11 +48,12 @@ class labSearchList extends Component {
             selected: [0, 1000],
             buttonEnable: false,
             subCategoryInfoList: [],
-            selectedCategory: [],
             selectedSubCategory: [],
             testOption: '',
             filterData: null,
-            disabled: true
+            disabled: true,
+            minPrice:0,
+            maxPrice:0
 
         }
         this.isFilteredData = false;
@@ -432,77 +433,84 @@ class labSearchList extends Component {
         }
     }
 
-    applyFilterData =async () => {
-        const { labTestData: { labPreviousData } } = this.props;
-        this.isFilteredData = true;
-        this.setState({ modalVisible: false, filterData: filterData });
+    applyFilterData = async () => {
+        try {
+            const { labTestData: { labPreviousData } } = this.props;
+            this.isFilteredData = true;
+            this.setState({ modalVisible: false, filterData: filterData, isLoading: true });
 
-        let testOptionList = [];
-        let subCategoryMatchedList = [];
-        let priceMatchedList = [];
-        labPreviousData.forEach((labEle) => {
-            let labIds = labEle.labInfo.lab_id
-            if (filterData.is_inhome_test) {
-                if (labEle.labInfo.is_inhome_test && filterData.is_inhome_test) {
-                    testOptionList.push(labIds);
+            let testOptionList = [];
+            let subCategoryMatchedList = [];
+            let priceMatchedList = [];
+            labPreviousData.forEach((labEle) => {
+
+                let labIds = labEle.labInfo.lab_id
+                if (filterData.is_inhome_test) {
+                    if (labEle.labInfo.is_inhome_test && filterData.is_inhome_test) {
+                        testOptionList.push(labIds);
+                    }
                 }
-            }
-            if (filterData.sub_category) {
-                let subCategoryArray = filterData.sub_category ? filterData.sub_category : [];
+                if (filterData.sub_category) {
+                    let subCategoryArray = filterData.sub_category ? filterData.sub_category : [];
 
-                subCategoryArray.forEach((labsubCategoryEle) => {
-                    if (labEle.labCatInfo.category_name === labsubCategoryEle.category_name) {
-                        subCategoryMatchedList.push(labIds)
-                    }
-                })
-            }
-            if (filterData.price) {
-                let priceArray = labEle.labCategories ? labEle.labCategories : [];
-                priceArray.forEach((labPriceEle) => {
-                    if (labPriceEle.offeredPrice >= filterData.price[0] && labPriceEle.offeredPrice <= filterData.price[1]) {
-                       priceMatchedList.push(labIds)
-                    }
-                })
-            }
-
-        })
-        let selectedFiltesArray = [];
-        if (filterData) {
-            if (filterData.is_inhome_test || filterData.is_inhome_test == false) {
-                selectedFiltesArray.push(testOptionList);
-            }
-
-            if (filterData.sub_category) {
-                selectedFiltesArray.push(subCategoryMatchedList);
-
-            }
-            if (filterData.price) {
-                selectedFiltesArray.push(priceMatchedList);
-            }
-            if (filterData) {
-              
-                let filteredListArray = intersection(selectedFiltesArray);
-                let filteredLabData = [];
-                if (filteredListArray.length === 0) {
-                    Toast.show({
-                        text: 'Labs Not found!..Choose Filter again',
-                        type: "danger",
-                        duration: 5000,
+                    subCategoryArray.forEach((labsubCategoryEle) => {
+                        if (labEle.labCatInfo.category_name === labsubCategoryEle.category_name) {
+                            subCategoryMatchedList.push(labIds)
+                        }
                     })
-                } else {
-                    filteredListArray.forEach(ele => {
-                        filteredLabData.push(labDataWithMap.get(String(ele)));
-                    });
                 }
-                store.dispatch({
-                    type: SET_LAB_LIST_ITEM_DATA,
-                    data: filteredLabData
-                })
-            }
-        } else {
-            this.clearFilteredData();
-        }
+                if (filterData.price) {
 
+                    if (labEle.labCatInfo.offeredPrice >= filterData.price[0] && labEle.labCatInfo.offeredPrice <= filterData.price[1]) {
+                        priceMatchedList.push(labIds)
+                    }
+                }
+
+            })
+            let selectedFiltesArray = [];
+            if (filterData) {
+                if (filterData.is_inhome_test || filterData.is_inhome_test == false) {
+                    selectedFiltesArray.push(testOptionList);
+                }
+
+                if (filterData.sub_category) {
+                    selectedFiltesArray.push(subCategoryMatchedList);
+
+                }
+                if (filterData.price) {
+                    selectedFiltesArray.push(priceMatchedList);
+
+                }
+                if (filterData) {
+
+                    let filteredListArray = intersection(selectedFiltesArray);
+                    let filteredLabData = [];
+                    if (filteredListArray.length === 0) {
+                        Toast.show({
+                            text: 'Labs Not found!..Choose Filter again',
+                            type: "danger",
+                            duration: 5000,
+                        })
+                    } else {
+                        filteredListArray.forEach(ele => {
+                            filteredLabData.push(labDataWithMap.get(String(ele)));
+
+                        });
+                    }
+                    store.dispatch({
+                        type: SET_LAB_LIST_ITEM_DATA,
+                        data: filteredLabData
+                    })
+                }
+            } else {
+                this.clearFilteredData();
+            }
+        } catch (ex) {
+            console.log(ex);
+
+        } finally {
+            this.setState({ isLoading: false })
+        }
     }
 
     clearFilteredData = async () => {  // Clear All selected Data when clicked the Clear filter option
@@ -513,8 +521,8 @@ class labSearchList extends Component {
             maxPrice: this.maxPrice
         });
         filterData = {};
-        this.isFilteredData=false;
-        const { labTestData: { labPreviousData} } = this.props;
+        this.isFilteredData = false;
+        const { labTestData: { labPreviousData } } = this.props;
         store.dispatch({
             type: SET_LAB_LIST_ITEM_DATA,
             data: labPreviousData
@@ -525,7 +533,7 @@ class labSearchList extends Component {
         this.setState({ selected: value });
     }
     renderLabListCards(item) {
-       
+
         const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
         const { expandedLabIdToShowSlotsData, isLoggedIn, buttonEnable, labListData } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
@@ -644,7 +652,8 @@ class labSearchList extends Component {
     }
     render() {
         const { labTestData: { patientWishListLabIds, labListItemData, labPreviousData } } = this.props;
-        const { labListData, isLoading, selectedSubCategory, values, testOption, disabled } = this.state;
+        const { labListData, isLoading, selectedSubCategory, values, testOption, disabled, minPrice, maxPrice } = this.state;
+        
         return (
             <Container style={styles.container}>
                 {isLoading ? <Loader style='list' /> :
@@ -822,12 +831,12 @@ class labSearchList extends Component {
                                                         <Row>
                                                             <Col size={1} style={{ justifyContent: 'center', height: 25, }}>
                                                                 <TouchableOpacity style={styles.priceDetails}>
-                                                                    <Text style={styles.innerTexts}>{this.state.minPrice}</Text>
+                                                                    <Text style={styles.innerTexts}>{minPrice}</Text>
                                                                 </TouchableOpacity>
                                                             </Col>
                                                             <Col size={8} style={{ marginTop: -12, marginLeft: 20 }}>
                                                                 <MultiSlider
-                                                                    values={[this.state.minPrice, this.state.maxPrice]}
+                                                                    values={[minPrice, maxPrice]}
                                                                     sliderLength={Dimensions.get('window').width - 160}
                                                                     onValuesChange={(value) => this.multiSliderValuesChange(value)}
                                                                     min={this.minPrice || 0}
