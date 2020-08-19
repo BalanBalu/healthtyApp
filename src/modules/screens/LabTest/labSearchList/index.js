@@ -851,7 +851,7 @@ class labSearchList extends Component {
                                                             </Col>
                                                             <Col size={1} style={{ justifyContent: 'center', height: 25, marginLeft: 5 }}>
                                                                 <TouchableOpacity style={styles.priceDetails}>
-                                                                    <Text style={styles.innerTexts}>{this.state.maxPrice}</Text>
+                                                                    <Text style={styles.innerTexts}>{maxPrice}</Text>
 
                                                                 </TouchableOpacity>
                                                             </Col>
