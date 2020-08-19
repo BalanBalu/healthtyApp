@@ -15,6 +15,8 @@ import { RenderNoAppointmentsFounds } from '../../CommonAll/components';
 import RenderAppointmentList from './RenderAppointmentList';
 const PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST = 6;
 const DOCTOR_FIELDS = "specialist,education,prefix,profile_image,gender";
+
+import moment from 'moment';
 export default class AppointmentList extends Component {
     constructor(props) {
         super(props)
@@ -63,7 +65,7 @@ export default class AppointmentList extends Component {
         try {
             debugger
             const reqQueryData = {
-                startDate: new Date(),
+                startDate: moment().startOf('day').toISOString(),
                 endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
                 limit: PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST,
                 skip: this.incrementPaginationCount,
@@ -86,7 +88,7 @@ export default class AppointmentList extends Component {
         try {
             const reqQueryData = {
                 startDate: subTimeUnit(new Date(), 1, "years").toISOString(),
-                endDate: new Date().toISOString(),
+                endDate: new Date(moment().subtract(1, 'day').endOf('day')).toISOString(),
                 limit: PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST,
                 skip: this.incrementPaginationCount,
                 sort: -1,
