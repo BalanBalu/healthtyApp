@@ -121,7 +121,9 @@ import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Con
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCare/Appointments/cancelAppointment';
-import MedicineRecords from '../../modules/screens/medicalRecords'
+import MedicineRecords from '../../modules/screens/medicalRecords';
+import EmrInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/emrInfo'
+import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
@@ -620,6 +622,20 @@ const HomeStack = createStackNavigator({
     }
   },
 //================  MedicineRecords ===============
+
+EmrInfo: {
+  screen: EmrInfo,
+  navigationOptions: {
+    title: 'EmrInfo'
+  }
+},
+
+UploadEmr: {
+  screen: UploadEmr,
+  navigationOptions: {
+    title: 'Upload Emr'
+  }
+},
   MedicineRecords: {
     screen: MedicineRecords,
     navigationOptions: {

@@ -3,18 +3,34 @@ import { Container, Content, Text, Title, Header, H3, Button, Radio, Item, Card,
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler, Dimensions } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, Dimensions, AsyncStorage } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ZoomImageViewer from '../../elements/ImageViewer/ZoomImageViewer';
+import {getMedicalRecords} from '../../providers/profile/profile.action'
 class MedicineRecords extends PureComponent {
     constructor(props) {
         super(props)
 
         this.state = {
-            imageZoomViewer: false
+            imageZoomViewer: false,
+            isLoading:false,
+            data:[]
 
         }
+    }
+    componentDidMount(){
+        this.getMedicalRecords()
+    }
+    async getMedicalRecords(){
+        this.setState({isLoading:true})
+        let userId=await AsyncStorage.getItem('userId');
+        let data=this.state.data
+        let result=await getMedicalRecords(userId)
+        if(result.success){
+          data=result.data
+        }
+        this.setState({data:data,isLoading:false})
     }
     headerComponent() {
         return  (
@@ -40,7 +56,9 @@ class MedicineRecords extends PureComponent {
                         </Row>
                         <Row style={{ marginTop: 15 }}>
                             <Right>
-                                <TouchableOpacity style={{ backgroundColor: '#7E49C3', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }}>
+                                <TouchableOpacity style={{ backgroundColor: '#7E49C3', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }} onPress={()=>{
+                                    this.props.navigation.navigate('UploadEmr')
+                                }}>
                                     <Text style={{ color: '#fff', fontSize: 15 }} >Upload</Text>
                                 </TouchableOpacity>
                             </Right>
@@ -51,7 +69,7 @@ class MedicineRecords extends PureComponent {
 
 
     render() {
-        const { imageZoomViewer } = this.state;
+        const { imageZoomViewer,data } = this.state;
         const images = [{ image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'MRI Scan' },
         { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'CT Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'ECG Scan' },
         { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'X ray Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'MRI Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'ECG Scan' },
@@ -61,27 +79,28 @@ class MedicineRecords extends PureComponent {
                 {/* <Content> */}
                     
                         <View style={{ flex: 1 }}>
+                            
                             <FlatList horizontal={false} numColumns={2}
-                                data={images.concat(images)}
+                                data={data}
                                 ListHeaderComponent={() => this.headerComponent()}
                                 scrollEventThrottle={16}
                                 renderItem={({ item, index }) =>
                                    
-                                         <TouchableOpacity onPress={() => {
-                                            this.props.navigation.navigate('ZoomImageViewer', { images: images.map(ele => {
-                                                return {
-                                                    url: '',
-                                                    props: {
-                                                        source: ele.image
-                                                    }     
-                                                 }
-                                            })  })
-                                           // this.setState({ imageZoomViewer : true })
-                                        }}> 
+                                        //  <TouchableOpacity onPress={() => {
+                                        //     this.props.navigation.navigate('ZoomImageViewer', { images: images.map(ele => {
+                                        //         return {
+                                        //             url: '',
+                                        //             props: {
+                                        //                 source: ele.image
+                                        //             }     
+                                        //          }
+                                        //     })  })
+                                        //    // this.setState({ imageZoomViewer : true })
+                                        // }}> 
                                             <Card style={{ borderRadius: 5, overflow: 'hidden' }}>
                                                 <Row style={styles.rowStyle}>
                                                     <Image
-                                                        source={item.image}
+                                                        source={item.emr_prescription_image.imageURL}
                                                         style={{
                                                             width: '100%', height: '100%', alignItems: 'center'
                                                         }}
@@ -89,12 +108,12 @@ class MedicineRecords extends PureComponent {
                                                 </Row>
                                                 <Row style={styles.secondRow}>
                                                     <Col style={{ width: '100%', }}>
-                                                        <Text style={styles.mainText}>{item.description}</Text>
+                                                        <Text style={styles.mainText}>{item.emr_type}</Text>
                                                     </Col>
 
                                                 </Row>
                                             </Card>
-                                        </TouchableOpacity>
+                                        // </TouchableOpacity>
                                   
 
                                 } />
