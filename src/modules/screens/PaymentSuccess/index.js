@@ -79,23 +79,23 @@ class PaymentSuccess extends Component {
                                 </Col>
                                 <Col style={{ width: '75%', marginTop: 10 }}>
                                     {fromNavigation === 'HOSPITAL' ?
-                                     <Row style={styles.rowDetail1}>
+                                        <Row style={styles.rowDetail1}>
 
-                                     <Right>
-                                         <Text style={styles.subText}>{successBookSlotDetails.slotData.location.name}</Text>
-                                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
-                                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
-                                     </Right>
-                                 </Row> :
+                                            <Right>
+                                                <Text style={styles.subText}>{successBookSlotDetails.slotData.location.name}</Text>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
+                                            </Right>
+                                        </Row> :
                                         <Row>
                                             <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} {' '}
                                                 <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text> </Text>
                                         </Row>
-    }
-                                        <Row>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
+                                    }
+                                    <Row>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
 
-                                        </Row>
+                                    </Row>
                                 </Col>
                             </Row>
                             <Row style={styles.rowDetail}>
@@ -104,7 +104,7 @@ class PaymentSuccess extends Component {
                                     <Text style={[styles.subText, { fontWeight: 'bold' }]}> {tokenNo} </Text>
                                 </Right>
                             </Row>
-                            {successBookSlotDetails.slotData &&fromNavigation===null&& this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
+                            {successBookSlotDetails.slotData && fromNavigation === null && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
 
 
                             <Row style={styles.rowDetail}>

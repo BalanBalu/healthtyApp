@@ -164,7 +164,8 @@ class HomeTestConfirmation extends Component {
             patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
         })
         debugger
-
+        const finalAmountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
+        bookSlotDetails.slotData.fee = finalAmountBySelectedPersons;
         bookSlotDetails.patient_data = patientData;
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
