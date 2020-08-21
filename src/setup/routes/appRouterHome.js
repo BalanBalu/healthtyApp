@@ -1159,7 +1159,12 @@ const drawerNavigatorRoutes = {
   "Home Health Care": {
     screen: HomeHealthcareDoctorList,
     routeName: "Home Health Care"
-  }
+  },
+  "Medicine Records": {
+    screen: MedicineRecords,
+    routeName: "Medicine Records"
+  },
+
 }
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -1255,7 +1260,13 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'Medicine Orders',
             routeName: drawerNavigatorRoutes["Medicine Orders"].routeName,
             icon: require('../../../assets/images/drawerIcons/Orders.png'),
-          }]
+          },
+          {
+            name: 'Medical Records',
+            routeName: drawerNavigatorRoutes[ "Medicine Records"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+        ]
       }
     ]}
     {...props} />

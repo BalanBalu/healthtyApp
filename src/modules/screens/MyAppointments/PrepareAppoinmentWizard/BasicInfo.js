@@ -46,7 +46,7 @@ class BasicInfo extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.props.navigation.navigate('MedicalHistory', { AppointmentId: appointmentId });
+                this.props.navigation.navigate('EmrInfo', { AppointmentId: appointmentId });
             }
         }
         catch (e) {
@@ -94,7 +94,7 @@ class BasicInfo extends PureComponent {
                             <View style={{ width: '40%', }}>
                                 <TouchableOpacity style={styles.skipButton} onPress={() => {
                                     prepareAppointmentUpdate(this.state.appointmentId, { has_skipped_user_meet_doctor_before: true });
-                                    this.props.navigation.navigate('MedicalHistory', { AppointmentId: this.state.appointmentId });
+                                    this.props.navigation.navigate('EmrInfo', { fromNavigation:'APPOINTMENT_PREPARE',AppointmentId: this.state.appointmentId });
                                 }}>
                                     <Text style={styles.touchText}>Skip</Text>
                                 </TouchableOpacity>

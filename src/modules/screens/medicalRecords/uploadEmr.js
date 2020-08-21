@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab, Toast } from 'native-base';
+import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab, Form } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, FlatList, Image, Dimensions, Platform } from 'react-native';
+import { StyleSheet, AsyncStorage, FlatList, Image, Dimensions, Platform,TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Loader } from '../../../components/ContentLoader'
-import {ImageUpload} from '../../screens/commonScreen/imageUpload'
-import {uploadImage} from '../../providers/common/common.action'
-import {toastMeassage} from '../../../modules/common'
+import { ImageUpload } from '../../screens/commonScreen/imageUpload'
+import { uploadImage,createEmrUpload } from '../../providers/common/common.action'
+import { toastMeassage ,onlySpaceNotAllowed} from '../../../modules/common';
+import { RenderTextReason } from '../CommonAll/components';
 
 const device_width = Dimensions.get("window").width
 
@@ -17,7 +18,7 @@ class UploadEmr extends Component {
         super(props)
         this.state = {
             imageSource: null,
-           
+
             uploadButton: true,
             isLoading: true,
             selectOptionPoopup: false,
@@ -32,32 +33,33 @@ class UploadEmr extends Component {
             this.props.navigation.navigate('login');
             return
         }
-       
+
 
 
     }
-    
-    
+
+
     uploadImageToServer = async (imagePath) => {
 
         try {
             const userId = await AsyncStorage.getItem('userId');
-           let appendForm="medicine"
-            let endPoint='/images/upload'
-            const response = await uploadImage(imagePath,endPoint,appendForm)
-            alert(JSON.stringify(response))
-            if (response.success) {
-                let data=this.state.imageData;
-                data.concat(response.data)
-                this.setState({imageData:data})
-                toastMeassage('image upload successfully','success',3000)
+            let appendForm = "medicine"
+            let endPoint = 'images/upload'
+            const response = await uploadImage(imagePath, endPoint, appendForm)
 
-           } else { 
-                toastMeassage('Problem Uploading  Picture','danger',3000)
+            if (response.success) {
+                let data = this.state.imageData;
+                let temp = data.concat(response.data)
+
+                this.setState({ imageData: temp })
+                toastMeassage('image upload successfully', 'success', 3000)
+
+            } else {
+                toastMeassage('Problem Uploading Picture', 'danger', 3000)
             }
 
         } catch (e) {
-            toastMeassage('Problem Uploading  Picture'+e,'danger',3000)
+            toastMeassage('Problem Uploading Picture' + e, 'danger', 3000)
             console.log(e);
         }
     }
@@ -80,14 +82,11 @@ class UploadEmr extends Component {
         try {
             this.setState({ isLoading: false })
             const { imageData, selectIndex } = this.state
+            let temp = imageData
+            temp.splice(selectIndex, 1)
 
-            const userId = await AsyncStorage.getItem('userId');
+            await this.setState({ imageData: temp, isLoading: true })
 
-            if (result.success) {
-                let temp = imageData
-                temp.splice(selectIndex, 1)
-                this.setState({ imageData: temp, isLoading: true })
-            }
 
 
         }
@@ -99,11 +98,32 @@ class UploadEmr extends Component {
         }
     }
     imageUpload = async (data) => {
-        this.setState({selectOptionPoopup:false})
+        this.setState({ selectOptionPoopup: false })
         if (data.image !== null) {
             await this.uploadImageToServer(data.image);
-           
+
         }
+    }
+   async  EmrUpload(){
+        // discription
+      if(!onlySpaceNotAllowed(this.state.discription)){
+        toastMeassage('kindly write discription', 'success', 3000)
+      }
+        let userId = await AsyncStorage.getItem('userId');
+        let reqata={
+        user_id: userId,
+        emr_type: 'PRESCRIPTION_IMAGE',
+        emr_discription:this.state.discription ,
+        emr_prescription_image: this.state.imageData
+        }
+        let result=await createEmrUpload(reqata)
+       
+        if(result.success){
+            toastMeassage('EMR upload successfully', 'success', 3000)
+            const { routeName, key } = this.props.navigation.getParam('prevState');
+            this.props.navigation.navigate({routeName, key,params: { hasEmrReload: true }})
+        }
+      
     }
 
     render() {
@@ -132,9 +152,9 @@ class UploadEmr extends Component {
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
                                             <View>
-                                                <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                                                <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', marginTop: 10, height: "60%" }}>
                                                     <Image
-                                                        source={{ uri: item.prescription_path }}
+                                                        source={{ uri: item.imageURL }}
                                                         style={styles.profileImage}
                                                     />
                                                 </Item>
@@ -164,12 +184,48 @@ class UploadEmr extends Component {
                             </Row>
                         </View>
                         {
-                            this.state.selectOptionPoopup?
-                            <ImageUpload
-                            popupVisible={(data) => this.imageUpload(data)}
-                            />:null
+                            this.state.selectOptionPoopup ?
+                                <ImageUpload
+                                    popupVisible={(data) => this.imageUpload(data)}
+                                /> : null
                         }
-                       
+                        {/* <View style={{ Flex: 1, marginLeft: 20, marginRight: 20, marginTop: -30 }}> */}
+
+                            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                                <Row>
+                                    <Icon name="create" style={{ fontSize: 15, color: '#000' }} />
+                                    <Text style={styles.subText}>EMR discription</Text>
+                                </Row>
+                                <Form style={{ marginRight: 1, marginLeft: -13 }}>
+                                    <Item style={{ borderBottomWidth: 0 }}>
+                                        <TextInput
+                                            onChangeText={(discription) => this.setState({discription})
+                                               
+                                            }
+                                            multiline={true} placeholder={''}
+                                            placeholderTextColor={"#909498"}
+                                            style={{
+                                                borderColor: '#909498',
+                                                borderRadius: 10,
+                                                borderWidth: 0.5,
+                                                height: 100,
+                                                fontSize: 14,
+                                                textAlignVertical: 'top',
+                                                width: '100%',
+                                                padding: 10,
+                                                paddingTop: 10,
+                                                paddingBottom: 10,
+                                                borderRadius: 10,
+                                                paddingRight: 10,
+                                                marginTop: 15
+                                            }}
+                                        />
+                                    </Item>
+                                </Form>
+                            </View>
+
+                        {/* </View> */}
+
                     </Content>
                 }
                 {imageData.length !== 0 ?
@@ -178,19 +234,19 @@ class UploadEmr extends Component {
                             { height: 30 } : { height: 45 }}>
                         <FooterTab>
                             <Row>
-                                <Col size={5} style={{  backgroundColor: '#fff' }}>
-                                <Row style={{alignItems: 'center', justifyContent: 'center', }}>
-                                    <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}  style={styles.buttonTouch}>
-                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '400' }}>Add More </Text>
-                                    </TouchableOpacity>
+                                <Col size={5} style={{ backgroundColor: '#fff' }}>
+                                    <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
+                                        <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })} style={styles.buttonTouch}>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '400' }}>Add More </Text>
+                                        </TouchableOpacity>
                                     </Row>
                                 </Col>
 
                                 <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
-                                <Row style={{alignItems: 'center', justifyContent: 'center', }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('MedicineCheckout', { prescriptionDetails: prescriptionDetails, isPrescription: true })} style={styles.buttonTouch}>
-                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Buy Now</Text>
-                                    </TouchableOpacity>
+                                    <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
+                                        <TouchableOpacity onPress={() => this.EmrUpload()} style={styles.buttonTouch}>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>upload</Text>
+                                        </TouchableOpacity>
                                     </Row>
                                 </Col>
                             </Row>
@@ -267,11 +323,11 @@ const styles = StyleSheet.create({
     buttonTouch: {
         flexDirection: 'row',
         borderRadius: 10,
-        width:'100%',
-        justifyContent:'center',
-        alignItems:'center'
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
- 
+
 })
 
 
