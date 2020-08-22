@@ -64,13 +64,13 @@ class Notification extends PureComponent {
         }
 
     }
-    updateNavigation = async (item,index) => {
+    updateNavigation = async (item, index) => {
 
 
         await this.setState({ notificationId: item._id })
         if (item.notification_type === 'APPOINTMENT') {
             if (!item.mark_as_viewed) {
-                 this.upDateNotification('mark_as_viewed',index)
+                this.upDateNotification('mark_as_viewed', index)
                 this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id, fromNotification: true })
 
             }
@@ -80,7 +80,7 @@ class Notification extends PureComponent {
         }
         else if (item.notification_type !== 'VIDEO_CONSULTATION') {
             if (!item.mark_as_viewed) {
-                 this.upDateNotification('mark_as_viewed')
+                this.upDateNotification('mark_as_viewed',index)
                 this.props.navigation.push(notificationNavigation[item.notification_type].navigationOption, { serviceId: item.service_id, fromNotification: true })
 
             }
@@ -89,20 +89,21 @@ class Notification extends PureComponent {
             }
         }
     }
-    upDateNotification = async (node,index) => {
+    upDateNotification = async (node, index) => {
         try {
 
             if (this.state.notificationId) {
 
                 UpDateUserNotification(node, this.state.notificationId);
-                if(node==='mark_as_viewed'){
-                    
-                    if(index){
-                        let data=this.state.data
-                        let temp=this.state.data[index]
-                        temp.mark_as_viewed=true
+                if (node === 'mark_as_viewed') {
+
+                    if (index!==undefined||index!==null) {
+                     
+                        let data = this.state.data
+                        let temp = this.state.data[index]
+                        temp.mark_as_viewed = true
                         data.splice(index, 1, temp);
-                        await this.setState({data})
+                        await this.setState({ data })
                     }
                 }
 
@@ -183,7 +184,7 @@ class Notification extends PureComponent {
                             <FlatList
                                 // horizontal={true}
                                 data={data}
-                                 extraData={this.state}
+                                extraData={this.state}
                                 onEndReached={() => this.handleLoadMore()}
                                 onEndReachedThreshold={0.5}
                                 // onMomentumScrollBegin={() => { 
@@ -193,7 +194,7 @@ class Notification extends PureComponent {
                                 ListFooterComponent={this.renderFooter.bind(this)}
                                 renderItem={({ item, index }) =>
                                     <Card style={{ borderRadius: 5, width: 'auto', padding: 15, backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
-                                        <TouchableOpacity onPress={() => this.updateNavigation(item,index)} testID='notificationView'>
+                                        <TouchableOpacity onPress={() => this.updateNavigation(item, index)} testID='notificationView'>
                                             <View>
                                                 {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
                                                     <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'right', marginTop: 5, }}>
