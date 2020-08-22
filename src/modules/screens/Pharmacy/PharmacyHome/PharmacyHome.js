@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
+import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy, getAvailableStockForListOfProducts,getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable, getselectedCartData } from '../CommomPharmacy';
@@ -103,6 +103,11 @@ class PharmacyHome extends Component {
                 this.setState({ medicineData: result, medicineDataAvailable: availableResult })
                 console.log("medicineData", this.state.medicineData)
                 if (userId) {
+                    let cartResult=await getCartListByUserId(userId)
+                    if(cartResult){
+                        await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartResult))
+
+                    }
                     let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
                     if (cart.length != 0) {
                         let cartData = JSON.parse(cart)
