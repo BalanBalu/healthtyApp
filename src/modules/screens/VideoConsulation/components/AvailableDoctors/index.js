@@ -34,7 +34,7 @@ class AvailableDoctors4Video extends Component {
             description: '',
             serviceType: '',
             doctorId: '',
-            fees:''
+            fees: ''
         }
         this.bookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
@@ -149,7 +149,7 @@ class AvailableDoctors4Video extends Component {
     onBookButtonPress4PaymentChat = async (doctorId, fee) => {
         try {
             this.setState({ isLoading: true });
-            const {description} = this.state
+            const { description } = this.state
             const amount = fee;
             console.log(fee);
             let freeService = false;
@@ -229,7 +229,7 @@ class AvailableDoctors4Video extends Component {
             if (fee == 0) {
                 freeService = true;
             }
-            const {description} = this.state
+            const { description } = this.state
             const videoConsultRequest = {
                 user_id: this.userId,
                 doctor_id: doctorId,
@@ -237,7 +237,7 @@ class AvailableDoctors4Video extends Component {
                 fee: fee,
                 status_by: 'USER',
                 statusUpdateReason: 'NEW VIDEO CONSULTATION',
-                description:description
+                description: description
             }
 
             const createVideoConsultingResponse = await createVideoConsuting(videoConsultRequest)
@@ -271,14 +271,15 @@ class AvailableDoctors4Video extends Component {
                     console.log('AfterVIdeo Creating', response)
                 } else {
                     this.setState({ isLoading: false });
-                    this.props.navigation.navigate('paymentPage', { 
+                    this.props.navigation.navigate('paymentPage', {
                         service_type: SERVICE_TYPES.VIDEO_CONSULTING,
                         bookSlotDetails: {
-                            doctorId : doctorId,
+                            doctorId: doctorId,
                             fee: amount,
-                            consultationId: createVideoConsultingResponse.consultationId    
-                        }, amount: amount }
-                );
+                            consultationId: createVideoConsultingResponse.consultationId
+                        }, amount: amount
+                    }
+                    );
                 }
             } else {
                 this.setState({ isLoading: false });
@@ -383,13 +384,13 @@ class AvailableDoctors4Video extends Component {
         }
 
     }
-    descriptionModalOpen = async (doctorId, fee,serviceType) => {
-        await this.setState({descriptionVisible:true,doctorId:doctorId,fees:fee,serviceType:serviceType})
+    descriptionModalOpen = async (doctorId, fee, serviceType) => {
+        await this.setState({ descriptionVisible: true, doctorId: doctorId, fees: fee, serviceType: serviceType })
     }
 
     descritionSubmission = async (serviceType) => {
-        const {  description,doctorId,fees } = this.state
-        if (serviceType === "CHAT" ) {
+        const { description, doctorId, fees } = this.state
+        if (serviceType === "CHAT") {
             if (description === '') {
                 Toast.show({
                     text: 'Kindly fill  the fields',
@@ -398,12 +399,12 @@ class AvailableDoctors4Video extends Component {
                 });
             }
             else {
-                    await this.onBookButtonPress4PaymentChat(doctorId, fees)
-                    await this.setState({ descriptionVisible: false,description:'' })
-                }
+                await this.onBookButtonPress4PaymentChat(doctorId, fees)
+                await this.setState({ descriptionVisible: false, description: '' })
             }
-            
-        if (serviceType === "VIDEO_CONSULTING" ) {
+        }
+
+        if (serviceType === "VIDEO_CONSULTING") {
             if (description === '') {
                 Toast.show({
                     text: 'Kindly fill  the fields',
@@ -412,10 +413,10 @@ class AvailableDoctors4Video extends Component {
                 });
             }
             else {
-                    await this.onBookButtonPress4PaymentVideo(doctorId,fees)
-                    await this.setState({ descriptionVisible: false,description:''})
-                }
+                await this.onBookButtonPress4PaymentVideo(doctorId, fees)
+                await this.setState({ descriptionVisible: false, description: '' })
             }
+        }
     }
 
     hasWhiteSpaceDescription(s) {
@@ -501,7 +502,7 @@ class AvailableDoctors4Video extends Component {
                             : null}
                         {item.availableForChat === true ?
                             <Col style={[isBothPremium ? { width: '25%' } : { width: '35%' }, { marginRight: 5 }]}>
-                                <TouchableOpacity onPress={() => this.descriptionModalOpen(item.doctor_id, item.chat_service_config.chat_fee,SERVICE_TYPES.CHAT)}
+                                <TouchableOpacity onPress={() => this.descriptionModalOpen(item.doctor_id, item.chat_service_config.chat_fee, SERVICE_TYPES.CHAT)}
                                     style={isBothPremium ? styles.ButtonStyle : isChatFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
                                     <Icon name="ios-chatboxes" style={!isBothPremium && isChatFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
                                     <Text style={isBothPremium && isChatFree ? styles.TextStyle : isChatFree ? styles.SponsorText : styles.TextStyle}>
@@ -512,7 +513,7 @@ class AvailableDoctors4Video extends Component {
 
                         {item.availableForVideo === true && item.hasCurrentlyAvailable === true ?
                             <Col style={isBothPremium ? { width: '25%' } : { width: '35%' }}>
-                                <TouchableOpacity onPress={() => this.descriptionModalOpen(item.doctor_id, this.getVideoConsultFee(item),SERVICE_TYPES.VIDEO_CONSULTING)}
+                                <TouchableOpacity onPress={() => this.descriptionModalOpen(item.doctor_id, this.getVideoConsultFee(item), SERVICE_TYPES.VIDEO_CONSULTING)}
                                     style={isBothPremium ? styles.ButtonStyle : isVideoFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
                                     <Icon name="ios-videocam" style={!isBothPremium && isVideoFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
                                     <Text style={isBothPremium ? styles.TextStyle : isVideoFree ? styles.SponsorText : styles.TextStyle}>
@@ -615,44 +616,47 @@ class AvailableDoctors4Video extends Component {
                             flexDirection: 'column',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            backgroundColor: 'rgba(0,0,0,0.5)'
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+
                         }}>
                             <View style={{
                                 width: '95%',
-                                height: '25%',
+                                height: 220,
                                 backgroundColor: '#fff',
                                 borderColor: '#909090',
                                 borderWidth: 3,
                                 padding: 10,
-                                borderRadius: 10
+                                borderRadius: 10,
                             }}>
                                 <Row style={styles.headerStyle}>
                                     <Icon name="create" style={{ fontSize: 15, color: '#fff', marginLeft: 15 }} />
                                     <Text style={styles.reasonText}> Enter Your Reason For Consultation?</Text>
                                 </Row>
-                                <TextInput
-                                    style={{ height: 120, borderWidth: 0.3, width: "100%", borderRadius: 5, fontSize: 14, borderColor: '#909090', padding: 2, marginTop: 10 }}
-                                    returnKeyType={'next'}
-                                    placeholder="Write Reason............"
-                                    multiline={true}
-                                    keyboardType={'default'}
-                                    textAlignVertical={'top'}
-                                    onChangeText={text => {
-                                        this.hasWhiteSpaceDescription(text);
-                                    }}
-                                />
+                                <View>
+                                    <TextInput
+                                        style={{ height: 120, borderWidth: 0.3, width: "100%", borderRadius: 5, fontSize: 14, borderColor: '#909090', padding: 2, marginTop: 10 }}
+                                        returnKeyType={'next'}
+                                        placeholder="Write Reason............"
+                                        multiline={true}
+                                        keyboardType={'default'}
 
+                                        textAlignVertical={'top'}
+                                        onChangeText={text => {
+                                            this.hasWhiteSpaceDescription(text);
+                                        }}
+                                    />
+                                </View>
                                 <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 5 }}>
                                     <Col size={2}></Col>
                                     <Col size={8} >
                                         <Row>
                                             <Col size={5}>
-                                                <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, borderRadius: 5, backgroundColor: 'red' }} onPress={() => this.setState({ descriptionVisible: false })} testID='cancelButton'>
+                                                <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, borderRadius: 5, backgroundColor: 'red', height: 25 }} onPress={() => this.setState({ descriptionVisible: false })} testID='cancelButton'>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: 'bold' }}> {'CANCEL'}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                             <Col size={5} style={{ marginRight: 3, marginLeft: 5 }} >
-                                                <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, borderRadius: 5, }} onPress={() => this.descritionSubmission(serviceType)} testID='submitButton'>
+                                                <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, borderRadius: 5, height: 25 }} onPress={() => this.descritionSubmission(serviceType)} testID='submitButton'>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>{'SUBMIT'}</Text>
                                                 </TouchableOpacity>
                                             </Col>
@@ -818,7 +822,8 @@ const styles = StyleSheet.create({
         marginTop: -10,
         marginLeft: -10,
         marginRight: -10,
-        alignItems: 'center'
+        alignItems: 'center',
+        height: 30
     }
 
 })
