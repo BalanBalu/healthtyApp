@@ -100,12 +100,14 @@ class Hospitals extends PureComponent {
             slotEndDateAndTime: addTimeUnit(date, 30, 'minutes'),
             booked_for:'HOSPITAL',
             location:{
-                location:haspitalValue.location
+                location:haspitalValue.location,
+                hospitalAdminId:haspitalValue.hospital_admin_id
             }
         }
         let data = haspitalValue
         data.slotData = slotData
         data.slotData.location.type = 'Hospital';
+
         console.log(JSON.stringify(data))
         this.props.navigation.navigate('Payment Review', { fromNavigation: 'HOSPITAL', resultconfirmSlotDetails: data })
     }
