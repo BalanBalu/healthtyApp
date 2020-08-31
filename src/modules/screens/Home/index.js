@@ -560,11 +560,11 @@ class Home extends Component {
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                         <Row style={{ marginTop: 5 }}>
                             <Col size={5}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories",{fromNavigation:"HOSPITAl"})}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Health Records")}>
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>{translate('Hospitals')}</Text>
+                                                <Text style={styles.mainText}>{translate('Health Records')}</Text>
                                             </Col>
                                             <Col size={2.5}>
                                                 <Image

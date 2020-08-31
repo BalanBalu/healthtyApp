@@ -239,18 +239,19 @@ export default class AppointmentList extends Component {
     }
     render() {
         const { data, reviewData, selectedIndex, isVisibleAddReviewPop, isLoading } = this.state;
-        if (isLoading) return <Spinner
-            color="blue"
-            style={[styles.containers, styles.horizontal]}
-            visible={true}
-            size={"large"}
-            overlayColor="none"
-            cancelable={false}
-        />;
+        
         return (
             <Container style={{ backgroundColor: '#ffffff', }}>
                 <NavigationEvents
                     onWillFocus={payload => { this.pageRefresh(payload) }}
+                />
+                <Spinner
+                    color="blue"
+                    style={[styles.containers, styles.horizontal]}
+                    visible={isLoading}
+                    size={"large"}
+                    overlayColor="none"
+                    cancelable={false}
                 />
                 <Card transparent>
                     <SegmentedControlTab

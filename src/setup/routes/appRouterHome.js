@@ -636,7 +636,7 @@ UploadEmr: {
     title: 'Upload Emr'
   }
 },
-  MedicineRecords: {
+ "Health Records": {
     screen: MedicineRecords,
     navigationOptions: {
       title: 'Medicine Records'
@@ -1160,9 +1160,9 @@ const drawerNavigatorRoutes = {
     screen: HomeHealthcareDoctorList,
     routeName: "Home Health Care"
   },
-  "Medicine Records": {
+  "Health Records": {
     screen: MedicineRecords,
-    routeName: "Medicine Records"
+    routeName: "Health Records"
   },
 
 }
@@ -1262,8 +1262,8 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             icon: require('../../../assets/images/drawerIcons/Orders.png'),
           },
           {
-            name: 'Medical Records',
-            routeName: drawerNavigatorRoutes[ "Medicine Records"].routeName,
+            name: 'Health Records',
+            routeName: drawerNavigatorRoutes[ "Health Records"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
         ]
