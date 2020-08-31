@@ -271,8 +271,8 @@ export default class BookAppointmentPaymentUpdate {
             if(bookSlotDetails.slotData.category_id){
                 bookAppointmentData.category_id=bookSlotDetails.slotData.category_id
             }
-            if(bookSlotDetails.hospital_admin_id){
-                bookAppointmentData.hospital_admin_id = bookSlotDetails.hospital_admin_id
+            if(bookSlotDetails.slotData && bookSlotDetails.slotData.location && bookSlotDetails.slotData.location.hospitalAdminId){
+                bookAppointmentData.hospital_admin_id = bookSlotDetails.slotData.location.hospitalAdminId
 
             }
             if(bookSlotDetails.slotData.booked_for){

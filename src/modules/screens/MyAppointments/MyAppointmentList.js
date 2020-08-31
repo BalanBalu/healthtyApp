@@ -12,7 +12,7 @@ import { formatDate, addTimeUnit, subTimeUnit, getAllId, statusValue } from "../
 import { getUserAppointments, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName,getDoctorNameOrHospitalName } from '../../common'
+import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
@@ -97,6 +97,7 @@ class MyAppoinmentList extends Component {
 		try {
 			// this.setState({ isLoading: true })
 			let userId = await AsyncStorage.getItem("userId");
+			let tempData = this.state.upComingData
 			let filters = {
 				startDate: new Date().toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
@@ -107,6 +108,7 @@ class MyAppoinmentList extends Component {
 
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
+			
 
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
@@ -155,13 +157,14 @@ class MyAppoinmentList extends Component {
 					}
 				})
 
-				let tempData = this.state.upComingData.concat(upcommingInfo)
-				this.setState({
-					upComingData: tempData,
-					data: tempData,
-					isLoading: false
-				});
+				tempData = this.state.upComingData.concat(upcommingInfo)
+
 			}
+			this.setState({
+				upComingData: tempData,
+				data: tempData,
+				isLoading: false
+			});
 		} catch (e) {
 			console.log(e);
 		} finally {
@@ -177,6 +180,7 @@ class MyAppoinmentList extends Component {
 			// 	isLoading: true
 			// })
 			let userId = await AsyncStorage.getItem("userId");
+			let tempData = this.state.pastData
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
@@ -187,9 +191,6 @@ class MyAppoinmentList extends Component {
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
-			console.log("===========================================================")
-			console.log(JSON.stringify(pastAppointmentResult))
-
 
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
@@ -243,12 +244,13 @@ class MyAppoinmentList extends Component {
 				)
 
 
-				let tempData = this.state.pastData.concat(pastDoctorDetails)
-				await this.setState({
-					pastData: tempData, data: tempData, isLoading: false
-				});
+				 tempData = this.state.pastData.concat(pastDoctorDetails)
+				
 
 			}
+			await this.setState({
+				pastData: tempData, data: tempData, isLoading: false
+			});
 		} catch (e) {
 			console.log(e);
 		} finally {
@@ -469,7 +471,7 @@ class MyAppoinmentList extends Component {
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Col size={9}>
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																		{ getDoctorNameOrHospitalName(item.appointmentResult)}
+																		{getDoctorNameOrHospitalName(item.appointmentResult)}
 																	</Text>
 																	<Text
 																		style={{
@@ -491,7 +493,7 @@ class MyAppoinmentList extends Component {
 																<Text
 																	style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
 																>
-																	{item.specialist?item.specialist:item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalName(item.appointmentResult.location[0]) : null}
+																	{item.specialist ? item.specialist : item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalName(item.appointmentResult.location[0]) : null}
 																</Text>
 
 																{selectedIndex == 1 &&
@@ -516,7 +518,7 @@ class MyAppoinmentList extends Component {
 																{item.appointmentResult.appointment_status == "APPROVED" && item.appointmentResult.onGoingAppointment ?
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: 'green', fontWeight: 'bold' }} note>{'Appointment Ongoing'}</Text>
 																	:
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status]? statusValue[item.appointmentResult.appointment_status].color:'red', fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status]?statusValue[item.appointmentResult.appointment_status].text:item.appointmentResult.appointment_status}</Text>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].color : 'red', fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].text : item.appointmentResult.appointment_status}</Text>
 																}
 
 
