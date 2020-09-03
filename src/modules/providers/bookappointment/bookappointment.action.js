@@ -581,3 +581,17 @@ export async function bookAppointment4Healthcare(bookSlotDetails, isLoading = tr
     }
   }
 }
+
+export async function getAppointmentCode(appointmentId, ) {
+  try {
+    let endPoint ='appointment/appointment_verification_code/'+appointmentId
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}

@@ -108,6 +108,7 @@ class UploadEmr extends Component {
         // discription
       if(!onlySpaceNotAllowed(this.state.discription)){
         toastMeassage('kindly write discription', 'success', 3000)
+        return
       }
         let userId = await AsyncStorage.getItem('userId');
         let reqata={
@@ -120,6 +121,7 @@ class UploadEmr extends Component {
        
         if(result.success){
             toastMeassage('EMR upload successfully', 'success', 3000)
+            this.setState({imageData:[],discription:''})
             const { routeName, key } = this.props.navigation.getParam('prevState');
             this.props.navigation.navigate({routeName, key,params: { hasEmrReload: true }})
         }
