@@ -11,24 +11,9 @@ class EcardDetails extends React.Component {
         <View style={ecardStyles.container}>
           <Text style={ecardStyles.titleText}>E-Card Details..</Text>
         </View>
-        <View
-          style={{
-            flex: 1,
-            paddingTop: 10,
-            paddingLeft: 20,
-            paddingRight: 30,
-            paddingBottom: 5,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <View style={ecardStyles.headingText}>
           <Text style={ecardStyles.customText}>
-            <Icon
-              name="info-circle"
-              size={17}
-              color="#7E49C3"
-              onPress={() => this.editProfile('UpdateEmail')}
-              testID="iconToUpdateEmail"
-            />
+            <Icon name="info-circle" size={17} color="#7E49C3" />
             {'    '}
             Policy Details
           </Text>
@@ -48,16 +33,7 @@ class EcardDetails extends React.Component {
           </View>
         </ListItem>
 
-        <View
-          style={{
-            flex: 1,
-            paddingTop: 10,
-            paddingLeft: 20,
-            paddingRight: 30,
-            paddingBottom: 5,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <View style={ecardStyles.headingText}>
           <Text style={ecardStyles.customText}>
             <Icon name="child" size={17} color="#7E49C3" />
             {'    '}
@@ -78,16 +54,7 @@ class EcardDetails extends React.Component {
           </View>
         </ListItem>
 
-        <View
-          style={{
-            flex: 1,
-            paddingTop: 10,
-            paddingLeft: 20,
-            paddingRight: 30,
-            paddingBottom: 5,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <View style={ecardStyles.headingText}>
           <Text style={ecardStyles.customText}>
             <Icon name="shield" size={17} color="#7E49C3" />
             {'    '}
@@ -117,13 +84,6 @@ class EcardDetails extends React.Component {
 }
 
 const ecardStyles = StyleSheet.create({
-  // container: {
-  //   paddingTop: 5,
-  //   margin: 10,
-
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-around',
-  // },
   Heading: {
     fontWeight: 'bold',
     fontSize: 17,
@@ -131,8 +91,8 @@ const ecardStyles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 15,
     paddingBottom: 5,
-    // color: '#7E49C3',
   },
+
   MainHeading: {
     flex: 1,
     fontWeight: 'bold',
@@ -148,6 +108,7 @@ const ecardStyles = StyleSheet.create({
     flex: 1,
     padding: 1,
   },
+
   Right: {
     flex: 1,
     padding: 1,
@@ -158,6 +119,7 @@ const ecardStyles = StyleSheet.create({
     color: '#A9A9A9',
     fontSize: 13,
   },
+
   titleText: {
     fontSize: 15,
     padding: 5,
@@ -170,13 +132,25 @@ const ecardStyles = StyleSheet.create({
     fontFamily: 'OpenSans',
     marginTop: 20,
   },
+
   customText1: {
     fontSize: 13,
     fontFamily: 'OpenSans',
   },
+
   customText: {
     fontSize: 15,
     fontFamily: 'OpenSans',
+  },
+
+  headingText: {
+    flex: 1,
+    paddingTop: 10,
+    paddingLeft: 20,
+    paddingRight: 30,
+    paddingBottom: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
