@@ -9,6 +9,27 @@ import styles from './styles';
 import { formatDate } from "../../../setup/helpers";
 
 
+const onPressPreviewImagesInZoom = (data, navigation) => {
+    navigation.navigate('ZoomImageViewer', {
+        images: !data.length ? '' : data.map(ele => {
+            return {
+                url: ele.imageURL,
+                width: 400, height: 400,
+            }
+        }), tittle: 'Photos'
+    })
+}
+
+
+const SingleImageViewInSquareShape = (props) => {
+    const { source, style } = props;
+    return (
+        <Image
+            source={source}
+            style={style}
+        />
+    )
+}
 const RenderProposeNewPopPage = (props) => {
     return (
         <View style={{
@@ -281,5 +302,7 @@ export {
     RenderAddressInfo,
     RenderEditingPincode,
     RenderNoAppointmentsFounds,
-    RenderProposeNewPopPage
+    RenderProposeNewPopPage,
+    onPressPreviewImagesInZoom,
+    SingleImageViewInSquareShape
 }

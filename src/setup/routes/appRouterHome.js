@@ -128,10 +128,11 @@ import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
-import Hospitals from '../../modules/screens/hospitalBookAppoinments/hospitals'
 import TextTicker from 'react-native-text-ticker';
 import { IS_ANDROID } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
+import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -200,19 +201,19 @@ const HomeStack = createStackNavigator({
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
                   <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
-                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems:  'flex-start', marginRight: 15 }}>
-                    <TextTicker style={{  marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000} 
-                        loop 
-                        bounce 
-                        repeatSpacer={50} 
-                        marqueeDelay={1000}>
+                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
+                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
+                      loop
+                      bounce
+                      repeatSpacer={50}
+                      marqueeDelay={1000}>
                       {navigation.getParam('appBar', { locationName: ' ' }).locationName}
                     </TextTicker>
-                    <TextTicker style={{  alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2  }} duration={10000} 
-                        loop 
-                        bounce 
-                        repeatSpacer={200} 
-                        marqueeDelay={1000}>
+                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }} duration={10000}
+                      loop
+                      bounce
+                      repeatSpacer={200}
+                      marqueeDelay={1000}>
                       {navigation.getParam('appBar', { locationCapta: 'Searching Near by Hospitals' }).locationCapta}
 
                     </TextTicker>
@@ -621,30 +622,30 @@ const HomeStack = createStackNavigator({
       title: 'Ecard Details'
     }
   },
-//================  MedicineRecords ===============
+  //================  MedicineRecords ===============
 
-EmrInfo: {
-  screen: EmrInfo,
-  navigationOptions: {
-    title: 'EmrInfo'
-  }
-},
+  EmrInfo: {
+    screen: EmrInfo,
+    navigationOptions: {
+      title: 'EmrInfo'
+    }
+  },
 
-UploadEmr: {
-  screen: UploadEmr,
-  navigationOptions: {
-    title: 'Upload Emr'
-  }
-},
- "Health Records": {
+  UploadEmr: {
+    screen: UploadEmr,
+    navigationOptions: {
+      title: 'Upload Emr'
+    }
+  },
+  "Health Records": {
     screen: MedicineRecords,
     navigationOptions: {
       title: 'Medicine Records'
     }
   },
   //================  Appoinment Booking Through Hospitals ===============
-  Hospitals: {
-    screen: Hospitals,
+  HospitalList: {
+    screen: HospitalList,
     navigationOptions: {
       title: 'Hospital List'
     }
@@ -1263,7 +1264,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           },
           {
             name: 'Health Records',
-            routeName: drawerNavigatorRoutes[ "Health Records"].routeName,
+            routeName: drawerNavigatorRoutes["Health Records"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
         ]

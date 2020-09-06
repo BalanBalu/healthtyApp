@@ -8,7 +8,15 @@ import { setI18nConfig } from '../setup/translator.helper';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
-
+export function hospitalProfileImages(data) {
+    let source = null;
+    if (data && data.profile_image) {
+        source = { uri: data.profile_image[0].imageURL }
+    } else {
+        source = require('../../assets/images/hospitalCommon.jpeg')
+    }
+    return (source)
+}
 export const RenderHospitalAddress = (props) => {
     const { headerStyle, hospotalNameTextStyle, gridStyle, renderHalfAddress } = props
     return (
@@ -523,8 +531,8 @@ export function getDoctorNameOrHospitalName(data) {
 
             }
         } else {
-            if(data.booked_for === 'HOSPITAL') {
-                name=getHospitalHeadeName(data.location[0])
+            if (data.booked_for === 'HOSPITAL') {
+                name = getHospitalHeadeName(data.location[0])
             }
         }
     }
