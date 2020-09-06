@@ -320,6 +320,8 @@ export const notificationNavigation = {
 
 }
 
-
+export function isTimeAfter(date1, date2) {
+  return moment(date1).isAfter(date2)
+}
 
 

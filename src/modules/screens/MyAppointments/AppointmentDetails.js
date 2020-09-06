@@ -8,12 +8,12 @@ import { StyleSheet, AsyncStorage, TouchableOpacity, Modal, FlatList } from 'rea
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff, statusValue, getMoment } from '../../../setup/helpers';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation,getAppointmentCode } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, dateDiff, statusValue, getMoment ,isTimeAfter} from '../../../setup/helpers';
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName,getDoctorNameOrHospitalName } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName,getDoctorNameOrHospitalName,toastMeassage } from '../../common'
 import { translate } from "../../../setup/translator.helper";
 import { updateEvent } from "../../../setup/calendarEvent";
 
@@ -268,6 +268,26 @@ class AppointmentDetails extends Component {
     }
   }
 
+  
+  
+  async onPressToGetAppointmentCode() {
+    try {
+ 
+
+      let result = await getAppointmentCode(this.state.appointmentId);
+ 
+      if(result.success){
+        toastMeassage(result.message,'success',3000)
+      }
+  
+
+     
+    }
+    catch (e) {
+    
+      console.log(e)
+    }
+  }
   async backNavigation() {
     const { navigation } = this.props;
     if (navigation.state.params) {
@@ -436,7 +456,22 @@ class AppointmentDetails extends Component {
                               <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
                             </Button>
                           </Row>
-                        </Col></Row> : null : null}
+                        </Col></Row> : null : data.appointment_status == 'APPROVED' && isTimeAfter(new Date().toISOString(), data.appointment_starttime) ?
+
+<Row>
+<Col size={5}>
+    <Row style={{ marginTop: 10 }}>
+        <Text note style={styles.subText3}>Do you need to get code ?</Text>
+    </Row>
+</Col>
+<Col size={5}>
+    <Row style={{ marginTop: 10 }}>
+        <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode()}>
+            <Text style={styles.ButtonText}>Get appointment Code</Text>
+        </Button>
+    </Row>
+</Col>
+</Row>:null}
                 </Grid>
                 <CardItem footer style={styles.cardItem2}>
                   <Grid>
