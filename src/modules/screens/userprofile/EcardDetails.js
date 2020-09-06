@@ -17,8 +17,11 @@ class EcardDetails extends React.Component {
       isLoading: false
     }
   }
-  componentDidMount() {
-    this.getEcardDetail()
+  async componentDidMount() {
+    const is_corporate_user = await AsyncStorage.getItem('is_corporate_user')
+    if(is_corporate_user) {
+        this.getEcardDetail()
+    }
   }
   async getEcardDetail() {
     await this.setState({ isLoading: true })
