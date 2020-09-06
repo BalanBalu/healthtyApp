@@ -17,7 +17,7 @@ class BenefeciaryDetails extends PureComponent {
         }
     }
     getCorporateBenificeryName(element) {
-        return (element.firstName ? element.firstName + ' ' :'') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ': '');
+        return (element.firstName ? element.firstName + ' ' : '') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ' : '');
     }
 
 
@@ -32,7 +32,7 @@ class BenefeciaryDetails extends PureComponent {
                 <Row>
                     <Col size={4}>
                         <Text style={styles.innerText}>Beneficiary</Text>
-                        <Text style={styles.innerText}>Product Name</Text>
+                        {/* <Text style={styles.innerText}>Product Name</Text> */}
                         <Text style={styles.innerText}>Policy Number</Text>
                         <Text style={styles.innerText}>Policy Effective From</Text>
                         <Text style={styles.innerText}>Policy End Date</Text>
@@ -52,14 +52,14 @@ class BenefeciaryDetails extends PureComponent {
 
                     </Col>
                     <Col size={5.5}>
-                        <Text  style={[styles.innerText,{color:'#909498'}]}>{this.getCorporateBenificeryName(data)}</Text>
-                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.productType}</Text>
-                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.policyNumber}</Text>
-                        <Text  style={[styles.innerText,{color:'#909498'}]}>{formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY')}</Text>
-                        <Text  style={[styles.innerText,{color:'#909498'}]}>{formatDate(data.policyEffectiveTo, 'DD/MM/YYYY')}</Text>
-                        <Text  style={[styles.innerText,{color:'#909498'}]}>{data.sumInsured}</Text>
-                        <Text  style={[styles.innerText,{color:'#909498'}]}>2500000</Text>
-                        <Text  style={[styles.innerText,{color:'#909498'}]}> ₹ 0.00</Text>
+                        <Text style={[styles.innerText, { color: '#909498' }]}>{this.getCorporateBenificeryName(data)}</Text>
+                        {/* <Text style={[styles.innerText, { color: '#909498' }]}>{data.productType}</Text> */}
+                        <Text style={[styles.innerText, { color: '#909498' }]}>{data.policyNumber}</Text>
+                        <Text style={[styles.innerText, { color: '#909498' }]}>{formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY')}</Text>
+                        <Text style={[styles.innerText, { color: '#909498' }]}>{formatDate(data.policyEffectiveTo, 'DD/MM/YYYY')}</Text>
+                        <Text style={[styles.innerText, { color: '#909498' }]}>{data.sumInsured}</Text>
+                        <Text style={[styles.innerText, { color: '#909498' }]}>2500000</Text>
+                        <Text style={[styles.innerText, { color: '#909498' }]}> ₹ 0.00</Text>
                     </Col>
                 </Row>
             </View>
