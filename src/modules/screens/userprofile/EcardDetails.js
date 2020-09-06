@@ -80,6 +80,7 @@ class EcardDetails extends React.Component {
     console.log(JSON.stringify(EcardData))
     return (
       <ScrollView>
+        {EcardData.length !=0?
         <View>
           <Text style={styles.titleText2}>E-Card Details..</Text>
           <ListItem avatar>
@@ -167,6 +168,7 @@ class EcardDetails extends React.Component {
           </Body>
         </ListItem> */}
         </View>
+        :null}
       </ScrollView>
     );
   }
