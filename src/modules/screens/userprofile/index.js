@@ -46,7 +46,7 @@ import {Loader} from '../../../components/ContentLoader';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadMultiPart} from '../../../setup/services/httpservices';
-import {renderDoctorImage, renderProfileImage, getGender} from '../../common';
+import {renderDoctorImage, renderProfileImage,getGender} from '../../common';
 import EcardDetails from './EcardDetails';
 
 class Profile extends Component {
@@ -323,11 +323,14 @@ class Profile extends Component {
     this.setState({family_members: temp, updateButton: false});
   };
 
+
+
   render() {
     const {
       profile: {isLoading},
     } = this.props;
     const {data, imageSource, family_members} = this.state;
+   
     return (
       <Container style={styles.container}>
         <NavigationEvents
@@ -914,8 +917,8 @@ class Profile extends Component {
                   </Right>
                 ) : null}
               </ListItem>
-              <EcardDetails />
-
+              
+             
               <ListItem avatar>
                 <Left>
                   <Icon name="briefcase" style={{color: '#7E49C3'}} />
@@ -940,7 +943,7 @@ class Profile extends Component {
                 </Right>
               </ListItem>
             </List>
-
+              <EcardDetails/>
             {this.state.favouriteList.length === 0 ? null : (
               <Card style={{padding: 10}}>
                 <List>
@@ -1168,4 +1171,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
   },
+  titleText2: {
+    fontSize: 15,
+    padding: 5,
+    margin: 10,
+    borderRadius: 20,
+    color: '#000',
+    fontFamily: 'OpenSans',
+    marginTop: 20,
+    fontWeight:'bold'
+  },
+  innerText: {
+    fontFamily: 'OpenSans',
+    fontSize: 12,
+    marginTop: 5
+
+},
 });
