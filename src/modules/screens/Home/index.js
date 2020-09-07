@@ -217,14 +217,14 @@ class Home extends Component {
             let result = await catagries(searchQueris);
 
             if (result.success) {
-                 let data = [];   
-                 result.data.some((ele, index) => {
-                    if(index < 9) {
-                        data.push(ele);  
+                let data = [];
+                result.data.some((ele, index) => {
+                    if (index < 9) {
+                        data.push(ele);
                     } else {
                         return true
-                    } 
-                 });   
+                    }
+                });
                 this.setState({ catagary: data, categryCount: this.state.categryCount + 1 })
             }
         } catch (e) {
@@ -256,9 +256,9 @@ class Home extends Component {
     }
 
     navigateToCategorySearch(categoryName) {
-         CheckLocationWarning.checkLocationWarning(this.navigateToCateSearch.bind(this), [ categoryName ]);
+        CheckLocationWarning.checkLocationWarning(this.navigateToCateSearch.bind(this), [categoryName]);
     };
-   
+
     navigateToCateSearch = (categoryName) => {
         const { bookappointment: { locationCordinates } } = this.props;
         this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
@@ -270,7 +270,7 @@ class Home extends Component {
             }
         })
     }
-   
+
 
     getMarkedAsReadedNotification = async (userId) => {
         try {
@@ -399,7 +399,7 @@ class Home extends Component {
         return (
 
             <Container style={styles.container}>
-               
+
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
@@ -419,7 +419,7 @@ class Home extends Component {
                             />
                         </Col>
                     </Row>
-                    
+
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '50%', }}>
                             <TouchableOpacity onPress={() =>
@@ -445,7 +445,7 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
                         <Col style={{ width: '50%', marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories",{fromNavigation:"HOSPITAl"})}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("HospitalList")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
@@ -468,7 +468,7 @@ class Home extends Component {
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
                         <Col style={{ width: '50%' }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories",{fromNavigation:"HOME_HEALTH_CARE"})}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
@@ -510,7 +510,7 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
                     </Grid>
-                  
+
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '50%', }}>
                             <TouchableOpacity onPress={() =>
