@@ -6,7 +6,7 @@ import StarRating from 'react-native-star-rating';
 import { RenderFavoritesComponent, onPressPreviewImagesInZoom, SingleImageViewInSquareShape } from '../../../screens/CommonAll/components';
 import { hospitalProfileImages, getKiloMeterCalculation } from '../../../common'
 import styles from '../Styles'
-export default class RenderDoctorInfo extends Component {
+export default class RenderHospitalInfo extends Component {
     constructor(props) {
         super(props)
     }
