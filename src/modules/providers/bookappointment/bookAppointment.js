@@ -266,19 +266,19 @@ export default class BookAppointmentPaymentUpdate {
             }
             if (bookSlotDetails.doctorId) {
                 bookAppointmentData.doctorId = bookSlotDetails.doctorId
-                bookAppointmentData.hospital_id= bookSlotDetails.slotData.location.hospital_id
+                bookAppointmentData.hospital_id = bookSlotDetails.slotData.location.hospital_id
             }
-            if(bookSlotDetails.slotData.category_id){
-                bookAppointmentData.category_id=bookSlotDetails.slotData.category_id
+            if (bookSlotDetails.slotData.category_id) {
+                bookAppointmentData.category_id = bookSlotDetails.slotData.category_id
             }
-            if(bookSlotDetails.slotData && bookSlotDetails.slotData.location && bookSlotDetails.slotData.location.hospitalAdminId){
+            if (bookSlotDetails.slotData && bookSlotDetails.slotData.location && bookSlotDetails.slotData.location.hospitalAdminId) {
                 bookAppointmentData.hospital_admin_id = bookSlotDetails.slotData.location.hospitalAdminId
 
             }
-            if(bookSlotDetails.slotData.booked_for){
-                bookAppointmentData.booked_for=bookSlotDetails.slotData.booked_for
+            if (bookSlotDetails.slotData.booked_for) {
+                bookAppointmentData.booked_for = bookSlotDetails.slotData.booked_for
             }
-           
+
             let resultData = await bookAppointment(bookAppointmentData);
             console.log(resultData)
             if (resultData.success) {
