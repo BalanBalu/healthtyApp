@@ -259,7 +259,7 @@ class TestDetails extends PureComponent {
                 </Row>
                 <Row>
                     <Col size={5}>
-                        <Text style={styles.NameText}>{`${data.full_name} ( ${data.benefeciaryUserDeails && data.benefeciaryUserDeails.relationShip ? data.benefeciaryUserDeails.relationShip : ''})`}</Text>
+                        <Text style={styles.NameText}>{`${data.full_name||' '} ( ${data.benefeciaryUserDeails && data.benefeciaryUserDeails.relationShip ? data.benefeciaryUserDeails.relationShip : ''})`}</Text>
                     </Col>
                     <Col size={5}>
                         <Text style={styles.ageText}>{data.age} years</Text>

@@ -151,6 +151,7 @@ class HospitalList extends Component {
         this.setState({ expandData: index })
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         let category_id = this.props.navigation.getParam('category_id') || null
+       
         let slotData = {
             fee: 200,
             slotStartDateAndTime: date,
@@ -158,7 +159,8 @@ class HospitalList extends Component {
             slotEndDateAndTime: addTimeUnit(date, 30, 'minutes'),
             booked_for: 'HOSPITAL',
             location: {
-                location: haspitalValue.location
+                location: haspitalValue.location,
+                hospitalAdminId:haspitalValue.hospital_admin_id
             }
         }
         let data = haspitalValue
