@@ -230,7 +230,7 @@ class UpdateFamilyMembers extends Component {
 
                             </View>
                         </Card>
-                        {this.state.family_members.length != 0 ?
+                        {this.state.family_members && this.state.family_members.length != 0 ?
                             <Card style={styles.cardStyle}>
                                 <View>
                                     <Text style={styles.headText}>Added Details</Text>
