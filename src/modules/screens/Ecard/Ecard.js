@@ -24,26 +24,29 @@ class Ecard extends PureComponent {
     async getEcardDetail() {
         await this.setState({ isLoading: true })
         const userId = await AsyncStorage.getItem('userId');
-        let fields = "corporate_user_id";
+        let fields = "corporate_user_id,employee_code";
         let userResult= await fetchUserProfile(userId, fields);
 
         if (!userResult.error) {
-            let corporateResult = await getCorporateEmployeeDetailsById(userResult.corporate_user_id);
+            let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
 
             if (!!corporateResult) {
-                let data = {
-                    PolicyNumber: corporateResult.policyNumber,
-                    EmployeeNumber: corporateResult.employeeId,
-                }
-                let result = await getCorporateUserEcardDetails(data);
+                console.log('corporateResultcorporateResultcorporateResult')
+                console.log(JSON.stringify(corporateResult))
+                // let data = {
+                //     PolicyNumber: corporateResult.policyNumber,
+                //     EmployeeNumber: corporateResult.employeeId,
+                // }
+                // let result = await getCorporateUserEcardDetails(data);
                
-                if (!!result && result.status === "True") {
-                    await this.setState({ data: JSON.parse(result.result) })
+                // if (!!result && result.status === "True") {
+                    await this.setState({ data: corporateResult})
 
 
-                } else {
-                    toastMeassage('employee Details not found', 'dangers', 3000)
-                }
+                // } 
+                // else {
+                //     toastMeassage('employee Details not found', 'dangers', 3000)
+                // }
 
 
             } else {
