@@ -55,6 +55,7 @@ export const addFavoritesToHospitalByUserService = async (userId, hospitalAdminI
         active: !patientFavoriteListCountOfHospitalAdminIds.includes(hospitalAdminId)
       };
       const updateResponse = await updateFavoritesToHospitalByUser(userId, hospitalAdminId, reqData4updateWishList);
+      // console.log('updateResponse====>', JSON.stringify(updateResponse))
       if (updateResponse.success) {
         if (reqData4updateWishList.active) {
           hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] = hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] ? hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] + 1 : 1
@@ -114,10 +115,12 @@ export const serviceOfGetHospitalFavoriteListCount4Pat = async (hospitalAdminId)
     const endPoint = '/wishListCount/' + hospitalAdminId + '/hospital';
     const response = await getService(endPoint);
     const favoritesList = response.data;
+    const favoritesListData = favoritesList.data;
+
     if (favoritesList.success) {
-      for (i = 0; i < favoritesList.data.length; i++) {
-        hospitalAdminId = favoritesList.data[i].wishList.hospital_admin_id;
-        hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] = hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] ? hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] + 1 : 1
+      for (i = 0; i < favoritesListData.length; i++) {
+        hospitalAdminId = favoritesListData[i].hospital_admin_id;
+        hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] = hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] ? hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] + 1 : favoritesListData[i].count;
       }
       store.dispatch({
         type: SET_HOSPITAL_FAVORITE_COUNTS_OF_HOSPITAL_ADMIN_IDS,
