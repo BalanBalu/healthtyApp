@@ -50,7 +50,7 @@ class UpdateFamilyMembers extends Component {
     }
 
     addedFamilyMembers = async () => {
-        const { name, age, gender, relationship } = this.state
+        const { name, age, gender, relationship, } = this.state
         console.log("relationship", relationship)
         if (name == '' || age == '' || gender == '' || relationship == '' || relationship == 'Select Relationship') {
             this.setState({ errorMsg: 'Kindly fill all the fields...' })
@@ -58,7 +58,8 @@ class UpdateFamilyMembers extends Component {
         }
         else {
             this.setState({ errMsg: '' })
-            let temp = this.state.family_members;
+            let temp =[];
+            temp = this.state.family_members||[];
             temp.push({
                 name: name,
                 age: Number(age),
@@ -230,7 +231,7 @@ class UpdateFamilyMembers extends Component {
 
                             </View>
                         </Card>
-                        {this.state.family_members.length != 0 ?
+                        {this.state.family_members && this.state.family_members.length != 0 ?
                             <Card style={styles.cardStyle}>
                                 <View>
                                     <Text style={styles.headText}>Added Details</Text>
