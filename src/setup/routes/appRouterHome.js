@@ -535,7 +535,7 @@ const HomeStack = createStackNavigator({
   Updateheightweight: {
     screen: Updateheightweight,
     navigationOptions: {
-      title: 'Update height weight'
+      title: 'Update height and weight'
     }
   },
   UpdateFamilyMembers: {
