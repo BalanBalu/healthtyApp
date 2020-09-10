@@ -24,26 +24,30 @@ class Ecard extends PureComponent {
     async getEcardDetail() {
         await this.setState({ isLoading: true })
         const userId = await AsyncStorage.getItem('userId');
-        let fields = "corporate_user_id";
-        let userResult= await fetchUserProfile(userId, fields);
+        let fields = "corporate_user_id,employee_code";
+        let userResult = await fetchUserProfile(userId, fields);
 
         if (!userResult.error) {
-            let corporateResult = await getCorporateEmployeeDetailsById(userResult.corporate_user_id);
+            let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
 
             if (!!corporateResult) {
-                let data = {
-                    PolicyNumber: corporateResult.policyNumber,
-                    EmployeeNumber: corporateResult.employeeId,
-                }
-                let result = await getCorporateUserEcardDetails(data);
-               
-                if (!!result && result.status === "True") {
-                    await this.setState({ data: JSON.parse(result.result) })
+                console.log('corporateResultcorporateResultcorporateResult')
+                console.log(JSON.stringify(corporateResult))
+             
+                // let data = {
+                //     PolicyNumber: corporateResult.policyNumber,
+                //     EmployeeNumber: corporateResult.employeeId,
+                // }
+                // let result = await getCorporateUserEcardDetails(data);
+
+                // if (!!result && result.status === "True") {
+                await this.setState({ data: corporateResult })
 
 
-                } else {
-                    toastMeassage('employee Details not found', 'dangers', 3000)
-                }
+                // } 
+                // else {
+                //     toastMeassage('employee Details not found', 'dangers', 3000)
+                // }
 
 
             } else {
@@ -56,11 +60,11 @@ class Ecard extends PureComponent {
         await this.setState({ isLoading: false })
 
     }
-  
+
     async open(data) {
         let requestObject = {
             MemberID: data.MemberId,
-            TPAId:data.MemberId,
+            TPAId: data.MemberId,
             EmployeeNumber: data.EmployeeCode,
             PolicyNumber: data.PolicyNumber
         }
@@ -75,24 +79,39 @@ class Ecard extends PureComponent {
 
     }
     getInsuranceAddress(data) {
-        let temp = []
-        data.split(',').map((ele, index) => {
-            if (index !== 0) {
-                temp.push(ele)
-            }
+        let temp = ''
+        if (data) {
+            temp = `${data.address2},${data.address1}`
+        }
+        // data.split(',').map((ele, index) => {
+        //     if (index !== 0) {
+        //         temp.push(ele)
+        //     }
 
-        })
+        // })
 
         return temp
     }
+    getMemberName(data) {
+        let temp = ''
+        if (data) {
+            temp = `${data.firstName || ' '} ${data.middleName || ''} ${data.lastName || ''}`
+        }
+
+
+        return temp
+
+    }
 
     employeeAndFamilyDetails(data) {
+
+        
         return (
             <View>
                 <View style={{ marginTop: 10, backgroundColor: '#f2f5f4', paddingTop: 8, justifyContent: 'center', alignItems: 'center', paddingBottom: 8 }}>
 
 
-                    <Text style={styles.headerText}>{data.InsuranceCompany.toUpperCase()}</Text>
+                    <Text style={styles.headerText}>{data.insuranceCompany ? data.insuranceCompany.toUpperCase() : 'MEDFLIC INSURANCE'}</Text>
                     {/* <Text style={styles.headerText}>COMPANY LIMITED</Text> */}
                     <Text style={styles.compName}>{data.address1 || ' '}</Text>
 
@@ -123,14 +142,14 @@ class Ecard extends PureComponent {
 
                     </Col>
                     <Col size={5.5}>
-                        <Text style={styles.innerText}>{data.PolicyNumber}</Text>
+                        <Text style={styles.innerText}>{data.policyNo}</Text>
                         <Text style={styles.innerText}>{data.health_india_Id || ' '}</Text>
-                        <Text style={styles.innerText}>{data.MemberId}</Text>
-                        <Text style={styles.innerText}>{data.MemberName}</Text>
-                        <Text style={styles.innerText}>{data.Gender}</Text>
-                        <Text style={styles.innerText}>{data.Age} Years</Text>
-                        <Text style={styles.innerText}>{data.Relation}</Text>
-                        <Text style={styles.innerText}>{data.EmployeeCode}</Text>
+                        <Text style={styles.innerText}>{data.memberId}</Text>
+                        <Text style={styles.innerText}>{this.getMemberName(data)}</Text>
+                        <Text style={styles.innerText}>{data.gender}</Text>
+                        <Text style={styles.innerText}>{data.age} Years</Text>
+                        <Text style={styles.innerText}>{data.relationShip}</Text>
+                        <Text style={styles.innerText}>{data.employeeId}</Text>
                         <Text style={styles.innerText}>{data.PolicyEndDate || ' '}</Text>
                     </Col>
                     <Col size={1.8} style={{ alignItems: 'center' }}>
@@ -142,8 +161,8 @@ class Ecard extends PureComponent {
                         <Image source={require('../../../../assets/images/healthIndia.png')} style={{ height: 60, width: 80 }} />
                     </Col>
                     <Col size={8} style={styles.colStyle}>
-                        <Text style={styles.footerText}>{data.GroupName}</Text>
-                        <Text style={styles.addressText}>{this.getInsuranceAddress(data.Address)}</Text>
+                        <Text style={styles.footerText}>{data.address3}</Text>
+                        <Text style={styles.addressText}>{this.getInsuranceAddress(data)}</Text>
                     </Col>
                 </Row>
 
@@ -173,8 +192,8 @@ class Ecard extends PureComponent {
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
-                                {data.find(ele => ele.Relation === 'EMPLOYEE') !== undefined ?
-                                    this.employeeAndFamilyDetails(data.find(ele => ele.Relation === 'EMPLOYEE')) : null}
+                                {data && data.find(ele => ele.relationShip === 'EMPLOYEE') !== undefined ?
+                                    this.employeeAndFamilyDetails(data.find(ele => ele.relationShip === 'EMPLOYEE')) : null}
                                 <View style={styles.borderStyle} />
                                 <View>
                                     <Text style={styles.familyHeader}>Family Members</Text>
@@ -182,11 +201,11 @@ class Ecard extends PureComponent {
                                         data={this.state.data}
                                         extraData={this.state}
                                         keyExtractor={(item, index) => index.toString()}
-                                        renderItem={({ item }) => 
-                                           item.Relation !== 'EMPLOYEE' &&
+                                        renderItem={({ item }) =>
+                                            item.relationShip !== 'EMPLOYEE' &&
                                             this.employeeAndFamilyDetails(item)}
-                                        
-                                         />
+
+                                    />
                                 </View>
 
                             </View>
