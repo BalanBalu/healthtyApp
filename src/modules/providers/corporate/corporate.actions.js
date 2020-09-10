@@ -27,9 +27,9 @@ export async function getCorporateUserEcardDetails(bodyData) {
 
   
 
-  export async function getCorporateEmployeeDetailsById(id) {
+  export async function getCorporateEmployeeDetailsById(empCode) {
     try {
-      let endPoint = 'member-detail/'+id;
+      let endPoint = 'member-detail/'+empCode;
       let response = await smartHealthGetService(endPoint);
 
   

@@ -6,6 +6,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import BenefeciaryDetails from './benefeciaryDetails'
 import { fetchUserProfile, getCorporateUserFamilyDetails, getPolicYDetailsByid } from '../../providers/profile/profile.action';
+import {getCorporateEmployeeDetailsById} from '../../providers/corporate/corporate.actions'
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { dateDiff } from '../../../setup/helpers';
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
@@ -59,27 +60,28 @@ class TestDetails extends PureComponent {
                 phone_no: patInfoResp.mobile_no
             }
             if (patInfoResp.employee_code) {
-                let result = await getCorporateUserFamilyDetails(patInfoResp.employee_code)
-                let benificeryDetailsResult = await getPolicYDetailsByid(patInfoResp.corporate_user_id)
+                let result = await getCorporateEmployeeDetailsById(patInfoResp.employee_code)
+                // let benificeryDetailsResult = await getPolicYDetailsByid(patInfoResp.corporate_user_id)
 
                 if (result && result[0]) {
                     let temp = [];
+                 
                     result.forEach(element => {
                         let obj = {
                             type: 'familymembers',
                             full_name: (element.firstName ? element.firstName + ' ' : '') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ' : ''),
                             gender: element.gender,
-                            age: element.ageInYrs,
-                            phone_no: element.mobileNo,
+                            // age: element.ageInYrs,
+                            phone_no: element.mobile,
                             benefeciaryUserDeails: {
                                 ...element,
-                                ...benificeryDetailsResult[0]
+                                // ...benificeryDetailsResult[0]
                             }
                         }
                         if (element.relationShip === 'EMPLOYEE') {
                             this.defaultPatDetails.benefeciaryUserDeails = {
                                 ...element,
-                                ...benificeryDetailsResult[0]
+                                // ...benificeryDetailsResult[0]
                             }
                         } else {
                             temp.push(obj)
@@ -276,7 +278,7 @@ class TestDetails extends PureComponent {
                                 <Text style={styles.commonText}>-</Text>
                             </Col>
                             <Col size={5} >
-                                <Text style={[styles.commonText, { color: '#909498' }]}>{data.gender === 'M' ? 'Male' : data.gender === 'F' ? 'Female' : 'Others'}</Text>
+                                <Text style={[styles.commonText, { color: '#909498' }]}>{data.gender === 'M' ? 'Male' : data.gender === 'F' ? 'Female' : data.gender ==='O'?'Others': data.gender ||'N/A'}</Text>
                             </Col>
                         </Row>
                     </Col>

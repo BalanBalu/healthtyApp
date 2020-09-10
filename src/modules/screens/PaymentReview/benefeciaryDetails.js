@@ -54,7 +54,7 @@ class BenefeciaryDetails extends PureComponent {
                     <Col size={5.5}>
                         <Text style={[styles.innerText, { color: '#909498' }]}>{this.getCorporateBenificeryName(data)}</Text>
                         {/* <Text style={[styles.innerText, { color: '#909498' }]}>{data.productType}</Text> */}
-                        <Text style={[styles.innerText, { color: '#909498' }]}>{data.policyNumber}</Text>
+                        <Text style={[styles.innerText, { color: '#909498' }]}>{data.policyNo}</Text>
                         <Text style={[styles.innerText, { color: '#909498' }]}>{formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY')}</Text>
                         <Text style={[styles.innerText, { color: '#909498' }]}>{formatDate(data.policyEffectiveTo, 'DD/MM/YYYY')}</Text>
                         <Text style={[styles.innerText, { color: '#909498' }]}>{data.sumInsured}</Text>
