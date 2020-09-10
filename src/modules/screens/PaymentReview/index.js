@@ -6,7 +6,7 @@ import { StyleSheet, AsyncStorage, Image, View, TextInput, TouchableOpacity, Fla
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge,toastMeassage } from '../../common';
+import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge, toastMeassage } from '../../common';
 import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
@@ -94,7 +94,7 @@ export default class PaymentReview extends Component {
     this.setState({ isLoading: false, spinnerText: ' ' });
 
     if (validationResult.success) {
- 
+
       const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
       if (patientDetailsObj.policy_no) {
         patientDataObj.policy_number = patientDetailsObj.policy_no
@@ -133,19 +133,19 @@ export default class PaymentReview extends Component {
       })
       return
     }
-   
+
     this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
-   
+
     const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
     if (patientDetailsObj.policy_no) {
       patientDataObj.policy_number = patientDetailsObj.policy_no
     }
- 
+
     bookSlotDetails.patient_data = patientDataObj;
     console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
-   
+
     let modesOfPayment = 'cash';
 
     if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
@@ -451,15 +451,15 @@ export default class PaymentReview extends Component {
                   </Col>
                   <Col size={8.4}>
                     <Text style={styles.docName}>{bookSlotDetails.name}</Text>
-                    <Text  style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                    <Text style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
                       {bookSlotDetails.slotData.location.location.address.city + ', '}
                       {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
                   </Col>
-                </Row> 
+                </Row>
                 : <Row>
                   <Col size={1.6}>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
-                      <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50,borderRadius:50/2 }} />
+                      <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50, borderRadius: 50 / 2 }} />
                     </TouchableOpacity>
                   </Col>
                   <Col size={8.4}>
@@ -470,10 +470,10 @@ export default class PaymentReview extends Component {
               {fromNavigation !== 'HOSPITAL' && bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>
-                    <Icon name="ios-pin" style={{ fontSize: 20,marginLeft:2}} />
+                    <Icon name="ios-pin" style={{ fontSize: 20, marginLeft: 2 }} />
                     <Text style={styles.hospName}>{bookSlotDetails.slotData.location.name}</Text>
                   </Row>
-                  <Text  style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                  <Text style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
                     {bookSlotDetails.slotData.location.location.address.city + ', '}
                     {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
                 </View>
@@ -553,7 +553,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text  style={{ fontSize: 14, fontFamily: 'OpenSans',color:'#909498' }}>Consultation Fees</Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909498' }}>Consultation Fees</Text>
                 </Col>
                 <Col>
                   <Text style={styles.rupeesText}>{'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
@@ -561,7 +561,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text  style={{ fontSize: 14, fontFamily: 'OpenSans',color:'#909498' }}>Charges </Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909498' }}>Charges </Text>
                 </Col>
                 <Col>
                   <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
