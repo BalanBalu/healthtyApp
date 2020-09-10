@@ -10,7 +10,8 @@ export const CorporateHome = (props) => {
     return (
         <View style={{ padding: 10 }}>
             <CorporateProfileCard />
-            <ProfileFamilyCard />
+            <ProfileFamilyCard 
+            navigation={navigation}/>
             <SearchAndAppointmentCard
                 navigation={navigation}
             />

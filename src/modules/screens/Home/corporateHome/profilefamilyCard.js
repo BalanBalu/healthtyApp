@@ -6,11 +6,13 @@ import { Icon, Card } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 export const ProfileFamilyCard = (props) => {
+        const { navigation } = props;
         return (
                 <View>
 
                         <Grid>
-                                <Card style={{ width: '100%' }}>
+                                <TouchableOpacity style={{ width: '100%', }} onPress={() => navigation("E Card")}>
+                                <Card >
                                         <Row>
                                                 <Col size={7} style={{ justifyContent: 'center', padding: 10 }}>
                                                         <Text style={styles.userName}>Family</Text>
@@ -24,6 +26,7 @@ export const ProfileFamilyCard = (props) => {
                                                 </Col>
                                         </Row>
                                 </Card>
+                                </TouchableOpacity>
                         </Grid>
                 </View>
         );
