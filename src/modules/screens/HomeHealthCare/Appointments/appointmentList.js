@@ -144,7 +144,7 @@ export default class AppointmentList extends Component {
                 });
                 debugger
                 const upcomingOrPastInfoList = [...this.state.data, ...upcomingOrPastInfo];  //  Merge previous  and current  UpComing Or Past data list
-                if (upcomingOrPastInfoList > 4) {
+                if (upcomingOrPastInfoList.length < 4) {
                     this.isEnabledLoadMoreData = false;
                 }
                 if (this.state.selectedIndex === 0) {
@@ -239,20 +239,13 @@ export default class AppointmentList extends Component {
     }
     render() {
         const { data, reviewData, selectedIndex, isVisibleAddReviewPop, isLoading } = this.state;
-        
+
         return (
             <Container style={{ backgroundColor: '#ffffff', }}>
                 <NavigationEvents
                     onWillFocus={payload => { this.pageRefresh(payload) }}
                 />
-                <Spinner
-                    color="blue"
-                    style={[styles.containers, styles.horizontal]}
-                    visible={isLoading}
-                    size={"large"}
-                    overlayColor="none"
-                    cancelable={false}
-                />
+
                 <Card transparent>
                     <SegmentedControlTab
                         tabsContainerStyle={{
@@ -270,15 +263,24 @@ export default class AppointmentList extends Component {
                         }}
                         tabStyle={{ borderColor: "#775DA3" }} />
                 </Card>
-                {data.length ?
-                    <FlatList
-                        data={data}
-                        onEndReached={() => { if (this.isEnabledLoadMoreData) this.loadMoreData(); }}
-                        onEndReachedThreshold={0.5}
-                        renderItem={({ item, index }) => this.renderAppointmentList(item, index)}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                    : < RenderNoAppointmentsFounds text={"No Appointments are scheduled !"} />
+                {isLoading ?
+                    <Spinner
+                        color="blue"
+                        style={[styles.containers, styles.horizontal]}
+                        visible={isLoading}
+                        size={"large"}
+                        overlayColor="none"
+                        cancelable={false}
+                    /> :
+                    data.length ?
+                        <FlatList
+                            data={data}
+                            onEndReached={() => { if (this.isEnabledLoadMoreData) this.loadMoreData(); }}
+                            onEndReachedThreshold={0.5}
+                            renderItem={({ item, index }) => this.renderAppointmentList(item, index)}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                        : < RenderNoAppointmentsFounds text={"No Appointments are scheduled !"} />
                 }
                 {isVisibleAddReviewPop === true ?
                     <InsertReview
