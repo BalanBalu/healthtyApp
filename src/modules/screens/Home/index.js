@@ -4,7 +4,7 @@ import { logout } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
-import { getReferalPoints, getCurrentVersion } from '../../providers/profile/profile.action';
+import { getReferalPoints, getCurrentVersion} from '../../providers/profile/profile.action';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -32,6 +32,10 @@ import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
 import NextAppoinmentPreparation from './nextAppoinmentPreparation'
 import CheckLocationWarning from './LocationWarning';
+import {CorporateHome} from './corporateHome'
+import { toastMeassage } from '../../common'
+
+
 class Home extends Component {
 
     locationUpdatedCount = 0;
@@ -45,7 +49,8 @@ class Home extends Component {
             AppoinmentData: [],
             updatedDate: '',
             AppointmentId: '',
-            doctorInfo: {}
+            doctorInfo: {},
+            isCorporateUser:false
         };
     }
 
@@ -76,6 +81,9 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
+            console.log('IsCorporate User', await AsyncStorage.getItem('is_corporate_user'));
+            const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+            this.setState({isCorporateUser})
             this.initialFunction();
             this._setUpListeners();
             NotifService.initNotification(this.props.navigation);
@@ -380,31 +388,36 @@ class Home extends Component {
         CallKeepService.displayIncomingCall('12345', 'Doctor');
     };
 
+    
+  
 
 
+getHomePageDetails(){
+    const { navigate } = this.props.navigation;
+    const {isCorporateUser,} = this.state
+    if(isCorporateUser === true){
+      return <CorporateHome   navigation={navigate} />
+    }
+    else {
+        return this.homepageRendering()
+    }
+}
+homepageRendering(){
+    const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
 
-    render() {
-        const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
+    if (locationUpdatedCount !== this.locationUpdatedCount) {
+        navigation.setParams({
+            appBar: {
+                locationName: patientSearchLocationName,
+                locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hospitals' : 'You are searching Hospitals on ' + patientSearchLocationName
+            }
+        });
+        this.locationUpdatedCount = locationUpdatedCount;
 
-        if (locationUpdatedCount !== this.locationUpdatedCount) {
-            navigation.setParams({
-                appBar: {
-                    locationName: patientSearchLocationName,
-                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hospitals' : 'You are searching Hospitals on ' + patientSearchLocationName
-                }
-            });
-            this.locationUpdatedCount = locationUpdatedCount;
-
-        }
-        return (
-
-            <Container style={styles.container}>
-
-                <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                    <NavigationEvents
-                        onWillFocus={payload => { this.backNavigation(payload) }}
-                    />
-                    <Row style={styles.SearchRow}>
+    }
+    return (
+        <View>
+   <Row style={styles.SearchRow}>
                         <Col size={0.9} style={styles.SearchStyle}>
                             <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
                         </Col>
@@ -721,7 +734,24 @@ class Home extends Component {
 
 
                     </View>
+        </View>
+    )
+}
 
+
+    render() {
+       
+        return (
+
+            <Container style={styles.container}>
+
+                <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
+                    <NavigationEvents
+                        onWillFocus={payload => { this.backNavigation(payload) }}
+                    />
+                 <View>
+                     {this.getHomePageDetails()}
+                 </View>
                 </Content>
             </Container>
         )
@@ -750,7 +780,7 @@ const styles = StyleSheet.create({
     },
 
     bodyContent: {
-        padding: 5
+        
     },
     textcenter: {
         fontSize: 15,
