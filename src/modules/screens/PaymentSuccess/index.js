@@ -37,6 +37,7 @@ class PaymentSuccess extends Component {
         this.isFromHomeHealthCareConfirmation = navigation.getParam('isFromHomeHealthCareConfirmation') || false;
         await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo, fromNavigation });
         console.log(paymentMethod);
+   
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressed);
@@ -82,7 +83,7 @@ class PaymentSuccess extends Component {
                                         <Row style={styles.rowDetail1}>
 
                                             <Right>
-                                                <Text style={styles.subText}>{successBookSlotDetails.slotData.location.name}</Text>
+                                                <Text style={styles.subText}>{successBookSlotDetails.name||' '}</Text>
                                                 <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
                                                 <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
                                             </Right>
