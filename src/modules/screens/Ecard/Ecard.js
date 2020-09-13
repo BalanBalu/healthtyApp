@@ -44,19 +44,16 @@ class Ecard extends PureComponent {
                 await this.setState({ data: corporateResult })
 
 
-                // } 
-                // else {
-                //     toastMeassage('employee Details not found', 'dangers', 3000)
-                // }
+                } else {
+                    toastMeassage('employee Details not found', 'dangers', 3000)
+                }
 
 
             } else {
                 toastMeassage('employee Details not found', 'dangers', 3000)
             }
 
-        } else {
-            toastMeassage('employee Details not found', 'dangers', 3000)
-        }
+       
         await this.setState({ isLoading: false })
 
     }
@@ -83,12 +80,7 @@ class Ecard extends PureComponent {
         if (data) {
             temp = `${data.address2},${data.address1}`
         }
-        // data.split(',').map((ele, index) => {
-        //     if (index !== 0) {
-        //         temp.push(ele)
-        //     }
-
-        // })
+     
 
         return temp
     }
@@ -161,8 +153,8 @@ class Ecard extends PureComponent {
                         <Image source={require('../../../../assets/images/healthIndia.png')} style={{ height: 60, width: 80 }} />
                     </Col>
                     <Col size={8} style={styles.colStyle}>
-                        <Text style={styles.footerText}>{data.address3}</Text>
-                        <Text style={styles.addressText}>{this.getInsuranceAddress(data)}</Text>
+                        <Text style={styles.footerText}>{data.GroupName}</Text>
+                        <Text style={styles.addressText}>{this.getInsuranceAddress(data.Address)}</Text>
                     </Col>
                 </Row>
 

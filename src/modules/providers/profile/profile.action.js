@@ -8,6 +8,7 @@ export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR';
 export const AVAILABLE_CREDIT_POINTS = 'PROFILE/AVAILABLE_CREDIT_POINTS';
 export const SET_REFER_CODE = 'PROFILE/SET_REFER_CODE';
 export const SET_USER_DATA_FOR_PREPARATION = 'PROFILE/SET_USER_DATA_FOR_PREPARATION';
+export const SET_CORPORATE_DATA='PROFILE/SET_CORPORATE_DATA'
 
 import { store } from '../../../setup/store'
 import { getService, putService, postService,smartHealthGetService } from '../../../setup/services/httpservices';

@@ -30,9 +30,8 @@ export async function getCorporateUserEcardDetails(bodyData) {
   export async function getCorporateEmployeeDetailsById(empCode) {
     try {
       let endPoint = 'member-detail/'+empCode;
-      let response = await smartHealthGetService(endPoint);
-
   
+      let response = await smartHealthGetService(endPoint);
   
       return response.data;
     } catch (e) {
@@ -64,4 +63,3 @@ export async function getCorporateUserEcardDetails(bodyData) {
       }
     }
   }
-  
