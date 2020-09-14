@@ -9,13 +9,7 @@ export function getMemberNameWithStatus(data) {
             } else {
                 status = 'Mrs'
             }
-        } else {
-            if (data.gender === 'Male') {
-                status = 'sri.'
-            } else {
-                status = 'Miss'
-            }
-        }
+        } 
         name = `${status + (data.firstName || '' )+ (' '+data.middleName || '') + (' '+data.lastName||'')}`
     }
 

@@ -12,17 +12,17 @@ export const CorporateHome = (props) => {
         <View style={{ padding: 10 }}>
             <CorporateProfileCard
              data={corporateData
-                &&corporateData.find(ele => ele.relationShip === 'EMPLOYEE')||{} 
+                &&corporateData.find(ele => ele.relationship === 'EMPLOYEE')||null 
             }
              />
             <ProfileFamilyCard 
             navigation={navigation}
             />
             <SearchAndAppointmentCard
-                navigation={corporateData}
+                navigation={navigation}
             />
             <TransactionHistoryCard
-                navigation={corporateData} />
+                navigation={navigation} />
 
         </View>
     );
