@@ -97,7 +97,7 @@ export async function login(userCredentials, isLoading = true) {
     let response = await postService(endPoint, userCredentials);
 
     let respData = response.data;
-    
+
 
 
     if (respData.error || !respData.success) {
@@ -120,7 +120,7 @@ export async function login(userCredentials, isLoading = true) {
     }
 
   } catch (e) {
-   
+
     store.dispatch({
       type: LOGIN_HAS_ERROR,
       message: e + ' Occured! Please Try again'
@@ -237,25 +237,25 @@ export async function logout() {
 
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
-  try{
-   
-if(userData.is_corporate_user){
-  await AsyncStorage.setItem('is_corporate_user', 'true')
-}
-  await AsyncStorage.setItem('token', token)
-  await AsyncStorage.setItem('userId', userData.userId)
-  await AsyncStorage.setItem('isLoggedIn', 'true');
-  AsyncStorage.setItem('user', JSON.stringify(userData))
-  axios.defaults.headers.common['x-access-token'] = token;
-  axios.defaults.headers.common['userId'] = userData.userId;
-  AsyncStorage
-  store.dispatch({
-    type: SET_USER,
-    details: userData
-  })
-}catch(e){
-  console.log(e)
-}
+  try {
+
+    if (userData.is_corporate_user) {
+      await AsyncStorage.setItem('is_corporate_user', 'true')
+    }
+    await AsyncStorage.setItem('token', token)
+    await AsyncStorage.setItem('userId', userData.userId)
+    await AsyncStorage.setItem('isLoggedIn', 'true');
+    AsyncStorage.setItem('user', JSON.stringify(userData))
+    axios.defaults.headers.common['x-access-token'] = token;
+    axios.defaults.headers.common['userId'] = userData.userId;
+    AsyncStorage
+    store.dispatch({
+      type: SET_USER,
+      details: userData
+    })
+  } catch (e) {
+    console.log(e)
+  }
 
 }
 export const hasLoggedIn = async (props) => {
@@ -416,7 +416,7 @@ export async function getAllCompanyList() {
 
 export async function verifyEmployeeDetails(empCode, authCode) {
   try {
-    let endPoint = `employee/${empCode}/${authCode}`;
+    let endPoint = `member-detail/${empCode}/${authCode}`;
 
     let response = await smartHealthGetService(endPoint);
 

@@ -78,7 +78,7 @@ class TestDetails extends PureComponent {
                                 // ...benificeryDetailsResult[0]
                             }
                         }
-                        if (element.relationShip === 'EMPLOYEE') {
+                        if (element.relationship === 'EMPLOYEE') {
                             this.defaultPatDetails.benefeciaryUserDeails = {
                                 ...element,
                                 // ...benificeryDetailsResult[0]
