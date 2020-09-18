@@ -28,7 +28,9 @@ export const CoverageCard = (props) => {
                   />
 
                 </TouchableOpacity>
-                <Text style={{
+               
+              </Col>
+              <Text style={{
                   fontSize: 12,
                   textAlign: 'center',
                   fontWeight: '700',
@@ -36,10 +38,9 @@ export const CoverageCard = (props) => {
                   paddingLeft: 5,
                   paddingRight: 5,
                   paddingTop: 1,
-                  paddingBottom: 1
+                  paddingBottom: 1,
+                  height:35
                 }}>{item.category_name}</Text>
-              </Col>
-
             </View>
           }
           keyExtractor={(item, index) => index.toString()}
