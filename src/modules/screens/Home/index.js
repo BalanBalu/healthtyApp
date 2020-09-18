@@ -12,16 +12,16 @@ import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
-const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
-const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
+const VideoConultationImg = require('../../../../assets/images/dashboardImages/ChatAndVideo.jpg');
+const pharmacyImg = require('../../../../assets/images/dashboardImages/pharmacyDashboard.jpg');
 const BloodImg = require('../../../../assets/images/blood.png');
 const ReminderImg = require('../../../../assets/images/reminder.png');
-const doctorConsultations = require('../../../../assets/images/doc_consultaiton.jpg');
-const HomeTestImg = require('../../../../assets/images/hometest.jpg');
-const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
+const doctorConsultations = require('../../../../assets/images/dashboardImages/DoctorConsultation.jpg');
+const HomeTestImg = require('../../../../assets/images/dashboardImages/HomeConsultation.jpg');
+const LabTestImgs = require('../../../../assets/images/dashboardImages/LabTest.jpg');
 const hospitalLogoImg = require('../../../../assets/images/hospital.png');
 const publicForum = require('../../../../assets/images/public_forum.png');
-const hospitalImg = require('../../../../assets/images/hospitalimg.jpg');
+const hospitalImg = require('../../../../assets/images/dashboardImages/Hospital-banner.jpg');
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
 import { CallService, CallKeepService } from '../VideoConsulation/services';
@@ -1014,7 +1014,7 @@ const styles = StyleSheet.create({
 
     },
     rowStyle: {
-        height: 100,
+        height: 120,
         width: '100%',
         overflow: 'hidden',
         backgroundColor: "#fff",
@@ -1026,19 +1026,19 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         width: '100%',
         height: 80,
-        borderTopColor: '#000',
-        borderTopWidth: 0.3,
         backgroundColor: '#fff',
         justifyContent: 'center',
-        alignItems: 'center'
+        paddingLeft:2,
+        paddingRight:2
+       
     },
     mainText: {
-        fontSize: 10,
+        fontSize: 12,
         textAlign: 'center',
         fontWeight: '500'
     },
     subText: {
-        fontSize: 10,
+        fontSize: 12,
         marginTop: 5,
         textAlign: 'center',
     }
