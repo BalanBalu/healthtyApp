@@ -4,7 +4,7 @@ import { CorporateProfileCard } from './profileCard'
 import { ProfileFamilyCard } from './profilefamilyCard'
 import { SearchAndAppointmentCard } from './searchAndAppointmentcard'
 import { TransactionHistoryCard } from './transactionHistoryCard'
-
+import {CoverageCard} from './converageCard'
 export const CorporateHome = (props) => {
     const { corporateData, navigation} = props;
   
@@ -18,6 +18,7 @@ export const CorporateHome = (props) => {
             <ProfileFamilyCard 
             navigation={navigation}
             />
+            <CoverageCard/>
             <SearchAndAppointmentCard
                 navigation={corporateData}
             />
