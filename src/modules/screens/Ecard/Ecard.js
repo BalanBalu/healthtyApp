@@ -111,7 +111,7 @@ class Ecard extends PureComponent {
                         <Text style={styles.innerText}>{this.getMemberName(data)}</Text>
                         <Text style={styles.innerText}>{data.gender}</Text>
                         <Text style={styles.innerText}>{data.age} Years</Text>
-                        <Text style={styles.innerText}>{data.relationShip}</Text>
+                        <Text style={styles.innerText}>{data.relationship}</Text>
                         <Text style={styles.innerText}>{data.employeeId}</Text>
                         <Text style={styles.innerText}>{data.PolicyEndDate || ' '}</Text>
                     </Col>
@@ -155,8 +155,8 @@ class Ecard extends PureComponent {
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
-                                {data && data.find(ele => ele.relationShip === 'EMPLOYEE') !== undefined ?
-                                    this.employeeAndFamilyDetails(data.find(ele => ele.relationShip === 'EMPLOYEE')) : null}
+                                {data && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
+                                    this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null}
                                 <View style={styles.borderStyle} />
                                 <View>
                                     <Text style={styles.familyHeader}>Family Members</Text>
