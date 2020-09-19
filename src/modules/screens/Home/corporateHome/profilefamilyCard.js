@@ -19,7 +19,7 @@ export const ProfileFamilyCard = (props) => {
                                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>View E-card and family profile from here</Text>
                                                 </Col>
                                                 <Col size={2} style={{ justifyContent: 'center', alignItems: 'center', padding: 10 }}>
-                                                        <FastImage source={require('../../../../../assets/images/corporateHomePageIcon/family_a.png')} style={{ height: 70, width: 70 }} />
+                                                        <FastImage source={require('../../../../../assets/images/corporateHomePageIcons/family_a.png')} style={{ height: 70, width: 70 }} />
                                                 </Col>
                                                 <Col size={1} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#E4D1FE' }}>
                                                         <MaterialIcons name='chevron-right' style={{ fontSize: 35, color: '#000' }} />

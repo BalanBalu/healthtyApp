@@ -8,7 +8,7 @@ import { NavigationActions } from 'react-navigation';
 
 export const CoverageCard = (props) => {
   
-  const data = [{ category_name: 'Claim Status', image: require('../../../../../assets/images/corporateHomePageIcon/Claim-status.png'), }, { category_name: 'Policy Cover', image: require('../../../../../assets/images/corporateHomePageIcon/policy-cover.png'), }, { category_name: 'Claim Intimation', image: require('../../../../../assets/images/corporateHomePageIcon/claim-intimation.png'), }, { category_name: 'Insurance Renewal', image: require('../../../../../assets/images/corporateHomePageIcon/insurance-renewal-reminder.png') },]
+  const data = [{ category_name: 'Claim Status', image: require('../../../../../assets/images/corporateHomePageIcons/Claim-status.png'), }, { category_name: 'Policy Cover', image: require('../../../../../assets/images/corporateHomePageIcons/policy-cover.png'), }, { category_name: 'Claim Intimation', image: require('../../../../../assets/images/corporateHomePageIcons/claim-intimation.png'), }, { category_name: 'Insurance Renewal', image: require('../../../../../assets/images/corporateHomePageIcons/insurance-renewal-reminder.png') },]
   return (
     <View>
       <Card style={{ width: '100%', paddingBottom: 10 }}>
