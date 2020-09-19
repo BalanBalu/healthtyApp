@@ -12,16 +12,16 @@ import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
-const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
-const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
+const VideoConultationImg = require('../../../../assets/images/DashBoardImage/ChatAndVideo.jpg');
+const pharmacyImg = require('../../../../assets/images/DashBoardImage/pharmacyDashboard.jpg');
 const BloodImg = require('../../../../assets/images/blood.png');
 const ReminderImg = require('../../../../assets/images/reminder.png');
-const doctorConsultations = require('../../../../assets/images/doc_consultaiton.jpg');
-const HomeTestImg = require('../../../../assets/images/hometest.jpg');
-const LabTestImgs = require('../../../../assets/images/Lab-tests.png');
+const doctorConsultations = require('../../../../assets/images/DashBoardImage/DoctorConsultation.jpg');
+const HomeTestImg = require('../../../../assets/images/DashBoardImage/HomeConsultation.jpg');
+const LabTestImgs = require('../../../../assets/images/DashBoardImage/LabTest.jpg');
 const hospitalLogoImg = require('../../../../assets/images/hospital.png');
 const publicForum = require('../../../../assets/images/public_forum.png');
-const hospitalImg = require('../../../../assets/images/hospitalimg.jpg');
+const hospitalImg = require('../../../../assets/images/DashBoardImage/Hospital-banner.jpg');
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
 import { CallService, CallKeepService } from '../VideoConsulation/services';
@@ -482,7 +482,7 @@ class Home extends Component {
                         }>
                             <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                 <Row style={styles.rowStyle}>
-                                    <Image
+                                    <FastImage
                                         source={doctorConsultations}
                                         style={{
                                             width: '100%', height: '100%', alignItems: 'center'
@@ -503,7 +503,7 @@ class Home extends Component {
                         <TouchableOpacity onPress={() => this.props.navigation.navigate("HospitalList")}>
                             <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                 <Row style={styles.rowStyle}>
-                                    <Image
+                                    <FastImage
                                         source={hospitalImg}
                                         style={{
                                             width: '100%', height: '100%', alignItems: 'center'
@@ -526,7 +526,7 @@ class Home extends Component {
                         <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })}>
                             <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                 <Row style={styles.rowStyle}>
-                                    <Image
+                                    <FastImage
                                         source={HomeTestImg}
                                         style={{
                                             width: '100%', height: '100%', alignItems: 'center'
@@ -547,7 +547,7 @@ class Home extends Component {
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
                             <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                 <Row style={styles.rowStyle}>
-                                    <Image
+                                    <FastImage
                                         source={LabTestImgs}
                                         style={{
                                             width: '100%', height: '100%', alignItems: 'center'
@@ -566,14 +566,14 @@ class Home extends Component {
                     </Col>
                 </Grid>
 
-                <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
+                <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
                     <Col style={{ width: '50%', }}>
                         <TouchableOpacity onPress={() =>
                             this.props.navigation.navigate("Video and Chat Service")
                         }>
                             <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                 <Row style={styles.rowStyle}>
-                                    <Image
+                                    <FastImage
                                         source={VideoConultationImg}
                                         style={{
                                             width: '100%', height: '100%', alignItems: 'center'
@@ -594,7 +594,7 @@ class Home extends Component {
                         <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
                             <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                 <Row style={styles.rowStyle}>
-                                    <Image
+                                    <FastImage
                                         source={pharmacyImg}
                                         style={{
                                             width: '100%', height: '100%', alignItems: 'center'
@@ -613,7 +613,7 @@ class Home extends Component {
 
                 </Grid>
                 <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
-                    <Row style={{ marginTop: 5 }}>
+                    <Row >
                         <Col size={5}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Health Records")}>
                                 <Card style={{ padding: 5, borderRadius: 2 }}>
@@ -622,7 +622,7 @@ class Home extends Component {
                                             <Text style={styles.mainText}>{translate('Health Records')}</Text>
                                         </Col>
                                         <Col size={2.5}>
-                                            <Image
+                                            <FastImage
                                                 source={hospitalLogoImg}
                                                 style={{
                                                     width: 35, height: 35, alignItems: 'center'
@@ -641,7 +641,7 @@ class Home extends Component {
                                             <Text style={styles.mainText}>{translate('Public Forum')} </Text>
                                         </Col>
                                         <Col size={2.5}>
-                                            <Image
+                                            <FastImage
                                                 source={publicForum}
                                                 style={{
                                                     width: 35, height: 35, alignItems: 'center'
@@ -653,7 +653,7 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
                     </Row>
-                    <Row style={{ marginTop: 5 }}>
+                    <Row>
                         <Col size={5}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
                                 <Card style={{ padding: 5, borderRadius: 2 }}>
@@ -662,7 +662,7 @@ class Home extends Component {
                                             <Text style={styles.mainText}>{translate('Medicine Reminder')}</Text>
                                         </Col>
                                         <Col size={2.5}>
-                                            <Image
+                                            <FastImage
                                                 source={ReminderImg}
                                                 style={{
                                                     width: 35, height: 35, alignItems: 'center'
@@ -682,7 +682,7 @@ class Home extends Component {
                                         </Col>
                                         <Col size={2.5}>
 
-                                            <Image
+                                            <FastImage
                                                 source={BloodImg}
                                                 style={{
                                                     width: 35, height: 35, alignItems: 'center'
@@ -755,7 +755,7 @@ class Home extends Component {
                                     </Col>
                                     <Col style={{ width: '30%', }}>
 
-                                        <Image
+                                        <FastImage
                                             source={require('../../../../assets/images/imagebgshape.png')}
                                             style={{
                                                 width: '130%', height: '130%', marginTop: -10, marginLeft: -18
@@ -1014,7 +1014,7 @@ const styles = StyleSheet.create({
 
     },
     rowStyle: {
-        height: 100,
+        height: 120,
         width: '100%',
         overflow: 'hidden',
         backgroundColor: "#fff",
@@ -1026,19 +1026,19 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         width: '100%',
         height: 80,
-        borderTopColor: '#000',
-        borderTopWidth: 0.3,
         backgroundColor: '#fff',
         justifyContent: 'center',
-        alignItems: 'center'
+        paddingLeft:2,
+        paddingRight:2
+       
     },
     mainText: {
-        fontSize: 10,
+        fontSize: 12,
         textAlign: 'center',
         fontWeight: '500'
     },
     subText: {
-        fontSize: 10,
+        fontSize: 12,
         marginTop: 5,
         textAlign: 'center',
     }
