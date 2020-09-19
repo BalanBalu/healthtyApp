@@ -5,6 +5,7 @@ import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById, getEcard
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import Spinner from '../../../components/Spinner'
 import { toastMeassage } from '../../common'
+import { connect } from 'react-redux'
 
 
 class Ecard extends PureComponent {
@@ -23,38 +24,8 @@ class Ecard extends PureComponent {
     }
     async getEcardDetail() {
         await this.setState({ isLoading: true })
-        const userId = await AsyncStorage.getItem('userId');
-        let fields = "corporate_user_id,employee_code";
-        let userResult = await fetchUserProfile(userId, fields);
-
-        if (!userResult.error) {
-            let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
-
-            if (!!corporateResult) {
-                console.log('corporateResultcorporateResultcorporateResult')
-                console.log(JSON.stringify(corporateResult))
-             
-                // let data = {
-                //     PolicyNumber: corporateResult.policyNumber,
-                //     EmployeeNumber: corporateResult.employeeId,
-                // }
-                // let result = await getCorporateUserEcardDetails(data);
-
-                // if (!!result && result.status === "True") {
-                await this.setState({ data: corporateResult })
-
-
-                } else {
-                    toastMeassage('employee Details not found', 'dangers', 3000)
-                }
-
-
-            } else {
-                toastMeassage('employee Details not found', 'dangers', 3000)
-            }
-
        
-        await this.setState({ isLoading: false })
+        await this.setState({ isLoading: false,data: this.props.profile.corporateData ||[] })
 
     }
 
@@ -140,7 +111,7 @@ class Ecard extends PureComponent {
                         <Text style={styles.innerText}>{this.getMemberName(data)}</Text>
                         <Text style={styles.innerText}>{data.gender}</Text>
                         <Text style={styles.innerText}>{data.age} Years</Text>
-                        <Text style={styles.innerText}>{data.relationShip}</Text>
+                        <Text style={styles.innerText}>{data.relationship}</Text>
                         <Text style={styles.innerText}>{data.employeeId}</Text>
                         <Text style={styles.innerText}>{data.PolicyEndDate || ' '}</Text>
                     </Col>
@@ -178,14 +149,14 @@ class Ecard extends PureComponent {
                         <Spinner color='blue'
                             visible={isLoading}
                             overlayColor="none"
-                        /> : data.length == 0 ?
+                        /> :data.length == 0 ?
                             <View style={{ alignItems: 'center', justifyContent: 'center', height: 550 }}>
                                 <Text> No E-CARD DETAILS FOUND</Text>
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
-                                {data && data.find(ele => ele.relationShip === 'EMPLOYEE') !== undefined ?
-                                    this.employeeAndFamilyDetails(data.find(ele => ele.relationShip === 'EMPLOYEE')) : null}
+                                {data && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
+                                    this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null}
                                 <View style={styles.borderStyle} />
                                 <View>
                                     <Text style={styles.familyHeader}>Family Members</Text>
@@ -194,7 +165,7 @@ class Ecard extends PureComponent {
                                         extraData={this.state}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item }) =>
-                                            item.relationShip !== 'EMPLOYEE' &&
+                                            item.relationship !== 'EMPLOYEE' &&
                                             this.employeeAndFamilyDetails(item)}
 
                                     />
@@ -209,7 +180,14 @@ class Ecard extends PureComponent {
 }
 
 
-export default Ecard
+
+function ecardState(state) {
+
+    return {
+        profile: state.profile,
+    }
+}
+export default connect(ecardState)(Ecard)
 
 const styles = StyleSheet.create({
     colStyle: {
