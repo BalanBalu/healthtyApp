@@ -18,7 +18,7 @@ export const CoverageCard = (props) => {
           renderItem={({ item, index }) =>
             <View style={{ width: '25%', marginTop: 15, }}>
               <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity onPress={() => navigationTo(item.navigate)}
+                <TouchableOpacity 
                   style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5, borderRadius: 10, }}>
                   <FastImage
                     source={item.image}
