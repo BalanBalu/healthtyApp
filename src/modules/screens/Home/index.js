@@ -88,7 +88,6 @@ class Home extends Component {
             const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
             this.setState({ isCorporateUser })
             this.initialFunction();
-            this._setUpListeners();
             NotifService.initNotification(this.props.navigation);
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
@@ -332,10 +331,6 @@ class Home extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId')
             if (userId) {
-                ConnectyCube.videochat.onCallListener = this._onCallListener;
-                ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
-                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-                ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
                 this.getMarkedAsReadedNotification(userId);
             }
         } catch (e) {
@@ -343,97 +338,9 @@ class Home extends Component {
         }
     }
 
-    /*      
-        Video Calling Service             
-    */
-    async _setUpListeners() {
-        let userId = await AsyncStorage.getItem('userId')
-        const { chat: { loggedIntoConnectyCube } } = this.props;
-        if (userId && loggedIntoConnectyCube === false) {
-            this.authorized = await authorizeConnectyCube();
-            console.log('loggedIntoConnectyCube ' + loggedIntoConnectyCube + ' Authorized: ' + this.authorized);
-            if (this.authorized) {
-                ConnectyCube.videochat.onCallListener = this._onCallListener;
-                ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
-                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-                ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
-                setTimeout(() => {
-                    setUserLoggedIn();
-                }, 5000)
-
-            }
-        }
-    }
-    _onCallListener = (session, extension) => {
-
-        CallService.processOnCallListener(session)
-            .then(() => this.showInomingCallModal(session, extension))
-            .catch(this.hideInomingCallModal);
-    };
-    _onRemoteStreamListener = async (session, userId, stream) => {
-        console.log('Stream Sathish', stream);
-        console.log(userId);
-        await store.dispatch({
-            type: SET_VIDEO_SESSION,
-            data: {
-                userId: userId,
-                stream: stream
-            }
-        })
-    };
-    _onStopCallListener = (session, userId, extension) => {
-        const isStoppedByInitiator = session.initiatorID === userId;
-
-        CallService.processOnStopCallListener(userId, isStoppedByInitiator)
-            .then(() => {
-                if (isStoppedByInitiator) {
-                    store.dispatch({
-                        type: SET_VIDEO_SESSION,
-                        data: null
-                    });
-                    CallService.setSession(null);
-                    CallService.setExtention(null);
-                    store.dispatch({
-                        type: RESET_INCOMING_VIDEO_CALL,
-                    })
-                }
-            })
-            .catch(
-                store.dispatch({
-                    type: RESET_INCOMING_VIDEO_CALL,
-                }));
-    };
-    _onRejectCallListener = (session, userId, extension) => {
-        CallService.processOnRejectCallListener(session, userId, extension)
-            .then(() => {
-                store.dispatch({
-                    type: SET_VIDEO_SESSION,
-                    data: null
-                });
-                CallService.setSession(null);
-                CallService.setExtention(null);
-            })
-            .catch(store.dispatch({
-                type: RESET_INCOMING_VIDEO_CALL,
-            }));
-    };
-
-    showInomingCallModal = (session, extension) => {
-        CallService.setSession(session);
-        CallService.setExtention(extension);
-        CallKeepService.displayIncomingCall('12345', 'Doctor');
-    };
-
-
-
-
-
     getHomePageDetails() {
         const { navigate } = this.props.navigation;
         let corporateData = this.props.profile.corporateData
-
-
-
         const { isCorporateUser } = this.state
         if (isCorporateUser === true) {
             return <CorporateHome corporateData={corporateData}

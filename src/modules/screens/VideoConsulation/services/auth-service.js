@@ -88,9 +88,8 @@ export default class AuthService {
         console.log('Successfully Logged in to ConnectyCube');
         resolve(true);
       }).catch((e) => {
-         alert('Login Failed because', JSON.stringify(e));
-         console.log(e); 
-         reject(false);
+          console.log(e); 
+          reject(false);
       });
     
     });
