@@ -35,7 +35,8 @@ class PharmacyHome extends Component {
             pharmacyData: '',
             selectedMedcine: '',
             isBuyNow: false,
-            isAddToCart: false
+            isAddToCart: false,
+            locationCordinatesData:[]
         }
 
     }
@@ -45,6 +46,7 @@ class PharmacyHome extends Component {
         if (locationCordinates === null) {
             CurrentLocation.getCurrentPosition();
         }
+        this.setState({locationCordinatesData:locationCordinates})
 
         this.getMedicineList();
         this.getNearByPharmacyList();
@@ -53,8 +55,13 @@ class PharmacyHome extends Component {
 
     async backNavigation(payload) {
         try{
+            const { bookappointment: { locationCordinates } } = this.props;
             let hascartReload = await AsyncStorage.getItem('hasCartReload')
-  
+     if(this.state.locationCordinatesData[0]!==locationCordinates){
+             this.getNearByPharmacyList();
+         this.setState({locationCordinatesData:locationCordinates})
+
+     }
         if (hascartReload === 'true') {
             await AsyncStorage.removeItem('hasCartReload');
             
@@ -75,7 +82,7 @@ class PharmacyHome extends Component {
         if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
 
             // this.getMedicineList();
-            // this.getNearByPharmacyList();
+         
         }
     }catch(e){
         console.log(e)

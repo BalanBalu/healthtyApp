@@ -308,7 +308,7 @@ export function getIsAvailable(data, availableData) {
     return ele.productId === data.id
   })
   if (item !== undefined) {
-    if (item.available > 1) {
+    if (item.available > 0) {
       isAvailable = true
     }
   }
