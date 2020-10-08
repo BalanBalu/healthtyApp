@@ -100,9 +100,10 @@ export default class CallKeepService {
         } else {
             console.log('Is IS_ANDROID ', IS_ANDROID);
             if(IS_ANDROID) {
-                console.log('...Coming to Correct Condition with Backgroud....');
+                console.log('...Coming to Correct Condition with Background....' + AppState.currentState);
                 const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
                 console.log(buildAPIVersion);
+            
                 if(buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
                     console.log(`Android API Version ${INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION} or Higher`)
                     NotifService.localNotif('Medflic: New Video Call from Doctor', 'Doctor is Calling You', {
@@ -110,7 +111,7 @@ export default class CallKeepService {
                         ongoing: true,
                         fullScreenIntent: true
                     });
-                } else {  
+                } else {
                     if (RootNavigation.getContainerRef()) {
                         console.log('Navigation Container is already Present....');
                         PushNotification.navigateToIncomingCallScreen();
@@ -125,8 +126,8 @@ export default class CallKeepService {
                             }
                         },100);
                         console.log('Excuting on Android with ' +  AppState.currentState);
+                    }
                 }
-              } 
             } else {
                 RNCallKeep.displayIncomingCall(this.uuid, String(handleNumber), 'Medflic Doctor', 'generic', true );
             }

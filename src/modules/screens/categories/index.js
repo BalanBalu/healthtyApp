@@ -160,7 +160,7 @@ class Categories extends Component {
                       }}
                     />
                     <Text style={{
-                      fontSize: 10,
+                      fontSize: 12,
                       textAlign: 'center',
                       fontWeight: '200',
                       marginTop: 5,

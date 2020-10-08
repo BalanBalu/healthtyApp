@@ -8,8 +8,7 @@ export default async (message) => {
 
   try {
     const isVideoCallNotification = message.data.videoNotification;
-  
-    console.log(message);
+    console.log('Notification got Received.........');
     if (message.data && message.data.additionalParameters) {
       console.log(typeof message.data.additionalParameters)
       let additionalData = JSON.parse(message.data.additionalParameters)

@@ -11,7 +11,7 @@ import { FIREBASE_SENDER_ID, CHAT_API_URL } from './config'
 import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notification/notification.actions';
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import SocketIOClient from 'socket.io-client';
-import { AuthService , CallKeepService } from '../modules/screens/VideoConsulation/services/index';
+import { AuthService , CallKeepService, CallProcessSetupService } from '../modules/screens/VideoConsulation/services/index';
 import VideoAlertModel from '../modules/providers/chat/video.alert.model';
 YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
@@ -43,7 +43,7 @@ export default class App extends Component {
   async componentDidMount() {
     NavigationService.isMountedRef.current = true;
     const userId = await AsyncStorage.getItem('userId');
-    AuthService.init();
+   // AuthService.init();
     RNLocalize.addEventListener('change', this.handleLocalizationChange);
     if (userId) {
       this.userId = userId;
@@ -51,7 +51,7 @@ export default class App extends Component {
     }
     setInterval(() => {
       this.getMarkedAsReadedNotification();
-    }, 10000)
+    }, 10000);
     //this.checkPermission();
   }
   componentWillUnmount() {
