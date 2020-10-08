@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount, getAvailableStockForListOfProducts, updateTopSearchedItems } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable, getselectedCartData,renderMedicineImage } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable, getselectedCartData, renderMedicineImage } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -11,7 +11,7 @@ import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import ImageZoom from 'react-native-image-pan-zoom';
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
-
+import { CURRENT_APP_NAME } from "../../../../setup/config";
 let medicineId, userId;
 class MedicineInfo extends Component {
     constructor(props) {
@@ -529,7 +529,7 @@ class MedicineInfo extends Component {
                                     <View style={styles.borderView}>
                                         <Row>
                                             <Col size={5} style={{ flexDirection: 'row' }}>
-                                                <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
+                                                <Text style={styles.desText}>{item.is_anonymous ? CURRENT_APP_NAME + ' User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
                                                 <View style={styles.viewRating}>
                                                     <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
                                                     <Text style={styles.ratingText}>{item.rating}</Text>

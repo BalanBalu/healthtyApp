@@ -2,6 +2,7 @@ import RNCalendarEvents from "react-native-calendar-events";
 
 import { Text, View, Button, Alert, BackHandler, AsyncStorage } from "react-native";
 const CALENDERID = 'calenderId';
+import { CURRENT_APP_NAME } from "../setup/config";
 /*
     1. SaveEvent when User Creates an Appointment → (providers/bookappointment.js) and update the EventId on DB as node called “user_calender_event_id“
     2. UpdateEvent When user Approves the “PostPoned Appointment”)
@@ -42,7 +43,7 @@ export async function requestCalendarPermissions() {
     console.log('Calendar Permission Granted');
     return requestCalendarPermission;
   } catch (error) {
-    Alert.alert("Medflic Need your Calendar Permission to Store your Apppointments");
+    Alert.alert(CURRENT_APP_NAME + " Need your Calendar Permission to Store your Apppointments");
     return false;
   }
 };
@@ -70,7 +71,7 @@ export async function saveEvent(title, startDate, endDate, location, description
 export async function updateEvent(id, title, startDate, endDate, location, description, options) {
   const event = await RNCalendarEvents.findEventById(id);
   let calendarId = await AsyncStorage.getItem(CALENDERID);
-  
+
   if (!calendarId) {
     calendarId = await createCalendar();
   }
@@ -85,12 +86,12 @@ export async function updateEvent(id, title, startDate, endDate, location, descr
   }
 
   if (!event) {
-    let result = await saveEvent(title,details);
+    let result = await saveEvent(title, details);
     return result;
   } else {
     console.log('Event found ', event);
 
-   details.id=id
+    details.id = id
     let result = await RNCalendarEvents.saveEvent(title, details);
     return result;
   }

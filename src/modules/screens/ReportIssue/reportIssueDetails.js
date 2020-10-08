@@ -9,7 +9,7 @@ import { upDateReportIssue, getUserRepportDetails } from '../../providers/report
 
 
 import { onlySpaceNotAllowed, reportStatusValue } from '../../common'
-
+import { CURRENT_APP_NAME } from "../../../setup/config";
 class reportIssueDetails extends Component {
   constructor(props) {
     super(props)
@@ -143,7 +143,7 @@ class reportIssueDetails extends Component {
                       <View>
                         <Row style={{ paddingBottom: 10, borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, marginTop: 30 }}>
                           <Left>
-                            <Text style={styles.reportText}>{item.reply_provider_type == 'USER' ? 'Replied By You' : item.reply_provider_type == 'DOCTOR' ? 'Replied By Doctor' : 'Replied By Medflic'}</Text>
+                            <Text style={styles.reportText}>{item.reply_provider_type == 'USER' ? 'Replied By You' : item.reply_provider_type == 'DOCTOR' ? 'Replied By Doctor' : 'Replied By ' + CURRENT_APP_NAME}</Text>
                           </Left>
                           <Right>
                             <Text style={styles.date}>{formatDate(item.created_date, 'dddd,DD/MM/YYYY') + ' at ' + formatDate(item.created_date, 'hh:mm a')}</Text>
@@ -161,8 +161,8 @@ class reportIssueDetails extends Component {
                             <View>
                               <Text style={[styles.boldContent, { marginTop: 20 }]}>Thanks,
                             </Text>
-                              <Text style={styles.boldContent}>Medflic Support Team
-                           </Text>
+                              <Text style={styles.boldContent}>{`${CURRENT_APP_NAME} Support Team`}
+                              </Text>
                             </View>
                           }
                         </View>

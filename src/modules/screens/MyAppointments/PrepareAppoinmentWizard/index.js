@@ -5,14 +5,15 @@ import {
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
 import { fetchUserProfile, setUserDataForPreparation } from '../../../providers/profile/profile.action';
-import styles from '../styles'
+import styles from '../styles';
+import { CURRENT_APP_NAME } from "../../../../setup/config";
 class PrepareAppointmentWizard extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
             doctorData: props.navigation.getParam('DoctorData'),
             appointmentId: props.navigation.getParam('AppointmentId'),
-            doctorName:props.navigation.getParam("Data")
+            doctorName: props.navigation.getParam("Data")
         }
     }
     getUserProfile = async () => {
@@ -30,7 +31,7 @@ class PrepareAppointmentWizard extends PureComponent {
     }
 
     render() {
-        const { Question, appointmentId ,doctorData,doctorName} = this.state
+        const { Question, appointmentId, doctorData, doctorName } = this.state
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
@@ -41,11 +42,11 @@ class PrepareAppointmentWizard extends PureComponent {
                                 <Image source={require('../../../../../assets/images/formpaper.png')} style={{ height: 200, width: 200, }} />
                             </View>
                             <Text style={styles.textContent}>No more paper forms!</Text>
-                            <Text style={styles.subText1}>Check in online and your information will be send directly to the Medflic</Text>
+                            <Text style={styles.subText1}>{`Check in online and your information will be send directly to the ${CURRENT_APP_NAME}`}</Text>
                         </View>
                         <View style={[styles.centerContent, { marginTop: 50 }]}>
                             <TouchableOpacity style={styles.touchStyle} onPress={() => {
-                                this.props.navigation.navigate("BasicInfo", { AppointmentId: appointmentId ,DoctorData: doctorData,Data:doctorName})
+                                this.props.navigation.navigate("BasicInfo", { AppointmentId: appointmentId, DoctorData: doctorData, Data: doctorName })
                                 this.getUserProfile()
                             }}>
                                 <Text style={styles.touchText}>I Agree Start check-in</Text>

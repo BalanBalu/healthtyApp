@@ -1,6 +1,7 @@
+import { CURRENT_APP_NAME } from "../../../../setup/config";
 export function getMemberNameWithStatus(data) {
 
-    let name = "medflic user"
+    let name = CURRENT_APP_NAME + " user"
     let status = ''
     if (data) {
         if (data.maritalStatus === 'MARRIED') {
@@ -9,8 +10,8 @@ export function getMemberNameWithStatus(data) {
             } else {
                 status = 'Mrs'
             }
-        } 
-        name = `${status + (data.firstName || '' )+ (' '+data.middleName || '') + (' '+data.lastName||'')}`
+        }
+        name = `${status + (data.firstName || '') + (' ' + data.middleName || '') + (' ' + data.lastName || '')}`
     }
 
     return name

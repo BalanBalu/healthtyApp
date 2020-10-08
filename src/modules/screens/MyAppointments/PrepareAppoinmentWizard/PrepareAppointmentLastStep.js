@@ -7,7 +7,7 @@ import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity,
 import Spinner from '../../../../components/Spinner';
 import { prepareAppointmentUpdate } from '../../../providers/bookappointment/bookappointment.action'
 import styles from '../styles'
-
+import { CURRENT_APP_NAME } from "../../../../setup/config";
 
 class PrepareAppointmentLastStep extends PureComponent {
     constructor(props) {
@@ -27,7 +27,7 @@ class PrepareAppointmentLastStep extends PureComponent {
                     agreed_for_send_forms: agreed_for_send_forms
                 }
                 this.setState({ isLoading: true })
-              
+
                 let response = await prepareAppointmentUpdate(appointmentId, data)
 
                 if (response.success) {
@@ -69,8 +69,8 @@ class PrepareAppointmentLastStep extends PureComponent {
                                 checked={this.state.agreed_for_send_forms}
                                 onPress={() => this.setState({ agreed_for_send_forms: !this.state.agreed_for_send_forms })}
                             />
-                            <Text style={[styles.flatlistText, { color: '#4c4c4c', lineHeight: 20 }]}>I verify that the information presented here is accurate,and i authorize Medflic to send this
-                                            information to my healthcare provider.</Text>
+                            <Text style={[styles.flatlistText, { color: '#4c4c4c', lineHeight: 20 }]}>{`I verify that the information presented here is accurate,and i authorize ${CURRENT_APP_NAME} to send this
+                                            information to my healthcare provider.`}</Text>
                         </View>
 
                         <View style={[styles.centerContent, { marginTop: 50 }]}>
