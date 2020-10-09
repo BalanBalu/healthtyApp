@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 import { getReferalPoints, getCurrentVersion, fetchUserProfile, SET_CORPORATE_DATA } from '../../providers/profile/profile.action';
 import { catagries } from '../../providers/catagries/catagries.actions';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE } from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE, CURRENT_APP_NAME } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
@@ -185,7 +185,7 @@ class Home extends Component {
         if (productConfigVersion.data[0].value.force_update == true) {
             Alert.alert(
                 "Please Upgrade Your Application !",
-                "Update Medflic application to Newer Version",
+                "Update " + CURRENT_APP_NAME + " application to Newer Version",
                 [
                     {
                         text: "UPDATE", onPress: () => {
@@ -199,7 +199,7 @@ class Home extends Component {
         } else {
             Alert.alert(
                 "Please Upgrade Your Application !",
-                "Update Medflic application to Latest Version",
+                "Update " + CURRENT_APP_NAME + " application to Latest Version",
                 [
                     {
                         text: "Skip",
@@ -255,7 +255,7 @@ class Home extends Component {
                 let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
 
                 if (!!corporateResult && corporateResult.success !== false) {
-                  
+
 
                     store.dispatch({
                         type: SET_CORPORATE_DATA,
@@ -935,9 +935,9 @@ const styles = StyleSheet.create({
         height: 80,
         backgroundColor: '#fff',
         justifyContent: 'center',
-        paddingLeft:2,
-        paddingRight:2
-       
+        paddingLeft: 2,
+        paddingRight: 2
+
     },
     mainText: {
         fontSize: 12,

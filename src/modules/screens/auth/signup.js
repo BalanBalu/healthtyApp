@@ -12,7 +12,7 @@ import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 import ModalPopup from '../../../components/Shared/ModalPopup';
-import { SHOW_MOBILE_AND_EMAIL_ENTRIES } from '../../../setup/config';
+import { SHOW_MOBILE_AND_EMAIL_ENTRIES, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../../../setup/config';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 console.disableYellowBox = true
 class Signup extends Component {
@@ -31,7 +31,7 @@ class Signup extends Component {
             referralCode: null,
             isModalVisible: false,
             corporateData: null,
-            refresh:false
+            refresh: false
         }
         this.isShowMobileEntryView = true;
         this.isShowEmailEntryView = true;
@@ -44,7 +44,7 @@ class Signup extends Component {
     getMobileAndEmailOtpServicesDetails = async () => {
         try {
 
-         
+
             const productConfigTypes = `${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY}`;
             const productConfigResp = await ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes);
             console.log('productConfigResp==>', productConfigResp);
@@ -61,7 +61,7 @@ class Signup extends Component {
                         this.isEnabledToSendOtpPage = true
                     }
                 });
-            this.setState({refresh:true})
+                this.setState({ refresh: true })
             }
         } catch (Ex) {
             console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
@@ -111,7 +111,7 @@ class Signup extends Component {
 
             if (corporateData !== null) {
                 requestData.is_corporate_user = true
-                requestData.corporate_user_id=corporateData._id
+                requestData.corporate_user_id = corporateData._id
                 requestData.employee_code = corporateData.employeeCode;
             }
 
@@ -123,7 +123,7 @@ class Signup extends Component {
                     type: requestData.type
                 }
                 if (corporateData !== null) {
-                    loginData.is_corporate_user=true
+                    loginData.is_corporate_user = true
                 }
                 if (this.isEnabledToSendOtpPage === true) {
                     this.props.navigation.navigate('renderOtpInput', { loginData: loginData });
@@ -145,10 +145,10 @@ class Signup extends Component {
 
     async doLoginAndContinueBasicDetailsUpdate(loginData) {
         try {
- 
+
             await login(loginData);  // Do SignIn Process after SignUp is Done
             if (this.props.user.isAuthenticated) {
-               
+
                 let corporateData = this.props.navigation.getParam('corporateData') || null;
                 this.props.navigation.navigate('userdetails', { corporateData: corporateData });
             }
@@ -156,7 +156,7 @@ class Signup extends Component {
                 this.setState({ errorMsg: this.props.user.message });
             }
         } catch (error) {
-          
+
             Toast.show({
                 text: 'Something Went Wrong' + error,
                 duration: 3000
@@ -194,12 +194,14 @@ class Signup extends Component {
                         <View>
 
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={styles.switchToCorporate}>
+                            {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={styles.switchToCorporate}>
                                     <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
-                                    <AntDesign name='doubleright' style={{color:'#fff',fontSize:15,marginTop:3,marginLeft:3}}/>
-                            </TouchableOpacity>
+                                    <AntDesign name='doubleright' style={{ color: '#fff', fontSize: 15, marginTop: 3, marginLeft: 3 }} />
+                                </TouchableOpacity>
+                                : null}
 
-                            <Card style={{ borderRadius: 10, padding: 5, marginTop: 15,marginBottom:20 }}>
+                            <Card style={{ borderRadius: 10, padding: 5, marginTop: 15, marginBottom: 20 }}>
                                 <View style={{ flex: 1 }}>
                                     <ModalPopup
                                         errorMessageText={errorMsg}
@@ -322,7 +324,7 @@ class Signup extends Component {
                                                 checked={this.state.checked}
                                                 onPress={() => { this.setState({ checked: !checked }); }}
                                             />
-                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, marginLeft: 20 }}>I Accept the Medflic </Text>
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, marginLeft: 20 }}>{`I Accept the ${CURRENT_APP_NAME} `}</Text>
                                             <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
                                                 <Text style={{ color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13, }}>Terms And Conditions</Text>
                                             </TouchableOpacity>

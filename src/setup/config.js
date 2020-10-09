@@ -58,3 +58,7 @@ export const SHOW_MOBILE_AND_EMAIL_ENTRIES = {
   PT_SHOW_EMAIL_ENTRY: 'PT_SHOW_EMAIL_ENTRY',
   PT_SHOW_OTP_ENTRY: 'PT_SHOW_OTP_ENTRY'
 }
+
+export const MY_SMART_HEALTH_CARE = 'My SmartHealth';
+export const MY_MEDFLIC = 'Medflic';
+export const CURRENT_APP_NAME = MY_MEDFLIC;

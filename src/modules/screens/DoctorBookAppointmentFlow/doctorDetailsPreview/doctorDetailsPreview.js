@@ -20,7 +20,7 @@ import { fetchAvailableDoctors4Video } from '../../../screens/VideoConsulation/s
 import { fetchAvailableDoctors4Chat } from '../../../providers/chat/chat.action';
 import RenderHospitalLoc from './RenderHospitalLoc'
 import { Loader } from '../../../../components/ContentLoader';
-import { CATEGORY_BASE_URL } from '../../../../setup/config';
+import { CATEGORY_BASE_URL, CURRENT_APP_NAME } from '../../../../setup/config';
 import { RenderReviewData } from '../../Reviews/ReviewCard';
 setDocInfoAndAvailableSlotsData = null;
 showedHospitalDoctorId = null;
@@ -391,11 +391,11 @@ class DoctorDetailsPreview extends Component {
         try {
             const doctorNameWithPrefix = `${doctorData.prefix}.${doctorData.first_name} ${doctorData.last_name}`;
             const result = await Share.share({
-                title: 'MEDFLIC Consultation',
+                title: CURRENT_APP_NAME + ' Consultation',
                 message:
-                    ` MEDFLIC Consultation :-
-          Recommend  "${doctorNameWithPrefix}" from MEDFLIC select is one of the top "${this.state.specialistWithServicesList[0].category_name}" in the country.
-          You can instantly consult  "${doctorNameWithPrefix}"   on the MEDFLIC app.`,
+                    ` ${CURRENT_APP_NAME} Consultation :-
+          Recommend  "${doctorNameWithPrefix}" from ${CURRENT_APP_NAME} select is one of the top "${this.state.specialistWithServicesList[0].category_name}" in the country.
+          You can instantly consult  "${doctorNameWithPrefix}"   on the ${CURRENT_APP_NAME} app.`,
                 // url: "https://medflic.com/appointment/booking?doctorId=" + this.state.doctorId
             });
             //  I recommend her for any relevant health concerns.

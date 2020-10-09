@@ -8,7 +8,7 @@ import { toastMeassage } from '../../common'
 import { connect } from 'react-redux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-
+import { CURRENT_APP_NAME } from "../../../setup/config";
 class Ecard extends PureComponent {
     constructor(props) {
         super(props)
@@ -154,7 +154,7 @@ class Ecard extends PureComponent {
                     <View>
                         <View style={{ backgroundColor: '#f2f5f4', paddingTop: 10, justifyContent: 'center', alignItems: 'center', paddingBottom: 8, marginTop: 5 }}>
 
-                            <Text style={styles.headerText}>{data.insuranceCompany ? data.insuranceCompany.toUpperCase() : 'MEDFLIC INSURANCE'}</Text>
+                            <Text style={styles.headerText}>{data.insuranceCompany ? data.insuranceCompany.toUpperCase() : CURRENT_APP_NAME + ' INSURANCE'}</Text>
                             {/* <Text style={styles.headerText}>COMPANY LIMITED</Text> */}
                             <Text style={styles.compName}>{data.address1 || ' '}</Text>
 

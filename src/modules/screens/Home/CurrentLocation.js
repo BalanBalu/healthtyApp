@@ -1,6 +1,6 @@
 
 import { SET_PATIENT_LOCATION_DATA } from '../../providers/bookappointment/bookappointment.action';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAP_BOX_TOKEN, CURRENT_APP_NAME } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { BackHandler, Alert, AsyncStorage } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
@@ -33,9 +33,9 @@ export default class CurrentLocation {
             if (permissionResult === 'authorized') {
               createCalendar();
             }
-           
+
             CallCurrentLocation.callCurrentLocation();
-             
+
           } else {
             Alert.alert(
               "Alert",
@@ -65,15 +65,15 @@ export default class CurrentLocation {
     }
   }
 
- 
-  
+
+
 }
 class CallCurrentLocation {
-  
-   static async callCurrentLocation() {
+
+  static async callCurrentLocation() {
     const manulllyEnabledLocation = await AsyncStorage.getItem('manuallyEnabledLocation');
     console.log('manulllyEnabledLocation', manulllyEnabledLocation);
-    if(manulllyEnabledLocation) {
+    if (manulllyEnabledLocation) {
       const locationData = JSON.parse(manulllyEnabledLocation)
       store.dispatch(locationData);
       return true
@@ -92,9 +92,9 @@ class CallCurrentLocation {
       let currentLocationCity = '';
       if (locationData) {
         if (locationData.context) {
-          locationData.context.forEach((placeData )=> {
+          locationData.context.forEach((placeData) => {
             currentLocationCity += placeData && placeData.text ? placeData.text + ', ' : '';
-          })  
+          })
         }
       }
 
@@ -110,14 +110,14 @@ class CallCurrentLocation {
       if (error.code === 1) {
         Alert.alert(
           "Alert",
-          "Your GPS Location is Turned off. Please Enable your GPS Location to Continue use Medflic Services",
+          "Your GPS Location is Turned off. Please Enable your GPS Location to Continue use " + CURRENT_APP_NAME + " Services",
           [
             { text: "OK", onPress: () => BackHandler.exitApp() }
           ]
         );
       }
     },
-    { timeout: 500000, enableHighAccuracy: true, showLocationDialog: true, forceRequestLocation: true };
-  
+      { timeout: 500000, enableHighAccuracy: true, showLocationDialog: true, forceRequestLocation: true };
+
   }
 }
