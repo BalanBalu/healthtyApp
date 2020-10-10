@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-<string name="app_name">medflic</string>
+<string name="app_name">My SmartHealth</string>
 <string name="title_activity_example">ExampleActivity</string>
     <string name="example_activity_title">Example activity</string>
     <string name="go_back">Go back!</string>
