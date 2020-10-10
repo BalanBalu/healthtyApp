@@ -1,4 +1,4 @@
-package com.ads.medflic;
+package com.ads.mysmarthealth;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.os.Build;

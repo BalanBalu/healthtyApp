@@ -32,7 +32,7 @@ export const CURRENT_PRODUCT_ANDROID_VERSION_CODE = '1.0.20';
 export const CURRENT_PRODUCT_IOS_VERSION_CODE = '16.0.0';
 
 /*** Change ON Prod End ***/
-export const ANDROID_BUNDLE_IDENTIFIER = 'com.ads.medflic';
+export const ANDROID_BUNDLE_IDENTIFIER = 'com.ads.mysmarthealth';
 export const ANDROID_VIDEO_CALL_ACTIVITY_NAME = 'ExampleActivity'
 export const BASIC_DEFAULT = {
   email: 'sathishkrish20@gmail.com',
