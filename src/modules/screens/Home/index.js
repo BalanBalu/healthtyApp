@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 import { getReferalPoints, getCurrentVersion, fetchUserProfile, SET_CORPORATE_DATA } from '../../providers/profile/profile.action';
 import { catagries } from '../../providers/catagries/catagries.actions';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE, CURRENT_APP_NAME } from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE, CURRENT_APP_NAME, ANDROID_BUNDLE_IDENTIFIER } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
@@ -190,7 +190,7 @@ class Home extends Component {
                     {
                         text: "UPDATE", onPress: () => {
                             console.log('OK Pressed')
-                            Linking.openURL("https://play.google.com/store/apps/details?id=com.ads.medflic&hl=en")
+                            Linking.openURL("https://play.google.com/store/apps/details?id=" + ANDROID_BUNDLE_IDENTIFIER)
                         }
                     }
                 ],
