@@ -77,7 +77,7 @@ class Insurance extends Component {
         <View style={styles.loader}>
           <ActivityIndicator
             size="large"
-            color="#0c9"
+            color="#775DA3"
             style={{marginTop: 100}}
           />
         </View>
