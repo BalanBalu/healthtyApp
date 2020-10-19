@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Row, Grid} from 'react-native-easy-grid';
-import {Container, View, Text, Button} from 'native-base';
+import {Row, Grid, Col} from 'react-native-easy-grid';
+import {Container, View, Text, Button, Icon, Input} from 'native-base';
 import {
   StyleSheet,
   FlatList,
@@ -24,8 +24,6 @@ class Insurance extends Component {
 
   fetchData = () => {
     this.setState({loading: true});
-    // https://jsonplaceholder.typicode.com/photos
-    // https://sh-qa-api.aopks.com/enquiry-list
     fetch('https://sh-qa-api.aopks.com/enquiry-list')
       .then(response => response.json())
       .then(responseJson => {
@@ -93,6 +91,26 @@ class Insurance extends Component {
     return (
       <Container>
         <Grid>
+          <Row style={styles.SearchRow}>
+            <Col size={0.5} style={styles.SearchStyle}>
+              <Icon
+                name="ios-search"
+                style={{color: '#fff', fontSize: 20, padding: 2}}
+              />
+            </Col>
+            <Col size={3.5} style={{justifyContent: 'center'}}>
+              <Input
+                onFocus={() => {
+                  this.props.navigation.navigate('RenderSuggestionList');
+                }}
+                placeholder="Search Insurance Policies..."
+                style={styles.inputfield}
+                placeholderTextColor="#e2e2e2"
+                editable={true}
+                underlineColorAndroid="transparent"
+              />
+            </Col>
+          </Row>
           <Row>
             <View>
               <FlatList
@@ -179,8 +197,34 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
+  SearchRow: {
+    backgroundColor: 'white',
+    borderColor: '#AFAFAF',
+    borderWidth: 0.5,
+    height: 50,
+    marginRight: 20,
+    marginLeft: 20,
+    marginTop: 15,
+    borderRadius: 10,
+  },
+  insuranceCard: {
+    backgroundColor: 'black',
+    borderColor: '#AFAFAF',
+  },
+  searchBar: {
+    marginTop: 0,
+  },
+  SearchStyle: {
+    backgroundColor: '#7E49C3',
+    width: '85%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRightColor: '#000',
+    borderRightWidth: 0.5,
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
+  },
 });
-
 export default Insurance;
 
 // ***
