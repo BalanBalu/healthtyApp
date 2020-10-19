@@ -48,10 +48,6 @@ class Insurance extends Component {
     <TouchableOpacity
       style={[styles.list, data.item.selectedClass]}
       onPress={() => this.selectItem(data)}>
-      {/* <Image
-        source={{uri: data.item.thumbnailUrl}}
-        style={{width: 40, height: 40, margin: 6}}
-      /> */}
       <Text style={styles.cardText1}> {data.item.title}</Text>
       <Text style={styles.cardText2}> {data.item.description}</Text>
       <Text style={styles.cardText3}>KNOW MORE</Text>
