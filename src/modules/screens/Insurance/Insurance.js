@@ -95,7 +95,7 @@ class Insurance extends Component {
         <View style={styles.loader}>
           <ActivityIndicator
             size="large"
-            color="#775DA3"
+            color="#7E49C3"
             style={{marginTop: 100}}
           />
         </View>
@@ -139,9 +139,12 @@ class Insurance extends Component {
                 keyExtractor={item => item._id.toString()}
                 renderItem={item => this.renderItem(item)}
               />
+              <Row style={{justifyContent:'center',alignItems:'center'}}>
               <Button style={styles.Button} onPress={this.insuranceDetailsUpdated}>
                 <Text style={styles.buttonText}>Send Interests</Text>
               </Button>
+              </Row>
+            
             </View>
         </Grid>
         </Content>
@@ -173,7 +176,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginLeft: 5,
     marginRight: 5,
-    borderColor: '#775DA3',
+    borderColor: '#7E49C3',
   },
   cardText1: {
     color: '#000',
@@ -185,22 +188,25 @@ const styles = StyleSheet.create({
     marginTop:5
   },
   cardText3: {
-    color: '#775DA3',
+    color: '#7E49C3',
     fontSize: 14,
     fontWeight: 'bold',
   },
   Button: {
     marginTop: 20,
-    backgroundColor: '#775DA3',
-    marginLeft: 90,
-    marginRight: 90,
-    marginBottom: 30,
+    backgroundColor: '#7E49C3',
+    // marginLeft: 90,
+    // marginRight: 90,
+    // marginBottom: 30,
     borderRadius: 5,
   },
-  buttonText: {textAlign: 'center', marginLeft: 40},
+  buttonText: {
+    textAlign: 'center',
+    fontWeight:'bold',
+    fontSize:14
+  },
   line: {
     marginTop: 8,
-
     height: 0.5,
     width: '100%',
     backgroundColor: 'rgba(255,255,255,0.5)',
