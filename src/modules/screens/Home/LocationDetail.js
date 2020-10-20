@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, ListItem, List } from 'native-base';
 import { connect } from 'react-redux'
-import { View, FlatList } from 'react-native';
+import { View, FlatList, AsyncStorage } from 'react-native';
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
 
@@ -72,13 +72,15 @@ class LocationDetail extends PureComponent {
                                 <ListItem
                                     button
                                     onPress={() => {
-                                        store.dispatch({
+                                        const data = {
                                             type: SET_PATIENT_LOCATION_DATA,
                                             center: item.coordinates,
                                             locationName: item.location,
                                             isSearchByCurrentLocation: false,
                                             isLocationSelected: true
-                                        });
+                                        }
+                                        store.dispatch(data);
+                                        AsyncStorage.setItem('manuallyEnabledLocation', JSON.stringify(data))
                                         navigation.navigate(navigationOption)
                                     }}
                                     button >

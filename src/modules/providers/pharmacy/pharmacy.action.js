@@ -37,11 +37,10 @@ export async function getMedicinesSearchList(keyword, pagination, isLoading = tr
   try {
     console.log(typeof keyword)
     let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + pagination + '&c=' + 10;
-    console.log(endPoint);
+   
 
     let response = await inventoryGetService(endPoint);
-    console.log('hi==================')
-    console.log(JSON.stringify(response.data))
+
     let respData = response.data.content;
     return respData;
   } catch (e) {
@@ -596,7 +595,7 @@ export async function getCartCount(userId) {
 }
 
 
-export async function getproductDetailsByPharmacyId(pharmacyIds,masterProductIds) {
+export async function getproductDetailsByPharmacyIds(pharmacyIds,masterProductIds) {
   try {
 
 
@@ -611,3 +610,19 @@ export async function getproductDetailsByPharmacyId(pharmacyIds,masterProductIds
     }
   }
 }
+export async function getproductDetailsByPharmacyId(pharmacyId,masterProductIds) {
+  try {
+
+
+    let endPoint = `/products/master/${pharmacyId}?ids=${masterProductIds}`
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+

@@ -84,10 +84,11 @@ export const sendNotification = async (doctorId, request) => {
     }
 }
 export const authorizeConnectyCube = async () => {
-    let userId = await AsyncStorage.getItem('userId');
-    if(userId) {
-        let fields = "user_id,connectycube"
-        let endPoint = 'user/' + userId + '?fields=' + fields;
+    try {
+        let userId = await AsyncStorage.getItem('userId');
+        if(userId) {
+        let fields = "user_id,connectycube";
+        let endPoint = 'video-consulting/public/connectycube/user/' + userId + '?fields=' + fields;
         let response = await getService(endPoint);
         let respData = response.data;
         if(respData.success === true) {
@@ -100,6 +101,10 @@ export const authorizeConnectyCube = async () => {
         }
     }
     return false;
+} catch (error) {
+    console.info('Error on Authorizing Connectycube ==> ', error);
+            
+}
 }
 
 export const setUserLoggedIn = () => {

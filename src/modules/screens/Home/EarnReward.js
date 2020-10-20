@@ -7,7 +7,7 @@ import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList, Image, ImageBackg
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import Spinner from "../../../components/Spinner";
-import { SHARE_URL } from '../../../setup/config'
+import { SHARE_URL, CURRENT_APP_NAME } from '../../../setup/config'
 import { connect } from 'react-redux';
 class EarnReward extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ class EarnReward extends Component {
       }
       const result = await Share.share({
         message:
-          'Join me on medflic a doctor  appointment booking app http://onelink.to/c2d6tx' + inviteId
+          `Join me on ${CURRENT_APP_NAME} a doctor  appointment booking app http://onelink.to/c2d6tx' ${inviteId}`
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {

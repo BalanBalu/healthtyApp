@@ -22,26 +22,28 @@ export async function getSpecialistDataSuggestions(type, SuggestionReqData) {
   }
 }
 
-export async function catagries(searchQueries = '') {
+export async function catagries(searchQueries = 'services=0') {
   try {
-    store.dispatch({
-      type: CATAGRIES_REQUEST,
-    })
+    if(store.getState().categories.fullCategoryFetched === true) {
+      console.log('Categories Already Fetched');
+      return store.getState().categories.response;
+    }
     let endPoint = 'category_services'
     if (searchQueries !== '') {
       endPoint = endPoint + '?' + searchQueries;
     }
-    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
 
-    // console.log(respData);
-    store.dispatch({
-      type: CATAGRIES_RESPONSE,
-      isLoading: false,
-      success: true,
-      message: respData.message
-    })
+    if(respData.success === true) {
+      store.dispatch({
+        type: CATAGRIES_RESPONSE,
+        isLoading: false,
+        success: true,
+        message: respData.message,
+        response: respData 
+      })
+    }
     return respData;
 
 

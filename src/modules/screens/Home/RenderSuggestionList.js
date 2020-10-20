@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import { getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { debounce } from '../../common';
-
+import LocationWarning from './LocationWarning';
 class RenderSuggestionsList extends PureComponent {
     constructor(props) {
         super(props);
@@ -20,7 +20,8 @@ class RenderSuggestionsList extends PureComponent {
         this.callGetSuggestionListService = debounce(this.callGetSuggestionListService, 300);
     }
     componentWillMount() {
-        this.callGetSuggestionListService('Primary', true)
+        LocationWarning.checkLocationWarning( this.callGetSuggestionListService.bind(this), ['Primary', true]);    
+       // this.callGetSuggestionListService('Primary', true)
     }
 
     callGetSuggestionListService = async (enteredText, suggestionTextDisable) => {
@@ -76,20 +77,10 @@ class RenderSuggestionsList extends PureComponent {
     };
 
     navigateToSearchListPage(item) {
+        LocationWarning.checkLocationWarning(this.navigateDoctorSearchList.bind(this), [ item ]);
+    }
+    navigateDoctorSearchList = (item) => {
         const { bookappointment: { isLocationSelected, locationCordinates } } = this.props;
-        if (!isLocationSelected) {
-            Alert.alert(
-                "Location Warning",
-                "The Location is Not choose, To continue Please choose your Location",
-                [
-                    { text: "Cancel" },
-                    {
-                        text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
-                    }
-                ],
-            );
-            return
-        }
         let reqData4SearchDocList = {
             locationDataFromSearch: {
                 type: 'geo',
@@ -102,21 +93,6 @@ class RenderSuggestionsList extends PureComponent {
         }
         console.log('reqData4SearchDocList===>', JSON.stringify(reqData4SearchDocList));
         this.props.navigation.navigate("Doctor Search List", reqData4SearchDocList);
-        // let requestData = [{
-        //     type: 'geo',
-        //     value: {
-        //         coordinates: locationCordinates,
-
-        //         maxDistance: MAX_DISTANCE_TO_COVER
-        //     }
-        // }]
-        // if (index !== 0) {
-        //     requestData.push({
-        //         type: item.type,
-        //         value: item.value
-        //     })
-        // }
-        // this.props.navigation.navigate("Doctor List", { resultData: requestData })
     }
 
     render() {

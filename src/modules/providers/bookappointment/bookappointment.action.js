@@ -221,7 +221,13 @@ export const getUserAppointments = async (userId, filters) => {
     if (filters.limit) {
       endPoint = endPoint + '&skip=' + filters.skip + '&limit=' + filters.limit + '&sort=' + filters.sort;
     }
+    if (filters.reviewInfo) {
+      endPoint = endPoint + '&reviewInfo=1'
+    }
 
+    if (filters.prepareAppointment) {
+      endPoint = endPoint + '&prepareAppointment=1'
+    }
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -303,7 +309,7 @@ export async function appointmentDetails(appointmentId, isLoading = true) {
 
 /* Update Appoiontment Status */
 
-export async function appointmentStatusUpdate(doctorId, appointmentId, requestData, isLoading = true) {
+export async function appointmentStatusUpdate( appointmentId, requestData, isLoading = true) {
   try {
     let endPoint = 'appointment/' + appointmentId
     let response = await putService(endPoint, requestData);
@@ -545,11 +551,40 @@ export async function fetchEmrData(appointmentId) {
 }
 export const getappointmentDetails = async (appointmentId, prepareAppointment) => {
   try {
-    let endPoint = 'appointment/' + appointmentId  
-    if(prepareAppointment)
-    {
-      endPoint = endPoint +  '?prepareAppointment=1'
+    let endPoint = 'appointment/' + appointmentId
+    if (prepareAppointment) {
+      endPoint = endPoint + '?prepareAppointment=1'
     }
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+/* Book the Doctor Appointment module  */
+export async function bookAppointment4Healthcare(bookSlotDetails, isLoading = true) {
+  try {
+    const endPoint = 'home_healthcare/appointment';
+    const response = await postService(endPoint, bookSlotDetails);
+    const respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getAppointmentCode(appointmentId, ) {
+  try {
+    let endPoint ='appointment/appointment_verification_code/'+appointmentId
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;

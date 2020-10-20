@@ -10,6 +10,7 @@ import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
 import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
+import CheckLocationWarning from '../Home/LocationWarning';
 
 
 class Categories extends Component {
@@ -25,7 +26,7 @@ class Categories extends Component {
   }
   getCatagries = async () => {
     try {
-      let result = await catagries();
+      let result = await catagries('services=0');
       if (result.success) {
         this.setState({ data: result.data, categoriesMain: result.data })
         for (let i = 0; i < result.data.length; i++) {
@@ -42,17 +43,44 @@ class Categories extends Component {
       this.setState({ isLoading: false });
     }
   }
+  navigate = (categoryName,category_id) => {
+    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this), [categoryName,category_id]);
+  }
 
-  navigateToCategorySearch(categoryName) {
+  navigateToCategorySearch(categoryName,category_id) {
+    console.log(categoryName);
+
+    console.log(this.props);
     const { bookappointment: { locationCordinates } } = this.props;
-    this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
-      inputKeywordFromSearch: categoryName,
-      locationDataFromSearch: {
-        type: 'geo',
-        "coordinates": locationCordinates,
-        maxDistance: MAX_DISTANCE_TO_COVER
-      }
-    })
+
+   let  fromNavigation = this.props.navigation.getParam('fromNavigation') || null
+    
+  
+    if (fromNavigation === "HOSPITAl") {
+      this.props.navigation.navigate("Hospitals", {   // New Enhancement Router path
+        category_id: category_id 
+      })
+    }
+    else if(fromNavigation === 'HOME_HEALTH_CARE') {
+        this.props.navigation.navigate("Home Health Care", { 
+                categoryName: categoryName, 
+                categoryId: category_id,
+                locationDataFromSearch: {
+                    type: 'geo',
+                    "coordinates": locationCordinates,
+                    maxDistance: MAX_DISTANCE_TO_COVER
+                }
+        });
+    } else {
+      this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+        inputKeywordFromSearch: categoryName,
+        locationDataFromSearch: {
+          type: 'geo',
+          "coordinates": locationCordinates,
+          maxDistance: MAX_DISTANCE_TO_COVER
+        }
+      })
+    }
     // let serachInputvalues = [{
     //   type: 'category',
     //   value: categoryName
@@ -123,7 +151,7 @@ class Categories extends Component {
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>
-                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
+                  <TouchableOpacity onPress={() => this.navigate(item.category_name,item.category_id)}
                     style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                     <FastImage
                       source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
@@ -132,7 +160,7 @@ class Categories extends Component {
                       }}
                     />
                     <Text style={{
-                      fontSize: 10,
+                      fontSize: 12,
                       textAlign: 'center',
                       fontWeight: '200',
                       marginTop: 5,
@@ -163,7 +191,7 @@ function appoinmentsState(state) {
     bookappointment: state.bookappointment
   }
 }
-export default connect(appoinmentsState, { login, messageShow, messageHide })(Categories)
+export default connect(appoinmentsState)(Categories)
 
 
 const styles = StyleSheet.create({

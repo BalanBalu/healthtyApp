@@ -20,7 +20,7 @@ import { fetchAvailableDoctors4Video } from '../../../screens/VideoConsulation/s
 import { fetchAvailableDoctors4Chat } from '../../../providers/chat/chat.action';
 import RenderHospitalLoc from './RenderHospitalLoc'
 import { Loader } from '../../../../components/ContentLoader';
-import { CATEGORY_BASE_URL } from '../../../../setup/config';
+import { CATEGORY_BASE_URL, CURRENT_APP_NAME } from '../../../../setup/config';
 import { RenderReviewData } from '../../Reviews/ReviewCard';
 setDocInfoAndAvailableSlotsData = null;
 showedHospitalDoctorId = null;
@@ -90,7 +90,7 @@ class DoctorDetailsPreview extends Component {
                 await this.getFavoriteCounts4PatByUserId(userId);
             }
             const doctorId = navigation.getParam('doctorId');
-            this.callVideAndChat(doctorId);
+            await this.callVideAndChat(doctorId);
             const [doctorDetailsResp, wishListResp, rattingResp] = await Promise.all([
                 getMultipleDoctorDetails(doctorId, fields).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
                 ServiceOfGetDoctorFavoriteListCount4Pat(doctorId).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -116,7 +116,7 @@ class DoctorDetailsPreview extends Component {
             this.weekWiseDatesList = navigation.getParam('weekWiseDatesList');
             const doctorItemData = navigation.getParam('singleDoctorItemData');
             this.doctorDetailsObj = doctorItemData;
-            this.callVideAndChat(this.doctorDetailsObj.doctor_id);
+            await this.callVideAndChat(this.doctorDetailsObj.doctor_id);
             debugger
             this.setDocInfoAndAvailableSlotsData = doctorItemData;
 
@@ -391,11 +391,11 @@ class DoctorDetailsPreview extends Component {
         try {
             const doctorNameWithPrefix = `${doctorData.prefix}.${doctorData.first_name} ${doctorData.last_name}`;
             const result = await Share.share({
-                title: 'MEDFLIC Consultation',
+                title: CURRENT_APP_NAME + ' Consultation',
                 message:
-                    ` MEDFLIC Consultation :-
-          Recommend  "${doctorNameWithPrefix}" from MEDFLIC select is one of the top "${this.state.specialistWithServicesList[0].category_name}" in the country.
-          You can instantly consult  "${doctorNameWithPrefix}"   on the MEDFLIC app.`,
+                    ` ${CURRENT_APP_NAME} Consultation :-
+          Recommend  "${doctorNameWithPrefix}" from ${CURRENT_APP_NAME} select is one of the top "${this.state.specialistWithServicesList[0].category_name}" in the country.
+          You can instantly consult  "${doctorNameWithPrefix}"   on the ${CURRENT_APP_NAME} app.`,
                 // url: "https://medflic.com/appointment/booking?doctorId=" + this.state.doctorId
             });
             //  I recommend her for any relevant health concerns.

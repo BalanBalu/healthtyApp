@@ -232,24 +232,28 @@ export class OrderInsertReview extends Component {
         this.setState({ errorMsg: '' });
 
 
-        reviewInsertData.isReviewSkipped = true,
+        reviewInsertData.isReviewSkipped = false,
           reviewInsertData.rating = rating,
-          reviewInsertData.reviewComment = comments
+          reviewInsertData.raviewComment = comments
 
       }
       else {
-        reviewInsertData.isReviewSkipped = false
+        reviewInsertData.isReviewSkipped = true
       }
-
+     
       let result = await InsertOrderReviews(userId, reviewInsertData);
      
 
       if (result) {
-        Toast.show({
-          text: 'review added successfully ',
-          type: "success",
-          duration: 3000
-        });
+      
+         if( reviewInsertData.isReviewSkipped!==true){
+          Toast.show({
+            text: 'review added successfully',
+            type: "success",
+            duration: 3000
+          });
+         }
+        
         this.props.popupVisible({
           visible: false,
           reviewUpdated: true

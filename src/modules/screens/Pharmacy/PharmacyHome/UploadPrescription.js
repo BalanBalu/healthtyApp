@@ -323,16 +323,20 @@ class UploadPrescription extends Component {
                             { height: 30 } : { height: 45 }}>
                         <FooterTab>
                             <Row>
-                                <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                    <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })} >
+                                <Col size={5} style={{  backgroundColor: '#fff' }}>
+                                <Row style={{alignItems: 'center', justifyContent: 'center', }}>
+                                    <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}  style={styles.buttonTouch}>
                                         <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '400' }}>Add More </Text>
                                     </TouchableOpacity>
+                                    </Row>
                                 </Col>
 
-                                <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('MedicineCheckout', { prescriptionDetails: prescriptionDetails, isPrescription: true })}>
+                                <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
+                                <Row style={{alignItems: 'center', justifyContent: 'center', }}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('MedicineCheckout', { prescriptionDetails: prescriptionDetails, isPrescription: true })} style={styles.buttonTouch}>
                                         <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Buy Now</Text>
                                     </TouchableOpacity>
+                                    </Row>
                                 </Col>
                             </Row>
                         </FooterTab>
@@ -404,7 +408,15 @@ const styles = StyleSheet.create({
         margin: 5,
         backgroundColor: '#fff'
 
-    }
+    },
+    buttonTouch: {
+        flexDirection: 'row',
+        borderRadius: 10,
+        width:'100%',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+ 
 })
 
 

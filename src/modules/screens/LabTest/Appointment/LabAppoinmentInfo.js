@@ -18,40 +18,58 @@ class LabAppointmentInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data:{},
+      data: {},
       labTestCategoryInfo: '',
       upcomingTap: 0,
       paymentData: {},
       reviewData: [],
       reportData: null,
       isLoading: true,
-      appointmentId: '',
-      modalVisible: false,
-
+      isAddReviewPopVisible: false,
+      isReschedulePopVisible: false,
     }
+    this.appointmentId = '';
   }
 
   async componentDidMount() {
 
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    const upcomingTap = navigation.getParam('selectedIndex');
+    console.log("appointmentData", appointmentData);
     if (appointmentData == undefined) {
       let appointmentId = navigation.getParam('serviceId')
-      await this.setState({ appointmentId })
       await new Promise.all([
         this.getAppointmentById(appointmentId),
         this.getUserReviews(),
+        this.getUserReport(),
+
       ])
     }
     else {
-      await this.setState({ data: appointmentData, upcomingTap, appointmentId: appointmentData._id })
-      this.getLapTestPaymentInfo(appointmentData.payment_id),
-        this.getUserReviews()
-
+      this.initialFunction(appointmentData);
     }
+    this.setState({ isLoading: false });
   }
 
+  initialFunction = async (appointmentData) => {
+    this.appointmentId = appointmentData._id;
+    const upcomingTap = this.props.navigation.getParam('selectedIndex');
+    this.setState({ data: appointmentData, upcomingTap })
+    await new Promise.all([
+      this.getLapTestPaymentInfo(appointmentData.payment_id),
+      this.getUserReviews(),
+      this.getUserReport(),
+
+    ])
+
+    if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
+      this.setState({ isAddReviewPopVisible: true })
+    }
+    const checkProposedNewTime = await AsyncStorage.getItem(this.appointmentId);
+    if (appointmentData.appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime != 'SKIP') {
+      this.setState({ isReschedulePopVisible: true })
+    }
+  }
 
   getAppointmentById = async (appointmentId) => {
 
@@ -59,7 +77,15 @@ class LabAppointmentInfo extends Component {
       let result = await getLabAppointmentById(appointmentId)
       if (result.success) {
         await this.setState({ data: result.data[0], isLoading: true });
-        this.getLapTestPaymentInfo(result.data[0].payment_id)
+        await this.getLapTestPaymentInfo(result.data[0].payment_id)
+
+        if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
+          this.setState({ isAddReviewPopVisible: true })
+        }
+        const checkProposedNewTime = await AsyncStorage.getItem(this.appointmentId);
+        if (appointmentData.appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime != 'SKIP') {
+          this.setState({ isReschedulePopVisible: true })
+        }
       }
     }
     catch (e) {
@@ -82,7 +108,7 @@ class LabAppointmentInfo extends Component {
   getUserReport = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      let resultReport = await getUserRepportDetails('labAppointment', userId, this.state.appointmentId);
+      let resultReport = await getUserRepportDetails('labAppointment', userId, this.appointmentId);
       if (resultReport.success) {
         this.setState({ reportData: resultReport.data });
       }
@@ -94,7 +120,7 @@ class LabAppointmentInfo extends Component {
 
   getUserReviews = async () => {
     try {
-      let reviewResult = await getUserReviews('appointment', this.state.appointmentId)
+      let reviewResult = await getUserReviews('appointment', this.appointmentId)
       if (reviewResult.success) {
         this.setState({ reviewData: reviewResult.data });
       }
@@ -107,24 +133,29 @@ class LabAppointmentInfo extends Component {
 
   navigateAddReview() {
     this.setState({
-      modalVisible: true
+      isAddReviewPopVisible: true
     });
 
   }
 
   async getvisble(val) {
-    this.setState({ modalVisible: false });
+    this.setState({ isAddReviewPopVisible: false });
     if (val.updatedVisible == true) {
       this.getUserReviews()
     }
   }
   async navigateCancelAppoointment() {
     try {
+      await this.setState({ isReschedulePopVisible: false });
       this.props.navigation.navigate('LabCancelAppointment', { appointmentData: this.state.data })
     }
     catch (e) {
       console.log(e)
     }
+  }
+  async skipAction() {
+    await AsyncStorage.setItem(this.appointmentId, 'SKIP');
+    this.setState({ isReschedulePopVisible: false })
   }
 
   async navigateLabConfirmation() {
@@ -132,6 +163,7 @@ class LabAppointmentInfo extends Component {
       const { data } = this.state;
       this.packageDetails = {
         appointment_id: data._id,
+        availability_id: data.availability_id,
         lab_id: data.lab_id,
         lab_test_categories_id: data.lab_test_categories_id,
         lab_test_descriptiion: data.lab_test_descriptiion,
@@ -174,7 +206,9 @@ class LabAppointmentInfo extends Component {
           text: result.message,
           duration: 3000
         })
-
+        if (this.state.isReschedulePopVisible == true) {
+          this.setState({ isReschedulePopVisible: false });
+        }
         this.setState({ data: temp });
       }
     }
@@ -212,7 +246,7 @@ class LabAppointmentInfo extends Component {
                   <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }}>{"Ref no :" + data.token_no}</Text>
                   <Row>
                     <Col style={{ width: '25%', }}>
-                     
+
                       <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(data.labInfo && data.labInfo), title: 'Profile photo' })}>
                         <Thumbnail circle source={renderLabProfileImage(data.labInfo && data.labInfo)} style={{ height: 60, width: 60 }} />
                       </TouchableOpacity>
@@ -254,7 +288,7 @@ class LabAppointmentInfo extends Component {
                             fontSize: 35
                           }} />
 
-                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_IN_PROGRESS" ? 'PAYMENT IN PROGRESS' : data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED' : data.appointment_status}</Text>
+                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_IN_PROGRESS" ? 'PAYMENT IN PROGRESS' : data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED' : data.appointment_status == "PROPOSED_NEW_TIME" ? "PROPOSED NEW TIME" : data.appointment_status}</Text>
                       </View>
                     </Col> : null
                   }
@@ -275,7 +309,7 @@ class LabAppointmentInfo extends Component {
                       </Row>
                     </Col>
                   </Row> :
-                  data.appointment_status == 'PAYMENT_FAILED' ?
+                  data.appointment_status == 'PAYMENT_FAILED' || data.appointment_status == 'PAYMENT_IN_PROGRESS' ?
                     <Row>
                       <Col size={7}>
                         <Row style={{ marginTop: 10 }}>
@@ -290,7 +324,29 @@ class LabAppointmentInfo extends Component {
                         </Row>
                       </Col>
                     </Row> :
-                    null : null}
+                    data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                      <Row>
+                        <Col size={4}>
+                          <Row style={{ marginTop: 10 }}>
+
+                            <Text note style={styles.subText3}>Do you want to accept ?</Text>
+
+                          </Row>
+                        </Col>
+                        <Col size={3}>
+                          <Row style={{ marginTop: 10 }}>
+                            <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A',marginLeft:25 }]} onPress={() => this.updateLabAppointmentStatus(data, 'APPROVED')}>
+                              <Text style={styles.ButtonText}>ACCEPT</Text>
+                            </Button>
+                          </Row>
+                        </Col>
+                        <Col size={3}>
+                          <Row style={{ marginTop: 10 }}>
+                            <Button danger style={[styles.postponeButton, {marginLeft: 20 }]} onPress={() => this.navigateCancelAppoointment()}>
+                              <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
+                            </Button>
+                          </Row>
+                        </Col></Row> : null : null}
 
               </Grid>
 
@@ -312,13 +368,44 @@ class LabAppointmentInfo extends Component {
                   </Row>
                 </Grid>
               </CardItem>
-
             </Card>
 
-
             <Grid>
-
               <View style={{ marginTop: 10 }}>
+                {data.appointment_status === 'CANCELED' || data.appointment_status === 'PROPOSED_NEW_TIME' ? data.status_update_reason != undefined &&
+                  <View style={styles.rowSubText1}>
+                    <Row style={styles.rowSubText}>
+                      <Col style={{ width: '8%', paddingTop: 5 }}>
+                        <Icon name="ios-document" style={{ fontSize: 20, }} />
+                      </Col>
+
+                      <Col style={{ width: '92%', paddingTop: 5 }}>
+                        {data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                          <Text style={styles.innerSubText1}>
+                            {data.status_updated_by.toLowerCase() === 'user' ? 'Proposed a new time by You' : 'Rescheudled a new Time by Lab'}</Text>
+                          : null}
+                        {data.appointment_status == 'CANCELED' ?
+                          <Text style={styles.innerSubText1}>
+                            {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by You' : ' Canceled by Lab'}</Text>
+                          : null}
+                       
+                        <Text note style={styles.subTextInner1}>{data.status_update_reason}</Text>
+                      </Col>
+                    </Row>
+                    {data.previous_data != undefined && data.appointment_status === 'PROPOSED_NEW_TIME' &&
+                      <Row style={styles.rowSubText}>
+                        <Col style={{ width: '8%', paddingTop: 5 }}>
+                          <Icon name="md-clock" style={{ fontSize: 20, }} />
+                        </Col>
+                        <Col style={{ width: '92%', paddingTop: 5 }}>
+                          <Text style={styles.innerSubText1}>Previous Time</Text>
+
+                          <Text note style={styles.subTextInner1}>{formatDate(data.previous_data.startDateTime, 'DD/MM/YYYY')}</Text>
+                          <Text note style={styles.subTextInner1}>{formatDate(data.previous_data.startDateTime, 'hh:mm a')}</Text>
+                        </Col>
+                      </Row>
+                    }
+                  </View> : null}
                 <Row style={styles.rowSubText}>
                   <Col style={{ width: '8%', paddingTop: 5 }}>
                     <Icon name="ios-flask" style={{ fontSize: 18, }} />
@@ -522,19 +609,84 @@ class LabAppointmentInfo extends Component {
                   </Col>
                 </Row>
               </View>
+              {this.state.isVisibleAddReviewPop === true ?
+                <InsertReview
+                  data={this.state.data}
+                  popupVisible={(data) => this.getvisble(data)}
+                /> : null}
               <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
                 <Modal
-                  animationType="slide"
+                  visible={this.state.isReschedulePopVisible}
                   transparent={true}
-                  containerStyle={{ justifyContent: 'flex-end' }}
-                  visible={this.state.modalVisible}
+                  animationType={'fade'}
                 >
-                  <InsertReview
-                    data={this.state.data}
-                    popupVisible={(data) => this.getvisble(data)}
-                  >
-                  </InsertReview>
+                  <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.5)'
+                  }}>
+                    <View style={{
+                      width: '95%',
+                      height: '25%',
+                      backgroundColor: '#fff',
+                      borderColor: 'gray',
+                      borderWidth: 3,
+                      padding: 10,
+                      borderRadius: 10
+                    }}>
+
+                      <CardItem header style={styles.cardItem3}>
+                        <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: -5, color: '#FFF', marginLeft: -5 }}>{'Lab has Rescheduled the appointment !'}</Text></CardItem>
+                      <Row style={{ justifyContent: 'center' }}>
+                        <Col style={{ width: '25%' }}>
+                          <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "DD/MM/YYYY") : null}</Text>
+                        </Col>
+                        <Col style={{ width: '75%' }}>
+                          <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "hh:mm a") : null}</Text>
+                        </Col>
+
+                      </Row>
+                      <Row style={{ justifyContent: 'center' }}>
+                        <Col style={{ width: '30%' }}>
+                          <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "DD/MM/YYYY")}</Text>
+                        </Col>
+                        <Col style={{ width: '70%' }}>
+                          <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "hh:mm a")}</Text>
+                        </Col>
+
+                      </Row>
+                      <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 15 }}>
+                        <Col size={2}></Col>
+                        <Col size={8} >
+                          <Row>
+
+                            <Col size={3} style={{ marginRight: 3 }}>
+                              <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
+                                onPress={() => this.skipAction()} testID='confirmButton'>
+
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
+                              </TouchableOpacity>
+                            </Col>
+                            <Col size={3.4} style={{ marginRight: 3 }} >
+                              <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, }} onPress={() => this.updateLabAppointmentStatus(data, 'APPROVED')} testID='confirmButton'>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}>{'ACCEPT'}</Text>
+                              </TouchableOpacity>
+                            </Col>
+                            <Col size={3.6}>
+                              <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: 'red' }} onPress={() => this.navigateCancelAppoointment()} testID='cancelButton'>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}> {'CANCEL'}</Text>
+                              </TouchableOpacity>
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                    </View>
+
+                  </View>
                 </Modal>
+
               </View>
             </Grid>
           </View>

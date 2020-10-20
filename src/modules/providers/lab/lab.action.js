@@ -19,7 +19,11 @@ export async function getLabTestCateries(coordinates) {
 export const getLapAppointments = async (userId, filters) => {
     try {
         let endPoint = 'lab-test/appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+        if (filters.reviewInfo) {
+            endPoint = endPoint + '&reviewInfo=1'
+        }
         console.log(endPoint);
+
         let response = await getService(endPoint);
         let respData = response.data;
         return respData;
@@ -55,6 +59,22 @@ export async function updateLapAppointment(appointmentId, requestData, isLoading
 
         return respData;
     } catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
+
+export const validateAppointment = async (userId, availabilityId, filters) => {
+    try {
+        let endPoint = 'lab-test/appointments/' + userId + '/' + availabilityId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+        console.log(endPoint);
+        let response = await getService(endPoint);
+        let respData = response.data;
+        return respData;
+    } catch (e) {
+        console.log(e.message);
         return {
             message: 'exception' + e,
             success: false
@@ -135,9 +155,9 @@ export async function insertReviews(userId, insertUserReviews) {
 }
 
 
-export async function getUserReviews(type,Id) {
+export async function getUserReviews(type, Id) {
     try {
-        let endPoint = 'lab-test/user/'+type+'/' + Id;
+        let endPoint = 'lab-test/user/' + type + '/' + Id;
         console.log("endPoint", endPoint)
         let response = await getService(endPoint);
         let respData = response.data;

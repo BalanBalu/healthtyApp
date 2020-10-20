@@ -31,10 +31,11 @@ export class AddToCard extends Component {
         let data = this.props.data;
 
 
-       
+
         if (data.cartData && data.cartData.item) {
             let userAddedMedicineQuantity = data.cartData.item.quantity || 1
             let discountedValue = medicineRateAfterOffer(data);
+           
             let userAddedTotalMedicineAmount = Number(Number(userAddedMedicineQuantity * discountedValue).toFixed(2))
 
             await this.setState({ userAddedMedicineQuantity, userAddedTotalMedicineAmount })
@@ -83,11 +84,11 @@ export class AddToCard extends Component {
             discountedAmount: temp.discount ? medicineDiscountedAmount(temp) : 0,
             productName: getMedicineName(temp),
             productId: String(temp.id),
-            masterProductId:String(temp.masterProductId),
+            masterProductId: String(temp.masterProductId),
             quantity: Number(temp.userAddedMedicineQuantity),
             tax: 0,
             totalPrice: Number(temp.userAddedTotalMedicineAmount),
-            unitPrice: Number(temp.price),
+            unitPrice:temp.price? Number(temp.price):0,
             image: CartMedicineImage(temp.productImages)
         }
         if (temp.maxThreashold) {
@@ -177,7 +178,7 @@ export class AddToCard extends Component {
                                     </Col>
                                     <Col size={6} style={{ marginTop: -5 }}>
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>
-                                        {/* <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, }}>{'By ' + data.pharmacy_name || 'nill'}</Text> */}
+ 
 
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#848484', }}>{'Total - ₹ ' + (this.state.userAddedTotalMedicineAmount)}</Text>
 

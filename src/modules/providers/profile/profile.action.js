@@ -8,9 +8,10 @@ export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR';
 export const AVAILABLE_CREDIT_POINTS = 'PROFILE/AVAILABLE_CREDIT_POINTS';
 export const SET_REFER_CODE = 'PROFILE/SET_REFER_CODE';
 export const SET_USER_DATA_FOR_PREPARATION = 'PROFILE/SET_USER_DATA_FOR_PREPARATION';
+export const SET_CORPORATE_DATA='PROFILE/SET_CORPORATE_DATA'
 
 import { store } from '../../../setup/store'
-import { getService, putService, postService } from '../../../setup/services/httpservices';
+import { getService, putService, postService,smartHealthGetService } from '../../../setup/services/httpservices';
 import { AuthService } from '../../screens/VideoConsulation/services';
 import NotifService from '../../../setup/NotifService';
 import { SET_USER } from '../auth/auth.actions';
@@ -238,8 +239,56 @@ export function setUserDataForPreparation(result) {
 }
 
 
+export async function getCorporateUserFamilyDetails(empCode) {
+  try {
+    let endPoint = 'employee/' + empCode;
+    let response = await smartHealthGetService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function getPolicYDetailsByid(corporateUserId) {
+  try {
+    let endPoint = 'policy/employee/' + corporateUserId;
+    let response = await smartHealthGetService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 
 
+//medicalRecords
+export async function getMedicalRecords(userId,skip,limit) {
+  try {
+    let endPoint = `/appointments/electrical_medical_records/user/${userId}`;
+    
+    if(limit){
+      endPoint=endPoint+`?skip=${skip}&limit=${limit}`
+    }
+    console.log(endPoint)
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
 
-
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}

@@ -9,7 +9,7 @@ import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import StarRating from 'react-native-star-rating';
 import { renderProfileImage } from '../../../common';
-
+import { CURRENT_APP_NAME } from "../../../../setup/config";
 
 class ViewAllReviews extends Component {
     constructor(props) {
@@ -81,7 +81,7 @@ class ViewAllReviews extends Component {
 
                                                 </Col>
                                                 <Col size={4}>
-                                                    <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
+                                                    <Text style={styles.desText}>{item.is_anonymous ? CURRENT_APP_NAME + ' User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
                                                     <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                                         disabled={false}
                                                         maxStars={5}

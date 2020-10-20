@@ -2,15 +2,15 @@ import React from 'react';
 import {
   AsyncStorage, Text, View
 } from 'react-native';
-import { setUserLocally } from '../../modules/providers/auth/auth.actions';
+import { setUserLocally, APP_LOADED } from '../../modules/providers/auth/auth.actions';
 import { store } from '../store';
-
+import SplashScreen from 'react-native-splash-screen';
 class AuthLoadingScreen extends React.Component {
-  constructor(props) {
+   constructor (props) {
     super(props);
     this._bootstrapAsync();
   }
-
+  
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
     const token = await AsyncStorage.getItem('token')
@@ -20,20 +20,24 @@ class AuthLoadingScreen extends React.Component {
         await setUserLocally(token, user);
       }
     }
-
-
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
-
     this.props.navigation.navigate(token ? 'App' : 'App');
-
+    SplashScreen.hide();
+    store.dispatch({
+      type: APP_LOADED
+    })
   };
 
 
 
   render() {
-     return null;
+     return <View 
+        style={{
+         flex: 1,
+         justifyContent: 'center',
+         alignItems: 'center',
+         backgroundColor: '#7357a2'
+       }}>
+     </View>
   }
 }
 

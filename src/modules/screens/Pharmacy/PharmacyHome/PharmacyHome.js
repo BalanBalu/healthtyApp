@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
+import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy, getAvailableStockForListOfProducts,getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable, getselectedCartData } from '../CommomPharmacy';
@@ -35,7 +35,8 @@ class PharmacyHome extends Component {
             pharmacyData: '',
             selectedMedcine: '',
             isBuyNow: false,
-            isAddToCart: false
+            isAddToCart: false,
+            locationCordinatesData:[]
         }
 
     }
@@ -45,6 +46,7 @@ class PharmacyHome extends Component {
         if (locationCordinates === null) {
             CurrentLocation.getCurrentPosition();
         }
+        this.setState({locationCordinatesData:locationCordinates})
 
         this.getMedicineList();
         this.getNearByPharmacyList();
@@ -53,8 +55,13 @@ class PharmacyHome extends Component {
 
     async backNavigation(payload) {
         try{
+            const { bookappointment: { locationCordinates } } = this.props;
             let hascartReload = await AsyncStorage.getItem('hasCartReload')
-  
+     if(this.state.locationCordinatesData[0]!==locationCordinates){
+             this.getNearByPharmacyList();
+         this.setState({locationCordinatesData:locationCordinates})
+
+     }
         if (hascartReload === 'true') {
             await AsyncStorage.removeItem('hasCartReload');
             
@@ -75,7 +82,7 @@ class PharmacyHome extends Component {
         if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
 
             // this.getMedicineList();
-            // this.getNearByPharmacyList();
+         
         }
     }catch(e){
         console.log(e)
@@ -103,6 +110,11 @@ class PharmacyHome extends Component {
                 this.setState({ medicineData: result, medicineDataAvailable: availableResult })
                 console.log("medicineData", this.state.medicineData)
                 if (userId) {
+                    let cartResult=await getCartListByUserId(userId)
+                    if(cartResult){
+                        await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartResult))
+
+                    }
                     let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
                     if (cart.length != 0) {
                         let cartData = JSON.parse(cart)
@@ -360,7 +372,7 @@ class PharmacyHome extends Component {
                                                     </Row>
                                             
                                                     <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                        <Text style={item.discount !== undefined && item.discount !== null ? styles.oldRupees : styles.newRupees}>₹{item.price}</Text>
+                                                        <Text style={item.discount !== undefined && item.discount !== null ? styles.oldRupees : styles.newRupees}>₹{item.price||0}</Text>
                                                         {item.discount !== undefined && item.discount !== null ?
                                                             <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item)}</Text> : null}
                                                     </Row>

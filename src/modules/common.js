@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, Platform } from "react-native";
-import { Icon } from 'native-base';
+import { View, Text, AsyncStorage, Platform, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Icon, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
-import { setI18nConfig  } from '../setup/translator.helper';
+import { setI18nConfig } from '../setup/translator.helper';
 
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
-
+export function hospitalProfileImages(data) {
+    let source = null;
+    if (data && data.profile_image) {
+        source = { uri: data.profile_image[0].imageURL }
+    } else {
+        source = require('../../assets/images/hospitalCommon.jpeg')
+    }
+    return (source)
+}
 export const RenderHospitalAddress = (props) => {
     const { headerStyle, hospotalNameTextStyle, gridStyle, renderHalfAddress } = props
     return (
@@ -120,13 +128,13 @@ export function getDoctorExperience(calulatedExperience) {
         return 'N/A'
     }
     if (calulatedExperience.year == 0) {
-        month = calulatedExperience.month;
+        let month = calulatedExperience.month;
         if (month == 0) {
             return 'N/A'
         }
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-        year = calulatedExperience.year;
+        let year = calulatedExperience.year;
         return `${year} Year` + (year <= 1 ? '' : 's')
     }
 }
@@ -150,6 +158,13 @@ export function getName(data) {
     }
     return name
 
+}
+export function getUserLocation(location) {
+    if (!location.address) return ''
+    if (location.address)
+        return `${location.address.address.no_and_street}, ${location.address.address.city}, ${location.address.address.state}, ${location.address.address.pin_code}`;
+    else
+        return ''
 }
 
 
@@ -229,7 +244,7 @@ export function getAllSpecialist(data) {
 }
 
 export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
-export const relationship = ['Select Retionship', 'Father', 'Mother', 'Husband', 'Wife', 'Son', 'Daughter']
+export const relationship = ['Select Relationship', 'Father', 'Mother', 'Husband', 'Wife', 'Son', 'Daughter']
 
 export const appointmentIssue = [
     { id: 0, value: 'If you see "Your payment was declined due to an issue with your account"' },
@@ -386,6 +401,39 @@ export async function validateFirstNameLastName(text) {
     }
 }
 
+export const RenderFooterLoader = (props) => {
+    return (
+        //Footer View with Load More button
+        <View style={styles.footer}>
+            <TouchableOpacity
+                activeOpacity={0.9}
+                // onPress={this.loadMoreData}
+
+                style={styles.loadMoreBtn}>
+                {props.footerLoading ?
+
+                    <ActivityIndicator color="blue" style={styles.btnText} /> : null}
+
+            </TouchableOpacity>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+
+    footer: {
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
+    btnText: {
+        color: 'blue',
+        fontSize: 15,
+        textAlign: 'center',
+    }
+});
+
 export function getUserGenderAndAge(data) {
     let genderAndAge = '';
     if (data) {
@@ -403,17 +451,91 @@ export function getUserGenderAndAge(data) {
     }
     return genderAndAge;
 }
-export const  onPopupEvent = (eventName, index,navigation) => {
+export const onPopupEvent = (eventName, index, navigation) => {
     if (eventName !== 'itemSelected') return
     if (index === 0) {
         setI18nConfig('en')
     }
-    else if (index === 1)
-    {
+    else if (index === 1) {
         setI18nConfig('ta')
     }
-    else if (index === 2)
-    {
+    else if (index === 2) {
         setI18nConfig('ma')
     }
-  }
+}
+
+export function renderForumImage(data, infoNode) {
+    let source = null;
+    if (data[infoNode] && data[infoNode].profile_image) {
+        source = { uri: data[infoNode].profile_image.imageURL }
+    } else if (data.gender == 'M') {
+        source = require('../../assets/images/profile_male.png')
+    } else if (data.gender == 'F') {
+        source = require('../../assets/images/profile_female.png')
+    } else {
+        source = require('../../assets/images/common_avatar.png')
+    }
+    return (source)
+
+}
+
+export function toastMeassage(text, type, duration) {
+
+    return (Toast.show({
+        text: text,
+        type: type,
+        duration: duration
+    }))
+
+
+}
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    let R = 6371; // Radius of the earth in km
+    let dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    let dLon = deg2rad(lon2 - lon1);
+    let a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ;
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c; // Distance in km
+    return d;
+}
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
+}
+export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
+    console.log(gpsLocation)
+    if (!!gpsLocation && !!pharmacyLocation) {
+        let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
+
+        return result.toFixed(1) + ' Km'
+
+
+    }
+    else {
+        return '0 km '
+    }
+}
+export const getRandomInt = (max = 1000) => {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
+export function getDoctorNameOrHospitalName(data) {
+    let name = 'unKnown'
+    if (data) {
+        if (data.doctorInfo) {
+            if (data.doctorInfo.first_name != undefined || data.doctorInfo.last_name != undefined) {
+                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')} ${data.doctorInfo.first_name || ''} ${data.doctorInfo.last_name || ''}`
+
+            }
+        } else {
+            if (data.booked_for === 'HOSPITAL') {
+                name = getHospitalHeadeName(data.location[0])
+            }
+        }
+    }
+    return name
+
+}
