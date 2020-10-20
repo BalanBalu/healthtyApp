@@ -114,16 +114,16 @@ class Insurance extends Component {
         <View style={styles.loader}>
           <ActivityIndicator
             size="large"
-            color="#775DA3"
+            color="#7E49C3"
             style={{marginTop: 100}}
           />
         </View>
       );
     }
     return (
-      <Container>
-        <Content>
-        <Grid>
+      <Container >
+        <View style={{flex:1}}>
+        <Grid >
           <Row style={styles.SearchRow}>
             <Col size={0.5} style={styles.SearchStyle}>
               <Icon
@@ -148,9 +148,6 @@ class Insurance extends Component {
               <FlatList
                 style={{
                   backgroundColor: '#fff',
-                  height: 600,
-                  elevation: 4,
-                  borderRadius: 8,
                 }}
                 padding={15}
                 data={this.state.dataSource}
@@ -158,12 +155,14 @@ class Insurance extends Component {
                 keyExtractor={item => item._id.toString()}
                 renderItem={item => this.renderItem(item)}
               />
+                </View>
+                </Grid>
+              <View style={{position: 'absolute',left: 0, right: 0, bottom: 25, justifyContent: 'center', alignItems: 'center'}}>
               <Button style={styles.Button} onPress={this.insuranceDetailsUpdated}>
                 <Text style={styles.buttonText}>Send Interests</Text>
               </Button>
-            </View>
-        </Grid>
-        </Content>
+              </View>
+        </View>
       </Container>
     );
   }
@@ -192,7 +191,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginLeft: 5,
     marginRight: 5,
-    borderColor: '#775DA3',
+    borderColor: '#7E49C3',
   },
   cardText1: {
     color: '#000',
@@ -204,22 +203,25 @@ const styles = StyleSheet.create({
     marginTop:5
   },
   cardText3: {
-    color: '#775DA3',
+    color: '#7E49C3',
     fontSize: 14,
     fontWeight: 'bold',
   },
   Button: {
     marginTop: 20,
-    backgroundColor: '#775DA3',
-    marginLeft: 90,
-    marginRight: 90,
-    marginBottom: 30,
+    backgroundColor: '#7E49C3',
+    // marginLeft: 90,
+    // marginRight: 90,
+    // marginBottom: 30,
     borderRadius: 5,
   },
-  buttonText: {textAlign: 'center', marginLeft: 40},
+  buttonText: {
+    textAlign: 'center',
+    fontWeight:'bold',
+    fontSize:14
+  },
   line: {
     marginTop: 8,
-
     height: 0.5,
     width: '100%',
     backgroundColor: 'rgba(255,255,255,0.5)',
