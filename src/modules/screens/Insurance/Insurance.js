@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Row, Grid, Col} from 'react-native-easy-grid';
-import {Container, View, Text, Button, Icon, Input} from 'native-base';
+import {Container, View, Text, Button, Icon, Input,Card, Content,CheckBox} from 'native-base';
+import { getInsuranceData  } from '../../providers/insurance/insurance.action';
 import {
   StyleSheet,
   FlatList,
@@ -14,52 +15,69 @@ class Insurance extends Component {
     super(props);
     this.state = {
       dataSource: [],
-      loading: false,
+      isLoading: false,
+      checked:false
     };
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.getInsuranceData()
   }
 
-  fetchData = () => {
-    this.setState({loading: true});
-    fetch('https://sh-qa-api.aopks.com/enquiry-list')
-      .then(response => response.json())
-      .then(responseJson => {
-        responseJson = responseJson.map(item => {
-          item.isSelect = false;
-          item.selectedClass = styles.list;
-          return item;
-        });
-        this.setState({
-          loading: false,
-          dataSource: responseJson,
-        });
+
+  getInsuranceData = async () => {
+    try {
+      this.setState({
+        isLoading: true
       })
-      .catch(error => {
-        this.setState({loading: false});
-      });
-  };
+      let result = await getInsuranceData();
+      if (result) {
+         console.log(result)
+        this.setState({
+          isLoading:false,
+          dataSource: result,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  }
 
+  insuranceDetailsUpdated = async () => {
+    
+   
+  }
   FlatListItemSeparator = () => <View style={styles.line} />;
-
   renderItem = data => (
     <TouchableOpacity
-      style={[styles.list, data.item.selectedClass]}
+      
       onPress={() => this.selectItem(data)}>
-      <Text style={styles.cardText1}> {data.item.title}</Text>
-      <Text style={styles.cardText2}> {data.item.description}</Text>
+        <Card style={[styles.list, data.item.selectedClass]}>
+          <Row>
+            <Col size={9}>
+            <Text style={styles.cardText1}>{data.item.title}</Text>
+            <Text style={styles.cardText2}>{data.item.description}</Text>
+            </Col>
+            <Col size={1}>
+            <CheckBox style={{ borderRadius: 5 }}
+                checked={this.state.checked}
+                onPress={() => this.selectItem(data)}
+              />
+            </Col>
+          </Row>
       <Text style={styles.cardText3}>KNOW MORE</Text>
+      </Card>
     </TouchableOpacity>
   );
 
   selectItem = data => {
     data.item.isSelect = !data.item.isSelect;
     data.item.selectedClass = data.item.isSelect
-      ? styles.selected
+      ? styles.selected 
       : styles.list;
-
+      this.setState({checked:!this.state.checked})
     const index = this.state.dataSource.findIndex(
       item => data.item.id === item.id,
     );
@@ -72,7 +90,7 @@ class Insurance extends Component {
   };
 
   render() {
-    if (this.state.loading) {
+    if (this.state.isLoading) {
       return (
         <View style={styles.loader}>
           <ActivityIndicator
@@ -83,9 +101,9 @@ class Insurance extends Component {
         </View>
       );
     }
-
     return (
       <Container>
+        <Content>
         <Grid>
           <Row style={styles.SearchRow}>
             <Col size={0.5} style={styles.SearchStyle}>
@@ -101,19 +119,16 @@ class Insurance extends Component {
                 }}
                 placeholder="Search Insurance Policies..."
                 style={styles.inputfield}
-                placeholderTextColor="#e2e2e2"
+                placeholderTextColor="#909090"
                 editable={true}
                 underlineColorAndroid="transparent"
               />
             </Col>
           </Row>
-          <Row>
-            <View>
+            <View style={{ marginTop: 20,}}>
               <FlatList
                 style={{
                   backgroundColor: '#fff',
-                  marginTop: 20,
-
                   height: 600,
                   elevation: 4,
                   borderRadius: 8,
@@ -124,12 +139,12 @@ class Insurance extends Component {
                 keyExtractor={item => item._id.toString()}
                 renderItem={item => this.renderItem(item)}
               />
-              <Button style={styles.Button}>
+              <Button style={styles.Button} onPress={this.insuranceDetailsUpdated}>
                 <Text style={styles.buttonText}>Send Interests</Text>
               </Button>
             </View>
-          </Row>
         </Grid>
+        </Content>
       </Container>
     );
   }
@@ -139,41 +154,38 @@ const styles = StyleSheet.create({
   list: {
     elevation: 8,
     marginTop: 4,
-    height: 200,
+    height: 120,
     marginBottom: 10,
-    width: 360,
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
-    marginLeft: 15,
-    marginRight: 15,
+    marginLeft:5,
+    marginRight:5
   },
-
   selected: {
     elevation: 8,
     marginTop: 10,
-    height: 200,
+    height: 120,
     marginBottom: 10,
-    width: 360,
     backgroundColor: '#fff',
     borderRadius: 10,
-    borderWidth: 2,
+    borderWidth: 20,
     padding: 15,
-    marginLeft: 15,
-    marginRight: 15,
+    marginLeft: 5,
+    marginRight: 5,
     borderColor: '#775DA3',
   },
   cardText1: {
-    color: 'black',
-    fontSize: 20,
+    color: '#000',
+    fontSize: 18,
   },
   cardText2: {
     color: 'grey',
     fontSize: 14,
+    marginTop:5
   },
   cardText3: {
     color: '#775DA3',
-    marginTop: 105,
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -204,7 +216,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   insuranceCard: {
-    backgroundColor: 'black',
+    backgroundColor: '#000',
     borderColor: '#AFAFAF',
   },
   searchBar: {

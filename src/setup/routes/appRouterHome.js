@@ -1198,6 +1198,11 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'E Card',
             routeName: drawerNavigatorRoutes['E Card'].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'Insurance',
+            routeName: drawerNavigatorRoutes['Insurance'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           }]
       },
       {
