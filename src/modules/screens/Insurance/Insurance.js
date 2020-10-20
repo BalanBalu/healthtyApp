@@ -102,9 +102,9 @@ class Insurance extends Component {
       );
     }
     return (
-      <Container>
-        <Content>
-        <Grid>
+      <Container >
+        <View style={{flex:1}}>
+        <Grid >
           <Row style={styles.SearchRow}>
             <Col size={0.5} style={styles.SearchStyle}>
               <Icon
@@ -129,9 +129,6 @@ class Insurance extends Component {
               <FlatList
                 style={{
                   backgroundColor: '#fff',
-                  height: 600,
-                  elevation: 4,
-                  borderRadius: 8,
                 }}
                 padding={15}
                 data={this.state.dataSource}
@@ -139,15 +136,14 @@ class Insurance extends Component {
                 keyExtractor={item => item._id.toString()}
                 renderItem={item => this.renderItem(item)}
               />
-              <Row style={{justifyContent:'center',alignItems:'center'}}>
+                </View>
+                </Grid>
+              <View style={{position: 'absolute',left: 0, right: 0, bottom: 25, justifyContent: 'center', alignItems: 'center'}}>
               <Button style={styles.Button} onPress={this.insuranceDetailsUpdated}>
                 <Text style={styles.buttonText}>Send Interests</Text>
               </Button>
-              </Row>
-            
-            </View>
-        </Grid>
-        </Content>
+              </View>
+        </View>
       </Container>
     );
   }
