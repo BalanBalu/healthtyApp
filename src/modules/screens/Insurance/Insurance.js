@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Row, Grid, Col} from 'react-native-easy-grid';
 import {Container, View, Text, Button, Icon, Input,Card, Content,CheckBox} from 'native-base';
-import { getInsuranceData  } from '../../providers/insurance/insurance.action';
+import { getInsuranceData, sendInsuranceInterests  } from '../../providers/insurance/insurance.action';
 import {
   StyleSheet,
   FlatList,
@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { toastMeassage } from '../../common';
 
 class Insurance extends Component {
   constructor(props) {
@@ -16,7 +18,6 @@ class Insurance extends Component {
     this.state = {
       dataSource: [],
       isLoading: false,
-      checked:false
     };
   }
 
@@ -35,7 +36,7 @@ class Insurance extends Component {
          console.log(result)
         this.setState({
           isLoading:false,
-          dataSource: result,
+          dataSource: result
         });
       }
     } catch (e) {
@@ -46,13 +47,32 @@ class Insurance extends Component {
   }
 
   insuranceDetailsUpdated = async () => {
-    
-   
+    const { dataSource } = this.state; 
+    let corporateData = this.props.profile.corporateData;
+    const loggedInEmployeeData = corporateData.find(ele => ele.relationship === 'EMPLOYEE')
+    let atLeastSelectedOne = false;
+    dataSource.forEach(async (insuranceData) => {
+        if (insuranceData.isSelect) {
+            atLeastSelectedOne = true;
+            const data = {
+              "contactNo": loggedInEmployeeData.mobile,
+              "firstName": loggedInEmployeeData.firstName,
+              "lastName": loggedInEmployeeData.lastName,
+              "email": loggedInEmployeeData.emailId,
+              "status": insuranceData.status,
+              "createdBy": loggedInEmployeeData.firstName,
+              "updatedBy": loggedInEmployeeData.firstName,
+              "detail": insuranceData.title
+            }
+           const result = await sendInsuranceInterests(data);
+        }
+    });
+    toastMeassage(atLeastSelectedOne ? 'Your Request has sent Successfully, our Support team would touch with you shortly' : 'Please select at least one to continue',atLeastSelectedOne ? 'success' : 'warning', 3000)
   }
   FlatListItemSeparator = () => <View style={styles.line} />;
+  
   renderItem = data => (
     <TouchableOpacity
-      
       onPress={() => this.selectItem(data)}>
         <Card style={[styles.list, data.item.selectedClass]}>
           <Row>
@@ -62,31 +82,30 @@ class Insurance extends Component {
             </Col>
             <Col size={1}>
             <CheckBox style={{ borderRadius: 5 }}
-                checked={this.state.checked}
+                checked={data.item.isSelect}
                 onPress={() => this.selectItem(data)}
               />
             </Col>
           </Row>
-      <Text style={styles.cardText3}>KNOW MORE</Text>
+          {/* <Text style={styles.cardText3}>KNOW MORE</Text> */}
       </Card>
     </TouchableOpacity>
   );
 
   selectItem = data => {
+    console.log(data);
     data.item.isSelect = !data.item.isSelect;
     data.item.selectedClass = data.item.isSelect
       ? styles.selected 
       : styles.list;
-      this.setState({checked:!this.state.checked})
-    const index = this.state.dataSource.findIndex(
-      item => data.item.id === item.id,
-    );
-
-    this.state.dataSource[index] = data.item;
-
-    this.setState({
-      dataSource: this.state.dataSource,
-    });
+      
+      const index = this.state.dataSource.findIndex(
+        item => data.item._id === item._id,
+      );
+      this.state.dataSource[index] = data.item;
+      this.setState({
+        dataSource: this.state.dataSource
+      });
   };
 
   render() {
@@ -233,6 +252,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
   },
 });
-export default Insurance;
+
+function homeState(state) {
+  return {
+      profile: state.profile,
+  }
+}
+export default connect(homeState)(Insurance)
 
 // ***

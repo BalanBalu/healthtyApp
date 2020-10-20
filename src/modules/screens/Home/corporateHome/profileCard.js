@@ -7,10 +7,10 @@ import{getMemberNameWithStatus} from './corporateFunction'
 
 
 export const CorporateProfileCard = (props) => {
-  const {data}=props
+  const { data } = props;
   return (
     <View>
-      {data!==null&&
+      {data !== null &&
       <Grid >
         <Card style={{ width: '100%' }}>
           <Row style={{ padding: 10 }}>
@@ -32,7 +32,7 @@ export const CorporateProfileCard = (props) => {
   <Text style={{ fontFamily: 'OpenSans', fontSize: 13 }}>Policy Number : <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: '200', color: '#B0B0B0' }}>{data.policyNo}</Text></Text>
             </Col>
           </Row>
-          <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', padding: 5, backgroundColor: '#E4D1FE', marginTop: 10 }}>Last Visited On 04th Sept,2020 At 04:36 PM </Text>
+        
         </Card>
       </Grid>}
     </View>
