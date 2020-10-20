@@ -7,14 +7,12 @@ import { TransactionHistoryCard } from './transactionHistoryCard'
 import {CoverageCard} from './converageCard'
 export const CorporateHome = (props) => {
     const { corporateData, navigation} = props;
-  
+
     return (
         <View style={{ padding: 10 }}>
             <CorporateProfileCard
-             data={corporateData
-                &&corporateData.find(ele => ele.relationship === 'EMPLOYEE')||null 
-            }
-             />
+                data={corporateData && corporateData.find(ele => ele.relationship === 'EMPLOYEE') || null }
+            />
             <ProfileFamilyCard 
             navigation={navigation}
             />

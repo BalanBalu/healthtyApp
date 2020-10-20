@@ -11,7 +11,7 @@ export function getMemberNameWithStatus(data) {
                 status = 'Mrs'
             }
         }
-        name = `${status + (data.firstName || '') + (' ' + data.middleName || '') + (' ' + data.lastName || '')}`
+        name = `${status} ${data.firstName || ''}${data.middleName ? ' ' + data.middleName + ' ' : ''} ${data.lastName || ''}`
     }
 
     return name
