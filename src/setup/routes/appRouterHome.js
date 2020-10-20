@@ -71,6 +71,7 @@ import { Badge, onPopupEvent } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import LocationDetail from '../../modules/screens/Home/LocationDetail';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
+import Insurance from '../../modules/screens/Insurance/Insurance';
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
 import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
@@ -354,6 +355,7 @@ const HomeStack = createStackNavigator({
       title: 'Notification',
     })
   },
+  
   BloodDonerFilters: {
     screen: BloodDonerFilters,
     navigationOptions: ({ navigation }) => ({
@@ -1094,6 +1096,12 @@ const HomeStack = createStackNavigator({
       title: 'Lab BookAppointment'
     }
   },
+  Insurance: {
+    screen: Insurance,
+    navigationOptions: {
+      title: 'Insurance'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -1149,6 +1157,10 @@ const drawerNavigatorRoutes = {
     screen: BloodDonersList,
     routeName: 'Blood Donors'
   },
+  "Insurance": {
+    screen: Insurance,
+    routeName: 'Insurance'
+  },
   "Public Forum": {
     screen: PublicForum,
     routeName: 'Public Forum'
@@ -1185,6 +1197,11 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           {
             name: 'E Card',
             routeName: drawerNavigatorRoutes['E Card'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'Insurance',
+            routeName: drawerNavigatorRoutes['Insurance'].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           }]
       },
