@@ -10,6 +10,7 @@ export default class RenderHospitalInfo extends Component {
     constructor(props) {
         super(props)
     }
+
     render() {
         const { item, index, navigation, hospitalInfo: { isLoggedIn, userLocDetails, patientFavoriteListCountOfHospitalAdminIds, hospitalFavoriteListCountOfHospitalAdminIds }, addToFavoritesList, openDateTimePicker } = this.props;
         return (
@@ -103,7 +104,9 @@ export default class RenderHospitalInfo extends Component {
                                                 onPressFavoriteIcon={() => addToFavoritesList(item.hospital_admin_id)}
                                             />
                                         </TouchableOpacity>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 11, marginLeft: 25, }}>{getKiloMeterCalculation(item.location && item.location.coordinates, userLocDetails)}</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 11, marginLeft: 25, }}>
+                                            {item.distInKiloMeter ? item.distInKiloMeter.toFixed(1) + ' Km' : '0 km '}
+                                        </Text>
                                     </Col>
                                 </Row>
                             </Col>
