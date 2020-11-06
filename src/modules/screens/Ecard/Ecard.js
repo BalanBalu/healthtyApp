@@ -33,20 +33,24 @@ class Ecard extends PureComponent {
     }
 
     async open(data) {
+      
         let requestObject = {
-            MemberID: data.MemberId,
-            TPAId: data.MemberId,
-            EmployeeNumber: data.EmployeeCode,
-            PolicyNumber: data.PolicyNumber
+            payer_code: data.payerCode,
+            member_id: data.memberId,
+            policy_no: data.policyNo,
+            first_name: data.firstName
         }
+       
         let result = await getEcardLink(requestObject)
-
-        if (!!result && result.status === 'True') {
-            let temp = JSON.parse(result.result)
-            Linking.openURL(temp[0].ECardUrl)
-        } else {
-            toastMeassage('sorry unable  download', 'danger', 3000)
-        }
+        if (result) {
+            Linking.openURL(result)
+        }else {
+                 toastMeassage('sorry unable  download', 'danger', 3000)
+            }
+        // if (!!result && result.status === 'True') {
+        //     let temp = JSON.parse(result.result)
+          
+        // } 
 
     }
     getInsuranceAddress(data) {

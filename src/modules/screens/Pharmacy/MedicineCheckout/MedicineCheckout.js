@@ -758,29 +758,30 @@ class MedicineCheckout extends Component {
                     </Modal>
 
                 </Content>
-                <Footer style={
-                    Platform.OS === "ios" ?
-                        { height: 40 } : { height: 45 }}>
-                    <FooterTab>
-                        <Row>
-                            <Col size={5} style={{ backgroundColor: '#fff' }}>
-                                <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
-                                    <TouchableOpacity style={styles.buttonTouch} onPress={() => this.processToPayLater()} >
-                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 0 ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
-                                    </TouchableOpacity>
-                                </Row>
-                            </Col>
-                            {isPrescription === false && medicineTotalAmountwithDeliveryChage ?
-                                <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
+                {isPrescription === false && this.state.medicineDetails.length === 0 ?null:
+                    <Footer style={
+                        Platform.OS === "ios" ?
+                            { height: 40 } : { height: 45 }}>
+                        <FooterTab>
+                            <Row>
+                                <Col size={5} style={{ backgroundColor: '#fff' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
-                                        <TouchableOpacity style={styles.buttonTouch} onPress={() => this.onProceedToPayment(true)}>
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
+                                        <TouchableOpacity style={styles.buttonTouch} onPress={() => this.processToPayLater()} >
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 0 ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
                                         </TouchableOpacity>
                                     </Row>
-                                </Col> : null}
-                        </Row>
-                    </FooterTab>
-                </Footer>
+                                </Col>
+                                {isPrescription === false && medicineTotalAmountwithDeliveryChage ?
+                                    <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
+                                        <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
+                                            <TouchableOpacity style={styles.buttonTouch} onPress={() => this.onProceedToPayment(true)}>
+                                                <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
+                                            </TouchableOpacity>
+                                        </Row>
+                                    </Col> : null}
+                            </Row>
+                        </FooterTab>
+                    </Footer> }
 
 
             </Container >
