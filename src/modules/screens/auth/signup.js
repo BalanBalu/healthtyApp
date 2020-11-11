@@ -13,8 +13,8 @@ import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import { SHOW_MOBILE_AND_EMAIL_ENTRIES, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../../../setup/config';
-import AntDesign from 'react-native-vector-icons/AntDesign'
-console.disableYellowBox = true
+import AntDesign from 'react-native-vector-icons/AntDesign';
+console.disableYellowBox = true;
 class Signup extends Component {
     constructor(props) {
         super(props)
@@ -37,17 +37,16 @@ class Signup extends Component {
         this.isShowEmailEntryView = true;
         this.isEnabledToSendOtpPage = false;
         this.emailEditable = true
-        console.log('constructor====>');
-        this.getMobileAndEmailOtpServicesDetails();
     }
-
+    async UNSAFE_componentWillMount() {
+        await this.getMobileAndEmailOtpServicesDetails();
+    }
     getMobileAndEmailOtpServicesDetails = async () => {
         try {
-
-
+            this.setState({ isLoading: true })
             const productConfigTypes = `${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY}`;
             const productConfigResp = await ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes);
-            console.log('productConfigResp==>', productConfigResp);
+            // console.log('productConfigResp==>', productConfigResp);
             if (productConfigResp.success) {
                 const productConfigData = productConfigResp.data;
                 productConfigData.map(item => {
@@ -61,8 +60,8 @@ class Signup extends Component {
                         this.isEnabledToSendOtpPage = true
                     }
                 });
-                this.setState({ refresh: true })
             }
+
         } catch (Ex) {
             console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
             return {
@@ -71,6 +70,9 @@ class Signup extends Component {
                 error: Ex,
                 message: `Exception while getting on Favorites for Patient : ${Ex}`
             }
+        }
+        finally {
+            this.setState({ isLoading: false })
         }
     }
     toggleRadio = async (radioSelect, genderSelect) => {
@@ -172,7 +174,6 @@ class Signup extends Component {
         let corporateData = this.props.navigation.getParam('corporateData') || null
         await this.setState({ corporateData })
         if (corporateData !== null) {
-            console.log('corporateData', corporateData)
             this.isEnabledToSendOtpPage = false;
             this.isShowEmailEntryView = true;
             if (corporateData.emailId) {
@@ -182,7 +183,7 @@ class Signup extends Component {
         }
     }
     render() {
-        const { user: { isLoading } } = this.props;
+        const { isLoading } = this.state;
         const { mobile_no, email, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible, corporateData } = this.state;
         return (
             <Container style={styles.container}>

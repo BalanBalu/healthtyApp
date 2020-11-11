@@ -3,6 +3,7 @@ import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Le
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from '../CommonAll/styles'
 import {
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
@@ -274,8 +275,8 @@ class DoctorList extends Component {
                     <Row style={{ height: 35, alignItems: 'center' }}>
                         <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(doctorInfoListAndSlotsData)}>
                             <Col size={2.0} >
-                                <Icon name={this.state.isRenderedTopRatedDocList ? 'ios-arrow-up-circle'
-                                    : 'ios-arrow-dropdown-circle'} style={{ color: 'gray', fontSize: 24 }} />
+                                <MaterialIcons name={this.state.isRenderedTopRatedDocList ? 'reply'
+                                    : 'keyboard-arrow-down'} style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
