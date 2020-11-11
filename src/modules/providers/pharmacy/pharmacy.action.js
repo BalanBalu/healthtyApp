@@ -35,9 +35,9 @@ export async function searchRecentItemsByPharmacy(limit) {
 }
 export async function getMedicinesSearchList(keyword, pagination, isLoading = true) {
   try {
-    console.log(typeof keyword)
+
     let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + pagination + '&c=' + 10;
-   
+
 
     let response = await inventoryGetService(endPoint);
 
@@ -105,7 +105,7 @@ export async function getMedicineOrderList(userId, pagination, count) {
 
     let endPoint = `transaction/order/user/${userId}?p=${pagination}&c=${10}`;
     let response = await inventoryGetService(endPoint);
-    console.log('req========================')
+
     let respData = response.data.content
 
     return respData;
@@ -123,13 +123,12 @@ export async function getAvailableStockForListOfProducts(productIds) {
 
     let endPoint = `/products/available-stocks?ids=${productIds}`;
     let response = await inventoryGetService(endPoint);
-    console.log('req========================')
-    console.log(response)
+
     let respData = response.data
 
     return respData;
   } catch (e) {
-    console.log('hi======')
+
     console.log(e)
     return {
       message: 'exception' + e,
@@ -146,9 +145,9 @@ export async function getMedicineOrderDetails(orderId) {
   try {
 
     let endPoint = `/transaction/order-number/${orderId}`;
- 
+
     let response = await inventoryGetService(endPoint);
- 
+
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -163,9 +162,9 @@ export async function getMedicineOrderDetailsByOrderId(orderId) {
   try {
 
     let endPoint = `/transaction/order/${orderId}`;
- 
+
     let response = await inventoryGetService(endPoint);
- 
+
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -181,9 +180,9 @@ export async function getOrderTracking(orderNumber) {
   try {
 
     let endPoint = `/transaction/track/${orderNumber}`;
- 
+
     let response = await inventoryGetService(endPoint);
- 
+
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -232,9 +231,10 @@ export async function deletePrescriptionByUserId(userId) {
 export async function getMedicinesSearchListByPharmacyId(pharmacyId, pagination, isLoading = true) {
   try {
     let endPoint = `/products/pharmacy/${pharmacyId}?p=${pagination}&c=${10}`;
+    console.log(endPoint)
     let response = await inventoryGetService(endPoint);
     let respData = response.data.content;
-    
+
     return respData;
   } catch (e) {
     return {
@@ -595,7 +595,7 @@ export async function getCartCount(userId) {
 }
 
 
-export async function getproductDetailsByPharmacyIds(pharmacyIds,masterProductIds) {
+export async function getproductDetailsByPharmacyIds(pharmacyIds, masterProductIds) {
   try {
 
 
@@ -610,7 +610,7 @@ export async function getproductDetailsByPharmacyIds(pharmacyIds,masterProductId
     }
   }
 }
-export async function getproductDetailsByPharmacyId(pharmacyId,masterProductIds) {
+export async function getproductDetailsByPharmacyId(pharmacyId, masterProductIds) {
   try {
 
 
