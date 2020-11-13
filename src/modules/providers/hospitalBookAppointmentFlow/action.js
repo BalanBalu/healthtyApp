@@ -22,6 +22,22 @@ export async function serviceOfSearchByHospitalDetails(reqData, skipCount, limit
 
 
 
+export async function validateAppointment(reqData) {
+  try {
+    const endPoint = `/appointment/hospital/validate`;
+    let response = await postService(endPoint, reqData);
+    // console.log('response===>', JSON.stringify(response))
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    console.log(e);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 export const serviceOfGetFavoriteListCount4PatientService = async (userId) => {
   try {
     const endPoint = 'user/wishList/hospital/' + userId;

@@ -4,9 +4,9 @@ import { Row, Col, Grid } from 'react-native-easy-grid';
 import { StyleSheet, View, TouchableOpacity, FlatList, ActivityIndicator, Image, AsyncStorage, TextInput, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { connect } from 'react-redux'
-import { serviceOfSearchByHospitalDetails, serviceOfGetFavoriteListCount4PatientService, addFavoritesToHospitalByUserService, serviceOfGetHospitalFavoriteListCount4Pat, SET_HOSPITAL_FAVORITE_COUNTS_OF_HOSPITAL_ADMIN_IDS } from '../../../providers/hospitalBookAppointmentFlow/action'
+import { serviceOfSearchByHospitalDetails, serviceOfGetFavoriteListCount4PatientService, addFavoritesToHospitalByUserService, serviceOfGetHospitalFavoriteListCount4Pat, SET_HOSPITAL_FAVORITE_COUNTS_OF_HOSPITAL_ADMIN_IDS,validateAppointment } from '../../../providers/hospitalBookAppointmentFlow/action'
 import { MAX_DISTANCE_TO_COVER_HOSPITALS } from '../../../../setup/config'
-import { addTimeUnit, formatDate } from '../../../../setup/helpers';
+import { addTimeUnit, formatDate,getMoment } from '../../../../setup/helpers';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import RenderHospitalInfo from './RenderHospitalInfo';
 import { Loader } from '../../../../components/ContentLoader';
@@ -147,11 +147,43 @@ class HospitalList extends Component {
             });
             return false;
         }
+
+
+
         const { haspitalValue, index } = this.selectedHospitalsForBooking;
         this.setState({ expandData: index })
+       
+        let userId = await AsyncStorage.getItem('userId');
+        let reqData = {
+            user_id: userId,
+            hospital_admin_id: haspitalValue.hospital_admin_id,
+            startDate:date,
+            endDate: addTimeUnit(date, 30, 'minutes')
+        }
+        let response = await validateAppointment(reqData);
+        console.log('====================================')
+console.log(JSON.stringify(response))
+        if (response.success == false) {
+            this.timeText = formatDate(response.data[0].appointment_starttime, 'hh:mm A')
+            Alert.alert(
+                "Appointment Warning",
+                `You already booked for the same hospital on ${this.timeText}, You want to book the appointment to continue`,
+                [
+                    { text: "Cancel" },
+                    {
+                        text: "Continue", onPress: () => this.proceedToAppointment(date),
+                    }
+                ],
+            );
+            return
+        } else {
+            this.proceedToAppointment(date)
+        }
+    }
+    proceedToAppointment(date) {
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         let category_id = this.props.navigation.getParam('category_id') || null
-       
+        const { haspitalValue, index } = this.selectedHospitalsForBooking;
         let slotData = {
             fee: 200,
             slotStartDateAndTime: date,
@@ -160,13 +192,14 @@ class HospitalList extends Component {
             booked_for: 'HOSPITAL',
             location: {
                 location: haspitalValue.location,
-                hospitalAdminId:haspitalValue.hospital_admin_id
+                hospitalAdminId: haspitalValue.hospital_admin_id
             }
         }
         let data = haspitalValue
         data.slotData = slotData
         data.slotData.location.type = 'Hospital';
         this.props.navigation.navigate('Payment Review', { fromNavigation: 'HOSPITAL', resultconfirmSlotDetails: data })
+
     }
     navigateToLocationMap() {
         Alert.alert(

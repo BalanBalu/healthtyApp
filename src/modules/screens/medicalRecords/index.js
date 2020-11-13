@@ -42,8 +42,8 @@ class MedicineRecords extends PureComponent {
         let result = await getMedicalRecords(userId, this.skip, this.limit)
 
         if (result.success) {
-            console.log('result.dataresult.dataresult.dataresult.dataresult.dataresult.data')
-            console.log(JSON.stringify(result.data))
+            
+     
             data = this.state.data.concat(result.data)
 
         }
