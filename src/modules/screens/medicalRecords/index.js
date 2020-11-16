@@ -9,7 +9,7 @@ import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ZoomImageViewer from '../../elements/ImageViewer/ZoomImageViewer';
 import { getMedicalRecords } from '../../providers/profile/profile.action';
-import {RenderListNotFound} from '../CommonAll/components'
+import { RenderListNotFound } from '../CommonAll/components'
 import Spinner from "../../../components/Spinner";
 import { RenderFooterLoader } from '../../common';
 class MedicineRecords extends PureComponent {
@@ -22,12 +22,12 @@ class MedicineRecords extends PureComponent {
             data: [],
             fromNavigation: null,
             selectedEmrData: [],
-            selectedIndex:-1
+            selectedIndex: -1
 
 
         }
-        this.skip=0
-        this.limit=10
+        this.skip = 0
+        this.limit = 10
         this.onEndReachedCalledDuringMomentum = true;
     }
     componentDidMount() {
@@ -39,17 +39,19 @@ class MedicineRecords extends PureComponent {
         this.setState({ isLoading: true })
         let userId = await AsyncStorage.getItem('userId');
         let data = this.state.data
-        let result = await getMedicalRecords(userId,this.skip,this.limit)
-       
+        let result = await getMedicalRecords(userId, this.skip, this.limit)
+
         if (result.success) {
+            console.log('result.dataresult.dataresult.dataresult.dataresult.dataresult.data')
+            console.log(JSON.stringify(result.data))
             data = this.state.data.concat(result.data)
 
         }
-   
+
         this.setState({ data: data, isLoading: false })
     }
     headerComponent() {
-        const {data}=this.state
+        const { data } = this.state
         return (
             <View style={{ padding: 10, }}>
                 <Row style={styles.SearchRow}>
@@ -71,16 +73,16 @@ class MedicineRecords extends PureComponent {
                     </Col>
 
                 </Row>
-                {data.length===0?
-             
-                <RenderListNotFound
-                text={'No medical Records found'}
-                />
-                :null}
+                {data.length === 0 ?
+
+                    <RenderListNotFound
+                        text={'No medical Records found'}
+                    />
+                    : null}
                 <Row style={{ marginTop: 15 }}>
                     <Right>
                         <TouchableOpacity style={{ backgroundColor: '#7E49C3', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }} onPress={() => {
-                            this.props.navigation.navigate('UploadEmr',{prevState:this.props.navigation.state})
+                            this.props.navigation.navigate('UploadEmr', { prevState: this.props.navigation.state })
                         }}>
                             <Text style={{ color: '#fff', fontSize: 15 }} >Upload</Text>
                         </TouchableOpacity>
@@ -102,44 +104,44 @@ class MedicineRecords extends PureComponent {
 
         }
 
-        await this.setState({ selectedEmrData: temp,selectedIndex:index })
+        await this.setState({ selectedEmrData: temp, selectedIndex: index })
 
     }
-    async proceed(){
-        this.props.navigation.navigate('EmrInfo',{emrData:this.state.selectedEmrData})
+    async proceed() {
+        this.props.navigation.navigate('EmrInfo', { emrData: this.state.selectedEmrData })
     }
     pageRefresh = async (navigationData) => {
-       
-                //    if(navigationData.params.hasEmrReload){
-                    this.skip=0
-                    this.limit=10
-                    this.setState({data:[]})
-                   this.getMedicalRecords()
 
-                //    }
-        
+        //    if(navigationData.params.hasEmrReload){
+        this.skip = 0
+        this.limit = 10
+        this.setState({ data: [] })
+        this.getMedicalRecords()
+
+        //    }
+
 
     }
     handleLoadMore = async () => {
-      
-		if (!this.onEndReachedCalledDuringMomentum) {
-			console.log('On Hanndle loading ' + this.state.skip);
+
+        if (!this.onEndReachedCalledDuringMomentum) {
+            console.log('On Hanndle loading ' + this.state.skip);
 
             this.onEndReachedCalledDuringMomentum = true;
-            this.skip=this.skip + this.limit
-			await this.setState({  footerLoading: true });
+            this.skip = this.skip + this.limit
+            await this.setState({ footerLoading: true });
 
-		await this.getMedicalRecords()
+            await this.getMedicalRecords()
 
 
-			this.setState({ footerLoading: false })
+            this.setState({ footerLoading: false })
 
-		}
-	}
+        }
+    }
 
 
     render() {
-        const { imageZoomViewer, data, fromNavigation, selectedEmrData,selectedIndex,isLoading } = this.state;
+        const { imageZoomViewer, data, fromNavigation, selectedEmrData, selectedIndex, isLoading } = this.state;
         const images = [{ image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'MRI Scan' },
         { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'CT Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'ECG Scan' },
         { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'X ray Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'MRI Scan' }, { image: require('../../../../assets/images/uploadedPrescription.jpg'), description: 'ECG Scan' },
@@ -150,16 +152,16 @@ class MedicineRecords extends PureComponent {
                 <NavigationEvents
                     onWillFocus={payload => { this.pageRefresh(payload) }}
                 />
-             
+
                 <Spinner
-								color="blue"
-								style={[styles.containers, styles.horizontal]}
-								visible={isLoading}
-								size={"large"}
-								overlayColor="none"
-								cancelable={false}
-							/>
-              
+                    color="blue"
+                    style={[styles.containers, styles.horizontal]}
+                    visible={isLoading}
+                    size={"large"}
+                    overlayColor="none"
+                    cancelable={false}
+                />
+
                 <View style={{ flex: 1 }}>
 
                     <FlatList horizontal={false} numColumns={2}
@@ -183,33 +185,35 @@ class MedicineRecords extends PureComponent {
                             //          }
                             //     })  })
                             //    // this.setState({ imageZoomViewer : true })
-                            // }}> 
-                            <Card style={{ borderRadius: 5, overflow: 'hidden' }}>
-                                <Row style={styles.rowStyle}>
-                                    <Image
-                                        source={{uri:item.emr_prescription_image.imageURL}}
-                                        style={{
-                                            width: '100%', height: '100%', alignItems: 'center'
-                                        }}
-                                    />
-                                </Row>
-                                <Row style={styles.secondRow}>
-                                    <Col style={{ width: '80%' }}>
-                                        <Text style={styles.mainText}>{item.emr_discription}</Text>
-                                    </Col>
-                                    {fromNavigation === 'APPOINTMENT_PREPARE' ?
-                                        <Col style={{ width: '20%' }}>
-                                            <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
-                                                <CheckBox style={{ borderRadius: 5 }}
-                                                    checked={selectedEmrData.includes(item._id)===true}
-                                                    onPress={() => this.SelectedItem(index, item)}
-                                                />
-                                            </View>
-                                        </Col> : null}
+                            // }}>
+                            item.emr_prescription_image ?
+                                <Card style={{ borderRadius: 5, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={{ uri: item.emr_prescription_image.imageURL }}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '80%' }}>
+                                            <Text style={styles.mainText}>{item.emr_discription}</Text>
+                                        </Col>
+                                        {fromNavigation === 'APPOINTMENT_PREPARE' ?
+                                            <Col style={{ width: '20%' }}>
+                                                <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
+                                                    <CheckBox style={{ borderRadius: 5 }}
+                                                        checked={selectedEmrData.includes(item._id) === true}
+                                                        onPress={() => this.SelectedItem(index, item)}
+                                                    />
+                                                </View>
+                                            </Col> : null}
 
-                                </Row>
+                                    </Row>
 
-                            </Card>
+                                </Card> : null
+
 
                             // </TouchableOpacity>
 
@@ -230,7 +234,7 @@ class MedicineRecords extends PureComponent {
                                 <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity style={styles.buttonTouch} onPress={() => this.proceed()} >
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans',color: '#fff', fontWeight: '400'}}> continue</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}> continue</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
@@ -239,10 +243,10 @@ class MedicineRecords extends PureComponent {
 
                     </Footer>
                         : null}
-                             <RenderFooterLoader footerLoading={this.state.footerLoading} />
+                    <RenderFooterLoader footerLoading={this.state.footerLoading} />
 
                 </View>
-    
+
                 {/* </Content> */}
             </Container>
 

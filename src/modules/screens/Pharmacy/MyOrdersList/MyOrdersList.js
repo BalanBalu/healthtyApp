@@ -226,7 +226,7 @@ class MyOrdersList extends Component {
                                                 </Row>
                                                 <Row style={styles.Row}>
 
-                                                    <Text style={[styles.orderprice1, { color: statusBar[item.status].color }]}>{statusBar[item.status].status}</Text>
+                                                    <Text style={[styles.orderprice1, { color:statusBar[item.status]? statusBar[item.status].color:'red' }]}>{statusBar[item.status]?statusBar[item.status].status:item.status}</Text>
                                                 </Row>
 
                                             </View>

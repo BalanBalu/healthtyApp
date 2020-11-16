@@ -92,7 +92,6 @@ class MedicineSearchList extends Component {
         try {
             let medicineResultData = await getMedicinesSearchListByPharmacyId(pharmacyId, this.state.pagination);
 
-
             if (medicineResultData) {
                 let data = this.state.data.concat(medicineResultData);
                 let medicineDataAvailable = this.state.medicineDataAvailable
@@ -198,7 +197,7 @@ class MedicineSearchList extends Component {
 
         const navigationByPharmacySelect = this.props.navigation.getParam('byPharmacy') || false;
         let pagination = this.state.pagination + 1;
-        this.setState({ pagination })
+       await  this.setState({ pagination })
         if (navigationByPharmacySelect === true) {
 
             let pharmacyInfo = this.props.navigation.getParam('pharmacyInfo') || null;

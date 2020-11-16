@@ -304,8 +304,8 @@ class MyAppoinmentList extends Component {
 
 		}
 
-		this.setState({
-			...this.state,
+		await this.setState({
+			
 			data,
 			isLoading: false
 
