@@ -192,6 +192,9 @@ class DoctorList extends Component {
                 debugger
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorId.values()) || [];
                 debugger
+                if (docListData.length <= 3) {
+                    this.isEnabledLoadMoreData = false;
+                }
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
