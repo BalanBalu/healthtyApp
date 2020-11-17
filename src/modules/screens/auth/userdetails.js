@@ -26,20 +26,20 @@ class UserDetails extends Component {
             isLoading: false,
 
         };
-        this.dobIsEditable=false
+        this.dobIsEditable = false
     }
 
     componentDidMount() {
         let corporateData = this.props.navigation.getParam('corporateData') || null;
-            
+
         if (corporateData !== null) {
             this.setState({
                 firstName: corporateData.firstName,
                 lastName: corporateData.lastName,
-                dob: new Date(new Date(corporateData.dob).getFullYear(),new Date(corporateData.dob).getMonth(),new Date(corporateData.dob).getDate())
+                dob: new Date(new Date(corporateData.dob).getFullYear(), new Date(corporateData.dob).getMonth(), new Date(corporateData.dob).getDate())
             })
-            if(corporateData.dob){
-                this.dobIsEditable=true
+            if (corporateData.dob) {
+                this.dobIsEditable = true
             }
 
         }
@@ -64,45 +64,53 @@ class UserDetails extends Component {
         const { firstName, lastName, dob, selectedBloodGroup, isBloodDonor, errorMsg } = this.state;
         const userId = await AsyncStorage.getItem('userId')
         try {
-            if (errorMsg === '') {
-                let requestData = {
-                    first_name: firstName,
-                    last_name: lastName,
-                    dob: dob,
-                    blood_group: selectedBloodGroup,
-                    is_blood_donor: isBloodDonor
-                };
-                // this.setState({ isLoading: false })
-                let updateResponse = await userFiledsUpdate(userId, requestData);
-                if (updateResponse.success) {
-                    Toast.show({
-                        text: 'Your Profile has been completed',
-                        type: "success",
-                        duration: 3000
-                    });
-                    if (isBloodDonor == true) {
-                        this.props.navigation.navigate('MapBox')
-                    }
-                    else {
-                        logout();
-                        this.props.navigation.navigate('login');
-                    }
+            if (!firstName) {
+                this.setState({ errorMsg: 'Please enter your First Name ' });
+                return false;
+            }
+            if (!lastName) {
+                this.setState({ errorMsg: 'Please enter your Last Name ' });
+                return false;
+            }
+            if (!dob) {
+                this.setState({ errorMsg: 'Kindly choose your DOB' });
+                return false
+            }
+            if (!selectedBloodGroup || selectedBloodGroup === 'Select Blood Group') {
+                this.setState({ errorMsg: 'Kindly select your Blood group' });
+                return false
+            }
+            this.setState({ errorMsg: '' });
+            let requestData = {
+                first_name: firstName,
+                last_name: lastName,
+                dob: dob,
+                blood_group: selectedBloodGroup,
+                is_blood_donor: isBloodDonor
+            };
+            let updateResponse = await userFiledsUpdate(userId, requestData);
+            if (updateResponse.success) {
+                Toast.show({
+                    text: 'Your Profile has been completed',
+                    type: "success",
+                    duration: 3000
+                });
+                if (isBloodDonor == true) {
+                    this.props.navigation.navigate('MapBox')
                 }
                 else {
-                    this.setState({ errorMsg: updateResponse.message });
+                    logout();
+                    this.props.navigation.navigate('login');
                 }
-            } else {
-                this.setState({ errorMsg: "Entered Data is not Valid. Kindly review them." });
             }
-            setTimeout(async () => {   // set Time out for Disable the Error Messages
-                await this.setState({ errorMsg: '' });
-            }, 3000);
+            else {
+                this.setState({ errorMsg: updateResponse.message });
+            }
         } catch (e) {
             Toast.show({
                 text: 'Exception Occurred' + e,
                 duration: 3000
             });
-            console.log(e);
         }
     }
 
@@ -156,12 +164,12 @@ class UserDetails extends Component {
                                                     maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                                     animationType={"fade"}
                                                     androidMode={"default"}
-                                                    placeHolderText={dob===''?"Date Of Birth":formatDate(dob,'DD-MM-YYYY')}
+                                                    placeHolderText={dob === '' ? "Date Of Birth" : formatDate(dob, 'DD-MM-YYYY')}
                                                     textStyle={{ color: "#5A5A5A" }}
                                                     value={dob}
                                                     placeHolderTextStyle={{ color: "#5A5A5A" }}
                                                     onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
-                                                    disabled={ this.dobIsEditable}
+                                                    disabled={this.dobIsEditable}
                                                 />
                                             </Row>
                                             <View style={{ marginLeft: 2 }}>
@@ -203,13 +211,13 @@ class UserDetails extends Component {
                                             </Row>
 
                                             <View>
-                                                <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}> {errorMsg}</Text>
+                                                <Text style={{ marginTop: 7, marginLeft: 30, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}> {errorMsg}</Text>
                                                 <Spinner color='blue'
                                                     visible={isLoading}
                                                 />
                                             </View>
 
-                                            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                            <View style={{ marginTop: 5, alignItems: 'center', justifyContent: 'center' }}>
                                                 <TouchableOpacity style={styles.UserButton1} onPress={() => this.updateUserDetails()}>
                                                     <Text style={styles.ButtonText}>Submit</Text>
                                                 </TouchableOpacity>
