@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { debounce, validateEmailAddress, acceptNumbersOnly } from '../../common';
 import Spinner from '../../../components/Spinner';
 import OTPTextInput from 'react-native-otp-textinput';
+import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from "../../../setup/config";
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
@@ -129,6 +130,31 @@ class Forgotpassword extends Component {
                         onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
                     />
                 </Item>
+                {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
+                    <Row style={{ marginTop: 10 }}>
+                        <Col size={3}>
+                            <Row style={{ alignItems: 'center' }}>
+                                <Radio
+                                    standardStyle={true}
+                                    selected={isCorporateUserSelected === false}
+                                    onPress={() => this.setState({ isCorporateUserSelected: false })}
+                                />
+                                <Text style={styles.firstCheckBox}>User</Text>
+                            </Row>
+                        </Col>
+                        <Col size={3}>
+                            <Row style={{ alignItems: 'center' }}>
+                                <Radio
+                                    standardStyle={true}
+                                    selected={isCorporateUserSelected === true}
+                                    onPress={() => this.setState({ isCorporateUserSelected: true })}
+                                />
+                                <Text style={styles.firstCheckBox}>Corporate</Text>
+                            </Row>
+                        </Col>
+                        <Col size={4}>
+                        </Col>
+                    </Row> : null}
                 {isLoading ?
                     <Spinner
                         visible={isLoading}
@@ -165,14 +191,14 @@ class Forgotpassword extends Component {
                         inputCount={6}
                         tintColor={'#775DA3'}
                         inputCellLength={1}
-                        // containerStyle={{
-                        //     marginLeft: -40
-                        // }}
-                        // textInputStyle={{
-                        //     // borderRadius: 10,
-                        //     borderWidth: 4,
-                        //     fontWeight: 'bold'
-                        // }}
+                        containerStyle={{
+                            marginLeft: -40,
+                        }}
+                        textInputStyle={{
+                            // borderRadius: 10,
+                            // borderWidth: 4,
+                            fontWeight: 'bold'
+                        }}
                         handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
                     />
                 </Item>

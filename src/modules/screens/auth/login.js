@@ -137,6 +137,32 @@ class Login extends Component {
                         : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
                       }
                     </Item>
+                    {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
+                      <Row style={{ marginTop: 10 }}>
+                        <Col size={3}>
+                          <Row style={{ alignItems: 'center' }}>
+                            <Radio
+                              standardStyle={true}
+                              selected={isSelected === 'user'}
+                              onPress={() => this.setState({ isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
+                            />
+                            <Text style={styles.firstCheckBox}>User</Text>
+                          </Row>
+                        </Col>
+                        <Col size={3}>
+                          <Row style={{ alignItems: 'center' }}>
+                            <Radio
+                              standardStyle={true}
+                              selected={isSelected === 'corporate_user'}
+                              onPress={() => this.setState({ isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                            />
+                            <Text style={styles.firstCheckBox}>Corporate</Text>
+                          </Row>
+                        </Col>
+                        <Col size={4}>
+                        </Col>
+                      </Row>
+                      : null}
                     <Row style={{ marginTop: 20, }}>
                       <Right>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
