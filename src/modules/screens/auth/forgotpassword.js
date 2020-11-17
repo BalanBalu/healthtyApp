@@ -174,29 +174,16 @@ class Forgotpassword extends Component {
             <View>
                 <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>OTP</Label>
                 <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                    {/* <Input placeholder="Enter your OTP" style={styles.authTransparentLabel}
-                        keyboardType="number-pad"
-                        autoFocus={true}
-                        autoCapitalize='none'
-                        value={otpCode}
-                        onChangeText={otpCode => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
-                        maxLength={6}
-                        returnKeyType={'next'}
-                        onSubmitEditing={() => { this.enterOtpTextInput._root.focus(); }}
-                        blurOnSubmit={false}
-                    /> */}
                     <OTPTextInput
-
                         ref={e => (this.otpInput = e)}
                         inputCount={6}
                         tintColor={'#775DA3'}
                         inputCellLength={1}
                         containerStyle={{
-                            marginLeft: -40,
+                            marginLeft: -1,
                         }}
                         textInputStyle={{
-                            // borderRadius: 10,
-                            // borderWidth: 4,
+                            width: 38,
                             fontWeight: 'bold'
                         }}
                         handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
