@@ -203,6 +203,7 @@ class DoctorList extends Component {
                     }
                     else {
                         this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
+
                     }
                 })
                 await Promise.all([
@@ -217,7 +218,6 @@ class DoctorList extends Component {
                 if (!activeSponsor && docListData.length <= 3) {
                     this.isEnabledLoadMoreData = false;
                 }
-                this.baCupOfDocList4TopRatedPurpose = doctorInfoList;
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
@@ -228,6 +228,7 @@ class DoctorList extends Component {
                         data: doctorInfoList
                     })
                 }
+                this.setDocList4TopRatedPurpose();
             }
             else {
                 if (!activeSponsor) this.isEnabledLoadMoreData = false;
@@ -261,7 +262,11 @@ class DoctorList extends Component {
             }
         }
     }
-
+    setDocList4TopRatedPurpose() {
+        let docList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
+        docList.sort(sortByPrimeDoctors);  // Sort by active Sponsors list in TOP
+        this.baCupOfDocList4TopRatedPurpose = docList;
+    }
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, } } = this.props;
         const { isLoading, isLoadingMoreDocList } = this.state;
@@ -530,6 +535,9 @@ class DoctorList extends Component {
                 if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
                     return ratingB - ratingA;
                 }
+                if (currentDoctorOrder === 'ASC') {
+                    return ratingB - ratingA;
+                }
             });
             store.dispatch({
                 type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
@@ -537,7 +545,6 @@ class DoctorList extends Component {
             });
         }
         else {
-            this.baCupOfDocList4TopRatedPurpose.sort(sortByPrimeDoctors);  // Sort by active Sponsors list in TOP
             store.dispatch({
                 type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                 data: this.baCupOfDocList4TopRatedPurpose
