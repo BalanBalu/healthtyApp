@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { debounce, validateEmailAddress, acceptNumbersOnly } from '../../common';
 import Spinner from '../../../components/Spinner';
 import OTPTextInput from 'react-native-otp-textinput';
+import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from "../../../setup/config";
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
@@ -40,14 +41,14 @@ class Forgotpassword extends Component {
     generateOtpCode = async () => {
         const { userEntry } = this.state;
         try {
-            
+
             await this.setState({ errorMessage: '', isLoading: true })
             let reqData = {
                 userEntry: userEntry,
                 type: 'user'
             };
-            if(this.state.isCorporateUserSelected) {
-                  reqData.is_corporate_user = true  
+            if (this.state.isCorporateUserSelected) {
+                reqData.is_corporate_user = true
             }
             let reqOtpResponse = await generateOTP(reqData)
             console.log('reqOtpResponse::::' + JSON.stringify(reqOtpResponse))
@@ -129,31 +130,31 @@ class Forgotpassword extends Component {
                         onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
                     />
                 </Item>
-                <Row style={{marginTop: 10 }}>
-                      <Col size={3}>
-                        <Row style={{ alignItems: 'center' }}>
-                          <Radio
-                            standardStyle={true}
-                            selected={isCorporateUserSelected === false }
-                            onPress={() => this.setState({ isCorporateUserSelected: false })}
-                          />
-                          <Text style={styles.firstCheckBox}>User</Text>
-                        </Row>
-                      </Col>
-                      <Col size={3}>
-                        <Row style={{ alignItems: 'center' }}>
-                          <Radio
-                            standardStyle={true}
-                            selected={isCorporateUserSelected === true }
-                            onPress={() => this.setState({ isCorporateUserSelected: true })}
-                          />
-                          <Text style={styles.firstCheckBox}>Corporate</Text>
-                        </Row>
-                      </Col>
-                      <Col size={4}>
-                      </Col>
-                </Row>
-                   
+                {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
+                    <Row style={{ marginTop: 10 }}>
+                        <Col size={3}>
+                            <Row style={{ alignItems: 'center' }}>
+                                <Radio
+                                    standardStyle={true}
+                                    selected={isCorporateUserSelected === false}
+                                    onPress={() => this.setState({ isCorporateUserSelected: false })}
+                                />
+                                <Text style={styles.firstCheckBox}>User</Text>
+                            </Row>
+                        </Col>
+                        <Col size={3}>
+                            <Row style={{ alignItems: 'center' }}>
+                                <Radio
+                                    standardStyle={true}
+                                    selected={isCorporateUserSelected === true}
+                                    onPress={() => this.setState({ isCorporateUserSelected: true })}
+                                />
+                                <Text style={styles.firstCheckBox}>Corporate</Text>
+                            </Row>
+                        </Col>
+                        <Col size={4}>
+                        </Col>
+                    </Row> : null}
                 {isLoading ?
                     <Spinner
                         visible={isLoading}
@@ -173,23 +174,18 @@ class Forgotpassword extends Component {
             <View>
                 <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>OTP</Label>
                 <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                    {/* <Input placeholder="Enter your OTP" style={styles.authTransparentLabel}
-                        keyboardType="number-pad"
-                        autoFocus={true}
-                        autoCapitalize='none'
-                        value={otpCode}
-                        onChangeText={otpCode => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
-                        maxLength={6}
-                        returnKeyType={'next'}
-                        onSubmitEditing={() => { this.enterOtpTextInput._root.focus(); }}
-                        blurOnSubmit={false}
-                    /> */}
                     <OTPTextInput
-                    
                         ref={e => (this.otpInput = e)}
                         inputCount={6}
                         tintColor={'#775DA3'}
                         inputCellLength={1}
+                        containerStyle={{
+                            marginLeft: -1,
+                        }}
+                        textInputStyle={{
+                            width: 38,
+                            fontWeight: 'bold'
+                        }}
                         handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
                     />
                 </Item>

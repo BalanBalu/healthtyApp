@@ -3,6 +3,7 @@ import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Le
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from '../CommonAll/styles'
 import {
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
@@ -38,6 +39,7 @@ class DoctorList extends Component {
     selectedSlotIndex4DocIdHostpitalIdToStoreInObj = {};
     selectedSlotItem4DocIdHostpitalIdToStoreInObj = {};
     totalSearchedDoctorIdsArray = [];
+    hospitalAndDoctorIdsArray = [];  // for remove avoid the sponsors doctors with hospital list duplication
     constructor(props) {
         super(props)
         this.state = {
@@ -52,13 +54,14 @@ class DoctorList extends Component {
             isLoading: true,
             isLoadingDatesAndSlots: false,
             isLoadingMoreDocList: false,
-            doctorInfoListAndSlotsData1: [],
+            isRenderedTopRatedDocList: false
         }
         this.conditionFromFilterPage = false,
             this.isEnabledLoadMoreData = true;
         this.selectedDataFromFilterPage = null;
         this.incrementPaginationCount = 0;
         this.onEndReachedIsTriggedFromRenderDateList = false;
+        this.baCupOfDocList4TopRatedPurpose = [];
     }
     navigateToFilters() {
         this.props.navigation.navigate("Filter Doctor Info", {
@@ -169,7 +172,7 @@ class DoctorList extends Component {
             else {
                 type = 'search';
             }
-            console.log('type=====>', type);
+            // console.log('type=====>', type);
             // console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
             const docListResponse = await searchByDocDetailsService(type, activeSponsor, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
             // console.log('docListResponse====>', JSON.stringify(docListResponse));
@@ -190,11 +193,18 @@ class DoctorList extends Component {
                         this.totalSearchedDoctorIdsArray.push(item.doctor_id)
                     }
                     if (activeSponsor && item.is_doctor_sponsor) {
+                        this.hospitalAndDoctorIdsArray.push(String(doctorIdHostpitalId));
                         if (!activeSponsorDocIdsArry.includes(item.doctor_id)) {
                             activeSponsorDocIdsArry.push(item.doctor_id)
                         }
                     }
-                    this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
+                    if (!activeSponsor && this.hospitalAndDoctorIdsArray && this.hospitalAndDoctorIdsArray.includes(String(doctorIdHostpitalId))) {
+                        console.log('Removing duplicate Doctor with hosital  item ====>')
+                    }
+                    else {
+                        this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
+
+                    }
                 })
                 await Promise.all([
                     ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -204,10 +214,10 @@ class DoctorList extends Component {
                     this.updateDocSponsorViewersCountByUser(activeSponsorDocIdsArry);
                 }
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
-                // console.log('doctorInfoList=-==>', activeSponsor, doctorInfoList);
-
                 doctorInfoList.sort(sortByPrimeDoctors);  // Sort by active Sponsors list in TOP
-
+                if (!activeSponsor && docListData.length <= 3) {
+                    this.isEnabledLoadMoreData = false;
+                }
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
@@ -218,6 +228,7 @@ class DoctorList extends Component {
                         data: doctorInfoList
                     })
                 }
+                this.setDocList4TopRatedPurpose();
             }
             else {
                 if (!activeSponsor) this.isEnabledLoadMoreData = false;
@@ -251,7 +262,11 @@ class DoctorList extends Component {
             }
         }
     }
-
+    setDocList4TopRatedPurpose() {
+        let docList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
+        docList.sort(sortByPrimeDoctors);  // Sort by active Sponsors list in TOP
+        this.baCupOfDocList4TopRatedPurpose = docList;
+    }
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, } } = this.props;
         const { isLoading, isLoadingMoreDocList } = this.state;
@@ -265,7 +280,8 @@ class DoctorList extends Component {
                     <Row style={{ height: 35, alignItems: 'center' }}>
                         <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(doctorInfoListAndSlotsData)}>
                             <Col size={2.0} >
-                                <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
+                                <MaterialIcons name={this.state.isRenderedTopRatedDocList ? 'reply'
+                                    : 'keyboard-arrow-down'} style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
@@ -316,7 +332,6 @@ class DoctorList extends Component {
 
     loadMoreData = async () => {
         try {
-            // console.log('calling On End reached=====>');
             this.setState({ isLoadingMoreDocList: true });
             await this.searchByDoctorDetails(false);
         } catch (error) {
@@ -507,34 +522,35 @@ class DoctorList extends Component {
 
     sortByTopRatings(doctorDataList) {
         const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
-        const doctorDataListBySort = doctorDataList.sort(function (a, b) {
-            let ratingA = 0;
-            let ratingB = 0;
-            if (docReviewListCountOfDoctorIDs[a.doctor_id]) {
-                ratingA = docReviewListCountOfDoctorIDs[a.doctor_id].average_rating || 0
-            };
-            if (docReviewListCountOfDoctorIDs[b.doctor_id]) {
-                ratingB = docReviewListCountOfDoctorIDs[b.doctor_id].average_rating || 0
-            }
-            if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
-                return ratingB - ratingA;
-            }
-            if (currentDoctorOrder === 'ASC') {
-                return ratingB - ratingA;
-            } else if (currentDoctorOrder === 'DESC') {
-                return ratingA - ratingB;
-            }
-        });
-        store.dispatch({
-            type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-            data: doctorDataListBySort
-        });
-        if (currentDoctorOrder === 'ASC') {
-            currentDoctorOrder = 'DESC';
-        } else if (currentDoctorOrder === 'DESC') {
-            currentDoctorOrder = 'ASC';
+        if (!this.state.isRenderedTopRatedDocList) {
+            const doctorDataListBySort = doctorDataList.sort(function (a, b) {
+                let ratingA = 0;
+                let ratingB = 0;
+                if (docReviewListCountOfDoctorIDs[a.doctor_id]) {
+                    ratingA = docReviewListCountOfDoctorIDs[a.doctor_id].average_rating || 0
+                };
+                if (docReviewListCountOfDoctorIDs[b.doctor_id]) {
+                    ratingB = docReviewListCountOfDoctorIDs[b.doctor_id].average_rating || 0
+                }
+                if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
+                    return ratingB - ratingA;
+                }
+                if (currentDoctorOrder === 'ASC') {
+                    return ratingB - ratingA;
+                }
+            });
+            store.dispatch({
+                type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+                data: doctorDataListBySort
+            });
         }
-        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+        else {
+            store.dispatch({
+                type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+                data: this.baCupOfDocList4TopRatedPurpose
+            });
+        }
+        this.setState({ isRenderedTopRatedDocList: !this.state.isRenderedTopRatedDocList });
     }
 
     renderDoctorInformationCard(item) {

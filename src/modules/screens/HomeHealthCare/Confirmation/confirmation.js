@@ -128,7 +128,7 @@ class HomeTestConfirmation extends Component {
         bookSlotDetails.patient_data = patientData;
         const finalAmountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
         const amount = finalAmountBySelectedPersons;
-        debugger
+        bookSlotDetails.slotData.fee = finalAmountBySelectedPersons;
         this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount })
     }
     async onPressPayAtHome() {
