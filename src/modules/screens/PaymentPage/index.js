@@ -266,6 +266,7 @@ class PaymentPage extends Component {
         console.log(response);
         if (response.success) {
             if (serviceType === SERVICE_TYPES.APPOINTMENT) {
+                const fromNavigation=this.props.navigation.getParam('fromNavigation') ||null
                 const { creditPointsApplied } = this.state;
                 if (creditPointsApplied === true) {
                     setTimeout(() => {
@@ -275,7 +276,8 @@ class PaymentPage extends Component {
                 this.props.navigation.navigate('paymentsuccess', {
                     successBookSlotDetails: bookSlotDetails,
                     paymentMethod: paymentMethodTitleCase,
-                    tokenNo: response.tokenNo
+                    tokenNo: response.tokenNo,
+                    fromNavigation:fromNavigation
                 });
             } else if (serviceType === SERVICE_TYPES.CHAT) {
                 this.props.navigation.navigate('SuccessChat');
