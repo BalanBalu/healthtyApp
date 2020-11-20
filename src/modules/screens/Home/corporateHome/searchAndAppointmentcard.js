@@ -10,15 +10,15 @@ export const SearchAndAppointmentCard = (props) => {
   const navigationTo = (data) => {
     const { navigation } = props;
     switch (data) {
-      case 'My Appointments':
-        return navigation("My Appointments");
+      case 'Doctor List':
+        return navigation("Doctor List");
       case 'Medicines':
         return navigation("Medicines");
-      case 'My Home Healthcare Appointments':
-        return navigation("My Home Healthcare Appointments");
+      case 'Home Health Care':
+        return navigation("Home Health Care");
       case 'HospitalList':
         return navigation("HospitalList");
-      case 'Lab Test':
+      case 'LabBookAppointment':
         return navigation("Lab Test");
       case 'Video and Chat Service':
         return navigation("Video and Chat Service");
@@ -29,7 +29,7 @@ export const SearchAndAppointmentCard = (props) => {
 
     }
   }
-  const data = [{ category_name: 'Consultation', image: require('../../../../../assets/images/corporateHomePageIcons/consultation.png'), navigate: 'My Appointments' }, { category_name: 'Pharmacy', image: require('../../../../../assets/images/corporateHomePageIcons/pharmacy_a.png'), navigate: 'Medicines' }, { category_name: 'Home test', image: require('../../../../../assets/images/corporateHomePageIcons/home-test.png'), navigate: 'My Home Healthcare Appointments' }, { category_name: 'Hospital', image: require('../../../../../assets/images/corporateHomePageIcons/hospital_a.png'), navigate: 'HospitalList' }, { category_name: 'Lab test', image: require('../../../../../assets/images/corporateHomePageIcons/Lab-test.png'), navigate: 'Lab Test' },
+  const data = [{ category_name: 'Consultation', image: require('../../../../../assets/images/corporateHomePageIcons/consultation.png'), navigate: 'Doctor List' }, { category_name: 'Pharmacy', image: require('../../../../../assets/images/corporateHomePageIcons/pharmacy_a.png'), navigate: 'Medicines' }, { category_name: 'Home test', image: require('../../../../../assets/images/corporateHomePageIcons/home-test.png'), navigate: 'Home Health Care' }, { category_name: 'Hospital', image: require('../../../../../assets/images/corporateHomePageIcons/hospital_a.png'), navigate: 'HospitalList' }, { category_name: 'Lab test', image: require('../../../../../assets/images/corporateHomePageIcons/Lab-test.png'), navigate: 'Lab Test' },
   { category_name: 'Reminder', image: require('../../../../../assets/images/corporateHomePageIcons/reminder.png'), navigate: 'Reminder' }, { category_name: 'Blood Donors', image: require('../../../../../assets/images/corporateHomePageIcons/blood_donor.png'), navigate: 'Blood Donors' }, { category_name: 'My Chats', image: require('../../../../../assets/images/corporateHomePageIcons/chat.png'), navigate: 'Video and Chat Service' }, { category_name: 'Video Consult', image: require('../../../../../assets/images/corporateHomePageIcons/video-consultation.png'), navigate: 'Video and Chat Service' },]
   return (
     <View>
