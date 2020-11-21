@@ -36,7 +36,8 @@ class Signup extends Component {
         this.isShowMobileEntryView = true;
         this.isShowEmailEntryView = true;
         this.isEnabledToSendOtpPage = false;
-        this.emailEditable = true
+        this.emailEditable = true;
+        this.spinnerBackgroundColor = 'gray';
     }
     async UNSAFE_componentWillMount() {
         await this.getMobileAndEmailOtpServicesDetails();
@@ -85,11 +86,11 @@ class Signup extends Component {
 
         let corporateData = this.props.navigation.getParam('corporateData') || null
         try {
+            this.spinnerBackgroundColor = 'rgba(0, 0, 0, 0.25)';
             if (checked === false) {
                 this.setState({ errorMsg: 'Please agree to the terms and conditions to continue', isModalVisible: true });
                 return false;
             }
-
             if (password.length < 6) {
                 this.setState({ errorMsg: "Password is required Min 6 Characters", isModalVisible: true });
                 return false;
@@ -331,6 +332,7 @@ class Signup extends Component {
                                             </TouchableOpacity>
                                         </Item>
                                         <Spinner color='blue'
+                                            overlayColor={this.spinnerBackgroundColor}
                                             visible={isLoading}
                                         />
                                         <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>

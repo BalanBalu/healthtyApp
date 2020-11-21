@@ -35,8 +35,7 @@ export default class RenderDoctorInfo extends Component {
                         </Row>
                         <Row style={{ marginLeft: 55, }}>
                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, }}>
-                                {`${item.hospitalInfo && item.hospitalInfo.hospital.name} - ${
-                                    item.hospitalInfo && item.hospitalInfo.hospital.location && item.hospitalInfo.hospital.location.address.city}`}
+                                {`${item.hospitalInfo && item.hospitalInfo.hospital.name} - ${item.hospitalInfo && item.hospitalInfo.hospital.location && item.hospitalInfo.hospital.location.address.city}`}
                             </Text>
                         </Row>
                     </Col>
@@ -50,15 +49,14 @@ export default class RenderDoctorInfo extends Component {
                         </Row>
                         {item.is_doctor_sponsor == true ?
                             <Row>
-                                <View style={{ position: 'absolute', marginLeft: 15, alignSelf: 'center' }}>
+                                <View style={{ marginLeft: 15, alignSelf: 'center', marginTop: 3 }}>
                                     <Image square source={vipLogo} style={{ height: 30, width: 30 }} />
                                 </View>
                             </Row>
-                            :
-                            <Row>
-                                <Text style={{ fontFamily: 'OpenSans', marginTop: 20, fontSize: 12, marginLeft: 15 }}>{getDistance(item.hospitalInfo.distInKiloMeter)}</Text>
-                            </Row>
-                        }
+                            : null}
+                        <Row>
+                            <Text style={{ fontFamily: 'OpenSans', marginTop: 10, fontSize: 12, marginLeft: 15 }}>{getDistance(item.hospitalInfo.distInKiloMeter)}</Text>
+                        </Row>
                     </Col>
                 </Row>
                 <Row>
