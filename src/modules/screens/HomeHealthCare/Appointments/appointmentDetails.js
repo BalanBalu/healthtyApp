@@ -278,6 +278,11 @@ class AppointmentDetails extends PureComponent {
                                                 <Text style={styles.subText2}>-</Text>
                                                 <Text note style={styles.subText2}>{getDoctorExperience(doctorData.calulatedExperience)}</Text>
                                             </Row>
+                                            <Row style={{ marginTop: 10, marginLeft: 5 }} >
+                                                <Text style={styles.subText1}>Consultation Fee</Text>
+                                                <Text style={styles.subText2}>-</Text>
+                                                <Text note style={styles.subText2}>{"Rs." + (paymentDetailsObj.amount ? paymentDetailsObj.amount : 0) + "/-"}</Text>
+                                            </Row>
                                             <Row style={{ marginTop: 10, marginLeft: 5 }}>
                                                 <Text style={styles.subText1}>Payment Method</Text>
                                                 <Text style={styles.subText2}>-</Text>
