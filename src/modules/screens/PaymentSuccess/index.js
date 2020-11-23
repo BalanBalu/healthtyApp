@@ -70,7 +70,7 @@ class PaymentSuccess extends Component {
                                 <Icon name="checkmark-circle" style={styles.circleIcon} />
                             </View>
                             <Text style={styles.successHeading}>SUCCESS</Text>
-                            <Text style={styles.subText}>Thank You For Choosing Our Service And Trust Our Doctor To Take Care Your Health</Text>
+                            <Text style={styles.subText}>Thank you for choosing our service ! We are grateful for the pleasure of serving you!</Text>
 
                             <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.5, marginTop: 10, marginLeft: 10, padding: 15, marginRight: 10 }}>
                                 <Col style={{ width: '25%', }}>

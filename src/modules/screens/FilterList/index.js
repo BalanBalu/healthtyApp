@@ -331,7 +331,7 @@ class Filters extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>{translate("Choose Spoken Languages")}</Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Languages Known")}</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -344,7 +344,7 @@ class Filters extends Component {
                                 items={languageData}
                                 uniqueKey='value'
                                 displayKey='value'
-                                selectText='Choose Languages you know'
+                                selectText='Choose your language '
                                 searchPlaceholderText='Search Your Languages'
                                 modalWithTouchable={true}
                                 showDropDowns={true}
@@ -408,9 +408,9 @@ class Filters extends Component {
                                 items={serviceList}
                                 uniqueKey='value'
                                 displayKey='value'
-                                selectText='Choose your Services  '
+                                selectText='Choose your services  '
                                 selectToggleText={{ fontSize: 13 }}
-                                searchPlaceholderText='Search Your Services'
+                                searchPlaceholderText='Search your services'
                                 modalWithTouchable={true}
                                 showDropDowns={true}
                                 hideSearch={false}

@@ -79,7 +79,7 @@ class BasicInfo extends PureComponent {
                                     itemSelected: !this.state.itemSelected
                                 })} />
 
-                            <Text style={styles.innersubTexts}>Yes,I've seen this doctor before</Text>
+                            <Text style={styles.innersubTexts}>Yes,I've visited this doctor before</Text>
                         </View>
 
                         <View style={{ alignItems: 'center', flexDirection: 'row', marginTop: 15 }}>
@@ -87,7 +87,7 @@ class BasicInfo extends PureComponent {
                                 standardStyle={true}
                                 selected={!this.state.itemSelected}
                                 onPress={() => this.setState({ itemSelected: !this.state.itemSelected })} />
-                            <Text style={styles.innersubTexts}>No.I'm a new patient</Text>
+                            <Text style={styles.innersubTexts}>No,This is my first time</Text>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: 200, height: 38 }}>

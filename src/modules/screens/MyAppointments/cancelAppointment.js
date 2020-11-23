@@ -126,7 +126,7 @@ class CancelAppointment extends Component {
               <Card>
                 <CardItem style={styles.text}>
                   <Body>
-                    <Text style={{fontFamily:'OpenSans',fontSize:15}}> We understand life can get in the way! cancelling or missing your appointment too many times will result in your account being locked!</Text>
+                    <Text style={{fontFamily:'OpenSans',fontSize:15}}> We understand life can get in the way! Cancelling or missing your appointment too many times will result in your account being locked!</Text>
                   </Body>
                 </CardItem>
                 <CardItem>
@@ -146,30 +146,30 @@ class CancelAppointment extends Component {
                       <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,marginTop:3}}>I am feeling better</Text>
                     </Row>
 
-                    <Row onPress={() => this.toggleRadio(1, " am looking for sooner or faster")} style={{marginTop:10}}>
-                      <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio(1, "Iam looking for sooner or faster")} color={"#775DA3"}
+                    <Row onPress={() => this.toggleRadio(1, " am looking for an earlier slot/appointment")} style={{marginTop:10}}>
+                      <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio(1, "Iam looking for an earlier slot/appointment")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_2Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I am looking for sooner or faster</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I am looking for an earlier slot/appointment</Text>
 
                     </Row>
 
 
-                    <Row onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")} style={{marginTop:10}}>
+                    <Row onPress={() => this.toggleRadio(2, "I won't be able to make it today")} style={{marginTop:10}}>
                      
-                      <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")} color={"#775DA3"}
+                      <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio(2, "I won't be able to make it today")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_3Selected' />
                      
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I will not be able to make this on the time</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I won't be able to make it today</Text>
 
                       
                     </Row>
 
 
 
-                    <Row onPress={() => this.toggleRadio(3, "I want to reshedule with different type")} style={{marginTop:10}}>
-                      <Radio selected={this.state.radioStatus[3]} color="red" selectedColor="green" onPress={() => this.toggleRadio(3, "I want to reshedule with different type")} color={"#775DA3"}
+                    <Row onPress={() => this.toggleRadio(3, "I want to reschedule with different type")} style={{marginTop:10}}>
+                      <Radio selected={this.state.radioStatus[3]} color="red" selectedColor="green" onPress={() => this.toggleRadio(3, "I want to reschedule with different type")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_4Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I want to reshedule with different type</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I want to reschedule with different type</Text>
                     </Row>
 
                     <Row onPress={() => this.toggleRadio(4, null)} style={{marginTop:10}}>

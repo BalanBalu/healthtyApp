@@ -218,14 +218,14 @@ export function toDataUrl(url) {
 export const statusValue = {
   "PAYMENT_IN_PROGRESS":
   {
-    text: 'waiting for  Payment process',
+    text: 'Waiting for  Payment process',
     color: '#3d70ff',
     icon: 'md-timer',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_IN_PROGRESS'
   },
   "PENDING":
   {
-    text: 'waiting for confirmation',
+    text: 'Waiting for confirmation',
     color: 'red',
     icon: 'checkmark-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PENDING',

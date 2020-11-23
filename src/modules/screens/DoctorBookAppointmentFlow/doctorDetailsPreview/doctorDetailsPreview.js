@@ -373,7 +373,7 @@ class DoctorDetailsPreview extends Component {
     onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
         if (!selectedSlotItem) {
             Toast.show({
-                text: 'Please Select a Slot to continue booking',
+                text: 'Please select a slot to continue booking',
                 type: 'warning',
                 duration: 3000
             })

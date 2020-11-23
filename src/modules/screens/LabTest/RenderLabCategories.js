@@ -9,7 +9,7 @@ export default class RenderLabCategories extends PureComponent {
         super(props)
     }
     render() {
-        const data = [{ checkup: 'full body checkup', initalprice: 2500, finalprice: 1500 },
+        const data = [{ checkup: 'Full body checkup', initalprice: 2500, finalprice: 1500 },
         { checkup: 'Diabetes Test', initalprice: 2500, finalprice: 1500 },
         { checkup: 'Fever Test', initalprice: 1500, finalprice: 1000 },
         { checkup: 'Arthristis', initalprice: 500, finalprice: 400 },

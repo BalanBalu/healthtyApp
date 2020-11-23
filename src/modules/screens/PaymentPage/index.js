@@ -578,7 +578,7 @@ class PaymentPage extends Component {
                                     checked={this.state.creditPointsApplied}
                                     onPress={() => this.setPaymentByCreditApplied()}
                                 />
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>Apply your {maxDicountAmountByCreditPoints} credit points to pay your appointment</Text>
                             </Row>
                         </Grid> : null}
 

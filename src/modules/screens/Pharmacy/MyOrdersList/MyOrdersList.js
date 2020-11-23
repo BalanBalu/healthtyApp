@@ -162,7 +162,7 @@ class MyOrdersList extends Component {
                                 }}
                                 note
                             >
-                                No orders Are Found
+                                 No orders found
                     </Text>
                             <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                                 <Button style={[styles.bookingButton, styles.customButton]}
@@ -237,10 +237,10 @@ class MyOrdersList extends Component {
                                             }}>
                                                 <Col size={7}>
                                                     {item.status == "PENDING" ?
-                                                        <Text style={styles.buytext}>Arrving on 24 Hours</Text> :
+                                                        <Text style={styles.buytext}>Arriving on 24 Hours</Text> :
                                                         null}
                                                     {item.status == "IN PROGRESS" ?
-                                                        <Text style={styles.buytext}>Arrving on Today</Text> :
+                                                        <Text style={styles.buytext}>Arriving on Today</Text> :
                                                         null}
                                                     {item.status == "COMPLETED" ?
                                                         <Text style={{ marginBottom: 25, fontSize: 11, marginTop: 10, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight: '500' }}>Deliveried on </Text> :

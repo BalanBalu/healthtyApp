@@ -121,7 +121,7 @@ export const RenderReviewData = (props) => {
                         maxStars={5}
                         rating={item.cleanness_rating}
                     />
-                    <Text style={styles.ratingText}>Cleanliness</Text>
+                    <Text style={styles.ratingText}>Service quality</Text>
                 </Col>
                 <Col style={{ alignItems: 'center', borderRightColor: 'gray', borderRightWidth: 0.5 }}>
                     <StarRating
