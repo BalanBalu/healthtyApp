@@ -12,7 +12,7 @@ import { formatDate, addTimeUnit, subTimeUnit, getAllId, statusValue } from "../
 import { getUserAppointments, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName } from '../../common'
+import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName,toastMeassage } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
@@ -272,6 +272,7 @@ class MyAppoinmentList extends Component {
 		this.setState({ modalVisible: false });
 		if (val.updatedVisible == true) {
 			await this.setState({ skip: 0, pastData: [] })
+			toastMeassage('Thank you for your valuable feedback', 'success', 3000)
 			await this.pastAppointment();
 		}
 	}

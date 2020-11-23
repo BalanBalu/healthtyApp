@@ -8,12 +8,12 @@ import { StyleSheet, AsyncStorage, TouchableOpacity, Modal, FlatList } from 'rea
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation,getAppointmentCode } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff, statusValue, getMoment ,isTimeAfter} from '../../../setup/helpers';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation, getAppointmentCode } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, dateDiff, statusValue, getMoment, isTimeAfter } from '../../../setup/helpers';
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName,getDoctorNameOrHospitalName,toastMeassage } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import { translate } from "../../../setup/translator.helper";
 import { updateEvent } from "../../../setup/calendarEvent";
 
@@ -62,7 +62,7 @@ class AppointmentDetails extends Component {
       ]);
     }
     else {
-      let doctorId = appointmentData.doctor_id||null;
+      let doctorId = appointmentData.doctor_id || null;
       let appointmentId = appointmentData._id;
       const selectedTab = navigation.getParam('selectedIndex');
       // this.props.navigation.setParams({ reportedId: appointmentId });
@@ -97,27 +97,27 @@ class AppointmentDetails extends Component {
     try {
 
       let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
-      if(this.state.doctorId!==null){
-      let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
+      if (this.state.doctorId !== null) {
+        let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
-      if (resultDetails.success) {
-        let educationDetails = '';
-        if (resultDetails.data.education != undefined) {
-          educationDetails = getAllEducation(resultDetails.data.education)
+        if (resultDetails.success) {
+          let educationDetails = '';
+          if (resultDetails.data.education != undefined) {
+            educationDetails = getAllEducation(resultDetails.data.education)
+          }
+          let specialistDetails = '';
+          if (resultDetails.data.specialist != undefined) {
+            specialistDetails = getAllSpecialist(resultDetails.data.specialist)
+          }
+
+
+          this.setState({
+            education: educationDetails,
+            doctorData: resultDetails.data,
+            specialist: specialistDetails.toString(),
+          })
         }
-        let specialistDetails = '';
-        if (resultDetails.data.specialist != undefined) {
-          specialistDetails = getAllSpecialist(resultDetails.data.specialist)
-        }
-
-
-        this.setState({
-          education: educationDetails,
-          doctorData: resultDetails.data,
-          specialist: specialistDetails.toString(),
-        })
       }
-    }
 
     }
     catch (e) {
@@ -208,7 +208,7 @@ class AppointmentDetails extends Component {
       this.setState({ isLoading: true });
       let userId = await AsyncStorage.getItem('userId');
       let requestData = {
-      
+
         userId: userId,
         startTime: data.appointment_starttime,
         endTime: data.appointment_endtime,
@@ -216,10 +216,10 @@ class AppointmentDetails extends Component {
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
-      if(data.booked_for==='HOSPITAL'){
-        requestData.hospitalAminId=data.location[0].hospital_admin_id
-      }else{
-        requestData.doctorId= data.doctor_id
+      if (data.booked_for === 'HOSPITAL') {
+        requestData.hospitalAminId = data.location[0].hospital_admin_id
+      } else {
+        requestData.doctorId = data.doctor_id
       }
 
       let result = await appointmentStatusUpdate(this.state.appointmentId, requestData);
@@ -268,23 +268,23 @@ class AppointmentDetails extends Component {
     }
   }
 
-  
-  
+
+
   async onPressToGetAppointmentCode() {
     try {
- 
+
 
       let result = await getAppointmentCode(this.state.appointmentId);
- 
-      if(result.success){
-        toastMeassage(result.message,'success',3000)
-      }
-  
 
-     
+      if (result.success) {
+        toastMeassage(result.message, 'success', 3000)
+      }
+
+
+
     }
     catch (e) {
-    
+
       console.log(e)
     }
   }
@@ -302,6 +302,7 @@ class AppointmentDetails extends Component {
 
       await this.setState({ isLoading: true, modalVisible: false })
       if (val.updatedVisible == true) {
+        toastMeassage('Thank you for your valuable feedback', 'success', 3000)
         this.props.navigation.setParams({ 'refreshPage': true });
         this.getUserReviews()
       }
@@ -366,7 +367,7 @@ class AppointmentDetails extends Component {
                     <Col style={{ width: '77%', marginTop: 10 }}>
                       <Row>
                         <Col size={9}>
-                          <Text style={styles.Textname} >{ getDoctorNameOrHospitalName(data)}</Text>
+                          <Text style={styles.Textname} >{getDoctorNameOrHospitalName(data)}</Text>
                           <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color: '#4c4c4c' }}>{education}</Text>
                           <Text style={styles.specialistTextStyle} >{specialist} </Text>
                         </Col>
@@ -458,20 +459,20 @@ class AppointmentDetails extends Component {
                           </Row>
                         </Col></Row> : null : data.appointment_status == 'APPROVED' && isTimeAfter(new Date().toISOString(), data.appointment_starttime) ?
 
-<Row>
-<Col size={5}>
-    <Row style={{ marginTop: 10 }}>
-        <Text note style={styles.subText3}>Do you need to get code ?</Text>
-    </Row>
-</Col>
-<Col size={5}>
-    <Row style={{ marginTop: 10 }}>
-        <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode()}>
-            <Text style={styles.ButtonText}>Get appointment Code</Text>
-        </Button>
-    </Row>
-</Col>
-</Row>:null}
+                      <Row>
+                        <Col size={5}>
+                          <Row style={{ marginTop: 10 }}>
+                            <Text note style={styles.subText3}>Do you need to get code ?</Text>
+                          </Row>
+                        </Col>
+                        <Col size={5}>
+                          <Row style={{ marginTop: 10 }}>
+                            <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode()}>
+                              <Text style={styles.ButtonText}>Get appointment Code</Text>
+                            </Button>
+                          </Row>
+                        </Col>
+                      </Row> : null}
                 </Grid>
                 <CardItem footer style={styles.cardItem2}>
                   <Grid>
