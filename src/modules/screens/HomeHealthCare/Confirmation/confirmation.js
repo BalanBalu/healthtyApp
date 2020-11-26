@@ -129,7 +129,7 @@ class HomeTestConfirmation extends Component {
         const finalAmountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
         const amount = finalAmountBySelectedPersons;
         bookSlotDetails.slotData.fee = finalAmountBySelectedPersons;
-        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount, patientAddress: this.state.patDetails })
+        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount, patientInfo: this.state.patDetails })
     }
     async onPressPayAtHome() {
         const { selectedPatientTypes, bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
