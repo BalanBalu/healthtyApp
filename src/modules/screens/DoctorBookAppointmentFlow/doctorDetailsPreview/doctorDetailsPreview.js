@@ -76,7 +76,6 @@ class DoctorDetailsPreview extends Component {
         debugger
         const { navigation } = this.props;
         const { selectedDate, selectedSlotIndex } = this.state;
-        this.setState({ isLoading: true });
         const availabilitySlots = navigation.getParam('fetchAvailabiltySlots') || false;
         const startDateByMoment = addMoment(selectedDate)
         const endDateByMoment = addMoment(selectedDate, 7, 'days');
@@ -86,11 +85,7 @@ class DoctorDetailsPreview extends Component {
         }
         if (availabilitySlots) { // coming from  My Appointment list via click  Book again button.
             await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props.
-            if (userId) {
-                await this.getFavoriteCounts4PatByUserId(userId);
-            }
             const doctorId = navigation.getParam('doctorId');
-            await this.callVideAndChat(doctorId);
             const [doctorDetailsResp, wishListResp, rattingResp] = await Promise.all([
                 getMultipleDoctorDetails(doctorId, fields).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
                 ServiceOfGetDoctorFavoriteListCount4Pat(doctorId).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -98,28 +93,33 @@ class DoctorDetailsPreview extends Component {
             ]);
             if (doctorDetailsResp.success && doctorDetailsResp.data && doctorDetailsResp.data[0]) {
                 this.doctorDetailsObj = doctorDetailsResp.data[0]  // store Doctor details
+                this.setState({ doctorId, doctorData: this.doctorDetailsObj, isLoading: false });
+                if (userId) {
+                    await this.getFavoriteCounts4PatByUserId(userId);
+                }
+                await this.callVideAndChat(doctorId);
             }
-            console.log('  this.doctorDetailsObj====>', this.doctorDetailsObj)
             const reqData4Availability = [
                 {
                     doctorId,
                     include_all_hospitals: true
                 }
             ]
-
             await this.getDoctorAvailabilitySlots(reqData4Availability, startDateByMoment, endDateByMoment);
-            console.log('setDocInfoAndAvailableSlotsData====>', this.setDocInfoAndAvailableSlotsData)
             await this.getLocationDataBySelectedSlot(this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData, selectedSlotIndex);
-            const specialistWithServicesList = this.formServiceListByUsingSpecialist(this.doctorDetailsObj.specialist || []);
-            this.setState({ doctorId, doctorData: this.setDocInfoAndAvailableSlotsData, specialistWithServicesList });
+            await this.formServiceListByUsingSpecialist(this.doctorDetailsObj.specialist || []);
+            this.setState({ isLoading: false })
         } else {
             this.weekWiseDatesList = navigation.getParam('weekWiseDatesList');
-            const doctorItemData = navigation.getParam('singleDoctorItemData');
+            let doctorItemData = navigation.getParam('singleDoctorItemData');
+            const singleDoctorAvailabilityData = navigation.getParam('singleDoctorAvailabilityData');
+            this.setState({ doctorId: doctorItemData.doctorId, doctorData: doctorItemData, isLoading: false });
+            await this.callVideAndChat(doctorItemData.doctor_id);
+            if (singleDoctorAvailabilityData) {
+                doctorItemData.slotData = singleDoctorAvailabilityData
+            }
             this.doctorDetailsObj = doctorItemData;
-            await this.callVideAndChat(this.doctorDetailsObj.doctor_id);
-            debugger
             this.setDocInfoAndAvailableSlotsData = doctorItemData;
-
             if (!doctorItemData.slotData) {
                 const doctorIdHostpitalId = doctorItemData.doctorIdHostpitalId;
                 const splitOfDoctorIdHostpitalId = doctorIdHostpitalId.split('-');
@@ -133,27 +133,31 @@ class DoctorDetailsPreview extends Component {
                 ]
                 await this.getDoctorAvailabilitySlots(reqData4Availability, startDateByMoment, endDateByMoment);
             }
-            await this.getLocationDataBySelectedSlot(this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData, selectedSlotIndex)
-            const specialistWithServicesList = this.formServiceListByUsingSpecialist(doctorItemData.specialist || []);
-            this.setState({ doctorId: this.setDocInfoAndAvailableSlotsData.doctorId, doctorData: this.setDocInfoAndAvailableSlotsData, specialistWithServicesList });
+            await this.getLocationDataBySelectedSlot(this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData, selectedSlotIndex);
+            await this.formServiceListByUsingSpecialist(doctorItemData.specialist || []);
         }
-        debugger
-        this.setState({ isLoading: false });
     }
 
 
 
     async callVideAndChat(doctorId) {
-        let [availableDocsVideo, availableDocsChat] = await Promise.all([
-            this.getDoctorAvailableDoctorData([doctorId]).catch(ex => { console.log(ex); return [] }),
-            this.getDoctorAvailableDoctorDataChat([doctorId]).catch(ex => { console.log(ex); return [] }),
-        ])
-        availableDocsVideo.forEach(doc => {
-            this.isVideoAvailability = true;
-        });
-        availableDocsChat.forEach(docChat => {
-            this.isChatAvailability = true;
-        })
+        try {
+            let [availableDocsVideo, availableDocsChat] = await Promise.all([
+                this.getDoctorAvailableDoctorData([doctorId]).catch(ex => { console.log(ex); return [] }),
+                this.getDoctorAvailableDoctorDataChat([doctorId]).catch(ex => { console.log(ex); return [] }),
+            ])
+            availableDocsVideo.forEach(doc => {
+                this.isVideoAvailability = true;
+            });
+            availableDocsChat.forEach(docChat => {
+                this.isChatAvailability = true;
+            })
+        } catch (error) {
+            console.log('Error is getting on Get Chat and Video video availability details==>', error.message)
+        }
+        finally {
+            this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
+        }
     }
 
 
@@ -174,7 +178,6 @@ class DoctorDetailsPreview extends Component {
     }
 
     getDoctorAvailableDoctorDataChat = async (doctorIds) => {
-        console.log('doctorIds' + JSON.stringify(doctorIds));
         try {
             let request = {};
             if (doctorIds) {
@@ -255,7 +258,8 @@ class DoctorDetailsPreview extends Component {
                 }
             });
         }
-        return specialistWithServicesList;
+        // return specialistWithServicesList;
+        this.setState({ specialistWithServicesList })
     }
 
     getDoctorAvailabilitySlots = async (availabilityReqData, startDateByMoment, endDateByMoment) => {
@@ -300,11 +304,10 @@ class DoctorDetailsPreview extends Component {
                 }
                 this.setDocInfoAndAvailableSlotsData = docDetailWithSlotsData;
             }
+            this.setState({ doctorData: this.setDocInfoAndAvailableSlotsData })
         } catch (error) {
             this.setState({ isLoading: false })
             console.log('Ex getting on getAvailabilitySlots service======', error.message);
-        } finally {
-            // this.setState({ isAvailabilityLoading: false })
         }
     }
 
@@ -333,6 +336,7 @@ class DoctorDetailsPreview extends Component {
             this.showLocBySelectedSlotItem = slotDataBySelectedDate[selectedSlotIndex].location;
             this.selectedSlotFee = slotDataBySelectedDate[selectedSlotIndex].fee;
             this.selectedSlotFeeWithoutOffer = slotDataBySelectedDate[selectedSlotIndex].feeWithoutOffer
+            this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
         }
     }
 

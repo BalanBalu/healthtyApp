@@ -402,12 +402,17 @@ class DoctorList extends Component {
     onPressGoToBookAppointmentPage(doctorItemData) {
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         doctorItemData.doctorId = doctorItemData.doctor_id;
+        const singleDoctorItemData = { ...doctorItemData };
+        const reqData4BookAppPage = {
+            singleDoctorItemData: singleDoctorItemData,
+            doctorId: doctorItemData.doctor_id,
+            weekWiseDatesList: this.weekWiseDatesList,
+        }
         const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorItemData.doctorIdHostpitalId).slotData;
         if (doctorItemHaveSlotsDataObj) {
-            doctorItemData.slotData = doctorItemHaveSlotsDataObj;
+            reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
         }
-        const singleDoctorItemData = { ...doctorItemData };
-        this.props.navigation.navigate('Doctor Details Preview', { doctorId: doctorItemData.doctor_id, singleDoctorItemData: singleDoctorItemData, weekWiseDatesList: this.weekWiseDatesList })
+        this.props.navigation.navigate('Doctor Details Preview', reqData4BookAppPage)
     }
 
     getFeesBySelectedSlot(selectedSlotData, wholeSlotData, doctorIdHostpitalId, item) {
