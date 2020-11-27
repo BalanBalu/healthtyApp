@@ -411,7 +411,6 @@ class DoctorDetailsPreview extends Component {
     renderDocInfoPreviewCard() {
         const { isLoggedIn, doctorData } = this.state;
         const { bookAppointmentData: { patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs } } = this.props;
-        debugger
         return (
             <View>
                 <RenderDoctorInfoPreview
@@ -667,11 +666,23 @@ class DoctorDetailsPreview extends Component {
         )
     }
 
+    getLocationDataBySelectedSlot(slotDataBySelectedDate, wholeSlotData, slotIndex) {
+        const selectedSlotIndex = slotIndex >= 0 ? slotIndex : 0;
+        if (slotDataBySelectedDate === undefined) {
+            slotDataBySelectedDate = wholeSlotData[Object.keys(wholeSlotData)[0]]
+        }
+        if (slotDataBySelectedDate) {
+            this.showLocBySelectedSlotItem = slotDataBySelectedDate[selectedSlotIndex].location;
+            this.selectedSlotFee = slotDataBySelectedDate[selectedSlotIndex].fee;
+            this.selectedSlotFeeWithoutOffer = slotDataBySelectedDate[selectedSlotIndex].feeWithoutOffer
+            this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
+        }
+    }
 
     /* Change the Date from Date Picker */
     onDateChanged = async (date) => {
         this.onEndReachedIsTriggedFromRenderDateList = false;
-        let { selectedDate, selectedSlotIndex, selectedSlotItem } = this.state;
+        let { selectedDate, selectedSlotIndex, selectedSlotItem, doctorData } = this.state;
         selectedDate = date;
         selectedSlotIndex = -1;
         selectedSlotItem = null;
@@ -681,8 +692,9 @@ class DoctorDetailsPreview extends Component {
                 doctorId: this.state.doctorId,
                 include_all_hospitals: true
             }]
-            await this.getAvailabilitySlots(availabilityRequest, getMoment(selectedDate), endDateMoment);
+            await this.getDoctorAvailabilitySlots(availabilityRequest, getMoment(selectedDate), endDateMoment);
         }
+        this.getLocationDataBySelectedSlot(doctorData.slotData[selectedDate], doctorData.slotData, selectedSlotIndex);
         this.setState({ selectedDate, selectedSlotIndex, selectedSlotItem, renderRefreshCount: this.state.renderRefreshCount + 1 });
     }
 
