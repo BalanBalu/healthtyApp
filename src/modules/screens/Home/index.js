@@ -407,7 +407,7 @@ class Home extends Component {
                         </TouchableOpacity>
                     </Col>
                     <Col style={{ width: '50%', marginLeft: 5 }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("HospitalList")}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { fromNavigation: "HOSPITAl" })}>
                             <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                 <Row style={styles.rowStyle}>
                                     <FastImage

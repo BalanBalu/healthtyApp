@@ -43,34 +43,35 @@ class Categories extends Component {
       this.setState({ isLoading: false });
     }
   }
-  navigate = (categoryName,category_id) => {
-    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this), [categoryName,category_id]);
+  navigate = (categoryName, category_id) => {
+    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this), [categoryName, category_id]);
   }
 
-  navigateToCategorySearch(categoryName,category_id) {
+  navigateToCategorySearch(categoryName, category_id) {
     console.log(categoryName);
 
     console.log(this.props);
     const { bookappointment: { locationCordinates } } = this.props;
 
-   let  fromNavigation = this.props.navigation.getParam('fromNavigation') || null
-    
-  
+    let fromNavigation = this.props.navigation.getParam('fromNavigation') || null
+
+
     if (fromNavigation === "HOSPITAl") {
-      this.props.navigation.navigate("Hospitals", {   // New Enhancement Router path
-        category_id: category_id 
+    
+      this.props.navigation.navigate("HospitalList", {   // New Enhancement Router path
+        category_id: category_id
       })
     }
-    else if(fromNavigation === 'HOME_HEALTH_CARE') {
-        this.props.navigation.navigate("Home Health Care", { 
-                categoryName: categoryName, 
-                categoryId: category_id,
-                locationDataFromSearch: {
-                    type: 'geo',
-                    "coordinates": locationCordinates,
-                    maxDistance: MAX_DISTANCE_TO_COVER
-                }
-        });
+    else if (fromNavigation === 'HOME_HEALTH_CARE') {
+      this.props.navigation.navigate("Home Health Care", {
+        categoryName: categoryName,
+        categoryId: category_id,
+        locationDataFromSearch: {
+          type: 'geo',
+          "coordinates": locationCordinates,
+          maxDistance: MAX_DISTANCE_TO_COVER
+        }
+      });
     } else {
       this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
         inputKeywordFromSearch: categoryName,
@@ -151,7 +152,7 @@ class Categories extends Component {
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>
-                  <TouchableOpacity onPress={() => this.navigate(item.category_name,item.category_id)}
+                  <TouchableOpacity onPress={() => this.navigate(item.category_name, item.category_id)}
                     style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                     <FastImage
                       source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
