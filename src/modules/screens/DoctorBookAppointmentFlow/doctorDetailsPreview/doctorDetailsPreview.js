@@ -28,7 +28,7 @@ showLocBySelectedSlotItem = null;
 selectedSlotFee = null;
 selectedSlotFeeWithoutOffer = null;
 showedFee = null;
-fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image,hospital";
+const DOCTOR_FIELDS = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image,hospital";
 import styles from '../../CommonAll/styles';
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
 import { RenderNoSlotsAvailable } from '../../CommonAll/components'
@@ -87,7 +87,7 @@ class DoctorDetailsPreview extends Component {
             await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props.
             const doctorId = navigation.getParam('doctorId');
             const [doctorDetailsResp, wishListResp, rattingResp] = await Promise.all([
-                getMultipleDoctorDetails(doctorId, fields).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
+                getMultipleDoctorDetails(doctorId, DOCTOR_FIELDS).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
                 ServiceOfGetDoctorFavoriteListCount4Pat(doctorId).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
                 serviceOfGetTotalReviewsCount4Doctors(doctorId).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
             ]);
