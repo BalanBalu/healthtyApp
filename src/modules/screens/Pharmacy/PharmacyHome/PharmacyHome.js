@@ -260,7 +260,7 @@ class PharmacyHome extends Component {
                                         <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
                                     </Col>
                                     <Col size={3.5} style={{ alignItems: 'flex-start' }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>{patientSearchLocationName || ''} </Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}  ellipsizeMode="tail" numberOfLines={1}>{patientSearchLocationName || ''} </Text>
                                     </Col>
                                 </Row>
 

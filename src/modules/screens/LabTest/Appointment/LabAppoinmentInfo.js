@@ -773,8 +773,8 @@ const styles = StyleSheet.create({
   postponeButton: {
     // backgroundColor:'#4765FF',
     height: 25,
-    padding: 8,
-    borderRadius: 5
+    borderRadius: 5,
+    paddingHorizontal: 5,
   },
   postponeButton2: {
     // backgroundColor:'#4765FF',
