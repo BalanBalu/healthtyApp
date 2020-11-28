@@ -135,7 +135,7 @@ class UploadEmr extends Component {
         return (
             <Container style={styles.container}>
                 {isLoading !== true ? <Loader style={'appointment'} /> :
-                    <Content style={{ flex: 1,marginTop:15 }}>
+                    <Content style={{ flex: 1, }}>
                         <View >
                             {imageData.length === 0 ?
                                 <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
@@ -274,6 +274,7 @@ const styles = StyleSheet.create({
     {
         marginLeft: 'auto',
         marginRight: 'auto',
+        marginTop:10,
         width: Dimensions.get('window').width - 10,
         height: Dimensions.get('window').height - 200,
         justifyContent: 'center',

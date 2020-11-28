@@ -40,9 +40,8 @@ class MedicineRecords extends PureComponent {
         let userId = await AsyncStorage.getItem('userId');
         let data = this.state.data
         let result = await getMedicalRecords(userId, this.skip, this.limit)
-        console.log("getMedicalRecords===" + JSON.stringify(result))
+        console.log("getMedicalRecords===" + JSON.stringify(result.data))
         if (result.success) {
-
 
             data = this.state.data.concat(result.data)
 
@@ -53,6 +52,28 @@ class MedicineRecords extends PureComponent {
 
         this.setState({ data: data, isLoading: false })
     }
+  async  filterMedicalRecords(searchValue) {
+        console.log(this.state.data);
+        const { categoriesMain } = this.state;
+      if (!searchValue) {
+          this.skip = 0
+          this.setState({ searchValue,data:[]});
+        await this.getMedicalRecords()
+         
+        } else {
+            let data=[]
+            let userId = await AsyncStorage.getItem('userId');
+            let result = await getMedicalRecords(userId, null, null, searchValue)
+            if (result.success) {
+
+                data = result.data
+    
+            }
+          this.setState({ searchValue,data})
+        }
+      }
+    
+    
     headerComponent() {
         const { data } = this.state
         return (
@@ -65,6 +86,8 @@ class MedicineRecords extends PureComponent {
                             style={styles.inputfield}
                             placeholderTextColor="#909498"
                             keyboardType={'email-address'}
+                            value={this.state.searchValue}
+                            onChangeText={searchValue => this.filterMedicalRecords(searchValue)}
                             underlineColorAndroid="transparent"
                             blurOnSubmit={false}
                         />
@@ -127,7 +150,7 @@ class MedicineRecords extends PureComponent {
     }
     handleLoadMore = async () => {
         console.log('data' + this.onEndReachedCalledDuringMomentum)
-        if (this.onEndReachedCalledDuringMomentum) {
+        if (!this.onEndReachedCalledDuringMomentum) {
             console.log('On Hanndle loading ' + this.state.skip);
 
             this.onEndReachedCalledDuringMomentum = true;
@@ -167,12 +190,12 @@ class MedicineRecords extends PureComponent {
 
                 <View style={{ flex: 1 }}>
 
-                    <FlatList horizontal={false} numColumns={2}
+                    <FlatList horizontal={false} 
                         data={data}
                         extraData={this.state}
                         ListHeaderComponent={() => this.headerComponent()}
                         onEndReached={() => this.handleLoadMore()}
-                        // onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+                         onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
                         onEndReachedThreshold={0.5}
                         scrollEventThrottle={16}
                         keyExtractor={(item, index) => index.toString()}
