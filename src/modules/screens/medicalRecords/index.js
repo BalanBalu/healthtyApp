@@ -40,13 +40,16 @@ class MedicineRecords extends PureComponent {
         let userId = await AsyncStorage.getItem('userId');
         let data = this.state.data
         let result = await getMedicalRecords(userId, this.skip, this.limit)
-
+        console.log("getMedicalRecords===" + JSON.stringify(result))
         if (result.success) {
-            
-     
+
+
             data = this.state.data.concat(result.data)
 
+        } else {
+            this.onEndReachedCalledDuringMomentum = false
         }
+
 
         this.setState({ data: data, isLoading: false })
     }
@@ -112,19 +115,19 @@ class MedicineRecords extends PureComponent {
     }
     pageRefresh = async (navigationData) => {
 
-        //    if(navigationData.params.hasEmrReload){
-        this.skip = 0
-        this.limit = 10
-        this.setState({ data: [] })
-        this.getMedicalRecords()
+        if (navigationData.action.params.hasEmrReload) {
+            this.skip = 0
 
-        //    }
+            await this.setState({ data: [] })
+            await this.getMedicalRecords()
+
+        }
 
 
     }
     handleLoadMore = async () => {
-
-        if (!this.onEndReachedCalledDuringMomentum) {
+        console.log('data' + this.onEndReachedCalledDuringMomentum)
+        if (this.onEndReachedCalledDuringMomentum) {
             console.log('On Hanndle loading ' + this.state.skip);
 
             this.onEndReachedCalledDuringMomentum = true;
@@ -169,49 +172,40 @@ class MedicineRecords extends PureComponent {
                         extraData={this.state}
                         ListHeaderComponent={() => this.headerComponent()}
                         onEndReached={() => this.handleLoadMore()}
-                        onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+                        // onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
                         onEndReachedThreshold={0.5}
                         scrollEventThrottle={16}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) =>
 
-                            //  <TouchableOpacity onPress={() => {
-                            //     this.props.navigation.navigate('ZoomImageViewer', { images: images.map(ele => {
-                            //         return {
-                            //             url: '',
-                            //             props: {
-                            //                 source: ele.image
-                            //             }     
-                            //          }
-                            //     })  })
-                            //    // this.setState({ imageZoomViewer : true })
-                            // }}>
+
                             item.emr_prescription_image ?
                                 <Card style={{ borderRadius: 5, overflow: 'hidden' }}>
-                                    <Row style={styles.rowStyle}>
-                                        <Image
-                                            source={{ uri: item.emr_prescription_image.imageURL }}
-                                            style={{
-                                                width: '100%', height: '100%', alignItems: 'center'
-                                            }}
-                                        />
-                                    </Row>
-                                    <Row style={styles.secondRow}>
-                                        <Col style={{ width: '80%' }}>
-                                            <Text style={styles.mainText}>{item.emr_discription}</Text>
-                                        </Col>
-                                        {fromNavigation === 'APPOINTMENT_PREPARE' ?
-                                            <Col style={{ width: '20%' }}>
-                                                <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
-                                                    <CheckBox style={{ borderRadius: 5 }}
-                                                        checked={selectedEmrData.includes(item._id) === true}
-                                                        onPress={() => this.SelectedItem(index, item)}
-                                                    />
-                                                </View>
-                                            </Col> : null}
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.emr_prescription_image.imageURL }, title: item.emr_discription||'EMR' })}>
+                                        <Row style={styles.rowStyle}>
+                                            <Image
+                                                source={{ uri: item.emr_prescription_image.imageURL }}
+                                                style={{
+                                                    width: '100%', height: '100%', alignItems: 'center'
+                                                }}
+                                            />
+                                        </Row>
+                                        <Row style={styles.secondRow}>
+                                            <Col style={{ width: '80%' }}>
+                                                <Text style={styles.mainText}>{item.emr_discription}</Text>
+                                            </Col>
+                                            {fromNavigation === 'APPOINTMENT_PREPARE' ?
+                                                <Col style={{ width: '20%' }}>
+                                                    <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
+                                                        <CheckBox style={{ borderRadius: 5 }}
+                                                            checked={selectedEmrData.includes(item._id) === true}
+                                                            onPress={() => this.SelectedItem(index, item)}
+                                                        />
+                                                    </View>
+                                                </Col> : null}
 
-                                    </Row>
-
+                                        </Row>
+                                    </TouchableOpacity>
                                 </Card> : null
 
 

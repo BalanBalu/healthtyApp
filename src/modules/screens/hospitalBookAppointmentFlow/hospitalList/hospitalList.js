@@ -84,11 +84,15 @@ class HospitalList extends Component {
     searchByHospitalDetails = async () => {
         try {
             const { bookappointment: { locationCordinates } } = this.props;
+            let category_id = this.props.navigation.getParam('category_id') || null
             let reqData4ServiceCall = {
                 locationData: {
                     coordinates: locationCordinates,
                     maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
                 }
+            }
+            if (category_id) {
+                reqData4ServiceCall.category_id=category_id  
             }
             if (this.state.hospitalName) reqData4ServiceCall.hospitalName = this.state.hospitalName;
             console.log('reqData4ServiceCall', JSON.stringify(reqData4ServiceCall))
