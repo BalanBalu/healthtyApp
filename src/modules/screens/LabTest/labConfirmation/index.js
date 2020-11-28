@@ -169,7 +169,7 @@ class LabConfirmation extends Component {
                 this.timeText = formatDate(response.data[0].appointment_starttime, 'hh:mm A')
                 Alert.alert(
                     "Appointment Warning",
-                    `You already booked for the same Lab on ${this.timeText}, You want to book the appointment to continue`,
+                    `You have already booked for a lab appointment at  ${this.timeText}.Do you want to continue booking?`,
                     [
                         { text: "Cancel" },
                         {

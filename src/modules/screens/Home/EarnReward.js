@@ -83,7 +83,7 @@ class EarnReward extends Component {
                         width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'
                       }}
                     >
-                      <Text style={styles.innerText}>Invite 25 peoples to Get Branded Watch absolutely free!!!</Text>
+                      <Text style={styles.innerText}>Invite 25 people to get a branded watch for absolutely free !!</Text>
                     </ImageBackground>
                   </Col>
                   <Col style={{ width: '30%', }}>

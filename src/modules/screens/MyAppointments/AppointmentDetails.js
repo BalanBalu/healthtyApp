@@ -423,7 +423,7 @@ class AppointmentDetails extends Component {
                       <Col size={7}>
                         <Row style={{ marginTop: 10 }}>
 
-                          <Text note style={styles.subText3}>Do you need to cancel this appointment ?</Text>
+                          <Text note style={styles.subText3}>Do you want to cancel this appointment ?</Text>
 
                         </Row>
                       </Col>
@@ -903,7 +903,7 @@ class AppointmentDetails extends Component {
                         <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
                           onPress={() => this.SkipAction()} testID='confirmButton'>
 
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
+                          <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'SKIP'}</Text>
                         </TouchableOpacity>
                       </Col>
                       <Col size={3.4} style={{ marginRight: 3 }} >

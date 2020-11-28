@@ -191,7 +191,7 @@ class Reminder extends Component {
         <AwesomeAlert
           show={isCancel}
           showProgress={false}
-          title={`Are you sure to delete your Reminder `}
+          title={`Are you sure you want to delete your reminder?`}
           closeOnTouchOutside={false}
           closeOnHardwareBackPress={true}
           showCancelButton={true}
@@ -245,7 +245,7 @@ class Reminder extends Component {
                 <View style={{ backgroundColor: '#F1F1F1', marginTop: height / 4, justifyContent: 'center', alignItems: 'center' }}>
 
                   <Image source={require('../../../../assets/images/Remindericon.png')} style={{ justifyContent: 'center', height: 150, width: 150 }} />
-                  <Text style={{ color: '#d83939', }}>No Reminder is available now!</Text>
+                  <Text style={{ color: '#d83939', }}>No Reminders !</Text>
                 </View>
                 :
 

@@ -266,7 +266,7 @@ class PaymentPage extends Component {
         console.log(response);
         if (response.success) {
             if (serviceType === SERVICE_TYPES.APPOINTMENT) {
-                const fromNavigation=this.props.navigation.getParam('fromNavigation') ||null
+                const fromNavigation = this.props.navigation.getParam('fromNavigation') || null
                 const { creditPointsApplied } = this.state;
                 if (creditPointsApplied === true) {
                     setTimeout(() => {
@@ -277,7 +277,7 @@ class PaymentPage extends Component {
                     successBookSlotDetails: bookSlotDetails,
                     paymentMethod: paymentMethodTitleCase,
                     tokenNo: response.tokenNo,
-                    fromNavigation:fromNavigation
+                    fromNavigation: fromNavigation
                 });
             } else if (serviceType === SERVICE_TYPES.CHAT) {
                 this.props.navigation.navigate('SuccessChat');
@@ -304,9 +304,9 @@ class PaymentPage extends Component {
                     }
 
                     await AsyncStorage.removeItem('cartItems-' + this.userId);
-                  
+
                 }
-                  this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState:'CREATE_ORDER' })
+                this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState: 'CREATE_ORDER' })
                 Toast.show({
                     text: 'Payment Success',
                     type: 'success',
@@ -336,9 +336,9 @@ class PaymentPage extends Component {
                     successBookSlotDetails: bookSlotDetails,
                     paymentMethod: paymentMethodTitleCase,
                     tokenNo: response.tokenNo,
-                    isFromHomeHealthCareConfirmation: true
+                    isFromHomeHealthCareConfirmation: true,
+                    patientInfo: this.props.navigation.getParam('patientInfo') || null
                 }
-                console.log(reqHomeHealthCare);
                 this.props.navigation.navigate('paymentsuccess', reqHomeHealthCare);
             }
         }
@@ -578,7 +578,7 @@ class PaymentPage extends Component {
                                     checked={this.state.creditPointsApplied}
                                     onPress={() => this.setPaymentByCreditApplied()}
                                 />
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>Apply your {maxDicountAmountByCreditPoints} credit points to pay your appointment</Text>
                             </Row>
                         </Grid> : null}
 

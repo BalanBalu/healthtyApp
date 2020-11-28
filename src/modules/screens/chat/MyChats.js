@@ -97,11 +97,11 @@ getAllChatsByUserId = async(userId) => {
             obj.unreadCount = convoData.conversationLstSnippet.messageInfo.unreadCount
         } else {
             if(convoData.status === possibleChatStatus.PAYMENT_IN_PROGRESS) {
-                obj.message = 'Payment is not completed, Please Complete your Payment and Continue',
+                obj.message = 'Payment is not completed.Please complete your payment to continue',
                 obj.messageUpdated_time = getRelativeTime(convoData.last_chat_updated)
             }
             if(convoData.status === possibleChatStatus.PENDING) {
-                obj.message = `You have Initiated the Chat with ${(convoData.doctorInfo.prefix ? convoData.doctorInfo.prefix + '. ' : '')} ${convoData.doctorInfo.doctor_name} Please Wait for Approval`;
+                obj.message = `You have initiated a chat request with ${(convoData.doctorInfo.prefix ? convoData.doctorInfo.prefix + '. ' : '')} ${convoData.doctorInfo.doctor_name} Please wait for the approval.`;
                 obj.messageUpdated_time = getRelativeTime(convoData.last_chat_updated)
             }
             if(convoData.status === possibleChatStatus.COMPLETED) {

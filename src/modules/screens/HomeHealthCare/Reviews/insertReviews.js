@@ -141,7 +141,7 @@ export class InsertReview extends Component {
 
                                 <Row style={{ marginTop: 20 }}>
                                     <Left style={{ marginLeft: 20 }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Cleanliness</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Service quality</Text>
                                     </Left>
                                     <Right style={{ marginRight: 20 }}>
                                         <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 50 }}
@@ -205,7 +205,7 @@ export class InsertReview extends Component {
                                     <TextInput
                                         style={{ height: 80, borderWidth: 1, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
                                         returnKeyType={'next'}
-                                        placeholder="Write Your Reviews"
+                                        placeholder="Write your reviews"
                                         multiline={true}
                                         keyboardType={'default'}
                                         textAlignVertical={'top'}

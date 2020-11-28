@@ -693,7 +693,7 @@ class MedicineCheckout extends Component {
                     <AwesomeAlert
                         show={false}
                         showProgress={false}
-                        title={`you have choose a prescription mentory product kindly upload prescription`}
+                        title={`You have chosen a prescription mandatory product.Kindly upload a prescription`}
                         closeOnTouchOutside={false}
                         closeOnHardwareBackPress={true}
                         showCancelButton={true}
@@ -732,7 +732,7 @@ class MedicineCheckout extends Component {
                             }}>
 
 
-                                <Text style={{ fontSize: 22, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> you have choose a prescription mentory product kindly upload prescription  </Text>
+                                <Text style={{ fontSize: 22, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}>You have chosen a prescription mandatory product.Kindly upload a prescription</Text>
                                 {/* </Item> */}
 
                                 <Button transparent style={{ paddingTop: 5, paddingBottom: 5, marginTop: 20 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>

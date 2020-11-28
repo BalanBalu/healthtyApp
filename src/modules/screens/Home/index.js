@@ -358,7 +358,7 @@ class Home extends Component {
             navigation.setParams({
                 appBar: {
                     locationName: patientSearchLocationName,
-                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hospitals' : 'You are searching Hospitals on ' + patientSearchLocationName
+                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hospitals' : 'You are searching hospitals in ' + patientSearchLocationName
                 }
             });
             this.locationUpdatedCount = locationUpdatedCount;
@@ -398,8 +398,8 @@ class Home extends Component {
                                 </Row>
                                 <Row style={styles.secondRow}>
                                     <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Doctor Consultions')}</Text>
-                                        <Text style={styles.subText}>{translate('Book an One Click appointment and Consult doctors')}</Text>
+                                        <Text style={styles.mainText}>{translate('Doctor Consultations')}</Text>
+                                        <Text style={styles.subText}>{translate('Book  a one-click appointment and consult doctors')}</Text>
                                     </Col>
 
                                 </Row>
@@ -420,7 +420,7 @@ class Home extends Component {
                                 <Row style={styles.secondRow}>
                                     <Col style={{ width: '100%', }}>
                                         <Text style={styles.mainText}>{translate('Hospitals')}</Text>
-                                        <Text style={styles.subText}>{translate('Search Hospitals and Consult Doctors')} </Text>
+                                        <Text style={styles.subText}>{translate('Search hospitals and consult doctors')} </Text>
                                     </Col>
                                 </Row>
                             </Card>
@@ -443,7 +443,7 @@ class Home extends Component {
                                 <Row style={styles.secondRow}>
                                     <Col style={{ width: '100%', }}>
                                         <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
-                                        <Text style={styles.subText}>{translate('Get Doctor Consultation at Your Home')} </Text>
+                                        <Text style={styles.subText}>{translate('Get doctor consultation at your home')} </Text>
                                     </Col>
 
                                 </Row>
@@ -464,7 +464,7 @@ class Home extends Component {
                                 <Row style={styles.secondRow}>
                                     <Col style={{ width: '100%', }}>
                                         <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
-                                        <Text style={styles.subText}>Book Full Body Lab Test from The Safety Of Your Home</Text>
+                                        <Text style={styles.subText}>Get all your tests done at the comfort of your home</Text>
                                     </Col>
 
                                 </Row>
@@ -643,7 +643,7 @@ class Home extends Component {
 
                     <Row style={{ marginTop: 10, marginBottom: 5 }}>
                         <Left>
-                            <Text style={styles.mainHead}>{translate('Refer and Earn!')} </Text>
+                            <Text style={styles.mainHead}>{translate('Refer and earn!')} </Text>
                         </Left>
                     </Row>
                     <View>

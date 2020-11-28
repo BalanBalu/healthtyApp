@@ -35,9 +35,10 @@ class PaymentSuccess extends Component {
         const fromNavigation = navigation.getParam('fromNavigation') || null
         const tokenNo = navigation.getParam('tokenNo');
         this.isFromHomeHealthCareConfirmation = navigation.getParam('isFromHomeHealthCareConfirmation') || false;
+        this.patientInfo = navigation.getParam('patientInfo') || null;
         await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo, fromNavigation });
         console.log(paymentMethod);
-   
+
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressed);
@@ -58,6 +59,21 @@ class PaymentSuccess extends Component {
             </Row>
         )
     }
+    renderPatientLocation() {
+        const patientAddress = this.patientInfo && this.patientInfo.address && this.patientInfo.address.address;
+        if (patientAddress && Object.keys(patientAddress).length) {
+            return (
+                <Row style={styles.rowDetail1}>
+                    <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 16 }}>Address</Text>
+                    <Right>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.no_and_street ? patientAddress.no_and_street + ' ,' : ''} {patientAddress.city}</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.state}, {patientAddress.pin_code}</Text>
+                    </Right>
+                </Row>
+            )
+        }
+        return null
+    }
     render() {
         const { navigation } = this.props;
         const { successBookSlotDetails, paymentMethod, tokenNo, fromNavigation } = this.state;
@@ -70,7 +86,7 @@ class PaymentSuccess extends Component {
                                 <Icon name="checkmark-circle" style={styles.circleIcon} />
                             </View>
                             <Text style={styles.successHeading}>SUCCESS</Text>
-                            <Text style={styles.subText}>Thank You For Choosing Our Service And Trust Our Doctor To Take Care Your Health</Text>
+                            <Text style={styles.subText}>Thank you for choosing our service ! We are grateful for the pleasure of serving you!</Text>
 
                             <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.5, marginTop: 10, marginLeft: 10, padding: 15, marginRight: 10 }}>
                                 <Col style={{ width: '25%', }}>
@@ -83,7 +99,7 @@ class PaymentSuccess extends Component {
                                         <Row style={styles.rowDetail1}>
 
                                             <Right>
-                                                <Text style={styles.subText}>{successBookSlotDetails.name||' '}</Text>
+                                                <Text style={styles.subText}>{successBookSlotDetails.name || ' '}</Text>
                                                 <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
                                                 <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
                                             </Right>
@@ -105,7 +121,7 @@ class PaymentSuccess extends Component {
                                     <Text style={[styles.subText, { fontWeight: 'bold' }]}> {tokenNo} </Text>
                                 </Right>
                             </Row>
-                            {successBookSlotDetails.slotData && fromNavigation === null && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
+                            {successBookSlotDetails.slotData && fromNavigation === null && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : this.renderPatientLocation()}
 
 
                             <Row style={styles.rowDetail}>

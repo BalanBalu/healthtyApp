@@ -43,7 +43,7 @@ export default class CallKeepService {
                     },
                     android: {
                         alertTitle: 'Permissions required',
-                        alertDescription: CURRENT_APP_NAME + ' is need a Permission to Show the Incoming Video Call Request',
+                        alertDescription: CURRENT_APP_NAME + ' needs permission to access your microphone and camera for the video consultation service',
                         cancelButton: 'Cancel',
                         okButton: 'ok',
                         additionalPermissions: [PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, PermissionsAndroid.PERMISSIONS.CAMERA, PermissionsAndroid.PERMISSIONS.SYSTEM_ALERT_WINDOW, PermissionsAndroid.PERMISSIONS.USE_FULL_SCREEN_INTENT]

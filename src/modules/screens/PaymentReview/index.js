@@ -134,7 +134,7 @@ export default class PaymentReview extends Component {
       return
     }
 
-    this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
+    this.setState({ isLoading: true, spinnerText: "We are Booking your Appointment" })
 
     const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
     if (patientDetailsObj.policy_no) {
@@ -530,7 +530,7 @@ export default class PaymentReview extends Component {
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
               <Row>
                 <Icon name="create" style={{ fontSize: 15, color: '#000' }} />
-                <Text style={styles.subText}> Your Reason For Checkup</Text>
+                <Text style={styles.subText}> Your reason for checkup</Text>
               </Row>
               <Form style={{ marginRight: 1, marginLeft: -13 }}>
                 <Item style={{ borderBottomWidth: 0 }}>

@@ -236,7 +236,7 @@ class Ecard extends PureComponent {
                             overlayColor="none"
                         /> : data.length == 0 ?
                             <View style={{ alignItems: 'center', justifyContent: 'center', height: 550 }}>
-                                <Text> No E-CARD DETAILS FOUND</Text>
+                                <Text>No E-Card details found !</Text>
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>

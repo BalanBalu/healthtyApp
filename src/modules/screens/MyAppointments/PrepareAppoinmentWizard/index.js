@@ -42,7 +42,7 @@ class PrepareAppointmentWizard extends PureComponent {
                                 <Image source={require('../../../../../assets/images/formpaper.png')} style={{ height: 200, width: 200, }} />
                             </View>
                             <Text style={styles.textContent}>No more paper forms!</Text>
-                            <Text style={styles.subText1}>{`Check in online and your information will be send directly to the ${CURRENT_APP_NAME}`}</Text>
+                            <Text style={styles.subText1}>{`Check-in online and your information will be send directly to  ${CURRENT_APP_NAME}`}</Text>
                         </View>
                         <View style={[styles.centerContent, { marginTop: 50 }]}>
                             <TouchableOpacity style={styles.touchStyle} onPress={() => {
