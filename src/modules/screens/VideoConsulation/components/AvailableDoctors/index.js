@@ -630,7 +630,7 @@ class AvailableDoctors4Video extends Component {
                             }}>
                                 <Row style={styles.headerStyle}>
                                     <Icon name="create" style={{ fontSize: 15, color: '#fff', marginLeft: 15 }} />
-                                    <Text style={styles.reasonText}> Enter Your Reason For Consultation?</Text>
+                                    <Text style={styles.reasonText}> Enter your reason for consultation?</Text>
                                 </Row>
                                 <View>
                                     <TextInput
@@ -651,12 +651,12 @@ class AvailableDoctors4Video extends Component {
                                     <Col size={8} >
                                         <Row>
                                             <Col size={5}>
-                                                <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, borderRadius: 5, backgroundColor: 'red', height: 25 }} onPress={() => this.setState({ descriptionVisible: false })} testID='cancelButton'>
+                                                <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, borderRadius: 5, backgroundColor: 'red', height: 25,alignItems:'center',justifyContent:'center' }} onPress={() => this.setState({ descriptionVisible: false })} testID='cancelButton'>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: 'bold' }}> {'CANCEL'}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                             <Col size={5} style={{ marginRight: 3, marginLeft: 5 }} >
-                                                <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, borderRadius: 5, height: 25 }} onPress={() => this.descritionSubmission(serviceType)} testID='submitButton'>
+                                                <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, borderRadius: 5, height: 25,alignItems:'center',justifyContent:'center' }} onPress={() => this.descritionSubmission(serviceType)} testID='submitButton'>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>{'SUBMIT'}</Text>
                                                 </TouchableOpacity>
                                             </Col>

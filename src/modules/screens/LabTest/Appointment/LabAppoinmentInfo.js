@@ -666,7 +666,7 @@ class LabAppointmentInfo extends Component {
                               <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
                                 onPress={() => this.skipAction()} testID='confirmButton'>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'SKIP'}</Text>
                               </TouchableOpacity>
                             </Col>
                             <Col size={3.4} style={{ marginRight: 3 }} >
@@ -773,8 +773,8 @@ const styles = StyleSheet.create({
   postponeButton: {
     // backgroundColor:'#4765FF',
     height: 25,
-    padding: 8,
-    borderRadius: 5
+    borderRadius: 5,
+    paddingHorizontal: 5,
   },
   postponeButton2: {
     // backgroundColor:'#4765FF',

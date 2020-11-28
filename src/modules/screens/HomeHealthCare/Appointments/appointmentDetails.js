@@ -349,7 +349,7 @@ class AppointmentDetails extends PureComponent {
                                 <CardItem footer style={styles.cardItem2}>
                                     <Grid>
                                         <Row style={{ marginRight: 5 }} >
-                                            <Col style={{ width: '50%', }}>
+                                            <Col style={{ width: '100%', }}>
                                                 <Row>
                                                     <Icon name='md-calendar' style={styles.iconStyle} />
                                                     <Text style={styles.timeText}>{formatDate(data.appointment_date, "dddd,MMMM DD-YYYY")}</Text>
@@ -490,7 +490,7 @@ class AppointmentDetails extends PureComponent {
                                                 <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
-                                                <Text style={styles.innerSubText}>Add Feedback"</Text>
+                                                <Text style={styles.innerSubText}>Add Feedback</Text>
                                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                                     <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.setState({ isVisibleAddReviewPop: true })}
                                                         testID='addFeedBack'>

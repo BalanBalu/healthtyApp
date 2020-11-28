@@ -310,7 +310,7 @@ class labSearchList extends Component {
         const { labInfo, labCatInfo } = labData;
         if (!selectedSlotItem) {
             Toast.show({
-                text: 'Please Select a Slot to continue booking',
+                text: 'Please select a slot to continue booking',
                 type: 'warning',
                 duration: 3000
             })
@@ -624,7 +624,7 @@ class labSearchList extends Component {
                                             slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate] !== undefined ?
                                                 this.renderWorkingHours(item.labInfo.lab_id, slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate])
                                                 : <RenderNoSlotsAvailable
-                                                    text={'Not Available Time'}
+                                                    text={'NO SLOT AVAILABLE'}
                                                 />
                                         }
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>

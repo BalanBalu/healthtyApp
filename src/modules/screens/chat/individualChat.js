@@ -352,7 +352,7 @@ class IndividualChat extends Component {
         } else if (status === possibleChatStatus.PAYMENT_IN_PROGRESS) {
             return 'Your Payment is not Completed, please complete your payment to start the chat with doctor'
         } else if (status === possibleChatStatus.PENDING) {
-            return 'You have initiated the chat, please wait for Doctor Approval. thank you for your patience'
+            return 'Kindly wait for the doctors approval. Thank you !'
         }else if (status === possibleChatStatus.COMPLETED) {
             return 'Conversation Completed'
         }

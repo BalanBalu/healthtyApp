@@ -152,7 +152,7 @@ export class MedInsertReview extends Component {
                       <TextInput
                         style={{ height: 80, borderWidth: 0.3, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
                         returnKeyType={'next'}
-                        placeholder="Write Your Reviews"
+                        placeholder="Write your reviews"
                         multiline={true}
                         keyboardType={'default'}
                         textAlignVertical={'top'}

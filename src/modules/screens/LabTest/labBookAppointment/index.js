@@ -214,7 +214,7 @@ class LabBookAppointment extends Component {
     const { labInfo, labCatInfo } = labData;
     if (!selectedSlotItem) {
       Toast.show({
-        text: 'Please Select a Slot to continue booking',
+        text: 'Please select a slot to continue booking',
         type: 'warning',
         duration: 3000
       })

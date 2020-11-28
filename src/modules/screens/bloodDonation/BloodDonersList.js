@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Card, Picker, Radio, Row, Col, Form, Button, Icon, Input, Footer } from 'native-base';
-import { StyleSheet, TextInput, TouchableOpacity, Image, Linking, Platform, } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, Image, Linking, Platform,AsyncStorage } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
-import { bloodDonationList } from '../../providers/profile/profile.action';
+import { bloodDonationList,fetchUserProfile } from '../../providers/profile/profile.action';
+
 import Spinner from '../../../components/Spinner'
 import { translate } from "../../../setup/translator.helper"
 
@@ -12,13 +13,33 @@ class BloodDonersList extends Component {
     super(props)
     this.state = {
       data: [],
-      isLoading: false
+      isLoading: false,
+      is_blood_donor:false
     }
   }
 
   componentDidMount() {
     this.getBlooddonationDetail();
+    this.getUserProfile();
   }
+
+
+  getUserProfile = async () => {
+    try {
+        let fields = "is_blood_donor"
+        let userId = await AsyncStorage.getItem('userId');
+        let result = await fetchUserProfile(userId, fields);
+        if (result) {
+          this.setState({
+            is_blood_donor: result.is_blood_donor,
+          });
+        }
+    }
+    catch (e) {
+        console.error('Error while Fetching User profile' + e);
+    }
+}
+
   getBlooddonationDetail = async () => {
     try {
       this.setState({
@@ -117,7 +138,8 @@ class BloodDonersList extends Component {
   };
 
   render() {
-    const { isLoading, data } = this.state;
+    const { isLoading, data ,is_blood_donor} = this.state;
+    console.log("BloodDonorsBB",data)
     return (
       <Container>
 
@@ -175,6 +197,7 @@ class BloodDonersList extends Component {
               </View>
           }
         </Content>
+        {is_blood_donor !== true?
         <Footer style={styles.footerStyle}>
           <Row style={{
             alignItems: 'center', justifyContent: 'center', marginLeft: 20,
@@ -188,6 +211,7 @@ class BloodDonersList extends Component {
             </Col>
           </Row>
         </Footer>
+        :null}
       </Container>
     )
   }

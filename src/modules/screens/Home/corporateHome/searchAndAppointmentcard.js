@@ -11,14 +11,14 @@ export const SearchAndAppointmentCard = (props) => {
     const { navigation } = props;
     switch (data) {
       case 'Doctor List':
-        return navigation("Doctor List");
+        return navigation("Categories");
       case 'Medicines':
         return navigation("Medicines");
       case 'Home Health Care':
-        return navigation("Home Health Care");
+        return navigation("Categories", { fromNavigation: "HOME_HEALTH_CARE" });
       case 'HospitalList':
         return navigation("HospitalList");
-      case 'LabBookAppointment':
+      case 'Lab Test':
         return navigation("Lab Test");
       case 'Video and Chat Service':
         return navigation("Video and Chat Service");

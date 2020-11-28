@@ -424,7 +424,7 @@ export const statusBar = {
   },
   "FAILED":
   {
-    status: 'order is failed try again',
+    status: 'Order Failed ! Try again',
     checked: true,
     color: 'green'
   },

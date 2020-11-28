@@ -498,7 +498,7 @@ class doctorSearchList extends Component {
         console.log(selectedSlotItemByDoctor);
         if (!selectedSlotItemByDoctor) {
             Toast.show({
-                text: 'Please Select a Slot to continue booking',
+                text: 'Please select a slot to continue booking',
                 type: 'warning',
                 duration: 3000
             })

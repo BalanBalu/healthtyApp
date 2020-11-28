@@ -193,7 +193,7 @@ class AddReminder extends Component {
     try {
       if ((this.state.medicine_name == null) || (this.state.medicine_form == null) || (this.state.medicine_form == "Select medicine Form") || (this.state.medicine_strength == null) || (this.state.previewdisplay == "Select medicine strength")) {
         Toast.show({
-          text: 'Kindly fill all the fields to schedule your reminderTime slots',
+          text: 'Kindly fill all the fields to schedule your reminder time slots',
           type: 'danger',
           duration: 3000
         });
@@ -461,7 +461,7 @@ class AddReminder extends Component {
                   <Form style={{ marginTop: 5, marginRight: 5 }}>
                     <Row>
                       <Col size={30}>
-                        <Text style={styles.NumText}>{translate("Select Date")}</Text>
+                        <Text style={styles.NumText}>{translate("Select date")}</Text>
                       </Col>
                       <Col size={35}>
                         <View style={{ marginTop: 5, }}>
@@ -513,7 +513,7 @@ class AddReminder extends Component {
                   <Form style={{ marginTop: 5, marginBottom: 5, marginRight: 5 }}>
                     <Row>
                       <Col size={30}>
-                        <Text style={styles.NumText}>{translate("Select Date")}</Text>
+                        <Text style={styles.NumText}>{translate("Select date")}</Text>
                       </Col>
                       <Col size={35} style={{ mariginTop: 10 }}>
                         <View style={{ marginTop: 5, }}>
