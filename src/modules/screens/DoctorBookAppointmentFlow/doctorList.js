@@ -54,14 +54,13 @@ class DoctorList extends Component {
             isLoading: true,
             isLoadingDatesAndSlots: false,
             isLoadingMoreDocList: false,
-            isRenderedTopRatedDocList: false
         }
         this.conditionFromFilterPage = false,
             this.isEnabledLoadMoreData = true;
         this.selectedDataFromFilterPage = null;
         this.incrementPaginationCount = 0;
         this.onEndReachedIsTriggedFromRenderDateList = false;
-        this.baCupOfDocList4TopRatedPurpose = [];
+        this.isRenderedTopRatedDocList = false;
     }
     navigateToFilters() {
         this.props.navigation.navigate("Filter Doctor Info", {
@@ -228,7 +227,6 @@ class DoctorList extends Component {
                         data: doctorInfoList
                     })
                 }
-                this.setDocList4TopRatedPurpose();
             }
             else {
                 if (!activeSponsor) this.isEnabledLoadMoreData = false;
@@ -262,10 +260,10 @@ class DoctorList extends Component {
             }
         }
     }
-    setDocList4TopRatedPurpose() {
+    setDocListByPreviousOrder() {
         let docList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
         docList.sort(sortByPrimeDoctors);  // Sort by active Sponsors list in TOP
-        this.baCupOfDocList4TopRatedPurpose = docList;
+        return docList || [];
     }
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, } } = this.props;
@@ -280,7 +278,7 @@ class DoctorList extends Component {
                     <Row style={{ height: 35, alignItems: 'center' }}>
                         <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(doctorInfoListAndSlotsData)}>
                             <Col size={2.0} >
-                                <MaterialIcons name={this.state.isRenderedTopRatedDocList ? 'reply'
+                                <MaterialIcons name={this.isRenderedTopRatedDocList ? 'reply'
                                     : 'keyboard-arrow-down'} style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
@@ -404,12 +402,17 @@ class DoctorList extends Component {
     onPressGoToBookAppointmentPage(doctorItemData) {
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         doctorItemData.doctorId = doctorItemData.doctor_id;
+        const singleDoctorItemData = { ...doctorItemData };
+        const reqData4BookAppPage = {
+            singleDoctorItemData: singleDoctorItemData,
+            doctorId: doctorItemData.doctor_id,
+            weekWiseDatesList: this.weekWiseDatesList,
+        }
         const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorItemData.doctorIdHostpitalId).slotData;
         if (doctorItemHaveSlotsDataObj) {
-            doctorItemData.slotData = doctorItemHaveSlotsDataObj;
+            reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
         }
-        const singleDoctorItemData = { ...doctorItemData };
-        this.props.navigation.navigate('Doctor Details Preview', { doctorId: doctorItemData.doctor_id, singleDoctorItemData: singleDoctorItemData, weekWiseDatesList: this.weekWiseDatesList })
+        this.props.navigation.navigate('Doctor Details Preview', reqData4BookAppPage)
     }
 
     getFeesBySelectedSlot(selectedSlotData, wholeSlotData, doctorIdHostpitalId, item) {
@@ -522,7 +525,8 @@ class DoctorList extends Component {
 
     sortByTopRatings(doctorDataList) {
         const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
-        if (!this.state.isRenderedTopRatedDocList) {
+        if (!this.isRenderedTopRatedDocList) {
+            this.isRenderedTopRatedDocList = true;
             const doctorDataListBySort = doctorDataList.sort(function (a, b) {
                 let ratingA = 0;
                 let ratingB = 0;
@@ -545,12 +549,12 @@ class DoctorList extends Component {
             });
         }
         else {
+            this.isRenderedTopRatedDocList = false;
             store.dispatch({
                 type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-                data: this.baCupOfDocList4TopRatedPurpose
+                data: this.setDocListByPreviousOrder()
             });
         }
-        this.setState({ isRenderedTopRatedDocList: !this.state.isRenderedTopRatedDocList });
     }
 
     renderDoctorInformationCard(item) {

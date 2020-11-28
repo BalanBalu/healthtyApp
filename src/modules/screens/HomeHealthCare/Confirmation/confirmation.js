@@ -129,7 +129,7 @@ class HomeTestConfirmation extends Component {
         const finalAmountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
         const amount = finalAmountBySelectedPersons;
         bookSlotDetails.slotData.fee = finalAmountBySelectedPersons;
-        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount })
+        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount, patientInfo: this.state.patDetails })
     }
     async onPressPayAtHome() {
         const { selectedPatientTypes, bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
@@ -174,7 +174,7 @@ class HomeTestConfirmation extends Component {
         console.log('Book Appointment Payment Update Response ');
         if (response.success) {
             debugger
-            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo, isFromHomeHealthCareConfirmation: true });
+            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo, isFromHomeHealthCareConfirmation: true, patientInfo: this.state.patDetails });
         } else {
             Toast.show({
                 text: response.message,

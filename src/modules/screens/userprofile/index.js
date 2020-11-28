@@ -999,7 +999,7 @@ class Profile extends Component {
                                 }}
                                 onPress={() =>
                                   this.props.navigation.navigate(
-                                    'Book Appointment',
+                                    'Doctor Details Preview',
                                     {
                                       doctorId: item.doctorInfo.doctor_id,
                                       fetchAvailabiltySlots: true,
