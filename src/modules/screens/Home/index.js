@@ -36,6 +36,7 @@ import { CorporateHome } from './corporateHome'
 import { toastMeassage } from '../../common'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { getCorporateEmployeeDetailsById } from '../../providers/corporate/corporate.actions'
+import { Loader } from '../../../components/ContentLoader';
 
 
 
@@ -46,7 +47,7 @@ class Home extends Component {
         super(props)
         this.state = {
             data: [],
-            isLoading: false,
+            isLoading: true,
             catagary: [],
             categryCount: 0,
             AppoinmentData: [],
@@ -689,19 +690,21 @@ class Home extends Component {
 
 
     render() {
-
+        const { isLoading } = this.state
         return (
 
             <Container style={styles.container}>
+                {isLoading ?
+                    <Loader style='home' /> :
+                    <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
 
-                <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                    <NavigationEvents
-                        onWillFocus={payload => { this.backNavigation(payload) }}
-                    />
-                    <View>
-                        {this.getHomePageDetails()}
-                    </View>
-                </Content>
+                        <NavigationEvents
+                            onWillFocus={payload => { this.backNavigation(payload) }}
+                        />
+                        <View>
+                            {this.getHomePageDetails()}
+                        </View>
+                    </Content>}
             </Container>
         )
     }
