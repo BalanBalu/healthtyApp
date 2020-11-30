@@ -406,11 +406,11 @@ class DoctorList extends Component {
         const reqData4BookAppPage = {
             singleDoctorItemData: singleDoctorItemData,
             doctorId: doctorItemData.doctor_id,
-            weekWiseDatesList: this.weekWiseDatesList,
         }
         const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorItemData.doctorIdHostpitalId).slotData;
         if (doctorItemHaveSlotsDataObj) {
             reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
+            reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
         }
         this.props.navigation.navigate('Doctor Details Preview', reqData4BookAppPage)
     }

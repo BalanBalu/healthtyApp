@@ -122,6 +122,8 @@ import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Con
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCare/Appointments/cancelAppointment';
+import HomeHealthcareDoctorDetailsPreview from '../../modules/screens/HomeHealthCare/doctorDetailsPreview/doctorDetailsPreview';
+
 import MedicineRecords from '../../modules/screens/medicalRecords';
 import EmrInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/emrInfo'
 import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
@@ -355,7 +357,7 @@ const HomeStack = createStackNavigator({
       title: 'Notification',
     })
   },
-  
+
   BloodDonerFilters: {
     screen: BloodDonerFilters,
     navigationOptions: ({ navigation }) => ({
@@ -781,6 +783,12 @@ const HomeStack = createStackNavigator({
     screen: HomeHealthcareCancelAppointment,
     navigationOptions: {
       title: 'Home Healthcare Cancel Appointment'
+    }
+  },
+  "Home Healthcare Doctor Details Preview": {
+    screen: HomeHealthcareDoctorDetailsPreview,
+    navigationOptions: {
+      title: 'Home Healthcare Doctor Details Preview'
     }
   },
 
