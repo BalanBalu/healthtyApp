@@ -4,7 +4,7 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, AsyncStorage } from 'react-native';
 import { formatDate } from '../../../setup/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
 import { RenderHospitalAddress, renderDoctorImage, getDoctorSpecialist, getDoctorEducation } from '../../common'
@@ -20,7 +20,9 @@ class PaymentSuccess extends Component {
             },
             paymentMethod: null,
             tokenNo: null,
-            fromNavigation: null
+            fromNavigation: null,
+            CorporateUser: false
+
 
         }
         this.isFromHomeHealthCareConfirmation = false;
@@ -73,6 +75,18 @@ class PaymentSuccess extends Component {
             )
         }
         return null
+    }
+
+    async homePageRedirect() {
+        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+        console.log("isCorporateUserBBB", isCorporateUser)
+        this.setState({ CorporateUser: isCorporateUser })
+        const { CorporateUser } = this.state
+        if (CorporateUser === true) {
+            this.props.navigation.navigate('CorporateHome');
+        } else {
+            this.props.navigation.navigate('Home');
+        }
     }
     render() {
         const { navigation } = this.props;
@@ -159,7 +173,7 @@ class PaymentSuccess extends Component {
 
                             </Row>
                         </Card>
-                        <Button onPress={() => navigation.navigate('Home')}
+                        <Button onPress={() => this.homePageRedirect()}
                             block style={{ marginTop: 5, borderRadius: 10, marginBottom: 10, backgroundColor: '#5bb85d' }}>
                             <Text style={styles.customizedText}> Home </Text>
                         </Button>
