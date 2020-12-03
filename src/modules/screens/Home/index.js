@@ -340,7 +340,7 @@ class Home extends Component {
                                     onFocus={() => { this.props.navigation.navigate("RenderSuggestionList") }}
                                     placeholder="Search for Symptoms/Services,etc"
                                     style={styles.inputfield}
-                                    placeholderTextColor="#e2e2e2"
+                                    placeholderTextColor="#909498"
                                     editable={true}
                                     underlineColorAndroid="transparent"
                                 />
@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20
     },
     inputfield: {
-        color: 'gray',
+        color: '#909498',
         fontFamily: 'OpenSans',
         fontSize: 12,
         padding: 5,
