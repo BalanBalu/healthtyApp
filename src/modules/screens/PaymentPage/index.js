@@ -13,7 +13,6 @@ import { deleteCartByIds } from '../../providers/pharmacy/pharmacy.action'
 import { validatePromoCode,applyPromoCode } from '../../providers/PromoCode/promo.action'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
-import SpinnerOverLay from '../../../components/SpinnerOverLay';
 import { NavigationEvents } from 'react-navigation';
 
 
