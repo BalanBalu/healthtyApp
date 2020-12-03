@@ -210,7 +210,7 @@ class UpdateUserDetails extends Component {
                                     />
 
                                 </Item>
-                                <Item last style={{ borderBottomWidth: 0, marginRight: 15, height: 45, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
+                                <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5, }}>
                                     <Picker style={styles.transparentLabel2}
                                         mode="dropdown"
                                         placeholderStyle={{ fontSize: 15, marginLeft: -5 }}
@@ -240,37 +240,33 @@ class UpdateUserDetails extends Component {
                                 </Item>
 
 
-                                <View style={{ marginTop: 20, borderBottomWidth: 0,marginLeft:5}}>
+                                <View style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 15,}}>
                                             <Row style={ Platform.OS === "ios" ? {marginLeft:10,marginRight:10}:null} >
-                                                <Col size={3} style={{justifyContent:'center'}}>
-                                                    <Row style={{alignItems:'center',}}>
+                                                <Col size={3} style={{flexDirection:'row',alignItems:'center'}}>
+                                                   
                                                     <Radio 
                                                         standardStyle={true}
                                                         onPress={() => this.setState({ gender: 'M', updateButton: false })}
                                                         selected={this.state.gender === 'M'}
                                                     />
-                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Male</Text>
-                                                    </Row>
+                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12,marginLeft:5 }}>Male</Text>
+                                                    
                                                 </Col>
-                                            <Col size={3}>
-                                                <Row style={{ alignItems: 'center' }}>
+                                                <Col size={3} style={{alignItems:'center',flexDirection:'row'}}>
                                                     <Radio 
                                                         standardStyle={true}
                                                         onPress={() => this.setState({ gender: 'F', updateButton: false })}
                                                         selected={this.state.gender === 'F'}
                                                        />
-                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Female</Text>
-                                                </Row>
+                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12, marginLeft:5  }}>Female</Text>
                                             </Col>
-                                            <Col size={3}>
-                                                <Row style={{ alignItems: 'center' }}>
+                                            <Col size={3} style={{alignItems:'center',flexDirection:'row'}}>
                                                     <Radio
                                                         standardStyle={true}
                                                         selectedColor={'#775DA3'}
                                                         onPress={() => this.setState({ gender: 'O', updateButton: false })}
                                                         selected={this.state.gender === 'O'}/>
-                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Others</Text>
-                                                </Row>
+                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12, marginLeft:5  }}>Others</Text>
                                             </Col>
                                             </Row>                              
                                 </View>

@@ -160,8 +160,13 @@ getAllChatsByUserId = async(userId) => {
                 </Col>
                 <Col style={{width:'85%',marginTop:5,marginLeft:15}}>
                     <Row>
-                        <Text style={styles.docname}>{item.name}</Text>
+                        <Col  size={7}>
+                        <Text style={styles.docname} ellipsizeMode="tail" numberOfLines={1}>{item.name}</Text>
+                        </Col>
+                        <Col  size={3}>
                         <Text style={styles.date}>{item.messageUpdated_time}</Text>
+
+                        </Col>
                     </Row>
                     <Row>
                         <Col style={{width:'80%'}}>
