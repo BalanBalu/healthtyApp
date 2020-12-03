@@ -61,12 +61,10 @@ export default class MapBox extends React.Component {
                         message: 'App needs location permission to find your position.'
                     }
                 ).then(granted => {
-                    console.log(granted);
                 }).catch(err => {
                     console.warn(err);
                 });
-                console.log("granted");
-                console.log(await granted);
+                // console.log(await granted);
             }
             this._isMounted = true;
             const { navigation } = this.props;
@@ -74,7 +72,6 @@ export default class MapBox extends React.Component {
             let showAllAddressFields = navigation.getParam('mapEdit') || false
             let navigationOption = navigation.getParam('navigationOption') || null
             let locationData = this.props.navigation.getParam('locationData');
-            console.log("locationData" + JSON.stringify(locationData))
             if (fromProfile) {
                 await this.setState({ fromProfile: true })
                 if (locationData) {
@@ -86,9 +83,8 @@ export default class MapBox extends React.Component {
                 }
             } else if (navigationOption) {
                 addressType = navigation.getParam('addressType') || null
-                console.log("addressType", addressType)
                 if (addressType) {
-                    this.setState({ addressType: addressType.addressType, full_name: addressType.full_name, mobile_no: addressType.mobile_no, addressTypeModule: addressType.addressTypeModule || null })
+                    this.setState({ addressType: addressType.addressType, full_name: addressType.full_name, mobile_no: addressType.mobile_no })
                 }
                 else if (addressType == 'lab_delivery_Address') {
                     this.setState({ addressType: addressType })
@@ -151,7 +147,6 @@ export default class MapBox extends React.Component {
         }
     }
     formUserAddress(locationData) {
-        console.log("locationData", locationData)
         let locationFullText = '';
         if (locationData.context) {
             for (let i = 0; i < locationData.context.length; i++) {
@@ -189,7 +184,6 @@ export default class MapBox extends React.Component {
             locationFullText = locationData.place_name;
         }
         this.setState({ address: { ...this.state.address }, locationFullText });
-        console.log("address", this.state.address)
         this.setState({ center: locationData.center })
         debugger
     }
@@ -206,7 +200,6 @@ export default class MapBox extends React.Component {
 
     getPostOffName = async (value) => {
         let response = await getPostOffNameAndDetails(value);
-        console.log("response::::", response)
         if (response.Status == 'Success') {
             let temp = [];
             temp = response.PostOffice;
@@ -248,7 +241,6 @@ export default class MapBox extends React.Component {
     }
     async updateAddressData() {
         try {
-            this.setState({ loading: true })
             let Lnglat = this.state.center;
             // addressData = 'address'
             let userAddressData = {
@@ -258,7 +250,6 @@ export default class MapBox extends React.Component {
                     address: this.state.address
                 }
             }
-            console.log("userAddressData", userAddressData)
             if (this.state.addressType == 'delivery_Address') {
 
                 if (validateFirstNameLastName(this.state.full_name) == false) {
@@ -276,23 +267,26 @@ export default class MapBox extends React.Component {
                     delete userAddressData.address
 
                 }
-                if (this.state.addressTypeModule && this.state.addressTypeModule === 'HOME_HEALTH_CARE') {
-                    userAddressData.delivery_Address.address_module_type = 'HOME_HEALTH_CARE';
-                }
             }
             if (this.state.addressType == 'lab_delivery_Address') {
                 userAddressData.delivery_Address = userAddressData.address;
                 delete userAddressData.address
-
             }
-
-
-
-            console.log(userAddressData)
+            if (this.state.addressType === 'HOME_HEALTH_CARE') {
+                if (validateFirstNameLastName(this.state.full_name) == false) {
+                    Toast.show({
+                        text: 'name should not contains white spaces and any Special Character',
+                        type: 'danger',
+                        duration: 5000
+                    })
+                    return
+                }
+                userAddressData.home_healthcare_address = userAddressData.address;
+                userAddressData.home_healthcare_address.full_name = this.state.full_name;
+                userAddressData.home_healthcare_address.mobile_no = this.state.mobile_no;
+                delete userAddressData.address
+            }
             const userId = await AsyncStorage.getItem('userId')
-
-            this.setState({ loading: false });
-
             let result = await userFiledsUpdate(userId, userAddressData);
             if (result.success) {
                 if (this.state.fromProfile) {
@@ -304,7 +298,7 @@ export default class MapBox extends React.Component {
                     this.props.navigation.navigate('Profile');
                 } else if (this.state.navigationOption) {
                     const setParamObjData = { hasReloadAddress: true }
-                    if (this.state.addressTypeModule && this.state.addressTypeModule === 'HOME_HEALTH_CARE') {
+                    if (this.state.addressType === 'HOME_HEALTH_CARE') {
                         setParamObjData.userAddressInfo = userAddressData;
                         setParamObjData.fromNavigation = 'HOME_HEALTH_CARE'
                     }
@@ -377,7 +371,6 @@ export default class MapBox extends React.Component {
     async onPress(e) {
         // const pointInView = await this._map.getPointInView(e.geometry.coordinates);
         // this.setState({pointInView});
-        // console.log(this.state.pointInView);
     }
     _abortRequests = () => {
         this._requests.map(i => i.abort());

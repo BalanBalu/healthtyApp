@@ -53,7 +53,7 @@ class DoctorList extends Component {
             doctorInfoListAndSlotsData1: [],
             pinCode: '',
             searchedInputTextValue: props.navigation.getParam('categoryName') || 'Primary',
-            searchedInputPinCodeValue: '600001',
+            searchedInputPinCodeValue: props.navigation.getParam('pinCode') || '600001',
             isLoadingOnChangeDocList: false,
             isOnEditPincode: false,
         }
@@ -104,7 +104,6 @@ class DoctorList extends Component {
         }
     }
     callInitialSearchOrFilterServiceWithClearedData = async (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) => {
-        debugger
         this.setState({ isLoading: true, });
         if (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) {
             this.props.navigation.setParams({ 'conditionFromFilterPage': false });
@@ -166,15 +165,8 @@ class DoctorList extends Component {
             else {
                 type = 'search';
             }
-            debugger
-            console.log('type=====>', type);
-            // console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
             const docListResponse = await searchByHomeHealthcareDocDetailsService(type, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
-            // console.log('docListResponse====>', JSON.stringify(docListResponse));
-            debugger
             if (docListResponse.success) {
-                debugger
-                // console.log(' this.incrementPaginationCount===>', this.incrementPaginationCount)
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
                 const searchedDoctorIdsArray = [];
                 const docListData = docListResponse.data || [];
@@ -184,14 +176,11 @@ class DoctorList extends Component {
                     searchedDoctorIdsArray.push(item.doctor_id);
                     this.docInfoAndAvailableSlotsMapByDoctorId.set(item.doctor_id, item);
                 })
-                debugger
                 await Promise.all([
                     ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
                     serviceOfGetTotalReviewsCount4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
                 ]);
-                debugger
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorId.values()) || [];
-                debugger
                 if (docListData.length <= 3) {
                     this.isEnabledLoadMoreData = false;
                 }
@@ -205,7 +194,6 @@ class DoctorList extends Component {
                         data: doctorInfoList
                     })
                 }
-                debugger
             }
             else {
                 if (this.docInfoAndAvailableSlotsMapByDoctorId.size < 3) this.isEnabledLoadMoreData = false;
@@ -383,7 +371,6 @@ class DoctorList extends Component {
 
     loadMoreData = async () => {
         try {
-            // console.log('calling On End reached=====>');
             this.setState({ isLoadingMoreDocList: true });
             await this.searchByDoctorDetails();
         } catch (error) {
@@ -466,6 +453,7 @@ class DoctorList extends Component {
     /* get Doctor  Availability Slots service */
     getDoctorAvailabilitySlots = async (doctor_id, startDateByMoment, endDateByMoment, indexOfItem) => {
         try {
+            const { searchedInputPinCodeValue } = this.state;
             this.weekWiseDatesList = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.weekWiseDatesList);
             const orderedDataFromWholeData = this.getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService(indexOfItem) // get 5 Or LessThan 5 of doctor_ids in order wise using index of given input of doctorInfoListAndSlotsData
             const reqDataDoctorIdsArry = [];
@@ -475,23 +463,26 @@ class DoctorList extends Component {
             const reqData4Availability = {
                 "doctorIds": reqDataDoctorIdsArry
             }
+            if (searchedInputPinCodeValue) {
+                reqData4Availability.locationData = {
+                    from_pincode: searchedInputPinCodeValue,
+                    to_pincode: searchedInputPinCodeValue,
+                }
+            }
             const reqStartAndEndDates = {
                 startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchDocHomeHealthcareAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            // console.log('resultSlotsData====>' + JSON.stringify(resultSlotsData))
             if (resultSlotsData.success) {
                 const availabilitySlotsData = resultSlotsData.data;
                 if (availabilitySlotsData.length != 0) {
                     this.setDoctorAvailabilitySlotsDataByDocAndHospitalIds(availabilitySlotsData || []);
                     const docInfoAndAvailableSlotsMap = Array.from(this.docInfoAndAvailableSlotsMapByDoctorId.values());
-                    debugger
                     store.dispatch({
                         type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                         data: docInfoAndAvailableSlotsMap
                     });
-                    debugger
                 }
             }
         } catch (ex) {
@@ -500,19 +491,14 @@ class DoctorList extends Component {
     }
     /*  Set Doctor Availability Slots data by doctor_ids   */
     setDoctorAvailabilitySlotsDataByDocAndHospitalIds = (SourceOfSlotsDataArray) => {
-        debugger
         SourceOfSlotsDataArray.map((item) => {
-            debugger
             const baCupOfDocInfo = this.docInfoAndAvailableSlotsMapByDoctorId.get(item.doctor_id);
             const finalSlotsDataObj = { ...baCupOfDocInfo.slotData, ...item.slotData } // Merge the Previous weeks and On change the Next week slots data
             delete baCupOfDocInfo.slotData
             const finalDocAndAvailabilityObj = {
                 ...baCupOfDocInfo, slotData: finalSlotsDataObj
             }
-            debugger
             this.docInfoAndAvailableSlotsMapByDoctorId.set(item.doctor_id, finalDocAndAvailabilityObj);
-            debugger
-
         });
     }
 

@@ -68,12 +68,8 @@ class Categories extends Component {
         categoryName,
         categoryId: category_id
       }
-      if (userAddressInfo.delivery_Address && userAddressInfo.delivery_Address.coordinates) {
-        reqParamDataObj.locationDataFromSearch = {
-          type: 'geo',
-          "coordinates": userAddressInfo.delivery_Address.coordinates || [],
-          maxDistance: MAX_DISTANCE_TO_COVER_HOME_HEALTH_CARE_DOCTORS
-        }
+      if (userAddressInfo.home_healthcare_address && userAddressInfo.home_healthcare_address.address && userAddressInfo.home_healthcare_address.address.pin_code) {
+        reqParamDataObj.pinCode = userAddressInfo.home_healthcare_address.address.pin_code
       }
       this.props.navigation.navigate("Home Health Care", reqParamDataObj);
     } else {
