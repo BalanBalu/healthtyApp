@@ -350,6 +350,12 @@ class Home extends Component {
             return this.homepageRendering()
         }
     }
+    onPressNavigateToLocPage = async (screen, addressType, navigationOption) => {
+        const getLoggedUserInfo = JSON.parse(await AsyncStorage.getItem('basicProfileData'));
+        const fullName = getLoggedUserInfo && getLoggedUserInfo.first_name ? getLoggedUserInfo.first_name + ' ' + getLoggedUserInfo.last_name : null;
+        addressType = { addressTypeModule: 'HOME_HEALTH_CARE', addressType: addressType, mobile_no: getLoggedUserInfo && getLoggedUserInfo.mobile_no || null, full_name: fullName }
+        this.props.navigation.navigate(screen, { screen, navigationOption, addressType })
+    }
     homepageRendering() {
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount },
             profile: { corporateData }, navigation } = this.props;
@@ -430,7 +436,10 @@ class Home extends Component {
                 </Grid>
                 <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
                     <Col style={{ width: '50%' }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })}>
+                        <TouchableOpacity onPress={() =>
+                            // this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })
+                            this.onPressNavigateToLocPage('MapBox', 'delivery_Address', 'Categories')
+                        }>
                             <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                 <Row style={styles.rowStyle}>
                                     <FastImage

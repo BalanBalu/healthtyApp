@@ -48,6 +48,7 @@ export const SERVICE_TYPES = {
 }
 export const MAX_DISTANCE_TO_COVER = 30000; // in meters Doctor Can be search Within in the AREA
 export const MAX_DISTANCE_TO_COVER_HOSPITALS = 20000; // in meters Users Can be search Hospitals Within in the AREA
+export const MAX_DISTANCE_TO_COVER_HOME_HEALTH_CARE_DOCTORS = 10000;
 
 export const PHARMACY_MAX_DISTANCE_TO_COVER = 10000;
 export const MAX_PERCENT_APPLY_BY_CREDIT_POINTS = 25;
@@ -62,5 +63,5 @@ export const MY_SMART_HEALTH_CARE = 'My SmartHealth';
 export const MY_MEDFLIC = 'Medflic';
 export const CURRENT_APP_NAME = MY_MEDFLIC;
 
-export const ANDROID_BUNDLE_IDENTIFIER = CURRENT_APP_NAME === MY_MEDFLIC ? 'com.ads.medflic': 'com.ads.mysmarthealth';
+export const ANDROID_BUNDLE_IDENTIFIER = CURRENT_APP_NAME === MY_MEDFLIC ? 'com.ads.medflic' : 'com.ads.mysmarthealth';
 
