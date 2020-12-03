@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
-import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
+import { MAX_DISTANCE_TO_COVER, MAX_DISTANCE_TO_COVER_HOME_HEALTH_CARE_DOCTORS } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 
@@ -57,21 +57,25 @@ class Categories extends Component {
 
 
     if (fromNavigation === "HOSPITAl") {
-    
+
       this.props.navigation.navigate("HospitalList", {   // New Enhancement Router path
         category_id: category_id
       })
     }
     else if (fromNavigation === 'HOME_HEALTH_CARE') {
-      this.props.navigation.navigate("Home Health Care", {
-        categoryName: categoryName,
-        categoryId: category_id,
-        locationDataFromSearch: {
+      let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null
+      const reqParamDataObj = {
+        categoryName,
+        categoryId: category_id
+      }
+      if (userAddressInfo.delivery_Address && userAddressInfo.delivery_Address.coordinates) {
+        reqParamDataObj.locationDataFromSearch = {
           type: 'geo',
-          "coordinates": locationCordinates,
-          maxDistance: MAX_DISTANCE_TO_COVER
+          "coordinates": userAddressInfo.delivery_Address.coordinates || [],
+          maxDistance: MAX_DISTANCE_TO_COVER_HOME_HEALTH_CARE_DOCTORS
         }
-      });
+      }
+      this.props.navigation.navigate("Home Health Care", reqParamDataObj);
     } else {
       this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
         inputKeywordFromSearch: categoryName,

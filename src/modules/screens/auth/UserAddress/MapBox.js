@@ -88,7 +88,7 @@ export default class MapBox extends React.Component {
                 addressType = navigation.getParam('addressType') || null
                 console.log("addressType", addressType)
                 if (addressType) {
-                    this.setState({ addressType: addressType.addressType, full_name: addressType.full_name, mobile_no: addressType.mobile_no })
+                    this.setState({ addressType: addressType.addressType, full_name: addressType.full_name, mobile_no: addressType.mobile_no, addressTypeModule: addressType.addressTypeModule || null })
                 }
                 else if (addressType == 'lab_delivery_Address') {
                     this.setState({ addressType: addressType })
@@ -276,6 +276,9 @@ export default class MapBox extends React.Component {
                     delete userAddressData.address
 
                 }
+                if (this.state.addressTypeModule && this.state.addressTypeModule === 'HOME_HEALTH_CARE') {
+                    userAddressData.delivery_Address.address_module_type = 'HOME_HEALTH_CARE';
+                }
             }
             if (this.state.addressType == 'lab_delivery_Address') {
                 userAddressData.delivery_Address = userAddressData.address;
@@ -287,7 +290,7 @@ export default class MapBox extends React.Component {
 
             console.log(userAddressData)
             const userId = await AsyncStorage.getItem('userId')
-          
+
             this.setState({ loading: false });
 
             let result = await userFiledsUpdate(userId, userAddressData);
@@ -300,8 +303,12 @@ export default class MapBox extends React.Component {
                     })
                     this.props.navigation.navigate('Profile');
                 } else if (this.state.navigationOption) {
-                    this.props.navigation.navigate(this.state.navigationOption,{hasReloadAddress:true});
-
+                    const setParamObjData = { hasReloadAddress: true }
+                    if (this.state.addressTypeModule && this.state.addressTypeModule === 'HOME_HEALTH_CARE') {
+                        setParamObjData.userAddressInfo = userAddressData;
+                        setParamObjData.fromNavigation = 'HOME_HEALTH_CARE'
+                    }
+                    this.props.navigation.navigate(this.state.navigationOption, setParamObjData);
                 }
                 else {
                     logout();
@@ -557,7 +564,7 @@ export default class MapBox extends React.Component {
                                     editable={this.state.editable}
                                     onChangeText={value => this.updateAddressObject('country', value)} />
                             </Item>
-                           
+
                             <Button success style={styles.loginButton} block onPress={() => this.updateAddressData()}>
                                 <Icon name='paper-plane'></Icon>
                                 <Text>Update</Text>
