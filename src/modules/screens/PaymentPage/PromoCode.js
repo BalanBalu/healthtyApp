@@ -24,9 +24,10 @@ class PromoCode extends Component {
     getPromolistDatas = async (data) => {
         try {
             let result = await getPromodataList(data)
+            console.log(JSON.stringify(result));
             if (result.success) {
                 this.setState({ data: result.data })
-                console.log(result);
+
             }
         }
         catch (e) {
@@ -38,7 +39,7 @@ class PromoCode extends Component {
     }
 
     displayMoreData() {
-        this.setState({ displayMore: true })
+        this.setState({ displayMore: !this.state.displayMore })
     }
 
 
@@ -58,24 +59,21 @@ class PromoCode extends Component {
             return null
         }
     }
-    getAppoinment(data) {
-        if (data.applicableService_type != undefined) {
-            return `${data.applicableService_type || ''}`
+    getPromocodeDiscription(data) {
+        if (data.service_type != undefined) {
+            return `${data.service_type || ''}`
         } else {
             return null
         }
     }
 
-    endDate(date) {
-        if (date.valid_upto != undefined) {
-            return `${date.valid_upto || ''}`
-        } else {
-            return null
-        }
-    }
-
+   
     OnCopyedValue() {
         if (this.state.coupenCodeText != null) { }
+    }
+    navigateToPaymentPage(data) {
+        this.props.navigation.navigate('paymentPage',{hasReload:true,coupenCodeText:data.promo_code})
+        
     }
 
     render() {
@@ -106,12 +104,14 @@ class PromoCode extends Component {
                                             </Row>
                                         </Col>
                                         <Col size={6}>
-                                            <Text style={{ color: '#775DA3', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> APPLY</Text>
+                                        <TouchableOpacity onPress={() => this.navigateToPaymentPage(item)}>
+                                                <Text style={{ color: '#775DA3', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> APPLY</Text>
+                                                </TouchableOpacity>
                                         </Col>
                                     </Row>
                                     <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
                                         {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>50% OFF on your first {this.getAppoinment(item)}</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>{this.getPromocodeDiscription(item)}</Text>
                                     </Row>
                                     <Row style={{ marginTop: 10 }}>
                                         {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
@@ -119,7 +119,7 @@ class PromoCode extends Component {
                                     </Row>
                                     <Row style={{ marginTop: 5, marginBottom: 5 }}>
                                         <TouchableOpacity onPress={() => this.displayMoreData()}>
-                                            <Text style={{ color: '#378DDF', fontSize: 12, fontWeight: 'bold' }}>+ MORE</Text>
+                                            <Text style={{ color: '#378DDF', fontSize: 12, fontWeight: 'bold' }}>{this.state.displayMore == false ? "+ MORE":"-LESS"}</Text>
                                         </TouchableOpacity>
                                     </Row>
                                     {this.state.displayMore == true ?
@@ -138,7 +138,7 @@ class PromoCode extends Component {
                                             </Row>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid only on select {this.getAppoinment(item)}</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid only on select {this.getPromocodeDiscription(item)}</Text>
                                             </Row>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
@@ -146,7 +146,7 @@ class PromoCode extends Component {
                                             </Row>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer valid till {formatDate(this.endDate(item), 'MMM DD,YYYY HH:MM  A')}</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer valid till {formatDate(item.expiration_date, 'MMM DD,YYYY HH:MM  A')}</Text>
                                             </Row>
                                         </View> : null}
                                     <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, }} />
