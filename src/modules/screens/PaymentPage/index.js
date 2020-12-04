@@ -785,16 +785,7 @@ class PaymentPage extends Component {
 
 
                 </Content>
-
-                <Footer style={{
-                    backgroundColor: '#fff'
-                }}>
-                    <FooterTab style={{ backgroundColor: '#fff', }}>
-                        <Button block onPress={() => this.makePaymentMethod()} block style={styles.paymentButton}>
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Pay</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
+                <TouchableOpacity  onPress={() => this.makePaymentMethod()} block style={styles.paymentButton}><Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'#fff' }}>Pay</Text></TouchableOpacity> 
             </Container >
         )
     }
@@ -1149,7 +1140,10 @@ const styles = StyleSheet.create({
 
     paymentButton: {
 
+        alignSelf: 'stretch',
         backgroundColor: '#775DA3',
+        height:45,justifyContent:'center',
+        alignItems:'center'
 
     },
     normalText:
