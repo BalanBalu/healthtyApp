@@ -33,6 +33,7 @@ import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
+import PromoCode from "../../modules/screens/PaymentPage/PromoCode"
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
@@ -713,6 +714,13 @@ const HomeStack = createStackNavigator({
     screen: PaymentPage,
     navigationOptions: {
       title: 'Payment Page'
+    }
+  },
+  
+  PromoCode: {
+    screen: PromoCode,
+    navigationOptions: {
+      title: 'Promo  codes'
     }
   },
   paymentsuccess: {
