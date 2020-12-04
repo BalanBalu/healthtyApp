@@ -14,10 +14,7 @@ export default class RenderDoctorInfoPreview extends Component {
     }
 
     render() {
-        debugger
-        console.log('Rendering Doc Details Preview====>');
         const { doctorData, navigation, shareDocInfo, docInfoData: { isLoggedIn, fee, feeWithoutOffer, isVideoAvailability, isChatAvailability, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList } = this.props;
-        debugger
         return (
             <View>
 

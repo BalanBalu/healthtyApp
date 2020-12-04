@@ -99,15 +99,15 @@ export const RenderReviewData = (props) => {
     return (
         <Grid>
             <Row style={{ marginTop: 20, borderTopColor: 'gray', borderTopWidth: 0.5, paddingTop: 20 }}>
-                <Col style={{ width: '15%' }}>
+                <Col size={2}>
                     <TouchableOpacity onPress={() => navigation.navigate("ImageView", { passImage: renderProfileImage(item.userInfo), title: 'Profile photo' })}>
                         <Thumbnail source={renderProfileImage(item.userInfo)} style={{ width: 60, height: 60, borderRadius: 60 / 2 }} />
                     </TouchableOpacity>
                 </Col>
-                <Col style={{ width: '55%', marginTop: 5, marginLeft: 15 }}>
-                    <Text style={styles.name}>{item.is_anonymous == true ? CURRENT_APP_NAME + ' User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>
+                <Col style={{ marginTop: 5, }} size={5}>
+                    <Text style={styles.name}>{item.is_anonymous == true ? CURRENT_APP_NAME + ' User' : item.userInfo.first_name + ' ' + item.userInfo.last_name}</Text>
                 </Col>
-                <Col style={{ width: '30%', marginTop: 8 }}>
+                <Col style={{  marginTop: 8 }} size={3}>
                     <Text style={styles.date}> {relativeTimeView(item.review_date)}</Text>
                 </Col>
             </Row>
@@ -175,12 +175,12 @@ const styles = StyleSheet.create({
     name: {
         fontFamily: 'OpenSans',
         fontSize: 12,
-        fontWeight: 'bold',
-        width: '80%'
+        fontWeight: 'bold'
     },
     date: {
         fontFamily: 'OpenSans',
         fontSize: 12,
+        textAlign:'right'
     },
     ratingText: {
         fontFamily: 'OpenSans',

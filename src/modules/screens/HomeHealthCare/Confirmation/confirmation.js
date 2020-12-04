@@ -208,7 +208,8 @@ class HomeTestConfirmation extends Component {
                                     </TouchableOpacity>
                                 </Col>
                                 <Col size={8.4}>
-                                    <Text style={styles.docName}>{(bookSlotDetails.prefix ? bookSlotDetails.prefix + '. ' : '') + (bookSlotDetails.first_name || '') + ' ' + (bookSlotDetails.last_name || '')} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                                    <Text style={styles.docName}>{(bookSlotDetails.prefix ? bookSlotDetails.prefix + '. ' : '') + (bookSlotDetails.first_name || '') + ' ' + (bookSlotDetails.last_name || '')} </Text>
+                                   <Text style={styles.specialist}>{getDoctorEducation(bookSlotDetails.education)}</Text>
                                     <Text style={styles.specialist}>{getDoctorSpecialist(bookSlotDetails.specialist)}</Text>
                                 </Col>
                             </Row>
@@ -317,7 +318,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909498' }}>Consultation Fees</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}>Consultation Fees</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'}{Number(amountBySelectedPersons).toFixed(2)}</Text>
@@ -325,7 +326,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909498' }}>Charges </Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}>Charges </Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>

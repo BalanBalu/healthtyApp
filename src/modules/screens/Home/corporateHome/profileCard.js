@@ -24,12 +24,13 @@ export const CorporateProfileCard = (props) => {
   <Text style={{ lineHeight: 20, fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>{data.insuranceCompany}</Text>
             </Col>
           </Row>
-          <Row style={{ marginTop: 5 }}>
+          <Row style={{ marginTop: 5,marginBottom:10,marginRight:5}}>
             <Col size={5} style={{ justifyContent: 'center', alignItems: 'center' }}>
   <Text style={{ fontFamily: 'OpenSans', fontSize: 14 }}>Card Number : <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: '200', color: '#B0B0B0' }}>{data.memberId}</Text> </Text>
             </Col>
             <Col size={5} style={{ justifyContent: 'center', alignItems: 'center' }}>
-  <Text style={{ fontFamily: 'OpenSans', fontSize: 13 }}>Policy Number : <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: '200', color: '#B0B0B0' }}>{data.policyNo}</Text></Text>
+  <Text style={{ fontFamily: 'OpenSans', fontSize: 13 }}  ellipsizeMode="tail"
+              numberOfLines={1}>Policy Number : <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: '200', color: '#B0B0B0' }} >{data.policyNo}</Text></Text>
             </Col>
           </Row>
         

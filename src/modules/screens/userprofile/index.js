@@ -561,15 +561,11 @@ class Profile extends Component {
                     <Row>
                       <Col>
                         <Text style={styles.customText}>Weight</Text>
-                        <Text note style={styles.customText1}>
-                          {data.weight} kg
-                      </Text>
+                        <Text note style={styles.customText1}>{data.weight} kg</Text>
                       </Col>
                       <Col>
                         <Text style={styles.customText}>Height</Text>
-                        <Text note style={styles.customText1}>
-                          {data.height} cm
-                      </Text>
+                        <Text note style={styles.customText1}>{data.height} cm</Text>
                       </Col>
                     </Row>
                   </Body>

@@ -513,11 +513,27 @@ class DoctorList extends Component {
                     navigation={this.props.navigation}
                     docInfoData={{ isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }}
                     addToFavoritesList={(doctorId) => { this.addToFavoritesList(doctorId) }}
+                    onPressGoToBookAppointmentPage={(item) => { this.onPressGoToBookAppointmentPage(item) }}
                 // shouldUpdate={`${item.doctor_id}-${fee}-${feeWithoutOffer}-${patientFavoriteListCountOfDoctorIds.includes(item.doctor_id)}`}
                 >
                 </RenderDoctorInfo>
             </View>
         )
+    }
+    onPressGoToBookAppointmentPage(doctorItemData) {
+        this.props.navigation.setParams({ 'conditionFromFilterPage': false });
+        doctorItemData.doctorId = doctorItemData.doctor_id;
+        const singleDoctorItemData = { ...doctorItemData };
+        const reqData4BookAppPage = {
+            singleDoctorItemData: singleDoctorItemData,
+            doctorId: doctorItemData.doctor_id,
+        }
+        const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorId.get(doctorItemData.doctor_id).slotData;
+        if (doctorItemHaveSlotsDataObj) {
+            reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
+            reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
+        }
+        this.props.navigation.navigate('Home Healthcare Doctor Details Preview', reqData4BookAppPage)
     }
 
 
@@ -567,8 +583,6 @@ class DoctorList extends Component {
                     slotData={slotData}
                     indexOfItem={indexOfItem}
                     doctor_id={doctor_id}
-                    selectedDate4DocIdHostpitalIdToStoreInObj={this.selectedDate4DocIdHostpitalIdToStoreInObj}
-                    selectedSlotItem4DocIdHostpitalIdToStoreInObj={this.selectedSlotItem4DocIdHostpitalIdToStoreInObj}
                     weekWiseDatesList={this.weekWiseDatesList}
                     onDateChanged={(item, doctor_id, indexOfItem, selectedSlotItem) => { this.onDateChanged(item, doctor_id, indexOfItem, selectedSlotItem) }}
                     callSlotsServiceWhenOnEndReached={(doctor_id, weekWiseDatesList, indexOfItem) => {
@@ -657,7 +671,7 @@ class DoctorList extends Component {
                                                     </Col>
                                                     <Col size={4}>
                                                         <TouchableOpacity
-                                                            onPress={() => { console.log('......Pressing....'); this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id], item.doctor_id) }}
+                                                            onPress={() => { this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id], item.doctor_id) }}
                                                             style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: 5 }}>
                                                             <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
                                                         </TouchableOpacity>

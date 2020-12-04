@@ -207,8 +207,11 @@ export default class AppointmentList extends Component {
             await this.getPastAppointmentList();
         }
     }
-    onPressGoToBookAppointmentPage = () => {
-        console.log('Need to Implement===>')
+    onPressGoToBookAppointmentPage = (item) => {
+        this.props.navigation.navigate('Home Healthcare Doctor Details Preview', {
+            doctorId: item.appointmentResult && item.appointmentResult.doctor_id,
+            fetchAvailabiltySlots: true
+        })
     }
     renderAppointmentList(item, index) {
         return (
