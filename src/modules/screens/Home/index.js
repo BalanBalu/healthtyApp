@@ -283,7 +283,12 @@ class Home extends Component {
         })
     }
 
-
+    onPressNavigateToLocPage = async (screen, addressModuleType, navigationOption) => {
+        const getLoggedUserInfo = JSON.parse(await AsyncStorage.getItem('basicProfileData'));
+        const fullName = getLoggedUserInfo && getLoggedUserInfo.first_name ? getLoggedUserInfo.first_name + ' ' + getLoggedUserInfo.last_name : null;
+        const addressType = { addressType: addressModuleType, mobile_no: getLoggedUserInfo && getLoggedUserInfo.mobile_no || null, full_name: fullName }
+        this.props.navigation.navigate(screen, { screen, navigationOption, addressType })
+    }
     getMarkedAsReadedNotification = async (userId) => {
         try {
             await fetchUserMarkedAsReadedNotification(userId);
@@ -395,7 +400,10 @@ class Home extends Component {
                         </Grid>
                         <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
                             <Col style={{ width: '50%' }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })}>
+                                <TouchableOpacity onPress={() =>
+                                    // this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })
+                                    this.onPressNavigateToLocPage('MapBox', 'HOME_HEALTH_CARE', 'Categories')
+                                }>
                                     <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                         <Row style={styles.rowStyle}>
                                             <FastImage

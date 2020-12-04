@@ -62,7 +62,7 @@ class PaymentSuccess extends Component {
         )
     }
     renderPatientLocation() {
-        const patientAddress = this.patientInfo && this.patientInfo.address && this.patientInfo.address.address;
+        const patientAddress = this.patientInfo && this.patientInfo.home_healthcare_address && this.patientInfo.home_healthcare_address.address;
         if (patientAddress && Object.keys(patientAddress).length) {
             return (
                 <Row style={styles.rowDetail1}>
