@@ -53,7 +53,7 @@ class HomeTestConfirmation extends Component {
 
     getPatientInfo = async () => {
         try {
-            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address,home_healthcare_address"
             const userId = await AsyncStorage.getItem('userId');
             const patInfoResp = await fetchUserProfile(userId, fields);
             this.setState({ patDetails: patInfoResp });
@@ -243,19 +243,19 @@ class HomeTestConfirmation extends Component {
                                     <Text style={styles.subHead}>Home Address</Text>
                                 </Col>
                                 <Col size={7}>
-                                    <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
+                                    {/* <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
                                         <TouchableOpacity  >
                                             <Text style={styles.changeText}>Change</Text>
                                         </TouchableOpacity>
-                                    </Row>
+                                    </Row> */}
                                 </Col>
                             </Row>
                             <Text style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
                             {
-                                patDetails.address && patDetails.address.address ?
-                                    <Text style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
-                                        patDetails.address.address.address_line_1 + ' , ' +
-                                        patDetails.address.address.city + ' - ' + patDetails.address.address.pin_code}</Text>
+                                patDetails.home_healthcare_address && patDetails.home_healthcare_address.address ?
+                                    <Text style={styles.homeAdressTexts}>{patDetails.home_healthcare_address.address.no_and_street + ' , ' +
+                                        patDetails.home_healthcare_address.address.address_line_1 + ' , ' +
+                                        patDetails.home_healthcare_address.address.city + ' - ' + patDetails.home_healthcare_address.address.pin_code}</Text>
                                     :
                                     null}
                             <Text style={styles.homeAdressTexts}>
