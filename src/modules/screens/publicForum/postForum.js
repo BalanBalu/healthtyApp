@@ -52,6 +52,7 @@ class PostForum extends PureComponent {
             type: "success",
             duration: 3000,
           })
+           this.props.navigation.pop()
           this.setState({ question_title: null, question_description: null })
         }
         else {
@@ -119,7 +120,7 @@ class PostForum extends PureComponent {
               placeholderTextColor="#696969"
               keyboardType={'default'}
               returnKeyType={'go'}
-              autoFocus={true}
+           
               value={this.state.question_description}
               onChangeText={text => {
                 this.hasWhiteSpaceQuestionDescription(text);
