@@ -422,6 +422,7 @@ class MedicineCheckout extends Component {
             if (response.success) {
                 let temp = this.state.h1ProductData;
                 let data = temp.concat(response.data)
+            
 
                 await this.setState({ h1ProductData: data, isH1Product: false })
 
@@ -670,9 +671,11 @@ class MedicineCheckout extends Component {
                                 renderItem={({ item, index }) =>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={9}>
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: 'prescription' })}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>
                                                 {item.file_name}
-                                            </Text>
+                                                </Text>
+                                                </TouchableOpacity>
                                         </Col>
 
                                         <Col size={1} style={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
