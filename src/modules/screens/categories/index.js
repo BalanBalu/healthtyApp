@@ -5,10 +5,10 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
-import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
+import { MAX_DISTANCE_TO_COVER, MAX_DISTANCE_TO_COVER_HOME_HEALTH_CARE_DOCTORS } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 
@@ -19,6 +19,17 @@ class Categories extends Component {
     this.state = {
       data: [],
       categoriesMain: []
+    }
+  }
+
+  async UNSAFE_componentWillMount() {
+    const fromNavigation = this.props.navigation.getParam('fromNavigation') || null;
+    const screen = 'MapBox';
+    if (fromNavigation === 'HOME_HEALTH_CARE') {
+      const getLoggedUserInfo = JSON.parse(await AsyncStorage.getItem('basicProfileData'));
+      const fullName = getLoggedUserInfo && getLoggedUserInfo.first_name ? getLoggedUserInfo.first_name + ' ' + getLoggedUserInfo.last_name : null;
+      const addressType = { addressType: 'HOME_HEALTH_CARE', mobile_no: getLoggedUserInfo && getLoggedUserInfo.mobile_no || null, full_name: fullName }
+      this.props.navigation.navigate(screen, { screen, navigationOption: 'Categories', addressType })
     }
   }
   componentDidMount() {
@@ -57,21 +68,21 @@ class Categories extends Component {
 
 
     if (fromNavigation === "HOSPITAl") {
-    
+
       this.props.navigation.navigate("HospitalList", {   // New Enhancement Router path
         category_id: category_id
       })
     }
     else if (fromNavigation === 'HOME_HEALTH_CARE') {
-      this.props.navigation.navigate("Home Health Care", {
-        categoryName: categoryName,
-        categoryId: category_id,
-        locationDataFromSearch: {
-          type: 'geo',
-          "coordinates": locationCordinates,
-          maxDistance: MAX_DISTANCE_TO_COVER
-        }
-      });
+      let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null
+      const reqParamDataObj = {
+        categoryName,
+        categoryId: category_id
+      }
+      if (userAddressInfo && userAddressInfo.home_healthcare_address && userAddressInfo.home_healthcare_address.address && userAddressInfo.home_healthcare_address.address.pin_code) {
+        reqParamDataObj.pinCode = userAddressInfo.home_healthcare_address.address.pin_code
+      }
+      this.props.navigation.navigate("Home Health Care", reqParamDataObj);
     } else {
       this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
         inputKeywordFromSearch: categoryName,

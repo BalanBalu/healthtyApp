@@ -53,7 +53,7 @@ class DoctorList extends Component {
             doctorInfoListAndSlotsData1: [],
             pinCode: '',
             searchedInputTextValue: props.navigation.getParam('categoryName') || 'Primary',
-            searchedInputPinCodeValue: '600001',
+            searchedInputPinCodeValue: props.navigation.getParam('pinCode') || '600001',
             isLoadingOnChangeDocList: false,
             isOnEditPincode: false,
         }
@@ -453,6 +453,7 @@ class DoctorList extends Component {
     /* get Doctor  Availability Slots service */
     getDoctorAvailabilitySlots = async (doctor_id, startDateByMoment, endDateByMoment, indexOfItem) => {
         try {
+            const { searchedInputPinCodeValue } = this.state;
             this.weekWiseDatesList = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.weekWiseDatesList);
             const orderedDataFromWholeData = this.getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService(indexOfItem) // get 5 Or LessThan 5 of doctor_ids in order wise using index of given input of doctorInfoListAndSlotsData
             const reqDataDoctorIdsArry = [];
@@ -461,6 +462,12 @@ class DoctorList extends Component {
             })
             const reqData4Availability = {
                 "doctorIds": reqDataDoctorIdsArry
+            }
+            if (searchedInputPinCodeValue) {
+                reqData4Availability.locationData = {
+                    from_pincode: searchedInputPinCodeValue,
+                    to_pincode: searchedInputPinCodeValue,
+                }
             }
             const reqStartAndEndDates = {
                 startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
