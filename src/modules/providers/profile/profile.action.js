@@ -273,12 +273,15 @@ export async function getPolicYDetailsByid(corporateUserId) {
 
 
 //medicalRecords
-export async function getMedicalRecords(userId,skip,limit) {
+export async function getMedicalRecords(userId,skip,limit,searchKey) {
   try {
     let endPoint = `/appointments/electrical_medical_records/user/${userId}`;
     
     if(limit){
       endPoint=endPoint+`?skip=${skip}&limit=${limit}`
+    }
+    if (searchKey) {
+      endPoint=endPoint+`?searchKey=${searchKey}`
     }
     console.log(endPoint)
     let response = await getService(endPoint);
