@@ -223,10 +223,12 @@ class UploadPrescription extends Component {
                                         renderItem={({ item, index }) =>
                                             <View>
                                                 <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.prescription_path }, title: 'Prescription' })}>
                                                     <Image
                                                         source={{ uri: item.prescription_path }}
                                                         style={styles.profileImage}
-                                                    />
+                                                        />
+                                                         </TouchableOpacity>
                                                 </Item>
 
 
