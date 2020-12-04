@@ -376,7 +376,7 @@ class MyAppoinmentList extends Component {
 				<NavigationEvents
 					onWillFocus={payload => { this.backNavigation(payload) }}
 				/>
-				<Card transparent>
+				<Card transparent >
 					<SegmentedControlTab
 						tabsContainerStyle={{
 							width: 250,
@@ -425,7 +425,7 @@ class MyAppoinmentList extends Component {
 										}}
 										note
 									>
-										No appointments are scheduled
+										No appoinments are scheduled
 								</Text>
 									<Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
 										<Button style={[styles.bookingButton, styles.customButton]}
@@ -599,7 +599,7 @@ class MyAppoinmentList extends Component {
 export default MyAppoinmentList;
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#ffffff",
+		// backgroundColor: "#ffffff",
 		margin: 10
 	},
 	bookAgain1: {

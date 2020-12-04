@@ -329,6 +329,26 @@ class TestDetails extends PureComponent {
 
                     </View>
                     : null}
+                     {isCorporateUser && payBy === POSSIBLE_PAY_METHODS.CORPORATE && data.benefeciaryUserDeails ?
+                    <View>
+                        <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
+                        <TouchableOpacity style={styles.benefeciaryButton} onPress={() => {
+                            let expandedListIndexPayBy = patientSelectionType + '-' + index;
+                            this.setState({ expandedListIndex: this.state.expandedListIndex === expandedListIndexPayBy ? -1 : expandedListIndexPayBy })
+                        }}>
+                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'OpenSans', }}>Show Benefeciary Details</Text>
+                            <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
+                        </TouchableOpacity>
+                        <View>
+                            <BenefeciaryDetails
+                                expand={this.state.expandedListIndex === patientSelectionType + '-' + index}
+                                data={data.benefeciaryUserDeails}
+                                payBy={payBy}
+                            />
+                        </View>
+
+                    </View>
+                    : null}
             </View>
         )
     }
@@ -363,7 +383,7 @@ class TestDetails extends PureComponent {
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Appointment for?</Text>
-                <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                     {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -445,7 +465,7 @@ class TestDetails extends PureComponent {
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' ,marginTop: 10}}>Patient Details</Text>
                             <View>
                                 {this.renderPatientDetails(this.defaultPatDetails, 0, false, POSSIBLE_FAMILY_MEMBERS.SELF)}
                             </View>
@@ -456,7 +476,7 @@ class TestDetails extends PureComponent {
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ?
                         <View>
                             {onlyFamilyWithPayDetailsData.length !== 0 ?
-                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans',marginTop: 10 }}>Patient Details</Text>
                                 : null}
                             <FlatList
                                 data={onlyFamilyWithPayDetailsData}

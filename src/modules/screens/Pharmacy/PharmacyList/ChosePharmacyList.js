@@ -310,12 +310,13 @@ class ChosePharmacyList extends Component {
                                                                 </View>
                                                                 
                                                                 {selectedPharmacy === index ?
+                                                                                item.pharmacyAvailableData !== undefined && item.pharmacyAvailableData.length !== 0 ?
                                                                     <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
                                                                         <CheckBox style={{ borderRadius: 5 }}
                                                                             checked={true}
                                                                             onPress={() => this.pharmacySelected(index)}
                                                                         />
-                                                                    </View>
+                                                                    </View>:null
                                                                     :
                                                                     <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
                                                                         <CheckBox style={{ borderRadius: 5 }}
