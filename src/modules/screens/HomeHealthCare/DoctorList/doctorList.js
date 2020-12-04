@@ -104,7 +104,6 @@ class DoctorList extends Component {
         }
     }
     callInitialSearchOrFilterServiceWithClearedData = async (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) => {
-        debugger
         this.setState({ isLoading: true, });
         if (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) {
             this.props.navigation.setParams({ 'conditionFromFilterPage': false });
@@ -166,15 +165,8 @@ class DoctorList extends Component {
             else {
                 type = 'search';
             }
-            debugger
-            console.log('type=====>', type);
-            // console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
             const docListResponse = await searchByHomeHealthcareDocDetailsService(type, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
-            // console.log('docListResponse====>', JSON.stringify(docListResponse));
-            debugger
             if (docListResponse.success) {
-                debugger
-                // console.log(' this.incrementPaginationCount===>', this.incrementPaginationCount)
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
                 const searchedDoctorIdsArray = [];
                 const docListData = docListResponse.data || [];
@@ -184,14 +176,11 @@ class DoctorList extends Component {
                     searchedDoctorIdsArray.push(item.doctor_id);
                     this.docInfoAndAvailableSlotsMapByDoctorId.set(item.doctor_id, item);
                 })
-                debugger
                 await Promise.all([
                     ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
                     serviceOfGetTotalReviewsCount4Doctors(searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
                 ]);
-                debugger
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorId.values()) || [];
-                debugger
                 if (docListData.length <= 3) {
                     this.isEnabledLoadMoreData = false;
                 }
@@ -205,7 +194,6 @@ class DoctorList extends Component {
                         data: doctorInfoList
                     })
                 }
-                debugger
             }
             else {
                 if (this.docInfoAndAvailableSlotsMapByDoctorId.size < 3) this.isEnabledLoadMoreData = false;
@@ -383,7 +371,6 @@ class DoctorList extends Component {
 
     loadMoreData = async () => {
         try {
-            // console.log('calling On End reached=====>');
             this.setState({ isLoadingMoreDocList: true });
             await this.searchByDoctorDetails();
         } catch (error) {
@@ -480,18 +467,15 @@ class DoctorList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchDocHomeHealthcareAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            // console.log('resultSlotsData====>' + JSON.stringify(resultSlotsData))
             if (resultSlotsData.success) {
                 const availabilitySlotsData = resultSlotsData.data;
                 if (availabilitySlotsData.length != 0) {
                     this.setDoctorAvailabilitySlotsDataByDocAndHospitalIds(availabilitySlotsData || []);
                     const docInfoAndAvailableSlotsMap = Array.from(this.docInfoAndAvailableSlotsMapByDoctorId.values());
-                    debugger
                     store.dispatch({
                         type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                         data: docInfoAndAvailableSlotsMap
                     });
-                    debugger
                 }
             }
         } catch (ex) {
@@ -500,19 +484,14 @@ class DoctorList extends Component {
     }
     /*  Set Doctor Availability Slots data by doctor_ids   */
     setDoctorAvailabilitySlotsDataByDocAndHospitalIds = (SourceOfSlotsDataArray) => {
-        debugger
         SourceOfSlotsDataArray.map((item) => {
-            debugger
             const baCupOfDocInfo = this.docInfoAndAvailableSlotsMapByDoctorId.get(item.doctor_id);
             const finalSlotsDataObj = { ...baCupOfDocInfo.slotData, ...item.slotData } // Merge the Previous weeks and On change the Next week slots data
             delete baCupOfDocInfo.slotData
             const finalDocAndAvailabilityObj = {
                 ...baCupOfDocInfo, slotData: finalSlotsDataObj
             }
-            debugger
             this.docInfoAndAvailableSlotsMapByDoctorId.set(item.doctor_id, finalDocAndAvailabilityObj);
-            debugger
-
         });
     }
 
@@ -527,11 +506,27 @@ class DoctorList extends Component {
                     navigation={this.props.navigation}
                     docInfoData={{ isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }}
                     addToFavoritesList={(doctorId) => { this.addToFavoritesList(doctorId) }}
+                    onPressGoToBookAppointmentPage={(item) => { this.onPressGoToBookAppointmentPage(item) }}
                 // shouldUpdate={`${item.doctor_id}-${fee}-${feeWithoutOffer}-${patientFavoriteListCountOfDoctorIds.includes(item.doctor_id)}`}
                 >
                 </RenderDoctorInfo>
             </View>
         )
+    }
+    onPressGoToBookAppointmentPage(doctorItemData) {
+        this.props.navigation.setParams({ 'conditionFromFilterPage': false });
+        doctorItemData.doctorId = doctorItemData.doctor_id;
+        const singleDoctorItemData = { ...doctorItemData };
+        const reqData4BookAppPage = {
+            singleDoctorItemData: singleDoctorItemData,
+            doctorId: doctorItemData.doctor_id,
+        }
+        const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorId.get(doctorItemData.doctor_id).slotData;
+        if (doctorItemHaveSlotsDataObj) {
+            reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
+            reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
+        }
+        this.props.navigation.navigate('Home Healthcare Doctor Details Preview', reqData4BookAppPage)
     }
 
 
@@ -581,8 +576,6 @@ class DoctorList extends Component {
                     slotData={slotData}
                     indexOfItem={indexOfItem}
                     doctor_id={doctor_id}
-                    selectedDate4DocIdHostpitalIdToStoreInObj={this.selectedDate4DocIdHostpitalIdToStoreInObj}
-                    selectedSlotItem4DocIdHostpitalIdToStoreInObj={this.selectedSlotItem4DocIdHostpitalIdToStoreInObj}
                     weekWiseDatesList={this.weekWiseDatesList}
                     onDateChanged={(item, doctor_id, indexOfItem, selectedSlotItem) => { this.onDateChanged(item, doctor_id, indexOfItem, selectedSlotItem) }}
                     callSlotsServiceWhenOnEndReached={(doctor_id, weekWiseDatesList, indexOfItem) => {
@@ -671,7 +664,7 @@ class DoctorList extends Component {
                                                     </Col>
                                                     <Col size={4}>
                                                         <TouchableOpacity
-                                                            onPress={() => { console.log('......Pressing....'); this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id], item.doctor_id) }}
+                                                            onPress={() => { this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id], item.doctor_id) }}
                                                             style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: 5 }}>
                                                             <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
                                                         </TouchableOpacity>

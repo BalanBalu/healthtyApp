@@ -3,7 +3,7 @@ import { Container, Content, Text, Segment, Button, Card, Right, Thumbnail, Icon
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image, Share } from 'react-native';
-import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
+import { formatDate, addMoment, getMoment, getUnixTimeStamp, setCurrentISOTime4GivenDate } from '../../../../setup/helpers';
 import { store } from '../../../../setup/store';
 import {
     addFavoritesToDocByUserService,
@@ -12,13 +12,14 @@ import {
     serviceOfGetTotalReviewsCount4Doctors,
     ServiceOfGetDoctorFavoriteListCount4Pat,
     fetchDoctorAvailabilitySlotsService,
+    fetchDocHomeHealthcareAvailabilitySlotsService,
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
     SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS
 } from '../../../providers/BookAppointmentFlow/action';
 import { userReviews } from '../../../providers/profile/profile.action';
 import { fetchAvailableDoctors4Video } from '../../../screens/VideoConsulation/services/video-consulting-service';
 import { fetchAvailableDoctors4Chat } from '../../../providers/chat/chat.action';
-import RenderHospitalLoc from './RenderHospitalLoc'
+// import RenderHospitalLoc from './RenderHospitalLoc'
 import { Loader } from '../../../../components/ContentLoader';
 import { CATEGORY_BASE_URL, CURRENT_APP_NAME } from '../../../../setup/config';
 import { RenderReviewData } from '../../Reviews/ReviewCard';
@@ -31,24 +32,18 @@ showedFee = null;
 const DOCTOR_FIELDS = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image,hospital";
 import styles from '../../CommonAll/styles';
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
-import { RenderNoSlotsAvailable } from '../../CommonAll/components'
-import RenderDatesList from '../RenderDateList';
-import RenderSlots from '../RenderSlots'
-import RenderDoctorInfoPreview from './RenderDoctorInfoPreview';
+import RenderDatesList from '../DoctorList/RenderDateList';
+import RenderDoctorInfoPreview from '../../DoctorBookAppointmentFlow/doctorDetailsPreview/RenderDoctorInfoPreview';
 
 class DoctorDetailsPreview extends Component {
-    weekWiseDatesList = [];
-    doctorDetailsObj = {}
     constructor(props) {
         super(props)
 
         this.state = {
-            selectedSlotItem: null,
             isLoading: true,
             onPressTabView: 1,
             selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
             currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
-            selectedSlotIndex: -1,
             doctorData: {},
             doctorDetails: null,
             showedFee: undefined,
@@ -68,14 +63,15 @@ class DoctorDetailsPreview extends Component {
         this.isVideoAvailability = false;
         this.isChatAvailability = false;
         this.onEndReachedIsTriggedFromRenderDateList = false;
+        this.selectedAppointmentSlot = null;
+        this.weekWiseDatesList = [];
     }
 
 
 
     async componentDidMount() {
-        debugger
         const { navigation } = this.props;
-        const { selectedDate, selectedSlotIndex } = this.state;
+        const { selectedDate } = this.state;
         const availabilitySlots = navigation.getParam('fetchAvailabiltySlots') || false;
         const startDateByMoment = addMoment(selectedDate)
         const endDateByMoment = addMoment(selectedDate, 7, 'days');
@@ -83,32 +79,26 @@ class DoctorDetailsPreview extends Component {
         if (userId) {
             this.setState({ isLoggedIn: true, userId });
         }
-        if (availabilitySlots) { // coming from  My Appointment list via click  Book again button.
+        if (availabilitySlots) { // coming from  My Home Health care Appointment list via click  Book again button.
             await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props.
             const doctorId = navigation.getParam('doctorId');
-            const [doctorDetailsResp, wishListResp, rattingResp] = await Promise.all([
+            alert(doctorId)
+            const [doctorDetailsResp] = await Promise.all([
                 getMultipleDoctorDetails(doctorId, DOCTOR_FIELDS).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
                 ServiceOfGetDoctorFavoriteListCount4Pat(doctorId).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
                 serviceOfGetTotalReviewsCount4Doctors(doctorId).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
             ]);
             if (doctorDetailsResp.success && doctorDetailsResp.data && doctorDetailsResp.data[0]) {
-                this.doctorDetailsObj = doctorDetailsResp.data[0]  // store Doctor details
-                this.setState({ doctorId, doctorData: this.doctorDetailsObj, isLoading: false });
+                this.setDocInfoAndAvailableSlotsData = doctorDetailsResp.data[0];
+                this.setState({ doctorId, doctorData: this.setDocInfoAndAvailableSlotsData, isLoading: false });
                 if (userId) {
                     await this.getFavoriteCounts4PatByUserId(userId);
                 }
                 await this.callVideAndChat(doctorId);
             }
-            const reqData4Availability = [
-                {
-                    doctorId,
-                    include_all_hospitals: true
-                }
-            ]
-            await this.getDoctorAvailabilitySlots(reqData4Availability, startDateByMoment, endDateByMoment);
-            await this.getLocationDataBySelectedSlot(this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData, selectedSlotIndex);
-            await this.formServiceListByUsingSpecialist(this.doctorDetailsObj.specialist || []);
-            this.setState({ isLoading: false })
+            await this.getDoctorAvailabilitySlots(startDateByMoment, endDateByMoment);
+            await this.getFeesBSelectedDate(this.setDocInfoAndAvailableSlotsData.slotData && this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData);
+            await this.formServiceListByUsingSpecialist(this.setDocInfoAndAvailableSlotsData.specialist || []);
         } else {
             this.weekWiseDatesList = navigation.getParam('weekWiseDatesList') || [];
             let doctorItemData = navigation.getParam('singleDoctorItemData');
@@ -121,19 +111,9 @@ class DoctorDetailsPreview extends Component {
             this.doctorDetailsObj = doctorItemData;
             this.setDocInfoAndAvailableSlotsData = doctorItemData;
             if (!doctorItemData.slotData) {
-                const doctorIdHostpitalId = doctorItemData.doctorIdHostpitalId;
-                const splitOfDoctorIdHostpitalId = doctorIdHostpitalId.split('-');
-                const doctorId = splitOfDoctorIdHostpitalId[0];
-                const hospitalId = parseInt(splitOfDoctorIdHostpitalId[1]);
-                const reqData4Availability = [
-                    {
-                        doctorId,
-                        hospitalIds: [hospitalId]
-                    }
-                ]
-                await this.getDoctorAvailabilitySlots(reqData4Availability, startDateByMoment, endDateByMoment);
+                await this.getDoctorAvailabilitySlots(startDateByMoment, endDateByMoment);
             }
-            await this.getLocationDataBySelectedSlot(this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData, selectedSlotIndex);
+            await this.getFeesBSelectedDate(this.setDocInfoAndAvailableSlotsData.slotData && this.setDocInfoAndAvailableSlotsData.slotData[selectedDate], this.setDocInfoAndAvailableSlotsData.slotData);
             await this.formServiceListByUsingSpecialist(doctorItemData.specialist || []);
         }
     }
@@ -258,51 +238,30 @@ class DoctorDetailsPreview extends Component {
                 }
             });
         }
-        // return specialistWithServicesList;
-        this.setState({ specialistWithServicesList })
+        this.setState({ specialistWithServicesList, isLoading: false })
     }
 
-    getDoctorAvailabilitySlots = async (availabilityReqData, startDateByMoment, endDateByMoment) => {
+    getDoctorAvailabilitySlots = async (startDateByMoment, endDateByMoment) => {
         try {
-            debugger
             this.weekWiseDatesList = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.weekWiseDatesList);
             const reqStartAndEndDates = {
                 startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
-            const availabilityResp = await fetchDoctorAvailabilitySlotsService(availabilityReqData, reqStartAndEndDates);
-            const availabilityData = availabilityResp.data;
-            // console.log('availabilityData=====>', availabilityData)
-            debugger
-
-            if (availabilityResp.success === true && availabilityData.length > 0) {
-                debugger
-                for (let availabilityCount = 0; availabilityCount < availabilityData.length; availabilityCount++) {
-                    let docHostpitalIdSlotData = availabilityData[availabilityCount];
-                    debugger
-                    if (this.setDocInfoAndAvailableSlotsData && this.setDocInfoAndAvailableSlotsData.slotData) {
-                        debugger
-                        for (var key in docHostpitalIdSlotData.slotData) {
-                            debugger
-                            if (this.setDocInfoAndAvailableSlotsData.slotData[key] === undefined) {
-                                this.setDocInfoAndAvailableSlotsData.slotData[key] = docHostpitalIdSlotData.slotData[key]
-                            }
-                        }
-                    } else {
-                        const docDetailWithSlotsData = {
-                            ...this.doctorDetailsObj,
-                            slotData: docHostpitalIdSlotData.slotData,
-                        }
-                        this.setDocInfoAndAvailableSlotsData = docDetailWithSlotsData;
-                    }
-                }
+            const reqData4Availability = {
+                "doctorIds": [this.state.doctorId]
             }
-            else {  // Exe when came from Book again
-                const docDetailWithSlotsData = {
-                    ...this.doctorDetailsObj,
-                    slotData: {},
+            const availabilityResp = await fetchDocHomeHealthcareAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
+            const availabilityData = availabilityResp.data;
+            if (availabilityResp.success === true && availabilityData && availabilityData.length > 0) {
+                const availabilityDataObj = availabilityData[0].slotData;
+                const baCupOfDocInfo = this.setDocInfoAndAvailableSlotsData;
+                const finalSlotsDataObj = { ...baCupOfDocInfo.slotData, ...availabilityDataObj } // Merge the Previous weeks and On change the Next week slots data
+                delete baCupOfDocInfo.slotData
+                const finalDocAndAvailabilityObj = {
+                    ...baCupOfDocInfo, slotData: finalSlotsDataObj
                 }
-                this.setDocInfoAndAvailableSlotsData = docDetailWithSlotsData;
+                this.setDocInfoAndAvailableSlotsData = finalDocAndAvailabilityObj;
             }
             this.setState({ doctorData: this.setDocInfoAndAvailableSlotsData })
         } catch (error) {
@@ -327,55 +286,20 @@ class DoctorDetailsPreview extends Component {
         }
     }
 
-    getLocationDataBySelectedSlot(slotDataBySelectedDate, wholeSlotData, slotIndex) {
-        const selectedSlotIndex = slotIndex >= 0 ? slotIndex : 0;
+    getFeesBSelectedDate(slotDataBySelectedDate, wholeSlotData) {
+        this.selectedAppointmentSlot = slotDataBySelectedDate;
         if (slotDataBySelectedDate === undefined) {
             slotDataBySelectedDate = wholeSlotData[Object.keys(wholeSlotData)[0]]
         }
         if (slotDataBySelectedDate) {
-            this.showLocBySelectedSlotItem = slotDataBySelectedDate[selectedSlotIndex].location;
-            this.selectedSlotFee = slotDataBySelectedDate[selectedSlotIndex].fee;
-            this.selectedSlotFeeWithoutOffer = slotDataBySelectedDate[selectedSlotIndex].feeWithoutOffer
+            this.selectedSlotFee = slotDataBySelectedDate.fee;
+            this.selectedSlotFeeWithoutOffer = slotDataBySelectedDate.feeWithoutOffer
             this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
         }
     }
-
-    onSlotItemPress(doctorIdHostpitalId, item, index) {
-        const { doctorData, selectedDate } = this.state;
-        const currentHostpitalId = item.location.hospital_id;
-        const previouslyShowedHospitalId = this.showLocBySelectedSlotItem.hospital_id;
-        this.getLocationDataBySelectedSlot(doctorData.slotData[selectedDate], doctorData.slotData, index);
-        this.selectedSlotFee = item.fee;
-        this.selectedSlotFeeWithoutOffer = item.feeWithoutOffer
-        if (currentHostpitalId !== previouslyShowedHospitalId && (item.fee != this.showedFee)) {
-            if (this.showedFee != null) {
-                Toast.show({
-                    text: 'Appointment Fee and Hospital Location Updated',
-                    type: 'warning',
-                    duration: 3000
-                });
-            }
-            this.showedFee = item.fee
-        } else if ((item.fee != this.showedFee)) {
-            if (this.showedFee != null) {
-                Toast.show({
-                    text: 'Appointment Fee Updated',
-                    type: 'warning',
-                    duration: 3000
-                });
-            }
-            this.showedFee = item.fee
-        } else if (currentHostpitalId !== previouslyShowedHospitalId) {
-            Toast.show({
-                text: 'Hospital Location Changed',
-                type: 'warning',
-                duration: 3000
-            });
-        }
-        this.setState({ selectedSlotItem: item, selectedSlotIndex: index, renderRefreshCount: this.state.renderRefreshCount + 1 });
-    }
-    onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
-        if (!selectedSlotItem) {
+    /*   navigate to next further process    */
+    onPressToContinue4PaymentReview = async () => {
+        if (!this.selectedAppointmentSlot) {
             Toast.show({
                 text: 'Please select a slot to continue booking',
                 type: 'warning',
@@ -383,14 +307,17 @@ class DoctorDetailsPreview extends Component {
             })
             return;
         }
-        doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
-        doctorData.doctorId = doctorData.doctor_id;
-        var confirmSlotDetails = {
-            ...doctorData,
-            slotData: selectedSlotItem
-        };
-        this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
+        const { doctorData } = this.state;
+        const doctorDetails = doctorData;
+        doctorDetails.doctorName = doctorDetails.first_name + ' ' + doctorDetails.last_name;
+        doctorDetails.doctorId = doctorDetails.doctor_id;
+        delete doctorDetails.slotData;
+        const isoFormatOfSelectedDate = setCurrentISOTime4GivenDate(this.selectedAppointmentSlot.slotDate);  // send only selected slot date and get with ISO format;
+        this.selectedAppointmentSlot.slotDate = isoFormatOfSelectedDate;
+        const confirmSlotDetails = { ...doctorDetails, slotData: this.selectedAppointmentSlot };
+        this.props.navigation.navigate('HomeHealthcareConfirmation', { resultconfirmSlotDetails: confirmSlotDetails })
     }
+
     shareDocInfo = async (doctorData) => {
         try {
             const doctorNameWithPrefix = `${doctorData.prefix}.${doctorData.first_name} ${doctorData.last_name}`;
@@ -398,8 +325,8 @@ class DoctorDetailsPreview extends Component {
                 title: CURRENT_APP_NAME + ' Consultation',
                 message:
                     ` ${CURRENT_APP_NAME} Consultation :-
-          Recommend  "${doctorNameWithPrefix}" from ${CURRENT_APP_NAME} select is one of the top "${this.state.specialistWithServicesList[0].category_name}" in the country.
-          You can instantly consult  "${doctorNameWithPrefix}"   on the ${CURRENT_APP_NAME} app.`,
+              Recommend  "${doctorNameWithPrefix}" from ${CURRENT_APP_NAME} select is one of the top "${this.state.specialistWithServicesList[0].category_name}" in the country.
+              You can instantly consult  "${doctorNameWithPrefix}"   on the ${CURRENT_APP_NAME} app.`,
                 // url: "https://medflic.com/appointment/booking?doctorId=" + this.state.doctorId
             });
             //  I recommend her for any relevant health concerns.
@@ -426,9 +353,7 @@ class DoctorDetailsPreview extends Component {
     }
 
     render() {
-        debugger
-        const { doctorData, isLoading, selectedDate, selectedSlotItem, onPressTabView, isLoggedIn, specialistWithServicesList, categoryShownObj, isLoadedUserReview, reviewsData, isLoadingReviews } = this.state;
-        debugger
+        const { doctorData, isLoading, selectedDate, onPressTabView, specialistWithServicesList, categoryShownObj, isLoadedUserReview, reviewsData, isLoadingReviews } = this.state;
         if (isLoading) return <Loader style='appointment' />;
         return (
             <Container style={{ backgroundColor: '#ffffff' }}>
@@ -469,35 +394,16 @@ class DoctorDetailsPreview extends Component {
                                         <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#775DA3' }}></Text></Right>
                                     </Row>
                                 </View> : null}
-
-
-
                             <View>
                                 <Row style={{ marginTop: 10 }}>
-                                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
+                                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date</Text>
                                 </Row>
                                 {this.renderDatesOnFlatList(doctorData.slotData, selectedDate)}
-                                {
-                                    doctorData.slotData && doctorData.slotData[selectedDate] !== undefined ?
-                                        this.renderAvailableSlots(doctorData.slotData[selectedDate])
-                                        : <RenderNoSlotsAvailable
-                                            text={'No Slots Available'}
-                                        />
-                                }
-                                <View style={{ borderTopColor: '#000', borderTopWidth: 0.3, marginTop: 10 }}>
-                                    <Row style={{ marginTop: 10, paddingTop: 10 }}>
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
-                                    </Row>
-                                    <Row style={{ marginTop: 5 }}>
-                                        <Col style={{ width: '40%' }}>
-                                            <Text style={{ marginTop: 2, marginBottom: 2, color: '#000', fontSize: 12, fontFamily: 'OpenSans' }}>{selectedSlotItem ? formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
-                                        </Col>
-                                        <Col style={{ width: '35%' }}></Col>
-                                        <Col style={{ width: '25%' }}></Col>
-                                    </Row>
+                                <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
+                                    <Text style={doctorData.slotData && doctorData.slotData[selectedDate] ? { fontSize: 12, alignSelf: 'flex-start', color: '#000', fontFamily: 'OpenSans' } : { color: '#a90e0e', fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans', marginTop: 10 }}> {doctorData.slotData && doctorData.slotData[selectedDate] ? "You Selected Appointment on" : "Appointment is Not Available"}</Text>
+                                    <Text style={{ alignSelf: 'flex-start', fontWeight: 'bold', color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 5 }}>{doctorData.slotData && doctorData.slotData[selectedDate] ? formatDate(doctorData.slotData[selectedDate].slotDate, 'ddd DD MMM YYYY') : null}</Text>
                                 </View>
                             </View>
-                            {this.renderHospitalLocation(this.showLocBySelectedSlotItem, doctorData.doctorId)}
                             {doctorData.awards ?
                                 <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3, marginBottom: 5, marginTop: 10 }}>
                                     <Row style={{ marginTop: 10, paddingTop: 10 }}>
@@ -607,7 +513,7 @@ class DoctorDetailsPreview extends Component {
                     <Row>
                         <Col style={{ marginRight: 40 }} >
                             <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}
-                                onPress={() => this.onPressContinueForPaymentReview(doctorData, selectedSlotItem)}
+                                onPress={() => this.onPressToContinue4PaymentReview()}
                                 testID='clickButtonToPaymentReviewPage'>
                                 <Row style={{ justifyContent: 'center', }}>
                                     <Text style={{ marginLeft: -25, marginTop: 2, fontWeight: 'bold', justifyContent: 'center', alignItems: 'center' }}>BOOK APPOINTMENT</Text>
@@ -621,28 +527,6 @@ class DoctorDetailsPreview extends Component {
 
     }
 
-    renderAvailableSlots(slotData) {
-        let { selectedSlotIndex, selectedDate } = this.state;
-        if (slotData === undefined || !Object.keys(slotData)) {
-            return null;
-        }
-        return (
-            <View>
-                <RenderSlots
-                    slotDetails={{ slotData, selectedSlotIndex }}
-                    shouldUpdate={`${selectedSlotIndex}-${selectedDate}`}
-                    onSlotItemPress={(doctorIdHostpitalId, selectedSlot, selectedSlotItemIndex) => this.onSlotItemPress(doctorIdHostpitalId, selectedSlot, selectedSlotItemIndex)}
-                >
-                </RenderSlots>
-            </View>
-        )
-    }
-
-    renderHospitalLocation = (hopitalLocationData, doctorId) => {
-        if (!hopitalLocationData) return null;
-        const doctorIdHospitalId = doctorId + '-' + hopitalLocationData.hospital_id;
-        return hopitalLocationData ? <RenderHospitalLoc number={doctorIdHospitalId} hopitalLocationData={hopitalLocationData} /> : null
-    }
 
     renderDatesOnFlatList(slotData, selectedDate) {
         if (slotData === undefined || !Object.keys(slotData)) {
@@ -653,10 +537,11 @@ class DoctorDetailsPreview extends Component {
                 <RenderDatesList
                     selectedDate={selectedDate}
                     slotData={slotData}
+                    doctor_id={this.state.doctorId}
                     weekWiseDatesList={this.weekWiseDatesList}
-                    onDateChanged={(item, doctorIdHostpitalId, indexOfItem) => { this.onDateChanged(item, doctorIdHostpitalId, indexOfItem) }}
-                    callSlotsServiceWhenOnEndReached={(doctorIdHostpitalId, weekWiseDatesList, indexOfItem) => {
-                        this.callSlotsServiceWhenOnEndReached(doctorIdHostpitalId, weekWiseDatesList, indexOfItem);
+                    onDateChanged={(item) => { this.onDateChanged(item) }}
+                    callSlotsServiceWhenOnEndReached={(doctor_id, weekWiseDatesList) => {
+                        this.callSlotsServiceWhenOnEndReached(doctor_id, weekWiseDatesList);
                     }}
                     shouldUpdate={`${selectedDate}`}
                     onEndReachedIsTriggedFromRenderDateList={this.onEndReachedIsTriggedFromRenderDateList}
@@ -666,50 +551,28 @@ class DoctorDetailsPreview extends Component {
         )
     }
 
-    getLocationDataBySelectedSlot(slotDataBySelectedDate, wholeSlotData, slotIndex) {
-        const selectedSlotIndex = slotIndex >= 0 ? slotIndex : 0;
-        if (slotDataBySelectedDate === undefined) {
-            slotDataBySelectedDate = wholeSlotData[Object.keys(wholeSlotData)[0]]
-        }
-        if (slotDataBySelectedDate) {
-            this.showLocBySelectedSlotItem = slotDataBySelectedDate[selectedSlotIndex].location;
-            this.selectedSlotFee = slotDataBySelectedDate[selectedSlotIndex].fee;
-            this.selectedSlotFeeWithoutOffer = slotDataBySelectedDate[selectedSlotIndex].feeWithoutOffer
-            this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
-        }
-    }
-
     /* Change the Date from Date Picker */
     onDateChanged = async (date) => {
         this.onEndReachedIsTriggedFromRenderDateList = false;
-        let { selectedDate, selectedSlotIndex, selectedSlotItem, doctorData } = this.state;
+        let { selectedDate, doctorData } = this.state;
         selectedDate = date;
-        selectedSlotIndex = -1;
-        selectedSlotItem = null;
         if (this.weekWiseDatesList.includes(selectedDate) === false) {
             let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
-            const availabilityRequest = [{
-                doctorId: this.state.doctorId,
-                include_all_hospitals: true
-            }]
-            await this.getDoctorAvailabilitySlots(availabilityRequest, getMoment(selectedDate), endDateMoment);
+            await this.getDoctorAvailabilitySlots(getMoment(selectedDate), endDateMoment);
         }
-        this.getLocationDataBySelectedSlot(doctorData.slotData[selectedDate], doctorData.slotData, selectedSlotIndex);
-        this.setState({ selectedDate, selectedSlotIndex, selectedSlotItem, renderRefreshCount: this.state.renderRefreshCount + 1 });
+        this.getFeesBSelectedDate(doctorData.slotData[selectedDate], doctorData.slotData);
+        this.setState({ selectedDate, renderRefreshCount: this.state.renderRefreshCount + 1 });
     }
 
-    callSlotsServiceWhenOnEndReached = async (doctorIdHostpitalId, weekWiseDatesList) => { // call availability slots service when change dates on next week
+    callSlotsServiceWhenOnEndReached = async (doctorId, weekWiseDatesList) => { // call availability slots service when change dates on next week
+        console.log('Calling AVaila APIIIIIII')
         this.onEndReachedIsTriggedFromRenderDateList = true;
         const finalIndex = weekWiseDatesList.length
         const lastProcessedDate = weekWiseDatesList[finalIndex - 1];
         const startDateByMoment = getMoment(lastProcessedDate).add(1, 'day');
         const endDateByMoment = addMoment(lastProcessedDate, 7, 'days');
         if (!this.weekWiseDatesList.includes(endDateByMoment.format('YYYY-MM-DD'))) {
-            const availabilityReqData = [{
-                doctorId: this.state.doctorId,
-                include_all_hospitals: true
-            }];
-            await this.getDoctorAvailabilitySlots(availabilityReqData, startDateByMoment, endDateByMoment);
+            await this.getDoctorAvailabilitySlots(startDateByMoment, endDateByMoment);
         }
     }
 
