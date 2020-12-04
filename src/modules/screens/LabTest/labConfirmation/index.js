@@ -484,7 +484,7 @@ class LabConfirmation extends Component {
                         </View> :
                         null}
 
-                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5,marginBottom:20 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Package Details</Text>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
