@@ -167,6 +167,12 @@ export function getUserLocation(location) {
         return ''
 }
 
+export function getHomeHealthCareUserLocation(address) {
+    if (!address) return ''
+    if (address)
+        return `${address.no_and_street}, ${address.city}, ${address.state}, ${address.pin_code}`;
+}
+
 
 export class Badge extends Component {
     constructor(props) {

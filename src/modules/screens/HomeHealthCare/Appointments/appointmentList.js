@@ -242,7 +242,6 @@ export default class AppointmentList extends Component {
     }
     render() {
         const { data, reviewData, selectedIndex, isVisibleAddReviewPop, isLoading } = this.state;
-
         return (
             <Container style={{ backgroundColor: '#ffffff', }}>
                 <NavigationEvents

@@ -6,7 +6,7 @@ import StarRating from 'react-native-star-rating';
 import styles from '../Styles'
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action';
-import { renderDoctorImage, getUserGenderAndAge, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getUserLocation, getAddress } from '../../../common'
+import { renderDoctorImage, getUserGenderAndAge, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHomeHealthCareUserLocation, getAddress } from '../../../common'
 import { formatDate, dateDiff, statusValue, getMoment } from '../../../../setup/helpers';
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
 import { getHomeTestappointmentByID, updateDocHomeTestappointment } from '../../../providers/homeHelthCare/action';
@@ -382,15 +382,17 @@ class AppointmentDetails extends PureComponent {
                                             <Text note style={styles.subTextInner1}>{data.disease_description || ''}</Text>
                                         </Col>
                                     </Row>
-                                    <Row style={styles.rowSubText}>
-                                        <Col style={{ width: '8%', paddingTop: 5 }}>
-                                            <Icon name="ios-pin" style={{ fontSize: 20, }} />
-                                        </Col>
-                                        <Col style={{ width: '92%', paddingTop: 5 }}>
-                                            <Text style={styles.innerSubText}>Patient Address</Text>
-                                            <Text note style={styles.subTextInner1}>{getUserLocation(data.userInfo)}</Text>
-                                        </Col>
-                                    </Row>
+                                    {data && data.userInfo && data.userInfo.home_healthcare_address && data.userInfo.home_healthcare_address.address ?
+                                        <Row style={styles.rowSubText}>
+                                            <Col style={{ width: '8%', paddingTop: 5 }}>
+                                                <Icon name="ios-pin" style={{ fontSize: 20, }} />
+                                            </Col>
+                                            <Col style={{ width: '92%', paddingTop: 5 }}>
+                                                <Text style={styles.innerSubText}>Patient Address</Text>
+                                                <Text note style={styles.subTextInner1}>{getHomeHealthCareUserLocation(data.userInfo.home_healthcare_address.address)}</Text>
+                                            </Col>
+                                        </Row>
+                                        : null}
                                     {data.patient_data.length ?
                                         <Row style={styles.rowSubText}>
                                             <Col style={{ width: '8%', paddingTop: 5 }}>
