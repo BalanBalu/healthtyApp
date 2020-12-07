@@ -35,7 +35,6 @@ import CheckLocationWarning from './LocationWarning';
 import { CorporateHome } from './corporateHome'
 import { toastMeassage } from '../../common'
 import { TouchableHighlight } from 'react-native-gesture-handler';
-import { getCorporateEmployeeDetailsById } from '../../providers/corporate/corporate.actions'
 
 
 
@@ -46,7 +45,7 @@ class Home extends Component {
         super(props)
         this.state = {
             data: [],
-            isLoading: false,
+            isLoading: true,
             catagary: [],
             categryCount: 0,
             AppoinmentData: [],
@@ -171,7 +170,6 @@ class Home extends Component {
                     notificationBadgeCount: notificationCount
                 });
                 this.getAllChatsByUserId(userId);
-                this.getCorporateDatails(userId)
                 this.getMarkedAsReadedNotification(userId);
             }
         }
@@ -245,36 +243,7 @@ class Home extends Component {
         }
     }
 
-    getCorporateDatails = async (userId) => {
-        try {
-            console.log('Calling getAllChatsByUserId');
-            let fields = "corporate_user_id,employee_code";
-            let userResult = await fetchUserProfile(userId, fields);
 
-            if (!userResult.error) {
-                let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
-
-                if (!!corporateResult && corporateResult.success !== false) {
-
-
-                    store.dispatch({
-                        type: SET_CORPORATE_DATA,
-                        data: corporateResult
-                    })
-                    // await this.setState({ data: corporateResult })
-
-
-                }
-            }
-
-        } catch (error) {
-            Toast.show({
-                text: 'Something went wrong' + error,
-                duration: 3000,
-                type: 'danger'
-            })
-        }
-    }
 
 
     getAllChatsByUserId = async (userId) => {
@@ -314,7 +283,6 @@ class Home extends Component {
         })
     }
 
-
     getMarkedAsReadedNotification = async (userId) => {
         try {
             await fetchUserMarkedAsReadedNotification(userId);
@@ -338,19 +306,9 @@ class Home extends Component {
         }
     }
 
-    getHomePageDetails() {
-        const { navigate } = this.props.navigation;
-        let corporateData = this.props.profile.corporateData
-        const { isCorporateUser } = this.state
-        if (isCorporateUser === true) {
-            return <CorporateHome corporateData={corporateData}
-                navigation={navigate} />
-        }
-        else {
-            return this.homepageRendering()
-        }
-    }
-    homepageRendering() {
+
+
+    render() {
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount },
             profile: { corporateData }, navigation } = this.props;
 
@@ -365,341 +323,332 @@ class Home extends Component {
 
         }
         return (
-            <View>
-                <Row style={styles.SearchRow}>
-                    <Col size={0.9} style={styles.SearchStyle}>
-                        <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-                    </Col>
-                    <Col size={8.1} style={{ justifyContent: 'center', }}>
-                        <Input
-                            onFocus={() => { this.props.navigation.navigate("RenderSuggestionList") }}
-                            placeholder="Search for Symptoms/Services,etc"
-                            style={styles.inputfield}
-                            placeholderTextColor="#e2e2e2"
-                            editable={true}
-                            underlineColorAndroid="transparent"
-                        />
-                    </Col>
-                </Row>
-
-                <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
-                    <Col style={{ width: '50%', }}>
-                        <TouchableOpacity onPress={() =>
-                            this.props.navigation.navigate("Categories")
-                        }>
-                            <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                <Row style={styles.rowStyle}>
-                                    <FastImage
-                                        source={doctorConsultations}
-                                        style={{
-                                            width: '100%', height: '100%', alignItems: 'center'
-                                        }}
-                                    />
-                                </Row>
-                                <Row style={styles.secondRow}>
-                                    <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Doctor Consultations')}</Text>
-                                        <Text style={styles.subText}>{translate('Book  a one-click appointment and consult doctors')}</Text>
-                                    </Col>
-
-                                </Row>
-                            </Card>
-                        </TouchableOpacity>
-                    </Col>
-                    <Col style={{ width: '50%', marginLeft: 5 }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { fromNavigation: "HOSPITAl" })}>
-                            <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                <Row style={styles.rowStyle}>
-                                    <FastImage
-                                        source={hospitalImg}
-                                        style={{
-                                            width: '100%', height: '100%', alignItems: 'center'
-                                        }}
-                                    />
-                                </Row>
-                                <Row style={styles.secondRow}>
-                                    <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Hospitals')}</Text>
-                                        <Text style={styles.subText}>{translate('Search hospitals and consult doctors')} </Text>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </TouchableOpacity>
-                    </Col>
-
-                </Grid>
-                <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
-                    <Col style={{ width: '50%' }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })}>
-                            <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                <Row style={styles.rowStyle}>
-                                    <FastImage
-                                        source={HomeTestImg}
-                                        style={{
-                                            width: '100%', height: '100%', alignItems: 'center'
-                                        }}
-                                    />
-                                </Row>
-                                <Row style={styles.secondRow}>
-                                    <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
-                                        <Text style={styles.subText}>{translate('Get doctor consultation at your home')} </Text>
-                                    </Col>
-
-                                </Row>
-                            </Card>
-                        </TouchableOpacity>
-                    </Col>
-                    <Col style={{ width: '50%', marginLeft: 5 }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
-                            <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                <Row style={styles.rowStyle}>
-                                    <FastImage
-                                        source={LabTestImgs}
-                                        style={{
-                                            width: '100%', height: '100%', alignItems: 'center'
-                                        }}
-                                    />
-                                </Row>
-                                <Row style={styles.secondRow}>
-                                    <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
-                                        <Text style={styles.subText}>Get all your tests done at the comfort of your home</Text>
-                                    </Col>
-
-                                </Row>
-                            </Card>
-                        </TouchableOpacity>
-                    </Col>
-                </Grid>
-
-                <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
-                    <Col style={{ width: '50%', }}>
-                        <TouchableOpacity onPress={() =>
-                            this.props.navigation.navigate("Video and Chat Service")
-                        }>
-                            <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                <Row style={styles.rowStyle}>
-                                    <FastImage
-                                        source={VideoConultationImg}
-                                        style={{
-                                            width: '100%', height: '100%', alignItems: 'center'
-                                        }}
-                                    />
-                                </Row>
-                                <Row style={styles.secondRow}>
-                                    <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Chat and Video')}</Text>
-                                        <Text style={styles.subText}>{translate('Consult doctors through chat or video')}</Text>
-                                    </Col>
-
-                                </Row>
-                            </Card>
-                        </TouchableOpacity>
-                    </Col>
-                    <Col style={{ width: '50%', marginLeft: 5 }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
-                            <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                <Row style={styles.rowStyle}>
-                                    <FastImage
-                                        source={pharmacyImg}
-                                        style={{
-                                            width: '100%', height: '100%', alignItems: 'center'
-                                        }}
-                                    />
-                                </Row>
-                                <Row style={styles.secondRow}>
-                                    <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
-                                        <Text style={styles.subText}>{translate('Get medicines delivered to home')} </Text>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </TouchableOpacity>
-                    </Col>
-
-                </Grid>
-                <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
-                    <Row >
-                        <Col size={5}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Health Records")}>
-                                <Card style={{ padding: 5, borderRadius: 2 }}>
-                                    <Row>
-                                        <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                            <Text style={styles.mainText}>{translate('Health Records')}</Text>
-                                        </Col>
-                                        <Col size={2.5}>
-                                            <FastImage
-                                                source={hospitalLogoImg}
-                                                style={{
-                                                    width: 35, height: 35, alignItems: 'center'
-                                                }}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col size={5} style={{ marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Public Forum")} >
-                                <Card style={{ padding: 5, borderRadius: 2 }}>
-                                    <Row>
-                                        <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                            <Text style={styles.mainText}>{translate('Public Forum')} </Text>
-                                        </Col>
-                                        <Col size={2.5}>
-                                            <FastImage
-                                                source={publicForum}
-                                                style={{
-                                                    width: 35, height: 35, alignItems: 'center'
-                                                }}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col size={5}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
-                                <Card style={{ padding: 5, borderRadius: 2 }}>
-                                    <Row>
-                                        <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                            <Text style={styles.mainText}>{translate('Medicine Reminder')}</Text>
-                                        </Col>
-                                        <Col size={2.5}>
-                                            <FastImage
-                                                source={ReminderImg}
-                                                style={{
-                                                    width: 35, height: 35, alignItems: 'center'
-                                                }}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col size={5} style={{ marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")} >
-                                <Card style={{ padding: 5, borderRadius: 2 }}>
-                                    <Row>
-                                        <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                            <Text style={styles.mainText}>{translate('Blood Donors')} </Text>
-                                        </Col>
-                                        <Col size={2.5}>
-
-                                            <FastImage
-                                                source={BloodImg}
-                                                style={{
-                                                    width: 35, height: 35, alignItems: 'center'
-                                                }}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
-                    </Row>
-                </Grid>
-                <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 20 }}>
-                    <Row style={{ marginTop: 10, marginBottom: 5 }}>
-                        <Left>
-                            <Text style={styles.mainHead}>{translate('Categories')}</Text>
-                        </Left>
-                        <Right>
-                            <TouchableOpacity onPress={() => this.navigetToCategories()} style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 5, paddingTop: 5, borderRadius: 5, color: '#fff', flexDirection: 'row' }}>
-                                <Text style={{ color: '#775DA3', fontSize: 13, textAlign: 'center', fontWeight: 'bold' }}>{translate('View All')}</Text>
-                            </TouchableOpacity>
-                        </Right>
-                    </Row>
-
-                    <View>
-                        <Row style={{ marginLeft: -5, marginTop: -10 }}>
-                            <FlatList
-                                numColumns={3}
-                                data={this.state.catagary}
-                                extraData={this.state.categryCount}
-                                renderItem={({ item, index }) =>
-                                    <Col style={styles.maincol}>
-                                        <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
-                                            style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                                            <FastImage
-                                                source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
-                                                style={{
-                                                    width: 50, height: 50, alignItems: 'center'
-                                                }}
-                                            />
-                                            <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5, paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1 }}>{item.category_name}</Text>
-                                        </TouchableOpacity>
-                                    </Col>
-                                }
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                        </Row>
-
-
-                    </View>
-
-                    <Row style={{ marginTop: 10, marginBottom: 5 }}>
-                        <Left>
-                            <Text style={styles.mainHead}>{translate('Refer and earn!')} </Text>
-                        </Left>
-                    </Row>
-                    <View>
-                        <Card style={{ borderRadius: 10, }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("EarnReward")}>
-                                <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }}>
-                                    <Col style={{ width: '70%', }}>
-                                        <ImageBackground
-                                            source={require('../../../../assets/images/bg.png')}
-                                            style={{
-                                                width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'
-                                            }}
-                                        >
-                                            <Text style={styles.innerText}>Invite People And Get Cash Rewards Upto Rs.100 /-</Text>
-                                        </ImageBackground>
-                                    </Col>
-                                    <Col style={{ width: '30%', }}>
-
-                                        <FastImage
-                                            source={require('../../../../assets/images/imagebgshape.png')}
-                                            style={{
-                                                width: '130%', height: '130%', marginTop: -10, marginLeft: -18
-                                            }}
-                                        />
-
-
-                                    </Col>
-                                </Row>
-                            </TouchableOpacity>
-                        </Card>
-                        <NextAppoinmentPreparation
-                            navigation={this.props.navigation}
-                        />
-                    </View>
-
-
-
-
-                </View>
-            </View>
-        )
-    }
-
-
-    render() {
-
-        return (
 
             <Container style={styles.container}>
-
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
                     <View>
-                        {this.getHomePageDetails()}
+                        <Row style={styles.SearchRow}>
+                            <Col size={0.9} style={styles.SearchStyle}>
+                                <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
+                            </Col>
+                            <Col size={8.1} style={{ justifyContent: 'center', }}>
+                                <Input
+                                    onFocus={() => { this.props.navigation.navigate("RenderSuggestionList") }}
+                                    placeholder="Search for Symptoms/Services,etc"
+                                    style={styles.inputfield}
+                                    placeholderTextColor="#909498"
+                                    editable={true}
+                                    underlineColorAndroid="transparent"
+                                />
+                            </Col>
+                        </Row>
+
+                        <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
+                            <Col style={{ width: '50%', }}>
+                                <TouchableOpacity onPress={() =>
+                                    this.props.navigation.navigate("Categories")
+                                }>
+                                    <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                        <Row style={styles.rowStyle}>
+                                            <FastImage
+                                                source={doctorConsultations}
+                                                style={{
+                                                    width: '100%', height: '100%', alignItems: 'center'
+                                                }}
+                                            />
+                                        </Row>
+                                        <Row style={styles.secondRow}>
+                                            <Col style={{ width: '100%', }}>
+                                                <Text style={styles.mainText}>{translate('Doctor Consultations')}</Text>
+                                                <Text style={styles.subText}>{translate('Book  a one-click appointment and consult doctors')}</Text>
+                                            </Col>
+
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col style={{ width: '50%', marginLeft: 5 }}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Categories", { fromNavigation: "HOSPITAl" })}>
+                                    <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                        <Row style={styles.rowStyle}>
+                                            <FastImage
+                                                source={hospitalImg}
+                                                style={{
+                                                    width: '100%', height: '100%', alignItems: 'center'
+                                                }}
+                                            />
+                                        </Row>
+                                        <Row style={styles.secondRow}>
+                                            <Col style={{ width: '100%', }}>
+                                                <Text style={styles.mainText}>{translate('Hospitals')}</Text>
+                                                <Text style={styles.subText}>{translate('Search hospitals and consult doctors')} </Text>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+
+                        </Grid>
+                        <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
+                            <Col style={{ width: '50%' }}>
+                                <TouchableOpacity onPress={() =>
+                                    this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })
+                                }>
+                                    <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                        <Row style={styles.rowStyle}>
+                                            <FastImage
+                                                source={HomeTestImg}
+                                                style={{
+                                                    width: '100%', height: '100%', alignItems: 'center'
+                                                }}
+                                            />
+                                        </Row>
+                                        <Row style={styles.secondRow}>
+                                            <Col style={{ width: '100%', }}>
+                                                <Text style={styles.mainText}>{translate('Home Health Care')}</Text>
+                                                <Text style={styles.subText}>{translate('Get doctor consultation at your home')} </Text>
+                                            </Col>
+
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col style={{ width: '50%', marginLeft: 5 }}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')} >
+                                    <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                        <Row style={styles.rowStyle}>
+                                            <FastImage
+                                                source={LabTestImgs}
+                                                style={{
+                                                    width: '100%', height: '100%', alignItems: 'center'
+                                                }}
+                                            />
+                                        </Row>
+                                        <Row style={styles.secondRow}>
+                                            <Col style={{ width: '100%', }}>
+                                                <Text style={styles.mainText}>{translate('Book Lab tests')}</Text>
+                                                <Text style={styles.subText}>Get all your tests done at the comfort of your home</Text>
+                                            </Col>
+
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                        </Grid>
+
+                        <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
+                            <Col style={{ width: '50%', }}>
+                                <TouchableOpacity onPress={() =>
+                                    this.props.navigation.navigate("Video and Chat Service")
+                                }>
+                                    <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                        <Row style={styles.rowStyle}>
+                                            <FastImage
+                                                source={VideoConultationImg}
+                                                style={{
+                                                    width: '100%', height: '100%', alignItems: 'center'
+                                                }}
+                                            />
+                                        </Row>
+                                        <Row style={styles.secondRow}>
+                                            <Col style={{ width: '100%', }}>
+                                                <Text style={styles.mainText}>{translate('Chat and Video')}</Text>
+                                                <Text style={styles.subText}>{translate('Consult doctors through chat or video')}</Text>
+                                            </Col>
+
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col style={{ width: '50%', marginLeft: 5 }}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
+                                    <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                        <Row style={styles.rowStyle}>
+                                            <FastImage
+                                                source={pharmacyImg}
+                                                style={{
+                                                    width: '100%', height: '100%', alignItems: 'center'
+                                                }}
+                                            />
+                                        </Row>
+                                        <Row style={styles.secondRow}>
+                                            <Col style={{ width: '100%', }}>
+                                                <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
+                                                <Text style={styles.subText}>{translate('Get medicines delivered to home')} </Text>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+
+                        </Grid>
+                        <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
+                            <Row >
+                                <Col size={5}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Health Records")}>
+                                        <Card style={{ padding: 5, borderRadius: 2 }}>
+                                            <Row>
+                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                    <Text style={styles.mainText}>{translate('Health Records')}</Text>
+                                                </Col>
+                                                <Col size={2.5}>
+                                                    <FastImage
+                                                        source={hospitalLogoImg}
+                                                        style={{
+                                                            width: 35, height: 35, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </TouchableOpacity>
+                                </Col>
+                                <Col size={5} style={{ marginLeft: 5 }}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Public Forum")} >
+                                        <Card style={{ padding: 5, borderRadius: 2 }}>
+                                            <Row>
+                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                    <Text style={styles.mainText}>{translate('Public Forum')} </Text>
+                                                </Col>
+                                                <Col size={2.5}>
+                                                    <FastImage
+                                                        source={publicForum}
+                                                        style={{
+                                                            width: 35, height: 35, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </TouchableOpacity>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col size={5}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
+                                        <Card style={{ padding: 5, borderRadius: 2 }}>
+                                            <Row>
+                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                    <Text style={styles.mainText}>{translate('Medicine Reminder')}</Text>
+                                                </Col>
+                                                <Col size={2.5}>
+                                                    <FastImage
+                                                        source={ReminderImg}
+                                                        style={{
+                                                            width: 35, height: 35, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </TouchableOpacity>
+                                </Col>
+                                <Col size={5} style={{ marginLeft: 5 }}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")} >
+                                        <Card style={{ padding: 5, borderRadius: 2 }}>
+                                            <Row>
+                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                    <Text style={styles.mainText}>{translate('Blood Donors')} </Text>
+                                                </Col>
+                                                <Col size={2.5}>
+
+                                                    <FastImage
+                                                        source={BloodImg}
+                                                        style={{
+                                                            width: 35, height: 35, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </TouchableOpacity>
+                                </Col>
+                            </Row>
+                        </Grid>
+                        <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 20 }}>
+                            <Row style={{ marginTop: 10, marginBottom: 5 }}>
+                                <Left>
+                                    <Text style={styles.mainHead}>{translate('Categories')}</Text>
+                                </Left>
+                                <Right>
+                                    <TouchableOpacity onPress={() => this.navigetToCategories()} style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 5, paddingTop: 5, borderRadius: 5, color: '#fff', flexDirection: 'row' }}>
+                                        <Text style={{ color: '#775DA3', fontSize: 13, textAlign: 'center', fontWeight: 'bold' }}>{translate('View All')}</Text>
+                                    </TouchableOpacity>
+                                </Right>
+                            </Row>
+
+                            <View>
+                                <Row style={{ marginLeft: -5, marginTop: -10 }}>
+                                    <FlatList
+                                        numColumns={3}
+                                        data={this.state.catagary}
+                                        extraData={this.state.categryCount}
+                                        renderItem={({ item, index }) =>
+                                            <Col style={styles.maincol}>
+                                                <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
+                                                    style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
+                                                    <FastImage
+                                                        source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
+                                                        style={{
+                                                            width: 50, height: 50, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                    <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5, paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1 }}>{item.category_name}</Text>
+                                                </TouchableOpacity>
+                                            </Col>
+                                        }
+                                        keyExtractor={(item, index) => index.toString()}
+                                    />
+                                </Row>
+
+
+                            </View>
+
+                            <Row style={{ marginTop: 10, marginBottom: 5 }}>
+                                <Left>
+                                    <Text style={styles.mainHead}>{translate('Refer and earn!')} </Text>
+                                </Left>
+                            </Row>
+                            <View>
+                                <Card style={{ borderRadius: 10, }}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("EarnReward")}>
+                                        <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }}>
+                                            <Col style={{ width: '70%', }}>
+                                                <ImageBackground
+                                                    source={require('../../../../assets/images/bg.png')}
+                                                    style={{
+                                                        width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'
+                                                    }}
+                                                >
+                                                    <Text style={styles.innerText}>Invite People And Get Cash Rewards Upto Rs.100 /-</Text>
+                                                </ImageBackground>
+                                            </Col>
+                                            <Col style={{ width: '30%', }}>
+
+                                                <FastImage
+                                                    source={require('../../../../assets/images/imagebgshape.png')}
+                                                    style={{
+                                                        width: '130%', height: '130%', marginTop: -10, marginLeft: -18
+                                                    }}
+                                                />
+
+
+                                            </Col>
+                                        </Row>
+                                    </TouchableOpacity>
+                                </Card>
+                                <NextAppoinmentPreparation
+                                    navigation={this.props.navigation}
+                                />
+                            </View>
+
+
+
+
+                        </View>
                     </View>
                 </Content>
             </Container>
@@ -850,7 +799,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20
     },
     inputfield: {
-        color: 'gray',
+        color: '#909498',
         fontFamily: 'OpenSans',
         fontSize: 12,
         padding: 5,

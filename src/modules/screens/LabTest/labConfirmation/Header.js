@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     hosAddress: {
         fontSize: 12,
         fontFamily: 'OpenSans',
-        color: '#C1C1C1',
+        color: '#000',
         marginLeft: 10
     },
     calDate: {

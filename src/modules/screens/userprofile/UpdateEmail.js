@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
 import { validateEmailAddress } from '../../common';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
@@ -114,6 +115,9 @@ class UpdateEmail extends Component {
                                         value={this.state.primaryEmail}
                                         testID='updateEmail' />
                                 </Item>
+                                <View style={{position:'absolute',top:70,right:20}}>
+                                <MaterialIcons name='lock' style={{fontSize:20,color:'gray'}}></MaterialIcons>
+                                </View>
                                 {this.state.primaryEmail !== null ?
                                     <Text style={{ marginLeft: 7, color: 'gray', fontSize: 13 }}>Primary email is not editable</Text> : null}
                                 <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>

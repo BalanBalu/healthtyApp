@@ -33,6 +33,7 @@ import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
+import PromoCode from "../../modules/screens/PaymentPage/PromoCode"
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
@@ -122,6 +123,8 @@ import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Con
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCare/Appointments/cancelAppointment';
+import HomeHealthcareDoctorDetailsPreview from '../../modules/screens/HomeHealthCare/doctorDetailsPreview/doctorDetailsPreview';
+
 import MedicineRecords from '../../modules/screens/medicalRecords';
 import EmrInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/emrInfo'
 import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
@@ -133,7 +136,7 @@ import TextTicker from 'react-native-text-ticker';
 import { IS_ANDROID } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
-
+import CorporateHome from '../../modules/screens/Home/corporateHome'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -306,6 +309,84 @@ const HomeStack = createStackNavigator({
       },
     })
   },
+  CorporateHome: {
+    screen: CorporateHome,
+
+    navigationOptions: ({ navigation }) => ({
+      title: 'CorporateHome',
+      header: (
+
+        <View
+          style={{
+            height: IS_ANDROID ? 60 : 90,
+            backgroundColor: '#7F49C3',
+            justifyContent: 'center',
+          }}>
+          <View
+            style={{
+              marginTop: IS_ANDROID ? 0 : 30,
+              height: 60,
+              justifyContent: 'center',
+            }}>
+            <Row size={12} style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+              <Col size={10} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
+                  <Image
+                    style={{ marginLeft: 18, tintColor: '#fff' }}
+                    source={menuIcon}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
+                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
+                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
+                      loop
+                      bounce
+                      repeatSpacer={50}
+                      marqueeDelay={1000}>
+                      {navigation.getParam('appBar', { locationName: ' ' }).locationName}
+                    </TextTicker>
+                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }} duration={10000}
+                      loop
+                      bounce
+                      repeatSpacer={200}
+                      marqueeDelay={1000}>
+                      {navigation.getParam('appBar', { locationCapta: 'Searching Near by Hospitals' }).locationCapta}
+
+                    </TextTicker>
+
+
+                  </View>
+                </TouchableOpacity>
+              </Col>
+
+              <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
+                <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
+                  <View>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                    {navigation.getParam('notificationBadgeCount') ?
+                      <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
+                  </View>
+                </TouchableOpacity>
+              </Col>
+              {Platform.OS != "ios" ?
+                <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+                  <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
+                </TouchableOpacity> : null}
+            </Row>
+
+
+          </View>
+        </View>
+
+      ),
+
+      
+      headerStyle: {
+        backgroundColor: '#7F49C3',
+      },
+    })
+  },
   EarnReward: {
     screen: EarnReward,
     navigationOptions: {
@@ -355,7 +436,7 @@ const HomeStack = createStackNavigator({
       title: 'Notification',
     })
   },
-  
+
   BloodDonerFilters: {
     screen: BloodDonerFilters,
     navigationOptions: ({ navigation }) => ({
@@ -715,6 +796,13 @@ const HomeStack = createStackNavigator({
       title: 'Payment Page'
     }
   },
+  
+  PromoCode: {
+    screen: PromoCode,
+    navigationOptions: {
+      title: 'Promo  codes'
+    }
+  },
   paymentsuccess: {
     screen: PaymentSuccess,
     navigationOptions: {
@@ -781,6 +869,12 @@ const HomeStack = createStackNavigator({
     screen: HomeHealthcareCancelAppointment,
     navigationOptions: {
       title: 'Home Healthcare Cancel Appointment'
+    }
+  },
+  "Home Healthcare Doctor Details Preview": {
+    screen: HomeHealthcareDoctorDetailsPreview,
+    navigationOptions: {
+      title: 'Home Healthcare Doctor Details Preview'
     }
   },
 

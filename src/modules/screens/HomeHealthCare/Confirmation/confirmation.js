@@ -53,7 +53,7 @@ class HomeTestConfirmation extends Component {
 
     getPatientInfo = async () => {
         try {
-            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address,home_healthcare_address"
             const userId = await AsyncStorage.getItem('userId');
             const patInfoResp = await fetchUserProfile(userId, fields);
             this.setState({ patDetails: patInfoResp });
@@ -208,7 +208,8 @@ class HomeTestConfirmation extends Component {
                                     </TouchableOpacity>
                                 </Col>
                                 <Col size={8.4}>
-                                    <Text style={styles.docName}>{(bookSlotDetails.prefix ? bookSlotDetails.prefix + '. ' : '') + (bookSlotDetails.first_name || '') + ' ' + (bookSlotDetails.last_name || '')} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                                    <Text style={styles.docName}>{(bookSlotDetails.prefix ? bookSlotDetails.prefix + '. ' : '') + (bookSlotDetails.first_name || '') + ' ' + (bookSlotDetails.last_name || '')} </Text>
+                                   <Text style={styles.specialist}>{getDoctorEducation(bookSlotDetails.education)}</Text>
                                     <Text style={styles.specialist}>{getDoctorSpecialist(bookSlotDetails.specialist)}</Text>
                                 </Col>
                             </Row>
@@ -242,19 +243,19 @@ class HomeTestConfirmation extends Component {
                                     <Text style={styles.subHead}>Home Address</Text>
                                 </Col>
                                 <Col size={7}>
-                                    <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
+                                    {/* <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
                                         <TouchableOpacity  >
                                             <Text style={styles.changeText}>Change</Text>
                                         </TouchableOpacity>
-                                    </Row>
+                                    </Row> */}
                                 </Col>
                             </Row>
                             <Text style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
                             {
-                                patDetails.address && patDetails.address.address ?
-                                    <Text style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
-                                        patDetails.address.address.address_line_1 + ' , ' +
-                                        patDetails.address.address.city + ' - ' + patDetails.address.address.pin_code}</Text>
+                                patDetails.home_healthcare_address && patDetails.home_healthcare_address.address ?
+                                    <Text style={styles.homeAdressTexts}>{patDetails.home_healthcare_address.address.no_and_street + ' , ' +
+                                        patDetails.home_healthcare_address.address.address_line_1 + ' , ' +
+                                        patDetails.home_healthcare_address.address.city + ' - ' + patDetails.home_healthcare_address.address.pin_code}</Text>
                                     :
                                     null}
                             <Text style={styles.homeAdressTexts}>
@@ -317,7 +318,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909498' }}>Consultation Fees</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}>Consultation Fees</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'}{Number(amountBySelectedPersons).toFixed(2)}</Text>
@@ -325,7 +326,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909498' }}>Charges </Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}>Charges </Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
