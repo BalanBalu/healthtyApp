@@ -234,11 +234,11 @@ class MedicineSearchList extends Component {
                         <View>
 
                             <View style={{ flex: 1, }}>
-                                <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, }}>
+                                <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 5, }}>
                                     <Input
                                         placeholder='Search for Medicines and Health Products...     '
                                         style={{ fontSize: 12, width: '300%' }}
-                                        placeholderTextColor="#C1C1C1"
+                                        placeholderTextColor="#909894"
                                         keyboardType={'default'}
                                         returnKeyType={'go'}
                                         value={this.state.medicineName}
@@ -263,7 +263,7 @@ class MedicineSearchList extends Component {
                                             onEndReached={this.handleLoadMore}
                                             onEndReachedThreshold={8}
                                             renderItem={({ item }) =>
-                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 2.5, }}>
+                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5, }}>
                                                     <Row onPress={() =>
                                                         this.props.navigation.navigate('MedicineInfo', {
                                                             medicineId: item.id,

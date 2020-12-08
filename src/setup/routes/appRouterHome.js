@@ -381,7 +381,7 @@ const HomeStack = createStackNavigator({
 
       ),
 
-      
+
       headerStyle: {
         backgroundColor: '#7F49C3',
       },
@@ -796,7 +796,7 @@ const HomeStack = createStackNavigator({
       title: 'Payment Page'
     }
   },
-  
+
   PromoCode: {
     screen: PromoCode,
     navigationOptions: {
@@ -954,17 +954,23 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerRight: (
 
-        <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
-          <View>
-            <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-            {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                  navigation.getParam('cartItemsCount')}
-              </Text>
-            }
-          </View>
-        </TouchableOpacity>
+        <Grid>
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
+                }
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
 
       )
     })
@@ -980,16 +986,18 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine List',
       headerRight: (
-        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Col>
-            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+        <Grid>
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                      navigation.getParam('cartItemsCount')}
-                  </Text>
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
                 }
               </View>
             </TouchableOpacity>
@@ -1004,15 +1012,17 @@ const HomeStack = createStackNavigator({
       title: 'Pharmacies',
       headerRight: (
         <Grid>
-          <Col>
-            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                      navigation.getParam('cartItemsCount')}
-                  </Text>
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
                 }
               </View>
             </TouchableOpacity>
@@ -1038,17 +1048,23 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Search Medicines',
       headerRight: (
-        <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
-          <View>
-            <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-            {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                  navigation.getParam('cartItemsCount')}
-              </Text>
-            }
-          </View>
-        </TouchableOpacity>
+        <Grid>
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
+                }
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
 
 
       ),
@@ -1093,16 +1109,18 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine Details',
       headerRight: (
-        <Grid style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Col>
-            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+        <Grid>
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                      navigation.getParam('cartItemsCount')}
-                  </Text>
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
                 }
               </View>
             </TouchableOpacity>

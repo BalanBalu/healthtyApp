@@ -60,7 +60,7 @@ class PharmacyList extends Component {
                             data={pharmacyData}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) =>
-                                <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10,borderRadius: 2.5, }}>
+                                <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10,borderRadius: 5, }}>
                                     <Row onPress={() => this.goPharmacyMedicineList(item)}
                                     style={{ paddingBottom: 2 }}>
                                         <Col size={2}>

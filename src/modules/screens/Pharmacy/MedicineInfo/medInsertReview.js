@@ -150,7 +150,7 @@ export class MedInsertReview extends Component {
                     </View>
                     <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
                       <TextInput
-                        style={{ height: 80, borderWidth: 0.3, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
+                        style={{ height: 80, borderWidth: 0.3, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14,color:'#909894' }}
                         returnKeyType={'next'}
                         placeholder="Write your reviews"
                         multiline={true}
