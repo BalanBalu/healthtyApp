@@ -55,6 +55,8 @@ class DoctorDetailsPreview extends Component {
             isLoadedUserReview: false,
             reviewsData: [],
             userId: null,
+            reqPinCode: null,
+            userAddressInfo: null,
             isLoadingReviews: false,
             showMoreOption: false,
             renderRefreshCount: 1,
@@ -82,7 +84,6 @@ class DoctorDetailsPreview extends Component {
         if (availabilitySlots) { // coming from  My Home Health care Appointment list via click  Book again button.
             await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props.
             const doctorId = navigation.getParam('doctorId');
-            alert(doctorId)
             const [doctorDetailsResp] = await Promise.all([
                 getMultipleDoctorDetails(doctorId, DOCTOR_FIELDS).catch(Ex => console.log('Ex is getting on get Doctor details====>', Ex)),
                 ServiceOfGetDoctorFavoriteListCount4Pat(doctorId).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -102,8 +103,10 @@ class DoctorDetailsPreview extends Component {
         } else {
             this.weekWiseDatesList = navigation.getParam('weekWiseDatesList') || [];
             let doctorItemData = navigation.getParam('singleDoctorItemData');
+            const reqPinCode = navigation.getParam('reqPinCode');
+            const userAddressInfo = navigation.getParam('userAddressInfo') || null;
             const singleDoctorAvailabilityData = navigation.getParam('singleDoctorAvailabilityData');
-            this.setState({ doctorId: doctorItemData.doctorId, doctorData: doctorItemData, isLoading: false });
+            this.setState({ reqPinCode, userAddressInfo, doctorId: doctorItemData.doctorId, doctorData: doctorItemData, isLoading: false });
             await this.callVideAndChat(doctorItemData.doctor_id);
             if (singleDoctorAvailabilityData) {
                 doctorItemData.slotData = singleDoctorAvailabilityData
@@ -243,6 +246,7 @@ class DoctorDetailsPreview extends Component {
 
     getDoctorAvailabilitySlots = async (startDateByMoment, endDateByMoment) => {
         try {
+            const { reqPinCode } = this.state;
             this.weekWiseDatesList = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.weekWiseDatesList);
             const reqStartAndEndDates = {
                 startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
@@ -250,6 +254,12 @@ class DoctorDetailsPreview extends Component {
             }
             const reqData4Availability = {
                 "doctorIds": [this.state.doctorId]
+            }
+            if (reqPinCode) {
+                reqData4Availability.locationData = {
+                    from_pincode: reqPinCode,
+                    to_pincode: reqPinCode,
+                }
             }
             const availabilityResp = await fetchDocHomeHealthcareAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
             const availabilityData = availabilityResp.data;
@@ -315,7 +325,7 @@ class DoctorDetailsPreview extends Component {
         const isoFormatOfSelectedDate = setCurrentISOTime4GivenDate(this.selectedAppointmentSlot.slotDate);  // send only selected slot date and get with ISO format;
         this.selectedAppointmentSlot.slotDate = isoFormatOfSelectedDate;
         const confirmSlotDetails = { ...doctorDetails, slotData: this.selectedAppointmentSlot };
-        this.props.navigation.navigate('HomeHealthcareConfirmation', { resultconfirmSlotDetails: confirmSlotDetails })
+        this.props.navigation.navigate('HomeHealthcareConfirmation', { resultconfirmSlotDetails: confirmSlotDetails, userAddressInfo: this.state.userAddressInfo })
     }
 
     shareDocInfo = async (doctorData) => {
@@ -565,7 +575,6 @@ class DoctorDetailsPreview extends Component {
     }
 
     callSlotsServiceWhenOnEndReached = async (doctorId, weekWiseDatesList) => { // call availability slots service when change dates on next week
-        console.log('Calling AVaila APIIIIIII')
         this.onEndReachedIsTriggedFromRenderDateList = true;
         const finalIndex = weekWiseDatesList.length
         const lastProcessedDate = weekWiseDatesList[finalIndex - 1];

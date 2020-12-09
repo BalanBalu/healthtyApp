@@ -10,7 +10,7 @@ import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_PO
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { getReferalPoints } from '../../providers/profile/profile.action';
 import { deleteCartByIds } from '../../providers/pharmacy/pharmacy.action'
-import { validatePromoCode,applyPromoCode } from '../../providers/PromoCode/promo.action'
+import { validatePromoCode, applyPromoCode } from '../../providers/PromoCode/promo.action'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
 import { NavigationEvents } from 'react-navigation';
@@ -272,7 +272,7 @@ class PaymentPage extends Component {
         if (response.success) {
             if (this.state.coupenCodeText !== null) {
                 this.applyPromoCode()
-                
+
             }
             if (serviceType === SERVICE_TYPES.APPOINTMENT) {
                 const fromNavigation = this.props.navigation.getParam('fromNavigation') || null
@@ -346,7 +346,6 @@ class PaymentPage extends Component {
                     paymentMethod: paymentMethodTitleCase,
                     tokenNo: response.tokenNo,
                     isFromHomeHealthCareConfirmation: true,
-                    patientInfo: this.props.navigation.getParam('patientInfo') || null
                 }
                 this.props.navigation.navigate('paymentsuccess', reqHomeHealthCare);
             }
@@ -462,14 +461,14 @@ class PaymentPage extends Component {
     }
     onCouponPress(coupenCodeText) {
         if (this.state.promoCodeErrorMsg) {
-            this.setState({ coupenCodeText: coupenCodeText,promoCodeErrorMsg:' ' })
+            this.setState({ coupenCodeText: coupenCodeText, promoCodeErrorMsg: ' ' })
         } else {
-            this.setState({ coupenCodeText: coupenCodeText}) 
+            this.setState({ coupenCodeText: coupenCodeText })
         }
     }
     async validatePromoCode() {
         let userId = await AsyncStorage.getItem('userId');
-        await this.setState({isLoading:true})
+        await this.setState({ isLoading: true })
         if (this.state.coupenCodeText !== null) {
             let reqData = {
                 promo_code: this.state.coupenCodeText,
@@ -483,17 +482,17 @@ class PaymentPage extends Component {
             console.log(JSON.stringify(result))
             if (result.success) {
 
-         this.setState({couponCodeDiscountAmount:Number(result.data.promoCodeDiscountAmount),promoCodeApplyMsg:result.message,promoCodeErrorMsg:'',isLoading:false})
+                this.setState({ couponCodeDiscountAmount: Number(result.data.promoCodeDiscountAmount), promoCodeApplyMsg: result.message, promoCodeErrorMsg: '', isLoading: false })
             } else {
-                this.setState({ promoCodeErrorMsg: result.message,promoCodeApplyMsg:'' ,isLoading:false})
+                this.setState({ promoCodeErrorMsg: result.message, promoCodeApplyMsg: '', isLoading: false })
             }
         } else {
-            this.setState({ promoCodeErrorMsg:"please enter the promo code",isLoading:false })
+            this.setState({ promoCodeErrorMsg: "please enter the promo code", isLoading: false })
         }
     }
     async applyPromoCode() {
         let userId = await AsyncStorage.getItem('userId');
-  
+
         if (this.state.coupenCodeText !== null) {
             let reqData = {
                 promo_code: this.state.coupenCodeText,
@@ -502,12 +501,12 @@ class PaymentPage extends Component {
                 user_id: userId,
                 amount_to_apply_promo_code: this.state.amount
             }
-          
+
             applyPromoCode(reqData)
         }
-      
 
-    
+
+
     }
     async setPaymentByCreditApplied() {
         const hasCreditApplied = !this.state.creditPointsApplied;
@@ -543,13 +542,13 @@ class PaymentPage extends Component {
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-                <NavigationEvents
-                onWillFocus={payload => { this.backNavigation(payload) }} />
+                    <NavigationEvents
+                        onWillFocus={payload => { this.backNavigation(payload) }} />
                     <Spinner
                         visible={isLoading}
                     // textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
                     />
- 
+
                     <View style={{ backgroundColor: '#f2f2f2' }}>
                         <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 10 }}>
                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>Select Options To Pay</Text>
@@ -573,7 +572,7 @@ class PaymentPage extends Component {
                                     </Form>
                                 </Col>
                             </Grid>
-                            
+
                             <Text style={{ color: 'green', marginLeft: 15, marginTop: 10 }}>{this.state.promoCodeApplyMsg}</Text>
                             <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.promoCodeErrorMsg}</Text>
                             <Row style={{ marginRight: 15, marginLeft: 15, marginTop: 10 }}>

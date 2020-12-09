@@ -5,14 +5,14 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { IS_ANDROID, validatePincode, validateName, validatePassword, validateFirstNameLastName, acceptNumbersOnly } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
-import { MAP_BOX_TOKEN } from '../../../../setup/config';
+import { MAP_BOX_TOKEN, SERVICE_TYPES } from '../../../../setup/config';
 import axios from 'axios';
 import { userFiledsUpdate, logout, getPostOffNameAndDetails } from '../../../providers/auth/auth.actions';
 import Geolocation from 'react-native-geolocation-service';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 import Qs from 'qs';
 import Spinner from '../../../../components/Spinner';
-import locationIcon from '../../../../../assets/marker.png'
+import locationIcon from '../../../../../assets/marker.png';
 import { NavigationEvents } from 'react-navigation';
 
 export default class MapBox extends React.Component {
@@ -272,7 +272,7 @@ export default class MapBox extends React.Component {
                 userAddressData.delivery_Address = userAddressData.address;
                 delete userAddressData.address
             }
-            if (this.state.addressType === 'HOME_HEALTH_CARE') {
+            if (this.state.addressType === SERVICE_TYPES.HOME_HEALTHCARE) {
                 if (validateFirstNameLastName(this.state.full_name) == false) {
                     Toast.show({
                         text: 'name should not contains white spaces and any Special Character',
@@ -284,9 +284,10 @@ export default class MapBox extends React.Component {
                 userAddressData.home_healthcare_address = userAddressData.address;
                 userAddressData.home_healthcare_address.full_name = this.state.full_name;
                 userAddressData.home_healthcare_address.mobile_no = this.state.mobile_no;
+                userAddressData.home_healthcare_address.active = true;
                 delete userAddressData.address
             }
-            const userId = await AsyncStorage.getItem('userId')
+            const userId = await AsyncStorage.getItem('userId');
             let result = await userFiledsUpdate(userId, userAddressData);
             if (result.success) {
                 if (this.state.fromProfile) {
@@ -298,9 +299,9 @@ export default class MapBox extends React.Component {
                     this.props.navigation.navigate('Profile');
                 } else if (this.state.navigationOption) {
                     const setParamObjData = { hasReloadAddress: true }
-                    if (this.state.addressType === 'HOME_HEALTH_CARE') {
+                    if (this.state.addressType === SERVICE_TYPES.HOME_HEALTHCARE) {
                         setParamObjData.userAddressInfo = userAddressData;
-                        setParamObjData.fromNavigation = 'HOME_HEALTH_CARE'
+                        setParamObjData.fromNavigation = SERVICE_TYPES.HOME_HEALTHCARE
                     }
                     this.props.navigation.navigate(this.state.navigationOption, setParamObjData);
                 }
@@ -472,7 +473,7 @@ export default class MapBox extends React.Component {
                     </Card> :
                     <Content style={styles.bodyContent}>
                         <Form>
-                            {this.state.addressType == 'delivery_Address' ?
+                            {this.state.addressType === 'delivery_Address' ?
                                 <View>
                                     <Item floatingLabel>
                                         <Label>Name</Label>

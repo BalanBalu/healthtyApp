@@ -6,7 +6,7 @@ import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Le
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import StarRating from "react-native-star-rating";
 import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
-import { renderDoctorImage, getName, getHomeHealthCareUserLocation } from '../../../common';
+import { renderDoctorImage, getName, getHomeHealthCareUserAddress } from '../../../common';
 import { formatDate, statusValue } from "../../../../setup/helpers";
 import styles from '../Styles'
 export default class RenderAppointmentList extends Component {
@@ -67,10 +67,10 @@ export default class RenderAppointmentList extends Component {
                                 )}
                             </Row>
                             <Text style={styles.mainText}>{item.degree}</Text>
-                            {item.appointmentResult && item.appointmentResult.userInfo && item.appointmentResult.userInfo.home_healthcare_address && item.appointmentResult.userInfo.home_healthcare_address.address ?
+                            {item.appointmentResult && item.appointmentResult.patient_location && item.appointmentResult.patient_location.address ?
                                 <View>
                                     <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visit home address :</Text>
-                                    <Text style={styles.subinnerText} note>{getHomeHealthCareUserLocation(item.appointmentResult.userInfo.home_healthcare_address.address)}
+                                    <Text style={styles.subinnerText} note>{getHomeHealthCareUserAddress(item.appointmentResult.patient_location.address)}
                                     </Text>
                                 </View>
                                 : null}

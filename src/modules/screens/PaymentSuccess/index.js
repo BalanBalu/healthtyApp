@@ -37,7 +37,6 @@ class PaymentSuccess extends Component {
         const fromNavigation = navigation.getParam('fromNavigation') || null
         const tokenNo = navigation.getParam('tokenNo');
         this.isFromHomeHealthCareConfirmation = navigation.getParam('isFromHomeHealthCareConfirmation') || false;
-        this.patientInfo = navigation.getParam('patientInfo') || null;
         await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo, fromNavigation });
         console.log(paymentMethod);
 
@@ -62,7 +61,8 @@ class PaymentSuccess extends Component {
         )
     }
     renderPatientLocation() {
-        const patientAddress = this.patientInfo && this.patientInfo.home_healthcare_address && this.patientInfo.home_healthcare_address.address;
+        const { successBookSlotDetails } = this.state;
+        const patientAddress = successBookSlotDetails && successBookSlotDetails.patient_location && successBookSlotDetails.patient_location.address;
         if (patientAddress && Object.keys(patientAddress).length) {
             return (
                 <Row style={styles.rowDetail1}>

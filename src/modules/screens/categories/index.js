@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
-import { MAX_DISTANCE_TO_COVER, MAX_DISTANCE_TO_COVER_HOME_HEALTH_CARE_DOCTORS } from '../../../setup/config';
+import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 
@@ -22,16 +22,6 @@ class Categories extends Component {
     }
   }
 
-  async UNSAFE_componentWillMount() {
-    const fromNavigation = this.props.navigation.getParam('fromNavigation') || null;
-    const screen = 'MapBox';
-    if (fromNavigation === 'HOME_HEALTH_CARE') {
-      const getLoggedUserInfo = JSON.parse(await AsyncStorage.getItem('basicProfileData'));
-      const fullName = getLoggedUserInfo && getLoggedUserInfo.first_name ? getLoggedUserInfo.first_name + ' ' + getLoggedUserInfo.last_name : null;
-      const addressType = { addressType: 'HOME_HEALTH_CARE', mobile_no: getLoggedUserInfo && getLoggedUserInfo.mobile_no || null, full_name: fullName }
-      this.props.navigation.navigate(screen, { screen, navigationOption: 'Categories', addressType })
-    }
-  }
   componentDidMount() {
     this.getCatagries();
   }
@@ -73,14 +63,16 @@ class Categories extends Component {
         category_id: category_id
       })
     }
-    else if (fromNavigation === 'HOME_HEALTH_CARE') {
-      let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null
+    else if (fromNavigation === SERVICE_TYPES.HOME_HEALTHCARE) {
+      let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null;
+      const pinCode = userAddressInfo && userAddressInfo.address && userAddressInfo.address.pin_code;
       const reqParamDataObj = {
         categoryName,
         categoryId: category_id
       }
-      if (userAddressInfo && userAddressInfo.home_healthcare_address && userAddressInfo.home_healthcare_address.address && userAddressInfo.home_healthcare_address.address.pin_code) {
-        reqParamDataObj.pinCode = userAddressInfo.home_healthcare_address.address.pin_code
+      if (pinCode) {
+        reqParamDataObj.userAddressInfo = userAddressInfo;
+        reqParamDataObj.pinCode = pinCode
       }
       this.props.navigation.navigate("Home Health Care", reqParamDataObj);
     } else {
