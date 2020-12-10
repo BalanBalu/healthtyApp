@@ -191,7 +191,7 @@ class MedicineCheckout extends Component {
             service_type: SERVICE_TYPES.PHARMACY,
             amount: Number(amount),
             bookSlotDetails: {
-                fee: amount,
+                fee: Number(amount),
                 medicineDetails: medicineOrderData,
                 totalAmount: Number(amount),
                 deliveryType: itemSelected,
