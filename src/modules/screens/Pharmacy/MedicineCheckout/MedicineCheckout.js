@@ -133,7 +133,8 @@ class MedicineCheckout extends Component {
     onProceedToPayment(navigationToPayment) {
 
         const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, deliveryDetails, pharmacyInfo, h1ProductData } = this.state;
-
+       console.log("medicineDetailsmedicineDetailsmedicineDetailsmedicineDetailsmedicineDetails")
+        console.log(JSON.stringify(medicineDetails))
         let isH1Product = false
 
         if (medicineDetails.length === 0 && isPrescription === false) {
@@ -179,16 +180,20 @@ class MedicineCheckout extends Component {
                 return ele.item.totalPrice
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
+               
+        }
+        if (!Number.isInteger(amount)) {
+            amount=  Number(amount).toFixed(2)
         }
 
         const paymentPageRequestData = {
 
             service_type: SERVICE_TYPES.PHARMACY,
-            amount: amount,
+            amount: Number(amount),
             bookSlotDetails: {
                 fee: amount,
                 medicineDetails: medicineOrderData,
-                totalAmount: amount,
+                totalAmount: Number(amount),
                 deliveryType: itemSelected,
                 delivery_address: {
                     mobile_no: selectedAddress.mobile_no || mobile_no || BASIC_DEFAULT.mobile_no,
@@ -422,7 +427,7 @@ class MedicineCheckout extends Component {
             if (response.success) {
                 let temp = this.state.h1ProductData;
                 let data = temp.concat(response.data)
-            
+
 
                 await this.setState({ h1ProductData: data, isH1Product: false })
 
@@ -671,11 +676,11 @@ class MedicineCheckout extends Component {
                                 renderItem={({ item, index }) =>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={9}>
-                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: 'prescription' })}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>
-                                                {item.file_name}
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: 'prescription' })}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>
+                                                    {item.file_name}
                                                 </Text>
-                                                </TouchableOpacity>
+                                            </TouchableOpacity>
                                         </Col>
 
                                         <Col size={1} style={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
@@ -761,7 +766,7 @@ class MedicineCheckout extends Component {
                     </Modal>
 
                 </Content>
-                {isPrescription === false && this.state.medicineDetails.length === 0 ?null:
+                {isPrescription === false && this.state.medicineDetails.length === 0 ? null :
                     <Footer style={
                         Platform.OS === "ios" ?
                             { height: 40 } : { height: 45 }}>
@@ -784,7 +789,7 @@ class MedicineCheckout extends Component {
                                     </Col> : null}
                             </Row>
                         </FooterTab>
-                    </Footer> }
+                    </Footer>}
 
 
             </Container >
