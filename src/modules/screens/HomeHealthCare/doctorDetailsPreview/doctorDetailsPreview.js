@@ -91,7 +91,9 @@ class DoctorDetailsPreview extends Component {
             ]);
             if (doctorDetailsResp.success && doctorDetailsResp.data && doctorDetailsResp.data[0]) {
                 this.setDocInfoAndAvailableSlotsData = doctorDetailsResp.data[0];
-                this.setState({ doctorId, doctorData: this.setDocInfoAndAvailableSlotsData, isLoading: false });
+                const reqPinCode = navigation.getParam('reqPinCode');
+                const userAddressInfo = navigation.getParam('userAddressInfo') || null;
+                this.setState({ reqPinCode, userAddressInfo, doctorId, doctorData: this.setDocInfoAndAvailableSlotsData, isLoading: false });
                 if (userId) {
                     await this.getFavoriteCounts4PatByUserId(userId);
                 }
