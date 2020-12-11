@@ -314,6 +314,7 @@ export default class BookAppointmentPaymentUpdate {
                 booked_from: "Mobile",
                 payment_id: paymentId
             }
+            if (bookSlotDetails.patient_location) bookAppointmentData.patient_location = bookSlotDetails.patient_location;
             if (bookSlotDetails.diseaseDescription) bookAppointmentData.description = bookSlotDetails.diseaseDescription;
             let resultData = await bookAppointment4Healthcare(bookAppointmentData);
             if (resultData.success) {

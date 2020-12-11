@@ -20,12 +20,10 @@ import { formatDate, addMoment, getMoment, setCurrentISOTime4GivenDate } from '.
 import { Loader } from '../../../../components/ContentLoader';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
-import { acceptNumbersOnly } from '../../../common';
 import { store } from '../../../../setup/store';
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
 import RenderDatesList from './RenderDateList'
-import { RenderEditingPincode } from '../../CommonAll/components';
 const CALL_AVAILABILITY_SLOTS_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 8;
 let doctorListOrder = 'ASC';
@@ -51,9 +49,9 @@ class DoctorList extends Component {
             isLoadingDatesAndSlots: false,
             isLoadingMoreDocList: false,
             doctorInfoListAndSlotsData1: [],
-            pinCode: '',
-            searchedInputTextValue: props.navigation.getParam('categoryName') || 'Primary',
-            searchedInputPinCodeValue: props.navigation.getParam('pinCode') || '600001',
+            reqSpecialistData: props.navigation.getParam('categoryName'),
+            reqPinCode: props.navigation.getParam('pinCode'),
+            userAddressInfo: props.navigation.getParam('userAddressInfo') || null,
             isLoadingOnChangeDocList: false,
             isOnEditPincode: false,
         }
@@ -146,20 +144,20 @@ class DoctorList extends Component {
     searchByDoctorDetails = async () => {
         try {
             const { bookAppointmentData: { getPreviousDocListWhenClearFilter } } = this.props;
-            const { searchedInputTextValue, searchedInputPinCodeValue } = this.state;
+            const { reqSpecialistData, reqPinCode } = this.state;
             let type;
             let reqData4ServiceCall = {}
-            if (searchedInputPinCodeValue) {
-                reqData4ServiceCall.locationData = { from_pincode: searchedInputPinCodeValue, to_pincode: searchedInputPinCodeValue }
+            if (reqPinCode) {
+                reqData4ServiceCall.locationData = { from_pincode: reqPinCode, to_pincode: reqPinCode }
             }
-            if (!this.conditionFromFilterPage && searchedInputTextValue) {
-                reqData4ServiceCall.inputText = searchedInputTextValue
+            if (!this.conditionFromFilterPage && reqSpecialistData) {
+                reqData4ServiceCall.inputText = reqSpecialistData
             }
             if (this.conditionFromFilterPage && !getPreviousDocListWhenClearFilter) {
                 type = 'filter';
                 reqData4ServiceCall = { ...reqData4ServiceCall, ...this.selectedDataFromFilterPage }
             }
-            else if (!searchedInputTextValue) {
+            else if (!reqSpecialistData) {
                 type = 'location'
             }
             else {
@@ -283,7 +281,7 @@ class DoctorList extends Component {
 
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, } } = this.props;
-        const { searchedInputTextValue, searchedInputPinCodeValue, isLoading, isLoadingMoreDocList, isLoadingOnChangeDocList } = this.state;
+        const { reqPinCode, isLoading, isLoadingMoreDocList, isLoadingOnChangeDocList } = this.state;
         if (isLoading) return <Loader style='list' />;
         return (
             <Container style={styles.container}>
@@ -311,49 +309,39 @@ class DoctorList extends Component {
                         </Col>
                     </Row>
                 </Card>
-                <RenderEditingPincode
-                    showPinCodeResultByType={"Doctors"}
-                    isPincodeEditVisible={this.state.isOnEditPincode}
-                    onChangeSelection={(value) => this.setState({ isOnEditPincode: value })}
-                    value={this.state.searchedInputPinCodeValue}
-                    onChangeText={pinCode => acceptNumbersOnly(pinCode) == true || pinCode === '' ? this.setState({ searchedInputPinCodeValue: pinCode }) : null}
-                    onPressEditButton={() => {
-                        this.setState({ isOnEditPincode: false })
-                        this.callGetDocListService();
-                    }}
-                />
-                {searchedInputPinCodeValue ?
-                    isLoadingOnChangeDocList ?
-                        <View style={{ marginTop: 60 }}>
-                            <ActivityIndicator
-                                animating={isLoadingOnChangeDocList}
-                                size="large"
-                                color='blue'
-                            />
-                        </View>
-                        :
-                        doctorInfoListAndSlotsData.length ?
-                            < FlatList
-                                data={doctorInfoListAndSlotsData}
-                                onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
-                                onEndReached={() => {
-                                    if (this.isEnabledLoadMoreData) {
-                                        this.loadMoreData();
-                                    }
-                                }}
-                                renderItem={({ item, index }) => this.renderDoctorCard(item, index)
-                                }
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                            :
-                            <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
-                            </Item>
-                    : <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center', color: "red" }} >Kindly Enter your Pincode</Text>
+                <View>
+                    <Text style={{
+                        marginLeft: 5,
+                        fontFamily: 'OpenSans',
+                        color: '#000',
+                        fontSize: 13,
+                        marginTop: 5
+                    }}>{"Showing Doctors in the"}
+                        <Text style={{
+                            fontFamily: 'OpenSans',
+                            color: '#7F49C3',
+                            fontSize: 13,
+                        }}>{" "}PinCode - {reqPinCode}</Text>
+                    </Text>
+                </View>
+                {                        doctorInfoListAndSlotsData.length ?
+                    < FlatList
+                        data={doctorInfoListAndSlotsData}
+                        onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}
+                        onEndReached={() => {
+                            if (this.isEnabledLoadMoreData) {
+                                this.loadMoreData();
+                            }
+                        }}
+                        renderItem={({ item, index }) => this.renderDoctorCard(item, index)
+                        }
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                    :
+                    <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
                     </Item>
                 }
-                {/* </View> */}
                 {isLoadingMoreDocList ?
                     <View style={{ flex: 1, justifyContent: 'flex-end' }}>
                         <ActivityIndicator
@@ -364,7 +352,6 @@ class DoctorList extends Component {
                         />
                     </View>
                     : null}
-                {/* </Content> */}
             </Container>
         )
     }
@@ -410,7 +397,7 @@ class DoctorList extends Component {
         const isoFormatOfSelectedDate = setCurrentISOTime4GivenDate(selectedSlotItemByDoctor.slotDate);  // send only selected slot date and get with ISO format;
         selectedSlotItemByDoctor.slotDate = isoFormatOfSelectedDate;
         const confirmSlotDetails = { ...doctorData, slotData: selectedSlotItemByDoctor };
-        this.props.navigation.navigate('HomeHealthcareConfirmation', { resultconfirmSlotDetails: confirmSlotDetails })
+        this.props.navigation.navigate('HomeHealthcareConfirmation', { resultconfirmSlotDetails: confirmSlotDetails, userAddressInfo: this.state.userAddressInfo })
     }
 
     getFeesBySelectedSlot(selectedSlotData, item) {
@@ -453,7 +440,7 @@ class DoctorList extends Component {
     /* get Doctor  Availability Slots service */
     getDoctorAvailabilitySlots = async (doctor_id, startDateByMoment, endDateByMoment, indexOfItem) => {
         try {
-            const { searchedInputPinCodeValue } = this.state;
+            const { reqPinCode } = this.state;
             this.weekWiseDatesList = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.weekWiseDatesList);
             const orderedDataFromWholeData = this.getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService(indexOfItem) // get 5 Or LessThan 5 of doctor_ids in order wise using index of given input of doctorInfoListAndSlotsData
             const reqDataDoctorIdsArry = [];
@@ -463,10 +450,10 @@ class DoctorList extends Component {
             const reqData4Availability = {
                 "doctorIds": reqDataDoctorIdsArry
             }
-            if (searchedInputPinCodeValue) {
+            if (reqPinCode) {
                 reqData4Availability.locationData = {
-                    from_pincode: searchedInputPinCodeValue,
-                    to_pincode: searchedInputPinCodeValue,
+                    from_pincode: reqPinCode,
+                    to_pincode: reqPinCode,
                 }
             }
             const reqStartAndEndDates = {
@@ -532,6 +519,10 @@ class DoctorList extends Component {
         if (doctorItemHaveSlotsDataObj) {
             reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
             reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
+        }
+        if (this.state.userAddressInfo) {
+            reqData4BookAppPage.userAddressInfo = this.state.userAddressInfo;
+            reqData4BookAppPage.reqPinCode = this.state.reqPinCode
         }
         this.props.navigation.navigate('Home Healthcare Doctor Details Preview', reqData4BookAppPage)
     }

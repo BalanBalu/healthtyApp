@@ -167,7 +167,6 @@ export function getUserLocation(location) {
         return ''
 }
 
-
 export class Badge extends Component {
     constructor(props) {
 
@@ -350,6 +349,13 @@ export function getAddress(location) {
     else
         return ''
 }
+
+export function getHomeHealthCareUserAddress(address) {
+    if (!address) return ''
+    if (address)
+        return (address.no_and_street ? address.no_and_street + ', ' : " ") + (address.address_line_1 ? address.address_line_1 + ', ' : " ") + (address.post_office_name ? address.post_office_name + ', ' : " ") + (address.city ? address.city + ', ' : " ") + (address.state ? address.state + ', ' : " ") + (address.pin_code ? address.pin_code : " ");
+}
+
 export function validateName(text) {
     let regex = /^(?!\s*$)[-a-zA-Z_:' ']{1,100}$/;
     if (regex.test(text) === false) return false;

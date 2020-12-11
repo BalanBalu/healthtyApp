@@ -83,14 +83,12 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            console.log('IsCorporate User', await AsyncStorage.getItem('is_corporate_user'));
             const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
             this.setState({ isCorporateUser })
             this.initialFunction();
             NotifService.initNotification(this.props.navigation);
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
-                console.log(productConfigVersion)
                 if (productConfigVersion.success) {
                     if (CURRENT_PRODUCT_VERSION_CODE !== productConfigVersion.data[0].value.version_code) {
                         await this.updateAppVersion(productConfigVersion);
@@ -248,15 +246,12 @@ class Home extends Component {
 
     getAllChatsByUserId = async (userId) => {
         try {
-            console.log('Calling getAllChatsByUserId');
             const chatList = await getAllChats(userId);
-            console.log('Got the data', chatList);
             if (chatList.success === true) {
                 store.dispatch({
                     type: SET_LAST_MESSAGES_DATA,
                     data: chatList.data
                 })
-                console.log(chatList.data);
             }
         } catch (error) {
             Toast.show({
@@ -394,9 +389,7 @@ class Home extends Component {
                         </Grid>
                         <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, }}>
                             <Col style={{ width: '50%' }}>
-                                <TouchableOpacity onPress={() =>
-                                    this.props.navigation.navigate("Categories", { fromNavigation: "HOME_HEALTH_CARE" })
-                                }>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Home Healthcare Address List")}>
                                     <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                         <Row style={styles.rowStyle}>
                                             <FastImage

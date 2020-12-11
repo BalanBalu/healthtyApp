@@ -208,10 +208,16 @@ export default class AppointmentList extends Component {
         }
     }
     onPressGoToBookAppointmentPage = (item) => {
-        this.props.navigation.navigate('Home Healthcare Doctor Details Preview', {
+        const reqParamsData = {
             doctorId: item.appointmentResult && item.appointmentResult.doctor_id,
-            fetchAvailabiltySlots: true
-        })
+            fetchAvailabiltySlots: true,
+        }
+        const userAddressInfo = item.appointmentResult && item.appointmentResult.patient_location
+        if (userAddressInfo) {
+            reqParamsData.reqPinCode = userAddressInfo.address && userAddressInfo.address.pin_code;
+            reqParamsData.userAddressInfo = userAddressInfo;
+        }
+        this.props.navigation.navigate('Home Healthcare Doctor Details Preview', reqParamsData);
     }
     renderAppointmentList(item, index) {
         return (
@@ -242,7 +248,6 @@ export default class AppointmentList extends Component {
     }
     render() {
         const { data, reviewData, selectedIndex, isVisibleAddReviewPop, isLoading } = this.state;
-
         return (
             <Container style={{ backgroundColor: '#ffffff', }}>
                 <NavigationEvents

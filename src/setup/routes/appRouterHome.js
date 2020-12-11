@@ -124,7 +124,7 @@ import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCare/Appointments/cancelAppointment';
 import HomeHealthcareDoctorDetailsPreview from '../../modules/screens/HomeHealthCare/doctorDetailsPreview/doctorDetailsPreview';
-
+import HomeHealthcareAddressList from '../../modules/screens/HomeHealthCare/homeDeliveryAddressPage';
 import MedicineRecords from '../../modules/screens/medicalRecords';
 import EmrInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/emrInfo'
 import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
@@ -877,6 +877,13 @@ const HomeStack = createStackNavigator({
       title: 'Home Healthcare Doctor Details Preview'
     }
   },
+  "Home Healthcare Address List": {
+    screen: HomeHealthcareAddressList,
+    navigationOptions: {
+      title: 'Home Healthcare Address List'
+    }
+  },
+
 
   // ============Chat ========================
   "Chat Service": {

@@ -6,7 +6,7 @@ import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Le
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import StarRating from "react-native-star-rating";
 import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
-import { renderDoctorImage, getName, getUserLocation } from '../../../common';
+import { renderDoctorImage, getName, getHomeHealthCareUserAddress } from '../../../common';
 import { formatDate, statusValue } from "../../../../setup/helpers";
 import styles from '../Styles'
 export default class RenderAppointmentList extends Component {
@@ -20,7 +20,6 @@ export default class RenderAppointmentList extends Component {
 
     render() {
         const { appointmentData: { item, selectedIndex, index, navigation }, onPressNavigateToInsertReviewPage, onPressGoToBookAppointmentPage } = this.props;
-        console.log('Rendering Appointment list =====>')
         return (
             <Card transparent style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
                 <TouchableOpacity onPress={() =>
@@ -68,8 +67,13 @@ export default class RenderAppointmentList extends Component {
                                 )}
                             </Row>
                             <Text style={styles.mainText}>{item.degree}</Text>
-                            <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visit home address :</Text>
-                            <Text style={styles.subinnerText} note>{getUserLocation(item.appointmentResult.userInfo)}</Text>
+                            {item.appointmentResult && item.appointmentResult.patient_location && item.appointmentResult.patient_location.address ?
+                                <View>
+                                    <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visit home address :</Text>
+                                    <Text style={styles.subinnerText} note>{getHomeHealthCareUserAddress(item.appointmentResult.patient_location.address)}
+                                    </Text>
+                                </View>
+                                : null}
                             <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visited On :</Text>
                             <Text style={styles.subinnerText} note>
                                 {formatDate(item.appointmentResult.appointment_date, "dddd,MMMM DD-YYYY")} </Text>
