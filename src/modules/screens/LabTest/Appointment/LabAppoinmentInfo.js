@@ -335,14 +335,14 @@ class LabAppointmentInfo extends Component {
                         </Col>
                         <Col size={3}>
                           <Row style={{ marginTop: 10 }}>
-                            <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A',marginLeft:25 }]} onPress={() => this.updateLabAppointmentStatus(data, 'APPROVED')}>
+                            <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A', marginLeft: 25 }]} onPress={() => this.updateLabAppointmentStatus(data, 'APPROVED')}>
                               <Text style={styles.ButtonText}>ACCEPT</Text>
                             </Button>
                           </Row>
                         </Col>
                         <Col size={3}>
                           <Row style={{ marginTop: 10 }}>
-                            <Button danger style={[styles.postponeButton, {marginLeft: 20 }]} onPress={() => this.navigateCancelAppoointment()}>
+                            <Button danger style={[styles.postponeButton, { marginLeft: 20 }]} onPress={() => this.navigateCancelAppoointment()}>
                               <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
                             </Button>
                           </Row>
@@ -388,7 +388,7 @@ class LabAppointmentInfo extends Component {
                           <Text style={styles.innerSubText1}>
                             {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by You' : ' Canceled by Lab'}</Text>
                           : null}
-                       
+
                         <Text note style={styles.subTextInner1}>{data.status_update_reason}</Text>
                       </Col>
                     </Row>
@@ -571,6 +571,36 @@ class LabAppointmentInfo extends Component {
                         <Text note style={styles.downText}>{"Rs." + (paymentData.amount != undefined ? paymentData.amount : 0)}</Text>
                       </Col>
                     </Row>
+                    {
+                      paymentData.coupon_code_discount_amount ?
+                        <Row style={{ marginTop: 10 }}>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={styles.downText}>coupon code discount amount
+                </Text>
+                          </Col>
+                          <Col style={{ width: '15%' }}>
+                            <Text style={styles.downText}>-</Text>
+                          </Col>
+                          <Col style={{ width: '25%' }}>
+                            <Text note style={styles.downText}>{"Rs." + paymentData.coupon_code_discount_amount}</Text>
+                          </Col>
+                        </Row> : null
+                    }
+                    {
+                      paymentData.credit_point_discount_amount ?
+                        <Row style={{ marginTop: 10 }}>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={styles.downText}>credit point discount amount
+                </Text>
+                          </Col>
+                          <Col style={{ width: '15%' }}>
+                            <Text style={styles.downText}>-</Text>
+                          </Col>
+                          <Col style={{ width: '25%' }}>
+                            <Text note style={styles.downText}>{"Rs." + paymentData.credit_point_discount_amount}</Text>
+                          </Col>
+                        </Row> : null
+                    }
                     <Row style={{ marginTop: 10 }}>
                       <Col style={{ width: '60%' }}>
                         <Text style={styles.downText}>Payment Made

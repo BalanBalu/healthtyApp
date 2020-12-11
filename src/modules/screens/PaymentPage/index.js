@@ -474,7 +474,7 @@ class PaymentPage extends Component {
                 promo_code: this.state.coupenCodeText,
                 user_type: "USER",
                 service_type: this.state.serviceType,
-                user_id: userId,
+                consumer_id: userId,
                 amount_to_apply_promo_code: this.state.amount
             }
             console.log(JSON.stringify(reqData))
@@ -498,7 +498,7 @@ class PaymentPage extends Component {
                 promo_code: this.state.coupenCodeText,
                 user_type: "USER",
                 service_type: this.state.serviceType,
-                user_id: userId,
+                consumer_id: userId,
                 amount_to_apply_promo_code: this.state.amount
             }
 

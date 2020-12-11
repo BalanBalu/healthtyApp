@@ -10,9 +10,22 @@ export default class RenderHospitalInfo extends Component {
     constructor(props) {
         super(props)
     }
+    getHospitalFee(data,category_id){
+        let fee =200;
+       if(data.categories_data){
+
+let find_categories_data=data.categories_data.find(ele=>{
+    return ele.category_id===category_id })
+
+if(find_categories_data){
+    fee=find_categories_data.fees;
+}
+        }
+        return fee
+          }
 
     render() {
-        const { item, index, navigation, hospitalInfo: { isLoggedIn, userLocDetails, patientFavoriteListCountOfHospitalAdminIds, hospitalFavoriteListCountOfHospitalAdminIds }, addToFavoritesList, openDateTimePicker } = this.props;
+        const { item, index, navigation, hospitalInfo: { isLoggedIn, userLocDetails, patientFavoriteListCountOfHospitalAdminIds, hospitalFavoriteListCountOfHospitalAdminIds }, addToFavoritesList, openDateTimePicker,category_id } = this.props;
         return (
             <Card style={styles.doctorListStyle}>
                 <List style={{ borderBottomWidth: 0 }}>
@@ -68,7 +81,7 @@ export default class RenderHospitalInfo extends Component {
                                     </Row>
                                     : null}
                                 <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.3, marginTop: 10 }}>
-                                    <Col size={3} style={{ marginTop: 10 }}>
+                                    <Col size={2} style={{ marginTop: 10 }}>
                                         <Text note style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 12 }}> Rating</Text>
                                         <View style={{ flexDirection: 'row', marginLeft: 5 }}>
                                             <StarRating
@@ -87,7 +100,11 @@ export default class RenderHospitalInfo extends Component {
                                         <Text note style={[styles.commonStyle, { marginLeft: 5 }]}> Favourite</Text>
                                         <Text style={[styles.commonStyle, { marginLeft: 25, fontWeight: 'bold' }]}>{hospitalFavoriteListCountOfHospitalAdminIds[item.hospital_admin_id] !== undefined ? hospitalFavoriteListCountOfHospitalAdminIds[item.hospital_admin_id] : '0'}</Text>
                                     </Col>
-                                    <Col size={3} >
+                                     <Col size={2}  style={{ marginTop: 10 }}>
+                                        <Text note style={[styles.commonStyle, { marginLeft: 5 }]}> Fee</Text>
+                                        <Text style={[styles.commonStyle, { marginLeft: 5, fontWeight: 'bold' }]}>{this.getHospitalFee(item,category_id)}</Text>
+                                    </Col>
+                                    <Col size={2} >
                                         <TouchableOpacity onPress={() => openDateTimePicker(item, index)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, width: 66, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: 20 }}>
                                             <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
                                         </TouchableOpacity>

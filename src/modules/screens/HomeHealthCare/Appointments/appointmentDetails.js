@@ -521,6 +521,36 @@ class AppointmentDetails extends PureComponent {
                                                     <Text note style={styles.downText}>{"Rs." + (paymentDetailsObj.amount ? paymentDetailsObj.amount : 0) + "/-"}</Text>
                                                 </Col>
                                             </Row>
+                                            {
+                      paymentDetailsObj.coupon_code_discount_amount ?
+                        <Row style={{ marginTop: 10 }}>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={styles.downText}>coupon code discount amount
+                </Text>
+                          </Col>
+                          <Col style={{ width: '15%' }}>
+                            <Text style={styles.downText}>-</Text>
+                          </Col>
+                          <Col style={{ width: '25%' }}>
+                            <Text note style={styles.downText}>{"Rs." + paymentDetailsObj.coupon_code_discount_amount}</Text>
+                          </Col>
+                        </Row> : null
+                    }
+                    {
+                      paymentDetailsObj.credit_point_discount_amount ?
+                        <Row style={{ marginTop: 10 }}>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={styles.downText}>credit point discount amount
+                </Text>
+                          </Col>
+                          <Col style={{ width: '15%' }}>
+                            <Text style={styles.downText}>-</Text>
+                          </Col>
+                          <Col style={{ width: '25%' }}>
+                            <Text note style={styles.downText}>{"Rs." + paymentDetailsObj.credit_point_discount_amount}</Text>
+                          </Col>
+                        </Row> : null
+                    }
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col style={{ width: '60%' }}>
                                                     <Text style={styles.downText}>Payment Made

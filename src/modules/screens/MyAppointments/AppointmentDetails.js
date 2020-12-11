@@ -804,6 +804,37 @@ class AppointmentDetails extends Component {
                           <Text note style={styles.downText}>{"Rs." + (paymentDetails.amount != undefined ? paymentDetails.amount : 0) + "/-"}</Text>
                         </Col>
                       </Row>
+                      {
+                      paymentDetails.coupon_code_discount_amount ?
+                        <Row style={{ marginTop: 10 }}>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={styles.downText}>coupon code discount amount
+                </Text>
+                          </Col>
+                          <Col style={{ width: '15%' }}>
+                            <Text style={styles.downText}>-</Text>
+                          </Col>
+                          <Col style={{ width: '25%' }}>
+                            <Text note style={styles.downText}>{"Rs." + paymentDetails.coupon_code_discount_amount}</Text>
+                          </Col>
+                        </Row> : null
+                    }
+                    {
+                      paymentDetails.credit_point_discount_amount ?
+                        <Row style={{ marginTop: 10 }}>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={styles.downText}>credit point discount amount
+                </Text>
+                          </Col>
+                          <Col style={{ width: '15%' }}>
+                            <Text style={styles.downText}>-</Text>
+                          </Col>
+                          <Col style={{ width: '25%' }}>
+                            <Text note style={styles.downText}>{"Rs." + paymentDetails.credit_point_discount_amount}</Text>
+                          </Col>
+                        </Row> : null
+                    }
+
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
                           <Text style={styles.downText}>{translate("Payment Made")}
