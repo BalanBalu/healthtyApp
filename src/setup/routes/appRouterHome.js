@@ -111,7 +111,6 @@ import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/Pre
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
 
-import PopupMenu from './popUpMenu';
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
 import PublicForum from '../../modules/screens/publicForum/publicForum'
 import PostForum from '../../modules/screens/publicForum/postForum'
@@ -137,6 +136,7 @@ import { IS_ANDROID } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
+import LanguagePopUp from './languagePopUp'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -236,10 +236,10 @@ const HomeStack = createStackNavigator({
                   </View>
                 </TouchableOpacity>
               </Col>
-              {Platform.OS != "ios" ?
-                <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
-                  <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
-                </TouchableOpacity> : null}
+              <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+                <LanguagePopUp />
+
+              </TouchableOpacity>
             </Row>
 
 
@@ -369,10 +369,10 @@ const HomeStack = createStackNavigator({
                   </View>
                 </TouchableOpacity>
               </Col>
-              {Platform.OS != "ios" ?
-                <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
-                  <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
-                </TouchableOpacity> : null}
+              <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+                <LanguagePopUp />
+
+              </TouchableOpacity>
             </Row>
 
 
@@ -397,12 +397,6 @@ const HomeStack = createStackNavigator({
     screen: NextAppoinmentPreparation,
     navigationOptions: {
       title: 'Next Appoinment Preparation'
-    }
-  },
-  PopupMenu: {
-    screen: PopupMenu,
-    navigationOptions: {
-      title: 'PopupMenu'
     }
   },
   // ================Categories  ===============
