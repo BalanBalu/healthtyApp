@@ -219,11 +219,11 @@ class PharmacyHome extends Component {
                 <View style={{ backgroundColor: '#7F49C3', padding: 5, paddingBottom: 10, height: 45 }}>
                     <Grid>
                         <Col size={10}>
-                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
+                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 5 }}>
                                 <Input
                                     placeholder='Search for Medicines and Health Products...     '
                                     style={{ fontSize: 12, width: '300%' }}
-                                    placeholderTextColor="#C1C1C1"
+                                    placeholderTextColor="#909894"
                                     keyboardType={'default'}
                                     onChangeText={(text) => this.navigatePress(text)}
                                     // onKeyPress={(evet) => this.navigatePress(evet)}
@@ -292,7 +292,7 @@ class PharmacyHome extends Component {
                             />
                         </View>
                     </ScrollView>
-                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10 }}>
+                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10,borderRadius:5 }}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('UploadPrescription')}>
                             <View style={styles.uploadStyles}>
                                 <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -340,7 +340,7 @@ class PharmacyHome extends Component {
                                                     medicineId: item.id,
                                                     medicineData: item
                                                 })}>
-                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%', borderRadius: 2.5, }}>
+                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%', borderRadius: 5, }}>
 
                                                     <Row>
                                                     {item.h1Product ?
@@ -434,7 +434,7 @@ class PharmacyHome extends Component {
                                     horizontal={true}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) =>
-                                        <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210, borderRadius: 2.5, }}>
+                                        <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210, borderRadius: 5, }}>
 
                                             <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
                                                 <Col size={5}>
@@ -475,13 +475,13 @@ class PharmacyHome extends Component {
                         </ScrollView>
 
                     </View>
-                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10, borderRadius: 5 }}>
+                    <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 20, borderRadius: 5 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#4c4c4c' }}>Here is What you do!</Text>
-                        <View style={{ backgroundColor: '#fff', marginTop: 5 }}>
+                        <View style={{ backgroundColor: '#fff', paddingTop: 5,borderRadius: 5,alignItems:'center',paddingBottom:8,marginTop:5 }}>
                             <Image
                                 source={require('../../../../../assets/images/pharmacyprocess.png')}
                                 style={{
-                                    width: 350, height: 80, alignItems: 'center'
+                                    width: 450, height: 80, alignItems: 'center'
                                 }}
                             />
                         </View>

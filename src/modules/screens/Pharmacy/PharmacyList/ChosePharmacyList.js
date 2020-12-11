@@ -162,7 +162,7 @@ class ChosePharmacyList extends Component {
                         <Input
                             placeholder="Search Pharmacy"
                             style={styles.inputfield}
-                            placeholderTextColor="#e2e2e2"
+                            placeholderTextColor="#909894"
                             keyboardType={'email-address'}
                             value={this.state.searchValue}
                             onChangeText={searchValue => this.filterPharmacies(searchValue)}
