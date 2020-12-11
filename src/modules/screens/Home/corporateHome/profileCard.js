@@ -14,17 +14,17 @@ export const CorporateProfileCard = (props) => {
       <Grid >
         <Card style={{ width: '100%' }}>
           <Row style={{ padding: 10 }}>
-            <Col size={2.5} style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Col size={2} >
               <TouchableOpacity >
                 <FastImage source={require('../../../../../assets/images/male_user.png')} style={{ height: 70, width: 70 }} />
               </TouchableOpacity>
             </Col>
-            <Col size={7.5} style={{ justifyContent: 'center', }}>
+            <Col size={8} >
               <Text style={styles.userName}>{`Hello ${getMemberNameWithStatus(data)}`}</Text>
-  <Text style={{ lineHeight: 20, fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>{data.insuranceCompany}</Text>
+              <Text style={{ lineHeight: 20, fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>{data.insuranceCompany}</Text>
             </Col>
           </Row>
-          <Row style={{ marginTop: 5,marginBottom:10,marginRight:5}}>
+          <Row style={{marginBottom:10,marginRight:10}}>
             <Col size={5} style={{ justifyContent: 'center', alignItems: 'center' }}>
   <Text style={{ fontFamily: 'OpenSans', fontSize: 14 }}>Card Number : <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: '200', color: '#B0B0B0' }}>{data.memberId}</Text> </Text>
             </Col>
@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
     color: '#7F49C3',
     fontFamily: 'OpenSans',
     fontSize: 16,
-    fontWeight: '700'
+    fontWeight: '700',
+    marginTop:5
 
   },
   mainCol: {

@@ -17,7 +17,7 @@ export const TransactionHistoryCard = (props) => {
             case 'My Home Healthcare Appointments':
                 return navigation("My Home Healthcare Appointments");
             case 'HospitalList':
-                return navigation("HospitalList");
+                return navigation("My Appointments");
             case 'Lab Test':
                 return navigation("My Lab Test Appointments");
             case 'My Chats':

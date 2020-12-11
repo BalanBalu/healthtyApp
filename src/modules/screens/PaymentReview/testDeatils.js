@@ -270,7 +270,7 @@ class TestDetails extends PureComponent {
 
                 </Row>
                 <Row style={{ marginTop: 10 }}>
-                    <Col size={3.3}>
+                    <Col size={4}>
                         <Row>
                             <Col size={3}>
                                 <Text style={styles.commonText}>Gender</Text>
@@ -283,7 +283,7 @@ class TestDetails extends PureComponent {
                             </Col>
                         </Row>
                     </Col>
-                    <Col size={3.3}>
+                    <Col size={4}>
                         {data.phone_no != undefined ?
                             <Row>
                                 <Col size={3}>
@@ -299,7 +299,7 @@ class TestDetails extends PureComponent {
                             : null}
                     </Col>
                     {enableSelectionBox === true ?
-                        <Col size={3.3}>
+                        <Col size={2}>
                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
                                     checked={this.props.familyMembersSelections.includes(payBy + '-' + index)}
