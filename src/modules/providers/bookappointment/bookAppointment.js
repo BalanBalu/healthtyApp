@@ -405,6 +405,10 @@ export default class BookAppointmentPaymentUpdate {
                 statusUpdateReason: 'Payment has been done',
                 payment_id: paymentId,
             }
+            if (bookSlotDetails.consultation_description) {
+                request4InitiateChat.consultation_description=bookSlotDetails.consultation_description
+            }
+            
             let resultData = await updateVideoConsuting(consultationId, request4InitiateChat);
             console.log(resultData)
             if (resultData.success) {
