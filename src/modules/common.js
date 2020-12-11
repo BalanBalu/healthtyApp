@@ -533,7 +533,7 @@ export function getDoctorNameOrHospitalName(data) {
     if (data) {
         if (data.doctorInfo) {
             if (data.doctorInfo.first_name != undefined || data.doctorInfo.last_name != undefined) {
-                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')} ${data.doctorInfo.first_name || ''} ${data.doctorInfo.last_name || ''}`
+                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.first_name || ''} ${data.doctorInfo.last_name || ''}`
 
             }
         } else {

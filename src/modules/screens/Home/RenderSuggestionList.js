@@ -148,7 +148,7 @@ class RenderSuggestionsList extends PureComponent {
 
                                         </Col>
                                         {/* <Col size={3}> */}
-                                        <Col size={2.5} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Col size={3} style={{ justifyContent: 'center', alignItems: 'flex-end',marginRight:5 }}>
                                             {item.profile_image ? <Image
                                                 source={{ uri: item.profile_image.imageURL }}
                                                 style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center' }} /> :
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
         marginTop: 2,
         fontSize: 13,
         fontFamily: 'OpenSans-Bold',
-        paddingLeft: 13,
+       
     },
     valueText: {
         color: '#775DA3',
