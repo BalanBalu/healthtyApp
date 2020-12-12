@@ -26,7 +26,7 @@ class FilterDocInfo extends Component {
 
     async componentDidMount() {
         const { bookAppointmentData: { baCupOfDoctorInfoListAndSlotsData4Filter }, navigation } = this.props;
-        // console.log('baCupOfDoctorInfoListAndSlotsData4Filter=====>', JSON.stringify(baCupOfDoctorInfoListAndSlotsData4Filter));
+
         const filterData = navigation.getParam('filterData');
         if (Object.keys(filterDataObject).length) { // condition for when click the Clear button and then press the back button and come back again Filter page (The previous selected filtered values from Doctor Search list page are Showing again)
             if (filterData) {
@@ -110,7 +110,7 @@ class FilterDocInfo extends Component {
                 data: false
             },
         );
-        // console.log('filterDataObject::', filterDataObject)
+      
         this.props.navigation.navigate('Doctor Search List', {
             filterData: filterDataObject,
             conditionFromFilterPage: true

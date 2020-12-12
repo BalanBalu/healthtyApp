@@ -36,7 +36,7 @@ class CancelAppointment extends Component {
 
     const { navigation } = this.props;
     const cancelData = navigation.getParam('appointmentDetail');
-    console.log(cancelData)
+  
     let doctorId = cancelData.doctor_id;
     let appointmentId = cancelData._id;
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, data: cancelData });
@@ -68,7 +68,7 @@ class CancelAppointment extends Component {
 
    
         let result = await appointmentStatusUpdate( this.state.appointmentId, requestData);
-           console.log(result)
+        
         if (result.success) {
         await reomveEvent(data.user_appointment_event_id)
       

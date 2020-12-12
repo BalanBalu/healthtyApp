@@ -34,7 +34,7 @@ class TestDetails extends PureComponent {
             familyDetailsData: [],
             onlyFamilyWithPayDetailsData: []
         }
-        console.log(this.props);
+   
         this.defaultPatDetails = {};
 
     }
@@ -50,7 +50,7 @@ class TestDetails extends PureComponent {
             const userId = await AsyncStorage.getItem('userId');
             const patInfoResp = await fetchUserProfile(userId, fields);
             let data = this.state.data;
-            console.log('patInfoResp====>', patInfoResp.employee_code)
+           
 
             this.defaultPatDetails = {
                 type: 'self',
@@ -90,7 +90,7 @@ class TestDetails extends PureComponent {
                     data.familyDataByCorporate = temp;
                     data.familyDataByInsurance = temp;
                 }
-                console.log('getCorporateUserFamilyDetailsgetCorporateUserFamilyDetails', JSON.stringify(result))
+                
             }
             this.props.addPatientDetails([this.defaultPatDetails], true);
             await this.setState({ refreshCount: this.state.refreshCount + 1, data })
@@ -105,7 +105,7 @@ class TestDetails extends PureComponent {
         const { name, age, gender } = this.state;
 
         if (!name || !age || !gender) {
-            console.log('is is coming to error');
+           
             this.setState({ errMsg: '* Kindly fill all the fields' });
         }
 
@@ -138,7 +138,7 @@ class TestDetails extends PureComponent {
 
         this.setState({ patientDetailsObj: this.defaultPatDetails });
         if (this.props.singlePatientSelect === true) {
-            console.log('this.defaultPatDetail', this.defaultPatDetails);
+           
             this.props.addPatientDetails([this.defaultPatDetails])
         } else {
             const familyDetailsData = this.props.familyDetailsData;
@@ -148,7 +148,7 @@ class TestDetails extends PureComponent {
             } else {
                 familyDetailsData.splice(index, 1);
             }
-            console.log(familyDetailsData);
+           
             this.setPatientType(POSSIBLE_FAMILY_MEMBERS.SELF);
             this.props.addPatientDetails(familyDetailsData);
         }
@@ -173,7 +173,7 @@ class TestDetails extends PureComponent {
             }
             return index !== indexNo
         });
-        console.log('uniqueId', uniqueId);
+       
         const arr = this.props.familyDetailsData.filter(function (item, index) {
             return item.uniqueId !== uniqueId
         });
@@ -246,7 +246,7 @@ class TestDetails extends PureComponent {
     }
 
     renderPatientDetails(data, index, enableSelectionBox, patientSelectionType) {
-        console.log('renderPatientDetails data====>', JSON.stringify(data))
+       
         const { isCorporateUser, payBy } = this.props;
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>

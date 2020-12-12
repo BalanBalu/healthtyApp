@@ -17,20 +17,18 @@ export default class CallService {
 
  
  constructor() {
-  console.log('Calling here ....'); 
+ 
    this.getWiredPlugedIn()
    if(IS_ANDROID) {
     activityStarter = NativeModules.InCallManager;
     eventEmitter = new NativeEventEmitter(activityStarter);
     eventEmitter.addListener('onAudioFocusChange', function (data) {
-     // --- do something with events
-     console.log('Wired Headset State', data);
  });
 }
  }
  async getWiredPlugedIn() {
  const isPluggedIn = await InCallManager.getIsWiredHeadsetPluggedIn();
- console.log('is Plugged in ' + isPluggedIn); 
+ 
 
  }
 
@@ -59,8 +57,6 @@ export default class CallService {
 
   setMediaDevices() {
     return ConnectyCube.videochat.getMediaDevices().then(mediaDevices => {
-      console.log('=======Setting THE Media Devices =============');
-      console.log(mediaDevices);
       this.mediaDevices = mediaDevices;
     });
   }
@@ -128,8 +124,6 @@ export default class CallService {
   };
 
   rejectCall = (session, extension) => {
-    console.log('On Reject Session', session);
-    console.log('On Reject Extentsion', extension);
     this.stopSounds();
     if(session) {
       if(extension) {
@@ -186,7 +180,6 @@ export default class CallService {
       }
       const inIncomingCallViaBackgroudState = store.getState().chat.incomingVideoCallViaBackgrondState;
       if (this._session && inIncomingCallViaBackgroudState === false ) {
-        console.log('is Busy.....');
         this.rejectCall(session, {busy: true});
         CallKeepService.endCall();
         reject();

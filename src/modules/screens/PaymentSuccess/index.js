@@ -32,13 +32,13 @@ class PaymentSuccess extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressed);
         const { navigation } = this.props;
         const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
-        console.log(successBookSlotDetails);
+       
         const paymentMethod = navigation.getParam('paymentMethod');
         const fromNavigation = navigation.getParam('fromNavigation') || null
         const tokenNo = navigation.getParam('tokenNo');
         this.isFromHomeHealthCareConfirmation = navigation.getParam('isFromHomeHealthCareConfirmation') || false;
         await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo, fromNavigation });
-        console.log(paymentMethod);
+       
 
     }
     componentWillUnmount() {
@@ -79,7 +79,7 @@ class PaymentSuccess extends Component {
 
     async homePageRedirect() {
         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
-        console.log("isCorporateUserBBB", isCorporateUser)
+       
         this.setState({ CorporateUser: isCorporateUser })
         const { CorporateUser } = this.state
         if (CorporateUser === true) {

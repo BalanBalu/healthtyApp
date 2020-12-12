@@ -89,7 +89,6 @@ class OrderDetails extends Component {
                 result = await getMedicineOrderDetailsByOrderId(orderNumber);
             } else {
                 result = await getMedicineOrderDetails(orderNumber);
-                console.log(JSON.stringify(result))
             }
            
 
@@ -114,7 +113,7 @@ class OrderDetails extends Component {
             this.setState({ isLoading: false });
         }
         catch (e) {
-            console.log(e);
+            this.setState({ isLoading: false });
         } finally {
             this.setState({ isLoading: false });
         }

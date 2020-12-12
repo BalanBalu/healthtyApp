@@ -65,7 +65,7 @@ class ChosePharmacyList extends Component {
                     })
 
                     let productResult = await getproductDetailsByPharmacyIds(pharmacyIds, productmasterIds);
-                console.log(JSON.stringify(productResult))
+            
                     if (productResult) {
                         let modifiedData = {}
                         let pharmacyData = []
@@ -131,8 +131,7 @@ class ChosePharmacyList extends Component {
                 })
             } else {
                 let value = pharmacyData[selectedPharmacy];
-                console.log('cmncv,jzmcnvbmcv')
-                console.log(JSON.stringify(value))
+               
                 this.props.navigation.navigate("MedicineCheckout", {
                     pharmacyInfo: value.pharmacyInfo, isPrescription: true, hasChosePharmacyReload: true, medicineDetails: value.pharmacyAvailable
                 });

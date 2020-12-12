@@ -53,7 +53,6 @@ class UploadPrescription extends Component {
     async  getUploadPrescription() {
         userId = await AsyncStorage.getItem('userId');
         result = await getUploadPrescription(userId)
-        console.log(JSON.stringify(result))
         if (result.success) {
             this.setState({ prescriptionData: result.data[0].prescriptionData, prescriptionDetails: result.data[0] })
 
@@ -72,11 +71,9 @@ class UploadPrescription extends Component {
                 freeStyleCropEnabled: true,
             }).then(image => {
                 this.setState({ selectOptionPoopup: false });
-                console.log(image);
                 this.uploadImageToServer(image);
             }).catch(ex => {
                 this.setState({ selectOptionPoopup: false });
-                console.log(ex);
             });
         } else {
             ImagePicker.openPicker({
@@ -88,13 +85,11 @@ class UploadPrescription extends Component {
                 freeStyleCropEnabled: true,
                 avoidEmptySpaceAroundImage: true,
             }).then(image => {
-                console.log(image);
-
                 this.setState({ selectOptionPoopup: false });
                 this.uploadImageToServer(image);
             }).catch(ex => {
                 this.setState({ selectOptionPoopup: false });
-                console.log(ex);
+
             });
         }
     }
@@ -105,7 +100,6 @@ class UploadPrescription extends Component {
         try {
             const userId = await AsyncStorage.getItem('userId');
             var formData = new FormData();
-            console.log(imagePath)
             if (Array.isArray(imagePath) && imagePath.length != 0) {
                 imagePath.map((ele) => {
                     formData.append("prescription", {
@@ -123,13 +117,11 @@ class UploadPrescription extends Component {
             }
             debugger
             let endPoint = `/medicine_orders/prescription/user/${userId}`
-            console.log(endPoint + 'endpoint');
             var res = await uploadMultiPart(endPoint, formData);
 
 
             const response = res.data;
             if (response.success) {
-                console.log("succcss")
                 this.getUploadPrescription()
                 Toast.show({
                     text: 'Prescription Uploaded Successfully',
@@ -155,7 +147,6 @@ class UploadPrescription extends Component {
                 duration: 3000,
                 type: 'danger'
             });
-            console.log(e);
         }
     }
 

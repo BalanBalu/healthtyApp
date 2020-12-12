@@ -76,7 +76,7 @@ class Quadrilateral extends React.Component {
 
 	render() {
         const { active } = this.props;
-        console.log('active', active)
+        
 		return (
 					<ObjectAnimated
 						value={this.animatedValue}

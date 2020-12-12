@@ -73,7 +73,7 @@ class Ecard extends PureComponent {
 
     }
     toggleData(data) {
-        console.log(data)
+       
         this.setState({ showCard: data, show: !this.state.show })
     }
 

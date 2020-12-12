@@ -40,7 +40,6 @@ export async function createCalendar() {
 export async function requestCalendarPermissions() {
   try {
     let requestCalendarPermission = await RNCalendarEvents.authorizeEventStore();
-    console.log('Calendar Permission Granted');
     return requestCalendarPermission;
   } catch (error) {
     Alert.alert(CURRENT_APP_NAME + " Need your Calendar Permission to Store your Apppointments");
@@ -89,8 +88,6 @@ export async function updateEvent(id, title, startDate, endDate, location, descr
     let result = await saveEvent(title, details);
     return result;
   } else {
-    console.log('Event found ', event);
-
     details.id = id
     let result = await RNCalendarEvents.saveEvent(title, details);
     return result;

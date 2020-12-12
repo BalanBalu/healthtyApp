@@ -112,14 +112,14 @@ class IndividualChat extends Component {
 
     getMessages = async () => {
         const { conversation_id, messageRecieveCount } = this.state;
-        console.log(conversation_id)
+       
         let resp = await axios.get(`${CHAT_API_URL}/api/conversation/${conversation_id}/messages`);
         let respBody = resp.data;
         this.setState({
             messages: respBody.data,
             messageRecieveCount: messageRecieveCount + 1
         })
-        console.log(respBody);
+      
         this.scrollToBottom();
 
     }
@@ -156,7 +156,7 @@ class IndividualChat extends Component {
                 messages: previouseMessage,
                 messageRecieveCount: messageRecieveCount + 1,
             });
-            console.log('Coming here', + this.state.typing);
+          
             let pushNotificationRequest = {
                 user_id: userId,
                 chat_id: conversation_id,
@@ -184,7 +184,7 @@ class IndividualChat extends Component {
         this.setState({ typing: text })
     }
     onReceivedMessage(mess) {
-        console.log('Reving from Private Chat', mess);
+      
         const { messageRecieveCount, userId } = this.state;
         if (mess.member_id !== userId) {
             const previouseMessage = this.state.messages;
@@ -222,8 +222,7 @@ class IndividualChat extends Component {
 
     render() {
         const { messages, userId, doctorInfo, userInfo, status } = this.state;
-        console.log(messages);
-        console.log('userId: ' + userId);
+       
         return (
             <Container>
 

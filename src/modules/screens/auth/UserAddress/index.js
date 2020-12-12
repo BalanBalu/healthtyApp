@@ -25,7 +25,7 @@ class UserAddress extends Component {
         const { navigation } = this.props;
         const fromProfile = navigation.getParam('fromProfile') || false
         navigationOption = navigation.getParam('navigationOption') || null
-        console.log(fromProfile)
+      
         if (fromProfile) {
             this.setState({ fromProfile: true })
         }

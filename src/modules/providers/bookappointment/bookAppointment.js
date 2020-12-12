@@ -34,9 +34,9 @@ export default class BookAppointmentPaymentUpdate {
                     payment_mode: modeOfPayment,
                     payment_method: paymentMethod
                 }
-                console.log(paymentData);
+               
                 let resultData = await createPaymentRazor(paymentData);
-                console.log(resultData);
+                
                 if (resultData.success) {
                     if (isSuccess) {
                         let bookAppointmentResponse = await this.updateNewBookAppointment(bookSlotDetails, userId, paymentId);
@@ -72,7 +72,7 @@ export default class BookAppointmentPaymentUpdate {
                     payment_method: paymentMethod
                 }
                 let resultData = await createPaymentRazor(paymentData);
-                console.log(resultData);
+               
                 if (resultData.success) {
                     const chatApprovalStatus = await this.updateChatForApproval(bookSlotDetails.chatId, userId, paymentId, bookSlotDetails)
                     return chatApprovalStatus
@@ -102,12 +102,12 @@ export default class BookAppointmentPaymentUpdate {
                     payment_method: paymentMethod
                 }
                 let resultData = await createPaymentRazor(paymentData);
-                console.log(resultData);
+               
                 if (resultData.success) {
                     const orderResp = await this.createNewMedicineOrder(bookSlotDetails, userId, paymentId, isSuccess)
                     return orderResp
                 } else {
-                    console.log('Creating Orders Failed');
+                   
                     await this.createNewMedicineOrder(bookSlotDetails, userId, paymentId, isSuccess)
                     return {
                         success: false,
@@ -133,7 +133,7 @@ export default class BookAppointmentPaymentUpdate {
                     payment_method: paymentMethod
                 }
                 let resultData = await createPaymentRazor(paymentData);
-                console.log(resultData);
+               
                 if (resultData.success) {
                     const chatApprovalStatus = await this.updateVideoConsulting(bookSlotDetails.consultationId, userId, paymentId, bookSlotDetails, isSuccess)
                     return chatApprovalStatus
@@ -162,7 +162,7 @@ export default class BookAppointmentPaymentUpdate {
                     payment_method: paymentMethod
                 }
                 let resultData = await createPaymentRazor(paymentData);
-                console.log(resultData);
+              
                 if (resultData.success) {
                     const statusResponse = await this.updateNewBookLabTestAppointment(bookSlotDetails.labTestAppointmentId, bookSlotDetails, paymentId)
                     return statusResponse
@@ -230,7 +230,7 @@ export default class BookAppointmentPaymentUpdate {
             }
 
             let resultData = await updateChat(chatId, request4InitiateChat);
-            console.log(resultData)
+           
             if (resultData.success) {
                 return {
                     message: resultData.message,
@@ -288,7 +288,7 @@ export default class BookAppointmentPaymentUpdate {
             }
 
             let resultData = await bookAppointment(bookAppointmentData);
-            console.log(resultData)
+            
             if (resultData.success) {
                 return {
                     message: resultData.message,
@@ -356,11 +356,7 @@ export default class BookAppointmentPaymentUpdate {
                 deliveryType: orderData.deliveryType,
                 delivery_address: orderData.delivery_address,
             }
-            if (orderData.deliveryType === 1) {
-                console.log('deliveryCharges')
-                // delete requestData.delivery_tax
-                // delete requestData.delivery_charges
-            } if (orderData.prescriptions) {
+            if (orderData.prescriptions) {
                 requestData.prescriptions = orderData.prescriptions
 
                 delete requestData.items
@@ -374,8 +370,7 @@ export default class BookAppointmentPaymentUpdate {
                 requestData.pharmacyId = orderData.pharmacyId
             }
             let resultData = await createMedicineOrder(requestData);
-            console.log('resultData create order result==================')
-            console.log(resultData)
+           
             if (resultData) {
                 capturePayment(paymentId)
                 if (orderData.prescriptions) {
@@ -415,7 +410,7 @@ export default class BookAppointmentPaymentUpdate {
                 payment_id: paymentId,
             }
             let resultData = await updateVideoConsuting(consultationId, request4InitiateChat);
-            console.log(resultData)
+         
             if (resultData.success) {
                 return {
                     message: resultData.message,
@@ -451,7 +446,7 @@ export default class BookAppointmentPaymentUpdate {
                 booked_from: 'MOBILE',
 
             }
-            console.log(createAppointmentData);
+            
             resultData = await updateLapAppointment(labTestAppointmentId, createAppointmentData);
 
         } else {
@@ -462,7 +457,7 @@ export default class BookAppointmentPaymentUpdate {
             }
             resultData = await insertAppointment(createAppointmentData);
         }
-        console.log(resultData)
+     
         if (resultData.success) {
             return {
                 message: resultData.message,

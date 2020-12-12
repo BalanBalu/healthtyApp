@@ -17,12 +17,10 @@ class NotifService {
     this.configure();
 
     messaging().requestPermission().then((result) => {
-      console.log('result ---- of Permission', result);
       this.messageListener = messaging().onMessage((message) => backgroundpush(message));
       messaging().getToken().then(fcmToken => {
         if (fcmToken) {
           tokenData = { token: fcmToken };
-          console.log('fcmToken: ', fcmToken);
         }
       });
     })
@@ -33,7 +31,6 @@ class NotifService {
     const settings = await messaging().requestPermission();
 
     if (settings) {
-      console.log('Permission settings:', settings);
       return settings;
     }
 
@@ -41,7 +38,6 @@ class NotifService {
 
 
   configure(gcm = FIREBASE_SENDER_ID) {
-    console.log(gcm)
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       // onRegister:(token) => this.onRegister(token), //this._onRegister.bind(this),
@@ -176,7 +172,6 @@ class NotifService {
   }
 
   onRegister = async (token) => {
-    console.log('On Register TOken ===> ', token);
     tokenData = token;
   }
 
@@ -184,7 +179,6 @@ class NotifService {
     if (tokenData) {
       const updatedDeviceToken = await AsyncStorage.getItem('updatedDeviceToken');
       let deviceToken = tokenData.token;
-      console.log('deviceToken', deviceToken)
       let mergedTokenWithUserId = String(userId) + '_' + String(deviceToken).substr(0, 15);
       if (!updatedDeviceToken) {
         this.callApiToDeviceToken(userId, deviceToken, mergedTokenWithUserId);
@@ -200,7 +194,6 @@ class NotifService {
         device_token: deviceToken,
       }
       let updateResponse = await userFiledsUpdate(userId, requestData);
-      console.log('updateResponse==>', updateResponse)
       if (updateResponse.success == true) {
         AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithUserId);
       }
@@ -210,7 +203,6 @@ class NotifService {
   }
 
   onNotification(notificationStr) {
-    console.log(notificationStr);
     const notification = JSON.parse(JSON.stringify(notificationStr));
     if (notification.tag == 'VIDEO_NOTIFICATION') {
       if (notification.action === 'Accept') {
@@ -220,7 +212,6 @@ class NotifService {
         this.onVideoCallRejectNotification();
       }
     }
-    console.log("NOTIFICATION:", notification);
 
   }
   subcribeToPushNotificationConnectyCube() {
@@ -239,17 +230,17 @@ class NotifService {
          bundle_identifier: "com.medflic"
        }
      }
-     console.log('Param of Push==> ', params)
+   
      ConnectyCube.pushnotifications.subscriptions.create(params)
      .then(result => {
       
-       console.log('Created the Push Notifiation', navigationProps);
+    
        // alert('Created the Push Notifiation' + JSON.stringify(result));
        // RootNavigation.navigate('My Chats', {});
        // NavigationDispatch(NavigationActions.navigate({routeName: 'My Chats'}));
      })
      .catch(error => {
-       console.log(error);
+
        alert('Error on Alert' + JSON.stringify(error));
      });
      } */
@@ -266,7 +257,7 @@ class NotifService {
    ConnectyCube.pushnotifications.events.create(pushParameters).then(result => {
        alert('Send an alert Message'+  JSON.stringify(result));
    }).catch(error => {
-     console.log('Push Failed-===>', error);
+  
      alert('Push Send failed:' + JSON.stringify(error))
    }); 
  } */

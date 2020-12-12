@@ -6,9 +6,7 @@ export const FORUM_ERROR = 'FORUM/CATAGRIES_ERROR'
 export async function forumInsertQuestion(data) {
     try {
       let endPoint = '/publicforum/question';
-      console.log(endPoint);
       let response = await postService(endPoint,data);
-      console.log('response', response);
       let respData = response.data;
       return respData;
     } catch (e) {
@@ -21,9 +19,7 @@ export async function forumInsertQuestion(data) {
   export async function forumInsertAnswer(data) {
     try {
       let endPoint = '/publicforum/answer';
-      console.log(endPoint);
       let response = await postService(endPoint,data);
-      console.log('response', response);
       let respData = response.data;
       return respData;
     } catch (e) {
@@ -65,9 +61,7 @@ export async function forumInsertQuestion(data) {
   export async function getForumQuestionAndAnswerDetails(questionId) {
     try {
       let endPoint = '/getForumQuestionAndAnswerDetails/' + questionId;
-      console.log(endPoint);
       let response = await postService(endPoint);
-      console.log('response', response);
       let respData = response.data;
       return respData;
     } catch (e) {
@@ -80,9 +74,7 @@ export async function forumInsertQuestion(data) {
   export async function searchSuggestionsForQuestionsAndAnswers(keyword) {
     try {
       let endPoint = '/publicforum/getSuggestionsFromQuestionsAndAnswers/' + keyword;
-      console.log(endPoint);
       let response = await postService(endPoint);
-      console.log('response', response);
       let respData = response.data;
       return respData;
     } catch (e) {

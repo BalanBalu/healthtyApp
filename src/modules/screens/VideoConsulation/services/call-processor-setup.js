@@ -17,7 +17,6 @@ export default class CallProcessSetupService {
       const { chat: { loggedIntoConnectyCube } } = store.getState();
       if (userId && loggedIntoConnectyCube === false) {
           this.authorized = await authorizeConnectyCube();
-          console.log('loggedIntoConnectyCube ' + loggedIntoConnectyCube + ' Authorized: ' + this.authorized);
           if (this.authorized) {
               ConnectyCube.videochat.onCallListener = this._onCallListener;
               ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
@@ -31,26 +30,23 @@ export default class CallProcessSetupService {
   }
 
   _onCallListener = (session, extension) => {
-    console.log('Listening On Call listener....');
     CallService.processOnCallListener(session)
         .then(() => this.showIncomingCallModal(session, extension))
         .catch(this.hideIncomingCallModal);
   };
 
   showIncomingCallModal = (session, extension) => {
-    console.log('Showing Incoming Call..');
     CallService.setSession(session);
     CallService.setExtention(extension);
     CallKeepService.displayIncomingCall('12345', 'Doctor');
   };
   
   hideIncomingCallModal = () => {
-      console.log('On Hiding Incoming Model');
+    
   }
 
   _onRemoteStreamListener = async (session, userId, stream) => {
-    console.log('Streaming...', stream);
-    console.log(userId);
+ 
     await store.dispatch({
         type: SET_VIDEO_SESSION,
         data: {
@@ -61,7 +57,7 @@ export default class CallProcessSetupService {
   };
 
   _onStopCallListener = (session, userId, extension) => {
-    console.log('Stopping the Call...');
+  
     const isStoppedByInitiator = session.initiatorID === userId;
 
     CallService.processOnStopCallListener(userId, isStoppedByInitiator)
@@ -86,7 +82,7 @@ export default class CallProcessSetupService {
   };
 
   _onRejectCallListener = (session, userId, extension) => {
-    console.log('Rejecting the Call....');
+  
     CallService.processOnRejectCallListener(session, userId, extension)
         .then(() => {
             store.dispatch({

@@ -12,7 +12,7 @@ export async function getSpecialistDataSuggestions(type, SuggestionReqData) {
     let endPoint = 'V2/doctor/search/' + type; // new path
     let response = await postService(endPoint, SuggestionReqData);
     let respData = response.data;
-    // console.log('respData'+JSON.stringify(respData))
+ 
     return respData;
   } catch (e) {
     return {
@@ -25,7 +25,7 @@ export async function getSpecialistDataSuggestions(type, SuggestionReqData) {
 export async function catagries(searchQueries = 'services=0') {
   try {
     if(store.getState().categories.fullCategoryFetched === true) {
-      console.log('Categories Already Fetched');
+     
       return store.getState().categories.response;
     }
     let endPoint = 'category_services'

@@ -38,7 +38,7 @@ class CancelService extends Component {
        
       }
 
-      console.log(type)
+     
      
       let cancelList = await getCurrentVersion(type)
       // alert(JSON.stringify(cancelList))
@@ -63,7 +63,6 @@ class CancelService extends Component {
   }
   toggleRadio(data, index) {
     if (index !== -1) {
-      console.log(this.state.cancelReasonList)
       this.setState({ selectedIndex: index, reasonForCancel: data.value })
     }
   }

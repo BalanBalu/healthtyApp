@@ -42,7 +42,7 @@ export default class PaymentReview extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const isLoggedIn = await hasLoggedIn(this.props);
-    console.log('IsCorporate User', await AsyncStorage.getItem('is_corporate_user'));
+    
     const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
 
     if (!isLoggedIn) {
@@ -52,7 +52,7 @@ export default class PaymentReview extends Component {
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
     const fromNavigation = navigation.getParam('fromNavigation') || null
-    console.log('bookSlotDetails', bookSlotDetails);
+   
     this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser, fromNavigation, isLoading: false });
     this.getPatientInfo();
   }
@@ -100,11 +100,11 @@ export default class PaymentReview extends Component {
         patientDataObj.policy_number = patientDetailsObj.policy_no
       }
       bookSlotDetails.patient_data = patientDataObj;
-      console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+     
       const amount = this.state.bookSlotDetails.slotData.fee;
       this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount, fromNavigation: this.state.fromNavigation })
     } else {
-      console.log(validationResult);
+ 
       Toast.show({
         text: validationResult.message,
         type: 'warning',
@@ -116,7 +116,7 @@ export default class PaymentReview extends Component {
   async processToPayLater(paymentMethod) {
     const { bookSlotDetails, patientDetailsObj, fromNavigation, isCorporateUser } = this.state;
     let { diseaseDescription } = bookSlotDetails;
-    console.log('final Patient Details ', patientDetailsObj);
+  
     if (!patientDetailsObj || (patientDetailsObj && !Object.keys(patientDetailsObj).length)) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
@@ -142,7 +142,7 @@ export default class PaymentReview extends Component {
     }
 
     bookSlotDetails.patient_data = patientDataObj;
-    console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+    
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
 
@@ -158,7 +158,7 @@ export default class PaymentReview extends Component {
 
     }
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, modesOfPayment, bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, modesOfPayment);
-    console.log('Book Appointment Payment Update Response ');
+   
     if (response.success) {
       this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: paymentMethod, tokenNo: response.tokenNo, fromNavigation: fromNavigation });
     } else {
@@ -177,7 +177,7 @@ export default class PaymentReview extends Component {
       // const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
       // const userId = await AsyncStorage.getItem('userId');
       // const patInfoResp = await fetchUserProfile(userId, fields);
-      // console.log('patInfoResp====>', patInfoResp)
+      
       // this.defaultPatDetails = {
       //   type: 'self',
       //   full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
@@ -194,7 +194,7 @@ export default class PaymentReview extends Component {
 
 
   addPatientList = async (patientData) => {
-    console.log('Patient Data==>', patientData);
+   
     this.setState({ errMsg: '' })
     const othersDetailsObj = patientData[0];
     await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
@@ -203,7 +203,7 @@ export default class PaymentReview extends Component {
 
   render() {
     const { bookSlotDetails, isCorporateUser, patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender, fromNavigation } = this.state;
-    console.log(isCorporateUser);
+   
     return (
       <Container>
         <Content style={{ padding: 15, backgroundColor: '#F5F5F5' }}>

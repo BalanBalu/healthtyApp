@@ -26,7 +26,7 @@ export async function ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(pro
     const response = await getService(endPoint);
     return response.data;
   } catch (Ex) {
-    console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
+ 
     return {
       success: false,
       statusCode: 500,
@@ -198,9 +198,8 @@ export async function updateNewPassword(data) {
   try {
     let endPoint = 'auth/changeNewPassword';
     let response = await putService(endPoint, data);
-    console.log('response' + JSON.stringify(response));
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData))
+  
     return respData;
   } catch (e) {
     return {
@@ -267,7 +266,7 @@ export const hasLoggedIn = async (props) => {
       if (navigation.state) {
         debugger
         let stateParams = navigation.state.params;
-        console.log(stateParams);
+     
         let routeName = navigation.state.routeName;
         store.dispatch({
           type: REDIRECT_NOTICE,
@@ -337,9 +336,9 @@ export async function userFiledsUpdate(userId, data) {
 /*Get post office name and details */
 export async function getPostOffNameAndDetails(pincode) {
   try {
-    console.log(pincode)
+   
     let fullPath = 'pincode/' + pincode;
-    console.log("fullPath", fullPath)
+    
     let response = await getService(fullPath);
     return response.data;
   } catch (e) {

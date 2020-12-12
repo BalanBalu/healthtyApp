@@ -48,7 +48,7 @@ class CorporateHome extends PureComponent {
 
     getCorporateDatails = async (userId) => {
         try {
-            console.log('Calling getAllChatsByUserId');
+          
             let fields = "corporate_user_id,employee_code";
             let userResult = await fetchUserProfile(userId, fields);
             if (!userResult.error) {
@@ -113,7 +113,7 @@ class CorporateHome extends PureComponent {
             this.locationUpdatedCount = locationUpdatedCount;
 
         }
-        console.log("corporateData23", corporateData)
+     
         return (
             <Container style={styles.container}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>

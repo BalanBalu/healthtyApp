@@ -80,7 +80,7 @@ class PatientInfo extends PureComponent {
             if(data.first_name != "" || data.dob  != "" || data.secondary_mobile  != "" || data.gender != undefined  || data.blood_group != undefined  || data.marital_status != undefined){
             let response = await userFiledsUpdate(userId, data)
          
-            console.log(response);
+        
             if (response.success) {
                 Toast.show({
                     text: response.message,

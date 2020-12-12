@@ -193,7 +193,7 @@ export class Badge extends Component {
 }
 
 export function getGender(data) {
-    console.log("data", data)
+   
     let genderAndAge = '';
     if (data) {
         if (data.gender) {
@@ -512,7 +512,7 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
-    console.log(gpsLocation)
+   
     if (!!gpsLocation && !!pharmacyLocation) {
         let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 

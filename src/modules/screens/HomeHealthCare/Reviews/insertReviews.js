@@ -68,7 +68,7 @@ export class InsertReview extends Component {
                         visible: false,
                         updatedVisible: true
                     });
-                    console.log(JSON.stringify(result))
+                  
                 }
                 else {
                     this.setState({ ratingIndicatePopUp: true })
@@ -83,7 +83,7 @@ export class InsertReview extends Component {
                     appointment_id: data._id,
                 };
                 let result = await insertReviews(userId, insertReviewData);
-                console.log(JSON.stringify(result))
+               
                 this.props.popupVisible({
                     visible: false,
                     updatedVisible: false
