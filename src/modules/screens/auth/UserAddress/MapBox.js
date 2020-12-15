@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import { Col, Row, Grid } from 'react-native-easy-grid';
+import { Row } from 'react-native-easy-grid';
 import { IS_ANDROID, validateFirstNameLastName, acceptNumbersOnly } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
 import { MAP_BOX_TOKEN, SERVICE_TYPES } from '../../../../setup/config';
@@ -10,13 +10,15 @@ import axios from 'axios';
 import { userFiledsUpdate, logout, getPostOffNameAndDetails } from '../../../providers/auth/auth.actions';
 import Geolocation from 'react-native-geolocation-service';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
-import Qs from 'qs';
-import locationIcon from '../../../../../assets/marker.png';
+// import Qs from 'qs';
 import { NavigationEvents } from 'react-navigation';
+import Spinner from '../../../../components/Spinner';
+import locationIcon from '../../../../../assets/marker.png';
+
 
 
 export default class MapBox extends Component {
-    _requests = [];
+    // _requests = [];
     constructor(props) {
         super(props);
         this.state = {
@@ -25,8 +27,8 @@ export default class MapBox extends Component {
             coordinates: null,
             center: [],
             zoom: 15,
-            isFinisedLoading: false,
-            locationFullText: null,
+            isLoadingFinished: false,
+            searchBoxLocFullText: null,
             showAllAddressFields: false,
             full_name: '',
             mobile_no: null,
@@ -44,10 +46,10 @@ export default class MapBox extends Component {
                 pin_code: null
             }
         }
-        this.onPress = this.onPress.bind(this);
         this.onRegionDidChange = this.onRegionDidChange.bind(this);
         this.onRegionIsChanging = this.onRegionIsChanging.bind(this);
         this.onDidFinishLoadingMap = this.onDidFinishLoadingMap.bind(this);
+        this.navigationOption = null;
     }
     async componentDidMount() {
         try {
@@ -67,40 +69,39 @@ export default class MapBox extends Component {
             const { navigation } = this.props;
             const fromProfile = navigation.getParam('fromProfile') || false
             let showAllAddressFields = navigation.getParam('mapEdit') || false
-            let navigationOption = navigation.getParam('navigationOption') || null
+            this.navigationOption = navigation.getParam('navigationOption') || null
             let locationData = this.props.navigation.getParam('locationData');
             if (fromProfile) {
                 await this.setState({ fromProfile: true })
                 if (locationData) {
-                    this.formUserAddress(locationData)
+                    this.setAndAutoFillAddressFields(locationData)
                     await this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
                 }
                 else {
                     this.getCurrentLocation();
                 }
-            } else if (navigationOption) {
-                addressType = navigation.getParam('addressType') || null
+            } else if (this.navigationOption) {
+                const addressType = navigation.getParam('addressType') || null
                 if (addressType) {
                     this.setState({ addressType: addressType.addressType, full_name: addressType.full_name, mobile_no: addressType.mobile_no })
                 }
                 else if (addressType == 'lab_delivery_Address') {
-                    this.setState({ addressType: addressType })
+                    this.setState({ addressType })
                 }
-                this.setState({ navigationOption })
             }
             else {
                 this.getCurrentLocation();
             }
-        } catch (e) {
-            console.log(e)
+        } catch (Ex) {
+            console.log('Ex is getting on Component Did Mount   ', Ex.message)
         }
     }
     backNavigation(navigationData) {
         if (navigationData.action && navigationData.action.type === 'Navigation/NAVIGATE') {
-            const searchLocationData = this.props.navigation.getParam('locationData')
+            const searchLocationData = this.props.navigation.getParam('locationData');
             if (searchLocationData) {
-                this.formUserAddress(searchLocationData)
-                this.setState({ coordinates: searchLocationData.center })
+                this.setAndAutoFillAddressFields(searchLocationData);
+                this.setState({ coordinates: searchLocationData.center });
             }
         }
     }
@@ -108,76 +109,76 @@ export default class MapBox extends Component {
     async getCurrentLocation() {
         try {
             Geolocation.getCurrentPosition(async (position) => {
-                const origin_coordinates = [position.coords.longitude, position.coords.latitude];
+                const currentLocCoOrdinates = [position.coords.longitude, position.coords.latitude];
                 await this.setState({
-                    center: origin_coordinates,
-                    coordinates: origin_coordinates,
+                    center: currentLocCoOrdinates,
+                    coordinates: currentLocCoOrdinates,
                     zoom: 15,
-                    isFinisedLoading: true
+                    isLoadingFinished: true
                 })
-                this.updtateLocation(origin_coordinates);
+                this.serviceOfUpdateLocInfoByCoOrdinates(currentLocCoOrdinates);
             }), error => {
                 console.log(error);
             }, { enableHighAccuracy: true, timeout: 50000, maximumAge: 1000 }
         }
-        catch (e) {
-            console.log(e)
+        catch (Ex) {
+            console.log('Ex is getting on Gte Current Location  ' + Ex.message)
         }
     }
-    async updtateLocation(center) {
-        let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${center[0]},${center[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
-        //this._request(center[0].toFixed(2), center[1].toFixed(2))
-        let resp = await axios.get(fullPath, {
+    async serviceOfUpdateLocInfoByCoOrdinates(coOrdinates) {   // Call Map Box data service  
+        let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coOrdinates[0]},${coOrdinates[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
+        let mapBoxResp = await axios.get(fullPath, {
             headers: {
                 'Content-Type': null,
                 'x-access-token': null,
                 'userId': null
             }
         });
-        let locationData = resp.data.features[0];
-        if (locationData) {
-            this.formUserAddress(locationData);
+        const mapBoxLocData = mapBoxResp.data && mapBoxResp.data.features[0];
+        if (mapBoxLocData) {
+            this.setAndAutoFillAddressFields(mapBoxLocData);
         }
     }
-    formUserAddress(locationData) {
-        let locationFullText = '';
-        if (locationData.context) {
-            for (let i = 0; i < locationData.context.length; i++) {
-                let textValue = locationData.context[i].text;
-                locationFullText += textValue + ', '
-                let contextType = locationData.context[i].id.split('.')[0];
+    setAndAutoFillAddressFields(locationData) {  // Set and Auto fill the all Address fields
+        let searchBoxLocFullText = '';
+        const locDataContext = locationData.context;
+        const locDataContextLength = locDataContext && locDataContext.length;
+        if (locDataContextLength) {
+            for (let i = 0; i < locDataContextLength; i++) {
+                const locValue = locDataContext[i].text;
+                searchBoxLocFullText += `${locValue}${i + 1 !== locDataContextLength ? ', ' : '.'}`;   //  auto fill Location text content in Search Box 
+                const contextType = locDataContext[i].id.split('.')[0];
                 switch (contextType) {
                     case 'no_and_street':
-                        this.onChangeUpdateAddressData('no_and_street', textValue);
+                        this.onChangeUpdateAddressData('no_and_street', locValue);
                         break
                     case 'locality':
-                        this.onChangeUpdateAddressData('address_line_1', textValue);
+                        this.onChangeUpdateAddressData('address_line_1', locValue);
                         break
                     case 'place':
-                        this.onChangeUpdateAddressData('city', textValue);
+                        this.onChangeUpdateAddressData('city', locValue);
                         break
                     case 'post_office_name':
-                        this.onChangeUpdateAddressData('post_office_name', textValue);
+                        this.onChangeUpdateAddressData('post_office_name', locValue);
                         break
                     case 'district':
-                        this.onChangeUpdateAddressData('district', textValue);
+                        this.onChangeUpdateAddressData('district', locValue);
                         break
                     case 'region':
-                        this.onChangeUpdateAddressData('state', textValue);
+                        this.onChangeUpdateAddressData('state', locValue);
                         break
                     case 'country':
-                        this.onChangeUpdateAddressData('country', textValue);
+                        this.onChangeUpdateAddressData('country', locValue);
                         break
                     case 'pin_code':
-                        this.onChangeUpdateAddressData('pin_code', textValue);
+                        this.onChangeUpdateAddressData('pin_code', locValue);
                         break
                 }
             }
         } else {
-            locationFullText = locationData.place_name;
+            searchBoxLocFullText = locationData.place_name;
         }
-        this.setState({ address: { ...this.state.address }, locationFullText });
-        this.setState({ center: locationData.center })
+        this.setState({ address: { ...this.state.address }, searchBoxLocFullText, center: locationData.center });
     }
 
 
@@ -197,7 +198,8 @@ export default class MapBox extends Component {
         const postOffResp = await getPostOffNameAndDetails(pinCode);
         if (postOffResp.Status == 'Success') {
             const postOfficeData = postOffResp.PostOffice;
-            this.setState({ postOfficeData })
+            this.setState({ postOfficeData });
+            this.postOfficeAddress(postOfficeData[0]);
         } else {
             this.setState({ postOfficeData: [{ Name: "Select Post Name" }] })
             Toast.show({
@@ -209,24 +211,21 @@ export default class MapBox extends Component {
         }
     }
     postOfficeAddress = async (value) => {
-        if (value != null || value != undefined) {
-
-            this.onChangeUpdateAddressData('post_office_name', value.Name)
-            await this.setState({
-                editable: false,
-                address: {
-                    no_and_street: this.state.address.no_and_street,
-                    address_line_1: this.state.address.address_line_1,
-                    post_office_name: this.state.address.post_office_name,
-                    city: this.state.address.city,
-                    district: value.District,
-                    state: value.State,
-                    country: value.Country,
-                    pin_code: this.state.address.pin_code
-                }
-
-            })
-        }
+        this.onChangeUpdateAddressData('post_office_name', value.Name);
+        const { address: { no_and_street, address_line_1, pin_code, city, post_office_name } } = this.state;
+        await this.setState({
+            editable: false,
+            address: {
+                no_and_street,
+                address_line_1,
+                pin_code,
+                post_office_name,
+                city,
+                district: value.District,
+                state: value.State,
+                country: value.Country
+            }
+        })
     }
 
     onChangeUpdateAddressData(addressNode, value) {
@@ -236,7 +235,7 @@ export default class MapBox extends Component {
     }
     async onPressUpdateLocInfo() {
         try {
-            const { center, addressType, fromProfile, navigationOption, address: { no_and_street, address_line_1, pin_code, city, state, country, post_office_name, district } } = this.state;
+            const { center, addressType, fromProfile, address: { no_and_street, pin_code, city, state, country, district } } = this.state;
             const reqData4displayToastMsg = {
                 type: 'warning',
                 duration: 3000,
@@ -256,7 +255,7 @@ export default class MapBox extends Component {
                     Toast.show(reqData4displayToastMsg)
                 return
             } if (!city) {
-                reqData4displayToastMsg.text = "Enter city",
+                reqData4displayToastMsg.text = "Enter city Or area",
                     Toast.show(reqData4displayToastMsg)
                 return
             } if (!district) {
@@ -315,13 +314,13 @@ export default class MapBox extends Component {
                         duration: 3000,
                     })
                     this.props.navigation.navigate('Profile');
-                } else if (navigationOption) {
+                } else if (this.navigationOption) {
                     const setParamObjData = { hasReloadAddress: true }
                     if (this.state.addressType === SERVICE_TYPES.HOME_HEALTHCARE) {
                         setParamObjData.userAddressInfo = reqUserAddressData;
                         setParamObjData.fromNavigation = SERVICE_TYPES.HOME_HEALTHCARE
                     }
-                    this.props.navigation.navigate(navigationOption, setParamObjData);
+                    this.props.navigation.navigate(this.navigationOption, setParamObjData);
                 }
                 else {
                     logout();
@@ -341,91 +340,81 @@ export default class MapBox extends Component {
                 })
             }
         } catch (Ex) {
-            Toast.show({
-                text: 'Exception Occurred on Updating Location Info' + Ex.message,
-                type: 'danger',
-                duration: 5000
-            })
+            console.log('Exception Occurred on Updating Location Info' + Ex.message),
+                Toast.show({
+                    text: 'Exception Occurred on ' + Ex.message,
+                    type: 'danger',
+                    duration: 5000
+                })
         }
         finally {
-            this.setState({ loading: false });
+            this.setState({ isLoading: false });
         }
     }
     async onRegionDidChange() {
-        if (this.state.isFinisedLoading) {
+        if (this.state.isLoadingFinished) {
             const zoom = await this._map.getZoom();
-            const center = this.state.center;
-            this.setState({ coordinates: center, zoom });
-            let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${center[0]},${center[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
-            //this._request(center[0].toFixed(2), center[1].toFixed(2))
-            let resp = await axios.get(fullPath, {
-                headers: {
-                    'Content-Type': null,
-                    'x-access-token': null,
-                    'userId': null
-                }
-            });
-            let locationData = resp.data.features[0];
-            if (locationData) {
-                this.formUserAddress(locationData);
-            }
+            this.setState({ zoom });
+            await this.serviceOfUpdateLocInfoByCoOrdinates(this.state.center);
         }
     }
 
     async onRegionIsChanging() {
-        if (this.state.isFinisedLoading) {
+        if (this.state.isLoadingFinished) {
             const center = await this._map.getCenter();
             this.setState({ center: center });
         }
     }
     async onDidFinishLoadingMap() {
-        await this.setState({ isFinisedLoading: true })
-    }
-    async onPress(e) {
-        // const pointInView = await this._map.getPointInView(e.geometry.coordinates);
-        // this.setState({pointInView});
-    }
-    _abortRequests = () => {
-        this._requests.map(i => i.abort());
-        this._requests = [];
-    }
-    _request = (lng, lat) => {
-        this._abortRequests();
-        if (lng && lat) {
-            const request = new XMLHttpRequest();
-            this._requests.push(request);
-            request.timeout = 1000;
-            request.ontimeout = 2000;
-            request.onreadystatechange = () => {
-                if (request.readyState !== 4) {
-                    return;
-                }
-                if (request.status === 200 && request.status !== 0) {
-                    const responseJSON = JSON.parse(request.responseText);
-                    if (typeof responseJSON.error_message !== 'undefined') {
-                        console.warn('Map places autocomplete: ' + responseJSON.error_message);
-                    }
-                } else {
-                    //console.warn(JSON.stringify(request) + "request could not be completed or has been aborted");
-                }
-            };
-            let url = '';
-            url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + lng + ',' + lat + '.json' + '?' + Qs.stringify({
-                types: 'poi',
-                access_token: MAP_BOX_TOKEN,
-            })
-            request.open('GET', url);
-            request.send();
-        }
+        await this.setState({ isLoadingFinished: true })
     }
 
+    // _abortRequests = () => {
+    //     this._requests.map(i => i.abort());
+    //     this._requests = [];
+    // }
+    // _request = (lng, lat) => {
+    //     this._abortRequests();
+    //     if (lng && lat) {
+    //         const request = new XMLHttpRequest();
+    //         this._requests.push(request);
+    //         request.timeout = 1000;
+    //         request.ontimeout = 2000;
+    //         request.onreadystatechange = () => {
+    //             if (request.readyState !== 4) {
+    //                 return;
+    //             }
+    //             if (request.status === 200 && request.status !== 0) {
+    //                 const responseJSON = JSON.parse(request.responseText);
+    //                 if (typeof responseJSON.error_message !== 'undefined') {
+    //                     console.warn('Map places autocomplete: ' + responseJSON.error_message);
+    //                 }
+    //             } else {
+    //                 //console.warn(JSON.stringify(request) + "request could not be completed or has been aborted");
+    //             }
+    //         };
+    //         let url = '';
+    //         url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + lng + ',' + lat + '.json' + '?' + Qs.stringify({
+    //             types: 'poi',
+    //             access_token: MAP_BOX_TOKEN,
+    //         })
+    //         request.open('GET', url);
+    //         request.send();
+    //     }
+    // }
+
     render() {
-        const { coordinates, zoom, locationFullText, center, address: { no_and_street, address_line_1, pin_code, city, state, country, post_office_name, district }, showAllAddressFields, editable } = this.state;
+        const { coordinates, zoom, searchBoxLocFullText, center, address: { no_and_street, address_line_1, pin_code, city, state, country, post_office_name, district }, showAllAddressFields, editable, isLoading } = this.state;
         return (
             <Container>
                 <NavigationEvents
                     onWillFocus={payload => { this.backNavigation(payload); }}
                 />
+                {isLoading ? <Spinner color='blue'
+                    visible={isLoading}
+                    textContent={'Please wait Loading...'}
+                />
+                    : null}
                 <View style={{ flex: 1 }}>
                     {coordinates !== null ?
                         <MapboxGL.MapView
@@ -448,10 +437,10 @@ export default class MapBox extends Component {
                             <MapboxGL.Images
                                 images={{ location: locationIcon }}
                             />
-                            {locationFullText !== null ?
+                            {searchBoxLocFullText !== null ?
                                 <MapboxGL.PointAnnotation
                                     id={'Map Center Pin'}
-                                    title={locationFullText}
+                                    title={searchBoxLocFullText}
                                     coordinate={center}>
                                 </MapboxGL.PointAnnotation> : null}
                         </MapboxGL.MapView>
@@ -466,7 +455,7 @@ export default class MapBox extends Component {
                     <Card>
                         <CardItem bordered>
                             <Body>
-                                <Button iconLeft block success onPress={() => this.setState({ showAllAddressFields: true })}>
+                                <Button style={{ borderRadius: 15 }} iconLeft block success onPress={() => this.setState({ showAllAddressFields: true })}>
                                     <Icon name='paper-plane'></Icon>
                                     <Text>Confirm Location</Text>
                                 </Button>
@@ -474,7 +463,11 @@ export default class MapBox extends Component {
                         </CardItem>
                     </Card> :
                     <Content style={styles.bodyContent}>
-                        <Form style={{ borderColor: 'black' }}>
+                        <Form style={{
+                            borderBottomWidth: 5,
+                            marginLeft: 10,
+                            marginRight: 10,
+                        }}>
                             {this.state.addressType === 'delivery_Address' ?
                                 <View>
                                     <Item floatingLabel>
@@ -502,7 +495,7 @@ export default class MapBox extends Component {
                                     </Item>
                                 </View>
                                 : null}
-                            <Item floatingLabel>
+                            <Item floatingLabel >
                                 <Label>No and Street</Label>
                                 <Input style={styles.transparentLabel}
                                     returnKeyType={'next'}
@@ -614,12 +607,10 @@ export default class MapBox extends Component {
                                     }}
                                 />
                             </Item>
-                            <Button success style={styles.loginButton} block onPress={() => this.onPressUpdateLocInfo()}>
+                            <Button success style={styles.confirmUpdateLocBtn} block onPress={() => this.onPressUpdateLocInfo()}>
                                 <Icon name='paper-plane'></Icon>
                                 <Text>Update</Text>
                             </Button>
-
-
                         </Form>
                     </Content>
                 }
@@ -632,11 +623,11 @@ export default class MapBox extends Component {
                         </View>
                         <View style={{ justifyContent: 'center', width: '90%' }}>
                             <Input placeholder=" Search Location"
-                                value={locationFullText}
+                                value={searchBoxLocFullText}
                                 style={styles.inputfield}
                                 placeholderTextColor="black"
-                                onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.state.navigationOption ? this.props.navigation.navigate('UserAddress', { navigationOption: this.state.navigationOption }) : this.props.navigation.navigate('UserAddress') }}
-                                onChangeText={locationFullText => this.setState({ locationFullText })} />
+                                onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.navigationOption ? this.props.navigation.navigate('UserAddress', { navigationOption: this.navigationOption }) : this.props.navigation.navigate('UserAddress') }}
+                                onChangeText={searchBoxLocFullText => this.setState({ searchBoxLocFullText })} />
                         </View>
                     </Row>
 
@@ -725,13 +716,14 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 20,
     },
-    loginButton: {
+    confirmUpdateLocBtn: {
         marginTop: 25,
         backgroundColor: '#775DA3',
         borderRadius: 5,
         fontFamily: 'OpenSans',
         marginLeft: 15,
-        marginBottom: 10
+        marginBottom: 10,
+        borderRadius: 15
     },
     SearchStyle: {
         backgroundColor: '#7E49C3',
