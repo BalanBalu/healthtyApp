@@ -1,16 +1,11 @@
 
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Platform } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Item, Text, Icon, Header, Left, Row, } from 'native-base';
 import MapboxAutocomplete from './AutoComplete';
 let token = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjZ0ZXMwdWozNDRteTB4bG14Y2o1In0.A34n-MA-vy3hsydgt_8pRQ';
-let publicToken = 'pk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanRyZnFvN2YwcGo3NGRxc251bnl3Nzd0In0.A5faVs4HJr1xUgi7k9eg-A';
-import MapBox from './MapBox';
-import { connect } from 'react-redux';
 
-class UserAddress extends Component {
-
+export default class UserAddress extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,32 +13,17 @@ class UserAddress extends Component {
             locationFetchSuccess: false,
             fromProfile: false,
             navigationOption: null
-
         }
+        this.fromProfile = props.navigation.getParam('fromProfile') || false
+        this.navigationOption = props.navigation.getParam('navigationOption') || null;
     }
-    componentDidMount() {
-        const { navigation } = this.props;
-        const fromProfile = navigation.getParam('fromProfile') || false
-        navigationOption = navigation.getParam('navigationOption') || null
-      
-        if (fromProfile) {
-            this.setState({ fromProfile: true })
-        }
-        if (navigationOption) {
-            this.setState({ navigationOption })
-        }
-    }
-
     getSelectedLocationDate = (locationData) => {
-
-        this.props.navigation.navigate('MapBox', { locationData: locationData, fromProfile: this.state.fromProfile })
+        this.props.navigation.navigate('MapBox', { locationData: locationData, fromProfile: this.fromProfile })
     }
-
     render() {
-
         return (
             <View style={{ flex: 1, backgroundColor: '#ecf0f1' }}>
-                {!this.state.fromProfile && !this.state.navigationOption ?
+                {!this.fromProfile && !this.navigationOption ?
                     <Header style={{ backgroundColor: '#7E49C3' }}>
                         <Row>
                             <Left>
@@ -67,7 +47,7 @@ class UserAddress extends Component {
                     </Item>
                 }
                 <MapboxAutocomplete
-                    text={this.state.text}
+                    text={this.state.enteredText}
                     minLength={2}
                     placeholder='Search Your Location'
                     accessToken={token}
@@ -75,54 +55,31 @@ class UserAddress extends Component {
                     returnKeyType={'search'}
                     fetchDetails={true}
                     listViewDisplayed={true}
-                    value={this.state.text}
+                    value={this.state.enteredText}
                     autoFocus={true}
                     onPress={this.getSelectedLocationDate}
-                    onChangeText={(text) => this.setState({ text: text })}
+                    onChangeText={(enteredText) => this.setState({ enteredText })}
                     style={{
                         backgroundColor: 'white', borderRadius: 5, marginLeft: 30,
                         marginRight: 30, fontfamily: 'OpenSans', fontSize: 18
                     }}
-
                 />
-
             </View>
-
         );
     }
-
-
-
 }
-export default UserAddress;
-const routes = {
-    UserLocation: {
-        name: 'UserLocation',
-        path: 'UserLocation',
-        screen: UserAddress,
-    },
-    MapBox: {
-        name: 'MapBox',
-        path: 'MapBox',
-        screen: MapBox,
-    }
-}
-
 const style = StyleSheet.create({
-
-
     welcome:
     {
         fontSize: 22,
         textAlign: 'center',
         marginTop: -10,
         fontFamily: 'opensans-semibold',
-
     },
     slide: {
         borderBottomWidth: 0,
         justifyContent: 'center',
-        marginTop: '30%',
+        marginTop: 30,
         paddingLeft: 30,
         paddingRight: 40,
         fontFamily: 'OpenSans',
@@ -134,5 +91,4 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 30
     },
-
 });
