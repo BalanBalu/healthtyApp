@@ -31,8 +31,7 @@ class PharmacyList extends Component {
             }
             const userId = await AsyncStorage.getItem('userId')
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
-            console.log('JSON.stringify(result)==============================pharmacylist')
-            console.log(JSON.stringify(result))
+          
             this.setState({ isLoading: false })
            
             if (result.success) {
@@ -52,7 +51,7 @@ class PharmacyList extends Component {
     }
     render() {
         const { isLoading, pharmacyData } = this.state;
-        console.log("bbbb",pharmacyData)
+       
         const { bookappointment: { locationCordinates } } = this.props;
         return (
             <Container style={{ backgroundColor: '#f2f2f2' }}>

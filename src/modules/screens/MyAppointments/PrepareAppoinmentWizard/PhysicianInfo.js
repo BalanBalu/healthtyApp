@@ -66,7 +66,7 @@ class PhysicianInfo extends PureComponent {
             if( data.primary_care_physician_info.physician_name != undefined || data.primary_care_physician_info.hospital_name != undefined || data.primary_care_physician_info.mobile_no != undefined ){
 
             let response = await userFiledsUpdate(userId, data)
-            console.log(JSON.stringify(response))
+            
             if (response.success) {
                 Toast.show({
                     text: response.message,

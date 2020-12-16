@@ -54,7 +54,7 @@ class AvailableDoctors4Video extends Component {
             this.getDoctorAvailableDoctorData(doctorIds).catch(ex => { console.log(ex); return [] }),
             this.getDoctorAvailableDoctorDataChat(doctorIds).catch(ex => { console.log(ex); return [] }),
         ])
-        console.log('availableDocsChat==>,', availableDocsChat);
+        
         availableDocsVideo.forEach(doc => {
             doc.availableForVideo = true;
             availablityMap.set(doc.doctor_id, doc);
@@ -99,10 +99,10 @@ class AvailableDoctors4Video extends Component {
                 let doctorIds = resultData.data.map((element) => {
                     return element.doctor_id
                 });
-                console.log(doctorIds);
+             
                 this.callVideAndChat(doctorIds);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
             } else {
-                console.log('Coming to no symptoms Found');
+                
                 this.setState({ isLoading: false, availableChatDoctors: [], availableVideoDoctors: [] })
             }
         } catch (error) {
@@ -123,13 +123,13 @@ class AvailableDoctors4Video extends Component {
                 return availableDocData.data;
             }
         } catch (error) {
-            console.log(error);
+          
             return [];
         }
         return [];
     }
     getDoctorAvailableDoctorDataChat = async (doctorIds) => {
-        console.log('doctorIds' + JSON.stringify(doctorIds));
+       
         try {
             let request = {};
             if (doctorIds) {
@@ -151,7 +151,7 @@ class AvailableDoctors4Video extends Component {
             this.setState({ isLoading: true });
             const { description } = this.state
             const amount = fee;
-            console.log(fee);
+            
             let freeService = false;
             if (fee == 0) {
                 freeService = true;
@@ -171,8 +171,7 @@ class AvailableDoctors4Video extends Component {
             const createChatResponse = await createChat(createChatRequest)
             this.setState({ isLoading: false });
             if (createChatResponse.success) {
-                console.log(createChatResponse);
-                console.log(JSON.stringify(createChatRequest))
+              
                 if (freeService === true) {
                     const bookSlotDetails = {
                         doctorId: doctorId,
@@ -237,13 +236,14 @@ class AvailableDoctors4Video extends Component {
                 fee: fee,
                 status_by: 'USER',
                 statusUpdateReason: 'NEW VIDEO CONSULTATION',
-                description: description
+                // description: description,
+                consultation_description:description
             }
 
             const createVideoConsultingResponse = await createVideoConsuting(videoConsultRequest)
             this.setState({ isLoading: false });
             if (createVideoConsultingResponse.success) {
-                console.log(createVideoConsultingResponse);
+                
                 if (freeService === true) {
                     videoConsultRequest.status = POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING;
                     const bookSlotDetails = {
@@ -268,7 +268,7 @@ class AvailableDoctors4Video extends Component {
                             duration: 3000
                         });
                     }
-                    console.log('AfterVIdeo Creating', response)
+                   
                 } else {
                     this.setState({ isLoading: false });
                     this.props.navigation.navigate('paymentPage', {
@@ -319,7 +319,7 @@ class AvailableDoctors4Video extends Component {
     getMinVideoChatConsultFee(item) {
         let videoFee = null;
         let chatFee = null;
-        console.log(item);
+    
         if (item && item.availabilityData && item.availabilityData[0]) {
             videoFee = Number(item.availabilityData[0].fee);
         }
@@ -651,12 +651,12 @@ class AvailableDoctors4Video extends Component {
                                     <Col size={8} >
                                         <Row>
                                             <Col size={5}>
-                                                <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, borderRadius: 5, backgroundColor: 'red', height: 25,alignItems:'center',justifyContent:'center' }} onPress={() => this.setState({ descriptionVisible: false })} testID='cancelButton'>
+                                                <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, borderRadius: 5, backgroundColor: 'red', height: 25, alignItems: 'center', justifyContent: 'center' }} onPress={() => this.setState({ descriptionVisible: false })} testID='cancelButton'>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: 'bold' }}> {'CANCEL'}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                             <Col size={5} style={{ marginRight: 3, marginLeft: 5 }} >
-                                                <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, borderRadius: 5, height: 25,alignItems:'center',justifyContent:'center' }} onPress={() => this.descritionSubmission(serviceType)} testID='submitButton'>
+                                                <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, borderRadius: 5, height: 25, alignItems: 'center', justifyContent: 'center' }} onPress={() => this.descritionSubmission(serviceType)} testID='submitButton'>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>{'SUBMIT'}</Text>
                                                 </TouchableOpacity>
                                             </Col>

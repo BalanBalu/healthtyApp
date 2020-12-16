@@ -72,7 +72,7 @@ class HospitalList extends Component {
         try {
             await serviceOfGetFavoriteListCount4PatientService(userId);
         } catch (Ex) {
-            console.log('Ex is getting on get Favorites details for Patient====>', Ex)
+          
             return {
                 success: false,
                 statusCode: 500,
@@ -95,11 +95,11 @@ class HospitalList extends Component {
                 reqData4ServiceCall.category_id = category_id
             }
             if (this.state.hospitalName) reqData4ServiceCall.hospitalName = this.state.hospitalName;
-            console.log('reqData4ServiceCall', JSON.stringify(reqData4ServiceCall))
+
             const hospitalResp = await serviceOfSearchByHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
 
             if (hospitalResp.success) {
-                // console.log(' this.incrementPaginationCount===>', this.incrementPaginationCount)
+ 
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...hospitalResp.data];
                 const hospitalAdminIdsArray = hospitalResp.data.map(item => { return item.hospital_admin_id });
@@ -165,8 +165,7 @@ class HospitalList extends Component {
             endDate: addTimeUnit(date, 30, 'minutes')
         }
         let response = await validateAppointment(reqData);
-        console.log('====================================')
-        console.log(JSON.stringify(response))
+
         if (response.success == false) {
             this.timeText = formatDate(response.data[0].appointment_starttime, 'hh:mm A')
             Alert.alert(

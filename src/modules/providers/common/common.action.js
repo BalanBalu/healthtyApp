@@ -13,10 +13,7 @@ export function messageHide() {
 }
 export async function uploadImage(imageData, endPoint, appendForm) {
   try {
-    console.log('endpoiint===========')
-    console.log(endPoint)
     var formData = new FormData();
-    console.log(imageData)
     if (Array.isArray(imageData) && imageData.length != 0) {
       imagePath.map((ele) => {
         formData.append('medicine', {
@@ -53,10 +50,7 @@ export async function createEmrUpload(data, isLoading = true) {
   try {
     let endPoint = '/electrical_medical_records';
     let response = await postService(endPoint, data);
-    console.log('response' + response);
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData));
-
     return respData;
   }
   catch (e) {

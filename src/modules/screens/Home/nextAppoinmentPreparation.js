@@ -25,11 +25,9 @@ class NextAppoinmentPreparation extends PureComponent {
 
     }
     async componentDidMount() {
-        try {
+   
             await this.upCommingNextAppointment()
-        } catch (ex) {
-            console.log(ex)
-        }
+       
     }
 
     upCommingNextAppointment = async () => {

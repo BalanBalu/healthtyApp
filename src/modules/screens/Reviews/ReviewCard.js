@@ -60,7 +60,7 @@ async function insertUserLikes(item, reviewerId, props) {
         debugger
         if (reviewerId) {
             isAlreadyLiked = getReactionColor(item, reviewerId);
-            console.log(isAlreadyLiked);
+          
 
             let reviewId = item._id;
             let reactionData = {
@@ -94,7 +94,7 @@ function getLikesCount(item) {
 
 export const RenderReviewData = (props) => {
     const { item, userId, navigation } = props;
-    console.log('Is Refreshing');
+  
 
     return (
         <Grid>

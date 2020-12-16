@@ -8,11 +8,9 @@ export async function serviceOfSearchByHospitalDetails(reqData, skipCount, limit
   try {
     const endPoint = `hospital/Near_by_hospital?skip=${skipCount}&limit=${limit}`;
     let response = await postService(endPoint, reqData);
-    // console.log('response===>', JSON.stringify(response))
     let respData = response.data;
     return respData;
   } catch (e) {
-    console.log(e);
     return {
       message: 'exception' + e,
       success: false
@@ -26,11 +24,9 @@ export async function validateAppointment(reqData) {
   try {
     const endPoint = `/appointment/hospital/validate`;
     let response = await postService(endPoint, reqData);
-    // console.log('response===>', JSON.stringify(response))
     let respData = response.data;
     return respData;
   } catch (e) {
-    console.log(e);
     return {
       message: 'exception' + e,
       success: false
@@ -71,7 +67,6 @@ export const addFavoritesToHospitalByUserService = async (userId, hospitalAdminI
         active: !patientFavoriteListCountOfHospitalAdminIds.includes(hospitalAdminId)
       };
       const updateResponse = await updateFavoritesToHospitalByUser(userId, hospitalAdminId, reqData4updateWishList);
-      // console.log('updateResponse====>', JSON.stringify(updateResponse))
       if (updateResponse.success) {
         if (reqData4updateWishList.active) {
           hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] = hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] ? hospitalFavoriteListCountOfHospitalAdminIds[hospitalAdminId] + 1 : 1
@@ -94,7 +89,6 @@ export const addFavoritesToHospitalByUserService = async (userId, hospitalAdminI
     }
   }
   catch (Ex) {
-    console.log('Ex is getting on update Wish list details for Hospital====>', Ex)
     return {
       success: false,
       statusCode: 500,
@@ -114,7 +108,6 @@ export async function updateFavoritesToHospitalByUser(userId, hospitalAdminId, r
     return respData;
   }
   catch (Ex) {
-    console.log('Ex is getting on update Wish list details for Hospital====>', Ex)
     return {
       success: false,
       statusCode: 500,
@@ -146,7 +139,6 @@ export const serviceOfGetHospitalFavoriteListCount4Pat = async (hospitalAdminId)
     return favoritesList;
   }
   catch (Ex) {
-    console.log('Ex is getting on fetch total WishList for Hospital====>', Ex.message)
     return {
       success: false,
       statusCode: 500,

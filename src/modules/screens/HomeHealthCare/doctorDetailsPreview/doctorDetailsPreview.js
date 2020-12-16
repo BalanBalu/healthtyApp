@@ -156,7 +156,7 @@ class DoctorDetailsPreview extends Component {
                 return availableDocData.data;
             }
         } catch (error) {
-            console.log(error);
+         
             return [];
         }
         return [];
@@ -205,7 +205,7 @@ class DoctorDetailsPreview extends Component {
         try {
             await getFavoriteListCount4PatientService(userId);
         } catch (Ex) {
-            console.log('Ex is getting on get Favorites details for Patient====>', Ex)
+            
             return {
                 success: false,
                 statusCode: 500,
@@ -278,7 +278,7 @@ class DoctorDetailsPreview extends Component {
             this.setState({ doctorData: this.setDocInfoAndAvailableSlotsData })
         } catch (error) {
             this.setState({ isLoading: false })
-            console.log('Ex getting on getAvailabilitySlots service======', error.message);
+         
         }
     }
 

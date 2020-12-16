@@ -40,7 +40,7 @@ class MedicineRecords extends PureComponent {
         let userId = await AsyncStorage.getItem('userId');
         let data = this.state.data
         let result = await getMedicalRecords(userId, this.skip, this.limit)
-        console.log("getMedicalRecords===" + JSON.stringify(result.data))
+      
         if (result.success) {
 
             data = this.state.data.concat(result.data)
@@ -53,7 +53,7 @@ class MedicineRecords extends PureComponent {
         this.setState({ data: data, isLoading: false })
     }
   async  filterMedicalRecords(searchValue) {
-        console.log(this.state.data);
+      
         const { categoriesMain } = this.state;
       if (!searchValue) {
           this.skip = 0
@@ -149,9 +149,9 @@ class MedicineRecords extends PureComponent {
 
     }
     handleLoadMore = async () => {
-        console.log('data' + this.onEndReachedCalledDuringMomentum)
+       
         if (!this.onEndReachedCalledDuringMomentum) {
-            console.log('On Hanndle loading ' + this.state.skip);
+           
 
             this.onEndReachedCalledDuringMomentum = true;
             this.skip = this.skip + this.limit

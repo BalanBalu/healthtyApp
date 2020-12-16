@@ -140,7 +140,6 @@ export function getPayCardType(number) {
 }
 for(var key in re) {
     if(re[key].test(number)) {
-      console.log(key); 
       return key
     }
 }

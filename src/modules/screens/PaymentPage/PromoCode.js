@@ -24,7 +24,7 @@ class PromoCode extends Component {
     getPromolistDatas = async (data) => {
         try {
             let result = await getPromodataList(data)
-            console.log(JSON.stringify(result));
+           
             if (result.success) {
                 this.setState({ data: result.data })
 

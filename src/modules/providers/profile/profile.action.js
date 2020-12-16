@@ -45,7 +45,7 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
     }
 
   } catch (e) {
-    console.log(e);
+ 
     store.dispatch({
       type: PROFILE_ERROR,
       message: e
@@ -80,7 +80,7 @@ export async function userReviews(id, type, isLoading = true) {
       isLoading
     })
     let endPoint = 'user/reviews/' + type + '/' + id;
-    console.log(endPoint);
+    
     let response = await getService(endPoint);
 
 
@@ -113,9 +113,9 @@ export async function insertLikesDataForReviews(reviewId, reviewerId, reactionDa
   try {
     let endPoint = 'review/reaction/' + reviewId + '/' + reviewerId;
     let response = await putService(endPoint, reactionData);
-    console.log('response' + response);
+    
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData));
+    
 
     return respData;
   }
@@ -149,10 +149,9 @@ export async function bloodDonationFilter(data) {
   try {
     let endPoint = '/bloodDonors/filters';
     let response = await postService(endPoint, data);
-    console.log('response' + response);
-    console.log(JSON.stringify(response))
+   
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData));
+   
     return respData;
   }
   catch (e) {
@@ -184,7 +183,7 @@ export const getReferalPoints = async (userId) => {
   let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob"
   let result = await fetchUserProfile(userId, fields);
  
-  console.log("result.is_mobile_verified", result.is_mobile_verified)
+ 
   if (result) {
     store.dispatch({
       type: AVAILABLE_CREDIT_POINTS,
@@ -283,7 +282,7 @@ export async function getMedicalRecords(userId,skip,limit,searchKey) {
     if (searchKey) {
       endPoint=endPoint+`?searchKey=${searchKey}`
     }
-    console.log(endPoint)
+
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;

@@ -17,7 +17,6 @@ class AuthLoadingScreen extends React.Component {
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
     const token = await AsyncStorage.getItem('token')
-    // console.log("token++++++++",token)
     if (token && token !== 'undefined' && token !== '') {
       const user = JSON.parse(await AsyncStorage.getItem('user'))
       if (user) {
@@ -25,7 +24,6 @@ class AuthLoadingScreen extends React.Component {
       }
     }
     const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
-    console.log("isCorporateUserBBB",isCorporateUser)
     this.setState({ CorporateUser:isCorporateUser })
     const { CorporateUser } = this.state
     if (CorporateUser === true) {

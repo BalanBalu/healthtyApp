@@ -168,7 +168,7 @@ class UserDetails extends Component {
                                                     textStyle={{ color: "#5A5A5A" }}
                                                     value={dob}
                                                     placeHolderTextStyle={{ color: "#5A5A5A" }}
-                                                    onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
+                                                    onDateChange={dob => {this.setState({ dob }) }}
                                                     disabled={this.dobIsEditable}
                                                 />
                                             </Row>

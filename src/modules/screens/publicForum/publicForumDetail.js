@@ -134,7 +134,6 @@ class PublicForumDetail extends PureComponent {
     render() {
 
         const { answer_text, getsData, isLoading } = this.state
-        console.log(JSON.stringify(getsData))
         return (
             <Container style={styles.container}>
 
