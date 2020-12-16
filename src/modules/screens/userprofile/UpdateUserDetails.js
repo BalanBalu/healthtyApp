@@ -204,7 +204,7 @@ class UpdateUserDetails extends Component {
                                         textStyle={{ fontSize: 13, color: "#5A5A5A" }}
                                         value={this.state.dob}
                                         placeHolderTextStyle={{ fontSize: 13, color: "#5A5A5A" }}
-                                        onDateChange={dob => { console.log(dob); this.setState({ dob, updateButton: false }) }}
+                                        onDateChange={dob => {this.setState({ dob, updateButton: false }) }}
                                         disabled={false}
                                         testID="editDateOfBirth"
                                     />

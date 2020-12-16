@@ -73,7 +73,7 @@ class PharmacyHome extends Component {
 
                 }
                 setCartItemCountOnNavigation(this.props.navigation);
-                // console.log(JSON.stringify(cartData[]))
+                
                 await this.setState({ cartItems: cartData })
                 await AsyncStorage.removeItem('hasCartReload');
             }
@@ -93,12 +93,7 @@ class PharmacyHome extends Component {
     getMedicineList = async () => {
         try {
             userId = await AsyncStorage.getItem('userId')
-
             let result = await searchRecentItemsByPharmacy(10)
-             console.log('result==========================================')
-                 console.log(JSON.stringify(result))
-
-
             if (result) {
                 let prodcuctIds = []
                 result.map(ele => {
@@ -108,7 +103,6 @@ class PharmacyHome extends Component {
                 let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
 
                 this.setState({ medicineData: result, medicineDataAvailable: availableResult })
-                console.log("medicineData", this.state.medicineData)
                 if (userId) {
                     let cartResult=await getCartListByUserId(userId)
                     if(cartResult){
@@ -126,8 +120,8 @@ class PharmacyHome extends Component {
 
         }
         catch (e) {
-
-            console.log(e)
+            this.setState({ isLoading: false });
+         
         }
         finally {
             this.setState({ isLoading: false });
@@ -201,7 +195,6 @@ class PharmacyHome extends Component {
         }
     }
     navigatePress(text) {
-        // console.log(text);
         this.props.navigation.navigate('MedicineSuggestionList', { medicineName: text })
 
     }

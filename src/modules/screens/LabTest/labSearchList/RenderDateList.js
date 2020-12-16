@@ -23,7 +23,7 @@ export default class RenderDates extends Component {
 
     render() {
         const { availabilitySlotsDatesArry, onDateChanged, selectedDate, availableSlotsData, labId, selectedDateObj, callSlotsServiceWhenOnEndReached, } = this.props;
-        console.log("availableSlotsData", availableSlotsData);
+       
         
         if (!Object.keys(availableSlotsData)) {
             return null;

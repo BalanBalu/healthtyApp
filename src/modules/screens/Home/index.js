@@ -185,7 +185,7 @@ class Home extends Component {
                 [
                     {
                         text: "UPDATE", onPress: () => {
-                            console.log('OK Pressed')
+                            
                             Linking.openURL("https://play.google.com/store/apps/details?id=" + ANDROID_BUNDLE_IDENTIFIER)
                         }
                     }
@@ -201,13 +201,13 @@ class Home extends Component {
                         text: "Skip",
                         onPress: () => {
                             this.otpAndBasicDetailsCompletion();
-                            console.log("Cancel Pressed");
+                       
                         },
                         style: "cancel"
                     },
                     {
                         text: "UPDATE", onPress: () => {
-                            console.log('OK Pressed')
+                            
                             Linking.openURL("https://play.google.com/store/apps/details?id=com.ads.medflic&hl=en")
                         }
 

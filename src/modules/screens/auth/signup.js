@@ -47,7 +47,7 @@ class Signup extends Component {
             this.setState({ isLoading: true })
             const productConfigTypes = `${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_MOBILE_NUMBER_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_EMAIL_ENTRY},${SHOW_MOBILE_AND_EMAIL_ENTRIES.PT_SHOW_OTP_ENTRY}`;
             const productConfigResp = await ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(productConfigTypes);
-            // console.log('productConfigResp==>', productConfigResp);
+            
             if (productConfigResp.success) {
                 const productConfigData = productConfigResp.data;
                 productConfigData.map(item => {
@@ -64,7 +64,7 @@ class Signup extends Component {
             }
 
         } catch (Ex) {
-            console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
+
             return {
                 success: false,
                 statusCode: 500,

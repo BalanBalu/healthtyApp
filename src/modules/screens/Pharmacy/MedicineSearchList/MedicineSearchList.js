@@ -58,8 +58,7 @@ class MedicineSearchList extends Component {
         try {
 
             let medicineResultData = await getMedicinesSearchList(enteredText, pagination);
-            console.log('MedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchList')
-            console.log(JSON.stringify(medicineResultData))
+         
             if (medicineResultData) {
                 let prodcuctIds = []
                 medicineResultData.map(ele => {
@@ -137,7 +136,6 @@ class MedicineSearchList extends Component {
         try {
             if (val.isNavigate) {
                 let temp = [];
-                // console.log(val);
                 temp.push(val.medicineData)
                 await this.setState({ isBuyNow: false })
                 this.props.navigation.navigate("MedicineCheckout", {
@@ -153,7 +151,6 @@ class MedicineSearchList extends Component {
                 let userId = await AsyncStorage.getItem('userId')
                 if (userId) {
                     let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
-                    // console.log('card')
                     if (cart.length != 0) {
                         let cardData = JSON.parse(cart)
                         await this.setState({ cartItems: cardData })

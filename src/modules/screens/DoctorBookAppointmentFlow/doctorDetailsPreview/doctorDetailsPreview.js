@@ -272,7 +272,7 @@ class DoctorDetailsPreview extends Component {
             }
             const availabilityResp = await fetchDoctorAvailabilitySlotsService(availabilityReqData, reqStartAndEndDates);
             const availabilityData = availabilityResp.data;
-            // console.log('availabilityData=====>', availabilityData)
+           
             debugger
 
             if (availabilityResp.success === true && availabilityData.length > 0) {
@@ -307,7 +307,7 @@ class DoctorDetailsPreview extends Component {
             this.setState({ doctorData: this.setDocInfoAndAvailableSlotsData })
         } catch (error) {
             this.setState({ isLoading: false })
-            console.log('Ex getting on getAvailabilitySlots service======', error.message);
+            
         }
     }
 

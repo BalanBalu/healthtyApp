@@ -94,7 +94,7 @@ class Profile extends Component {
 
       let userId = await AsyncStorage.getItem('userId');
       let result = await fetchUserProfile(userId, fields);
-      console.log('result', result);
+    
       if (result) {
         this.setState({
           data: result,
@@ -185,7 +185,7 @@ class Profile extends Component {
         });
 
         function location(locationObj) {
-          console.log('locationObj', locationObj);
+      
 
           let placeName = '';
           let contextData = [];
@@ -249,12 +249,12 @@ class Profile extends Component {
       })
         .then(image => {
           this.setState({ selectOptionPoopup: false });
-          console.log(image);
+          
           this.uploadImageToServer(image);
         })
         .catch(ex => {
           this.setState({ selectOptionPoopup: false });
-          console.log(ex);
+         
         });
     } else {
       ImagePicker.openPicker({
@@ -266,14 +266,14 @@ class Profile extends Component {
         avoidEmptySpaceAroundImage: true,
       })
         .then(image => {
-          console.log(image);
+        
 
           this.setState({ selectOptionPoopup: false });
           this.uploadImageToServer(image);
         })
         .catch(ex => {
           this.setState({ selectOptionPoopup: false });
-          console.log(ex);
+        
         });
     }
   }
@@ -313,7 +313,6 @@ class Profile extends Component {
         duration: 3000,
         type: 'danger',
       });
-      console.log(e);
     }
   };
 

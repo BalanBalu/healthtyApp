@@ -46,9 +46,7 @@ export const updateUploadMultiPart = async (endPoint, formData) => {
          'content-type': `multipart/form-data; boundary=${formData._boundary}`,
       },
    }
-   console.log(req)
    const response = await axios(req)
-   console.log(response)
    return response;
 
 }

@@ -161,7 +161,7 @@ class Locations extends PureComponent {
                         await AsyncStorage.removeItem('manuallyEnabledLocation');
                         CurrentLocation.getCurrentPosition();
                         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
-                        console.log("isCorporateUserBBB", isCorporateUser)
+                       
                         this.setState({ CorporateUser: isCorporateUser })
                         const { CorporateUser } = this.state
                         if (CorporateUser === true) {

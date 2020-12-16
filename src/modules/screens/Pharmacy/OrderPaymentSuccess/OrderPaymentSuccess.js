@@ -7,7 +7,6 @@ import { StyleSheet, Image } from 'react-native';
 class OrderPaymentSuccess extends Component {
     constructor(props) {
         super(props)
-        console.log(this.props)
     }
 
     render() {

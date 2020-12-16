@@ -33,7 +33,7 @@ class LabCancelAppointment extends Component {
 
         const { navigation } = this.props;
         const cancelData = navigation.getParam('appointmentData');
-        console.log(cancelData)
+       
                 await this.setState({ data: cancelData });
 
     }
@@ -42,7 +42,7 @@ class LabCancelAppointment extends Component {
     cancelLabAppointment = async (data, updatedStatus) => {
        
         try {
-            console.log("data:::", data)
+            
             let userId = await AsyncStorage.getItem('userId');
             if (onlySpaceNotAllowed(this.state.statusUpdateReason) == true) {
             this.setState({ isLoading: true });
@@ -57,7 +57,7 @@ class LabCancelAppointment extends Component {
             };
 
             let result = await updateLapAppointment(data._id, requestData);
-                console.log("Cancle   result+++++++++++++++++++++++", result)
+                
             this.setState({ isLoading: false })
 
                 if (result.success) {

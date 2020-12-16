@@ -64,7 +64,7 @@ export default class MapBox extends React.Component {
                 }).catch(err => {
                     console.warn(err);
                 });
-                // console.log(await granted);
+               
             }
             this._isMounted = true;
             const { navigation } = this.props;

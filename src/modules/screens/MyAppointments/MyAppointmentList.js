@@ -325,7 +325,6 @@ class MyAppoinmentList extends Component {
 	}
 	handleLoadMore = async () => {
 		if (!this.onEndReachedCalledDuringMomentum) {
-			console.log('On Hanndle loading ' + this.state.skip);
 
 			this.onEndReachedCalledDuringMomentum = true;
 			await this.setState({ skip: this.state.skip + this.state.limit, footerLoading: true });

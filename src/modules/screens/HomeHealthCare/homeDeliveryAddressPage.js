@@ -69,7 +69,7 @@ class HomeHealthCareAddressChange extends Component {
                 this.setState({ fullName, mobileNo, addressList: homeHealthCareAddress })
             }
         } catch (Ex) {
-            console.log('Ex is getting on Fetch User Information in Home Health Address list page===>', Ex.message)
+
             return {
                 success: false,
                 statusCode: 500,

@@ -76,14 +76,11 @@ export default class App extends Component {
       agent: false, // [2] Please don't set this to true upgrade: false, 
     });
     this.socket.on(userId + '-member-message', (message) => {
-      console.log('Connected');
       this.onReceivedMessage(message)
     });
   }
   onReceivedMessage = (recievedMessage) => {
-    console.log(recievedMessage);
     const recievedConvesationId = recievedMessage.conversation_id;
-    console.log('On Recieve from APP.js');
     const myChatList = store.getState().chat.myChatList;
     if (this.userId && recievedMessage.member_id !== this.userId) {
       myChatList.some(element => {

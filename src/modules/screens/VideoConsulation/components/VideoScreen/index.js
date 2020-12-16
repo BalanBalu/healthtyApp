@@ -37,7 +37,6 @@ import { Toast } from 'native-base';
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     if(this.callToUser) {
       userMedflicNdConnecticubeData = this.props.navigation.getParam("videoConsulationData");
-      console.log(userMedflicNdConnecticubeData);
       if(userMedflicNdConnecticubeData.doctorInfo && userMedflicNdConnecticubeData.doctorInfo.connectycube) {
         CallService.setKeepScreenOn(true);
         const connectyCubeUserId = userMedflicNdConnecticubeData.doctorInfo.connectycube.connectycube_id;
@@ -98,8 +97,6 @@ import { Toast } from 'native-base';
    const { navigation } = this.props;
     const onPressReject = navigation.getParam('onPressReject') || false;
     const onPressAccept = navigation.getParam('onPressAccept') || false;
-   console.log('State of onPressReject:' + onPressReject);
-   console.log('State of onPressAccept:' + onPressAccept);
     if(onPressReject === true) {
      this._onPressReject();
    } if(onPressAccept === true ) {

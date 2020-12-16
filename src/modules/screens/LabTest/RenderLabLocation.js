@@ -24,7 +24,7 @@ export default class RenderLabLocation extends Component {
 
     render() {
         const { locationData, name } = this.props;
-        console.log('locationData', locationData);
+       
         const addressData = locationData && locationData.address;
         return (
             <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.7, }}>

@@ -88,7 +88,7 @@ export const insertPushNotification = async (data) => {
         let respData = response.data;
         return respData;
     } catch (error) {
-       console.log(error)
+       
        return{
            success:false,
            error:error

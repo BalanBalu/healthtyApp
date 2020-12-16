@@ -45,7 +45,7 @@ export const UpDateUserNotification = async (updateNode, notificationIds) => {
         let respData = response.data;
         return respData;
     } catch (e) {
-        console.log(e.message);
+        
         return {
             message: 'exception' + e,
             success: false

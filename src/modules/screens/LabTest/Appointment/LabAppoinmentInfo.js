@@ -35,7 +35,7 @@ class LabAppointmentInfo extends Component {
 
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    console.log("appointmentData", appointmentData);
+   
     if (appointmentData == undefined) {
       let appointmentId = navigation.getParam('serviceId')
       await new Promise.all([
