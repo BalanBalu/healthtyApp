@@ -116,7 +116,7 @@ export function toTitleCase(str) {
 }
 export function findArrayObj(array, findNode, findValue) {
   let returnObj;
-  //console.log(findValue);
+
   for (let i = 0; i < array.length; i++) {
     if (array[i][findNode] === findValue) {
       returnObj = array[i];
@@ -146,7 +146,7 @@ export function intersection() {
   } else {
     lists = arguments;
   }
-  console.log(lists);
+ 
   for (var i = 0; i < lists.length; i++) {
     var currentList = lists[i];
     for (var y = 0; y < currentList.length; y++) {

@@ -89,8 +89,6 @@ class MedicineInfo extends Component {
             let [result, availableResult] = await new Promise.all([
                 getProductDetailById(medicineId),
                 getAvailableStockForListOfProducts(prodcuctIds)])
-            console.log('hi==================')
-            console.log(JSON.stringify(result))
 
             if (result) {
                 this.setState({ medicineData: result })

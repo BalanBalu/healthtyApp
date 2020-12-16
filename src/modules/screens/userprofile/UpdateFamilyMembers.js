@@ -37,9 +37,9 @@ class UpdateFamilyMembers extends Component {
     async getFamilyDetails() {
         const { navigation } = this.props;
         let userData = navigation.getParam('updatedata');
-        console.log("userData", userData)
+        
         const fromProfile = navigation.getParam('fromProfile') || false
-        console.log("fromProfile", fromProfile)
+     
         if (fromProfile) {
             await this.setState({
                 updateButton: true,
@@ -51,7 +51,7 @@ class UpdateFamilyMembers extends Component {
 
     addedFamilyMembers = async () => {
         const { name, age, gender, relationship, } = this.state
-        console.log("relationship", relationship)
+        
         if (name == '' || age == '' || gender == '' || relationship == '' || relationship == 'Select Relationship') {
             this.setState({ errorMsg: 'Kindly fill all the fields...' })
             return false;
@@ -67,7 +67,7 @@ class UpdateFamilyMembers extends Component {
                 relationship: relationship
 
             });
-            console.log("temp", temp)
+          
 
             await this.setState({ family_members: temp, updateButton: false });
             await this.setState({ name: '', age: '', gender: '', relationship: '' });
@@ -83,7 +83,7 @@ class UpdateFamilyMembers extends Component {
             };
             const userId = await AsyncStorage.getItem('userId')
             let response = await userFiledsUpdate(userId, requestData);
-            console.log("response", response)
+  
             if (response.success) {
                 Toast.show({
                     text: 'Your family member details are updated',

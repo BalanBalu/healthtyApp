@@ -51,14 +51,14 @@ class Forgotpassword extends Component {
                 reqData.is_corporate_user = true
             }
             let reqOtpResponse = await generateOTP(reqData)
-            console.log('reqOtpResponse::::' + JSON.stringify(reqOtpResponse))
+            
             if (reqOtpResponse.success == true)
                 await this.setState({ isOTPGenerated: true });
             else
                 this.setState({ errorMessage: reqOtpResponse.error });
         }
         catch (e) {
-            console.log(e);
+           
             Toast.show({
                 text: 'Something Went Wrong' + e,
                 duration: 3000

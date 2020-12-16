@@ -48,8 +48,7 @@ export class InsertReview extends Component {
 
   submitReview = async (reviewCondition) => {
     try {
-      console.log('cpme submit review')
-
+    
       const { userId, appointmentId, doctorId } = this.state;
 
       const { data, isAnonymous, wait_time_rating, staff_rating, cleanness_rating, comments, isDoctorRecommended } = this.state
@@ -74,13 +73,13 @@ export class InsertReview extends Component {
             delete insertReviewData.doctor_id
             insertReviewData.hospital_admin_id=data.hospitalsInfo[0].hospital_admin_id
           }
-          console.log(JSON.stringify(data))
+          
           let result = await addReview(userId, insertReviewData);
           this.props.popupVisible({
             visible: false,
             updatedVisible: true
           });
-          console.log(JSON.stringify(result))
+          
         }
         else {
           this.setState({ ratingIndicatePopUp: true })
@@ -95,7 +94,7 @@ export class InsertReview extends Component {
           appointment_id: data._id,
         };
         let result = await addReview(userId, insertReviewData);
-        console.log(JSON.stringify(result))
+        
         this.props.popupVisible({
           visible: false,
           updatedVisible: false

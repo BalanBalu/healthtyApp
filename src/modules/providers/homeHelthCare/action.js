@@ -27,7 +27,6 @@ export async function getHomeTestappointmentByID(appointmentId) {
         const respData = response.data;
         return respData;
     } catch (Ex) {
-        console.log('Ex is getting on Update Doctor Home Test appointment details====>', Ex.message)
         return {
             success: false,
             statusCode: 500,
@@ -44,7 +43,6 @@ export async function updateDocHomeTestappointment(appointmentId, reqData) {
         const respData = response.data;
         return respData;
     } catch (Ex) {
-        console.log('Ex is getting on Update Doctor Home Test appointment details====>', Ex.message)
         return {
             success: false,
             statusCode: 500,

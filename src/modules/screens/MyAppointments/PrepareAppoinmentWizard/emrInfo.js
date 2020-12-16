@@ -53,12 +53,12 @@ class EmrInfo extends PureComponent {
                 emr_detail_ids: data,
             
             }
-            console.log(data);
+         
             this.setState({ isLoading: true })
             let response = await prepareAppointmentUpdate(appointmentId, reqData)
 
             
-            console.log(response);
+            
             if (response.success) {
                 toastMeassage(response.message,'success',3000)
               

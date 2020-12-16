@@ -55,7 +55,7 @@ class LabConfirmation extends Component {
         }
         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
         this.setState({ isCorporateUser });
-        console.log('packageDetails', this.state.packageDetails);
+        
         await this.getUserProfile();
     }
 
@@ -323,7 +323,7 @@ class LabConfirmation extends Component {
             }
         }
         catch (e) {
-            console.log(e);
+         
             Toast.show({
                 text: 'Exception While Creating the Appointment' + e,
                 type: "danger",

@@ -48,7 +48,7 @@ class BloodDonersList extends Component {
       let data = []
       let result = await bloodDonationList(data);
       if (result.success) {
-        console.log(result)
+       
         let user = result.data.userList
         let doctor = result.data.doctorList
         user.concat(doctor);

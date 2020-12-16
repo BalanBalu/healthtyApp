@@ -31,8 +31,7 @@ class Filters extends Component {
         const { bookappointment: { doctorData }, navigation } = this.props;
         const filterData = navigation.getParam('filterData');
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
-        console.log('Filter Data from Search List: ' + JSON.stringify(filterData));
-        console.log(' filterBySelectedAvailabilityDateCount' + filterBySelectedAvailabilityDateCount);
+
         if (globalOffilterBySelectedAvailabilityDateCount != 0) {
             if (filterBySelectedAvailabilityDateCount !== 0 && filterBySelectedAvailabilityDateCount !== undefined) {
                 this.clickFilterByAvailabilityDates(filterBySelectedAvailabilityDateCount, false, true);
@@ -65,7 +64,7 @@ class Filters extends Component {
         }
 
         await this.setState({ doctorData: doctorData });
-        // console.log('doctorData' + JSON.stringify(this.state.doctorData));
+       
         let sampleLangArray = [];
         let sampleCategoryArray = [];
         let sampleServiceArray = [];
@@ -100,8 +99,7 @@ class Filters extends Component {
 
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
-        console.log('filterDataObject::', filterDataObject)
-        console.log('this.state.selectAvailabilityIndex::', this.state.selectAvailabilityIndex)
+
         this.props.navigation.navigate('Doctor List', {
             filterData: filterDataObject,
             filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true

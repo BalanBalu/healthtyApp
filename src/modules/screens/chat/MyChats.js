@@ -56,7 +56,7 @@ getAllChatsByUserId = async(userId) => {
   try {
     this.setState({ isLoading: true });
     const chatList = await getAllChats(userId);
-   console.log(chatList);
+  
     if(chatList.success === true) {
         store.dispatch({
             type: SET_LAST_MESSAGES_DATA,

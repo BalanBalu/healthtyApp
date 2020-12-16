@@ -52,7 +52,7 @@ class OfflineNotice extends React.PureComponent {
   render() {
    
     const { connectionStatus } = this.state;
-    console.log('Rending with connecttion Status', connectionStatus);
+  
     if (connectionStatus == 'Offline') return <RenderOffline />
     else if (connectionStatus == 'Online') return <RenderOnline />
     else return null

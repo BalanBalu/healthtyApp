@@ -49,7 +49,7 @@ class PublicForum extends PureComponent {
         }
     }
     callquerysearchService = async (enteredText, skipConcatWithPreviousData) => {
-        console.log("Wholedata=========<<<<<<<<<<<<<Calling Data");
+       
 
         let result = await getAllPublicForumDetails(this.state.query_text, this.state.skip, this.state.limit)
 
@@ -89,7 +89,7 @@ class PublicForum extends PureComponent {
     backNavigation = async (navigationData) => {
         try {
             if (navigationData.lastState && navigationData.lastState.params && navigationData.lastState.params.refreshPage) {
-                console.log('Inside the Calling Service');
+                
                 await this.callquerysearchService(this.state.query_text, true);
             }
         } catch (e) {

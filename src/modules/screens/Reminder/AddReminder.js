@@ -58,15 +58,11 @@ class AddReminder extends Component {
       refreshCount: 1,
       currentDate:  moment().startOf('day').toDate()
     }
-    debugger
     this.callmedicinesearchService = debounce(this.callmedicinesearchService, 500);
   }
   componentDidMount() {
-    debugger
     const { reminder: { reminderResponse: { data, } } } = this.props;
-    // console.log('data props from compom did mount', JSON.stringify(data));
 
-    debugger
   }
   SearchKeyWordFunction = async (enteredText) => {
     if (enteredText == '') {
@@ -78,7 +74,6 @@ class AddReminder extends Component {
   }
   callmedicinesearchService = async (enteredText) => {
     let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
-    // console.log('medicinedone+++++++++++++++++' + JSON.stringify(medicineResultData))
     if (medicineResultData.success) {
       this.setState({
         medicineSugesstionArray: medicineResultData.data,
@@ -158,11 +153,6 @@ class AddReminder extends Component {
 
   handleEndDatePicked = date => {
     this.setState({ endDatePlaceholder: true, isEndDateTimePickerVisible: false, medicine_take_end_date: date });
-    console.log('picked date', date);
-
-    console.log('this.state.medicine_take_start_date', this.state.medicine_take_start_date);
-
-    console.log('this.state.medicine_take_end_date', this.state.medicine_take_end_date);
 
 
     if (date < this.state.medicine_take_start_date) {
@@ -212,7 +202,6 @@ class AddReminder extends Component {
 
 
   delete(index) {
-    console.log('Deliting...');
     let temp = this.medicineTakeTimes;
     temp.splice(index, 1)
     this.medicineTakeTimes = temp;

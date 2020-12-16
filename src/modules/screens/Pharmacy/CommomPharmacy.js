@@ -206,7 +206,7 @@ export function renderPharmacyImage(data) {
 }
 export async function relativeTimeView(review_date) {
   try {
-    console.log(review_date)
+ 
     var postedDate = review_date;
     var currentDate = new Date();
     var relativeDate = dateDiff(postedDate, currentDate, 'days');
@@ -243,7 +243,7 @@ export function getAddress(location) {
     return ''
 }
 export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
-  console.log(gpsLocation)
+  
   if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
     let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 

@@ -23,15 +23,9 @@ class PharmacyCart extends Component {
 
     }
 
-    async componentDidMount() {
-        try {
-         
-         
+    async componentDidMount() {  
                 await this.getAddToCart();
             
-        } catch (e) {
-            console.log(e)
-        }
     }
    
     getAddToCart = async () => {
@@ -39,9 +33,6 @@ class PharmacyCart extends Component {
             this.setState({ isLoading: true })
             userId = await AsyncStorage.getItem('userId')
             let cartItems = await AsyncStorage.getItem('cartItems-' + userId) || [];
-            console.log('cartItemscartItemscartItemscartItems')
-            console.log(cartItems)
-
             if (cartItems.length === 0) {
                 this.setState({ cartItems: [], isLoading: false });
             } else {
@@ -125,7 +116,6 @@ class PharmacyCart extends Component {
         if (this.state.cartItems) {
 
             this.state.cartItems.map(element => {
-          console.log( element.item.totalPrice)
 
                 total = total + element.item.totalPrice
             })
@@ -163,8 +153,7 @@ class PharmacyCart extends Component {
 
     }
     productDiscountedPrice(unitPrice,discountedAmount){
-         console.log(unitPrice)
-         console.log(discountedAmount)
+      
         let value=Number(unitPrice)-Number(discountedAmount)
         return Number(Number(value).toFixed(2))
     }

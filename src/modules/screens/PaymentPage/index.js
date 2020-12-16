@@ -111,7 +111,7 @@ class PaymentPage extends Component {
             })
             return false;
         }
-        console.log('Selected Saved Card Id ' + this.state.selectedSavedCardId);
+        
         if (this.state.selectedSavedCardId !== null) {
             var savedCards = this.state.savedCards;
             var selectedSavedCardId = this.state.selectedSavedCardId;
@@ -242,10 +242,10 @@ class PaymentPage extends Component {
             ...paymentMethodData,
             'notes[message]': 'New Appointment Booking: ' + this.userId
         }
-        console.log(JSON.stringify(options));
+       
         Razorpay.open(options).then((data) => {
             // handle success
-            console.log(data);
+        
             this.updatePaymentDetails(true, data, 'online', finalAmountToPayByOnline);
 
             if (this.state.saveCardCheckbox) {
@@ -253,7 +253,7 @@ class PaymentPage extends Component {
             }
 
         }).catch((error) => {
-            console.log(error);
+           
             this.updatePaymentDetails(false, error, 'online', finalAmountToPayByOnline);
         });
     }
@@ -268,7 +268,7 @@ class PaymentPage extends Component {
             finalAmountToPayByOnline
         }
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetailsWithDiscoutData, serviceType, this.userId, paymentMethodTitleCase);
-        console.log(response);
+      
         if (response.success) {
             if (this.state.coupenCodeText !== null) {
                 this.applyPromoCode()
@@ -401,7 +401,7 @@ class PaymentPage extends Component {
         }
 
         cardPaymentDetails.monthyear = text;
-        console.log(cardPaymentDetails);
+        
 
         this.setState({ cardPaymentDetails })
         // Update the state, which in turns updates the value in the text field
@@ -429,7 +429,7 @@ class PaymentPage extends Component {
                 var saveCard = savedCards.find(savedCards => {
                     return savedCards.card_number === this.state.cardPaymentDetails.number.replace(/ /g, '');
                 });
-                console.log(saveCard)
+                
 
                 var cardRequestData = {
                     card_holder_name: this.state.cardPaymentDetails.name,
@@ -443,7 +443,7 @@ class PaymentPage extends Component {
                 if (saveCard) {
                     cardRequestData.card_id = saveCard.card_id;
                 }
-                console.log('cardRequestData ==> ', cardRequestData)
+                
                 const userId = await AsyncStorage.getItem('userId');
                 let endPoint = 'user/payment/ ' + userId;
                 putService(endPoint, cardRequestData);
@@ -455,8 +455,8 @@ class PaymentPage extends Component {
     }
 
     onSelectedItemsChange = (selectedItems) => {
-        console.log(selectedItems)
-        // this.setState({ selectedItems: [ selectedItems[selectedItems.length - 1] ] });
+        
+       
         this.setState({ selectedItems: selectedItems, selectedNetBank: selectedItems[0] });
     }
     onCouponPress(coupenCodeText) {
@@ -477,9 +477,9 @@ class PaymentPage extends Component {
                 consumer_id: userId,
                 amount_to_apply_promo_code: this.state.amount
             }
-            console.log(JSON.stringify(reqData))
+       
             let result = await validatePromoCode(reqData)
-            console.log(JSON.stringify(result))
+            
             if (result.success) {
 
                 this.setState({ couponCodeDiscountAmount: Number(result.data.promoCodeDiscountAmount), promoCodeApplyMsg: result.message, promoCodeErrorMsg: '', isLoading: false })

@@ -57,7 +57,7 @@ class HospitalizationAndSurgeries extends PureComponent {
             this.setState({ isLoading: true })
             if(data.medical_procedure != undefined){
             let response = await userFiledsUpdate(userId, data)
-            console.log(JSON.stringify(response))
+           
             if (response.success) {
                 Toast.show({
                     text: response.message,

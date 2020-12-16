@@ -33,7 +33,7 @@ class Insurance extends Component {
       })
       let result = await getInsuranceData();
       if (result) {
-         console.log(result)
+      
         this.setState({
           isLoading:false,
           dataSource: result
@@ -93,7 +93,7 @@ class Insurance extends Component {
   );
 
   selectItem = data => {
-    console.log(data);
+
     data.item.isSelect = !data.item.isSelect;
     data.item.selectedClass = data.item.isSelect
       ? styles.selected 

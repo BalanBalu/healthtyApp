@@ -133,8 +133,7 @@ class MedicineCheckout extends Component {
     onProceedToPayment(navigationToPayment) {
 
         const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, deliveryDetails, pharmacyInfo, h1ProductData } = this.state;
-       console.log("medicineDetailsmedicineDetailsmedicineDetailsmedicineDetailsmedicineDetails")
-        console.log(JSON.stringify(medicineDetails))
+      
         let isH1Product = false
 
         if (medicineDetails.length === 0 && isPrescription === false) {
@@ -370,11 +369,11 @@ class MedicineCheckout extends Component {
                 freeStyleCropEnabled: true,
             }).then(image => {
                 this.setState({ isH1Product: false });
-                console.log(image);
+            
                 this.uploadImageToServer(image);
             }).catch(ex => {
                 this.setState({ isH1Product: false });
-                console.log(ex);
+              
             });
         } else {
             ImagePicker.openPicker({
@@ -385,13 +384,13 @@ class MedicineCheckout extends Component {
                 freeStyleCropEnabled: true,
                 avoidEmptySpaceAroundImage: true,
             }).then(image => {
-                console.log(image);
+                
 
                 this.setState({ isH1Product: false });
                 this.uploadImageToServer(image);
             }).catch(ex => {
                 this.setState({ isH1Product: false });
-                console.log(ex);
+               
             });
         }
     }
@@ -452,7 +451,7 @@ class MedicineCheckout extends Component {
                 duration: 3000,
                 type: 'danger'
             });
-            console.log(e);
+          
         }
     }
 

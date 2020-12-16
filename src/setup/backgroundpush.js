@@ -8,9 +8,7 @@ export default async (message) => {
 
   try {
     const isVideoCallNotification = message.data.videoNotification;
-    console.log('Notification got Received.........');
     if (message.data && message.data.additionalParameters) {
-      console.log(typeof message.data.additionalParameters)
       let additionalData = JSON.parse(message.data.additionalParameters)
       if (additionalData.user_appointment_event_id) {
        await reomveEvent(additionalData.user_appointment_event_id);
@@ -37,10 +35,6 @@ export default async (message) => {
 
     const notitificationId = id + 1;
     messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log(
-        'Notification caused app to open from background state:',
-        remoteMessage.notification,
-      );
       if (remoteMessage.data.navigationKeyPT) {
         rootNavigation.navigate(remoteMessage.data.navigationKeyPT);
       }
@@ -49,12 +43,7 @@ export default async (message) => {
     messaging()
       .getInitialNotification()
       .then(remoteMessage => {
-        console.log(remoteMessage);
         if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage.notification,
-          );
           if (remoteMessage.data.navigationKeyPT) {
             rootNavigation.navigate(remoteMessage.data.navigationKeyPT);
           } // e.g. "Settings"

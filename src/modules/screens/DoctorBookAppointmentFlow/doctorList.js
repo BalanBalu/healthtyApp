@@ -171,10 +171,9 @@ class DoctorList extends Component {
             else {
                 type = 'search';
             }
-            // console.log('type=====>', type);
-            // console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
+            
             const docListResponse = await searchByDocDetailsService(type, activeSponsor, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
-            // console.log('docListResponse====>', JSON.stringify(docListResponse));
+            
             if (docListResponse.success) {
                 if (!activeSponsor) {
                     this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
@@ -198,7 +197,7 @@ class DoctorList extends Component {
                         }
                     }
                     if (!activeSponsor && this.hospitalAndDoctorIdsArray && this.hospitalAndDoctorIdsArray.includes(String(doctorIdHostpitalId))) {
-                        console.log('Removing duplicate Doctor with hosital  item ====>')
+                       
                     }
                     else {
                         this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
@@ -251,7 +250,7 @@ class DoctorList extends Component {
         try {
             await getFavoriteListCount4PatientService(userId);
         } catch (Ex) {
-            console.log('Ex is getting on get Favorites details for Patient====>', Ex)
+          
             return {
                 success: false,
                 statusCode: 500,
@@ -728,7 +727,7 @@ class DoctorList extends Component {
                                                 </Col>
                                                 <Col size={4}>
                                                     <TouchableOpacity
-                                                        onPress={() => { console.log('......Pressing....'); this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
+                                                        onPress={() => {this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
                                                         style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: 5 }}>
                                                         <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
                                                     </TouchableOpacity>

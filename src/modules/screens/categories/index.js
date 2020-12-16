@@ -49,9 +49,9 @@ class Categories extends Component {
   }
 
   navigateToCategorySearch(categoryName, category_id) {
-    console.log(categoryName);
+    
 
-    console.log(this.props);
+  
     const { bookappointment: { locationCordinates } } = this.props;
 
     let fromNavigation = this.props.navigation.getParam('fromNavigation') || null
@@ -100,7 +100,7 @@ class Categories extends Component {
   }
 
   filterCategories(searchValue) {
-    console.log(this.state.data);
+   
     const { categoriesMain } = this.state;
     if (!searchValue) {
       this.setState({ searchValue, data: categoriesMain });

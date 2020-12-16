@@ -71,7 +71,6 @@ class MyOrdersList extends Component {
                 success: true
             }
         } catch (e) {
-            console.log(e);
             this.setState({ isLoading: false });
         }
     }

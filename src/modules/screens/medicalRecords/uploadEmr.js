@@ -60,7 +60,7 @@ class UploadEmr extends Component {
 
         } catch (e) {
             toastMeassage('Problem Uploading Picture' + e, 'danger', 3000)
-            console.log(e);
+           
         }
     }
 

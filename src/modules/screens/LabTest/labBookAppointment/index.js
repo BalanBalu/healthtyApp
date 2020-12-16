@@ -109,7 +109,7 @@ class LabBookAppointment extends Component {
         endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
       }
       const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-      console.log("resultSlotsData", resultSlotsData);
+     
       
       if (resultSlotsData.success) {
         const availabilityData = resultSlotsData.data;

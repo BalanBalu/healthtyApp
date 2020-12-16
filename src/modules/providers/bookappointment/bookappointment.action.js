@@ -37,7 +37,7 @@ export async function updateSponsorViewCount(userId, sponsorIds) {
     let endPoint = 'updateSponsorViewers/' + userId
     let response = await putService(endPoint, sponsorIds);
     let respData = response.data;
-    // console.log('respData'+JSON.stringify(respData))
+    
     return respData;
   } catch (e) {
     return {
@@ -66,7 +66,7 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
 
 export async function validateBooking(reqDataValidate) {
   try {
-    console.log(reqDataValidate);
+
     let endPoint = 'appointment/validate';
     let response = await postService(endPoint, reqDataValidate);
     let respData = response.data;
@@ -86,7 +86,7 @@ export async function createPaymentRazor(paymentData) {
     let respData = response.data;
     return respData;
   } catch (e) {
-    console.log(e);
+  
     return {
       message: 'exception' + e,
       success: false
@@ -99,10 +99,9 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
   try {
     let endPoint = 'user/' + userId + '/filters/doctors';
     let response = await postService(endPoint, searchInputvalues);
-    console.log("searchInputvalues");
-    console.log(searchInputvalues);
+   
     let respData = response.data;
-    console.log(respData);
+   
     return respData;
   } catch (e) {
     return {
@@ -228,12 +227,12 @@ export const getUserAppointments = async (userId, filters) => {
     if (filters.prepareAppointment) {
       endPoint = endPoint + '&prepareAppointment=1'
     }
-    console.log(endPoint);
+   
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
   } catch (e) {
-    console.log(e.message);
+   
     return {
       message: 'exception' + e,
       success: false
@@ -250,7 +249,7 @@ export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
     let respData = response.data;
     return respData;
   } catch (e) {
-    console.log(e.message);
+    
     return {
       message: 'exception' + e,
       success: false
@@ -266,7 +265,7 @@ export const getMultipleDoctorDetails = async (doctorIds, fields, isLoading = tr
     let respData = response.data;
     return respData;
   } catch (e) {
-    console.log(e.message);
+  
     return {
       message: 'exception' + e,
       success: false
@@ -282,7 +281,7 @@ export const getMultipleDoctorDetailsV2 = async (doctorIds, fields, isLoading = 
     let respData = response.data;
     return respData;
   } catch (e) {
-    console.log(e.message);
+  
     return {
       message: 'exception' + e,
       success: false
@@ -339,7 +338,7 @@ export const getPatientWishList = async (userId) => {
       result.data.forEach(element => {
         wishListDoctorsIds.push(element.doctorInfo.doctor_id)
       })
-      console.log(wishListDoctorsIds);
+   
       store.dispatch({
         type: SET_PATIENT_WISH_LIST_DOC_IDS,
         data: wishListDoctorsIds
@@ -347,7 +346,7 @@ export const getPatientWishList = async (userId) => {
     }
     return result;
   } catch (e) {
-    console.log(e.message);
+    
     return {
       message: 'exception' + e,
       success: false
@@ -373,7 +372,7 @@ export const getDoctorFaviouteList = async (doctorId) => {
           favouriteListCountByDoctorIds[doctorId] = 1;
         }
       }
-      console.log(favouriteListCountByDoctorIds);
+ 
       store.dispatch({
         type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
         data: favouriteListCountByDoctorIds
@@ -382,7 +381,7 @@ export const getDoctorFaviouteList = async (doctorId) => {
 
     return resultFavList;
   } catch (e) {
-    console.log(e.message);
+    
     return {
       message: 'exception' + e,
       success: false
@@ -394,14 +393,14 @@ export const addToWishListDoctor = async (doctorId, userId) => {
   try {
     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = store.getState();
     let result = null;
-    console.log(patientWishListsDoctorIds);
+   
     let requestData = {
       active: !patientWishListsDoctorIds.includes(doctorId)
     };
 
     if (userId) {
       result = await insertDoctorsWishList(userId, doctorId, requestData);
-      //   console.log('result'+JSON.stringify(result));
+      
       if (result.success) {
         if (requestData.active) {
           if (favouriteListCountByDoctorIds[doctorId]) {

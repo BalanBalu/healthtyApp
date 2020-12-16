@@ -6,7 +6,7 @@ import CallingLoader from './CallingLoader';
 
 export default ({streams}) => {
   const RTCViewRendered = ({userId, stream}) => {
-    console.log(stream);
+  
     if (stream) {
       return (
         <RTCView
@@ -27,7 +27,7 @@ export default ({streams}) => {
   };
 
   const streamsCount = streams.length;
-  console.log('Stream Count ' , streams)
+  
   let RTCListView = null;
 
   switch (streamsCount) {
