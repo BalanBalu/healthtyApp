@@ -59,12 +59,14 @@ export default class CallKeepService {
                     Alert.alert(
                         "Permission to Display Incoming Call Screen",
                         CURRENT_APP_NAME + " Requires a Permission to Display Incoming Call Screen for Video Consultation Service",
-                        [{
-                            text: "Ok",
-                            onPress: () => {
-                                activityStarter.getPermissionForOverLay();
-                            }
-                        }],
+                        [
+                            { text: 'Later' },
+                            {
+                                text: "Ok",
+                                onPress: () => {
+                                    activityStarter.getPermissionForOverLay();
+                                }
+                            }],
                         { cancelable: false }
                     );
                 }
@@ -94,11 +96,11 @@ export default class CallKeepService {
                 })
             }
         } else {
-            
+
             if (IS_ANDROID) {
 
                 const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
-               
+
 
                 if (buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
 
@@ -109,19 +111,19 @@ export default class CallKeepService {
                     });
                 } else {
                     if (RootNavigation.getContainerRef()) {
-                        
+
                         PushNotification.navigateToIncomingCallScreen();
                     } else {
                         SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-                     
+
                         var interval = setInterval(() => {
                             if (RootNavigation.getContainerRef()) {
-                                
+
                                 PushNotification.navigateToIncomingCallScreen();
                                 clearInterval(interval);
                             }
                         }, 100);
-                       
+
                     }
                 }
             } else {
@@ -162,19 +164,19 @@ export default class CallKeepService {
 
     //  EVENTS ///
     onAnswerCallAction = async () => {
-       
+
         if (IS_ANDROID) {
             if (RootNavigation.getContainerRef()) {
                 RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
             } else {
                 const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
-            
+
                 if (buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
                     SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-                    
+
                     var interval = setInterval(() => {
                         if (RootNavigation.getContainerRef()) {
-                           
+
                             RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
                             clearInterval(interval);
                         }
@@ -185,7 +187,7 @@ export default class CallKeepService {
             }
         } else {
             if (!RootNavigation.getContainerRef()) {
-               
+
                 store.dispatch({
                     type: SET_INCOMING_VIDEO_CALL,
                     data: true
@@ -200,7 +202,7 @@ export default class CallKeepService {
         });
     }
     onRejectCallAction = async () => {
-       
+
         RNCallKeep.endAllCalls();
         if (IS_ANDROID) {
             if (RootNavigation.getContainerRef()) {
@@ -209,7 +211,7 @@ export default class CallKeepService {
                 const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
                 if (buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
                     SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-                 
+
                     var interval = setInterval(() => {
                         if (RootNavigation.getContainerRef()) {
                             RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
@@ -222,7 +224,7 @@ export default class CallKeepService {
             }
         } else {
             if (!RootNavigation.getContainerRef()) {
-              
+
                 store.dispatch({
                     type: SET_INCOMING_VIDEO_CALL,
                     data: true
@@ -251,7 +253,7 @@ export default class CallKeepService {
                  }
              }); */
             PushNotification.onFullScreenIntentActionRegister((result) => {
-              
+
                 if (result === CALL_SCREEN_ACTIONS.ACCEPTED) {
                     this.onAnswerCallAction();
                 } else if (result === CALL_SCREEN_ACTIONS.DECLINED) {
