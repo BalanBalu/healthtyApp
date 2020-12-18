@@ -394,13 +394,7 @@ class PharmacyHome extends Component {
                                                                 <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff', marginTop: 1 }} />
                                                                 <Text style={styles.BuyNowText}>Buy Now</Text>
                                                             </TouchableOpacity>
-                                                            {this.state.isAddToCartAndBuyNow === true ?
-                                                                <AddToCard
-                                                                    navigation={this.props.navigation}
-                                                                    data={this.state.selectedMedcine}
-                                                                    popupVisible={(data) => this.getVisible(data)}
-                                                                />
-                                                                : null}
+                                                           
                                                         </Row>
                                                     }
                                                 </Col>
@@ -480,6 +474,13 @@ class PharmacyHome extends Component {
                             />
                         </View>
                     </View>
+                    {this.state.isAddToCartAndBuyNow === true ?
+                                                                <AddToCard
+                                                                    navigation={this.props.navigation}
+                                                                    data={this.state.selectedMedcine}
+                                                                    popupVisible={(data) => this.getVisible(data)}
+                                                                />
+                                                                : null}
                 </Content>
 
 
