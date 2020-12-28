@@ -1,44 +1,29 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon, Right } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform, Modal } from 'react-native';
+import { Container, Content, Text, Button, Toast, View, Footer, Icon } from 'native-base';
+import { Col, Row } from 'react-native-easy-grid';
+import { StyleSheet, AsyncStorage } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
-import ImagePicker from 'react-native-image-crop-picker';
-import { fetchUserProfile, getCurrentVersion } from '../../providers/profile/profile.action';
-import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
-import Spinner from '../../../components/Spinner';
+import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { Loader } from '../../../components/ContentLoader';
 import { SERVICE_TYPES } from '../../../setup/config'
-import { getHomeHealthCareUserAddress } from '../../common';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
-import AwesomeAlert from 'react-native-awesome-alerts';
-import { connect } from 'react-redux';
+import ConfirmPopup from '../../../components/Shared/ConfirmPopup';
+import RenderUserAddressList from './RenderUserAddressList';
 const USER_FIELDS = "first_name,last_name,mobile_no,email,address,delivery_address,home_healthcare_address"
 
-class HomeHealthCareAddressChange extends Component {
+export default class HomeHealthCareAddressChange extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            medicineDetails: [],
-            deliveryAddressArray: [],
-            email: '',
             mobileNo: '',
             fullName: '',
             selectedAddressData: null,
             isLoading: true,
-            itemSelected: 0,
-            deliveryDetails: null,
-            medicineTotalAmount: 0,
-            pickupOPtionEnabled: true,
-            pharmacyInfo: null,
-            isPrescription: false,
-            prescriptionDetails: null,
-            isH1Product: false,
-            h1ProductData: [],
-
             selectedAddressIndex: -1,
-            addressList: []
+            addressList: [],
+            isVisibleDeletePop: false,
         };
     }
 
@@ -64,12 +49,14 @@ class HomeHealthCareAddressChange extends Component {
                 const fullName = userInfoResp.first_name + " " + userInfoResp.last_name;
                 const mobileNo = userInfoResp.mobile_no;
                 const userAddress = userInfoResp.address && userInfoResp.address;
+                userAddress.active = true;
+                userAddress.address_type = 'DEFAULT';
                 const homeHealthCareAddress = userInfoResp.home_healthcare_address && userInfoResp.home_healthcare_address.length ? userInfoResp.home_healthcare_address : [];
                 homeHealthCareAddress.unshift(userAddress);
-                this.setState({ fullName, mobileNo, addressList: homeHealthCareAddress })
+                const addressList = homeHealthCareAddress.filter(ele => ele.active === true);
+                this.setState({ fullName, mobileNo, addressList })
             }
         } catch (Ex) {
-
             return {
                 success: false,
                 statusCode: 500,
@@ -101,8 +88,62 @@ class HomeHealthCareAddressChange extends Component {
             await this.getUserInfo();
         };
     }
+
+    removeSelectedUserAddress = async () => {
+        try {
+            this.setState({ isLoading: true });
+            const { selectedDeletedAddressData, addressList, selectedAddressData, selectedAddressIndex } = this.state;
+            selectedDeletedAddressData.active = false;
+            const reqAddressData = { home_healthcare_address: selectedDeletedAddressData }
+            const userId = await AsyncStorage.getItem('userId');
+            const updateResp = await userFiledsUpdate(userId, reqAddressData);
+            if (updateResp.success) {
+                const findIndex = addressList.findIndex(ele => String(ele._id) === String(selectedDeletedAddressData._id))
+                addressList.splice(findIndex, 1);
+                if (selectedAddressData && selectedAddressData.length) {  // when user select the any address then delete that respected Item then it is not stored in state.
+                    const findSelectedAddressIndex = selectedAddressData.findIndex(ele => String(ele._id) === String(selectedDeletedAddressData._id))
+                    if (findSelectedAddressIndex >= 0) {
+                        selectedAddressData.splice(findSelectedAddressIndex, 1);
+                    }
+                }
+                this.setState({ addressList, selectedAddressData, selectedAddressIndex: -1, isLoading: false });
+            }
+            else {
+                Toast.show({
+                    text: updateResp.message,
+                    type: 'danger',
+                    duration: 3000,
+                })
+            }
+        } catch (Ex) {
+            console.log('Exception Occurred on Delete User Address' + Ex.message),
+                Toast.show({
+                    text: 'Exception Occurred on ' + Ex.message,
+                    type: 'danger',
+                    duration: 5000
+                })
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
+
+    /* Renders the User Active Address list  */
+    renderUserAddressList(item, index) {
+        return (
+            <View>
+                <RenderUserAddressList
+                    item={item}
+                    extraData={{ index, selectedAddressIndex: this.state.selectedAddressIndex, navigation: this.props.navigation, mobileNo: this.state.mobileNo, fullName: this.state.fullName }}
+                    onPressEnabledDeleteAddressItemPop={(selectedDeletedAddressData, selectedDeletedIndex) => this.setState({ isVisibleDeletePop: true, selectedDeletedAddressData, selectedDeletedIndex })}
+                    onPressRadioBtnToSelectAddressItem={(selectedAddressData, selectedAddressIndex) => this.setState({ selectedAddressData, selectedAddressIndex })}
+                >
+                </RenderUserAddressList>
+            </View>
+        )
+    }
     render() {
-        const { addressList, selectedAddressIndex, selectedAddressData, isLoading } = this.state
+        const { addressList, selectedAddressIndex, isVisibleDeletePop, isLoading } = this.state
         if (isLoading) return <Loader style='list' />;
         return (
             <Container style={{ flex: 1 }}>
@@ -117,30 +158,26 @@ class HomeHealthCareAddressChange extends Component {
                         <FlatList
                             data={addressList}
                             keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item, index }) =>
-                                <View style={{ backgroundColor: '#fff' }}>
-                                    <Row style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 5, marginLeft: 5, justifyContent: 'center', borderBottomColor: 'gray' }}>
-                                        <Col size={1} style={{ justifyContent: 'center' }}>
-                                            <Radio
-                                                standardStyle={true}
-                                                selected={selectedAddressIndex === index}
-                                                onPress={() => this.setState({ selectedAddressIndex: index, selectedAddressData: item })} />
-                                        </Col>
-                                        <Col size={9} style={{ justifyContent: 'center' }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: '400', marginTop: 2, }}>{this.state.fullName || null}</Text>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, marginTop: 2, color: '#4c4c4c' }}>{getHomeHealthCareUserAddress(item.address)}</Text>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, marginTop: 2 }}>{'Mobile -' + (this.state.mobileNo || 'No Number')}</Text>
-                                        </Col>
-                                    </Row>
-                                </View>
-                            } />
+                            renderItem={({ item, index }) => this.renderUserAddressList(item, index)}
+                        />
                     </View>
                     <Button transparent onPress={() => this.onPressGoToLocPage()}>
                         <Icon name='add' style={{ color: 'gray' }} />
                         <Text uppercase={false} style={styles.customText}>ADD NEW ADDRESS</Text>
                     </Button>
                 </Content>
-
+                <ConfirmPopup
+                    warningMessageText={'Are you sure you want to delete this Address !'}
+                    confirmButtonText={'Confirm'}
+                    confirmButtonStyle={styles.confirmButton}
+                    cancelButtonStyle={styles.cancelButton}
+                    cancelButtonText={'Cancel'}
+                    confirmButtonAction={() => {
+                        this.removeSelectedUserAddress();
+                        this.setState({ isVisibleDeletePop: false })
+                    }}
+                    cancelButtonAction={() => this.setState({ isVisibleDeletePop: !isVisibleDeletePop })}
+                    visible={isVisibleDeletePop} />
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row>
                         <Col style={{ marginRight: 40 }} >
@@ -159,9 +196,6 @@ class HomeHealthCareAddressChange extends Component {
     }
 
 }
-
-const bookAppointmentDataState = ({ bookAppointmentData } = state) => ({ bookAppointmentData })
-export default connect(bookAppointmentDataState)(HomeHealthCareAddressChange)
 
 const styles = StyleSheet.create({
 
