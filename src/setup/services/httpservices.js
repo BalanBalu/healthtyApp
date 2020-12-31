@@ -73,8 +73,21 @@ export const inventoryDeleteService = async (endPoint, data) => {
 }
 
 export const smartHealthPostService = async (endPoint, data) => {
-   let fullPath = SMART_HEALTH_API_URL + endPoint;
-   let resp = await axios.post(fullPath, data)
+   // let fullPath = SMART_HEALTH_API_URL + endPoint;
+   // let headers= {
+   //    'Content-Type': `application/json`
+   // }
+   
+   var req = {
+      method: 'POST',
+      url: SMART_HEALTH_API_URL + endPoint,
+      data: data,
+      headers: {
+         'Content-Type': 'application/json'
+      },
+   }
+   const resp = await axios(req)
+   // let resp = await axios.post(fullPath, data,headers)
    return resp;
 }
 

@@ -5,7 +5,7 @@ import {
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView, AsyncStorage, ImageBackground } from 'react-native';
-import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
+import { login, RESET_REDIRECT_NOTICE,SmartHealthlogin } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
@@ -48,7 +48,11 @@ class Login extends Component {
       if (isSelected === 'corporate_user') {
         requestData.is_corporate_user = true
       }
-      await login(requestData);   // Do Login Process
+      if (isSelected === 'corporate_user') {
+        await SmartHealthlogin(requestData)
+      } else {
+        await login(requestData);
+      }  // Do Login Process
       if (this.props.user.isAuthenticated) {
         this.getUserProfile();
         if (this.props.user.needToRedirect === true) {
@@ -114,9 +118,9 @@ class Login extends Component {
                   <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
 
                   <Form>
-                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number/ Email</Label>
+                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>{isSelected === 'corporate_user' ?"Member id":"Mobile Number/ Email"}</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
-                      <Input placeholder="Mobile Number / Email" style={styles.authTransparentLabel}
+                      <Input placeholder={isSelected === 'corporate_user' ? "Member id" : "Mobile Number / Email"} style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
                         returnKeyType={'next'}
                         value={userEntry}
