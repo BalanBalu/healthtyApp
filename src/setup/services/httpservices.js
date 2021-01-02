@@ -100,7 +100,17 @@ export const smartHealthGetService = async (endPoint) => {
 }
 export const smartHealthPutService = async (endPoint, data) => {
    let fullPath = SMART_HEALTH_API_URL + endPoint;
-   let resp = await axios.put(fullPath, data)
+   var req = {
+      method: 'PUT',
+      url: SMART_HEALTH_API_URL + endPoint,
+      data: data,
+      headers: {
+         'Content-Type': 'application/json'
+      },
+   }
+   const resp = await axios(req)
+   // let resp = await axios.put(fullPath, data)
+   alert(JSON.stringify(resp))
    return resp;
 }
 export const smartHealthDeleteService = async (endPoint, data) => {

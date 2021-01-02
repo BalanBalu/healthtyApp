@@ -118,9 +118,9 @@ class Login extends Component {
                   <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
 
                   <Form>
-                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>{isSelected === 'corporate_user' ?"Member id":"Mobile Number/ Email"}</Label>
+                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number/ Email</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
-                      <Input placeholder={isSelected === 'corporate_user' ? "Member id" : "Mobile Number / Email"} style={styles.authTransparentLabel}
+                      <Input placeholder= "Mobile Number / Email" style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
                         returnKeyType={'next'}
                         value={userEntry}
