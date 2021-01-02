@@ -110,6 +110,10 @@ class Home extends Component {
     otpAndBasicDetailsCompletion = async () => {
         try {
             let userId = await AsyncStorage.getItem("userId");
+            let forceToChangePassword = await AsyncStorage.getItem('forceToChangePassword') || null
+            if (forceToChangePassword) {
+                this.props.navigation.navigate('UpdatePassword', { updatedata: {} });  
+            }
             if (userId) {
                 let res = await getReferalPoints(userId);
                 if (res.updateMobileNo === true) {
