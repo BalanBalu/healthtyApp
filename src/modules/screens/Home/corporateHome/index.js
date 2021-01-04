@@ -48,7 +48,7 @@ class CorporateHome extends PureComponent {
 
     getCorporateDatails = async (userId) => {
         try {
-          
+
             let fields = "corporate_user_id,employee_code";
             let userResult = await fetchUserProfile(userId, fields);
             if (!userResult.error) {
@@ -99,7 +99,7 @@ class CorporateHome extends PureComponent {
     }
 
     render() {
-        let corporateData = this.props.profile.corporateData
+        let corporateData = this.props.profile.corporateData;
         const { navigate } = this.props.navigation;
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount },
             navigation } = this.props;
@@ -113,15 +113,17 @@ class CorporateHome extends PureComponent {
             this.locationUpdatedCount = locationUpdatedCount;
 
         }
-     
+
         return (
             <Container style={styles.container}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
                     <View style={{ padding: 10 }}>
-                        <CorporateProfileCard
-                            data={corporateData && corporateData.find(ele => ele.relationship === 'EMPLOYEE') || null}
-                        />
+                        {corporateData && corporateData.length ?
+                            <CorporateProfileCard
+                                data={corporateData && corporateData.find(ele => ele.relationship === 'EMPLOYEE') || null}
+                            />
+                            : null}
                         <ProfileFamilyCard
                             navigation={navigate}
                         />

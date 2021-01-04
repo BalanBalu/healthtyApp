@@ -117,12 +117,12 @@ class Home extends Component {
             if (userId) {
                 let res = await getReferalPoints(userId);
                 if (res.updateMobileNo === true) {
-                    this.props.navigation.navigate('UpdateContact', { updatedata: {} });
-                    Toast.show({
-                        text: 'Plase Update Your Mobile Number and Continue',
-                        duration: 3000,
-                        type: 'warning'
-                    })
+                    // this.props.navigation.navigate('UpdateContact', { updatedata: {} });
+                    // Toast.show({
+                    //     text: 'Plase Update Your Mobile Number and Continue',
+                    //     duration: 3000,
+                    //     type: 'warning'
+                    // })
                 }
                 else if (res.hasProfileUpdated == false) {
                     if (res.hasOtpNotVerified === true) {
@@ -461,28 +461,25 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col style={{ width: '50%', marginLeft: 5 }}>
-                                {this.state.isCorporateUser === false ?
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
-                                        <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                            <Row style={styles.rowStyle}>
-                                                <FastImage
-                                                    source={pharmacyImg}
-                                                    style={{
-                                                        width: '100%', height: '100%', alignItems: 'center'
-                                                    }}
-                                                />
-                                            </Row>
-                                            <Row style={styles.secondRow}>
-                                                <Col style={{ width: '100%', }}>
-                                                    <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
-                                                    <Text style={styles.subText}>{translate('Get medicines delivered to home')} </Text>
-                                                </Col>
-                                            </Row>
-                                        </Card>
-                                    </TouchableOpacity>
-                                    : null}
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
+                                    <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                        <Row style={styles.rowStyle}>
+                                            <FastImage
+                                                source={pharmacyImg}
+                                                style={{
+                                                    width: '100%', height: '100%', alignItems: 'center'
+                                                }}
+                                            />
+                                        </Row>
+                                        <Row style={styles.secondRow}>
+                                            <Col style={{ width: '100%', }}>
+                                                <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
+                                                <Text style={styles.subText}>{translate('Get medicines delivered to home')} </Text>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
                             </Col>
-
                         </Grid>
                         <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                             <Row >
@@ -526,49 +523,47 @@ class Home extends Component {
                                 </Col>
 
                             </Row>
-                            {this.state.isCorporateUser === false ?
-                                <Row>
-                                    <Col size={5} >
-                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Public Forum")} >
-                                            <Card style={{ padding: 5, borderRadius: 2 }}>
-                                                <Row>
-                                                    <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                        <Text style={styles.mainText}>{translate('Public Forum')} </Text>
-                                                    </Col>
-                                                    <Col size={2.5}>
-                                                        <FastImage
-                                                            source={publicForum}
-                                                            style={{
-                                                                width: 35, height: 35, alignItems: 'center'
-                                                            }}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </TouchableOpacity>
-                                    </Col>
-                                    <Col size={5} >
-                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")} >
-                                            <Card style={{ padding: 5, borderRadius: 2 }}>
-                                                <Row>
-                                                    <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                        <Text style={styles.mainText}>{translate('Blood Donors')} </Text>
-                                                    </Col>
-                                                    <Col size={2.5}>
+                            <Row>
+                                <Col size={5} >
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Public Forum")} >
+                                        <Card style={{ padding: 5, borderRadius: 2 }}>
+                                            <Row>
+                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                    <Text style={styles.mainText}>{translate('Public Forum')} </Text>
+                                                </Col>
+                                                <Col size={2.5}>
+                                                    <FastImage
+                                                        source={publicForum}
+                                                        style={{
+                                                            width: 35, height: 35, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </TouchableOpacity>
+                                </Col>
+                                <Col size={5} >
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")} >
+                                        <Card style={{ padding: 5, borderRadius: 2 }}>
+                                            <Row>
+                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                    <Text style={styles.mainText}>{translate('Blood Donors')} </Text>
+                                                </Col>
+                                                <Col size={2.5}>
 
-                                                        <FastImage
-                                                            source={BloodImg}
-                                                            style={{
-                                                                width: 35, height: 35, alignItems: 'center'
-                                                            }}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </TouchableOpacity>
-                                    </Col>
-                                </Row>
-                                : null}
+                                                    <FastImage
+                                                        source={BloodImg}
+                                                        style={{
+                                                            width: 35, height: 35, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </TouchableOpacity>
+                                </Col>
+                            </Row>
                         </Grid>
                         <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 20 }}>
                             <Row style={{ marginTop: 10, marginBottom: 5 }}>

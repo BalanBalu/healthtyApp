@@ -252,7 +252,6 @@ export async function logout() {
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
   try {
-
     if (userData.is_corporate_user) {
       await AsyncStorage.setItem('is_corporate_user', 'true')
     }
@@ -467,7 +466,6 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
       let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
 
       let res = await smartHealthGetService(ends);
-
       if (res && res.data && res.data[0]) {
         let reqData = res.data[0]
 
@@ -502,16 +500,16 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
         let insertEndPoint = 'auth/smart_health/signUp'
         let signUpResult = await postService(insertEndPoint, reqBody)
-      
         if (signUpResult.data.success) {
           await AsyncStorage.setItem('memberId', reqData.memberId)
           changePasswordEndPoint = 'member-users/member-id?id=' + reqData.memberId
           let forgotResult = await smartHealthGetService(changePasswordEndPoint)
-        
+
           if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
             await AsyncStorage.setItem('forceToChangePassword', 'true')
           }
           const token = signUpResult.data.token;
+          signUpResult.data.data.is_corporate_user = true;
           await setUserLocally(token, signUpResult.data.data);
 
           store.dispatch({
@@ -530,7 +528,7 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
       }
 
 
-    }else {
+    } else {
       store.dispatch({
         type: LOGIN_HAS_ERROR,
         message: "Invalid Login Credentials"
