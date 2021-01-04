@@ -65,6 +65,7 @@ class Profile extends Component {
       selectOptionPoopup: false,
       is_blood_donor: false,
       family_members: [],
+      isCorporateUser: false
     };
   }
   async componentDidMount() {
@@ -73,6 +74,8 @@ class Profile extends Component {
       this.props.navigation.navigate('login');
       return;
     }
+    const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+    this.setState({ isCorporateUser })
     this.getUserProfile();
     this.getfavouritesList();
   }
@@ -94,7 +97,7 @@ class Profile extends Component {
 
       let userId = await AsyncStorage.getItem('userId');
       let result = await fetchUserProfile(userId, fields);
-    
+
       if (result) {
         this.setState({
           data: result,
@@ -185,7 +188,7 @@ class Profile extends Component {
         });
 
         function location(locationObj) {
-      
+
 
           let placeName = '';
           let contextData = [];
@@ -249,12 +252,12 @@ class Profile extends Component {
       })
         .then(image => {
           this.setState({ selectOptionPoopup: false });
-          
+
           this.uploadImageToServer(image);
         })
         .catch(ex => {
           this.setState({ selectOptionPoopup: false });
-         
+
         });
     } else {
       ImagePicker.openPicker({
@@ -266,14 +269,14 @@ class Profile extends Component {
         avoidEmptySpaceAroundImage: true,
       })
         .then(image => {
-        
+
 
           this.setState({ selectOptionPoopup: false });
           this.uploadImageToServer(image);
         })
         .catch(ex => {
           this.setState({ selectOptionPoopup: false });
-        
+
         });
     }
   }
@@ -698,42 +701,43 @@ class Profile extends Component {
                     </Button>
                   </Body>
                 </ListItem>
-                <ListItem avatar>
-                  <Left>
-                    <Icon
-                      name="ios-flame"
-                      style={{ color: '#7E49C3', marginTop: 5 }}
-                    />
-                  </Left>
+                {this.state.isCorporateUser === false ?
+                  <ListItem avatar>
+                    <Left>
+                      <Icon
+                        name="ios-flame"
+                        style={{ color: '#7E49C3', marginTop: 5 }}
+                      />
+                    </Left>
 
-                  <Body>
-                    <Text style={styles.customText}>Blood Donor</Text>
-                  </Body>
+                    <Body>
+                      <Text style={styles.customText}>Blood Donor</Text>
+                    </Body>
 
-                  <Right
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: -15,
-                    }}>
-                    <Switch
-                      value={this.state.is_blood_donor}
-                      style={{ marginTop: 15 }}
-                      onValueChange={value => {
-                        this.setState({
-                          is_blood_donor: !this.state.is_blood_donor,
-                        });
-                        if (value === true) {
-                          if (data.address === undefined) {
-                            this.editProfile('MapBox');
+                    <Right
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: -15,
+                      }}>
+                      <Switch
+                        value={this.state.is_blood_donor}
+                        style={{ marginTop: 15 }}
+                        onValueChange={value => {
+                          this.setState({
+                            is_blood_donor: !this.state.is_blood_donor,
+                          });
+                          if (value === true) {
+                            if (data.address === undefined) {
+                              this.editProfile('MapBox');
+                            }
                           }
-                        }
-                        this.updateBloodDonor();
-                      }}
-                    />
-                  </Right>
-                </ListItem>
-
+                          this.updateBloodDonor();
+                        }}
+                      />
+                    </Right>
+                  </ListItem>
+                  : null}
                 <ListItem avatar>
                   <Left>
                     <Icon name="mail" style={{ color: '#7E49C3' }} />

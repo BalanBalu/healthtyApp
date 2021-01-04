@@ -1292,7 +1292,89 @@ const drawerNavigatorRoutes = {
   },
 
 }
+export const corporateUserSideBarMenuList = [
+  {
+    menuName: 'Home',
+    routeName: drawerNavigatorRoutes.Home.routeName,
+    icon: require('../../../assets/images/drawerIcons/Home.png'),
+    subMenus: []
+  },
+  {
+    menuName: 'Insurance Services',
+    menuForCorporateUser: true,
+    subMenus: [
+      {
+        name: 'E Card',
+        routeName: drawerNavigatorRoutes['E Card'].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+      {
+        name: 'Insurance',
+        routeName: drawerNavigatorRoutes['Insurance'].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      }]
+  },
+  {
+    menuName: 'Services',
+    subMenus: [
+      {
+        name: 'Home Health Care',
+        routeName: 'Home Healthcare Address List', // drawerNavigatorRoutes["Home Health Care"].routeName,
+        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+        params: {
+          fromNavigation: "HOME_HEALTH_CARE"
+        }
 
+      },
+      {
+        name: 'Video and Chat',
+        routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+
+      },
+      {
+        name: 'Reminder',
+        routeName: drawerNavigatorRoutes.Reminder.routeName,
+        icon: require('../../../assets/images/drawerIcons/Reminder.png'),
+      }
+    ]
+  },
+  {
+    menuName: 'Consultations',
+    subMenus: [
+      {
+        name: 'My Appointments',
+        routeName: drawerNavigatorRoutes["My Appointments"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+      {
+        name: 'My Home Healthcare Appointments',
+        routeName: drawerNavigatorRoutes["My Home Healthcare Appointments"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+      {
+        name: 'My Chat Consultations',
+        routeName: drawerNavigatorRoutes["My Chats"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Chat.png'),
+      },
+      {
+        name: 'My Video Consultations',
+        routeName: drawerNavigatorRoutes["My Video Consultations"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Chat.png'),
+      },
+      {
+        name: 'My Lab Test Appointments',
+        routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+      {
+        name: 'Health Records',
+        routeName: drawerNavigatorRoutes["Health Records"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+    ]
+  }
+]
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
   overlayColor: 'rgba(0, 0, 0, 0.7)',
   contentComponent: props => <SideBar

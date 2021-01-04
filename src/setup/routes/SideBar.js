@@ -6,7 +6,7 @@ import { logout } from '../../modules/providers/auth/auth.actions';
 import FastImage from 'react-native-fast-image'
 import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE, IS_ANDROID, CURRENT_APP_NAME } from '../config'
 import { translate } from "../../setup/translator.helper"
-
+import { corporateUserSideBarMenuList } from "./appRouterHome";
 class SideBar extends React.Component {
   activeUserData = {};
   constructor(props) {
@@ -108,7 +108,7 @@ class SideBar extends React.Component {
           </View>
 
           <FlatList
-            data={menuSubMenus}
+            data={is_corporate_user === false ? menuSubMenus : corporateUserSideBarMenuList}
             keyExtractor={(item, index) => index.toString()}
             ItemSeparatorComponent={() =>
               <View
