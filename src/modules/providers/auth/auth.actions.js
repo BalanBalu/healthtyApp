@@ -1,4 +1,4 @@
-import { postService, putService, getService, smartHealthGetService, smartHealthPostService } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
@@ -191,6 +191,21 @@ export async function changePassword(reqData) {
     });
   }
 
+}
+//
+export async function updateSmartHealthNewPassword(data) {
+  try {
+    let endPoint = 'auth/change_password';
+    let response = await smartHealthPutService(endPoint, data);
+    let respData = response.data;
+
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
 }
 
 /*Change Password*/
@@ -446,15 +461,16 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
 
     let response = await smartHealthPostService(endPoint, req);
-    console.log(response)
+
     if (response && response.data && response.data.access_token) {
       await AsyncStorage.setItem('smartToken', response.data.access_token)
-      let ends = 'member-detail/memberId/' + userCredentials.userEntry;
+      let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
 
       let res = await smartHealthGetService(ends);
 
       if (res && res.data && res.data[0]) {
         let reqData = res.data[0]
+
         let reqBody = {
           type: 'user',
           email: reqData.emailId,
@@ -486,41 +502,46 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
         let insertEndPoint = 'auth/smart_health/signUp'
         let signUpResult = await postService(insertEndPoint, reqBody)
-        if (!signUpResult.data.success) {
+      
+        if (signUpResult.data.success) {
+          await AsyncStorage.setItem('memberId', reqData.memberId)
+          changePasswordEndPoint = 'member-users/member-id?id=' + reqData.memberId
+          let forgotResult = await smartHealthGetService(changePasswordEndPoint)
+        
+          if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
+            await AsyncStorage.setItem('forceToChangePassword', 'true')
+          }
+          const token = signUpResult.data.token;
+          await setUserLocally(token, signUpResult.data.data);
 
+          store.dispatch({
+            type: LOGIN_RESPONSE,
+            message: respData.data.message
+          })
+
+        } else {
+          store.dispatch({
+            type: LOGIN_HAS_ERROR,
+            message: "Invalid Login Credentials"
+          })
         }
-        userCredentials.userEntry = reqData.emailId || reqData.mobile
+
 
       }
 
 
-    }
-
-    let loginEndPoint = 'auth/signIn'
-    let loginResponse = await postService(loginEndPoint, userCredentials);
-
-    let respData = loginResponse.data;
-
-
-
-    if (respData.error || !respData.success) {
+    }else {
       store.dispatch({
         type: LOGIN_HAS_ERROR,
         message: "Invalid Login Credentials"
       })
-    } else {
-
-
-      const token = respData.token;
-      await setUserLocally(token, respData.data);
-
-      store.dispatch({
-        type: LOGIN_RESPONSE,
-        message: respData.message
-      })
-
-      return true;
     }
+
+
+
+
+
+
     return true
 
   } catch (e) {
