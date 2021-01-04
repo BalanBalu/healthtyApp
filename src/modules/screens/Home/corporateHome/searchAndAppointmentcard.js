@@ -12,8 +12,6 @@ export const SearchAndAppointmentCard = (props) => {
     switch (data) {
       case 'Doctor List':
         return navigation("Categories");
-      case 'Medicines':
-        return navigation("Medicines");
       case 'Home Health Care':
         return navigation("Categories", { fromNavigation: "HOME_HEALTH_CARE" });
       case 'HospitalList':
@@ -24,13 +22,10 @@ export const SearchAndAppointmentCard = (props) => {
         return navigation("Video and Chat Service");
       case 'Reminder':
         return navigation("Reminder");
-      case 'Blood Donors':
-        return navigation("Blood Donors");
-
     }
   }
-  const data = [{ category_name: 'Consultation', image: require('../../../../../assets/images/corporateHomePageIcons/consultation.png'), navigate: 'Doctor List' }, { category_name: 'Pharmacy', image: require('../../../../../assets/images/corporateHomePageIcons/pharmacy_a.png'), navigate: 'Medicines' }, { category_name: 'Home test', image: require('../../../../../assets/images/corporateHomePageIcons/home-test.png'), navigate: 'Home Health Care' }, { category_name: 'Hospital', image: require('../../../../../assets/images/corporateHomePageIcons/hospital_a.png'), navigate: 'HospitalList' }, { category_name: 'Lab test', image: require('../../../../../assets/images/corporateHomePageIcons/Lab-test.png'), navigate: 'Lab Test' },
-  { category_name: 'Reminder', image: require('../../../../../assets/images/corporateHomePageIcons/reminder.png'), navigate: 'Reminder' }, { category_name: 'Blood Donors', image: require('../../../../../assets/images/corporateHomePageIcons/blood_donor.png'), navigate: 'Blood Donors' }, { category_name: 'My Chats', image: require('../../../../../assets/images/corporateHomePageIcons/chat.png'), navigate: 'Video and Chat Service' }, { category_name: 'Video Consult', image: require('../../../../../assets/images/corporateHomePageIcons/video-consultation.png'), navigate: 'Video and Chat Service' },]
+  const data = [{ category_name: 'Consultation', image: require('../../../../../assets/images/corporateHomePageIcons/consultation.png'), navigate: 'Doctor List' }, { category_name: 'Home test', image: require('../../../../../assets/images/corporateHomePageIcons/home-test.png'), navigate: 'Home Health Care' }, { category_name: 'Hospital', image: require('../../../../../assets/images/corporateHomePageIcons/hospital_a.png'), navigate: 'HospitalList' }, { category_name: 'Lab test', image: require('../../../../../assets/images/corporateHomePageIcons/Lab-test.png'), navigate: 'Lab Test' },
+  { category_name: 'Reminder', image: require('../../../../../assets/images/corporateHomePageIcons/reminder.png'), navigate: 'Reminder' }, { category_name: 'My Chats', image: require('../../../../../assets/images/corporateHomePageIcons/chat.png'), navigate: 'Video and Chat Service' }, { category_name: 'Video Consult', image: require('../../../../../assets/images/corporateHomePageIcons/video-consultation.png'), navigate: 'Video and Chat Service' },]
   return (
     <View>
       <Card style={{ width: '100%', paddingBottom: 10 }}>

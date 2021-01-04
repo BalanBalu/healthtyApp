@@ -1340,7 +1340,7 @@ export const corporateUserSideBarMenuList = [
     ]
   },
   {
-    menuName: 'Consultations',
+    menuName: 'Orders and Consultations',
     subMenus: [
       {
         name: 'My Appointments',
