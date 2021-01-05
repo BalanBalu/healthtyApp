@@ -215,7 +215,7 @@ class PharmacyHome extends Component {
                         <Col size={10}>
                             <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 5 }}>
                                 <Input
-                                    placeholder='Search for Medicines and Health Products...     '
+                                    placeholder='Search for Medicines     '
                                     style={{ fontSize: 12, width: '300%' }}
                                     placeholderTextColor="#909894"
                                     keyboardType={'default'}

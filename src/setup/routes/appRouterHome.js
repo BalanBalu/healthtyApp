@@ -1082,7 +1082,7 @@ const HomeStack = createStackNavigator({
   ChosePharmacyList: {
     screen: ChosePharmacyList,
     navigationOptions: {
-      title: ' Choose Pharmacy'
+      title: 'Available pharmacy'
     }
   },
   ReOrder: {
