@@ -13,7 +13,7 @@ export const SearchAndAppointmentCard = (props) => {
       case 'Doctor List':
         return navigation("Categories");
       case 'Home Health Care':
-        return navigation("Categories", { fromNavigation: "HOME_HEALTH_CARE" });
+        return navigation("Home Healthcare Address List", { fromNavigation: "HOME_HEALTH_CARE" });
       case 'HospitalList':
         return navigation("Categories", { fromNavigation: "HOSPITAl" });
       case 'Lab Test':

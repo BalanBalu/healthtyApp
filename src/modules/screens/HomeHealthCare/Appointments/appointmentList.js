@@ -246,6 +246,16 @@ export default class AppointmentList extends Component {
             this.setState({ isLoadingMoreAppList: false })
         }
     }
+    async onPressGoToBookNow() {
+        let corporateUser = await AsyncStorage.getItem("is_corporate_user") || null;
+        if (corporateUser) {
+            
+			this.props.navigation.navigate('CorporateHome',{fromAppointment: true});
+        } else {
+           
+			 this.props.navigation.navigate("Home", { fromAppointment: true })
+		}
+    }
     render() {
         const { data, reviewData, selectedIndex, isVisibleAddReviewPop, isLoading } = this.state;
         return (
@@ -288,7 +298,9 @@ export default class AppointmentList extends Component {
                             renderItem={({ item, index }) => this.renderAppointmentList(item, index)}
                             keyExtractor={(item, index) => index.toString()}
                         />
-                        : < RenderNoAppointmentsFounds text={"No Appointments are scheduled !"} />
+                        : < RenderNoAppointmentsFounds 
+                        text={"No Appointments are scheduled !"}
+                        onPressGoToBookNow={(item) => { this.onPressGoToBookNow(item) }}/>
                 }
                 {isVisibleAddReviewPop === true ?
                     <InsertReview
