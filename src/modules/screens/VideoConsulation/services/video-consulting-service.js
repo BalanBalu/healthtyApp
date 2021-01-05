@@ -106,6 +106,22 @@ export const authorizeConnectyCube = async () => {
 }
 }
 
+export const createEmrByVideoConsultation = async ( request) => {
+    try {
+        let endPoint = 'video-consulting/consultation/update/emr';
+        console.log(JSON.stringify(request))
+        let response = await putService(endPoint, request);
+        let respData = response.data;
+        return respData;
+    } catch (e) {
+        return {
+            success: false,
+            message: e + ' Occured! Please Try again'
+        }
+    }
+}
+
+
 export const setUserLoggedIn = () => {
     store.dispatch({
         type: SET_USER_LOOGED_IN_CONNECTYCUBE,

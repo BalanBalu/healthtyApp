@@ -176,7 +176,16 @@ class LabAppointmentList extends Component {
             labId: labId, fetchAvailabiltySlots: true
         });
     }
-
+	async navigateToHomeOrCorporate() {
+		let corporateUser = await AsyncStorage.getItem("is_corporate_user") || null;
+        if (corporateUser) {
+            
+			this.props.navigation.navigate('CorporateHome',{fromAppointment: true});
+        } else {
+            this.props.navigation.navigate("Lab Test")
+			// this.props.navigation.navigate("Home", { fromAppointment: true })
+		}
+}
     render() {
         const { data, selectedIndex, isLoading } = this.state;
        
@@ -234,7 +243,7 @@ class LabAppointmentList extends Component {
                                     }}>No appointments scheduled !
 								</Text>
                                     <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
-                                        <Button style={[styles.bookingButton, styles.customButton]} onPress={() => this.props.navigation.navigate("Lab Test")
+                                        <Button style={[styles.bookingButton, styles.customButton]} onPress={() =>this.navigateToHomeOrCorporate() 
                                         } testID='navigateToHome'>
                                             <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
                                         </Button>

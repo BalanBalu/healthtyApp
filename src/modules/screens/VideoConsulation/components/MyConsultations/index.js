@@ -4,10 +4,11 @@ import { View, Text, Button, List, Icon, ListItem, DatePicker, Left, Segment, Co
 import { StyleSheet, Platform, Image, AsyncStorage, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Spinner from '../../../../../components/Spinner';
-import { renderDoctorImage, getName } from '../../../../common'
+import { NavigationEvents } from 'react-navigation';
+import { renderDoctorImage, getName,toastMeassage } from '../../../../common'
 import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
 import { POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../constants';
-import { getVideoConsuting, updateVideoConsuting } from '../../services/video-consulting-service';
+import { getVideoConsuting, updateVideoConsuting,createEmrByVideoConsultation } from '../../services/video-consulting-service';
 import { formatDate } from '../../../../../setup/helpers';
 import { connect } from 'react-redux';
 export const IS_ANDROID = Platform.OS === 'android';
@@ -18,6 +19,7 @@ class VideoConsultaions extends Component {
 			isLoading: true,
 			consultaionData: []
 		}
+		this.selectedData=null
 	}
 	async componentDidMount() {
 		try {
@@ -95,6 +97,42 @@ class VideoConsultaions extends Component {
 		})
 	}
 
+	uploadRecords(item) {
+		this.selectedData = item
+			this.props.navigation.navigate('Health Records', { fromNavigation: 'VIDEO_CONSULTATION', prevState: this.props.navigation.state });
+	}
+	
+	viewRecored(data) {
+		
+			this.props.navigation.navigate('Health Records', { fromNavigation: 'VIDEO_CONSULTATION', prevState: this.props.navigation.state });
+	}
+
+	backNavigation = async (navigationData) => {
+		try {
+			let data = this.props.navigation.getParam('emrData') || []
+			if (data.length !== 0) {
+				let temp = []
+				data.forEach(ele => {
+					temp.push({
+						emr_id: ele,
+						emr_update_type: "USER"
+					})
+				})
+				let reqData = {
+					consultation_id: this.selectedData.consultaion_id,
+					emr_details: temp,
+
+				}
+				let result = await createEmrByVideoConsultation(reqData)
+				if (result.success) {
+					toastMeassage('emr upload successfully', 'success', 3000)
+				}
+			}
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
 	renderConsultaions(item, index) {
 		const { chat: { loggedIntoConnectyCube } } = this.props;
 
@@ -107,6 +145,7 @@ class VideoConsultaions extends Component {
 						</Right>
 					</Row>
 					<Row>
+
 						<Col style={{ width: '80%' }}>
 							<Row style={{ marginBottom: 15 }}>
 								<Col size={3}>
@@ -128,7 +167,24 @@ class VideoConsultaions extends Component {
 											<Text style={[styles.buttonText1, { marginLeft: -10 }]}>Call</Text>
 										</Button>
 									</Row>
-									: null
+									: 	item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING&&!item.emr_details  ?
+									<Row style={{ marginLeft: '22%' }} >
+										<Button primary  style={[styles.actionButton, { backgroundColor: '#08BF01' }]}
+												 onPress={() => this.uploadRecords(item)}
+											>
+											{/* <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-call' : 'ios-call'} /> */}
+											<Text style={[styles.buttonText1, { marginLeft: -10 }]}>Upload Records</Text>
+										</Button>
+										</Row> : item.emr_details ?
+											<Row style={{ marginLeft: '22%' }} >
+											<Button primary  style={[styles.actionButton, { backgroundColor: '#08BF01' }]}
+													 onPress={() => this.viewRecored(item.emr_details )}
+												>
+												{/* <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-call' : 'ios-call'} /> */}
+												<Text style={[styles.buttonText1, { marginLeft: -10 }]}>view Records</Text>
+											</Button>
+											</Row>:
+										null
 							}
 						</Col>
 						<Col style={{ width: '20%', alignItems: 'center' }}>
@@ -170,13 +226,17 @@ class VideoConsultaions extends Component {
 	}
 	render() {
 		const { isLoading, consultaionData } = this.state;
-		// alert(JSON.stringify(consultaionData))
+		
 		return (
 			<Container style={styles.container}>
 				<Content style={{ padding: 10 }}>
 					<Spinner
 						visible={isLoading}
 					/>
+					 <NavigationEvents
+                  onWillFocus={payload => { this.backNavigation(payload) }}
+                />
+
 
 					{consultaionData.length === 0 && isLoading === false ?
 						<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>

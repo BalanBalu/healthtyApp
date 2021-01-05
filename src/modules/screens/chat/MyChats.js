@@ -44,12 +44,18 @@ async componentDidMount() {
 removeBackHandlerListerner () {
     BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
 }
-onBackPress = () => {
+ onBackPress = async() => {
     const { dispatch, navigation } = this.props;
     if (navigation.index === 0) {
       return false;
     }
-    navigation.navigate('Home');
+    let corporateUser = await AsyncStorage.getItem("is_corporate_user") || null;
+		if (corporateUser) {
+			navigation.navigate('CorporateHome',{fromAppointment: true});
+		} else {
+			navigation.navigate("Home", { fromAppointment: true })
+		}
+    // navigation.navigate('Home');
     return true;
   };
 getAllChatsByUserId = async(userId) => {
@@ -64,7 +70,7 @@ getAllChatsByUserId = async(userId) => {
         })
     } else {
         Toast.show({
-            text: chatList.message, 
+            text: "No chat found", 
             duration: 3000,
             type: 'danger'
         })

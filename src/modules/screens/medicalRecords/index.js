@@ -134,7 +134,15 @@ class MedicineRecords extends PureComponent {
 
     }
     async proceed() {
-        this.props.navigation.navigate('EmrInfo', { emrData: this.state.selectedEmrData })
+    
+        if (this.state.fromNavigation === 'APPOINTMENT_PREPARE') {
+                      this.props.navigation.navigate('EmrInfo', { emrData: this.state.selectedEmrData })
+                   }
+        if (this.state.fromNavigation === 'VIDEO_CONSULTATION') {
+                   
+                      this.props.navigation.navigate('My Video Consultations', { emrData: this.state.selectedEmrData })
+                  }
+        // this.props.navigation.navigate('EmrInfo', { emrData: this.state.selectedEmrData })
     }
     pageRefresh = async (navigationData) => {
 
@@ -217,7 +225,7 @@ class MedicineRecords extends PureComponent {
                                             <Col style={{ width: '80%' }}>
                                                 <Text style={styles.mainText}>{item.emr_discription}</Text>
                                             </Col>
-                                            {fromNavigation === 'APPOINTMENT_PREPARE' ?
+                                            {fromNavigation === 'APPOINTMENT_PREPARE'||fromNavigation === 'VIDEO_CONSULTATION'  ?
                                                 <Col style={{ width: '20%' }}>
                                                     <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
                                                         <CheckBox style={{ borderRadius: 5 }}
@@ -236,7 +244,7 @@ class MedicineRecords extends PureComponent {
 
 
                         } />
-                    {fromNavigation === 'APPOINTMENT_PREPARE' ? <Footer style={
+                    {fromNavigation === 'APPOINTMENT_PREPARE'||fromNavigation === 'VIDEO_CONSULTATION' ? <Footer style={
                         Platform.OS === "ios" ?
                             { height: 40 } : { height: 45 }}>
                         <FooterTab>

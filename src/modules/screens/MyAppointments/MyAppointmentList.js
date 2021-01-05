@@ -346,7 +346,14 @@ class MyAppoinmentList extends Component {
 
 		}
 	}
-
+	async navigateToHomeOrCorporate() {
+		let corporateUser = await AsyncStorage.getItem("is_corporate_user") || null;
+		if (corporateUser) {
+			this.props.navigation.navigate('CorporateHome',{fromAppointment: true});
+		} else {
+			this.props.navigation.navigate("Home", { fromAppointment: true })
+		}
+}
 	renderFooter() {
 		return (
 			//Footer View with Load More button
@@ -429,7 +436,7 @@ class MyAppoinmentList extends Component {
 									<Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
 										<Button style={[styles.bookingButton, styles.customButton]}
 											onPress={() =>
-												this.props.navigation.navigate("Home", { fromAppointment: true })
+												this.navigateToHomeOrCorporate()
 											} testID='navigateToHome'>
 											<Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
 										</Button>
