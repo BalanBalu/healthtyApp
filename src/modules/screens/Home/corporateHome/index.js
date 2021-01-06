@@ -54,7 +54,7 @@ class CorporateHome extends PureComponent {
             if (!userResult.error) {
                 let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
 
-                if (!!corporateResult && corporateResult.success !== false) {
+                if (!!corporateResult && !corporateResult.error) {
 
 
                     store.dispatch({

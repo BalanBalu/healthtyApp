@@ -17,6 +17,21 @@ catch(e){
 }
 
 
+export const getPromodataListByFilter = async (data) => { 
+    try {
+    let endPoint = "admin/promo_code/filter";
+    let response =  await postService(endPoint,data);
+    let resData = response.data
+    return resData
+}
+catch(e){
+    return{
+        message: "exception" + e,
+        success: false
+    }
+}
+}
+
 export const validatePromoCode = async (data) => { 
     try {
     let endPoint = "admin/promo_code/validate";
