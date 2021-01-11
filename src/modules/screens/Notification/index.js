@@ -167,7 +167,7 @@ class Notification extends PureComponent {
 
                         <View style={{
                             flex: 1,
-                            justifyContent: 'center', alignItems: 'center', marginTop: 200,
+                            justifyContent: 'center', alignItems: 'center',
                         }}>
 
                             <Icon style={{ fontSize: 25 }} name='ios-notifications-off' />
