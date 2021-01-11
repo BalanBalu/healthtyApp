@@ -180,7 +180,7 @@ export async function getCurrentVersion(type) {
 
 
 export const getReferalPoints = async (userId) => {
-  let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob"
+  let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob,is_corporate_user"
   let result = await fetchUserProfile(userId, fields);
  
  
@@ -196,18 +196,35 @@ export const getReferalPoints = async (userId) => {
       })
     }
     NotifService.updateDeviceToken(userId);
+   
     if (result.mobile_no == undefined) {
-      return {
-        hasProfileUpdated: false,
-        updateMobileNo: true
+      if (result.is_corporate_user) {
+        return {
+          hasProfileUpdated: false,
+          updateMobileNo: false
+        }
+      } else {
+        return {
+          hasProfileUpdated: false,
+          updateMobileNo: true
+        }
       }
     }
     else if (!result.is_mobile_verified) {
-      return {
-        hasProfileUpdated: false,
-        hasOtpNotVerified: true,
-        mobile_no: result.mobile_no,
-        email: result.email
+      if (result.is_corporate_user) {
+        return {
+          hasProfileUpdated: false,
+          hasOtpNotVerified: false,
+          mobile_no: result.mobile_no,
+          email: result.email
+        }
+      } else {
+        return {
+          hasProfileUpdated: false,
+          hasOtpNotVerified: true,
+          mobile_no: result.mobile_no,
+          email: result.email
+        }
       }
     }
 
