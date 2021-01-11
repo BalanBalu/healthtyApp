@@ -105,7 +105,7 @@ class doctorSearchList extends Component {
 
 
     componentNavigationMount = async () => {
-        console.log('is Navigation Mount is working');
+       
         this.setState({ refreshCount: this.state.refreshCount + 1 });
         const { navigation } = this.props;
         const filterData = navigation.getParam('filterData');
@@ -114,15 +114,14 @@ class doctorSearchList extends Component {
             conditionFromFilterPage = navigation.getParam('ConditionFromFilter');
             await this.setState({ filterData: filterData, filterBySelectedAvailabilityDateCount: filterBySelectedAvailabilityDateCount })
             if (conditionFromFilterPage == true) {
-                console.log('comming FilterPage');
+               
                 this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
             }
         }
     }
 
     renderDoctorListByFilteredData = async (filterData, availtyDateCount) => {
-        console.log('filterData' + JSON.stringify(filterData))
-        console.log('availtyDateCount' + availtyDateCount);
+     
         let genderPreferenceMatchedList = [];
         let languageMatchedList = [];
         let categoryMatchedList = [];
@@ -198,28 +197,28 @@ class doctorSearchList extends Component {
         if (filterData) {
             if (filterData.gender) {
                 selectedFiltesArray.push(genderPreferenceMatchedList);
-                console.log('genderPreferenceMatchedList:' + genderPreferenceMatchedList)
+               
             }
             if (filterData.language) {
                 selectedFiltesArray.push(languageMatchedList);
-                console.log('languageMatchedList:' + languageMatchedList)
+                
             }
             if (filterData.experience) {
                 selectedFiltesArray.push(experienceMatchedList);
-                console.log('experienceMatchedList:' + experienceMatchedList)
+              
             }
             if (filterData.category) {
                 selectedFiltesArray.push(categoryMatchedList);
             }
             if (filterData.service) {
                 selectedFiltesArray.push(servicesMatchedList);
-                console.log('servicesMatchedList:' + servicesMatchedList)
+              
             }
         }
         /* Finally Rendered the Doctor Lists  */
-        console.log("selectedFiltesArray" + JSON.stringify(selectedFiltesArray))
+   
         if (filterData || availtyDateCount !== 0) {
-            console.log('Came Filter Availability and DocData , Filter only DocDatas  ')
+            
             let filteredDocListArray = intersection(selectedFiltesArray);
             let filteredDocData = [];
             if (filteredDocListArray.length === 0) {
@@ -268,7 +267,7 @@ class doctorSearchList extends Component {
         this.setState({ isLoading: true });
         const { navigation } = this.props;
         const searchedInputValues = navigation.getParam('resultData');
-        console.log(searchedInputValues);
+   
         let endDateMoment = addMoment(this.state.selectedDate, 7, 'days')
 
         const userId = await AsyncStorage.getItem('userId');
@@ -333,7 +332,7 @@ class doctorSearchList extends Component {
                     this.processedDoctorIds.push(doctorSlotData.doctorIdHostpitalId);
                     this.processedDoctorDetailsData.push(obj);
                 }
-                console.log('Is doctor sponsored', this.sponsorIdWithHospitalIdArray.includes(doctorSlotData.doctorIdHostpitalId));
+     
 
             }
         }
@@ -345,7 +344,7 @@ class doctorSearchList extends Component {
             type: SET_FILTERED_DOCTOR_DATA,
             data: this.processedDoctorDetailsData
         })
-        console.log(this.processedDoctorDetailsData);
+        
         this.setState({ refreshCount: this.state.refreshCount + 1 });
         return this.processedDoctorDetailsData;
     }
@@ -353,7 +352,7 @@ class doctorSearchList extends Component {
         try {
             this.setState({ isLoading: true });
             const doctorIds = doctorIdHospitalIds.map(doc => doc.doctorId);
-            console.log(doctorIds);
+         
             const [resultDoctorDetails, slotData, patientReviesResult, favResult, activeSponsorDetails] = await Promise.all([
                 this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res)),
                 this.getAvailabilitySlots(doctorIdHospitalIds, startDate, endDate).catch(res => console.log("Exception" + res)),
@@ -361,7 +360,6 @@ class doctorSearchList extends Component {
                 getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res)),
                 getAllDoctorsActiveSponsorDetails(doctorIds).catch(res => console.log("Exception on get All Doctors ActiveSponsor Details" + res))
             ]);
-            console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(activeSponsorDetails))
             if (activeSponsorDetails.data) {
                 let sponsorIdArray = [];
 
@@ -372,7 +370,7 @@ class doctorSearchList extends Component {
                         this.sponsorIdWithHospitalIdArray.push(ele.doctor_id + '-' + hospitalId);
                     }
                 });
-                console.log('Hopital Array:' + this.sponsorIdWithHospitalIdArray);
+             
                 this.updateSponsorViewersCount(sponsorIdArray)
             };
 
@@ -381,13 +379,13 @@ class doctorSearchList extends Component {
             });
 
             let doctorData = this.processFinalData(slotData) || [];
-            console.log(doctorData);
+          
             this.setState({ refreshCount: this.state.refreshCount + 1 });
             doctorData.forEach((element) => {
                 doctorDataWithAviablityInMap.set(String(element.doctorIdHostpitalId), element)
             });
         } catch (error) {
-            console.log('exception on getting multiple Requests');
+           
             console.log(error)
         } finally {
             this.setState({ isLoading: false });
@@ -402,7 +400,7 @@ class doctorSearchList extends Component {
                 sponsorIds: sponsorIdArray
             }
             let resultData = await updateSponsorViewCount(userId, sponsorIds);
-            console.log('successfully updated Doctors Sponsors counts ' + JSON.stringify(resultData.updatedResult))
+
         } catch (ex) {
             return {
                 success: false,
@@ -416,16 +414,16 @@ class doctorSearchList extends Component {
         let doctorData = [];
         try {
             let resultDoctorDetails = await getMultipleDoctorDetailsV2(doctorIds, fields);
-            console.log('resultDoctorDetails ==> ', resultDoctorDetails);
+           
             if (resultDoctorDetails.success) {
                 doctorData = resultDoctorDetails.data;
                 return doctorData;
             }
-            console.log('finished loading get Doctor Details');
+          
 
         } catch (ex) {
             console.log(ex);
-            console.log('Exception occured on getMultplieDocDetail')
+           
         }
         return doctorData;
     }
@@ -440,7 +438,7 @@ class doctorSearchList extends Component {
 
     /* get the  Doctors Availability Slots */
     getAvailabilitySlots = async (getSearchedDoctorIds, startDate, endDate) => {
-        console.log('started loading get availability');
+   
 
         let availabilityData = [];
         this.enumarateDates(startDate, endDate)
@@ -469,7 +467,7 @@ class doctorSearchList extends Component {
             now = now.add(1, 'day');
         }
         this.setState({ processedDoctorAvailabilityDates: this.processedDoctorAvailabilityDates });
-        console.log('Process Dates are ' + this.state.processedDoctorAvailabilityDates);
+        
 
     }
 
@@ -490,15 +488,15 @@ class doctorSearchList extends Component {
             this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
 
         }
-        console.log('ended loading the onDateChanged')
+      
     }
 
     /* Click the Slots from Doctor List page */
     onPressContinueForPaymentReview = async (doctorData, selectedSlotItemByDoctor, doctorIdHostpitalId) => {
-        console.log(selectedSlotItemByDoctor);
+       
         if (!selectedSlotItemByDoctor) {
             Toast.show({
-                text: 'Please Select a Slot to continue booking',
+                text: 'Please select a slot to continue booking',
                 type: 'warning',
                 duration: 3000
             })
@@ -523,7 +521,7 @@ class doctorSearchList extends Component {
 
         this.setState({ selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, refreshCount: this.state.refreshCount + 1 });
 
-        console.log(selectedSlotIndex + '. and index :' + index);
+       
         if ((item.fee != showedFeeByDoctorIds[doctorIdHostpitalId])) {
             if (showedFeeByDoctorIds[doctorIdHostpitalId] != undefined) {
                 Toast.show({
@@ -535,7 +533,7 @@ class doctorSearchList extends Component {
             showedFeeByDoctorIds[doctorIdHostpitalId] = item.fee
             this.setState({ showedFeeByDoctorIds });
         }
-        console.log(item);
+       
     }
 
 
@@ -551,7 +549,7 @@ class doctorSearchList extends Component {
             type: SET_SINGLE_DOCTOR_DATA,
             data: requestData
         })
-        console.log(requestData);
+    
         this.props.navigation.navigate('Book Appointment', { doctorId: doctorData.doctor_id, processedAvailabilityDates: this.processedDoctorAvailabilityDates })
     }
 
@@ -559,7 +557,7 @@ class doctorSearchList extends Component {
     haveAvailableSlots(doctorIdHostpitalId, slotsData) {
         let { selectedSlotByDoctorIds, showedFee } = this.state;
         let selectedSlotIndex = selectedSlotByDoctorIds[doctorIdHostpitalId] !== undefined ? selectedSlotByDoctorIds[doctorIdHostpitalId] : -1
-        console.log('Selected slot index:' + selectedSlotIndex);
+      
         const { width } = Dimensions.get('screen');
         const itemWidth = (width) / 4;
         const sortByStartTime = (a, b) => {
@@ -622,7 +620,7 @@ class doctorSearchList extends Component {
     }
 
     noAvailableSlots() {
-        console.log('started-loading-no-slots-available');
+        
         return (
             <Row style={{ justifyContent: 'center', marginTop: 20 }}>
                 <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
@@ -635,7 +633,7 @@ class doctorSearchList extends Component {
 
 
     onBookPress(doctorIdHospitalId) {
-        console.log('you have pressed onBookPress');
+      
         const { expandedDoctorIdHospitalsToShowSlotsData } = this.state;
         if (expandedDoctorIdHospitalsToShowSlotsData.indexOf(doctorIdHospitalId) !== -1) {
             expandedDoctorIdHospitalsToShowSlotsData.splice(expandedDoctorIdHospitalsToShowSlotsData.indexOf(doctorIdHospitalId), 1)
@@ -646,7 +644,7 @@ class doctorSearchList extends Component {
     }
     sortByTopRatings(filteredDoctorData) {
         const { bookappointment: { reviewsByDoctorIds } } = this.props;
-        console.log(reviewsByDoctorIds);
+      
         filteredData = filteredDoctorData.sort(function (a, b) {
 
             let ratingA = 0;
@@ -972,7 +970,7 @@ class doctorSearchList extends Component {
 
                                                 <Col size={4}>
                                                     <TouchableOpacity
-                                                        onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
+                                                        onPress={() => {this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
                                                         style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
                                                         <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
                                                     </TouchableOpacity>

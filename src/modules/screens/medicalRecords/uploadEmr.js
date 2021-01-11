@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab, Form } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, FlatList, Image, Dimensions, Platform,TextInput } from 'react-native';
+import { StyleSheet, AsyncStorage, FlatList, Image, Dimensions, Platform, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Loader } from '../../../components/ContentLoader'
 import { ImageUpload } from '../../screens/commonScreen/imageUpload'
-import { uploadImage,createEmrUpload } from '../../providers/common/common.action'
-import { toastMeassage ,onlySpaceNotAllowed} from '../../../modules/common';
+import { uploadImage, createEmrUpload } from '../../providers/common/common.action'
+import { toastMeassage, onlySpaceNotAllowed } from '../../../modules/common';
 import { RenderTextReason } from '../CommonAll/components';
 
 const device_width = Dimensions.get("window").width
@@ -60,7 +60,7 @@ class UploadEmr extends Component {
 
         } catch (e) {
             toastMeassage('Problem Uploading Picture' + e, 'danger', 3000)
-            console.log(e);
+
         }
     }
 
@@ -104,28 +104,32 @@ class UploadEmr extends Component {
 
         }
     }
-   async  EmrUpload(){
+    async EmrUpload() {
         // discription
-      if(!onlySpaceNotAllowed(this.state.discription)){
-        toastMeassage('kindly write discription', 'success', 3000)
-        return
-      }
+        if (!onlySpaceNotAllowed(this.state.discription)) {
+            toastMeassage('kindly write discription', 'success', 3000)
+            return
+        }
+
         let userId = await AsyncStorage.getItem('userId');
-        let reqata={
-        user_id: userId,
-        emr_type: 'PRESCRIPTION_IMAGE',
-        emr_discription:this.state.discription ,
-        emr_prescription_image: this.state.imageData
+        let reqata = {
+            user_id: userId,
+            emr_type: 'PRESCRIPTION_IMAGE',
+            emr_discription: this.state.discription,
+            emr_prescription_image: this.state.imageData,
+            updated_by:'USER'
         }
-        let result=await createEmrUpload(reqata)
+        let result = await createEmrUpload(reqata)
        
-        if(result.success){
+        if (result.success) {
             toastMeassage('EMR upload successfully', 'success', 3000)
-            this.setState({imageData:[],discription:''})
+            this.setState({ imageData: [], discription: '' })
             const { routeName, key } = this.props.navigation.getParam('prevState');
-            this.props.navigation.navigate({routeName, key,params: { hasEmrReload: true }})
+            this.props.navigation.navigate({ routeName, key, params: { hasEmrReload: true } })
+        } else {
+            toastMeassage(result.measage, 'success', 3000)
         }
-      
+
     }
 
     render() {
@@ -135,7 +139,7 @@ class UploadEmr extends Component {
         return (
             <Container style={styles.container}>
                 {isLoading !== true ? <Loader style={'appointment'} /> :
-                    <Content style={{ flex: 1 }}>
+                    <Content style={{ flex: 1, }}>
                         <View >
                             {imageData.length === 0 ?
                                 <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
@@ -155,10 +159,12 @@ class UploadEmr extends Component {
                                         renderItem={({ item, index }) =>
                                             <View>
                                                 <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', marginTop: 10, height: "60%" }}>
-                                                    <Image
-                                                        source={{ uri: item.imageURL }}
-                                                        style={styles.profileImage}
-                                                    />
+                                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: 'EMR' })}>
+                                                        <Image
+                                                            source={{ uri: item.imageURL }}
+                                                            style={styles.profileImage}
+                                                        />
+                                                    </TouchableOpacity>
                                                 </Item>
 
 
@@ -193,38 +199,38 @@ class UploadEmr extends Component {
                         }
                         {/* <View style={{ Flex: 1, marginLeft: 20, marginRight: 20, marginTop: -30 }}> */}
 
-                            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
-                                <Row>
-                                    <Icon name="create" style={{ fontSize: 15, color: '#000' }} />
-                                    <Text style={styles.subText}>EMR discription</Text>
-                                </Row>
-                                <Form style={{ marginRight: 1, marginLeft: -13 }}>
-                                    <Item style={{ borderBottomWidth: 0 }}>
-                                        <TextInput
-                                            onChangeText={(discription) => this.setState({discription})
-                                               
-                                            }
-                                            multiline={true} placeholder={''}
-                                            placeholderTextColor={"#909498"}
-                                            style={{
-                                                borderColor: '#909498',
-                                                borderRadius: 10,
-                                                borderWidth: 0.5,
-                                                height: 100,
-                                                fontSize: 14,
-                                                textAlignVertical: 'top',
-                                                width: '100%',
-                                                padding: 10,
-                                                paddingTop: 10,
-                                                paddingBottom: 10,
-                                                borderRadius: 10,
-                                                paddingRight: 10,
-                                                marginTop: 15
-                                            }}
-                                        />
-                                    </Item>
-                                </Form>
-                            </View>
+                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                            <Row>
+                                <Icon name="create" style={{ fontSize: 15, color: '#000' }} />
+                                <Text style={styles.subText}>EMR discription</Text>
+                            </Row>
+                            <Form style={{ marginRight: 1, marginLeft: -13 }}>
+                                <Item style={{ borderBottomWidth: 0 }}>
+                                    <TextInput
+                                        onChangeText={(discription) => this.setState({ discription })
+
+                                        }
+                                        multiline={true} placeholder={''}
+                                        placeholderTextColor={"#909498"}
+                                        style={{
+                                            borderColor: '#909498',
+                                            borderRadius: 10,
+                                            borderWidth: 0.5,
+                                            height: 100,
+                                            fontSize: 14,
+                                            textAlignVertical: 'top',
+                                            width: '100%',
+                                            padding: 10,
+                                            paddingTop: 10,
+                                            paddingBottom: 10,
+                                            borderRadius: 10,
+                                            paddingRight: 10,
+                                            marginTop: 15
+                                        }}
+                                    />
+                                </Item>
+                            </Form>
+                        </View>
 
                         {/* </View> */}
 
@@ -272,6 +278,7 @@ const styles = StyleSheet.create({
     {
         marginLeft: 'auto',
         marginRight: 'auto',
+        marginTop: 10,
         width: Dimensions.get('window').width - 10,
         height: Dimensions.get('window').height - 200,
         justifyContent: 'center',

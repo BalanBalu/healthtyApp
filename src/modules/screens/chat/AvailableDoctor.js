@@ -56,15 +56,15 @@ class AvailableDoctors4Chat extends Component {
             let doctorIds = resultData.data.map((element) => {
                 return element.doctor_id
             });
-            console.log(doctorIds);
+            
             this.getDoctorAvailableDoctorData(doctorIds);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
         } else {
-            console.log('Coming to no symptoms Found');
+            
             this.setState({ isLoading: false, availableChatDoctors: [] })
         }
     }
     getDoctorAvailableDoctorData = async (doctorIds) => {
-        console.log('doctorIds' + JSON.stringify(doctorIds));
+        
         const request = {
             doctor_ids: doctorIds
         }
@@ -78,8 +78,7 @@ class AvailableDoctors4Chat extends Component {
             })
             this.setState({ availableChatDoctors: availableDocData.data })
         }
-        console.log('availableDocData');
-        console.log(availableDocData);
+       
     }
 
     onBookButtonPress4Payment = async (doctorId, fee) => {
@@ -99,7 +98,7 @@ class AvailableDoctors4Chat extends Component {
             const createChatResponse = await createChat(createChatRequest)
             this.setState({ isLoading: false });
             if (createChatResponse.success) {
-                console.log(createChatResponse);
+                
                 this.props.navigation.navigate('paymentPage', {
                     service_type: SERVICE_TYPES.CHAT,
                     bookSlotDetails: {

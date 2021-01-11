@@ -36,14 +36,14 @@ class RenderSuggestionsList extends PureComponent {
                 inputText: enteredText
             }
             let resultOfSuggestionData = await getSpecialistDataSuggestions('suggestion', suggestionReqData);
-            // console.log('resultOfSuggestionData.data' + JSON.stringify(resultOfSuggestionData.data))
+
             if (resultOfSuggestionData.success) {
                 this.setState({ suggestionList: resultOfSuggestionData.data, searchValue: suggestionTextDisable ? '' : enteredText });
             } else {
                 this.setState({ suggestionList: [], searchValue: suggestionTextDisable ? '' : enteredText });
             }
         } catch (Ex) {
-            console.log('Ex is getting on get Suggestions list details for Patient====>', Ex)
+           
             return {
                 success: false,
                 statusCode: 500,
@@ -91,7 +91,7 @@ class RenderSuggestionsList extends PureComponent {
         if (item) {
             reqData4SearchDocList = { inputKeywordFromSearch: item.value, ...reqData4SearchDocList }
         }
-        console.log('reqData4SearchDocList===>', JSON.stringify(reqData4SearchDocList));
+       
         this.props.navigation.navigate("Doctor Search List", reqData4SearchDocList);
     }
 
@@ -148,7 +148,7 @@ class RenderSuggestionsList extends PureComponent {
 
                                         </Col>
                                         {/* <Col size={3}> */}
-                                        <Col size={2.5} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Col size={3} style={{ justifyContent: 'center', alignItems: 'flex-end',marginRight:5 }}>
                                             {item.profile_image ? <Image
                                                 source={{ uri: item.profile_image.imageURL }}
                                                 style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center' }} /> :
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
         marginTop: 2,
         fontSize: 13,
         fontFamily: 'OpenSans-Bold',
-        paddingLeft: 13,
+       
     },
     valueText: {
         color: '#775DA3',

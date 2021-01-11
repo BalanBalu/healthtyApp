@@ -85,7 +85,7 @@ class labSearchList extends Component {
         try {
             getWishList4PatientByLabTestService(userId);
         } catch (Ex) {
-            console.log('Ex is getting on get Wish list details for Patient====>', Ex)
+            
             return {
                 success: false,
                 statusCode: 500,
@@ -136,7 +136,7 @@ class labSearchList extends Component {
         try {
             getTotalWishList4LabTestService(labIdsArry);
         } catch (Ex) {
-            console.log('Ex is getting on get Wish list details for Patient====>', Ex)
+          
             return {
                 success: false,
                 statusCode: 500,
@@ -149,7 +149,7 @@ class labSearchList extends Component {
         try {
             getTotalReviewsCount4LabTestService(labIdsArry);
         } catch (Ex) {
-            console.log('Ex is getting on get Reviews count for Lab====>', Ex)
+            
             return {
                 success: false,
                 statusCode: 500,
@@ -310,14 +310,14 @@ class labSearchList extends Component {
         const { labInfo, labCatInfo } = labData;
         if (!selectedSlotItem) {
             Toast.show({
-                text: 'Please Select a Slot to continue booking',
+                text: 'Please select a slot to continue booking',
                 type: 'warning',
                 duration: 3000
             })
             return;
         }
         let fee = (parseInt(labCatInfo.branch_details.price) - ((parseInt(labCatInfo.branch_details.offer) / 100) * parseInt(labCatInfo.branch_details.price)))
-        console.log('labInfo', labInfo);
+    
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo.lab_test_categories_id,
@@ -624,7 +624,7 @@ class labSearchList extends Component {
                                             slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate] !== undefined ?
                                                 this.renderWorkingHours(item.labInfo.lab_id, slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate])
                                                 : <RenderNoSlotsAvailable
-                                                    text={'Not Available Time'}
+                                                    text={'NO SLOT AVAILABLE'}
                                                 />
                                         }
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>

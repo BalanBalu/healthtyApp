@@ -60,8 +60,6 @@ class reportIssueDetails extends Component {
         }
 
         let response = await upDateReportIssue(data._id, userId, reqData);
-
-        console.log(response);
         if (response.success) {
           let temp = replyData || []
 

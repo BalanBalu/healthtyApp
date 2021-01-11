@@ -5,7 +5,7 @@ import {
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView, AsyncStorage, ImageBackground } from 'react-native';
-import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
+import { login, RESET_REDIRECT_NOTICE,SmartHealthlogin } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
@@ -26,7 +26,8 @@ class Login extends Component {
       checked: false,
       isModalVisible: false,
       showPassword: true,
-      isSelected: 'user'
+      isSelected: 'user',
+      CorporateUser: false
     }
   }
 
@@ -47,7 +48,11 @@ class Login extends Component {
       if (isSelected === 'corporate_user') {
         requestData.is_corporate_user = true
       }
-      await login(requestData);   // Do Login Process
+      if (isSelected === 'corporate_user') {
+        await SmartHealthlogin(requestData)
+      } else {
+        await login(requestData);
+      }  // Do Login Process
       if (this.props.user.isAuthenticated) {
         this.getUserProfile();
         if (this.props.user.needToRedirect === true) {
@@ -58,7 +63,15 @@ class Login extends Component {
           })
           return
         }
-        this.props.navigation.navigate('Home');
+        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+       
+        await this.setState({ CorporateUser: isCorporateUser })
+        const { CorporateUser } = this.state
+        if (CorporateUser === true) {
+          this.props.navigation.navigate('CorporateHome');
+        } else {
+          this.props.navigation.navigate('Home');
+        }
       } else {
         this.setState({ loginErrorMsg: this.props.user.message, isModalVisible: true })
       }
@@ -107,7 +120,7 @@ class Login extends Component {
                   <Form>
                     <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number/ Email</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
-                      <Input placeholder="Mobile Number / Email" style={styles.authTransparentLabel}
+                      <Input placeholder= "Mobile Number / Email" style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
                         returnKeyType={'next'}
                         value={userEntry}
@@ -137,19 +150,19 @@ class Login extends Component {
                         : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
                       }
                     </Item>
-                    <Row style={{ marginTop: 10 }}>
-                      <Col size={3}>
-                        <Row style={{ alignItems: 'center' }}>
-                          <Radio
-                            standardStyle={true}
-                            selected={isSelected === 'user'}
-                            onPress={() => this.setState({ isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
-                          />
-                          <Text style={styles.firstCheckBox}>User</Text>
-                        </Row>
-                      </Col>
-                      <Col size={3}>
-                        {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
+                    {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
+                      <Row style={{ marginTop: 10 }}>
+                        <Col size={3}>
+                          <Row style={{ alignItems: 'center' }}>
+                            <Radio
+                              standardStyle={true}
+                              selected={isSelected === 'user'}
+                              onPress={() => this.setState({ isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
+                            />
+                            <Text style={styles.firstCheckBox}>User</Text>
+                          </Row>
+                        </Col>
+                        <Col size={3}>
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
                               standardStyle={true}
@@ -158,11 +171,11 @@ class Login extends Component {
                             />
                             <Text style={styles.firstCheckBox}>Corporate</Text>
                           </Row>
-                          : null}
-                      </Col>
-                      <Col size={4}>
-                      </Col>
-                    </Row>
+                        </Col>
+                        <Col size={4}>
+                        </Col>
+                      </Row>
+                      : null}
                     <Row style={{ marginTop: 20, }}>
                       <Right>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>

@@ -207,8 +207,17 @@ export default class AppointmentList extends Component {
             await this.getPastAppointmentList();
         }
     }
-    onPressGoToBookAppointmentPage = () => {
-        console.log('Need to Implement===>')
+    onPressGoToBookAppointmentPage = (item) => {
+        const reqParamsData = {
+            doctorId: item.appointmentResult && item.appointmentResult.doctor_id,
+            fetchAvailabiltySlots: true,
+        }
+        const userAddressInfo = item.appointmentResult && item.appointmentResult.patient_location
+        if (userAddressInfo) {
+            reqParamsData.reqPinCode = userAddressInfo.address && userAddressInfo.address.pin_code;
+            reqParamsData.userAddressInfo = userAddressInfo;
+        }
+        this.props.navigation.navigate('Home Healthcare Doctor Details Preview', reqParamsData);
     }
     renderAppointmentList(item, index) {
         return (
@@ -237,9 +246,18 @@ export default class AppointmentList extends Component {
             this.setState({ isLoadingMoreAppList: false })
         }
     }
+    async onPressGoToBookNow() {
+        let corporateUser = await AsyncStorage.getItem("is_corporate_user") || null;
+        if (corporateUser) {
+            
+			this.props.navigation.navigate('CorporateHome',{fromAppointment: true});
+        } else {
+           
+			 this.props.navigation.navigate("Home", { fromAppointment: true })
+		}
+    }
     render() {
         const { data, reviewData, selectedIndex, isVisibleAddReviewPop, isLoading } = this.state;
-
         return (
             <Container style={{ backgroundColor: '#ffffff', }}>
                 <NavigationEvents
@@ -280,7 +298,9 @@ export default class AppointmentList extends Component {
                             renderItem={({ item, index }) => this.renderAppointmentList(item, index)}
                             keyExtractor={(item, index) => index.toString()}
                         />
-                        : < RenderNoAppointmentsFounds text={"No Appointments are scheduled !"} />
+                        : < RenderNoAppointmentsFounds 
+                        text={"No Appointments are scheduled !"}
+                        onPressGoToBookNow={(item) => { this.onPressGoToBookNow(item) }}/>
                 }
                 {isVisibleAddReviewPop === true ?
                     <InsertReview

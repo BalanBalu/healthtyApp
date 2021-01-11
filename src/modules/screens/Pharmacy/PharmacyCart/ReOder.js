@@ -21,12 +21,7 @@ class ReOrder extends Component {
     }
 
     async componentDidMount() {
-        try {  
                 await this.getReOderData();
-           
-        } catch (e) {
-            console.log(e)
-        }
     }
     getReOderData = async () => {
         try {
@@ -57,7 +52,6 @@ class ReOrder extends Component {
                   let findData=  productResult.find(element=>{return element.masterProductId===ele.masterProductId})
                   
                   if(findData!==undefined){
-                    console.log(findData)
                     let discountedValue = medicineRateAfterOffer(findData);
                     let price =  ProductIncrementDecreMents(ele.quantity, discountedValue, 'null', ele.maxThreashold)
                  
@@ -71,7 +65,7 @@ class ReOrder extends Component {
             this.setState({ reOrderData: temp , isLoading: false});
             }else{
             Toast.show({
-                text: ' sorry unable to make a re order please try again later',
+                text: ' Sorry ! Unable to make reorder',
                 duration: 3000,
                 type: 'danger',
               
@@ -80,7 +74,7 @@ class ReOrder extends Component {
         }
         }else{
             Toast.show({
-                text: ' sorry unable to make a re order please try again later',
+                text: ' Sorry ! Unable to make reorder',
                 duration: 3000,
                 type: 'danger',
               

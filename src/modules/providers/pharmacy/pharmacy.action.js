@@ -35,9 +35,9 @@ export async function searchRecentItemsByPharmacy(limit) {
 }
 export async function getMedicinesSearchList(keyword, pagination, isLoading = true) {
   try {
-    console.log(typeof keyword)
+
     let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + pagination + '&c=' + 10;
-   
+
 
     let response = await inventoryGetService(endPoint);
 
@@ -54,7 +54,7 @@ export async function getProductDetailById(medicineId) {
   try {
 
     let endPoint = `/products/detail/${medicineId}`;
-    console.log(endPoint)
+  
     let response = await inventoryGetService(endPoint);
     let respData = response.data;
     return respData;
@@ -70,8 +70,8 @@ export async function getAllPromotions() {
   try {
     let endPoint = 'promotions';
     let response = await inventoryGetService(endPoint);
-    console.log(JSON.stringify(response))
-    // let respData = response.data;
+  
+     let respData = response.data;
     return respData;
   } catch (e) {
     return {
@@ -105,13 +105,12 @@ export async function getMedicineOrderList(userId, pagination, count) {
 
     let endPoint = `transaction/order/user/${userId}?p=${pagination}&c=${10}`;
     let response = await inventoryGetService(endPoint);
-    console.log('req========================')
+
     let respData = response.data.content
 
     return respData;
   } catch (e) {
-    console.log('hi======')
-    console.log(e)
+ 
     return {
       message: 'exception' + e,
       success: false
@@ -123,14 +122,13 @@ export async function getAvailableStockForListOfProducts(productIds) {
 
     let endPoint = `/products/available-stocks?ids=${productIds}`;
     let response = await inventoryGetService(endPoint);
-    console.log('req========================')
-    console.log(response)
+
     let respData = response.data
 
     return respData;
   } catch (e) {
-    console.log('hi======')
-    console.log(e)
+
+
     return {
       message: 'exception' + e,
       success: false
@@ -146,9 +144,9 @@ export async function getMedicineOrderDetails(orderId) {
   try {
 
     let endPoint = `/transaction/order-number/${orderId}`;
- 
+
     let response = await inventoryGetService(endPoint);
- 
+
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -163,9 +161,9 @@ export async function getMedicineOrderDetailsByOrderId(orderId) {
   try {
 
     let endPoint = `/transaction/order/${orderId}`;
- 
+
     let response = await inventoryGetService(endPoint);
- 
+
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -181,9 +179,9 @@ export async function getOrderTracking(orderNumber) {
   try {
 
     let endPoint = `/transaction/track/${orderNumber}`;
- 
+
     let response = await inventoryGetService(endPoint);
- 
+
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -198,7 +196,7 @@ export async function getpharmacy(pharmacy_id) {
   try {
 
     let endPoint = '/getpharmacy/' + pharmacy_id
-    console.log(endPoint);
+  
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -214,9 +212,9 @@ export async function deletePrescriptionByUserId(userId) {
   try {
 
     let endPoint = '/medicine_orders/prescription/user/' + userId
-    console.log(endPoint);
+    
     let response = await deleteService(endPoint);
-    console.log(JSON.stringify(response.data))
+    
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -232,9 +230,10 @@ export async function deletePrescriptionByUserId(userId) {
 export async function getMedicinesSearchListByPharmacyId(pharmacyId, pagination, isLoading = true) {
   try {
     let endPoint = `/products/pharmacy/${pharmacyId}?p=${pagination}&c=${10}`;
+   
     let response = await inventoryGetService(endPoint);
     let respData = response.data.content;
-    
+
     return respData;
   } catch (e) {
     return {
@@ -259,7 +258,7 @@ export async function getNearOrOrderPharmacy(user_id, coordinates) {
 
     return respData;
   } catch (e) {
-    console.log(e);
+  
     return {
       message: 'exception' + e,
       success: false
@@ -289,9 +288,9 @@ export async function getPopularMedicine(userId, coordinates) {
 export async function createMedicineOrder(data) {
   try {
     let endPoint = '/transaction';
-    console.log(endPoint)
+    
     let response = await inventoryPutService(endPoint, data);
-    console.log(JSON.stringify(response))
+ 
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -306,7 +305,7 @@ export async function createMedicineOrder(data) {
 export async function updateTopSearchedItems(pid) {
   try {
     let endPoint = `/products/top-search-product/${pid}`;
-    console.log(endPoint)
+   
     let response = await inventoryPutService(endPoint, data);
 
 
@@ -323,7 +322,7 @@ export async function getMedicineReviews(medicine_id) {
   try {
 
     let endPoint = '/medicine/' + medicine_id + '/reviews?limit=2';
-    console.log(endPoint);
+    
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -339,7 +338,7 @@ export async function getAllMedicineReviews(medicine_id) {
   try {
 
     let endPoint = '/medicine/' + medicine_id + '/reviews';
-    console.log(endPoint);
+ 
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -356,7 +355,7 @@ export async function InsertMedicineReviews(userId, data) {
   try {
 
     let endPoint = '/medicine/review/' + userId;
-    console.log(endPoint);
+    
     let response = await postService(endPoint, data);
     let respData = response.data;
     return respData;
@@ -375,7 +374,7 @@ export async function getMedicineReviewsCount(medicine_id) {
   try {
 
     let endPoint = '/medicine/' + medicine_id + '/reviewsCount';
-    console.log(endPoint);
+   
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -426,8 +425,7 @@ export async function upDateOrderData(data) {
     let response = await inventoryPutService(endPoint, data);
 
     let respData = response.data;
-    console.log('updateData====================================')
-    console.log(JSON.stringify(respData))
+  
     return respData;
 
   } catch (e) {
@@ -443,8 +441,7 @@ export async function capturePayment(paymentId) {
     let response = await putService(endPoint, data);
 
     let respData = response.data;
-    console.log('capturePayment====================================')
-    console.log(JSON.stringify(respData))
+  
     return respData;
 
   } catch (e) {
@@ -458,7 +455,7 @@ export async function capturePayment(paymentId) {
 export async function getUploadPrescription(userId) {
   try {
     let endPoint = '/medicine_orders/prescription/user/' + userId;
-    console.log(endPoint);
+    
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -595,7 +592,7 @@ export async function getCartCount(userId) {
 }
 
 
-export async function getproductDetailsByPharmacyIds(pharmacyIds,masterProductIds) {
+export async function getproductDetailsByPharmacyIds(pharmacyIds, masterProductIds) {
   try {
 
 
@@ -610,7 +607,7 @@ export async function getproductDetailsByPharmacyIds(pharmacyIds,masterProductId
     }
   }
 }
-export async function getproductDetailsByPharmacyId(pharmacyId,masterProductIds) {
+export async function getproductDetailsByPharmacyId(pharmacyId, masterProductIds) {
   try {
 
 

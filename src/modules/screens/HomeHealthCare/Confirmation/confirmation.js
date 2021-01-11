@@ -6,7 +6,7 @@ import styles from '../Styles'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { formatDate } from '../../../../setup/helpers';
-import { renderDoctorImage, getDoctorEducation, getDoctorSpecialist, getUserGenderAndAge } from '../../../common';
+import { renderDoctorImage, getDoctorEducation, getDoctorSpecialist, getUserGenderAndAge, getHomeHealthCareUserAddress } from '../../../common';
 import Spinner from '../../../../components/Spinner';
 import { SERVICE_TYPES } from '../../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
@@ -29,7 +29,7 @@ class HomeTestConfirmation extends Component {
             isCorporateUser: false,
             selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
             familyMembersSelections: [],
-
+            userAddressInfo: props.navigation.getParam('userAddressInfo') || null,
             isCheckedFamilyWithPay: false,
             selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
             familyDetailsData: [],
@@ -53,7 +53,7 @@ class HomeTestConfirmation extends Component {
 
     getPatientInfo = async () => {
         try {
-            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+            const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address,home_healthcare_address"
             const userId = await AsyncStorage.getItem('userId');
             const patInfoResp = await fetchUserProfile(userId, fields);
             this.setState({ patDetails: patInfoResp });
@@ -66,8 +66,6 @@ class HomeTestConfirmation extends Component {
 
 
     addPatientList = async (patDetails) => {
-        console.log(' Patient Details Length --> ' + patDetails.length);
-        console.log(patDetails);
         const patDetailsArray = patDetails.map(ele => {
             const othersDetailsObj = {
                 ...ele,
@@ -93,8 +91,7 @@ class HomeTestConfirmation extends Component {
     }
 
     async onPressConfirmProceedPayment() {
-        debugger
-        const { selectedPatientTypes, bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
+        const { selectedPatientTypes, bookSlotDetails, patDetailsArray, enteredDiseaseText, userAddressInfo } = this.state;
         const findFamilyDetailsInPatDetailsArray = patDetailsArray.find(item => item.type === 'others');
         if (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && !findFamilyDetailsInPatDetailsArray) {
             Toast.show({
@@ -128,11 +125,12 @@ class HomeTestConfirmation extends Component {
         bookSlotDetails.patient_data = patientData;
         const finalAmountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
         const amount = finalAmountBySelectedPersons;
-        debugger
-        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount })
+        bookSlotDetails.slotData.fee = finalAmountBySelectedPersons;
+        if (userAddressInfo) bookSlotDetails.patient_location = userAddressInfo;
+        this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.HOME_HEALTHCARE, bookSlotDetails: bookSlotDetails, amount, patientInfo: this.state.patDetails })
     }
     async onPressPayAtHome() {
-        const { selectedPatientTypes, bookSlotDetails, patDetailsArray, enteredDiseaseText } = this.state;
+        const { selectedPatientTypes, bookSlotDetails, patDetailsArray, enteredDiseaseText, userAddressInfo } = this.state;
         const findFamilyDetailsInPatDetailsArray = patDetailsArray.find(item => item.type === 'others');
         if (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && !findFamilyDetailsInPatDetailsArray) {
             Toast.show({
@@ -163,17 +161,14 @@ class HomeTestConfirmation extends Component {
         patDetailsArray.map(ele => {
             patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
         })
-        debugger
         const finalAmountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
         bookSlotDetails.slotData.fee = finalAmountBySelectedPersons;
         bookSlotDetails.patient_data = patientData;
+        if (userAddressInfo) bookSlotDetails.patient_location = userAddressInfo;
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.HOME_HEALTHCARE, userId, 'cash');
-        debugger
-        console.log('Book Appointment Payment Update Response ');
         if (response.success) {
-            debugger
             this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo, isFromHomeHealthCareConfirmation: true });
         } else {
             Toast.show({
@@ -182,13 +177,12 @@ class HomeTestConfirmation extends Component {
                 duration: 3000
             })
         }
-        debugger
 
         this.setState({ isLoading: false, spinnerText: ' ' });
     }
 
     render() {
-        const { bookSlotDetails, patDetails, errMsg, isLoading, spinnerText, isCheckedSelf, isCheckedOthers, name, age, gender, patDetailsArray, isCorporateUser, isCheckedFamilyWithPay } = this.state;
+        const { bookSlotDetails, patDetails, userAddressInfo, errMsg, isLoading, spinnerText, isCheckedSelf, isCheckedOthers, name, age, gender, patDetailsArray, isCorporateUser, isCheckedFamilyWithPay } = this.state;
         const extraCharges = bookSlotDetails.extraCharges || 0;
         const amountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
         const finalPaidAmount = amountBySelectedPersons + extraCharges;
@@ -208,7 +202,8 @@ class HomeTestConfirmation extends Component {
                                     </TouchableOpacity>
                                 </Col>
                                 <Col size={8.4}>
-                                    <Text style={styles.docName}>{(bookSlotDetails.prefix ? bookSlotDetails.prefix + '. ' : '') + (bookSlotDetails.first_name || '') + ' ' + (bookSlotDetails.last_name || '')} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                                    <Text style={styles.docName}>{(bookSlotDetails.prefix ? bookSlotDetails.prefix + '. ' : '') + (bookSlotDetails.first_name || '') + ' ' + (bookSlotDetails.last_name || '')} </Text>
+                                    <Text style={styles.specialist}>{getDoctorEducation(bookSlotDetails.education)}</Text>
                                     <Text style={styles.specialist}>{getDoctorSpecialist(bookSlotDetails.specialist)}</Text>
                                 </Col>
                             </Row>
@@ -242,21 +237,13 @@ class HomeTestConfirmation extends Component {
                                     <Text style={styles.subHead}>Home Address</Text>
                                 </Col>
                                 <Col size={7}>
-                                    <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
-                                        <TouchableOpacity  >
-                                            <Text style={styles.changeText}>Change</Text>
-                                        </TouchableOpacity>
-                                    </Row>
                                 </Col>
                             </Row>
                             <Text style={styles.homeAdressTexts}> {patDetails.first_name + '-' + patDetails.last_name}</Text>
                             {
-                                patDetails.address && patDetails.address.address ?
-                                    <Text style={styles.homeAdressTexts}>{patDetails.address.address.no_and_street + ' , ' +
-                                        patDetails.address.address.address_line_1 + ' , ' +
-                                        patDetails.address.address.city + ' - ' + patDetails.address.address.pin_code}</Text>
-                                    :
-                                    null}
+                                userAddressInfo && userAddressInfo.address ?
+                                    <Text style={styles.homeAdressTexts}>{getHomeHealthCareUserAddress(userAddressInfo.address)}</Text>
+                                    : null}
                             <Text style={styles.homeAdressTexts}>
                                 Mobile - {patDetails.mobile_no || 'No number'}
                             </Text>
@@ -317,7 +304,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909498' }}>Consultation Fees</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}>Consultation Fees</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'}{Number(amountBySelectedPersons).toFixed(2)}</Text>
@@ -325,7 +312,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909498' }}>Charges </Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}>Charges </Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>

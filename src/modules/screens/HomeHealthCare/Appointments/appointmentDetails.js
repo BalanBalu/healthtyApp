@@ -6,7 +6,7 @@ import StarRating from 'react-native-star-rating';
 import styles from '../Styles'
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action';
-import { renderDoctorImage, getUserGenderAndAge, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getUserLocation, getAddress } from '../../../common'
+import { renderDoctorImage, getUserGenderAndAge, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHomeHealthCareUserAddress } from '../../../common'
 import { formatDate, dateDiff, statusValue, getMoment } from '../../../../setup/helpers';
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
 import { getHomeTestappointmentByID, updateDocHomeTestappointment } from '../../../providers/homeHelthCare/action';
@@ -278,6 +278,11 @@ class AppointmentDetails extends PureComponent {
                                                 <Text style={styles.subText2}>-</Text>
                                                 <Text note style={styles.subText2}>{getDoctorExperience(doctorData.calulatedExperience)}</Text>
                                             </Row>
+                                            <Row style={{ marginTop: 10, marginLeft: 5 }} >
+                                                <Text style={styles.subText1}>Consultation Fee</Text>
+                                                <Text style={styles.subText2}>-</Text>
+                                                <Text note style={styles.subText2}>{"Rs." + (paymentDetailsObj.amount ? paymentDetailsObj.amount : 0) + "/-"}</Text>
+                                            </Row>
                                             <Row style={{ marginTop: 10, marginLeft: 5 }}>
                                                 <Text style={styles.subText1}>Payment Method</Text>
                                                 <Text style={styles.subText2}>-</Text>
@@ -344,7 +349,7 @@ class AppointmentDetails extends PureComponent {
                                 <CardItem footer style={styles.cardItem2}>
                                     <Grid>
                                         <Row style={{ marginRight: 5 }} >
-                                            <Col style={{ width: '50%', }}>
+                                            <Col style={{ width: '100%', }}>
                                                 <Row>
                                                     <Icon name='md-calendar' style={styles.iconStyle} />
                                                     <Text style={styles.timeText}>{formatDate(data.appointment_date, "dddd,MMMM DD-YYYY")}</Text>
@@ -377,15 +382,17 @@ class AppointmentDetails extends PureComponent {
                                             <Text note style={styles.subTextInner1}>{data.disease_description || ''}</Text>
                                         </Col>
                                     </Row>
-                                    <Row style={styles.rowSubText}>
-                                        <Col style={{ width: '8%', paddingTop: 5 }}>
-                                            <Icon name="ios-pin" style={{ fontSize: 20, }} />
-                                        </Col>
-                                        <Col style={{ width: '92%', paddingTop: 5 }}>
-                                            <Text style={styles.innerSubText}>Patient Address</Text>
-                                            <Text note style={styles.subTextInner1}>{getUserLocation(data.userInfo)}</Text>
-                                        </Col>
-                                    </Row>
+                                    {data && data.patient_location && data.patient_location.address ?
+                                        <Row style={styles.rowSubText}>
+                                            <Col style={{ width: '8%', paddingTop: 5 }}>
+                                                <Icon name="ios-pin" style={{ fontSize: 20, }} />
+                                            </Col>
+                                            <Col style={{ width: '92%', paddingTop: 5 }}>
+                                                <Text style={styles.innerSubText}>Patient Address</Text>
+                                                <Text note style={styles.subTextInner1}>{getHomeHealthCareUserAddress(data.patient_location.address)}</Text>
+                                            </Col>
+                                        </Row>
+                                        : null}
                                     {data.patient_data.length ?
                                         <Row style={styles.rowSubText}>
                                             <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -439,7 +446,7 @@ class AppointmentDetails extends PureComponent {
                                             <Text style={styles.innerSubText}>Payment Report</Text>
                                             {reportData != null ?
                                                 <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                                                    <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'HOME_TEST' }) }}>
+                                                    <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'HOME_HEALTHCARE' }) }}>
                                                         <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
                                                         <Row>
                                                             <Col size={9}>
@@ -456,7 +463,7 @@ class AppointmentDetails extends PureComponent {
                                                     <TouchableOpacity block success
                                                         style={styles.reviewButton} onPress={() => {
                                                             this.props.navigation.push('ReportIssue', {
-                                                                issueFor: { serviceType: 'HOME_TEST', reportedId: data._id, status: data.appointment_status },
+                                                                issueFor: { serviceType: 'HOME_HEALTHCARE', reportedId: data._id, status: data.appointment_status },
                                                                 prevState: this.props.navigation.state
                                                             })
                                                         }}>
@@ -485,7 +492,7 @@ class AppointmentDetails extends PureComponent {
                                                 <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
-                                                <Text style={styles.innerSubText}>Add Feedback"</Text>
+                                                <Text style={styles.innerSubText}>Add Feedback</Text>
                                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                                     <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.setState({ isVisibleAddReviewPop: true })}
                                                         testID='addFeedBack'>
@@ -514,6 +521,36 @@ class AppointmentDetails extends PureComponent {
                                                     <Text note style={styles.downText}>{"Rs." + (paymentDetailsObj.amount ? paymentDetailsObj.amount : 0) + "/-"}</Text>
                                                 </Col>
                                             </Row>
+                                            {
+                                                paymentDetailsObj.coupon_code_discount_amount ?
+                                                    <Row style={{ marginTop: 10 }}>
+                                                        <Col style={{ width: '60%' }}>
+                                                            <Text style={styles.downText}>coupon code discount amount
+                </Text>
+                                                        </Col>
+                                                        <Col style={{ width: '15%' }}>
+                                                            <Text style={styles.downText}>-</Text>
+                                                        </Col>
+                                                        <Col style={{ width: '25%' }}>
+                                                            <Text note style={styles.downText}>{"Rs." + paymentDetailsObj.coupon_code_discount_amount}</Text>
+                                                        </Col>
+                                                    </Row> : null
+                                            }
+                                            {
+                                                paymentDetailsObj.credit_point_discount_amount ?
+                                                    <Row style={{ marginTop: 10 }}>
+                                                        <Col style={{ width: '60%' }}>
+                                                            <Text style={styles.downText}>credit point discount amount
+                </Text>
+                                                        </Col>
+                                                        <Col style={{ width: '15%' }}>
+                                                            <Text style={styles.downText}>-</Text>
+                                                        </Col>
+                                                        <Col style={{ width: '25%' }}>
+                                                            <Text note style={styles.downText}>{"Rs." + paymentDetailsObj.credit_point_discount_amount}</Text>
+                                                        </Col>
+                                                    </Row> : null
+                                            }
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col style={{ width: '60%' }}>
                                                     <Text style={styles.downText}>Payment Made

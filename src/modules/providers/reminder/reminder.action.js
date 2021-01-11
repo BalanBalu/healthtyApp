@@ -9,9 +9,9 @@ export async function addReminderdata(userId, data) {
   try {
 
     let endPoint = 'reminder/medicines/user/' + userId;
-    console.log(endPoint);
+    
     let response = await putService(endPoint, data);
-    console.log('response', response);
+    
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -30,12 +30,12 @@ export async function getReminderData(userId) {
   };
   try {
     let endPoint = 'reminder/medicines/user/' + userId;
-    console.log(endPoint);
+  
     let response = await getService(endPoint);
     respData = response.data;
     return respData;
   } catch (e) {
-    console.log('exception', e);
+
     return {
       message: 'exception' + e,
       success: false
@@ -66,7 +66,7 @@ export function sheudleNotificationForAddReminders(reminders) {
 }
 
 function iterateThroughMedinceTimesByDay(element, reminderDate) {
-  console.log('Reminder Data......');
+
   for (let index = 0; index < element.medicine_take_times.length; index++) {
     const medicineTakeTimeData = element.medicine_take_times[index];
     let reminderTime = new Date(medicineTakeTimeData.medicine_take_time);

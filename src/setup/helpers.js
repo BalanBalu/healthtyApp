@@ -116,7 +116,7 @@ export function toTitleCase(str) {
 }
 export function findArrayObj(array, findNode, findValue) {
   let returnObj;
-  //console.log(findValue);
+
   for (let i = 0; i < array.length; i++) {
     if (array[i][findNode] === findValue) {
       returnObj = array[i];
@@ -146,7 +146,7 @@ export function intersection() {
   } else {
     lists = arguments;
   }
-  console.log(lists);
+ 
   for (var i = 0; i < lists.length; i++) {
     var currentList = lists[i];
     for (var y = 0; y < currentList.length; y++) {
@@ -218,14 +218,14 @@ export function toDataUrl(url) {
 export const statusValue = {
   "PAYMENT_IN_PROGRESS":
   {
-    text: 'waiting for  Payment process',
+    text: 'Waiting for  Payment process',
     color: '#3d70ff',
     icon: 'md-timer',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_IN_PROGRESS'
   },
   "PENDING":
   {
-    text: 'waiting for confirmation',
+    text: 'Waiting for confirmation',
     color: 'red',
     icon: 'checkmark-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PENDING',

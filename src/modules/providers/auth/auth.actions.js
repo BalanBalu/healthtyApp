@@ -1,4 +1,4 @@
-import { postService, putService, getService, smartHealthGetService } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
@@ -26,7 +26,7 @@ export async function ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(pro
     const response = await getService(endPoint);
     return response.data;
   } catch (Ex) {
-    console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
+
     return {
       success: false,
       statusCode: 500,
@@ -192,15 +192,29 @@ export async function changePassword(reqData) {
   }
 
 }
+//
+export async function updateSmartHealthNewPassword(data) {
+  try {
+    let endPoint = 'auth/change_password';
+    let response = await smartHealthPutService(endPoint, data);
+    let respData = response.data;
+
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 /*Change Password*/
 export async function updateNewPassword(data) {
   try {
     let endPoint = 'auth/changeNewPassword';
     let response = await putService(endPoint, data);
-    console.log('response' + JSON.stringify(response));
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData))
+
     return respData;
   } catch (e) {
     return {
@@ -238,7 +252,6 @@ export async function logout() {
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
   try {
-
     if (userData.is_corporate_user) {
       await AsyncStorage.setItem('is_corporate_user', 'true')
     }
@@ -267,7 +280,7 @@ export const hasLoggedIn = async (props) => {
       if (navigation.state) {
         debugger
         let stateParams = navigation.state.params;
-        console.log(stateParams);
+
         let routeName = navigation.state.routeName;
         store.dispatch({
           type: REDIRECT_NOTICE,
@@ -337,9 +350,9 @@ export async function userFiledsUpdate(userId, data) {
 /*Get post office name and details */
 export async function getPostOffNameAndDetails(pincode) {
   try {
-    console.log(pincode)
+
     let fullPath = 'pincode/' + pincode;
-    console.log("fullPath", fullPath)
+
     let response = await getService(fullPath);
     return response.data;
   } catch (e) {
@@ -431,6 +444,112 @@ export async function verifyEmployeeDetails(empCode, authCode) {
 }
 
 
+export async function SmartHealthlogin(userCredentials, isLoading = true) {
+  try {
+
+    store.dispatch({
+      type: LOGIN_REQUEST,
+      isLoading
+    })
+
+    let endPoint = 'auth/member-login'
+    let req = {
+      userId: userCredentials.userEntry,
+      password: userCredentials.password
+    }
+
+
+    let response = await smartHealthPostService(endPoint, req);
+
+    if (response && response.data && response.data.access_token) {
+      await AsyncStorage.setItem('smartToken', response.data.access_token)
+      let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
+
+      let res = await smartHealthGetService(ends);
+      if (res && res.data && res.data[0]) {
+        let reqData = res.data[0]
+
+        let reqBody = {
+          type: 'user',
+          email: reqData.emailId,
+          password: userCredentials.password,
+          gender: reqData.gender === 'Male' ? 'M' : reqData.gender === 'FeMale' ? 'F' : 'O',
+          dob: reqData.dob,
+          is_corporate_user: true,
+          corporate_member_id: userCredentials.userEntry,
+          employee_code: reqData.employeeId,
+          first_name: reqData.firstName,
+          last_name: reqData.lastName,
+          address: {
+            type: 'Point',
+            address: {
+              no_and_street: reqData.address1 || '1',
+              address_line_1: reqData.address2 || ' ',
+              district: reqData.district || 'district',
+              city: reqData.city,
+              state: reqData.state,
+              country: reqData.countryCode,
+              pin_code: String(reqData.pinCode)
+            }
+          }
+
+        }
+        if (reqData.mobile) {
+          reqBody.mobile_no = reqData.mobile
+        }
+
+        let insertEndPoint = 'auth/smart_health/signUp'
+        let signUpResult = await postService(insertEndPoint, reqBody)
+        if (signUpResult.data.success) {
+          await AsyncStorage.setItem('memberId', reqData.memberId)
+          changePasswordEndPoint = 'member-users/member-id?id=' + reqData.memberId
+          let forgotResult = await smartHealthGetService(changePasswordEndPoint)
+
+          if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
+            await AsyncStorage.setItem('forceToChangePassword', 'true')
+          }
+          const token = signUpResult.data.token;
+          signUpResult.data.data.is_corporate_user = true;
+          await setUserLocally(token, signUpResult.data.data);
+
+          store.dispatch({
+            type: LOGIN_RESPONSE,
+            message: respData.data.message
+          })
+
+        } else {
+          store.dispatch({
+            type: LOGIN_HAS_ERROR,
+            message: "Invalid Login Credentials"
+          })
+        }
+
+
+      }
+
+
+    } else {
+      store.dispatch({
+        type: LOGIN_HAS_ERROR,
+        message: "Invalid Login Credentials"
+      })
+    }
+
+
+
+
+
+
+    return true
+
+  } catch (e) {
+
+    store.dispatch({
+      type: LOGIN_HAS_ERROR,
+      message: e + ' Occured! Please Try again'
+    });
+  }
+}
 
 
 

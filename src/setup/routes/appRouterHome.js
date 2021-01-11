@@ -33,6 +33,7 @@ import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
+import PromoCode from "../../modules/screens/PaymentPage/PromoCode"
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
@@ -110,7 +111,6 @@ import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/Pre
 import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 import NextAppoinmentPreparation from '../../modules/screens/Home/nextAppoinmentPreparation'
 
-import PopupMenu from './popUpMenu';
 import filterDocInfo from '../../modules/screens/DoctorBookAppointmentFlow/filterDocInfo';
 import PublicForum from '../../modules/screens/publicForum/publicForum'
 import PostForum from '../../modules/screens/publicForum/postForum'
@@ -122,6 +122,8 @@ import HomeHealthcareConfirmation from '../../modules/screens/HomeHealthCare/Con
 import HomeHealthcareAppointmentList from '../../modules/screens/HomeHealthCare/Appointments/appointmentList';
 import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCare/Appointments/appointmentDetails';
 import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCare/Appointments/cancelAppointment';
+import HomeHealthcareDoctorDetailsPreview from '../../modules/screens/HomeHealthCare/doctorDetailsPreview/doctorDetailsPreview';
+import HomeHealthcareAddressList from '../../modules/screens/HomeHealthCare/homeDeliveryAddressPage';
 import MedicineRecords from '../../modules/screens/medicalRecords';
 import EmrInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/emrInfo'
 import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
@@ -133,7 +135,8 @@ import TextTicker from 'react-native-text-ticker';
 import { IS_ANDROID } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
-
+import CorporateHome from '../../modules/screens/Home/corporateHome'
+import LanguagePopUp from './languagePopUp'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -233,10 +236,10 @@ const HomeStack = createStackNavigator({
                   </View>
                 </TouchableOpacity>
               </Col>
-              {Platform.OS != "ios" ?
-                <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
-                  <PopupMenu actions={['English', 'Tamil', 'Malayalam']} onPress={onPopupEvent} navigation={navigation} />
-                </TouchableOpacity> : null}
+              <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+                <LanguagePopUp />
+
+              </TouchableOpacity>
             </Row>
 
 
@@ -306,6 +309,84 @@ const HomeStack = createStackNavigator({
       },
     })
   },
+  CorporateHome: {
+    screen: CorporateHome,
+
+    navigationOptions: ({ navigation }) => ({
+      title: 'CorporateHome',
+      header: (
+
+        <View
+          style={{
+            height: IS_ANDROID ? 60 : 90,
+            backgroundColor: '#7F49C3',
+            justifyContent: 'center',
+          }}>
+          <View
+            style={{
+              marginTop: IS_ANDROID ? 0 : 30,
+              height: 60,
+              justifyContent: 'center',
+            }}>
+            <Row size={12} style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+              <Col size={10} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
+                  <Image
+                    style={{ marginLeft: 18, tintColor: '#fff' }}
+                    source={menuIcon}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
+                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
+                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
+                      loop
+                      bounce
+                      repeatSpacer={50}
+                      marqueeDelay={1000}>
+                      {navigation.getParam('appBar', { locationName: ' ' }).locationName}
+                    </TextTicker>
+                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }} duration={10000}
+                      loop
+                      bounce
+                      repeatSpacer={200}
+                      marqueeDelay={1000}>
+                      {navigation.getParam('appBar', { locationCapta: 'Searching Near by Hospitals' }).locationCapta}
+
+                    </TextTicker>
+
+
+                  </View>
+                </TouchableOpacity>
+              </Col>
+
+              <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
+                <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
+                  <View>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                    {navigation.getParam('notificationBadgeCount') ?
+                      <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
+                  </View>
+                </TouchableOpacity>
+              </Col>
+              <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
+                <LanguagePopUp />
+
+              </TouchableOpacity>
+            </Row>
+
+
+          </View>
+        </View>
+
+      ),
+
+
+      headerStyle: {
+        backgroundColor: '#7F49C3',
+      },
+    })
+  },
   EarnReward: {
     screen: EarnReward,
     navigationOptions: {
@@ -316,12 +397,6 @@ const HomeStack = createStackNavigator({
     screen: NextAppoinmentPreparation,
     navigationOptions: {
       title: 'Next Appoinment Preparation'
-    }
-  },
-  PopupMenu: {
-    screen: PopupMenu,
-    navigationOptions: {
-      title: 'PopupMenu'
     }
   },
   // ================Categories  ===============
@@ -355,7 +430,7 @@ const HomeStack = createStackNavigator({
       title: 'Notification',
     })
   },
-  
+
   BloodDonerFilters: {
     screen: BloodDonerFilters,
     navigationOptions: ({ navigation }) => ({
@@ -715,6 +790,13 @@ const HomeStack = createStackNavigator({
       title: 'Payment Page'
     }
   },
+
+  PromoCode: {
+    screen: PromoCode,
+    navigationOptions: {
+      title: 'Promo  codes'
+    }
+  },
   paymentsuccess: {
     screen: PaymentSuccess,
     navigationOptions: {
@@ -783,6 +865,19 @@ const HomeStack = createStackNavigator({
       title: 'Home Healthcare Cancel Appointment'
     }
   },
+  "Home Healthcare Doctor Details Preview": {
+    screen: HomeHealthcareDoctorDetailsPreview,
+    navigationOptions: {
+      title: 'Home Healthcare Doctor Details Preview'
+    }
+  },
+  "Home Healthcare Address List": {
+    screen: HomeHealthcareAddressList,
+    navigationOptions: {
+      title: 'Home Healthcare Address List'
+    }
+  },
+
 
   // ============Chat ========================
   "Chat Service": {
@@ -860,17 +955,23 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerRight: (
 
-        <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
-          <View>
-            <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-            {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                  navigation.getParam('cartItemsCount')}
-              </Text>
-            }
-          </View>
-        </TouchableOpacity>
+        <Grid>
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
+                }
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
 
       )
     })
@@ -886,16 +987,18 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine List',
       headerRight: (
-        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Col>
-            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+        <Grid>
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                      navigation.getParam('cartItemsCount')}
-                  </Text>
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
                 }
               </View>
             </TouchableOpacity>
@@ -910,15 +1013,17 @@ const HomeStack = createStackNavigator({
       title: 'Pharmacies',
       headerRight: (
         <Grid>
-          <Col>
-            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                      navigation.getParam('cartItemsCount')}
-                  </Text>
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
                 }
               </View>
             </TouchableOpacity>
@@ -944,17 +1049,23 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Search Medicines',
       headerRight: (
-        <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
-          <View>
-            <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-            {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                  navigation.getParam('cartItemsCount')}
-              </Text>
-            }
-          </View>
-        </TouchableOpacity>
+        <Grid>
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
+                }
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
 
 
       ),
@@ -971,7 +1082,7 @@ const HomeStack = createStackNavigator({
   ChosePharmacyList: {
     screen: ChosePharmacyList,
     navigationOptions: {
-      title: ' Choose Pharmacy'
+      title: 'Available pharmacy'
     }
   },
   ReOrder: {
@@ -999,16 +1110,18 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine Details',
       headerRight: (
-        <Grid style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Col>
-            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+        <Grid>
+          <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                      navigation.getParam('cartItemsCount')}
-                  </Text>
+                  <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
+                    <Text
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                    >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
+                    </Text>
+                  </View>
                 }
               </View>
             </TouchableOpacity>
@@ -1179,7 +1292,89 @@ const drawerNavigatorRoutes = {
   },
 
 }
+export const corporateUserSideBarMenuList = [
+  {
+    menuName: 'Home',
+    routeName: drawerNavigatorRoutes.Home.routeName,
+    icon: require('../../../assets/images/drawerIcons/Home.png'),
+    subMenus: []
+  },
+  {
+    menuName: 'Insurance Services',
+    menuForCorporateUser: true,
+    subMenus: [
+      {
+        name: 'E Card',
+        routeName: drawerNavigatorRoutes['E Card'].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+      {
+        name: 'Insurance',
+        routeName: drawerNavigatorRoutes['Insurance'].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      }]
+  },
+  {
+    menuName: 'Services',
+    subMenus: [
+      {
+        name: 'Home Health Care',
+        routeName: 'Home Healthcare Address List', // drawerNavigatorRoutes["Home Health Care"].routeName,
+        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+        params: {
+          fromNavigation: "HOME_HEALTH_CARE"
+        }
 
+      },
+      {
+        name: 'Video and Chat',
+        routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+
+      },
+      {
+        name: 'Reminder',
+        routeName: drawerNavigatorRoutes.Reminder.routeName,
+        icon: require('../../../assets/images/drawerIcons/Reminder.png'),
+      }
+    ]
+  },
+  {
+    menuName: 'Orders and Consultations',
+    subMenus: [
+      {
+        name: 'My Appointments',
+        routeName: drawerNavigatorRoutes["My Appointments"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+      {
+        name: 'My Home Healthcare Appointments',
+        routeName: drawerNavigatorRoutes["My Home Healthcare Appointments"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+      {
+        name: 'My Chat Consultations',
+        routeName: drawerNavigatorRoutes["My Chats"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Chat.png'),
+      },
+      {
+        name: 'My Video Consultations',
+        routeName: drawerNavigatorRoutes["My Video Consultations"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Chat.png'),
+      },
+      {
+        name: 'My Lab Test Appointments',
+        routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+      {
+        name: 'Health Records',
+        routeName: drawerNavigatorRoutes["Health Records"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
+    ]
+  }
+]
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
   overlayColor: 'rgba(0, 0, 0, 0.7)',
   contentComponent: props => <SideBar
@@ -1210,7 +1405,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
         subMenus: [
           {
             name: 'Home Health Care',
-            routeName: 'Categories', // drawerNavigatorRoutes["Home Health Care"].routeName,
+            routeName: 'Home Healthcare Address List', // drawerNavigatorRoutes["Home Health Care"].routeName,
             icon: require('../../../assets/images/drawerIcons/homeTest.png'),
             params: {
               fromNavigation: "HOME_HEALTH_CARE"

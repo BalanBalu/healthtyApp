@@ -1,48 +1,50 @@
 
 import React, { Component } from 'react';
 import { View, Text, Button, List, Icon, ListItem, DatePicker, Left, Segment, Content, CardItem, Right, Thumbnail, Item, Card, Body, Container, Toast } from "native-base";
-import { StyleSheet, Platform, Image, AsyncStorage, FlatList,TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Platform, Image, AsyncStorage, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Spinner from '../../../../../components/Spinner';
-import { renderDoctorImage, getName } from '../../../../common'
+import { NavigationEvents } from 'react-navigation';
+import { renderDoctorImage, getName,toastMeassage } from '../../../../common'
 import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
-import {POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../constants';
-import { getVideoConsuting, updateVideoConsuting } from '../../services/video-consulting-service';
-import { formatDate } from  '../../../../../setup/helpers';
+import { POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../constants';
+import { getVideoConsuting, updateVideoConsuting,createEmrByVideoConsultation } from '../../services/video-consulting-service';
+import { formatDate } from '../../../../../setup/helpers';
 import { connect } from 'react-redux';
 export const IS_ANDROID = Platform.OS === 'android';
 class VideoConsultaions extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            isLoading: true,
-            consultaionData: []
-        }
-    }
-    async componentDidMount() {
-        try {
+	constructor(props) {
+		super(props)
+		this.state = {
+			isLoading: true,
+			consultaionData: []
+		}
+		this.selectedData=null
+	}
+	async componentDidMount() {
+		try {
 			const isLoggedIn = await hasLoggedIn(this.props);
-    		 if (!isLoggedIn) {
-        		this.props.navigation.navigate("login");
-        	    return;
-    		}
-            const userId = await AsyncStorage.getItem('userId');
-            const consultationReesponse = await getVideoConsuting(userId)
-            if(consultationReesponse.success === true) {
-                this.setState({consultaionData : consultationReesponse.data})
-            }
-        } catch (error) {
-            console.error(error)    
-        } finally {
-            this.setState({ isLoading : false })
-        }
-       
-    }
-    async doAccept(item, updatedStatus, index, updatedStatusReason) {
-        try {
-              
-            this.setState({ isLoading: true });
-            let requestData = {
+			if (!isLoggedIn) {
+				this.props.navigation.navigate("login");
+				return;
+			}
+			const userId = await AsyncStorage.getItem('userId');
+			const consultationReesponse = await getVideoConsuting(userId)
+			if (consultationReesponse.success === true) {
+				this.setState({ consultaionData: consultationReesponse.data })
+			}
+		} catch (error) {
+			console.error(error)
+		} finally {
+			this.setState({ isLoading: false })
+		}
+
+	}
+	async doAccept(item, updatedStatus, index, updatedStatusReason) {
+		try {
+
+			this.setState({ isLoading: true });
+			let requestData = {
 				doctor_id: item.doctorInfo.doctor_id,
 				user_id: item.userInfo.user_id,
 				status: updatedStatus,
@@ -50,12 +52,12 @@ class VideoConsultaions extends Component {
 				status_by: 'USER',
 			};
 			let resp = await updateVideoConsuting(item.consultaion_id, requestData);
-		
+
 			if (resp.success) {
 				this.setState({ isLoading: false });
-                let data = this.state.consultaionData;
-                data[index].status = updatedStatus
-                this.setState({ consultaionData: data});
+				let data = this.state.consultaionData;
+				data[index].status = updatedStatus
+				this.setState({ consultaionData: data });
 				Toast.show({
 					text: resp.message,
 					duration: 3000
@@ -65,24 +67,24 @@ class VideoConsultaions extends Component {
 					text: resp.message,
 					duration: 3000
 				})
-            }
-        } catch (error) {
-            Toast.show({
-                text:'Something went wrong: ' + error,
-                duration: 3000
-            })
-        } finally {
-            this.setState({ isLoading: false })
-        }		
+			}
+		} catch (error) {
+			Toast.show({
+				text: 'Something went wrong: ' + error,
+				duration: 3000
+			})
+		} finally {
+			this.setState({ isLoading: false })
+		}
 	}
 	callDoctor(videoConsulationData) {
-        this.props.navigation.navigate('VideoScreen', {
-            callToUser: true,
-            videoConsulationData: videoConsulationData
-        })
-    }
-	
-	
+		this.props.navigation.navigate('VideoScreen', {
+			callToUser: true,
+			videoConsulationData: videoConsulationData
+		})
+	}
+
+
 	navigateToBookAppointmentPage(item) {
 
 		let doctorId = item.doctorInfo.doctor_id;
@@ -90,119 +92,198 @@ class VideoConsultaions extends Component {
 			doctorId: doctorId,
 
 
-			
-			  fetchAvailabiltySlots: true
+
+			fetchAvailabiltySlots: true
 		})
 	}
 
-    renderConsultaions(item, index) {
+	uploadRecords(item) {
+		this.selectedData = item
+			this.props.navigation.navigate('Health Records', { fromNavigation: 'VIDEO_CONSULTATION', prevState: this.props.navigation.state });
+	}
+	
+	viewRecored(data) {
+		
+			this.props.navigation.navigate('Health Records', { fromNavigation: 'VIDEO_CONSULTATION', prevState: this.props.navigation.state });
+	}
+
+	backNavigation = async (navigationData) => {
+		try {
+			let data = this.props.navigation.getParam('emrData') || []
+			if (data.length !== 0) {
+				let temp = []
+				data.forEach(ele => {
+					temp.push({
+						emr_id: ele,
+						emr_update_type: "USER"
+					})
+				})
+				let reqData = {
+					consultation_id: this.selectedData.consultaion_id,
+					emr_details: temp,
+
+				}
+				let result = await createEmrByVideoConsultation(reqData)
+				if (result.success) {
+					toastMeassage('emr upload successfully', 'success', 3000)
+				}
+			}
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
+	renderConsultaions(item, index) {
 		const { chat: { loggedIntoConnectyCube } } = this.props;
 
-        return (
-            <Card style={styles.mainCard}>
-                <Grid onPress={() => this.navigateToBookAppointmentPage(item)}>
-                <Row>
-					<Right>
-					  <Text style={styles.dateText}>{formatDate(item.consulting_date, 'DD, MMM YYYY hh:mm a')} </Text>
-				</Right>
-				</Row>
-				<Row>
-                  <Col style={{ width: '80%' }}>  
-					<Row style={{ marginBottom : 15 }}>
-                        <Col size={3}>
-						<TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item.doctorInfo), title: 'Profile photo' })} >
-						    <Thumbnail circular source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
-							</TouchableOpacity>
+		return (
+			<Card style={styles.mainCard}>
+				<Grid onPress={() => this.navigateToBookAppointmentPage(item)}>
+					<Row>
+						<Right>
+							<Text style={styles.dateText}>{formatDate(item.consulting_date, 'DD, MMM YYYY hh:mm a')} </Text>
+						</Right>
+					</Row>
+					<Row>
+
+						<Col style={{ width: '80%' }}>
+							<Row style={{ marginBottom: 15 }}>
+								<Col size={3}>
+									<TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item.doctorInfo), title: 'Profile photo' })} >
+										<Thumbnail circular source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
+									</TouchableOpacity>
+								</Col>
+								<Col size={7}>
+									<Text style={styles.docNameText}>{getName(item.doctorInfo)} </Text>
+									<Text note style={styles.docNameText}>Rs. {item.fee}</Text>
+								</Col>
+							</Row>
+							{
+								item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.APPROVED && loggedIntoConnectyCube ?
+									<Row style={{ marginLeft: '22%' }} >
+										<Button primary iconLeft style={[styles.actionButton, { backgroundColor: '#08BF01' }]}
+											onPress={() => this.callDoctor(item)}>
+											<Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-call' : 'ios-call'} />
+											<Text style={[styles.buttonText1, { marginLeft: -10 }]}>Call</Text>
+										</Button>
+									</Row>
+									: 	item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING&&!item.emr_details  ?
+									<Row style={{ marginLeft: '22%' }} >
+										<Button primary  style={[styles.actionButton, { backgroundColor: '#08BF01' }]}
+												 onPress={() => this.uploadRecords(item)}
+											>
+											{/* <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-call' : 'ios-call'} /> */}
+											<Text style={[styles.buttonText1, { marginLeft: -10 }]}>Upload Records</Text>
+										</Button>
+										</Row> : item.emr_details ?
+											<Row style={{ marginLeft: '22%' }} >
+											<Button primary  style={[styles.actionButton, { backgroundColor: '#08BF01' }]}
+													 onPress={() => this.viewRecored(item.emr_details )}
+												>
+												{/* <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-call' : 'ios-call'} /> */}
+												<Text style={[styles.buttonText1, { marginLeft: -10 }]}>view Records</Text>
+											</Button>
+											</Row>:
+										null
+							}
 						</Col>
-                        <Col size={7}>
-                            <Text style={styles.docNameText}>{getName(item.doctorInfo)} </Text>
-                            <Text note style={styles.docNameText}>Rs. {item.fee}</Text>
-                        </Col>
-                    </Row>
-                     {
-                        item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.APPROVED && loggedIntoConnectyCube ? 
-                            <Row style={{ marginLeft: '22%' }} >
-                                <Button primary iconLeft style={[styles.actionButton, { backgroundColor: '#08BF01'  }]} 
-                                     onPress={() => this.callDoctor(item)}>
-								    <Icon style={{ marginTop: -5}} name={IS_ANDROID ? 'md-call' : 'ios-call' }  />
-                                    <Text style={[styles.buttonText1, {  marginLeft: -10  }]}>Call</Text>
-							    </Button>
-                            </Row>
-                        : null    
-                        }
-                    </Col>
-                    <Col style={{ width: '20%', alignItems: 'center' }}>
-                        <Icon name={STATUS_VALUE_DATA[item.status].icon} 
-                              style={{ color: STATUS_VALUE_DATA[item.status].color, fontSize: 35, alignItems: 'center', justifyContent: 'center' }} 
-                        />
-                        <Text style={[styles.buttonText1, { color: STATUS_VALUE_DATA[item.status].color }]}>{STATUS_VALUE_DATA[item.status].statusText}</Text>
-                    
-                    </Col>
-                    </Row>
-                    <Row style={{alignItems:'center',marginBottom:5,justifyContent:'center'}}>
-                        <Text style={[styles.statusText, {color: STATUS_VALUE_DATA[item.status].color }]}>{STATUS_VALUE_DATA[item.status].text}</Text> 
-                    </Row>
-                    
-                </Grid>
-            </Card>
-        )
-    }
-    render() {
-		const { isLoading, consultaionData } = this.state; 
-		// alert(JSON.stringify(consultaionData))
-        return (
-            <Container style={styles.container}>
-                <Content style={{ padding: 10 }}>
-                <Spinner
-					visible={isLoading} 
+						<Col style={{ width: '20%', alignItems: 'center' }}>
+							<Icon name={STATUS_VALUE_DATA[item.status].icon}
+								style={{ color: STATUS_VALUE_DATA[item.status].color, fontSize: 35, alignItems: 'center', justifyContent: 'center' }}
+							/>
+							<Text style={[styles.buttonText1, { color: STATUS_VALUE_DATA[item.status].color }]}>{STATUS_VALUE_DATA[item.status].statusText}</Text>
+
+						</Col>
+					</Row>
+					{item.consultation_description ? 
+					 <View> 
+				
+
+					<Row style={{ alignItems: 'center', marginBottom: 5, justifyContent: 'center' }}>
+				
+								<Text style={{
+								color: STATUS_VALUE_DATA[item.status].color, fontFamily: 'OpenSans',
+								fontSize: 14
+							}}>{"consultation discription :"}</Text>
+					</Row>
+					<Row style={{ alignItems: 'center', marginBottom: 5, justifyContent: 'center' }}>
+						<Text style={{
+							color: 'grey', fontFamily: 'OpenSans',
+				fontSize: 14
+			}}>{item.consultation_description}</Text>
+	
+	</Row>
+				
+					<Row style={{ alignItems: 'center', marginBottom: 5, justifyContent: 'center' }}>
+						<Text style={[styles.statusText, { color: STATUS_VALUE_DATA[item.status].color }]}>{STATUS_VALUE_DATA[item.status].text}</Text>
+					</Row>
+					</View> :null}
+
+
+				</Grid>
+			</Card>
+		)
+	}
+	render() {
+		const { isLoading, consultaionData } = this.state;
+		
+		return (
+			<Container style={styles.container}>
+				<Content style={{ padding: 10 }}>
+					<Spinner
+						visible={isLoading}
+					/>
+					 <NavigationEvents
+                  onWillFocus={payload => { this.backNavigation(payload) }}
                 />
 
-                {consultaionData.length === 0 && isLoading === false ?
-					<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
-						<Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
-							No Consultations
-						</Text>
-                    </View> : 
-                	<FlatList
-                        data={consultaionData}
-                        extraData={[consultaionData]}
-                        ref={(ref) => { this.flatListRef = ref; }}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item, index }) =>
-                            this.renderConsultaions(item, index)
-                    }/>
-                }
 
-                </Content>
-            </Container>
-        )
-    }
-} 
+					{consultaionData.length === 0 && isLoading === false ?
+						<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
+							<Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
+								No Consultations
+						</Text>
+						</View> :
+						<FlatList
+							data={consultaionData}
+							extraData={[consultaionData]}
+							ref={(ref) => { this.flatListRef = ref; }}
+							keyExtractor={(item, index) => index.toString()}
+							renderItem={({ item, index }) =>
+								this.renderConsultaions(item, index)
+							} />
+					}
+
+				</Content>
+			</Container>
+		)
+	}
+}
 const styles = StyleSheet.create({
-    container: {
-        flex:1
-    },
-    mainCard: {
-        padding: 5,
+	container: {
+		flex: 1
+	},
+	mainCard: {
+		padding: 5,
 		borderRadius: 10,
 		marginBottom: 20,
-		
+
 	},
 	dateText: {
 		fontFamily: 'OpenSans',
 		fontSize: 12,
-    },
-    docNameText: {
+	},
+	docNameText: {
 		fontFamily: 'OpenSans',
 		fontSize: 16,
 		fontWeight: 'bold',
 		width: '60%'
-    },
-    statusText: {
+	},
+	statusText: {
 		fontFamily: 'OpenSans',
 		fontSize: 16,
 		fontWeight: 'bold',
-		textAlign:'center'
+		textAlign: 'center'
 	},
 	genderText: {
 		fontFamily: 'OpenSans',
@@ -211,39 +292,39 @@ const styles = StyleSheet.create({
 		fontStyle: 'italic',
 		width: '60%'
 	},
-    diseaseText: {
+	diseaseText: {
 		fontFamily: 'OpenSans',
 		fontSize: 14,
 		marginLeft: 10,
 		fontStyle: 'italic',
 		marginTop: -5
-    },
-    actionButton: {
-       borderRadius: 3,
-        height: 30,
+	},
+	actionButton: {
+		borderRadius: 3,
+		height: 30,
 		backgroundColor: '#08BF01',
 		justifyContent: 'center'
-    },
-    actionButtonCancel: {
-        borderRadius: 3,
-         height: 30,
-         backgroundColor: '#ff0000',
-         justifyContent: 'center'
-     },
-    buttonText1: {
+	},
+	actionButtonCancel: {
+		borderRadius: 3,
+		height: 30,
+		backgroundColor: '#ff0000',
+		justifyContent: 'center'
+	},
+	buttonText1: {
 		fontFamily: 'OpenSans',
 		fontSize: 12,
 		textAlign: 'center',
 		fontWeight: 'bold',
 		color: '#fff',
-		
-    },
+
+	},
 
 
 
 
 
-    segButton: {
+	segButton: {
 		justifyContent: 'center',
 		paddingBottom: -10,
 		paddingTop: -10,
@@ -287,11 +368,11 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		fontWeight: 'bold'
 	},
-	
-	
-	
 
-	
+
+
+
+
 	buttonText: {
 		fontFamily: 'OpenSans',
 		fontSize: 12,
@@ -359,7 +440,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		padding: 10
 	},
-	
+
 })
 function homeState(state) {
 	return {

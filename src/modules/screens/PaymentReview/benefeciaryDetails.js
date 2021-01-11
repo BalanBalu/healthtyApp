@@ -24,7 +24,7 @@ class BenefeciaryDetails extends PureComponent {
 
     render() {
         const { expand, data } = this.props;
-        // console.log('benificeryDetails', data)
+        
         if (!expand) return null;
         return (
 

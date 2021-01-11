@@ -16,7 +16,8 @@ class Locations extends PureComponent {
             popularLocations: [],
             isLoading: false,
             pressStatus: false,
-            selectedItem: 0
+            selectedItem: 0,
+            CorporateUser: false
         }
     }
 
@@ -138,7 +139,7 @@ class Locations extends PureComponent {
                                                 }
                                                 store.dispatch(data)
                                                 AsyncStorage.setItem('manuallyEnabledLocation', JSON.stringify(data))
-                                       
+
                                                 this.props.navigation.pop()
                                             }}
                                             button>
@@ -159,8 +160,15 @@ class Locations extends PureComponent {
                     <TouchableOpacity style={styles.fab} onPress={async () => {
                         await AsyncStorage.removeItem('manuallyEnabledLocation');
                         CurrentLocation.getCurrentPosition();
-                        this.props.navigation.navigate("Home");
+                        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
                        
+                        this.setState({ CorporateUser: isCorporateUser })
+                        const { CorporateUser } = this.state
+                        if (CorporateUser === true) {
+                            this.props.navigation.navigate('CorporateHome');
+                        } else {
+                            this.props.navigation.navigate('Home');
+                        }
                     }}>
                         <Icon name="locate" style={styles.text}></Icon>
                     </TouchableOpacity>

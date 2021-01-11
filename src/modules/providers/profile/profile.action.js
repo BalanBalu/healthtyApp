@@ -45,7 +45,7 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
     }
 
   } catch (e) {
-    console.log(e);
+ 
     store.dispatch({
       type: PROFILE_ERROR,
       message: e
@@ -80,7 +80,7 @@ export async function userReviews(id, type, isLoading = true) {
       isLoading
     })
     let endPoint = 'user/reviews/' + type + '/' + id;
-    console.log(endPoint);
+    
     let response = await getService(endPoint);
 
 
@@ -113,9 +113,9 @@ export async function insertLikesDataForReviews(reviewId, reviewerId, reactionDa
   try {
     let endPoint = 'review/reaction/' + reviewId + '/' + reviewerId;
     let response = await putService(endPoint, reactionData);
-    console.log('response' + response);
+    
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData));
+    
 
     return respData;
   }
@@ -149,10 +149,9 @@ export async function bloodDonationFilter(data) {
   try {
     let endPoint = '/bloodDonors/filters';
     let response = await postService(endPoint, data);
-    console.log('response' + response);
-    console.log(JSON.stringify(response))
+   
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData));
+   
     return respData;
   }
   catch (e) {
@@ -181,10 +180,10 @@ export async function getCurrentVersion(type) {
 
 
 export const getReferalPoints = async (userId) => {
-  let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob"
+  let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob,is_corporate_user"
   let result = await fetchUserProfile(userId, fields);
  
-  console.log("result.is_mobile_verified", result.is_mobile_verified)
+ 
   if (result) {
     store.dispatch({
       type: AVAILABLE_CREDIT_POINTS,
@@ -197,18 +196,35 @@ export const getReferalPoints = async (userId) => {
       })
     }
     NotifService.updateDeviceToken(userId);
+   
     if (result.mobile_no == undefined) {
-      return {
-        hasProfileUpdated: false,
-        updateMobileNo: true
+      if (result.is_corporate_user) {
+        return {
+          hasProfileUpdated: false,
+          updateMobileNo: false
+        }
+      } else {
+        return {
+          hasProfileUpdated: false,
+          updateMobileNo: true
+        }
       }
     }
     else if (!result.is_mobile_verified) {
-      return {
-        hasProfileUpdated: false,
-        hasOtpNotVerified: true,
-        mobile_no: result.mobile_no,
-        email: result.email
+      if (result.is_corporate_user) {
+        return {
+          hasProfileUpdated: false,
+          hasOtpNotVerified: false,
+          mobile_no: result.mobile_no,
+          email: result.email
+        }
+      } else {
+        return {
+          hasProfileUpdated: false,
+          hasOtpNotVerified: true,
+          mobile_no: result.mobile_no,
+          email: result.email
+        }
       }
     }
 
@@ -273,14 +289,17 @@ export async function getPolicYDetailsByid(corporateUserId) {
 
 
 //medicalRecords
-export async function getMedicalRecords(userId,skip,limit) {
+export async function getMedicalRecords(userId,skip,limit,searchKey) {
   try {
     let endPoint = `/appointments/electrical_medical_records/user/${userId}`;
     
     if(limit){
       endPoint=endPoint+`?skip=${skip}&limit=${limit}`
     }
-    console.log(endPoint)
+    if (searchKey) {
+      endPoint=endPoint+`?searchKey=${searchKey}`
+    }
+
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;

@@ -23,7 +23,6 @@ class LabCategories extends PureComponent {
   getLabCategories = async () => {
     try {
       const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
-      console.log("locationCordinates", isLocationSelected)
       if (!isLocationSelected) {
         Alert.alert(
           "Location Warning",
@@ -42,7 +41,7 @@ class LabCategories extends PureComponent {
         "maxDistance": MAX_DISTANCE_TO_COVER
       }
       let result = await getLabTestCateries(JSON.stringify(locationData));
-      console.log("result", result)
+    
       if (result.success) {
         this.setState({ labData: result.data });
         this.mainLabData = result.data;
@@ -54,7 +53,7 @@ class LabCategories extends PureComponent {
   }
   onPressCatItem = async (type, value) => {	
     const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
-    console.log("locationCordinates", locationCordinates)
+  
     if (!isLocationSelected) {
       Alert.alert(
         "Location Warning",
@@ -89,7 +88,7 @@ class LabCategories extends PureComponent {
 
 
   filterCategories(searchValue) {
-    console.log("this.mainLabData", this.mainLabData);
+    
     const { labData } = this.state;
     if (searchValue === searchValue.replace(/^[^*|\":<>[\]{}`\\()'; @& $]+$/)) {
       return [];
@@ -159,7 +158,7 @@ class LabCategories extends PureComponent {
                       }}
                     />
                     <Text style={styles.mainText}>{item.lab_test_category_info.category_name}</Text>
-                    <Text style={styles.subText}>package starts from</Text>
+                    <Text style={styles.subText}>Package starts from</Text>
                     <Row>
                       <Text style={styles.rsText}> {item.minPriceWithoutOffer != item.minPriceWithOffer ?('₹'+item.minPriceWithoutOffer):null}</Text>
                       <Text style={styles.finalRs}>₹ {Math.round(item.minPriceWithOffer)}</Text>

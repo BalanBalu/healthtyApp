@@ -110,9 +110,9 @@ export class labInsertReviews extends Component {
                     <Grid style={{
                         backgroundColor: '#fff',
                         position: 'absolute',
-                        bottom: 12,
+                        bottom: 5,
                         marginLeft:10,
-                        marginRight:10
+                        marginRight:10,
                     }}>
                         <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                             <Left>
@@ -126,7 +126,7 @@ export class labInsertReviews extends Component {
 
                             <Row style={{ marginTop: 20 }}>
                                 <Left style={{ marginLeft: 20 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Cleanliness</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Service quality</Text>
                                 </Left>
                                 <Right style={{ marginRight: 20 }}>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 50 }}
@@ -191,7 +191,7 @@ export class labInsertReviews extends Component {
                                 <TextInput
                                     style={{ height: 80, borderWidth: 1, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
                                     returnKeyType={'next'}
-                                    placeholder="Write Your Reviews"
+                                    placeholder="Write your reviews"
                                     multiline={true}
                                     keyboardType={'default'}
                                     textAlignVertical={'top'}
@@ -202,7 +202,7 @@ export class labInsertReviews extends Component {
                             </View>
                         </View>
 
-                        <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, }}>
+                        <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, marginBottom:10 }}>
 
                             <Col style={{ width: '50%' }}>
                             </Col>

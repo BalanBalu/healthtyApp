@@ -8,6 +8,9 @@ import SplashScreen from 'react-native-splash-screen';
 class AuthLoadingScreen extends React.Component {
    constructor (props) {
     super(props);
+    this.state = {
+      CorporateUser: false
+  };
     this._bootstrapAsync();
   }
   
@@ -20,7 +23,14 @@ class AuthLoadingScreen extends React.Component {
         await setUserLocally(token, user);
       }
     }
-    this.props.navigation.navigate(token ? 'App' : 'App');
+    const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+    this.setState({ CorporateUser:isCorporateUser })
+    const { CorporateUser } = this.state
+    if (CorporateUser === true) {
+    this.props.navigation.navigate('CorporateHome');
+    }else{
+      this.props.navigation.navigate('Home');  
+    }
     SplashScreen.hide();
     store.dispatch({
       type: APP_LOADED

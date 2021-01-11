@@ -55,7 +55,7 @@ class LabConfirmation extends Component {
         }
         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
         this.setState({ isCorporateUser });
-        console.log('packageDetails', this.state.packageDetails);
+        
         await this.getUserProfile();
     }
 
@@ -169,7 +169,7 @@ class LabConfirmation extends Component {
                 this.timeText = formatDate(response.data[0].appointment_starttime, 'hh:mm A')
                 Alert.alert(
                     "Appointment Warning",
-                    `You already booked for the same Lab on ${this.timeText}, You want to book the appointment to continue`,
+                    `You have already booked for a lab appointment at  ${this.timeText}.Do you want to continue booking?`,
                     [
                         { text: "Cancel" },
                         {
@@ -323,7 +323,7 @@ class LabConfirmation extends Component {
             }
         }
         catch (e) {
-            console.log(e);
+         
             Toast.show({
                 text: 'Exception While Creating the Appointment' + e,
                 type: "danger",
@@ -484,7 +484,7 @@ class LabConfirmation extends Component {
                         </View> :
                         null}
 
-                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5,marginBottom:20 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Package Details</Text>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>

@@ -25,11 +25,9 @@ class NextAppoinmentPreparation extends PureComponent {
 
     }
     async componentDidMount() {
-        try {
+   
             await this.upCommingNextAppointment()
-        } catch (ex) {
-            console.log(ex)
-        }
+       
     }
 
     upCommingNextAppointment = async () => {
@@ -57,9 +55,9 @@ class NextAppoinmentPreparation extends PureComponent {
                 let tomorrowDate = formatDate(currentDate.toISOString(), "dddd,MMMM DD-YYYY")
                let updatedDate = '';
                 if (currentDataFormat == dateData) {
-                    updatedDate =  "Today";
+                    updatedDate =  "today";
                 } else if (tomorrowDate == dateData) {
-                    updatedDate =  "Tomorrow";
+                    updatedDate =  "tomorrow";
                 } else {
                     updatedDate = dateData;
                 }
@@ -91,7 +89,7 @@ class NextAppoinmentPreparation extends PureComponent {
                                     fontSize: 15,
                                     fontWeight: 'bold'
                                 }
-                                }>You have an Appointment on {updatedDate}</Text>
+                                }>You have an appointment on {updatedDate}</Text>
                             </Left>
                         </Row>
 
@@ -157,7 +155,7 @@ class NextAppoinmentPreparation extends PureComponent {
                                                 marginRight: 15,
                                                 fontWeight: '500',
                                             }}>
-                                                You  have  an  Appointment   with   {(AppoinmentData.prefix != undefined ? AppoinmentData.prefix + ' ' : '') + getName(AppoinmentData.doctorInfo)}  and  is  scheduled  at {formatDate(AppoinmentData.appointment_starttime, "hh:mm a")}.Please  prepare  for  the  Appointment
+                                                You  have  an  Appointment   with   {(AppoinmentData.prefix != undefined ? AppoinmentData.prefix + ' ' : '') + getName(AppoinmentData.doctorInfo)} scheduled  at {formatDate(AppoinmentData.appointment_starttime, "hh:mm a")}.Please plan accordingly !
                     </Text>
 
                                         </Col>

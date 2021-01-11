@@ -27,16 +27,16 @@ class RenderOtpInput extends Component {
             this.setState({ fromProfile: true, verifyData })
         }
         // this.setState({ isLoading: true });
-        console.log(this.props.user)
+   
         if(loginData.userEntry  === null && this.props.user && this.props.user.details) {
             loginData.userEntry = this.props.user.details.email
         }
-        console.log(loginData);
+    
         let requestData = {
             appType: 'user',
             userEntry: loginData.userEntry 
         }
-        console.log("requestData" + JSON.stringify(requestData))
+        
         await this.setState({ requestData });
         await this.generateOtpCode();
         this.setState({ isLoading: false });
@@ -63,13 +63,13 @@ class RenderOtpInput extends Component {
                 reqDataForGenerateOtpCode.is_corporate_user = true;
             }
             if (this.state.fromProfile) {
-                console.log("userId:::"+userId)
+            
                 reqOtpResponse = await generateOtpForEmailAndMobile(reqDataForGenerateOtpCode, userId)
             } else {
                 reqOtpResponse = await generateOtpCodeForCreateAccount(reqDataForGenerateOtpCode) //  Generate OTP code for Create DR medflic Account
             }
             if (reqOtpResponse.success == true) {
-                console.log(reqOtpResponse);
+            
                 await this.setState({ isGeneratedOtp: true, reqOtpResponseObject: reqOtpResponse });
             } else {
                 this.setState({ errorMsg: JSON.stringify(reqOtpResponse.error) + "  Go Back to Sign In Page", reqOtpResponseObject: reqOtpResponse })

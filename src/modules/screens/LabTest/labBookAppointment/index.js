@@ -109,7 +109,7 @@ class LabBookAppointment extends Component {
         endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
       }
       const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-      console.log("resultSlotsData", resultSlotsData);
+     
       
       if (resultSlotsData.success) {
         const availabilityData = resultSlotsData.data;
@@ -214,7 +214,7 @@ class LabBookAppointment extends Component {
     const { labInfo, labCatInfo } = labData;
     if (!selectedSlotItem) {
       Toast.show({
-        text: 'Please Select a Slot to continue booking',
+        text: 'Please select a slot to continue booking',
         type: 'warning',
         duration: 3000
       })

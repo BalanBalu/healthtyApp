@@ -167,7 +167,7 @@ export class AddToCard extends Component {
                         backgroundColor: '#fff',
                         position: 'absolute',
                         bottom: 0,
-                        marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey', width: '95%', paddingBottom: 15, padding: 10
+                        marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey', width: '95%', paddingBottom: 15, padding: 10,marginBottom:5
                     }}>
                         <Row >
                             <Col size={7}>

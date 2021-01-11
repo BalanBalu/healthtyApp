@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, View, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, Row } from 'native-base';
 import { AsyncStorage, ScrollView } from 'react-native';
-import { updateNewPassword } from '../../providers/auth/auth.actions';
+import { updateNewPassword,updateSmartNewPassword } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import styles from './style.js'
 import Spinner from '../../../components/Spinner';
@@ -53,7 +53,17 @@ class UpdatePassword extends Component {
                 oldPassword: this.state.oldPassword,
                 newPassword: this.state.newPassword
             };
-
+            let is_corporate_user = await AsyncStorage.getItem('is_corporate_user')||null
+            if (is_corporate_user) {
+                let memberId = await AsyncStorage.getItem('memberId')||null
+                let smartData = {
+                    userType: 'MEMBER',
+                    userId: memberId,
+                    oldPassword: this.state.oldPassword,
+                    newPassword: this.state.newPassword
+                };
+                updateSmartNewPassword(smartData);
+            }
             let result = await updateNewPassword(data);
             if (result.success) {
                 await Toast.show({

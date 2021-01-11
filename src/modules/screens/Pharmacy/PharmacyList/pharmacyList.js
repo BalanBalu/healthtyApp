@@ -12,7 +12,8 @@ class PharmacyList extends Component {
         super(props)
         this.state = {
             isLoading: true,
-            pharmacyData: []
+            pharmacyData: [],
+            PharmacyName:''
         }
     }
     componentDidMount() {
@@ -24,14 +25,13 @@ class PharmacyList extends Component {
         try {
             this.setState({ isLoading: true })
             const { bookappointment: { locationCordinates } } = this.props;
-            locationData = {
+            let locationData = {
                 "coordinates": locationCordinates,
                 "maxDistance": MAX_DISTANCE_TO_COVER
             }
             const userId = await AsyncStorage.getItem('userId')
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
-            console.log('JSON.stringify(result)==============================pharmacylist')
-            console.log(JSON.stringify(result))
+          
             this.setState({ isLoading: false })
            
             if (result.success) {
@@ -51,16 +51,32 @@ class PharmacyList extends Component {
     }
     render() {
         const { isLoading, pharmacyData } = this.state;
+       
         const { bookappointment: { locationCordinates } } = this.props;
         return (
             <Container style={{ backgroundColor: '#f2f2f2' }}>
                 <Content style={{ padding: 10 }}>
-                    <View>
+                <View style={{ flex: 1, }}>
+                    <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, borderWidth: 1, borderColor: 'gray' }}>
+                            <Input
+                                placeholder='Search Pharmacies'
+                                style={{ fontSize: 12, width: '300%' }}
+                                placeholderTextColor="#909894"
+                                keyboardType={'default'}
+                                returnKeyType={'go'}
+                                value={this.state.PharmacyName}
+                                autoFocus={true}
+                                // onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
+                                multiline={false} />
+                            <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+                            </TouchableOpacity>
+                        </Item>
                         <FlatList
                             data={pharmacyData}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) =>
-                                <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10,borderRadius: 2.5, }}>
+                                <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10,borderRadius: 5, }}>
                                     <Row onPress={() => this.goPharmacyMedicineList(item)}
                                     style={{ paddingBottom: 2 }}>
                                         <Col size={2}>

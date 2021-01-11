@@ -34,8 +34,8 @@ class EmrInfo extends PureComponent {
         try {
        
 
-          
-                this.props.navigation.navigate('MedicineRecords',{fromNavigation:'APPOINTMENT_PREPARE',prevState:this.props.navigation.state});
+
+                this.props.navigation.navigate('Health Records',{fromNavigation:'APPOINTMENT_PREPARE',prevState:this.props.navigation.state});
             
         }
         catch (e) {
@@ -50,15 +50,15 @@ class EmrInfo extends PureComponent {
             const { appointmentId,data } = this.state
                  if(data.length!==0){
             let reqData = {
-                emr_detail_ids: data,
+                emr_details: data,
             
             }
-            console.log(data);
+         
             this.setState({ isLoading: true })
             let response = await prepareAppointmentUpdate(appointmentId, reqData)
 
             
-            console.log(response);
+            
             if (response.success) {
                 toastMeassage(response.message,'success',3000)
               
@@ -82,8 +82,17 @@ class EmrInfo extends PureComponent {
 
   
     backNavigation = async (navigationData) => {
-    let data=	this.props.navigation.getParam('emrData')||[]
-    this.setState({data})
+        let data = this.props.navigation.getParam('emrData') || []
+        let temp=[]
+        if (data.length !== 0) {
+            data.forEach(ele => {
+                temp.push({
+                    emr_id: ele,
+                    emr_update_type:"USER"
+                })
+            })
+        }
+    this.setState({data:temp})
     
 		
 	}

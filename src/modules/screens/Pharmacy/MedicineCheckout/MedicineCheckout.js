@@ -133,7 +133,7 @@ class MedicineCheckout extends Component {
     onProceedToPayment(navigationToPayment) {
 
         const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, deliveryDetails, pharmacyInfo, h1ProductData } = this.state;
-
+      
         let isH1Product = false
 
         if (medicineDetails.length === 0 && isPrescription === false) {
@@ -179,16 +179,20 @@ class MedicineCheckout extends Component {
                 return ele.item.totalPrice
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
+               
+        }
+        if (!Number.isInteger(amount)) {
+            amount=  Number(amount).toFixed(2)
         }
 
         const paymentPageRequestData = {
 
             service_type: SERVICE_TYPES.PHARMACY,
-            amount: amount,
+            amount: Number(amount),
             bookSlotDetails: {
-                fee: amount,
+                fee: Number(amount),
                 medicineDetails: medicineOrderData,
-                totalAmount: amount,
+                totalAmount: Number(amount),
                 deliveryType: itemSelected,
                 delivery_address: {
                     mobile_no: selectedAddress.mobile_no || mobile_no || BASIC_DEFAULT.mobile_no,
@@ -365,11 +369,11 @@ class MedicineCheckout extends Component {
                 freeStyleCropEnabled: true,
             }).then(image => {
                 this.setState({ isH1Product: false });
-                console.log(image);
+            
                 this.uploadImageToServer(image);
             }).catch(ex => {
                 this.setState({ isH1Product: false });
-                console.log(ex);
+              
             });
         } else {
             ImagePicker.openPicker({
@@ -380,13 +384,13 @@ class MedicineCheckout extends Component {
                 freeStyleCropEnabled: true,
                 avoidEmptySpaceAroundImage: true,
             }).then(image => {
-                console.log(image);
+                
 
                 this.setState({ isH1Product: false });
                 this.uploadImageToServer(image);
             }).catch(ex => {
                 this.setState({ isH1Product: false });
-                console.log(ex);
+               
             });
         }
     }
@@ -423,6 +427,7 @@ class MedicineCheckout extends Component {
                 let temp = this.state.h1ProductData;
                 let data = temp.concat(response.data)
 
+
                 await this.setState({ h1ProductData: data, isH1Product: false })
 
                 Toast.show({
@@ -446,7 +451,7 @@ class MedicineCheckout extends Component {
                 duration: 3000,
                 type: 'danger'
             });
-            console.log(e);
+          
         }
     }
 
@@ -670,9 +675,11 @@ class MedicineCheckout extends Component {
                                 renderItem={({ item, index }) =>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={9}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>
-                                                {item.file_name}
-                                            </Text>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: 'prescription' })}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>
+                                                    {item.file_name}
+                                                </Text>
+                                            </TouchableOpacity>
                                         </Col>
 
                                         <Col size={1} style={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
@@ -693,7 +700,7 @@ class MedicineCheckout extends Component {
                     <AwesomeAlert
                         show={false}
                         showProgress={false}
-                        title={`you have choose a prescription mentory product kindly upload prescription`}
+                        title={`You have chosen a prescription mandatory product.Kindly upload a prescription`}
                         closeOnTouchOutside={false}
                         closeOnHardwareBackPress={true}
                         showCancelButton={true}
@@ -732,7 +739,7 @@ class MedicineCheckout extends Component {
                             }}>
 
 
-                                <Text style={{ fontSize: 22, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> you have choose a prescription mentory product kindly upload prescription  </Text>
+                                <Text style={{ fontSize: 22, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}>You have chosen a prescription mandatory product.Kindly upload a prescription</Text>
                                 {/* </Item> */}
 
                                 <Button transparent style={{ paddingTop: 5, paddingBottom: 5, marginTop: 20 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
@@ -758,29 +765,30 @@ class MedicineCheckout extends Component {
                     </Modal>
 
                 </Content>
-                <Footer style={
-                    Platform.OS === "ios" ?
-                        { height: 40 } : { height: 45 }}>
-                    <FooterTab>
-                        <Row>
-                            <Col size={5} style={{ backgroundColor: '#fff' }}>
-                                <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
-                                    <TouchableOpacity style={styles.buttonTouch} onPress={() => this.processToPayLater()} >
-                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 0 ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
-                                    </TouchableOpacity>
-                                </Row>
-                            </Col>
-                            {isPrescription === false && medicineTotalAmountwithDeliveryChage ?
-                                <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
+                {isPrescription === false && this.state.medicineDetails.length === 0 ? null :
+                    <Footer style={
+                        Platform.OS === "ios" ?
+                            { height: 40 } : { height: 45 }}>
+                        <FooterTab>
+                            <Row>
+                                <Col size={5} style={{ backgroundColor: '#fff' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
-                                        <TouchableOpacity style={styles.buttonTouch} onPress={() => this.onProceedToPayment(true)}>
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
+                                        <TouchableOpacity style={styles.buttonTouch} onPress={() => this.processToPayLater()} >
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 0 ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
                                         </TouchableOpacity>
                                     </Row>
-                                </Col> : null}
-                        </Row>
-                    </FooterTab>
-                </Footer>
+                                </Col>
+                                {isPrescription === false && medicineTotalAmountwithDeliveryChage ?
+                                    <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
+                                        <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
+                                            <TouchableOpacity style={styles.buttonTouch} onPress={() => this.onProceedToPayment(true)}>
+                                                <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
+                                            </TouchableOpacity>
+                                        </Row>
+                                    </Col> : null}
+                            </Row>
+                        </FooterTab>
+                    </Footer>}
 
 
             </Container >

@@ -12,7 +12,7 @@ import { formatDate, addTimeUnit, subTimeUnit, getAllId, statusValue } from "../
 import { getUserAppointments, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName } from '../../common'
+import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
@@ -108,7 +108,7 @@ class MyAppoinmentList extends Component {
 
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-			
+
 
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
@@ -244,8 +244,8 @@ class MyAppoinmentList extends Component {
 				)
 
 
-				 tempData = this.state.pastData.concat(pastDoctorDetails)
-				
+				tempData = this.state.pastData.concat(pastDoctorDetails)
+
 
 			}
 			await this.setState({
@@ -272,6 +272,7 @@ class MyAppoinmentList extends Component {
 		this.setState({ modalVisible: false });
 		if (val.updatedVisible == true) {
 			await this.setState({ skip: 0, pastData: [] })
+			toastMeassage('Thank you for your valuable feedback', 'success', 3000)
 			await this.pastAppointment();
 		}
 	}
@@ -304,8 +305,8 @@ class MyAppoinmentList extends Component {
 
 		}
 
-		this.setState({
-			...this.state,
+		await this.setState({
+
 			data,
 			isLoading: false
 
@@ -324,7 +325,6 @@ class MyAppoinmentList extends Component {
 	}
 	handleLoadMore = async () => {
 		if (!this.onEndReachedCalledDuringMomentum) {
-			console.log('On Hanndle loading ' + this.state.skip);
 
 			this.onEndReachedCalledDuringMomentum = true;
 			await this.setState({ skip: this.state.skip + this.state.limit, footerLoading: true });
@@ -346,7 +346,14 @@ class MyAppoinmentList extends Component {
 
 		}
 	}
-
+	async navigateToHomeOrCorporate() {
+		let corporateUser = await AsyncStorage.getItem("is_corporate_user") || null;
+		if (corporateUser) {
+			this.props.navigation.navigate('CorporateHome',{fromAppointment: true});
+		} else {
+			this.props.navigation.navigate("Home", { fromAppointment: true })
+		}
+}
 	renderFooter() {
 		return (
 			//Footer View with Load More button
@@ -375,7 +382,7 @@ class MyAppoinmentList extends Component {
 				<NavigationEvents
 					onWillFocus={payload => { this.backNavigation(payload) }}
 				/>
-				<Card transparent>
+				<Card transparent >
 					<SegmentedControlTab
 						tabsContainerStyle={{
 							width: 250,
@@ -429,7 +436,7 @@ class MyAppoinmentList extends Component {
 									<Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
 										<Button style={[styles.bookingButton, styles.customButton]}
 											onPress={() =>
-												this.props.navigation.navigate("Home", { fromAppointment: true })
+												this.navigateToHomeOrCorporate()
 											} testID='navigateToHome'>
 											<Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
 										</Button>
@@ -470,24 +477,17 @@ class MyAppoinmentList extends Component {
 
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Col size={9}>
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																		{getDoctorNameOrHospitalName(item.appointmentResult)}
-																	</Text>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>{getDoctorNameOrHospitalName(item.appointmentResult)}</Text>
 																	<Text
 																		style={{
 																			fontFamily: "OpenSans",
 																			fontSize: 13,
 																			marginTop: "1%"
 																		}}
-																	>
-																		{item.degree}
-																	</Text>
+																	>{item.degree}</Text>
 																</Col>
 																<Col size={1}>
-
 																</Col>
-
-
 															</Row>
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Text
@@ -529,7 +529,8 @@ class MyAppoinmentList extends Component {
 															{selectedIndex == 1 &&
 																item.appointmentResult.appointment_status == "COMPLETED" && (item.appointmentResult.is_review_added == undefined || item.appointmentResult.is_review_added == false) ? (
 																	<Row style={{ borderBottomWidth: 0 }}>
-																		<Right style={(styles.marginRight = -2)}>
+																		<Col size={1} ></Col>
+																		<Col size={4} >
 																			<Button
 																				style={styles.shareButton}
 																				onPress={() => this.navigateAddReview(item, index)}
@@ -539,32 +540,46 @@ class MyAppoinmentList extends Component {
 																				<Text style={styles.bookAgain1}>
 
 																					Add Review
-																</Text>
-																			</Button></Right>
+                                                                                </Text>
+																			</Button>
+																		</Col>
 
-																		<Right style={(styles.marginRight = 5)}>
+
+																		<Col size={4} style={{ marginLeft: 5 }}>
 
 																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
 																				<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
 																					Book Again
-																</Text>
+                                                                               </Text>
 																			</Button>
-																		</Right>
+																		</Col>
 																	</Row>
+
+
+
+
 
 																) : (
 																	selectedIndex === 1 && (
 
 
 																		<Row style={{ borderBottomWidth: 0 }}>
-																			<Right style={(styles.marginRight = 10)}>
+																			<Col size={6} style={(styles.marginRight = 10)}>
+
+																			</Col>
+																			<Col size={4} style={(styles.marginRight = 10)}>
 																				<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																					<Text style={styles.bookAgain1}>
 																						Book Again
-																		           </Text>
+																			   </Text>
 																				</Button>
-																			</Right>
+																			</Col>
 																		</Row>
+
+
+
+
+
 
 																	)
 																)}
@@ -598,13 +613,14 @@ class MyAppoinmentList extends Component {
 export default MyAppoinmentList;
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#ffffff",
+		// backgroundColor: "#ffffff",
 		margin: 10
 	},
 	bookAgain1: {
 		fontSize: 13,
 		fontFamily: 'OpenSans',
-		fontWeight: 'bold'
+		fontWeight: 'bold',
+		textAlign: 'center'
 	},
 	bodyContent: {
 		padding: 5
@@ -618,7 +634,7 @@ const styles = StyleSheet.create({
 		height: 30,
 		color: "white",
 		fontSize: 12,
-		textAlign: "center"
+		justifyContent: 'center'
 	},
 	bookingAgainButton: {
 		marginTop: 12,
@@ -642,7 +658,8 @@ const styles = StyleSheet.create({
 		height: 30,
 		color: "white",
 		fontSize: 12,
-		textAlign: "center"
+		justifyContent: 'center'
+
 	},
 	customButton: {
 		alignItems: "center",

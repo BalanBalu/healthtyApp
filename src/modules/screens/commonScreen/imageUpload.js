@@ -31,7 +31,7 @@ export class ImageUpload extends Component {
                 freeStyleCropEnabled: true,
             }).then(image => {
                 this.setState({ selectOptionPoopup: false });
-                console.log(image);
+             
                 this.props.popupVisible({
                     success:true,
                     image:image
@@ -43,7 +43,7 @@ export class ImageUpload extends Component {
                     success:false,
                     error:ex
                   });
-                console.log(ex);
+                
             });
         } else {
             ImagePicker.openPicker({
@@ -55,7 +55,7 @@ export class ImageUpload extends Component {
                 freeStyleCropEnabled: true,
                 avoidEmptySpaceAroundImage: true,
             }).then(image => {
-                console.log(image);
+              
                 this.props.popupVisible({
                     success:true,
                     image:image
@@ -66,7 +66,7 @@ export class ImageUpload extends Component {
                     success:false,
                     error:ex
                   });
-                console.log(ex);
+                
             });
         }
     }

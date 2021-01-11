@@ -3,6 +3,7 @@ import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Le
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from '../CommonAll/styles'
 import {
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
@@ -38,6 +39,7 @@ class DoctorList extends Component {
     selectedSlotIndex4DocIdHostpitalIdToStoreInObj = {};
     selectedSlotItem4DocIdHostpitalIdToStoreInObj = {};
     totalSearchedDoctorIdsArray = [];
+    hospitalAndDoctorIdsArray = [];  // for remove avoid the sponsors doctors with hospital list duplication
     constructor(props) {
         super(props)
         this.state = {
@@ -52,13 +54,13 @@ class DoctorList extends Component {
             isLoading: true,
             isLoadingDatesAndSlots: false,
             isLoadingMoreDocList: false,
-            doctorInfoListAndSlotsData1: [],
         }
         this.conditionFromFilterPage = false,
             this.isEnabledLoadMoreData = true;
         this.selectedDataFromFilterPage = null;
         this.incrementPaginationCount = 0;
         this.onEndReachedIsTriggedFromRenderDateList = false;
+        this.isRenderedTopRatedDocList = false;
     }
     navigateToFilters() {
         this.props.navigation.navigate("Filter Doctor Info", {
@@ -169,10 +171,9 @@ class DoctorList extends Component {
             else {
                 type = 'search';
             }
-            console.log('type=====>', type);
-            // console.log('reqData4ServiceCall=====>', JSON.stringify(reqData4ServiceCall))
+            
             const docListResponse = await searchByDocDetailsService(type, activeSponsor, reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_DOCTORS_LIST);
-            // console.log('docListResponse====>', JSON.stringify(docListResponse));
+            
             if (docListResponse.success) {
                 if (!activeSponsor) {
                     this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
@@ -190,11 +191,18 @@ class DoctorList extends Component {
                         this.totalSearchedDoctorIdsArray.push(item.doctor_id)
                     }
                     if (activeSponsor && item.is_doctor_sponsor) {
+                        this.hospitalAndDoctorIdsArray.push(String(doctorIdHostpitalId));
                         if (!activeSponsorDocIdsArry.includes(item.doctor_id)) {
                             activeSponsorDocIdsArry.push(item.doctor_id)
                         }
                     }
-                    this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
+                    if (!activeSponsor && this.hospitalAndDoctorIdsArray && this.hospitalAndDoctorIdsArray.includes(String(doctorIdHostpitalId))) {
+                       
+                    }
+                    else {
+                        this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
+
+                    }
                 })
                 await Promise.all([
                     ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
@@ -204,10 +212,10 @@ class DoctorList extends Component {
                     this.updateDocSponsorViewersCountByUser(activeSponsorDocIdsArry);
                 }
                 let doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
-                // console.log('doctorInfoList=-==>', activeSponsor, doctorInfoList);
-
                 doctorInfoList.sort(sortByPrimeDoctors);  // Sort by active Sponsors list in TOP
-
+                if (!activeSponsor && docListData.length <= 3) {
+                    this.isEnabledLoadMoreData = false;
+                }
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
@@ -242,7 +250,7 @@ class DoctorList extends Component {
         try {
             await getFavoriteListCount4PatientService(userId);
         } catch (Ex) {
-            console.log('Ex is getting on get Favorites details for Patient====>', Ex)
+          
             return {
                 success: false,
                 statusCode: 500,
@@ -251,7 +259,11 @@ class DoctorList extends Component {
             }
         }
     }
-
+    setDocListByPreviousOrder() {
+        let docList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
+        docList.sort(sortByPrimeDoctors);  // Sort by active Sponsors list in TOP
+        return docList || [];
+    }
     render() {
         const { bookAppointmentData: { doctorInfoListAndSlotsData, } } = this.props;
         const { isLoading, isLoadingMoreDocList } = this.state;
@@ -265,7 +277,8 @@ class DoctorList extends Component {
                     <Row style={{ height: 35, alignItems: 'center' }}>
                         <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(doctorInfoListAndSlotsData)}>
                             <Col size={2.0} >
-                                <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
+                                <MaterialIcons name={this.isRenderedTopRatedDocList ? 'reply'
+                                    : 'keyboard-arrow-down'} style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
@@ -316,7 +329,6 @@ class DoctorList extends Component {
 
     loadMoreData = async () => {
         try {
-            // console.log('calling On End reached=====>');
             this.setState({ isLoadingMoreDocList: true });
             await this.searchByDoctorDetails(false);
         } catch (error) {
@@ -356,7 +368,7 @@ class DoctorList extends Component {
     onPressToContinue4PaymentReview = async (doctorData, selectedSlotItemByDoctor, doctorIdHostpitalId) => {
         if (!selectedSlotItemByDoctor) {
             Toast.show({
-                text: 'Please Select a Slot to continue booking',
+                text: 'Please select a slot to continue booking',
                 type: 'warning',
                 duration: 3000
             })
@@ -389,12 +401,18 @@ class DoctorList extends Component {
     onPressGoToBookAppointmentPage(doctorItemData) {
         this.props.navigation.setParams({ 'conditionFromFilterPage': false });
         doctorItemData.doctorId = doctorItemData.doctor_id;
+        const singleDoctorItemData = { ...doctorItemData };
+        const reqData4BookAppPage = {
+            singleDoctorItemData: singleDoctorItemData,
+            doctorId: doctorItemData.doctor_id,
+            // weekWiseDatesList : this.weekWiseDatesList
+        }
         const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorItemData.doctorIdHostpitalId).slotData;
         if (doctorItemHaveSlotsDataObj) {
-            doctorItemData.slotData = doctorItemHaveSlotsDataObj;
+            reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
+            reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
         }
-        const singleDoctorItemData = { ...doctorItemData };
-        this.props.navigation.navigate('Doctor Details Preview', { doctorId: doctorItemData.doctor_id, singleDoctorItemData: singleDoctorItemData, weekWiseDatesList: this.weekWiseDatesList })
+        this.props.navigation.navigate('Doctor Details Preview', reqData4BookAppPage)
     }
 
     getFeesBySelectedSlot(selectedSlotData, wholeSlotData, doctorIdHostpitalId, item) {
@@ -507,34 +525,36 @@ class DoctorList extends Component {
 
     sortByTopRatings(doctorDataList) {
         const { bookAppointmentData: { docReviewListCountOfDoctorIDs } } = this.props;
-        const doctorDataListBySort = doctorDataList.sort(function (a, b) {
-            let ratingA = 0;
-            let ratingB = 0;
-            if (docReviewListCountOfDoctorIDs[a.doctor_id]) {
-                ratingA = docReviewListCountOfDoctorIDs[a.doctor_id].average_rating || 0
-            };
-            if (docReviewListCountOfDoctorIDs[b.doctor_id]) {
-                ratingB = docReviewListCountOfDoctorIDs[b.doctor_id].average_rating || 0
-            }
-            if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
-                return ratingB - ratingA;
-            }
-            if (currentDoctorOrder === 'ASC') {
-                return ratingB - ratingA;
-            } else if (currentDoctorOrder === 'DESC') {
-                return ratingA - ratingB;
-            }
-        });
-        store.dispatch({
-            type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-            data: doctorDataListBySort
-        });
-        if (currentDoctorOrder === 'ASC') {
-            currentDoctorOrder = 'DESC';
-        } else if (currentDoctorOrder === 'DESC') {
-            currentDoctorOrder = 'ASC';
+        if (!this.isRenderedTopRatedDocList) {
+            this.isRenderedTopRatedDocList = true;
+            const doctorDataListBySort = doctorDataList.sort(function (a, b) {
+                let ratingA = 0;
+                let ratingB = 0;
+                if (docReviewListCountOfDoctorIDs[a.doctor_id]) {
+                    ratingA = docReviewListCountOfDoctorIDs[a.doctor_id].average_rating || 0
+                };
+                if (docReviewListCountOfDoctorIDs[b.doctor_id]) {
+                    ratingB = docReviewListCountOfDoctorIDs[b.doctor_id].average_rating || 0
+                }
+                if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
+                    return ratingB - ratingA;
+                }
+                if (currentDoctorOrder === 'ASC') {
+                    return ratingB - ratingA;
+                }
+            });
+            store.dispatch({
+                type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+                data: doctorDataListBySort
+            });
         }
-        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+        else {
+            this.isRenderedTopRatedDocList = false;
+            store.dispatch({
+                type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+                data: this.setDocListByPreviousOrder()
+            });
+        }
     }
 
     renderDoctorInformationCard(item) {
@@ -707,7 +727,7 @@ class DoctorList extends Component {
                                                 </Col>
                                                 <Col size={4}>
                                                     <TouchableOpacity
-                                                        onPress={() => { console.log('......Pressing....'); this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
+                                                        onPress={() => {this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
                                                         style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: 5 }}>
                                                         <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
                                                     </TouchableOpacity>

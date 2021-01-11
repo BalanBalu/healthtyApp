@@ -14,7 +14,7 @@ import { store } from '../../../setup/store';
 export const getTotalReviewsCount4LabTestService = async (labIds) => {
     try {
         const endPoint = 'lab-test/user/reviewsCount/' + labIds;
-        console.log(endPoint);
+      
 
         const response = await getService(endPoint);
         const reviewCountRes = response.data;
@@ -30,12 +30,12 @@ export const getTotalReviewsCount4LabTestService = async (labIds) => {
                 type: SET_REVIEWS_COUNT_BY_LAB_IDS,
                 data: reviewCountsByLabIds
             })
-            // console.log('reviewCountsByLabIds=====>', reviewCountsByLabIds);
+         
         }
         return reviewCountRes;
 
     } catch (Ex) {
-        console.log('Ex is getting on get Reviews count for Lab====>', Ex)
+        
         return {
             success: false,
             statusCode: 500,
@@ -48,13 +48,13 @@ export const getTotalReviewsCount4LabTestService = async (labIds) => {
 export const getLabDetails = async (labId, fields) => {
     try {
         const endPoint = 'lab-test/lab/' + labId + '?fields=' + fields;
-        console.log('endPoint=====>', endPoint);
+        
 
         const response = await getService(endPoint);
         const respData = response.data;
         return respData;
     } catch (Ex) {
-        console.log('Ex is getting on get lab details====>', Ex)
+       
         return {
             success: false,
             statusCode: 500,
@@ -84,7 +84,7 @@ export const getTotalWishList4LabTestService = async (labId) => {
         return favoritesList;
     }
     catch (Ex) {
-        console.log('Ex is getting on fetch total WishList for Lab====>', Ex)
+   
         return {
             success: false,
             statusCode: 500,
@@ -101,7 +101,7 @@ export const addFavoritesToLabByUserService = async (userId, labId) => {
                 active: !patientWishListLabIds.includes(labId)
             };
             const updateResponse = await updateFavoritesToLabByUser(userId, labId, reqData4updateWishList);
-            //   console.log('updateResponse'+JSON.stringify(updateResponse));
+        
             if (updateResponse.success) {
                 if (reqData4updateWishList.active) {
                     wishListCountByLabIds[labId] = wishListCountByLabIds[labId] ? wishListCountByLabIds[labId] + 1 : 1
@@ -124,7 +124,7 @@ export const addFavoritesToLabByUserService = async (userId, labId) => {
         }
     }
     catch (Ex) {
-        console.log('Ex is getting on update Wish list details for Lab====>', Ex)
+      
         return {
             success: false,
             statusCode: 500,
@@ -142,7 +142,7 @@ export async function updateFavoritesToLabByUser(userId, labId, reqData4updateWi
         return respData;
     }
     catch (Ex) {
-        console.log('Ex is getting on update Wish list details for Lab====>', Ex)
+       
         return {
             success: false,
             statusCode: 500,
@@ -158,11 +158,11 @@ export const getWishList4PatientByLabTestService = async (userId) => {
     try {
         const endPoint = 'lab-test/user/wishList/' + userId;
         const response = await getService(endPoint);
-        // console.log('getPatientWishList response===>', response);
+    
         const result = response.data;
         if (result.success) {
             const wishListLabIdsArry = result.data.map(item => item.labInfo.lab_id)
-            // console.log('wishListLabIdsArry  map=====>', wishListLabIdsArry);
+          
             store.dispatch({
                 type: SET_PATIENT_WISH_LIST_LAB_IDS,
                 data: wishListLabIdsArry
@@ -170,7 +170,7 @@ export const getWishList4PatientByLabTestService = async (userId) => {
         }
         return result;
     } catch (Ex) {
-        console.log('Ex is getting on get Wish list details for Patient====>', Ex)
+       
         return {
             success: false,
             statusCode: 500,

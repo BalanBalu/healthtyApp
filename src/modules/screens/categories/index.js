@@ -5,10 +5,10 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
-import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
+import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 
@@ -21,6 +21,7 @@ class Categories extends Component {
       categoriesMain: []
     }
   }
+
   componentDidMount() {
     this.getCatagries();
   }
@@ -43,34 +44,37 @@ class Categories extends Component {
       this.setState({ isLoading: false });
     }
   }
-  navigate = (categoryName,category_id) => {
-    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this), [categoryName,category_id]);
+  navigate = (categoryName, category_id) => {
+    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this), [categoryName, category_id]);
   }
 
-  navigateToCategorySearch(categoryName,category_id) {
-    console.log(categoryName);
+  navigateToCategorySearch(categoryName, category_id) {
+    
 
-    console.log(this.props);
+  
     const { bookappointment: { locationCordinates } } = this.props;
 
-   let  fromNavigation = this.props.navigation.getParam('fromNavigation') || null
-    
-  
+    let fromNavigation = this.props.navigation.getParam('fromNavigation') || null
+
+
     if (fromNavigation === "HOSPITAl") {
-      this.props.navigation.navigate("Hospitals", {   // New Enhancement Router path
-        category_id: category_id 
+
+      this.props.navigation.navigate("HospitalList", {   // New Enhancement Router path
+        category_id: category_id
       })
     }
-    else if(fromNavigation === 'HOME_HEALTH_CARE') {
-        this.props.navigation.navigate("Home Health Care", { 
-                categoryName: categoryName, 
-                categoryId: category_id,
-                locationDataFromSearch: {
-                    type: 'geo',
-                    "coordinates": locationCordinates,
-                    maxDistance: MAX_DISTANCE_TO_COVER
-                }
-        });
+    else if (fromNavigation === SERVICE_TYPES.HOME_HEALTHCARE) {
+      let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null;
+      const pinCode = userAddressInfo && userAddressInfo.address && userAddressInfo.address.pin_code;
+      const reqParamDataObj = {
+        categoryName,
+        categoryId: category_id
+      }
+      if (pinCode) {
+        reqParamDataObj.userAddressInfo = userAddressInfo;
+        reqParamDataObj.pinCode = pinCode
+      }
+      this.props.navigation.navigate("Home Health Care", reqParamDataObj);
     } else {
       this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
         inputKeywordFromSearch: categoryName,
@@ -96,7 +100,7 @@ class Categories extends Component {
   }
 
   filterCategories(searchValue) {
-    console.log(this.state.data);
+   
     const { categoriesMain } = this.state;
     if (!searchValue) {
       this.setState({ searchValue, data: categoriesMain });
@@ -151,7 +155,7 @@ class Categories extends Component {
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>
-                  <TouchableOpacity onPress={() => this.navigate(item.category_name,item.category_id)}
+                  <TouchableOpacity onPress={() => this.navigate(item.category_name, item.category_id)}
                     style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                     <FastImage
                       source={{ uri: item.imageBaseURL + item.category_id + '.png' }}

@@ -65,12 +65,12 @@ class ChosePharmacyList extends Component {
                     })
 
                     let productResult = await getproductDetailsByPharmacyIds(pharmacyIds, productmasterIds);
-
+            
                     if (productResult) {
                         let modifiedData = {}
                         let pharmacyData = []
                         result.data.forEach(element => {
-                       
+
                             let pharmacyProductData = productResult.find(ele => {
                                 return ele.pharmacyId === element.pharmacyInfo.pharmacy_id
                             })
@@ -96,7 +96,7 @@ class ChosePharmacyList extends Component {
 
                         });
 
-                        this.setState({ pharmacyData: pharmacyData,pharmacyMainData: pharmacyData})
+                        this.setState({ pharmacyData: pharmacyData, pharmacyMainData: pharmacyData })
                     }
                 }
 
@@ -120,26 +120,25 @@ class ChosePharmacyList extends Component {
         }
     }
     onProceedToPayment = () => {
-      try{
-        const { selectedPharmacy, pharmacyData } = this.state;
+        try {
+            const { selectedPharmacy, pharmacyData } = this.state;
 
-        if (selectedPharmacy === -1) {
-            Toast.show({
-                text: 'kindly choose pharmacy',
-                type: 'warning',
-                duration: 3000
-            })
-        } else {
-            let value = pharmacyData[selectedPharmacy];
-            console.log('cmncv,jzmcnvbmcv')
-       console.log(JSON.stringify(value))
-            this.props.navigation.navigate("MedicineCheckout", {
-                pharmacyInfo: value.pharmacyInfo, isPrescription: true, hasChosePharmacyReload: true, medicineDetails: value.pharmacyAvailable
-            });
+            if (selectedPharmacy === -1) {
+                Toast.show({
+                    text: 'kindly choose pharmacy',
+                    type: 'warning',
+                    duration: 3000
+                })
+            } else {
+                let value = pharmacyData[selectedPharmacy];
+               
+                this.props.navigation.navigate("MedicineCheckout", {
+                    pharmacyInfo: value.pharmacyInfo, isPrescription: true, hasChosePharmacyReload: true, medicineDetails: value.pharmacyAvailable
+                });
+            }
+        } catch (e) {
+            console.log(e)
         }
-    }catch(e){
-        console.log(e)
-    }
     }
     filterPharmacies(searchValue) {
 
@@ -162,7 +161,7 @@ class ChosePharmacyList extends Component {
                         <Input
                             placeholder="Search Pharmacy"
                             style={styles.inputfield}
-                            placeholderTextColor="#e2e2e2"
+                            placeholderTextColor="#909894"
                             keyboardType={'email-address'}
                             value={this.state.searchValue}
                             onChangeText={searchValue => this.filterPharmacies(searchValue)}
@@ -184,7 +183,7 @@ class ChosePharmacyList extends Component {
     medicineDataModify(data, isAvailable) {
         let medicineDataModify = [];
         let unavailableMedicineData = [];
-        let productWithItemData=[];
+        let productWithItemData = [];
         let totalAmount = 0
         if (isAvailable) {
             this.state.medicineOrderData.forEach(element => {
@@ -195,7 +194,7 @@ class ChosePharmacyList extends Component {
                 })
                 if (index !== -1) {
                     let element = data.products[index]
-                
+
                     let item = {
                         discountedAmount: element.discount ? medicineDiscountedAmount(element) : 0,
                         productName: getMedicineName(element),
@@ -221,9 +220,9 @@ class ChosePharmacyList extends Component {
                     totalAmount = +price.totalAmount
                     productWithItemData.push({ item })
                     medicineDataModify.push(item)
-                   
+
                 } else {
-                    
+
                     let data = {
                         productName: temp.productName,
                         status: 'unavailable'
@@ -243,7 +242,7 @@ class ChosePharmacyList extends Component {
 
         }
         return {
-            productWithItemData:productWithItemData,
+            productWithItemData: productWithItemData,
             medicineDataModify: medicineDataModify,
             unavailableMedicineData: unavailableMedicineData,
             totalAmount: totalAmount
@@ -308,21 +307,22 @@ class ChosePharmacyList extends Component {
                                                                 <View style={{ alignItems: 'flex-end', }}>
                                                                     <Text style={styles.kmText}>{getKiloMeterCalculation(item.pharmacyInfo.location.coordinates, locationCordinates)}</Text>
                                                                 </View>
-                                                                
-                                                                {selectedPharmacy === index ?
-                                                                    <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
-                                                                        <CheckBox style={{ borderRadius: 5 }}
-                                                                            checked={true}
-                                                                            onPress={() => this.pharmacySelected(index)}
-                                                                        />
-                                                                    </View>
-                                                                    :
-                                                                    <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
-                                                                        <CheckBox style={{ borderRadius: 5 }}
-                                                                            checked={false}
-                                                                            onPress={() => this.pharmacySelected(index)}
-                                                                        />
-                                                                    </View>
+
+                                                                {
+                                                                    item.pharmacyAvailableData !== undefined && item.pharmacyAvailableData.length !== 0 ?
+                                                                        <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
+                                                                            <CheckBox style={{ borderRadius: 5 }}
+                                                                                checked={selectedPharmacy === index ? true : false}
+                                                                                onPress={() => this.pharmacySelected(index)}
+                                                                            />
+                                                                        </View> : null
+                                                                    // :
+                                                                    // <View style={{ marginTop: 10, alignItems: 'flex-end', marginRight: 20 }}>
+                                                                    //     <CheckBox style={{ borderRadius: 5 }}
+                                                                    //         checked={false}
+                                                                    //         onPress={() => this.pharmacySelected(index)}
+                                                                    //     />
+                                                                    // </View>
                                                                 }
                                                             </Col>
 

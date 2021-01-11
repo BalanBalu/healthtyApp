@@ -20,16 +20,16 @@ export function medicineRateAfterOffer(item) {
     if (item.discount.type === 'PERCENT') {
       let divided = (Number(item.discount.value) / 100) * Number(item.price)
       amount = Number(item.price) - divided
-     
+
     } else if (item.discount.type === 'Amount') {
       amount = Number(item.price) - Number(item.discount.value);
-     
+
     } else if (item.discount.type === 'AMOUNT') {
       amount = Number(item.price) - Number(item.discount.value);
-    
+
     }
   }
-  if(amount<0){
+  if (amount < 0) {
     return 0
   }
 
@@ -43,12 +43,12 @@ export function medicineDiscountedAmount(item) {
 
   let amount = 0
   if (item === undefined || item === null) {
-    
+
     return amount
   }
   if (item.discount === undefined || item.discount === null) {
 
-  
+
     return amount
   }
   if (item.discount.type) {
@@ -56,16 +56,16 @@ export function medicineDiscountedAmount(item) {
     if (item.discount.type === 'PERCENT') {
       let divided = (parseInt(item.discount.value) / 100) * parseInt(item.price)
       amount = divided
-  
+
     } else if (item.discount.type === 'Amount') {
       amount = parseInt(item.discount.value);
 
     } else if (item.discount.type === 'AMOUNT') {
       amount = parseInt(item.discount.value);
-    
+
     }
   }
-  if(amount<0){
+  if (amount < 0) {
     return 0
   }
 
@@ -140,30 +140,30 @@ export function renderMedicineImage(data) {
 }
 export function CartMedicineImage(data) {
 
-  let source =  null;
-  
+  let source = null;
+
   if (data !== null && data !== undefined) {
 
     if (Array.isArray(data) && data.length !== 0) {
       let defaultImage = data.find(ele => {
         return ele.isDefault === true
       })
-     
+
       if (defaultImage) {
 
-        source =  defaultImage.imageURL 
+        source = defaultImage.imageURL
       } else {
-        source = data[0].imageURL 
+        source = data[0].imageURL
       }
     }
   }
-  
+
   return (source)
 }
 export function renderMedicineImageAnimation(data) {
 
 
-  let source =  require('../../../../assets/images/noImage.jpg')
+  let source = require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data.imageURL }
   }
@@ -174,7 +174,7 @@ export function renderMedicineImageByimageUrl(data) {
 
 
   let source = require('../../../../assets/images/noImage.jpg')
-  if (data&&data.image) {
+  if (data && data.image) {
     source = { uri: data.image }
   }
   return (source)
@@ -182,7 +182,7 @@ export function renderMedicineImageByimageUrl(data) {
 export function renderMedicineImageView(data) {
 
 
-  let source =  require('../../../../assets/images/noImage.jpg')
+  let source = require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data }
   }
@@ -191,7 +191,7 @@ export function renderMedicineImageView(data) {
 export function renderPrescriptionImageAnimation(data) {
 
 
-  let source =  require('../../../../assets/images/noImage.jpg')
+  let source = require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data.prescription_path }
   }
@@ -206,7 +206,7 @@ export function renderPharmacyImage(data) {
 }
 export async function relativeTimeView(review_date) {
   try {
-    console.log(review_date)
+ 
     var postedDate = review_date;
     var currentDate = new Date();
     var relativeDate = dateDiff(postedDate, currentDate, 'days');
@@ -243,12 +243,12 @@ export function getAddress(location) {
     return ''
 }
 export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
-  console.log(gpsLocation)
+  
   if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
     let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 
     return result.toFixed(1) + ' Km'
-  
+
 
   }
   else {
@@ -329,7 +329,7 @@ export function getMedicineWeightUnit(weight, unit) {
 }
 
 
-export  function ProductIncrementDecreMents(quantity, price, operation, threshold_limits) {
+export function ProductIncrementDecreMents(quantity, price, operation, threshold_limits) {
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
 
@@ -424,7 +424,7 @@ export const statusBar = {
   },
   "FAILED":
   {
-    status: 'order is failed try again',
+    status: 'Order Failed ! Try again',
     checked: true,
     color: 'green'
   },
@@ -448,6 +448,11 @@ export const statusBar = {
     status: 'confirm the order',
     checked: true,
     color: 'red'
+  },
+  "CONFIRM": {
+    status: 'confirm the order',
+    checked: true,
+    color: 'green'
   },
 
   "RETURNED": {

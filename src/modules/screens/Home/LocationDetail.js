@@ -10,14 +10,15 @@ class LocationDetail extends PureComponent {
         super(props)
         this.state = {
             pressStatus: false,
-            selectedItem: 0
+            selectedItem: 0,
+            CorporateUser: false
         }
         const { navigation } = this.props;
         this.fetchPopularCityAreas(navigation.getParam('cityData'))
     }
     async fetchPopularCityAreas(cityData) {
         debugger
-        console.log(cityData);
+   
         let navigationOption = this.props.navigation.getParam('navigationOption') || null;
 
         let result;
@@ -33,8 +34,16 @@ class LocationDetail extends PureComponent {
                 fromPinCode: cityData.from_pincode,
                 toPinCode: cityData.to_pincode
             });
-            this.setState({ navigationOption: 'Home' })
-            console.log(result);
+            const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+           
+            this.setState({ CorporateUser: isCorporateUser })
+            const { CorporateUser } = this.state
+            if (CorporateUser === true) {
+                this.setState({ navigationOption: 'CorporateHome' })
+            } else {
+                this.setState({ navigationOption: 'Home' })
+            }
+          
         }
 
         if (result.success) {

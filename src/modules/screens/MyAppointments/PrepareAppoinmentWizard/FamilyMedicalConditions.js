@@ -66,7 +66,7 @@ class FamilyMedicalConditions extends PureComponent {
              }
            
             let response = await userFiledsUpdate(userId, data)
-            console.log(JSON.stringify(response))
+           
             if (response.success) {
                 Toast.show({
                     text: response.message,

@@ -80,7 +80,6 @@ class EcardDetails extends React.Component {
   }
   render() {
     const { EcardData } = this.state;
-    console.log(JSON.stringify(EcardData))
     return (
       <ScrollView>
         {EcardData.length !=0?

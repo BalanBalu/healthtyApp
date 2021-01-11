@@ -123,7 +123,7 @@ class Notification extends PureComponent {
             if (result.success) {
 
                 let temp = this.state.data.concat(result.data);
-                console.log('Total Count ' + result.totalCount + ' Loaded Notification Count:' + temp.length);
+
                 if (temp.length === result.totalCount) {
                     this.isAllNotificationLoaded = true;
                 }
@@ -167,7 +167,7 @@ class Notification extends PureComponent {
 
                         <View style={{
                             flex: 1,
-                            justifyContent: 'center', alignItems: 'center', marginTop: 200,
+                            justifyContent: 'center', alignItems: 'center',
                         }}>
 
                             <Icon style={{ fontSize: 25 }} name='ios-notifications-off' />
@@ -188,7 +188,7 @@ class Notification extends PureComponent {
                                 onEndReached={() => this.handleLoadMore()}
                                 onEndReachedThreshold={0.5}
                                 // onMomentumScrollBegin={() => { 
-                                //     console.log('On Momentum Scroll begin');
+                               
                                 //     this.onEndReachedCalledDuringMomentum = false; 
                                 // }}
                                 ListFooterComponent={this.renderFooter.bind(this)}

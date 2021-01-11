@@ -26,7 +26,7 @@ class FilterDocInfo extends Component {
 
     async componentDidMount() {
         const { bookAppointmentData: { baCupOfDoctorInfoListAndSlotsData4Filter }, navigation } = this.props;
-        // console.log('baCupOfDoctorInfoListAndSlotsData4Filter=====>', JSON.stringify(baCupOfDoctorInfoListAndSlotsData4Filter));
+
         const filterData = navigation.getParam('filterData');
         if (Object.keys(filterDataObject).length) { // condition for when click the Clear button and then press the back button and come back again Filter page (The previous selected filtered values from Doctor Search list page are Showing again)
             if (filterData) {
@@ -110,7 +110,7 @@ class FilterDocInfo extends Component {
                 data: false
             },
         );
-        // console.log('filterDataObject::', filterDataObject)
+      
         this.props.navigation.navigate('Doctor Search List', {
             filterData: filterDataObject,
             conditionFromFilterPage: true
@@ -354,7 +354,7 @@ class FilterDocInfo extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Choose Spoken Languages</Text>
+                        <Text style={styles.headingLabelStyle}>Choose languages you know</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -386,7 +386,7 @@ class FilterDocInfo extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Selected your Specialist</Text>
+                        <Text style={styles.headingLabelStyle}>Select your specialist</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -418,7 +418,7 @@ class FilterDocInfo extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Selected hospitalName</Text>
+                        <Text style={styles.headingLabelStyle}>Select Hospital name</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{

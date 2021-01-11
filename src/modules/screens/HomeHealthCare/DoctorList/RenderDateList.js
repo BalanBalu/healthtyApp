@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Container, Content, Text } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, TouchableOpacity, View, FlatList, Dimensions, Image } from 'react-native';
+import { Text } from 'native-base';
+import { Col } from 'react-native-easy-grid';
+import { TouchableOpacity, View, FlatList } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { reducer } from '../../CommonAll/functions';
 import styles from '../../CommonAll/styles'
 import moment from 'moment';
 
@@ -11,7 +10,7 @@ export default class RenderDatesList extends Component {
     constructor(props) {
         super(props)
     }
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps) {
         if (nextProps.shouldUpdate !== this.props.shouldUpdate) {
             return true
         }
@@ -24,7 +23,7 @@ export default class RenderDatesList extends Component {
         return false
     }
     render() {
-        const { indexOfItem, weekWiseDatesList, selectedDate4DocIdHostpitalIdToStoreInObj, onDateChanged, callSlotsServiceWhenOnEndReached, selectedSlotItem4DocIdHostpitalIdToStoreInObj, selectedDate, slotData, doctor_id } = this.props;
+        const { indexOfItem, weekWiseDatesList, onDateChanged, callSlotsServiceWhenOnEndReached, selectedDate, slotData, doctor_id } = this.props;
         if (slotData === undefined || !Object.keys(slotData)) {
             return null;
         }
@@ -32,7 +31,6 @@ export default class RenderDatesList extends Component {
             <FlatList
                 horizontal={true}
                 data={weekWiseDatesList}
-                extraData={[selectedDate4DocIdHostpitalIdToStoreInObj, selectedSlotItem4DocIdHostpitalIdToStoreInObj]}
                 onEndReachedThreshold={1}
                 onEndReached={({ distanceFromEnd }) => { callSlotsServiceWhenOnEndReached(doctor_id, weekWiseDatesList, indexOfItem) }}
                 renderItem={({ item }) => {

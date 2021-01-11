@@ -58,15 +58,11 @@ class AddReminder extends Component {
       refreshCount: 1,
       currentDate:  moment().startOf('day').toDate()
     }
-    debugger
     this.callmedicinesearchService = debounce(this.callmedicinesearchService, 500);
   }
   componentDidMount() {
-    debugger
     const { reminder: { reminderResponse: { data, } } } = this.props;
-    // console.log('data props from compom did mount', JSON.stringify(data));
 
-    debugger
   }
   SearchKeyWordFunction = async (enteredText) => {
     if (enteredText == '') {
@@ -78,7 +74,6 @@ class AddReminder extends Component {
   }
   callmedicinesearchService = async (enteredText) => {
     let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
-    // console.log('medicinedone+++++++++++++++++' + JSON.stringify(medicineResultData))
     if (medicineResultData.success) {
       this.setState({
         medicineSugesstionArray: medicineResultData.data,
@@ -158,11 +153,6 @@ class AddReminder extends Component {
 
   handleEndDatePicked = date => {
     this.setState({ endDatePlaceholder: true, isEndDateTimePickerVisible: false, medicine_take_end_date: date });
-    console.log('picked date', date);
-
-    console.log('this.state.medicine_take_start_date', this.state.medicine_take_start_date);
-
-    console.log('this.state.medicine_take_end_date', this.state.medicine_take_end_date);
 
 
     if (date < this.state.medicine_take_start_date) {
@@ -193,7 +183,7 @@ class AddReminder extends Component {
     try {
       if ((this.state.medicine_name == null) || (this.state.medicine_form == null) || (this.state.medicine_form == "Select medicine Form") || (this.state.medicine_strength == null) || (this.state.previewdisplay == "Select medicine strength")) {
         Toast.show({
-          text: 'Kindly fill all the fields to schedule your reminderTime slots',
+          text: 'Kindly fill all the fields to schedule your reminder time slots',
           type: 'danger',
           duration: 3000
         });
@@ -212,7 +202,6 @@ class AddReminder extends Component {
 
 
   delete(index) {
-    console.log('Deliting...');
     let temp = this.medicineTakeTimes;
     temp.splice(index, 1)
     this.medicineTakeTimes = temp;
@@ -461,7 +450,7 @@ class AddReminder extends Component {
                   <Form style={{ marginTop: 5, marginRight: 5 }}>
                     <Row>
                       <Col size={30}>
-                        <Text style={styles.NumText}>{translate("Select Date")}</Text>
+                        <Text style={styles.NumText}>{translate("Select date")}</Text>
                       </Col>
                       <Col size={35}>
                         <View style={{ marginTop: 5, }}>
@@ -513,7 +502,7 @@ class AddReminder extends Component {
                   <Form style={{ marginTop: 5, marginBottom: 5, marginRight: 5 }}>
                     <Row>
                       <Col size={30}>
-                        <Text style={styles.NumText}>{translate("Select Date")}</Text>
+                        <Text style={styles.NumText}>{translate("Select date")}</Text>
                       </Col>
                       <Col size={35} style={{ mariginTop: 10 }}>
                         <View style={{ marginTop: 5, }}>

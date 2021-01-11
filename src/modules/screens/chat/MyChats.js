@@ -44,19 +44,25 @@ async componentDidMount() {
 removeBackHandlerListerner () {
     BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
 }
-onBackPress = () => {
+ onBackPress = async() => {
     const { dispatch, navigation } = this.props;
     if (navigation.index === 0) {
       return false;
     }
-    navigation.navigate('Home');
+    let corporateUser = await AsyncStorage.getItem("is_corporate_user") || null;
+		if (corporateUser) {
+			navigation.navigate('CorporateHome',{fromAppointment: true});
+		} else {
+			navigation.navigate("Home", { fromAppointment: true })
+		}
+    // navigation.navigate('Home');
     return true;
   };
 getAllChatsByUserId = async(userId) => {
   try {
     this.setState({ isLoading: true });
     const chatList = await getAllChats(userId);
-   console.log(chatList);
+  
     if(chatList.success === true) {
         store.dispatch({
             type: SET_LAST_MESSAGES_DATA,
@@ -64,7 +70,7 @@ getAllChatsByUserId = async(userId) => {
         })
     } else {
         Toast.show({
-            text: chatList.message, 
+            text: "No chat found", 
             duration: 3000,
             type: 'danger'
         })
@@ -97,11 +103,11 @@ getAllChatsByUserId = async(userId) => {
             obj.unreadCount = convoData.conversationLstSnippet.messageInfo.unreadCount
         } else {
             if(convoData.status === possibleChatStatus.PAYMENT_IN_PROGRESS) {
-                obj.message = 'Payment is not completed, Please Complete your Payment and Continue',
+                obj.message = 'Payment is not completed.Please complete your payment to continue',
                 obj.messageUpdated_time = getRelativeTime(convoData.last_chat_updated)
             }
             if(convoData.status === possibleChatStatus.PENDING) {
-                obj.message = `You have Initiated the Chat with ${(convoData.doctorInfo.prefix ? convoData.doctorInfo.prefix + '. ' : '')} ${convoData.doctorInfo.doctor_name} Please Wait for Approval`;
+                obj.message = `You have initiated a chat request with ${(convoData.doctorInfo.prefix ? convoData.doctorInfo.prefix + '. ' : '')} ${convoData.doctorInfo.doctor_name} Please wait for the approval.`;
                 obj.messageUpdated_time = getRelativeTime(convoData.last_chat_updated)
             }
             if(convoData.status === possibleChatStatus.COMPLETED) {
@@ -160,8 +166,13 @@ getAllChatsByUserId = async(userId) => {
                 </Col>
                 <Col style={{width:'85%',marginTop:5,marginLeft:15}}>
                     <Row>
-                        <Text style={styles.docname}>{item.name}</Text>
+                        <Col  size={7}>
+                        <Text style={styles.docname} ellipsizeMode="tail" numberOfLines={1}>{item.name}</Text>
+                        </Col>
+                        <Col  size={3}>
                         <Text style={styles.date}>{item.messageUpdated_time}</Text>
+
+                        </Col>
                     </Row>
                     <Row>
                         <Col style={{width:'80%'}}>

@@ -85,9 +85,9 @@ class MedicineSuggestionList extends Component {
                     <View style={{ flex: 1, }}>
                         <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, borderWidth: 1, borderColor: 'gray' }}>
                             <Input
-                                placeholder='Search for Medicines and Health Products...     '
+                                placeholder='Search for Medicines     '
                                 style={{ fontSize: 12, width: '300%' }}
-                                placeholderTextColor="#C1C1C1"
+                                placeholderTextColor="#909894"
                                 keyboardType={'default'}
                                 returnKeyType={'go'}
                                 value={this.state.medicineName}

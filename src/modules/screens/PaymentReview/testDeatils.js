@@ -34,7 +34,7 @@ class TestDetails extends PureComponent {
             familyDetailsData: [],
             onlyFamilyWithPayDetailsData: []
         }
-        console.log(this.props);
+   
         this.defaultPatDetails = {};
 
     }
@@ -50,7 +50,7 @@ class TestDetails extends PureComponent {
             const userId = await AsyncStorage.getItem('userId');
             const patInfoResp = await fetchUserProfile(userId, fields);
             let data = this.state.data;
-            console.log('patInfoResp====>', patInfoResp.employee_code)
+           
 
             this.defaultPatDetails = {
                 type: 'self',
@@ -90,7 +90,7 @@ class TestDetails extends PureComponent {
                     data.familyDataByCorporate = temp;
                     data.familyDataByInsurance = temp;
                 }
-                console.log('getCorporateUserFamilyDetailsgetCorporateUserFamilyDetails', JSON.stringify(result))
+                
             }
             this.props.addPatientDetails([this.defaultPatDetails], true);
             await this.setState({ refreshCount: this.state.refreshCount + 1, data })
@@ -105,7 +105,7 @@ class TestDetails extends PureComponent {
         const { name, age, gender } = this.state;
 
         if (!name || !age || !gender) {
-            console.log('is is coming to error');
+           
             this.setState({ errMsg: '* Kindly fill all the fields' });
         }
 
@@ -138,7 +138,7 @@ class TestDetails extends PureComponent {
 
         this.setState({ patientDetailsObj: this.defaultPatDetails });
         if (this.props.singlePatientSelect === true) {
-            console.log('this.defaultPatDetail', this.defaultPatDetails);
+           
             this.props.addPatientDetails([this.defaultPatDetails])
         } else {
             const familyDetailsData = this.props.familyDetailsData;
@@ -148,7 +148,7 @@ class TestDetails extends PureComponent {
             } else {
                 familyDetailsData.splice(index, 1);
             }
-            console.log(familyDetailsData);
+           
             this.setPatientType(POSSIBLE_FAMILY_MEMBERS.SELF);
             this.props.addPatientDetails(familyDetailsData);
         }
@@ -173,7 +173,7 @@ class TestDetails extends PureComponent {
             }
             return index !== indexNo
         });
-        console.log('uniqueId', uniqueId);
+       
         const arr = this.props.familyDetailsData.filter(function (item, index) {
             return item.uniqueId !== uniqueId
         });
@@ -246,7 +246,7 @@ class TestDetails extends PureComponent {
     }
 
     renderPatientDetails(data, index, enableSelectionBox, patientSelectionType) {
-        console.log('renderPatientDetails data====>', JSON.stringify(data))
+       
         const { isCorporateUser, payBy } = this.props;
         return (
             <View style={{ borderColor: 'gray', borderWidth: 0.3, padding: 10, borderRadius: 5, marginTop: 10 }}>
@@ -270,7 +270,7 @@ class TestDetails extends PureComponent {
 
                 </Row>
                 <Row style={{ marginTop: 10 }}>
-                    <Col size={3.3}>
+                    <Col size={4}>
                         <Row>
                             <Col size={3}>
                                 <Text style={styles.commonText}>Gender</Text>
@@ -283,7 +283,7 @@ class TestDetails extends PureComponent {
                             </Col>
                         </Row>
                     </Col>
-                    <Col size={3.3}>
+                    <Col size={4}>
                         {data.phone_no != undefined ?
                             <Row>
                                 <Col size={3}>
@@ -299,7 +299,7 @@ class TestDetails extends PureComponent {
                             : null}
                     </Col>
                     {enableSelectionBox === true ?
-                        <Col size={3.3}>
+                        <Col size={2}>
                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
                                     checked={this.props.familyMembersSelections.includes(payBy + '-' + index)}
@@ -310,6 +310,26 @@ class TestDetails extends PureComponent {
                         : null}
                 </Row>
                 {isCorporateUser && payBy === POSSIBLE_PAY_METHODS.INSURANCE && data.benefeciaryUserDeails ?
+                    <View>
+                        <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
+                        <TouchableOpacity style={styles.benefeciaryButton} onPress={() => {
+                            let expandedListIndexPayBy = patientSelectionType + '-' + index;
+                            this.setState({ expandedListIndex: this.state.expandedListIndex === expandedListIndexPayBy ? -1 : expandedListIndexPayBy })
+                        }}>
+                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'OpenSans', }}>Show Benefeciary Details</Text>
+                            <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
+                        </TouchableOpacity>
+                        <View>
+                            <BenefeciaryDetails
+                                expand={this.state.expandedListIndex === patientSelectionType + '-' + index}
+                                data={data.benefeciaryUserDeails}
+                                payBy={payBy}
+                            />
+                        </View>
+
+                    </View>
+                    : null}
+                     {isCorporateUser && payBy === POSSIBLE_PAY_METHODS.CORPORATE && data.benefeciaryUserDeails ?
                     <View>
                         <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, marginTop: 10 }} />
                         <TouchableOpacity style={styles.benefeciaryButton} onPress={() => {
@@ -363,7 +383,7 @@ class TestDetails extends PureComponent {
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Appointment for?</Text>
-                <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                     {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -445,7 +465,7 @@ class TestDetails extends PureComponent {
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' ,marginTop: 10}}>Patient Details</Text>
                             <View>
                                 {this.renderPatientDetails(this.defaultPatDetails, 0, false, POSSIBLE_FAMILY_MEMBERS.SELF)}
                             </View>
@@ -456,7 +476,7 @@ class TestDetails extends PureComponent {
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ?
                         <View>
                             {onlyFamilyWithPayDetailsData.length !== 0 ?
-                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans',marginTop: 10 }}>Patient Details</Text>
                                 : null}
                             <FlatList
                                 data={onlyFamilyWithPayDetailsData}

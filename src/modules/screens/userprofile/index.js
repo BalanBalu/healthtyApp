@@ -47,7 +47,7 @@ import { Loader } from '../../../components/ContentLoader';
 import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices';
 import { renderDoctorImage, renderProfileImage, getGender } from '../../common';
-import EcardDetails from './EcardDetails';
+// import EcardDetails from '../userprofile/EcardDetails';
 
 class Profile extends Component {
   navigation = this.props.navigation;
@@ -65,6 +65,7 @@ class Profile extends Component {
       selectOptionPoopup: false,
       is_blood_donor: false,
       family_members: [],
+      isCorporateUser: false
     };
   }
   async componentDidMount() {
@@ -73,6 +74,8 @@ class Profile extends Component {
       this.props.navigation.navigate('login');
       return;
     }
+    const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+    this.setState({ isCorporateUser })
     this.getUserProfile();
     this.getfavouritesList();
   }
@@ -94,7 +97,7 @@ class Profile extends Component {
 
       let userId = await AsyncStorage.getItem('userId');
       let result = await fetchUserProfile(userId, fields);
-      console.log('result', result);
+
       if (result) {
         this.setState({
           data: result,
@@ -185,7 +188,7 @@ class Profile extends Component {
         });
 
         function location(locationObj) {
-          console.log('locationObj', locationObj);
+
 
           let placeName = '';
           let contextData = [];
@@ -249,12 +252,12 @@ class Profile extends Component {
       })
         .then(image => {
           this.setState({ selectOptionPoopup: false });
-          console.log(image);
+
           this.uploadImageToServer(image);
         })
         .catch(ex => {
           this.setState({ selectOptionPoopup: false });
-          console.log(ex);
+
         });
     } else {
       ImagePicker.openPicker({
@@ -266,14 +269,14 @@ class Profile extends Component {
         avoidEmptySpaceAroundImage: true,
       })
         .then(image => {
-          console.log(image);
+
 
           this.setState({ selectOptionPoopup: false });
           this.uploadImageToServer(image);
         })
         .catch(ex => {
           this.setState({ selectOptionPoopup: false });
-          console.log(ex);
+
         });
     }
   }
@@ -313,7 +316,6 @@ class Profile extends Component {
         duration: 3000,
         type: 'danger',
       });
-      console.log(e);
     }
   };
 
@@ -561,15 +563,11 @@ class Profile extends Component {
                     <Row>
                       <Col>
                         <Text style={styles.customText}>Weight</Text>
-                        <Text note style={styles.customText1}>
-                          {data.weight} kg
-                      </Text>
+                        <Text note style={styles.customText1}>{data.weight} kg</Text>
                       </Col>
                       <Col>
                         <Text style={styles.customText}>Height</Text>
-                        <Text note style={styles.customText1}>
-                          {data.height} cm
-                      </Text>
+                        <Text note style={styles.customText1}>{data.height} cm</Text>
                       </Col>
                     </Row>
                   </Body>
@@ -703,42 +701,43 @@ class Profile extends Component {
                     </Button>
                   </Body>
                 </ListItem>
-                <ListItem avatar>
-                  <Left>
-                    <Icon
-                      name="ios-flame"
-                      style={{ color: '#7E49C3', marginTop: 5 }}
-                    />
-                  </Left>
+                {this.state.isCorporateUser === false ?
+                  <ListItem avatar>
+                    <Left>
+                      <Icon
+                        name="ios-flame"
+                        style={{ color: '#7E49C3', marginTop: 5 }}
+                      />
+                    </Left>
 
-                  <Body>
-                    <Text style={styles.customText}>Blood Donor</Text>
-                  </Body>
+                    <Body>
+                      <Text style={styles.customText}>Blood Donor</Text>
+                    </Body>
 
-                  <Right
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: -15,
-                    }}>
-                    <Switch
-                      value={this.state.is_blood_donor}
-                      style={{ marginTop: 15 }}
-                      onValueChange={value => {
-                        this.setState({
-                          is_blood_donor: !this.state.is_blood_donor,
-                        });
-                        if (value === true) {
-                          if (data.address === undefined) {
-                            this.editProfile('MapBox');
+                    <Right
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: -15,
+                      }}>
+                      <Switch
+                        value={this.state.is_blood_donor}
+                        style={{ marginTop: 15 }}
+                        onValueChange={value => {
+                          this.setState({
+                            is_blood_donor: !this.state.is_blood_donor,
+                          });
+                          if (value === true) {
+                            if (data.address === undefined) {
+                              this.editProfile('MapBox');
+                            }
                           }
-                        }
-                        this.updateBloodDonor();
-                      }}
-                    />
-                  </Right>
-                </ListItem>
-
+                          this.updateBloodDonor();
+                        }}
+                      />
+                    </Right>
+                  </ListItem>
+                  : null}
                 <ListItem avatar>
                   <Left>
                     <Icon name="mail" style={{ color: '#7E49C3' }} />
@@ -943,7 +942,7 @@ class Profile extends Component {
                   </Right>
                 </ListItem>
               </List>
-              <EcardDetails />
+              {/* <EcardDetails /> */}
               {this.state.favouriteList.length === 0 ? null : (
                 <Card style={{ padding: 10 }}>
                   <List>
@@ -999,7 +998,7 @@ class Profile extends Component {
                                 }}
                                 onPress={() =>
                                   this.props.navigation.navigate(
-                                    'Book Appointment',
+                                    'Doctor Details Preview',
                                     {
                                       doctorId: item.doctorInfo.doctor_id,
                                       fetchAvailabiltySlots: true,

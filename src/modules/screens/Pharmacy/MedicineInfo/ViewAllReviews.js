@@ -24,7 +24,7 @@ class ViewAllReviews extends Component {
     }
     relativeTimeView(review_date) {
         try {
-            console.log(review_date)
+        
             var postedDate = review_date;
             var currentDate = new Date();
             var relativeDate = dateDiff(postedDate, currentDate, 'days');
@@ -43,10 +43,8 @@ class ViewAllReviews extends Component {
             this.setState({ isLoading: true });
             let medicineId = this.props.navigation.getParam('medicineId');
             let result = await getAllMedicineReviews(medicineId);
-            console.log("result", result)
             if (result.success) {
                 this.setState({ viewAllReviewData: result.data })
-                console.log("viewAllReviewData", this.state.viewAllReviewData)
 
             } else {
                 this.setState({ isLoading: false, viewAllReviewData: '' });

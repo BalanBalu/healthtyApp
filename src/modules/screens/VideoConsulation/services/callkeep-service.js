@@ -43,7 +43,7 @@ export default class CallKeepService {
                     },
                     android: {
                         alertTitle: 'Permissions required',
-                        alertDescription: CURRENT_APP_NAME + ' is need a Permission to Show the Incoming Video Call Request',
+                        alertDescription: CURRENT_APP_NAME + ' needs permission to access your microphone and camera for the video consultation service',
                         cancelButton: 'Cancel',
                         okButton: 'ok',
                         additionalPermissions: [PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, PermissionsAndroid.PERMISSIONS.CAMERA, PermissionsAndroid.PERMISSIONS.SYSTEM_ALERT_WINDOW, PermissionsAndroid.PERMISSIONS.USE_FULL_SCREEN_INTENT]
@@ -55,19 +55,18 @@ export default class CallKeepService {
                 })
             }
             if (IS_ANDROID) {
-                console.log('hasAlreadyPermissionGrantedToShowVideoScreen ', await activityStarter.hasAlreadyPermissionGrantedToShowVideoScreen());
                 if (await activityStarter.hasAlreadyPermissionGrantedToShowVideoScreen() === false) {
-                    console.log('Overlay Permission False, So Requesting Once');
                     Alert.alert(
                         "Permission to Display Incoming Call Screen",
                         CURRENT_APP_NAME + " Requires a Permission to Display Incoming Call Screen for Video Consultation Service",
-                        [{
-                            text: "Ok",
-                            onPress: () => {
-                                console.log('OK Pressed')
-                                activityStarter.getPermissionForOverLay();
-                            }
-                        }],
+                        [
+                            { text: 'Later' },
+                            {
+                                text: "Ok",
+                                onPress: () => {
+                                    activityStarter.getPermissionForOverLay();
+                                }
+                            }],
                         { cancelable: false }
                     );
                 }
@@ -84,7 +83,6 @@ export default class CallKeepService {
         this.uuid = IS_ANDROID ? randomNumber() : uuidv4();
         this.handleNumber = handleNumber;
         this.handlerName = handlerName;
-        console.log('AppState.currentState: ==> ', AppState.currentState);
         if (AppState.currentState === 'active') {
             if (IS_IOS) {   // Enable THese Condition when we set for Cusotm Activity once all of them tested
                 store.dispatch({
@@ -98,14 +96,14 @@ export default class CallKeepService {
                 })
             }
         } else {
-            console.log('Is IS_ANDROID ', IS_ANDROID);
+
             if (IS_ANDROID) {
-                console.log('...Coming to Correct Condition with Background....' + AppState.currentState);
+
                 const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
-                console.log(buildAPIVersion);
+
 
                 if (buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
-                    console.log(`Android API Version ${INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION} or Higher`)
+
                     NotifService.localNotif(CURRENT_APP_NAME + ': New Video Call from Doctor', 'Doctor is Calling You', {
                         tag: 'VIDEO_NOTIFICATION',
                         ongoing: true,
@@ -113,19 +111,19 @@ export default class CallKeepService {
                     });
                 } else {
                     if (RootNavigation.getContainerRef()) {
-                        console.log('Navigation Container is already Present....');
+
                         PushNotification.navigateToIncomingCallScreen();
                     } else {
                         SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-                        console.log('Navigation Container is  Not Present....');
+
                         var interval = setInterval(() => {
                             if (RootNavigation.getContainerRef()) {
-                                console.log('Excuting to Navigate To Video Screen...');
+
                                 PushNotification.navigateToIncomingCallScreen();
                                 clearInterval(interval);
                             }
                         }, 100);
-                        console.log('Excuting on Android with ' + AppState.currentState);
+
                     }
                 }
             } else {
@@ -166,19 +164,19 @@ export default class CallKeepService {
 
     //  EVENTS ///
     onAnswerCallAction = async () => {
-        console.log('ON Answer Event');
+
         if (IS_ANDROID) {
             if (RootNavigation.getContainerRef()) {
                 RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
             } else {
                 const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
-                console.log(buildAPIVersion);
+
                 if (buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
                     SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-                    console.log('Navigation Container is  Not Present....');
+
                     var interval = setInterval(() => {
                         if (RootNavigation.getContainerRef()) {
-                            console.log('Excuting to Navigate To Video Screen...');
+
                             RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
                             clearInterval(interval);
                         }
@@ -189,7 +187,7 @@ export default class CallKeepService {
             }
         } else {
             if (!RootNavigation.getContainerRef()) {
-                console.log('On Reference False');
+
                 store.dispatch({
                     type: SET_INCOMING_VIDEO_CALL,
                     data: true
@@ -204,7 +202,7 @@ export default class CallKeepService {
         });
     }
     onRejectCallAction = async () => {
-        console.log('On Reject the Incoming Call...');
+
         RNCallKeep.endAllCalls();
         if (IS_ANDROID) {
             if (RootNavigation.getContainerRef()) {
@@ -213,10 +211,9 @@ export default class CallKeepService {
                 const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
                 if (buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
                     SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-                    console.log('Navigation Container is  Not Present....');
+
                     var interval = setInterval(() => {
                         if (RootNavigation.getContainerRef()) {
-                            console.log('Excuting to Navigate To Video Screen...');
                             RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
                             clearInterval(interval);
                         }
@@ -227,7 +224,7 @@ export default class CallKeepService {
             }
         } else {
             if (!RootNavigation.getContainerRef()) {
-                console.log('On Reference False');
+
                 store.dispatch({
                     type: SET_INCOMING_VIDEO_CALL,
                     data: true
@@ -248,7 +245,7 @@ export default class CallKeepService {
         RNCallKeep.addEventListener('endCall', this.onRejectCallAction);
         if (IS_ANDROID) {
             /* eventEmitter.addListener('callActionChange', (param) =>  {
-                 console.log('Action Result Param', param);
+                
                  if(param === 'accepted') {
                      this.onAnswerCallAction();
                  } else if(param === 'declined') {
@@ -256,7 +253,7 @@ export default class CallKeepService {
                  }
              }); */
             PushNotification.onFullScreenIntentActionRegister((result) => {
-                console.log(result);
+
                 if (result === CALL_SCREEN_ACTIONS.ACCEPTED) {
                     this.onAnswerCallAction();
                 } else if (result === CALL_SCREEN_ACTIONS.DECLINED) {
