@@ -31,7 +31,7 @@ class PublicForum extends PureComponent {
             query_text: '',
             skip: 0,
             limit: 10,
-            isAllItemFetched: false
+            isAllItemFetched: false,
         };
         this.onEndReachedCalledDuringMomentum = true;
         this.callquerysearchService = debounce(this.callquerysearchService, 500);
@@ -49,10 +49,10 @@ class PublicForum extends PureComponent {
         }
     }
     callquerysearchService = async (enteredText, skipConcatWithPreviousData) => {
-       
-
+        this.setState({
+            isLoading: true
+          })
         let result = await getAllPublicForumDetails(this.state.query_text, this.state.skip, this.state.limit)
-
         if (result.success) {
             let forumFetced = result.data || []
             this.setState({
@@ -72,6 +72,7 @@ class PublicForum extends PureComponent {
 
     }
     renderFooter() {
+        this.setState({isLoading: false})
         return (
 
             this.state.isAllItemFetched === false ?
@@ -112,7 +113,6 @@ class PublicForum extends PureComponent {
         const { isLoading, data, } = this.state;
         return (
             <Container style={styles.container}>
-                {isLoading ? <ActivityIndicator /> : null}
 
                 <View style={{ flex: 1, marginLeft: 5, marginRight: 5, marginBottom: 10 }}
                     contentContainerStyle={{ flexGrow: 1 }}>
@@ -164,13 +164,15 @@ class PublicForum extends PureComponent {
                         </Form>
 
                     </View>
-                    {data.length === 0 ?
+                    {isLoading ? <ActivityIndicator  style={{flex:1,justifyContent:'center',alignItems:'center',fontSize:50}}/> : 
+                    data.length === 0 ?
 							<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
+                                 
 								<Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
 									No Questions 
 							</Text>
 							</View>:
-                    <View style={{ flex: 1 ,marginTop:10}}>
+                          <View style={{ flex: 1 ,marginTop:10}}>
                         <FlatList
                             data={data}
                             extraData={data}
