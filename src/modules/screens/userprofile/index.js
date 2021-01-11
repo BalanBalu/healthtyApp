@@ -689,7 +689,7 @@ class Profile extends Component {
                         </View>
                       )}
                     />
-                    <Button transparent>
+                    <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
                       <Icon name="add" style={{ color: 'gray' }} />
                       <Text
                         uppercase={false}
@@ -753,7 +753,7 @@ class Profile extends Component {
                           {data.email}
                         </Text>
                       ) : (
-                          <Button transparent>
+                          <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
                             <Icon name="add" style={{ color: 'gray' }} />
                             <Text
                               uppercase={false}
@@ -815,7 +815,7 @@ class Profile extends Component {
                         </View>
                       ) : (
                           <Button
-                            transparent
+                            transparent style={{justifyContent:'flex-start',marginLeft:-15}}
                             onPress={() => this.editProfile('MapBox')}>
                             <Icon name="add" style={{ color: 'gray' }} />
                             <Text uppercase={false} style={styles.customText}>
@@ -891,7 +891,7 @@ class Profile extends Component {
                           keyExtractor={(item, index) => index.toString()}
                         />
                       ) : (
-                          <Button transparent>
+                          <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
                             <Icon name="add" style={{ color: 'gray' }} />
                             <Text
                               uppercase={false}
@@ -1053,7 +1053,7 @@ const styles = StyleSheet.create({
   customText2: {
     fontSize: 15,
     fontFamily: 'OpenSans',
-    marginRight: 100,
+    // marginRight: 100,
   },
   logo: {
     height: 80,
