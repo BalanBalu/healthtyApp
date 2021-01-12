@@ -48,10 +48,11 @@ export default class App extends Component {
     if (userId) {
       this.userId = userId;
       this.initializeSocket(userId);
+      setInterval(() => {
+        this.getMarkedAsReadedNotification();
+      }, 10000);
     }
-    setInterval(() => {
-      this.getMarkedAsReadedNotification();
-    }, 10000);
+    
     //this.checkPermission();
   }
   componentWillUnmount() {
