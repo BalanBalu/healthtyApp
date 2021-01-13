@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import RoutesHome from './routes/appRouterHome';
 import { Provider } from 'react-redux';
- import NavigationService from './rootNavigation';
+import NavigationService from './rootNavigation';
 import { store } from './store'
 import { StyleProvider, Root, Toast } from 'native-base';
 import getTheme from '../theme/components';
@@ -11,7 +11,7 @@ import { FIREBASE_SENDER_ID, CHAT_API_URL } from './config'
 import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notification/notification.actions';
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import SocketIOClient from 'socket.io-client';
-import { AuthService , CallKeepService, CallProcessSetupService } from '../modules/screens/VideoConsulation/services/index';
+import { AuthService, CallKeepService, CallProcessSetupService } from '../modules/screens/VideoConsulation/services/index';
 import VideoAlertModel from '../modules/providers/chat/video.alert.model';
 YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
@@ -22,7 +22,7 @@ YellowBox.ignoreWarnings([
   'Animated: `useNativeDriver` was not specified. This is',
   'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation'
 ]);
-import { setI18nConfig, translate  } from './translator.helper';
+import { setI18nConfig, translate } from './translator.helper';
 import * as RNLocalize from "react-native-localize";
 import OfflineNotice from '../components/offlineNotice';
 
@@ -37,17 +37,18 @@ export default class App extends Component {
     };
     setI18nConfig();
     NavigationService.isMountedRef.current = false;
-    
+
   }
 
   async componentDidMount() {
     NavigationService.isMountedRef.current = true;
     const userId = await AsyncStorage.getItem('userId');
-   // AuthService.init();
+    // AuthService.init();
     RNLocalize.addEventListener('change', this.handleLocalizationChange);
     if (userId) {
       this.userId = userId;
       this.initializeSocket(userId);
+
     }
     setInterval(() => {
       this.getMarkedAsReadedNotification();
@@ -110,8 +111,9 @@ export default class App extends Component {
   getMarkedAsReadedNotification = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-
-      fetchUserMarkedAsReadedNotification(userId);
+       if (userId) {
+        fetchUserMarkedAsReadedNotification(userId);
+        }
     }
     catch (e) {
       console.log(e)
@@ -119,18 +121,18 @@ export default class App extends Component {
   }
 
 
-  
+
   render() {
     return (
       <Provider store={store} key="provider">
         <Root>
-        <VideoAlertModel> </VideoAlertModel>
-        
+          <VideoAlertModel> </VideoAlertModel>
+
           <StyleProvider style={getTheme(material)}>
-              <RoutesHome ref={NavigationService.navigationRef}> 
-            </RoutesHome> 
+            <RoutesHome ref={NavigationService.navigationRef}>
+            </RoutesHome>
           </StyleProvider>
-          <OfflineNotice/>
+          <OfflineNotice />
         </Root>
       </Provider>
     )

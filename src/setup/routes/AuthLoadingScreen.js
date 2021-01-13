@@ -5,6 +5,7 @@ import {
 import { setUserLocally, APP_LOADED } from '../../modules/providers/auth/auth.actions';
 import { store } from '../store';
 import SplashScreen from 'react-native-splash-screen';
+import {CURRENT_APP_NAME,MY_SMART_HEALTH_CARE} from '../config'
 class AuthLoadingScreen extends React.Component {
    constructor (props) {
     super(props);
@@ -17,8 +18,9 @@ class AuthLoadingScreen extends React.Component {
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
     const token = await AsyncStorage.getItem('token')
+    let  user=null
     if (token && token !== 'undefined' && token !== '') {
-      const user = JSON.parse(await AsyncStorage.getItem('user'))
+       user = JSON.parse(await AsyncStorage.getItem('user'))
       if (user) {
         await setUserLocally(token, user);
       }
@@ -26,9 +28,15 @@ class AuthLoadingScreen extends React.Component {
     const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
     this.setState({ CorporateUser:isCorporateUser })
     const { CorporateUser } = this.state
-    if (CorporateUser === true) {
-    this.props.navigation.navigate('CorporateHome');
-    }else{
+    if (CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
+      if (CorporateUser === true) {
+        this.props.navigation.navigate('CorporateHome');
+      } if (user) {
+        this.props.navigation.navigate('Home'); 
+      } else {
+        this.props.navigation.navigate('login');
+      }
+    }else {
       this.props.navigation.navigate('Home');  
     }
     SplashScreen.hide();
