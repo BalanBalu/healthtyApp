@@ -460,12 +460,13 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
 
     let response = await smartHealthPostService(endPoint, req);
-
+   
     if (response && response.data && response.data.access_token) {
       await AsyncStorage.setItem('smartToken', response.data.access_token)
       let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
 
       let res = await smartHealthGetService(ends);
+      
       if (res && res.data && res.data[0]) {
         let reqData = res.data[0]
 
@@ -534,19 +535,13 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
         message: "Invalid Login Credentials"
       })
     }
-
-
-
-
-
-
     return true
 
   } catch (e) {
 
     store.dispatch({
       type: LOGIN_HAS_ERROR,
-      message: e + ' Occured! Please Try again'
+      message:"Invalid Login Credentials"
     });
   }
 }
