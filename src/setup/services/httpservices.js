@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { API_URL, INVENTORY_API_URL, SMART_HEALTH_API_URL, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../config';
 axios.defaults.headers.common['app_name'] = CURRENT_APP_NAME
+
 export const postService = async (endPoint, data) => {
   
    
