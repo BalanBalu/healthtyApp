@@ -1,9 +1,13 @@
 import axios from 'axios';
-import { API_URL, INVENTORY_API_URL, SMART_HEALTH_API_URL } from '../config';
-
+import { API_URL, INVENTORY_API_URL, SMART_HEALTH_API_URL, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../config';
+axios.defaults.headers.common['app_name'] = CURRENT_APP_NAME
 export const postService = async (endPoint, data) => {
+  
+   
    let fullPath = API_URL + endPoint;
+
    let resp = await axios.post(fullPath, data)
+
    return resp;
 }
 
@@ -77,21 +81,21 @@ export const smartHealthPostService = async (endPoint, data) => {
    // let headers= {
    //    'Content-Type': `application/json`
    // }
-   
-      var req = {
-         method: 'POST',
-         url: SMART_HEALTH_API_URL + endPoint,
-         data: data,
-         headers: {
-            'Content-Type': 'application/json'
-         },
-      }
-      const resp = await axios(req);
-     
-      // let resp = await axios.post(fullPath, data,headers)
-      return resp;
 
-   } 
+   var req = {
+      method: 'POST',
+      url: SMART_HEALTH_API_URL + endPoint,
+      data: data,
+      headers: {
+         'Content-Type': 'application/json'
+      },
+   }
+   const resp = await axios(req);
+
+   // let resp = await axios.post(fullPath, data,headers)
+   return resp;
+
+}
 export const smartHealthGetService = async (endPoint) => {
    let fullPath = SMART_HEALTH_API_URL + endPoint;
 
@@ -120,13 +124,13 @@ export const smartHealthDeleteService = async (endPoint, data) => {
    return resp;
 }
 export const getServiceExternal = async (endPoint) => {
-   let emptyHeaders =null
+   let emptyHeaders = null
    let resp = await axios.get(endPoint, emptyHeaders);
    return resp;
 }
 
-export const postServiceExternal = async (endPoint,data) => {
+export const postServiceExternal = async (endPoint, data) => {
    let emptyHeaders = null
-   let resp = await axios.post(endPoint,data, emptyHeaders);
+   let resp = await axios.post(endPoint, data, emptyHeaders);
    return resp;
 }
