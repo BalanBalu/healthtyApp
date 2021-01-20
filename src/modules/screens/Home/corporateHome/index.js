@@ -54,7 +54,7 @@ class CorporateHome extends PureComponent {
             if (!userResult.error) {
                 let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
 
-                if (!!corporateResult && corporateResult.success !== false) {
+                if (!!corporateResult && !corporateResult.error) {
 
 
                     store.dispatch({
@@ -121,7 +121,7 @@ class CorporateHome extends PureComponent {
                     <View style={{ padding: 10 }}>
                         {corporateData && corporateData.length ?
                             <CorporateProfileCard
-                                data={corporateData && corporateData.find(ele => ele.relationship === 'EMPLOYEE') || null}
+                                data={corporateData && corporateData.find(ele => ele.relationship === 'EMPLOYEE'||ele.relationship === 'SELF') || null}
                             />
                             : null}
                         <ProfileFamilyCard

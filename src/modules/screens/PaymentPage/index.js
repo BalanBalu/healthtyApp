@@ -577,7 +577,7 @@ class PaymentPage extends Component {
                             <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.promoCodeErrorMsg}</Text>
                             <Row style={{ marginRight: 15, marginLeft: 15, marginTop: 10 }}>
                                 <Right style={{ marginRight: 5 }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode")}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode",{isFilter:true,serviceType:this.state.serviceType})}>
                                         <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3', borderBottomColor: '#775DA3', borderBottomWidth: 0.5, borderStyle: 'dotted', }}>Available Promo Codes</Text>
                                     </TouchableOpacity>
                                 </Right>

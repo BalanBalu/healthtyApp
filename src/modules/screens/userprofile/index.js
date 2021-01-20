@@ -47,7 +47,7 @@ import { Loader } from '../../../components/ContentLoader';
 import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices';
 import { renderDoctorImage, renderProfileImage, getGender } from '../../common';
-import EcardDetails from './EcardDetails';
+// import EcardDetails from '../userprofile/EcardDetails';
 
 class Profile extends Component {
   navigation = this.props.navigation;
@@ -942,7 +942,7 @@ class Profile extends Component {
                   </Right>
                 </ListItem>
               </List>
-              <EcardDetails />
+              {/* <EcardDetails /> */}
               {this.state.favouriteList.length === 0 ? null : (
                 <Card style={{ padding: 10 }}>
                   <List>
