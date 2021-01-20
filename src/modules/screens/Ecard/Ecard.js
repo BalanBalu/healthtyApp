@@ -33,23 +33,23 @@ class Ecard extends PureComponent {
     }
 
     async open(data) {
-      
+
         let requestObject = {
             payer_code: data.payerCode,
             member_id: data.memberId,
             policy_no: data.policyNo,
             first_name: data.firstName
         }
-       
+
         let result = await getEcardLink(requestObject)
         if (result) {
             Linking.openURL(result)
-        }else {
-                 toastMeassage('sorry unable  download', 'danger', 3000)
-            }
+        } else {
+            toastMeassage('sorry unable  download', 'danger', 3000)
+        }
         // if (!!result && result.status === 'True') {
         //     let temp = JSON.parse(result.result)
-          
+
         // } 
 
     }
@@ -73,7 +73,7 @@ class Ecard extends PureComponent {
 
     }
     toggleData(data) {
-       
+
         this.setState({ showCard: data, show: !this.state.show })
     }
 
@@ -234,14 +234,14 @@ class Ecard extends PureComponent {
                         <Spinner color='blue'
                             visible={isLoading}
                             overlayColor="none"
-                        /> : data.length == 0 ?
+                        /> : !Array.isArray(data) || data.length === 0 ?
                             <View style={{ alignItems: 'center', justifyContent: 'center', height: 550 }}>
                                 <Text>No E-Card details found !</Text>
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
                                 <Text style={styles.familyHeader}>Employee Detail</Text>
-                                {data && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
+                                {data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
                                     this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null}
                                 <View style={styles.borderStyle} />
                                 <View>

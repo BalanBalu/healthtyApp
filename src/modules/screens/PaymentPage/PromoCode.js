@@ -37,6 +37,7 @@ class PromoCode extends Component {
             } else {
                 result = await getPromodataList(data)
             }
+            
            
             if (result.success) {
                 this.setState({ data: result.data })
@@ -83,8 +84,27 @@ class PromoCode extends Component {
             return null
         }
     }
+    
+    getPromoCodeMinimumAmountDisciption(data) {
+        let discription=''
+        if (data.minimum_amount_to_apply_coupon !== undefined) {
+            discription=`Minimum order value is Rs.${data.minimum_amount_to_apply_coupon} (Transaction value)`
+        } 
+        return discription
+    }
+    getPromoCodeMinimumOfferAmount(data) {
+        let discription = ''
+        if (data.discount_number) {
+            if (data.discount_type === 'AMOUNT') {
+                discription = `Flat   ${data.discount_number} Rs off`
+            } else if (data.discount_type === 'PERCENTAGE') {
+                discription = `Flat   ${data.discount_number} % off`
+ 
+            }
 
-   
+            }
+        return discription
+    }
     OnCopyedValue() {
         if (this.state.coupenCodeText != null) { }
     }
@@ -128,6 +148,16 @@ class PromoCode extends Component {
                                                 </TouchableOpacity>
                                             </Col>
                                         </Row>
+                                      
+                                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
+                                          
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>{this.getPromoCodeMinimumAmountDisciption(item)}</Text>
+                                        </Row>
+                                        
+                                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
+                                          
+                                          <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>{this.getPromoCodeMinimumOfferAmount(item)}</Text>
+                                      </Row>
                                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
                                             {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>{this.getPromocodeDiscription(item)}</Text>
@@ -155,6 +185,7 @@ class PromoCode extends Component {
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid on all modes of payments</Text>
                                                 </Row>
+                                              
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid only on select {this.getPromocodeDiscription(item)}</Text>
