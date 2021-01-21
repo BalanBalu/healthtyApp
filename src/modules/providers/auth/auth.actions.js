@@ -138,6 +138,7 @@ export async function generateOTP(reqData) {
     })
     let endPoint = 'auth/requestCodeFP'
     let response = await postService(endPoint, reqData);
+
     let responseData = response.data
     if (response.error || response.success == false) {
       store.dispatch({
@@ -237,7 +238,8 @@ export async function logout() {
   await AsyncStorage.removeItem('basicProfileData');
   await AsyncStorage.removeItem('updatedDeviceToken');
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
-  await AsyncStorage.removeItem('is_corporate_user')
+  await AsyncStorage.removeItem('is_corporate_user');
+  await AsyncStorage.removeItem('relationship')
 
   store.dispatch({
     type: LOGOUT
@@ -261,6 +263,7 @@ export async function setUserLocally(token, userData) {
     AsyncStorage.setItem('user', JSON.stringify(userData))
     axios.defaults.headers.common['x-access-token'] = token;
     axios.defaults.headers.common['userId'] = userData.userId;
+
     AsyncStorage
     store.dispatch({
       type: SET_USER,
@@ -460,21 +463,24 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
 
     let response = await smartHealthPostService(endPoint, req);
-   
+
     if (response && response.data && response.data.access_token) {
       await AsyncStorage.setItem('smartToken', response.data.access_token)
       let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
 
       let res = await smartHealthGetService(ends);
-      
+    
       if (res && res.data && res.data[0]) {
         let reqData = res.data[0]
-
+       
+        if (reqData.relationship) {
+          await AsyncStorage.setItem('relationship', reqData.relationship)
+        }
         let reqBody = {
           type: 'user',
           email: reqData.emailId,
           password: userCredentials.password,
-          gender: reqData.gender === 'Male' ? 'M' : reqData.gender === 'FeMale' ? 'F' : 'O',
+          gender: reqData.gender === 'Male' ? 'M' : reqData.gender === 'Female' ? 'F' : 'O',
           dob: reqData.dob,
           is_corporate_user: true,
           corporate_member_id: userCredentials.userEntry,
@@ -499,11 +505,14 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
           reqBody.mobile_no = reqData.mobile
         }
 
-        let insertEndPoint = 'auth/smart_health/signUp'
-        let signUpResult = await postService(insertEndPoint, reqBody)
+        let insertEndPoint = 'auth/smart_health/signUp';
+        let signUpResult = await postService(insertEndPoint, reqBody);
+
+
         if (signUpResult.data.success) {
           await AsyncStorage.setItem('memberId', reqData.memberId)
           changePasswordEndPoint = 'member-users/member-id?id=' + reqData.memberId
+          console.log(changePasswordEndPoint)
           let forgotResult = await smartHealthGetService(changePasswordEndPoint)
 
           if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
@@ -541,7 +550,7 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
     store.dispatch({
       type: LOGIN_HAS_ERROR,
-      message:"Invalid Login Credentials"
+      message: "Invalid Login Credentials"
     });
   }
 }

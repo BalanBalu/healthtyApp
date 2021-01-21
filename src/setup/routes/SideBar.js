@@ -4,9 +4,10 @@ import { Container, Content, Text, List, ListItem, View, Row, Col, Footer, Foote
 import { DragwerLogos } from './appRouterHome';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import FastImage from 'react-native-fast-image'
-import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE, IS_ANDROID, CURRENT_APP_NAME } from '../config'
+import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE, IS_ANDROID, CURRENT_APP_NAME,MY_SMART_HEALTH_CARE } from '../config'
 import { translate } from "../../setup/translator.helper"
 import { corporateUserSideBarMenuList } from "./appRouterHome";
+
 class SideBar extends React.Component {
   activeUserData = {};
   constructor(props) {
@@ -108,7 +109,7 @@ class SideBar extends React.Component {
           </View>
 
           <FlatList
-            data={is_corporate_user === false ? menuSubMenus : corporateUserSideBarMenuList}
+            data={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE  ? corporateUserSideBarMenuList:menuSubMenus }
             keyExtractor={(item, index) => index.toString()}
             ItemSeparatorComponent={() =>
               <View
