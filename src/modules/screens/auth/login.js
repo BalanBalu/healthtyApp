@@ -152,7 +152,7 @@ class Login extends Component {
                     </Item>
                     {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
                       <Row style={{ marginTop: 10 }}>
-                         <Col size={3}>
+                         <Col size={4}>
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
                               standardStyle={true}
@@ -162,7 +162,7 @@ class Login extends Component {
                             <Text style={styles.firstCheckBox}>Corporate</Text>
                           </Row>
                         </Col>
-                        <Col size={3}>
+                        <Col size={4}>
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
                               standardStyle={true}
@@ -173,7 +173,7 @@ class Login extends Component {
                           </Row>
                         </Col>
                        
-                        <Col size={4}>
+                        <Col size={2}>
                         </Col>
                       </Row>
                       : null}
@@ -198,7 +198,7 @@ class Login extends Component {
                       {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans', marginTop: 2 }}>{loginErrorMsg}</Text> */}
                     </View>
 
-                    <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
+                    <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10,marginTop:10 }}>
                       <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: '#775DA3' }}>Don't Have An Account ?</Text>
                       <TouchableOpacity onPress={() => {
                         this.props.navigation.navigate('signup')
