@@ -142,7 +142,7 @@ class Forgotpassword extends Component {
                                 <Text style={styles.firstCheckBox}>User</Text>
                             </Row>
                         </Col>
-                        <Col size={4}>
+                        <Col size={3}>
                             <Row style={{ alignItems: 'center' }}>
                                 <Radio
                                     standardStyle={true}
@@ -152,7 +152,7 @@ class Forgotpassword extends Component {
                                 <Text style={styles.firstCheckBox}>Corporate</Text>
                             </Row>
                         </Col>
-                        <Col size={3}>
+                        <Col size={4}>
                         </Col>
                     </Row> : null}
                 {isLoading ?
