@@ -26,7 +26,7 @@ class Login extends Component {
       checked: false,
       isModalVisible: false,
       showPassword: true,
-      isSelected: 'user',
+      isSelected:CURRENT_APP_NAME === MY_SMART_HEALTH_CARE?'corporate_user':'user',
       CorporateUser: false
     }
   }
@@ -70,6 +70,7 @@ class Login extends Component {
         if (CorporateUser === true) {
           this.props.navigation.navigate('CorporateHome');
         } else {
+          
           this.props.navigation.navigate('Home');
         }
       } else {
