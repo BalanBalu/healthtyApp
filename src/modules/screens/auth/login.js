@@ -26,7 +26,7 @@ class Login extends Component {
       checked: false,
       isModalVisible: false,
       showPassword: true,
-      isSelected: 'user',
+      isSelected: 'corporate_user',
       CorporateUser: false
     }
   }
@@ -118,9 +118,9 @@ class Login extends Component {
                   <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
 
                   <Form>
-                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number/ Email</Label>
+                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>{isSelected === 'corporate_user' ? "Email" : "Mobile Number/ Email"}</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
-                      <Input placeholder= "Mobile Number / Email" style={styles.authTransparentLabel}
+                      <Input placeholder={isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
                         returnKeyType={'next'}
                         value={userEntry}
@@ -152,17 +152,7 @@ class Login extends Component {
                     </Item>
                     {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
                       <Row style={{ marginTop: 10 }}>
-                        <Col size={3}>
-                          <Row style={{ alignItems: 'center' }}>
-                            <Radio
-                              standardStyle={true}
-                              selected={isSelected === 'user'}
-                              onPress={() => this.setState({ isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
-                            />
-                            <Text style={styles.firstCheckBox}>User</Text>
-                          </Row>
-                        </Col>
-                        <Col size={3}>
+                         <Col size={4}>
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
                               standardStyle={true}
@@ -173,6 +163,17 @@ class Login extends Component {
                           </Row>
                         </Col>
                         <Col size={4}>
+                          <Row style={{ alignItems: 'center' }}>
+                            <Radio
+                              standardStyle={true}
+                              selected={isSelected === 'user'}
+                              onPress={() => this.setState({ isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
+                            />
+                            <Text style={styles.firstCheckBox}>User</Text>
+                          </Row>
+                        </Col>
+                       
+                        <Col size={2}>
                         </Col>
                       </Row>
                       : null}
@@ -197,7 +198,7 @@ class Login extends Component {
                       {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans', marginTop: 2 }}>{loginErrorMsg}</Text> */}
                     </View>
 
-                    <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
+                    <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10,marginTop:10 }}>
                       <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: '#775DA3' }}>Don't Have An Account ?</Text>
                       <TouchableOpacity onPress={() => {
                         this.props.navigation.navigate('signup')
