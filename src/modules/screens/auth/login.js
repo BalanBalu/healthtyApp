@@ -70,6 +70,7 @@ class Login extends Component {
         if (CorporateUser === true) {
           this.props.navigation.navigate('CorporateHome');
         } else {
+          
           this.props.navigation.navigate('Home');
         }
       } else {

@@ -19,11 +19,16 @@ class CorporateHome extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-
+            isCorporateUser: false,
+            relationship:null
         }
     }
     async componentDidMount() {
         let userId = await AsyncStorage.getItem("userId");
+        let relationship = await AsyncStorage.getItem("relationship") || null;
+        
+        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+       this.setState({isCorporateUser,relationship})
         this.getCorporateDatails(userId)
         this.initialFunction();
     }
@@ -101,6 +106,7 @@ class CorporateHome extends PureComponent {
     render() {
         let corporateData = this.props.profile.corporateData;
         const { navigate } = this.props.navigation;
+        const { isCorporateUser,relationship } = this.state;
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount },
             navigation } = this.props;
         if (locationUpdatedCount !== this.locationUpdatedCount) {
@@ -119,15 +125,17 @@ class CorporateHome extends PureComponent {
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
                     <View style={{ padding: 10 }}>
-                        {corporateData && corporateData.length ?
+                        {isCorporateUser&&corporateData && corporateData.length ?
                             <CorporateProfileCard
-                                data={corporateData && corporateData.find(ele => ele.relationship === 'EMPLOYEE'||ele.relationship === 'SELF') || null}
+                                data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
                             />
                             : null}
-                        <ProfileFamilyCard
-                            navigation={navigate}
-                        />
-                        <CoverageCard />
+                        {isCorporateUser ?
+                            <ProfileFamilyCard
+                                navigation={navigate}
+                            /> : null}
+                        {isCorporateUser ?
+                            <CoverageCard /> : null}
                         <SearchAndAppointmentCard
                             navigation={navigate}
                         />
