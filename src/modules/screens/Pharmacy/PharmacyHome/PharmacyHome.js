@@ -16,6 +16,7 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import bannerOffer from '../../../../../assets/images/25offer-banner.jpg'
 import flatBannerOffer from '../../../../../assets/images/20flatoff-banner.jpg'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 let userId;
 class PharmacyHome extends Component {
@@ -238,7 +239,7 @@ class PharmacyHome extends Component {
                             size={6} style={{ justifyContent: 'center', backgroundColor: '#fff', height: 30, borderColor: 'gray', borderWidth: 0.3, borderRadius: 2 }}>
                             <Row>
                                 <Col size={.5}>
-                                    <Icon name='ios-pin' style={{ fontSize: 20, color: '#775DA3', marginTop: 5, marginLeft: 4 }} />
+                                    <Icon name='location-sharp' style={{ fontSize: 15, color: '#775DA3', marginTop: 5, marginLeft: 4 }} />
                                 </Col>
                                 <Col size={5.5} style={{ justifyContent: 'center' }}>
                                     <Text style={{ fontSize: 10, color: '#775DA3', marginLeft: 5 }}>Search Near by Stores</Text>
@@ -297,7 +298,7 @@ class PharmacyHome extends Component {
                                                 <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
                                                     UPLOAD PRESCRIPTION
                                                 </Text>
-                                                <Icon name='ios-arrow-forward' style={{ marginLeft: 5, color: '#fff', fontSize: 15 }} />
+                                            <MaterialIcons name="keyboard-arrow-right" style={{ marginLeft: 5, color: '#fff', fontSize: 15 }} />
                                             </TouchableOpacity>
                                         </Row>
                                     </Col>
