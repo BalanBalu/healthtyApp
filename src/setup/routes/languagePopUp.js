@@ -49,7 +49,7 @@ class LanguagePopUp extends React.PureComponent {
           button={
             <TouchableOpacity activeOpacity={1} onPress={this.showMenu} style={styles.menuIcon}>
                <FontAwesome
-            name='language' style={{ color: '#fff', fontSize: 25 }}></FontAwesome>
+            name='language' style={{ color: '#fff', fontSize: 22 }}></FontAwesome>
             </TouchableOpacity>
           }
         >

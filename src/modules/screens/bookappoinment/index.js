@@ -650,14 +650,14 @@ getMinVideoChatConsultFee(item) {
                       {availabilityForChat === true ?
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
-                      <Icon name="ios-chatboxes" style={{fontSize:25,color:'#7F49C3'}} />
-                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:2}}>{translate("Chat")}</Text>
+                      <Icon name="chatbox" style={{fontSize:25,color:'#7F49C3',marginTop:2}} />
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>{translate("Chat")}</Text>
                     </TouchableOpacity>
                   </Col>
                   : null}
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}}>
-                      <Icon name="md-share" style={{fontSize:18,color:'#7F49C3'}} />
+                       <Icon name="share-social"  style={{fontSize:20,color:'#7F49C3'}} />
                       <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>{translate("Share")}</Text>
                     </TouchableOpacity>
                   </Col>

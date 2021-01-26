@@ -9,7 +9,7 @@ import moment from 'moment';
 import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders, getReminderData } from '../../providers/reminder/reminder.action.js';
 import { IS_ANDROID, IS_IOS } from '../../../setup/config';
 import { translate } from "../../../setup/translator.helper"
-
+import AntDesign from 'react-native-vector-icons/AntDesign'
 const POSSIBLE_PAGE_CONTENT = {
   MEDICINE_CONTENT: 'MEDCINE_CONTENT',
   DATE_CONTENT: 'DATE_CONTENT',
@@ -568,7 +568,7 @@ class AddReminder extends Component {
                       <Col size={3.5} style={{ mariginTop: 5 }}>
                         <View style={{ alignItems: 'flex-start', marginTop: 5, padding: 1 }}>
                           <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={styles.toucableOpacity}>
-                            <Icon name='ios-clock' style={styles.tocuhIcon} />
+                            <AntDesign name='clockcircleo' style={styles.tocuhIcon} />
                             {
                               this.state.timePlaceholder ?
                                 <View>

@@ -8,6 +8,8 @@ import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
 import CurrentLocation from './CurrentLocation';
 import { getPopularCities } from '../../providers/locations/location.action';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+
 class Locations extends PureComponent {
     constructor(props) {
         super(props)
@@ -113,7 +115,7 @@ class Locations extends PureComponent {
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.city_name}</Text>
                                             </Left>
                                             <Right style={{ marginRight: 10, }}>
-                                                <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
+                                                <MaterialIcons name="keyboard-arrow-right" style={{ fontSize: 20 }} />
                                             </Right>
                                         </ListItem>
 
