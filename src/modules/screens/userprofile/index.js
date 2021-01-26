@@ -92,6 +92,7 @@ class Profile extends Component {
   /*Get userProfile*/
   getUserProfile = async () => {
     try {
+      this.setState({ isLoading: true });
       let fields =
         'first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified,height,weight,family_members';
 
@@ -689,7 +690,7 @@ class Profile extends Component {
                         </View>
                       )}
                     />
-                    <Button transparent>
+                    <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
                       <Icon name="add" style={{ color: 'gray' }} />
                       <Text
                         uppercase={false}
@@ -753,7 +754,7 @@ class Profile extends Component {
                           {data.email}
                         </Text>
                       ) : (
-                          <Button transparent>
+                          <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
                             <Icon name="add" style={{ color: 'gray' }} />
                             <Text
                               uppercase={false}
@@ -766,17 +767,6 @@ class Profile extends Component {
                         )}
                     </TouchableOpacity>
                   </Body>
-
-                  {data.email != undefined ? (
-                    <Right>
-                      <Icon
-                        name="create"
-                        style={{ color: 'black' }}
-                        onPress={() => this.editProfile('UpdateEmail')}
-                        testID="iconToUpdateEmail"
-                      />
-                    </Right>
-                  ) : null}
                 </ListItem>
 
                 <ListItem avatar>
@@ -815,7 +805,7 @@ class Profile extends Component {
                         </View>
                       ) : (
                           <Button
-                            transparent
+                            transparent style={{justifyContent:'flex-start',marginLeft:-15}}
                             onPress={() => this.editProfile('MapBox')}>
                             <Icon name="add" style={{ color: 'gray' }} />
                             <Text uppercase={false} style={styles.customText}>
@@ -850,16 +840,7 @@ class Profile extends Component {
                       </Text>
                     </View>
                   </Body>
-                  {data.mobile_no === undefined ? (
-                    <Right>
-                      <Icon
-                        name="create"
-                        style={{ color: 'black' }}
-                        onPress={() => this.editProfile('UpdateContact')}
-                        testID="iconToUpdateContact"
-                      />
-                    </Right>
-                  ) : null}
+                
                 </ListItem>
 
                 <ListItem avatar>
@@ -891,7 +872,7 @@ class Profile extends Component {
                           keyExtractor={(item, index) => index.toString()}
                         />
                       ) : (
-                          <Button transparent>
+                          <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
                             <Icon name="add" style={{ color: 'gray' }} />
                             <Text
                               uppercase={false}
@@ -1053,7 +1034,7 @@ const styles = StyleSheet.create({
   customText2: {
     fontSize: 15,
     fontFamily: 'OpenSans',
-    marginRight: 100,
+    // marginRight: 100,
   },
   logo: {
     height: 80,
