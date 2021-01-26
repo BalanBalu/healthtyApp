@@ -16,6 +16,8 @@ import { InsertReview } from '../Reviews/InsertReview'
 import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import { translate } from "../../../setup/translator.helper";
 import { updateEvent } from "../../../setup/calendarEvent";
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const hasReviewButtonShow = true
 
@@ -486,7 +488,7 @@ class AppointmentDetails extends Component {
                       </Col>
                       <Col style={{ width: '50%', marginLeft: 5, }}>
                         <Row>
-                          <Icon name="md-clock" style={styles.iconStyle} />
+                          <AntDesign name='clockcircleo' style={styles.iconStyle} />
                           <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a') + '-' + formatDate(data.appointment_endtime, 'hh:mm a')}</Text>
                         </Row>
                       </Col>
@@ -552,7 +554,7 @@ class AppointmentDetails extends Component {
                       {data.previous_data != undefined && data.appointment_status === 'PROPOSED_NEW_TIME' &&
                         <Row style={styles.rowSubText}>
                           <Col style={{ width: '8%', paddingTop: 5 }}>
-                            <Icon name="md-clock" style={{ fontSize: 20, }} />
+                          <AntDesign name='clockcircleo' style={{ fontSize: 20, }} />
                           </Col>
                           <Col style={{ width: '92%', paddingTop: 5 }}>
                             <Text style={styles.innerSubText1}>Previous Time</Text>
@@ -633,7 +635,7 @@ class AppointmentDetails extends Component {
                   {data.location != undefined &&
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
-                        <Icon name="ios-pin" style={{ fontSize: 20, }} />
+                        <Icon name="location-sharp" style={{ fontSize: 20, }} />
                       </Col>
                       <Col style={{ width: '92%', paddingTop: 5 }}>
                         <Text style={styles.innerSubText}>{translate("Hospital")}</Text>
@@ -778,7 +780,7 @@ class AppointmentDetails extends Component {
                             <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
 
                               <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>{translate("Add Feedback")} </Text>
-                              <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                              <MaterialIcons name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></MaterialIcons>
                             </TouchableOpacity>
                           </View>
                         </Col>
@@ -1051,7 +1053,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#FFF',
-    marginLeft: -10
+    marginLeft:10
+   
   },
   iconStyle: {
     fontSize: 20,

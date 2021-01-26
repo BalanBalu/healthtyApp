@@ -55,6 +55,7 @@ class LabConfirmation extends Component {
         }
         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
         this.setState({ isCorporateUser });
+        console.log(`isCorporateUser`, this.state.isCorporateUser);
         
         await this.getUserProfile();
     }
@@ -260,7 +261,8 @@ class LabConfirmation extends Component {
                 this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
                 let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', requestData, SERVICE_TYPES.LAB_TEST, userId, 'cash');
                 if (response.success) {
-                    this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                    const manualNaviagationPage = this.state.isCorporateUser ? 'CorporateHome':'Home'
+                    this.props.navigation.navigate('SuccessChat', { manualNaviagationPage });
                     Toast.show({
                         text: 'Appointment has Succcessfully Requested',
                         type: "success",
