@@ -133,9 +133,9 @@ class Insurance extends Component {
             </Col>
             <Col size={3.5} style={{justifyContent: 'center'}}>
               <Input
-                onFocus={() => {
-                  this.props.navigation.navigate('RenderSuggestionList');
-                }}
+                // onFocus={() => {
+                //   this.props.navigation.navigate('RenderSuggestionList');
+                // }}
                 placeholder="Search Insurance Policies..."
                 style={styles.inputfield}
                 placeholderTextColor="#909090"
