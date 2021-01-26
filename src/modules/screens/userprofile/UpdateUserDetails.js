@@ -223,7 +223,7 @@ class UpdateUserDetails extends Component {
                                             fontSize: 16,
                                         }}
                                         itemTextStyle={{ color: '#5cb85c', }}
-                                        style={{ width: 320 }}
+                                        style={{ width: "100%"  }}
                                         onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample, updateButton: false }) }}
                                         selectedValue={this.state.selectedBloodGroup}
                                         testID="editBloodGroup"
@@ -240,7 +240,7 @@ class UpdateUserDetails extends Component {
                                 </Item>
 
 
-                                <View style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 15,}}>
+                                <View style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 20,}}>
                                             <Row style={ Platform.OS === "ios" ? {marginLeft:10,marginRight:10}:null} >
                                                 <Col size={3} style={{flexDirection:'row',alignItems:'center'}}>
                                                    
