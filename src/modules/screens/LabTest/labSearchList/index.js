@@ -17,6 +17,7 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { color } from 'react-native-reanimated';
 import moment from 'moment';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 let labListOrder = 'ASC';
@@ -664,7 +665,7 @@ class labSearchList extends Component {
                                     <Col style={{ width: '55%', flexDirection: 'row', marginLeft: 5, }} onPress={() => this.topRatingLabs(labListItemData)}>
                                         <Row>
                                             <Col style={{ width: '15%' }}>
-                                                <Icon name={labListOrder === 'ASC' ? 'ios-arrow-down' : 'ios-arrow-up'} style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
+                                                <MaterialIcons name={labListOrder === 'ASC' ? 'keyboard-arrow-down' :'keyboard-arrow-up'} style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
                                             </Col>
                                             <Col style={{ width: '85%' }}>
                                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
@@ -675,7 +676,7 @@ class labSearchList extends Component {
                                         <Row>
                                             <TouchableOpacity onPress={() => this.filterLabListData(labPreviousData)} style={{ flexDirection: 'row' }}>
                                                 <Col style={{ width: '35%', marginLeft: 10 }}>
-                                                    <Icon name='ios-funnel' style={{ color: 'gray' }} />
+                                                    <Icon name='ios-funnel' style={{ color: 'gray',fontSize:20 }} />
                                                 </Col>
                                                 <Col style={{ width: '65%' }}>
                                                     <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>

@@ -277,8 +277,7 @@ class DoctorList extends Component {
                     <Row style={{ height: 35, alignItems: 'center' }}>
                         <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.sortByTopRatings(doctorInfoListAndSlotsData)}>
                             <Col size={2.0} >
-                                <MaterialIcons name={this.isRenderedTopRatedDocList ? 'reply'
-                                    : 'keyboard-arrow-down'} style={{ color: 'gray', fontSize: 24 }} />
+                                <MaterialIcons name={this.isRenderedTopRatedDocList ?  'keyboard-arrow-up':'keyboard-arrow-down'} style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
@@ -290,7 +289,7 @@ class DoctorList extends Component {
                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
                             </Col>
                             <Col size={2.0} style={{ marginLeft: 5 }}>
-                                <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25 }} />
+                                <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 20 }} />
                             </Col>
                         </Col>
                     </Row>
