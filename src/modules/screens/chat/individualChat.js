@@ -320,8 +320,8 @@ class IndividualChat extends Component {
                                     style={[styles.circle, { marginLeft: 10 }]}>
                                     <Icon name="ios-send"
                                         style={{
-                                            color: '#fff', fontSize: 30, padding: 2,
-                                            transform: [{ rotate: '45deg' }]
+                                            color: '#fff', fontSize: 20, padding: 2,
+                                            // transform: [{ rotate: '45deg' }]
                                         }}
                                         onPress={this.onSend}
                                     />

@@ -173,7 +173,7 @@ class LabAppointmentList extends Component {
     onPressBookAgain(labItemData) {
         let labId = labItemData.lab_id;
         this.props.navigation.navigate('LabBookAppointment', {
-            labId: labId, fetchAvailabiltySlots: true
+            labId: labId, fetchAvailabiltySlots: true, lab_test_categories_id: labItemData.lab_test_categories_id
         });
     }
 	async navigateToHomeOrCorporate() {

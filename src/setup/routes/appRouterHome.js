@@ -132,11 +132,12 @@ import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
 import TextTicker from 'react-native-text-ticker';
-import { IS_ANDROID } from '../config';
+import { IS_ANDROID,CURRENT_APP_NAME , MY_SMART_HEALTH_CARE } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
+import {smartHealthStack}from './smartHealtStack'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -204,7 +205,7 @@ const HomeStack = createStackNavigator({
                   />
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
-                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <Icon name="location-sharp" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
                   <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
                     <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
                       loop
@@ -230,7 +231,7 @@ const HomeStack = createStackNavigator({
               <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
                   <View>
-                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold',fontSize:25 }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
                       <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
                   </View>
@@ -263,7 +264,7 @@ const HomeStack = createStackNavigator({
               <Col size={10}>
                 <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
                   <View style={{ flexDirection: 'row' }}>
-                    <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                    <Icon name="location-sharp" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
                    
                     <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>{navigation.getParam('appBar', { locationName: ' ' }).locationName}</Text>
                     <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
@@ -337,7 +338,7 @@ const HomeStack = createStackNavigator({
                   />
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
-                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <Icon name="location-sharp" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
                   <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
                     <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
                       loop
@@ -363,7 +364,7 @@ const HomeStack = createStackNavigator({
               <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
                   <View>
-                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold',fontSize:25 }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
                       <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
                   </View>
@@ -1226,7 +1227,7 @@ const HomeStack = createStackNavigator({
 
 const drawerNavigatorRoutes = {
   Home: {
-    screen: HomeStack,
+    screen: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE?smartHealthStack:HomeStack,
     routeName: 'Home'
   },
   'Video and Chat Service': {
@@ -1331,11 +1332,6 @@ export const corporateUserSideBarMenuList = [
         routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
 
-      },
-      {
-        name: 'Reminder',
-        routeName: drawerNavigatorRoutes.Reminder.routeName,
-        icon: require('../../../assets/images/drawerIcons/Reminder.png'),
       }
     ]
   },
@@ -1375,6 +1371,7 @@ export const corporateUserSideBarMenuList = [
     ]
   }
 ]
+
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
   overlayColor: 'rgba(0, 0, 0, 0.7)',
   contentComponent: props => <SideBar
@@ -1485,7 +1482,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
     {...props} />
 },
   {
-    initialRouteName: 'Home'
+    initialRouteName: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE?'Home':'CorporateHome'
   })
 
 export const DragwerLogos = {
@@ -1502,12 +1499,95 @@ export const DragwerLogos = {
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
   'My Lab Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
   'My Home Healthcare Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
-
 }
+const SmDrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
+  overlayColor: 'rgba(0, 0, 0, 0.7)',
+  contentComponent: props => <SideBar
+    menuSubMenus={[
+    
+      {
+        menuName: 'Insurance Services',
+        menuForCorporateUser: true,
+        subMenus: [
+          {
+            name: 'E Card',
+            routeName: drawerNavigatorRoutes['E Card'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'Insurance',
+            routeName: drawerNavigatorRoutes['Insurance'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          }]
+      },
+      {
+        menuName: 'Services',
+        subMenus: [
+          {
+            name: 'Home Health Care',
+            routeName: 'Home Healthcare Address List', // drawerNavigatorRoutes["Home Health Care"].routeName,
+            icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+            params: {
+              fromNavigation: "HOME_HEALTH_CARE"
+            }
+
+          },
+          {
+            name: 'Video and Chat',
+            routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+
+          },
+
+        ]
+      },
+      {
+        menuName: 'Orders and Consultations',
+        subMenus: [
+          {
+            name: 'My Appointments',
+            routeName: drawerNavigatorRoutes["My Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'My Home Healthcare Appointments',
+            routeName: drawerNavigatorRoutes["My Home Healthcare Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'My Chat Consultations',
+            routeName: drawerNavigatorRoutes["My Chats"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Chat.png'),
+          },
+          {
+            name: 'My Video Consultations',
+            routeName: drawerNavigatorRoutes["My Video Consultations"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Chat.png'),
+          },
+          {
+            name: 'My Lab Test Appointments',
+            routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'Health Records',
+            routeName: drawerNavigatorRoutes["Health Records"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+        ]
+      }
+    ]}
+    {...props} />
+},
+  {
+    initialRouteName: 'CorporateHome'
+  })
+
 export default createAppContainer(createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
     App: DrawerNavigator,
+    SmApp:SmDrawerNavigator,
     Auth: AuthStack
   },
   {

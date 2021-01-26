@@ -13,6 +13,7 @@ import { getHomeTestappointmentByID, updateDocHomeTestappointment } from '../../
 import Spinner from "../../../../components/Spinner";
 import InsertReview from '../Reviews/insertReviews';
 import { RenderProposeNewPopPage } from '../../CommonAll/components';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 const DOCTOR_FIELDS = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
 
 class AppointmentDetails extends PureComponent {
@@ -385,7 +386,7 @@ class AppointmentDetails extends PureComponent {
                                     {data && data.patient_location && data.patient_location.address ?
                                         <Row style={styles.rowSubText}>
                                             <Col style={{ width: '8%', paddingTop: 5 }}>
-                                                <Icon name="ios-pin" style={{ fontSize: 20, }} />
+                                                <Icon name="location-sharp" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
                                                 <Text style={styles.innerSubText}>Patient Address</Text>
@@ -396,7 +397,7 @@ class AppointmentDetails extends PureComponent {
                                     {data.patient_data.length ?
                                         <Row style={styles.rowSubText}>
                                             <Col style={{ width: '8%', paddingTop: 5 }}>
-                                                <Icon name="ios-pin" style={{ fontSize: 20, }} />
+                                                <Icon name="location-sharp" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
                                                 <Text style={styles.innerSubText}>Patient Details</Text>
@@ -497,7 +498,7 @@ class AppointmentDetails extends PureComponent {
                                                     <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.setState({ isVisibleAddReviewPop: true })}
                                                         testID='addFeedBack'>
                                                         <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>Add Feedback</Text>
-                                                        <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                                                        <MaterialIcons name="create" style={{ fontSize: 15, marginTop: 3, marginLeft: 5, color: '#fff' }}></MaterialIcons>
                                                     </TouchableOpacity>
                                                 </View>
                                             </Col>

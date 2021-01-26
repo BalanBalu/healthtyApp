@@ -48,6 +48,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices';
 import { renderDoctorImage, renderProfileImage, getGender } from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 class Profile extends Component {
   navigation = this.props.navigation;
@@ -407,7 +408,7 @@ class Profile extends Component {
                           </Text>
                         </Text>
 
-                        <Icon
+                        <MaterialIcons
                           name="create"
                           style={{ fontSize: 20, marginTop: 10, marginLeft: 25 }}
                           onPress={() => this.editProfile('UpdateUserDetails')}
@@ -574,9 +575,9 @@ class Profile extends Component {
                   </Body>
 
                   <Right>
-                    <Icon
+                    <MaterialIcons
                       name="create"
-                      style={{ color: 'black' }}
+                      style={{ color: 'black',fontSize:20 }}
                       onPress={() =>
                         this.props.navigation.navigate('Updateheightweight', {
                           weight: data.weight,
@@ -622,7 +623,7 @@ class Profile extends Component {
                                 onPress={() =>
                                   this.editProfile('UpdateFamilyMembers')
                                 }>
-                                <Icon
+                                <MaterialIcons
                                   active
                                   name="create"
                                   style={{
@@ -767,6 +768,17 @@ class Profile extends Component {
                         )}
                     </TouchableOpacity>
                   </Body>
+
+                  {data.email != undefined ? (
+                    <Right>
+                      <MaterialIcons
+                        name="create"
+                        style={{ color: 'black',fontSize:20 }}
+                        onPress={() => this.editProfile('UpdateEmail')}
+                        testID="iconToUpdateEmail"
+                      />
+                    </Right>
+                  ) : null}
                 </ListItem>
 
                 <ListItem avatar>
@@ -817,9 +829,9 @@ class Profile extends Component {
                   </Body>
                   {data.address ? (
                     <Right>
-                      <Icon
+                      <MaterialIcons
                         name="create"
-                        style={{ color: 'black' }}
+                        style={{ color: 'black',fontSize:20 }}
                         onPress={() => this.editAddress(data.address)}
                         testID="iconToUpdateAddress"
                       />
@@ -840,7 +852,16 @@ class Profile extends Component {
                       </Text>
                     </View>
                   </Body>
-                
+                  {data.mobile_no === undefined ? (
+                    <Right>
+                      <MaterialIcons
+                        name="create"
+                        style={{ color: 'black',fontSize:20 }}
+                        onPress={() => this.editProfile('UpdateContact')}
+                        testID="iconToUpdateContact"
+                      />
+                    </Right>
+                  ) : null}
                 </ListItem>
 
                 <ListItem avatar>
@@ -888,9 +909,9 @@ class Profile extends Component {
 
                   {data.insurance != undefined ? (
                     <Right>
-                      <Icon
+                      <MaterialIcons
                         name="create"
-                        style={{ color: 'black' }}
+                        style={{ color: 'black',fontSize:20 }}
                         onPress={() => this.editProfile('UpdateInsurance')}
                         testID="iconToEditUpdateInsurance"
                       />
@@ -914,9 +935,9 @@ class Profile extends Component {
                     </TouchableOpacity>
                   </Body>
                   <Right>
-                    <Icon
+                    <MaterialIcons
                       name="create"
-                      style={{ color: 'black' }}
+                      style={{ color: 'black',fontSize:20 }}
                       onPress={() => this.editProfile('UpdatePassword')}
                       testID="iconToUpdatePassword"
                     />

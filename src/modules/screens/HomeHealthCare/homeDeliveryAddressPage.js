@@ -45,14 +45,18 @@ export default class HomeHealthCareAddressChange extends Component {
             this.setState({ isLoading: true })
             const userId = await AsyncStorage.getItem('userId');
             const userInfoResp = await fetchUserProfile(userId, USER_FIELDS);
+           
             if (userInfoResp && Object.keys(userInfoResp).length) {
                 const fullName = userInfoResp.first_name + " " + userInfoResp.last_name;
                 const mobileNo = userInfoResp.mobile_no;
                 const userAddress = userInfoResp.address && userInfoResp.address;
-                userAddress.active = true;
-                userAddress.address_type = 'DEFAULT';
                 const homeHealthCareAddress = userInfoResp.home_healthcare_address && userInfoResp.home_healthcare_address.length ? userInfoResp.home_healthcare_address : [];
-                homeHealthCareAddress.unshift(userAddress);
+                if (userAddress) {
+                    userAddress.active = true;
+                    userAddress.address_type = 'DEFAULT';
+                    homeHealthCareAddress.unshift(userAddress);
+
+                }
                 const addressList = homeHealthCareAddress.filter(ele => ele.active === true);
                 this.setState({ fullName, mobileNo, addressList })
             }

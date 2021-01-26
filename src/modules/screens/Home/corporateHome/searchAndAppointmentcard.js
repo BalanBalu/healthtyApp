@@ -25,7 +25,7 @@ export const SearchAndAppointmentCard = (props) => {
     }
   }
   const data = [{ category_name: 'Consultation', image: require('../../../../../assets/images/corporateHomePageIcons/consultation.png'), navigate: 'Doctor List' }, { category_name: 'Home test', image: require('../../../../../assets/images/corporateHomePageIcons/home-test.png'), navigate: 'Home Health Care' }, { category_name: 'Hospital', image: require('../../../../../assets/images/corporateHomePageIcons/hospital_a.png'), navigate: 'HospitalList' }, { category_name: 'Lab test', image: require('../../../../../assets/images/corporateHomePageIcons/Lab-test.png'), navigate: 'Lab Test' },
-  { category_name: 'Reminder', image: require('../../../../../assets/images/corporateHomePageIcons/reminder.png'), navigate: 'Reminder' }, { category_name: 'My Chats', image: require('../../../../../assets/images/corporateHomePageIcons/chat.png'), navigate: 'Video and Chat Service' }, { category_name: 'Video Consult', image: require('../../../../../assets/images/corporateHomePageIcons/video-consultation.png'), navigate: 'Video and Chat Service' },]
+ { category_name: 'My Chats', image: require('../../../../../assets/images/corporateHomePageIcons/chat.png'), navigate: 'Video and Chat Service' }, { category_name: 'Video Consult', image: require('../../../../../assets/images/corporateHomePageIcons/video-consultation.png'), navigate: 'Video and Chat Service' },]
   return (
     <View>
       <Card style={{ width: '100%', paddingBottom: 10 }}>

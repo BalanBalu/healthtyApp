@@ -6,6 +6,7 @@ import Autocomplete from '../../../components/Autocomplete'
 import { bloodDonationFilter, bloodDonationList } from '../../providers/profile/profile.action'
 import { object } from 'prop-types';
 import { translate } from "../../../setup/translator.helper"
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 class BloodDonerFilters extends Component {
   constructor(props) {
@@ -434,51 +435,51 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'BLOODGROUP' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('BLOODGROUP')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("Blood Group")} </Text>
+                  <Text style={selectedOne === 'BLOODGROUP' ? { fontFamily: 'OpenSans', fontSize: 12, color:'#fff'}:{fontFamily: 'OpenSans', fontSize: 12,}}>{translate("Blood Group")} </Text>
 
                 </Left>
                 <Right>
-                  <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
+                  <MaterialIcons name="keyboard-arrow-right" style={selectedOne === 'BLOODGROUP' ?{ fontSize: 25,color:'#fff' }:{ fontSize: 25 }} />
                 </Right>
               </TouchableOpacity>
             </ListItem>
             <ListItem style={selectedOne === 'COUNTRY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('COUNTRY')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{translate("Country")}</Text>
+                  <Text style={selectedOne === 'COUNTRY' ? { fontFamily: 'OpenSans', fontSize: 12,color:'#fff' }: { fontFamily: 'OpenSans', fontSize: 12 }}>{translate("Country")}</Text>
                 </Left>
                 <Right>
-                  <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
+                  <MaterialIcons name="keyboard-arrow-right" style={selectedOne === 'COUNTRY' ? { fontSize: 25,color:'#fff' }:{ fontSize: 25 }} />
                 </Right>
               </TouchableOpacity>
             </ListItem>
             <ListItem style={selectedOne === 'STATE' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('STATE')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{translate("State")}</Text>
+                  <Text style={selectedOne === 'STATE' ?{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff'}:{fontFamily: 'OpenSans', fontSize: 12}}>{translate("State")}</Text>
                 </Left>
                 <Right>
-                  <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
+                  <MaterialIcons name="keyboard-arrow-right" style={selectedOne === 'STATE' ?{ fontSize: 25,color:'#fff' } :{ fontSize: 25}} />
                 </Right>
               </TouchableOpacity>
             </ListItem>
             <ListItem style={selectedOne === 'DISTRICT' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('DISTRICT')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("District")}</Text>
+                  <Text style={selectedOne === 'DISTRICT' ?{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff' }:{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("District")}</Text>
                 </Left>
                 <Right>
-                  <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
+                  <MaterialIcons name="keyboard-arrow-right" style={selectedOne === 'DISTRICT' ?{ fontSize: 25,color:'#fff' }:{fontSize: 25}} />
                 </Right>
               </TouchableOpacity>
             </ListItem>
             <ListItem style={selectedOne === 'CITY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('CITY')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("City")}</Text>
+                  <Text style={selectedOne === 'CITY' ?{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff' }:{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("City")}</Text>
                 </Left>
                 <Right>
-                  <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
+                  <MaterialIcons name="keyboard-arrow-right" style={selectedOne === 'CITY' ?{ fontSize: 25,color:'#fff' }:{ fontSize: 25 }} />
                 </Right>
               </TouchableOpacity>
             </ListItem>

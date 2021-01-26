@@ -58,8 +58,9 @@ class LabBookAppointment extends Component {
     if (fetchAvailabiltySlots) {
       let labDetailsObj = {}, result;
       const labId = navigation.getParam('labId') || false;
-      const labDetailsResp = await getLabDetails(labId, fields)
+      const lab_test_categories_id = navigation.getParam('lab_test_categories_id') || false;
 
+      const labDetailsResp = await getLabDetails(labId, fields)
       if (labDetailsResp.success && labDetailsResp.data && labDetailsResp.data[0]) {
         result = labDetailsResp.data[0];
         labDetailsObj.labInfo = {
@@ -70,13 +71,12 @@ class LabBookAppointment extends Component {
           location_code: result.location_code
         }
         labDetailsResp.data[0].available_lab_test_categories.map(CatInfo => {
-          if (labId.includes(CatInfo.branch_details.lab_id)) {
+          if (lab_test_categories_id.includes(CatInfo.lab_test_categories_id)) {
             labDetailsObj.labCatInfo = CatInfo;
           }
         })
 
       }
-
       this.setState({ labInfoData: labDetailsObj, labId });
       await this.getLabTestAvailabilitySlots(labId, startDateByMoment, endDateByMoment);
 
@@ -109,8 +109,8 @@ class LabBookAppointment extends Component {
         endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
       }
       const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-     
-      
+
+
       if (resultSlotsData.success) {
         const availabilityData = resultSlotsData.data;
         if (availabilityData.length != 0) {
@@ -252,7 +252,6 @@ class LabBookAppointment extends Component {
     const slotDataObj4Item = this.slotData4ItemMap.get(String(labId)) || {}
     const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
     const { labInfo, labCatInfo } = labInfoData;
-
     return (
       <Container style={styles.container}>
         {isLoading ?

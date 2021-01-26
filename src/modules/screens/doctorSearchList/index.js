@@ -31,6 +31,7 @@ import moment from 'moment';
 
 import { store } from '../../../setup/store';
 import { translate } from "../../../setup/translator.helper"
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 
 const vipLogo = require('../../../../assets/images/viplogo.png')
@@ -770,7 +771,7 @@ class doctorSearchList extends Component {
                                     <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
 
                                         <Col size={1.1} >
-                                            <Icon name='ios-arrow-down' style={{ color: 'gray', fontSize: 20, marginTop: 10 }} />
+                                            <MaterialIcons name='keyboard-arrow-down' style={{ color: 'gray', fontSize: 20, marginTop: 10 }} />
                                         </Col>
                                         <Col size={8.9} style={{ justifyContent: 'center' }}>
                                             <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>{translate("Top Rated")}</Text>

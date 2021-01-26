@@ -176,7 +176,7 @@ class BloodDonersList extends Component {
                             <Col>
                               <Row>
                                 <Col size={5} style={{ flexDirection: 'row' }}>
-                                <Icon name="ios-pin" style={{ color: '#1D96F2', fontSize: 15, marginTop: 10 }} />
+                                <Icon name="location-sharp" style={{ color: '#1D96F2', fontSize: 15, marginTop: 10 }} />
                               <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 2 }}>{this.getAddress(item.address)}</Text>
                                 </Col>
                                 <Col size={5}>
