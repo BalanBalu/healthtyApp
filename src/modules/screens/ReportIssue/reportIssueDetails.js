@@ -9,7 +9,7 @@ import { upDateReportIssue, getUserRepportDetails } from '../../providers/report
 
 
 import { onlySpaceNotAllowed, reportStatusValue } from '../../common'
-
+import { CURRENT_APP_NAME } from "../../../setup/config";
 class reportIssueDetails extends Component {
   constructor(props) {
     super(props)
@@ -31,7 +31,6 @@ class reportIssueDetails extends Component {
       const userId = await AsyncStorage.getItem('userId');
       let serviceType = this.props.navigation.getParam('serviceType')
       let resultReport = await getUserRepportDetails(serviceType, userId, this.state.reportedId, true);
-
       if (resultReport.success) {
 
         this.setState({ data: resultReport.data, replyData: resultReport.data.reply_data || [] });
@@ -61,8 +60,6 @@ class reportIssueDetails extends Component {
         }
 
         let response = await upDateReportIssue(data._id, userId, reqData);
-
-        console.log(response);
         if (response.success) {
           let temp = replyData || []
 
@@ -132,7 +129,7 @@ class reportIssueDetails extends Component {
                   </Row>
                   <View style={{ marginTop: 10 }}>
                     <Text style={styles.contentText}>{data.issue_type}</Text>
-                    <Text note style={styles.contentText}>{data.complaint} <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#4c4c4c'}}>{' Reported on ' +formatDate(data.created_date, 'DD/MM/YYYY ')}</Text> </Text>
+                    <Text note style={styles.contentText}>{data.complaint} <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#4c4c4c' }}>{' Reported on ' + formatDate(data.created_date, 'DD/MM/YYYY ')}</Text> </Text>
                   </View>
                 </View>
                 {replyData.length != 0 &&
@@ -144,7 +141,7 @@ class reportIssueDetails extends Component {
                       <View>
                         <Row style={{ paddingBottom: 10, borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, marginTop: 30 }}>
                           <Left>
-                            <Text style={styles.reportText}>{item.reply_provider_type == 'USER' ? 'Replied By You' : item.reply_provider_type == 'DOCTOR' ? 'Replied By Doctor' : 'Replied By Medflic'}</Text>
+                            <Text style={styles.reportText}>{item.reply_provider_type == 'USER' ? 'Replied By You' : item.reply_provider_type == 'DOCTOR' ? 'Replied By Doctor' : 'Replied By ' + CURRENT_APP_NAME}</Text>
                           </Left>
                           <Right>
                             <Text style={styles.date}>{formatDate(item.created_date, 'dddd,DD/MM/YYYY') + ' at ' + formatDate(item.created_date, 'hh:mm a')}</Text>
@@ -162,8 +159,8 @@ class reportIssueDetails extends Component {
                             <View>
                               <Text style={[styles.boldContent, { marginTop: 20 }]}>Thanks,
                             </Text>
-                              <Text style={styles.boldContent}>Medflic Support Team
-                           </Text>
+                              <Text style={styles.boldContent}>{`${CURRENT_APP_NAME} Support Team`}
+                              </Text>
                             </View>
                           }
                         </View>

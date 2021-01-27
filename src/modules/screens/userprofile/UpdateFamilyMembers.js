@@ -36,33 +36,30 @@ class UpdateFamilyMembers extends Component {
 
     async getFamilyDetails() {
         const { navigation } = this.props;
-        const userData = navigation.getParam('updatedata');
-        console.log("userData", userData)
+        let userData = navigation.getParam('updatedata');
+        
         const fromProfile = navigation.getParam('fromProfile') || false
-        console.log("fromProfile", fromProfile)
+     
         if (fromProfile) {
             await this.setState({
-                name: userData.family_members[0].name,
-                age: parseInt(userData.family_members[0].age),
-                gender: userData.family_members[0].gender,
-                relationship: userData.family_members[0].relationship,
                 updateButton: true,
-                fromProfile: true
-
+                fromProfile: true,
+                family_members: userData.family_members,
             })
         }
     }
 
     addedFamilyMembers = async () => {
-        const { name, age, gender, relationship,fromProfile } = this.state
-        console.log("relationship", relationship)
+        const { name, age, gender, relationship, } = this.state
+        
         if (name == '' || age == '' || gender == '' || relationship == '' || relationship == 'Select Relationship') {
             this.setState({ errorMsg: 'Kindly fill all the fields...' })
             return false;
         }
         else {
             this.setState({ errMsg: '' })
-            let temp = this.state.family_members;
+            let temp =[];
+            temp = this.state.family_members||[];
             temp.push({
                 name: name,
                 age: Number(age),
@@ -70,12 +67,9 @@ class UpdateFamilyMembers extends Component {
                 relationship: relationship
 
             });
-            console.log("temp", temp)
+          
 
             await this.setState({ family_members: temp, updateButton: false });
-            if(fromProfile){
-                this.updateFamilyMembers()
-            }
             await this.setState({ name: '', age: '', gender: '', relationship: '' });
 
         }
@@ -88,10 +82,8 @@ class UpdateFamilyMembers extends Component {
                 family_members: this.state.family_members
             };
             const userId = await AsyncStorage.getItem('userId')
-            console.log("requestData", requestData)
-
             let response = await userFiledsUpdate(userId, requestData);
-            console.log("response", response)
+  
             if (response.success) {
                 Toast.show({
                     text: 'Your family member details are updated',
@@ -132,7 +124,7 @@ class UpdateFamilyMembers extends Component {
     }
 
     render() {
-        const { age, gender, fromProfile } = this.state;
+        const { age, gender } = this.state;
 
         return (
 
@@ -229,8 +221,8 @@ class UpdateFamilyMembers extends Component {
                                     </Item>
 
                                     <View>
-                                        <Button primary disabled={this.state.updateButton} style={this.state.updateButton ? styles.addressButtonDisable : styles.addressButton} block onPress={() =>  this.addedFamilyMembers() } testID="addDetails">
-                                            <Text style={styles.buttonText}>{fromProfile ? "UPDATE" : "ADD"}</Text>
+                                        <Button primary disabled={this.state.updateButton} style={this.state.updateButton ? styles.addressButtonDisable : styles.addressButton} block onPress={() => this.addedFamilyMembers()} testID="addDetails">
+                                            <Text style={styles.buttonText}>ADD</Text>
                                         </Button>
                                     </View>
 
@@ -239,7 +231,7 @@ class UpdateFamilyMembers extends Component {
 
                             </View>
                         </Card>
-                        {this.state.family_members.length != 0 ?
+                        {this.state.family_members && this.state.family_members.length != 0 ?
                             <Card style={styles.cardStyle}>
                                 <View>
                                     <Text style={styles.headText}>Added Details</Text>

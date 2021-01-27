@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail, Icon, CheckBox, Input, Radio } from 'native-base';
+import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail, Icon, CheckBox, Input, Radio, Footer, FooterTab, } from 'native-base';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, AsyncStorage, Image, View, TextInput, TouchableOpacity, FlatList, Platform } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge } from '../../common';
+import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge, toastMeassage } from '../../common';
 import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
+import { TestDetails, POSSIBLE_FAMILY_MEMBERS } from './testDeatils'
+import { PayBySelection, POSSIBLE_PAY_METHODS } from './PayBySelection';
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
@@ -18,13 +20,21 @@ export default class PaymentReview extends Component {
       bookSlotDetails: {
         diseaseDescription: ''
       },
-      isLoading: false,
+      isLoading: true,
       gender: 'M',
       full_name: '',
       age: '',
-      isSelected: '',
+      isSelected: 'self',
       patientDetailsObj: {},
-      addPatientDataPoPupEnable: false
+      addPatientDataPoPupEnable: false,
+      isCorporateUser: false,
+      selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
+      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
+      familyMembersSelections: [],
+      fromNavigation: null,
+      familyMembersSelections: [],
+      selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
+      familyDetailsData: []
     }
     this.defaultPatDetails = {};
   }
@@ -32,13 +42,19 @@ export default class PaymentReview extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const isLoggedIn = await hasLoggedIn(this.props);
+    
+    const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+
     if (!isLoggedIn) {
+      this.setState({ isLoading: false });
       navigation.navigate('login');
       return
     }
     const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
-    await this.setState({ bookSlotDetails: bookSlotDetails });
-    await this.getPatientInfo();
+    const fromNavigation = navigation.getParam('fromNavigation') || null
+   
+    this.setState({ bookSlotDetails: bookSlotDetails, isCorporateUser, fromNavigation, isLoading: false });
+    this.getPatientInfo();
   }
   async confirmProceedPayment() {
     const { bookSlotDetails, patientDetailsObj } = this.state;
@@ -61,21 +77,34 @@ export default class PaymentReview extends Component {
     }
     this.setState({ isLoading: true, spinnerText: "Please Wait" });
     const bookingSlotData = bookSlotDetails
-    const reqData = {
-      doctorId: bookingSlotData.doctorId,
-      startTime: bookingSlotData.slotData.slotStartDateAndTime,
-      endTime: bookingSlotData.slotData.slotEndDateAndTime,
-    }
-    validationResult = await validateBooking(reqData)
-    this.setState({ isLoading: false, spinnerText: ' ' });
-    if (validationResult.success) {
-      const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
-      bookSlotDetails.patient_data = patientDataObj;
-      console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
-      const amount = this.state.bookSlotDetails.slotData.fee;
-      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+    let validationResult
+    if (this.state.fromNavigation === 'HOSPITAL') {
+      validationResult = {
+        success: true
+      }
+
     } else {
-      console.log(validationResult);
+      const reqData = {
+        doctorId: bookingSlotData.doctorId,
+        startTime: bookingSlotData.slotData.slotStartDateAndTime,
+        endTime: bookingSlotData.slotData.slotEndDateAndTime,
+      }
+      validationResult = await validateBooking(reqData)
+    }
+    this.setState({ isLoading: false, spinnerText: ' ' });
+
+    if (validationResult.success) {
+
+      const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
+      if (patientDetailsObj.policy_no) {
+        patientDataObj.policy_number = patientDetailsObj.policy_no
+      }
+      bookSlotDetails.patient_data = patientDataObj;
+     
+      const amount = this.state.bookSlotDetails.slotData.fee;
+      this.props.navigation.navigate('paymentPage', { service_type: SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount, fromNavigation: this.state.fromNavigation })
+    } else {
+ 
       Toast.show({
         text: validationResult.message,
         type: 'warning',
@@ -84,10 +113,11 @@ export default class PaymentReview extends Component {
     }
 
   }
-  async processToPayLater() {
-    const { bookSlotDetails, patientDetailsObj } = this.state;
+  async processToPayLater(paymentMethod) {
+    const { bookSlotDetails, patientDetailsObj, fromNavigation, isCorporateUser } = this.state;
     let { diseaseDescription } = bookSlotDetails;
-    if (!Object.keys(patientDetailsObj).length) {
+  
+    if (!patientDetailsObj || (patientDetailsObj && !Object.keys(patientDetailsObj).length)) {
       Toast.show({
         text: 'Kindly select Self or Add other patient details',
         type: 'warning',
@@ -103,16 +133,34 @@ export default class PaymentReview extends Component {
       })
       return
     }
-    this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
+
+    this.setState({ isLoading: true, spinnerText: "We are Booking your Appointment" })
+
     const patientDataObj = { patient_name: patientDetailsObj.full_name, patient_age: patientDetailsObj.age, gender: patientDetailsObj.gender }
+    if (patientDetailsObj.policy_no) {
+      patientDataObj.policy_number = patientDetailsObj.policy_no
+    }
+
     bookSlotDetails.patient_data = patientDataObj;
-    console.log('bookSlotDetails===>', JSON.stringify(bookSlotDetails));
+    
     const userId = await AsyncStorage.getItem('userId');
     this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, 'cash');
-    console.log('Book Appointment Payment Update Response ');
+
+    let modesOfPayment = 'cash';
+
+    if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
+
+      modesOfPayment = 'corporate';
+
+    } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
+
+      modesOfPayment = 'insurance'
+
+    }
+    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, modesOfPayment, bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, modesOfPayment);
+   
     if (response.success) {
-      this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
+      this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: bookSlotDetails, paymentMethod: paymentMethod, tokenNo: response.tokenNo, fromNavigation: fromNavigation });
     } else {
       Toast.show({
         text: response.message,
@@ -126,16 +174,17 @@ export default class PaymentReview extends Component {
 
   getPatientInfo = async () => {
     try {
-      const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
-      const userId = await AsyncStorage.getItem('userId');
-      const patInfoResp = await fetchUserProfile(userId, fields);
-      console.log('patInfoResp====>', patInfoResp)
-      this.defaultPatDetails = {
-        type: 'self',
-        full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
-        gender: patInfoResp.gender,
-        age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
-      }
+      // const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
+      // const userId = await AsyncStorage.getItem('userId');
+      // const patInfoResp = await fetchUserProfile(userId, fields);
+      
+      // this.defaultPatDetails = {
+      //   type: 'self',
+      //   full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+      //   gender: patInfoResp.gender,
+      //   age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
+      // }
+      // this.setState({ patientDetailsObj: this.defaultPatDetails });
     }
     catch (Ex) {
       console.log('Ex is getting Get Patient Info in Payment preview page', Ex.message);
@@ -144,43 +193,26 @@ export default class PaymentReview extends Component {
 
 
 
-  addPatientList = async () => {
-    const { name, age, gender } = this.state;
-    if (!name || !age || !gender) {
-      this.setState({ errMsg: '* Kindly fill all the fields' });
-    }
-    else {
-      this.setState({ errMsg: '' })
-      const othersDetailsObj = {
-        type: 'others',
-        full_name: name,
-        age: parseInt(age),
-        gender
-      }
-      await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
-      await this.setState({ name: null, age: null, gender: null });
-    }
+  addPatientList = async (patientData) => {
+   
+    this.setState({ errMsg: '' })
+    const othersDetailsObj = patientData[0];
+    await this.setState({ patientDetailsObj: othersDetailsObj, updateButton: false, addPatientDataPoPupEnable: false });
   }
 
 
   render() {
-    const { bookSlotDetails, patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender } = this.state;
+    const { bookSlotDetails, isCorporateUser, patientDetailsObj, addPatientDataPoPupEnable, errMsg, isLoading, spinnerText, isSelected, name, age, gender, fromNavigation } = this.state;
+   
     return (
       <Container>
-        <Content style={{ padding: 15 }}>
-          <Spinner
-            visible={isLoading}
-            textContent={spinnerText}
-          />
+        <Content style={{ padding: 15, backgroundColor: '#F5F5F5' }}>
+          {/*
           <View style={{ marginBottom: 20 }}>
             <Card transparent >
               <CardItem header style={styles.cardItem}>
                 <Grid>
-                  {/* <Col style={{alignItems:'center'}}>
-                      <Thumbnail square source={ renderDoctorImage(bookSlotDetails) } style={{width:100,height:100,marginTop:-60}}/>
-                       <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
-                       <Text style={styles. cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
-                      </Col> */}
+                
                   <Row>
                     <Col style={{ width: '25%', justifyContent: 'center' }}>
                       <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
@@ -197,17 +229,15 @@ export default class PaymentReview extends Component {
             </Card>
             <Card style={styles.innerCard}>
               <Grid>
-                {/* <Row style={{marginTop:10,marginLeft:10}} >
-                   <Icon name="ios-medkit" style={{fontSize:20,marginTop:-5}}/>
-                   <Text note style={styles.diseaseText}>Typhoid</Text>
-                  </Row> */}
+              
                 {bookSlotDetails.slotData ?
                   <View style={{ marginTop: 10, marginLeft: 10 }} >
                     <Row>
                       <Icon name="ios-pin" style={{ fontSize: 20 }} />
                       <Col>
                         <Text style={styles.hospitalText}>{bookSlotDetails.slotData.location.name}</Text>
-                        <Text note style={styles.hosAddressText}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                        <Text note style={styles.hosAddressText}>
+                        {bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
                           {bookSlotDetails.slotData.location.location.address.city + ', '}
                           {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
                       </Col>
@@ -216,11 +246,11 @@ export default class PaymentReview extends Component {
                 <Row style={{ borderTopColor: 'gray', borderTopWidth: 1, marginTop: 10 }}>
                   <Col style={{ borderRightColor: 'gray', borderRightWidth: 1, marginTop: 5, alignItems: 'center' }}>
                     <Icon name='md-calendar' style={{ color: '#0055A5', fontSize: 30 }} />
-                    <Text style={{ color: '#0055A5', fontFamily: 'OpenSans', fontSize: 12 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
+                    <Text style={{ color: '#0055A5', fontFamily: 'OpenSans', fontSize: 14 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                   </Col>
                   <Col style={{ alignItems: 'center', marginTop: 5 }}>
                     <Icon name="md-clock" style={{ color: 'green', fontSize: 30 }} />
-                    <Text style={{ color: 'green', fontFamily: 'OpenSans', fontSize: 12 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
+                    <Text style={{ color: 'green', fontFamily: 'OpenSans', fontSize: 14 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                   </Col>
                 </Row>
               </Grid>
@@ -237,6 +267,7 @@ export default class PaymentReview extends Component {
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
                           <Radio
+                            standardStyle={true}
                             selected={isSelected === 'self'}
                             onPress={() => this.setState({ isSelected: 'self', patientDetailsObj: this.defaultPatDetails })}
                           />
@@ -246,6 +277,7 @@ export default class PaymentReview extends Component {
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
                           <Radio
+                            standardStyle={true}
                             selected={isSelected === 'others'}
                             onPress={() => this.setState({ isSelected: 'others', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
                           />
@@ -299,7 +331,7 @@ export default class PaymentReview extends Component {
                   </Row>
                   <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
                     <Text style={{
-                      fontFamily: 'OpenSans', fontSize: 12, marginTop: 3
+                      fontFamily: 'OpenSans', fontSize: 14, marginTop: 3
                     }}>Gender</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                       <Radio
@@ -324,7 +356,7 @@ export default class PaymentReview extends Component {
                     </View>
                   </View>
                 </View> : null}
-              {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
+              {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 14, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
               {isSelected === 'others' && addPatientDataPoPupEnable ?
                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
                   <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()}>
@@ -345,7 +377,7 @@ export default class PaymentReview extends Component {
                             <Text style={styles.commonText}>-</Text>
                           </Col>
                           <Col size={7}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{patientDetailsObj.full_name}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#000' }}>{patientDetailsObj.full_name}</Text>
 
                           </Col>
                         </Row>
@@ -369,7 +401,7 @@ export default class PaymentReview extends Component {
                             <Text style={styles.commonText}>-</Text>
                           </Col>
                           <Col size={7.5}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(patientDetailsObj.age) + ' - ' + getUserGenderAndAge(patientDetailsObj)}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#000' }}>{(patientDetailsObj.age) + ' - ' + getUserGenderAndAge(patientDetailsObj)}</Text>
                           </Col>
                         </Row>
                       </Col>
@@ -403,8 +435,185 @@ export default class PaymentReview extends Component {
                 <Text style={styles.payButtonText}>Pay Online</Text>
               </Button>
             </Row>
+          </View> */}
+          <Spinner
+            visible={isLoading}
+            textContent={spinnerText}
+          />
+          <View style={{ paddingBottom: 50 }}>
+            <View style={{ backgroundColor: '#fff', padding: 10 }}>
+              {fromNavigation === 'HOSPITAL' ?
+                <Row>
+                  <Col size={1.6}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                      <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50 }} />
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={8.4}>
+                    <Text style={styles.docName}>{bookSlotDetails.name}</Text>
+                    <Text style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                      {bookSlotDetails.slotData.location.location.address.city + ', '}
+                      {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
+                  </Col>
+                </Row>
+                : <Row>
+                  <Col size={1.6}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
+                      <Image source={renderDoctorImage(bookSlotDetails)} style={{ height: 50, width: 50, borderRadius: 50 / 2 }} />
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={8.4}>
+                    <Text style={styles.docName}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                    <Text style={styles.specialist}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
+                  </Col>
+                </Row>}
+              {fromNavigation !== 'HOSPITAL' && bookSlotDetails.slotData ?
+                <View style={{ marginTop: 10 }}>
+                  <Row>
+                    <Icon name="ios-pin" style={{ fontSize: 20, marginLeft: 2 }} />
+                    <Text style={styles.hospName}>{bookSlotDetails.slotData.location.name}</Text>
+                  </Row>
+                  <Text style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                    {bookSlotDetails.slotData.location.location.address.city + ', '}
+                    {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
+                </View>
+                : null}
+              <Row style={{ marginTop: 10, }}>
+                <Col size={5} style={{ flexDirection: 'row' }}>
+                  <Icon name="md-calendar" style={{ fontSize: 20, color: '#0054A5' }} />
+                  <Text style={styles.calDate}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
+                </Col>
+                <Col size={5} style={{ flexDirection: 'row' }}>
+                  <Icon name="md-clock" style={{ fontSize: 20, color: '#8EC63F' }} />
+                  <Text style={styles.clockTime}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
+                </Col>
+              </Row>
+
+            </View>
+
+            <PayBySelection
+              isCorporateUser={isCorporateUser}
+              selectedPayBy={this.state.selectedPayBy}
+              onSelectionChange={(mode) => {
+
+                this.setState({ selectedPayBy: mode, selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF], patientDetailsObj: this.defaultPatDetails, familyMembersSelections: [] })
+
+              }}
+            />
+
+            <TestDetails
+              isCorporateUser={isCorporateUser}
+              navigation={this.props.navigation}
+              singlePatientSelect={true}
+              familyMembersSelections={this.state.familyMembersSelections}
+              changeFamilyMembersSelections={(familyMemberSelections) => this.setState({ familyMembersSelections: familyMemberSelections })}
+              onSelectionChange={(patientType) => {
+                if (patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
+
+                  this.setState({ patientDetailsObj: this.defaultPatDetails, selectedPatientTypes: [patientType], familyMembersSelections: [] })
+
+                } else {
+                  this.setState({ patientDetailsObj: {}, selectedPatientTypes: [patientType] })
+                }
+              }}
+              familyDetailsData={this.state.familyDetailsData}
+              setFamilyDetailsData={(familyDetailsData) => this.setState({ familyDetailsData: familyDetailsData })}
+              selectedPatientTypes={this.state.selectedPatientTypes}
+              payBy={this.state.selectedPayBy}
+              addPatientDetails={(data, setDefaultPatentData) => {
+                if (setDefaultPatentData === true) {
+                  this.defaultPatDetails = data[0];
+                }
+                this.addPatientList(data)
+              }}
+            />
+            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+              <Row>
+                <Icon name="create" style={{ fontSize: 15, color: '#000' }} />
+                <Text style={styles.subText}> Your reason for checkup</Text>
+              </Row>
+              <Form style={{ marginRight: 1, marginLeft: -13 }}>
+                <Item style={{ borderBottomWidth: 0 }}>
+                  <TextInput
+                    onChangeText={(diseaseDescription) => {
+                      var bookSlotDetails = { ...this.state.bookSlotDetails }
+                      bookSlotDetails.diseaseDescription = diseaseDescription;
+                      this.setState({ bookSlotDetails })
+                    }}
+                    multiline={true} placeholder="Write Reason...."
+                    placeholderTextColor={"#909498"}
+                    style={styles.textInput} />
+                </Item>
+              </Form>
+            </View>
+            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+              <Row>
+                <Icon name="ios-cash" style={{ fontSize: 15, color: '#784EBC' }} />
+                <Text style={styles.subText}> Billing Details</Text>
+              </Row>
+              <Row style={{ marginTop: 10 }}>
+                <Col>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909498' }}>Consultation Fees</Text>
+                </Col>
+                <Col>
+                  <Text style={styles.rupeesText}>{'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 10 }}>
+                <Col>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909498' }}>Charges </Text>
+                </Col>
+                <Col>
+                  <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 10 }}>
+                <Col>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
+                </Col>
+                <Col>
+                  <Text style={styles.rupeesText}>{'\u20B9'} {(bookSlotDetails.slotData && bookSlotDetails.slotData.fee || 0) + 0}</Text>
+                </Col>
+              </Row>
+            </View>
           </View>
         </Content>
+        <Footer style={
+          Platform.OS === "ios" ?
+            { height: 30 } : { height: 45 }}>
+          <FooterTab>
+
+            <Row>
+              {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ?
+                <>
+                  <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
+                    <TouchableOpacity
+                      onPress={() => this.processToPayLater('cash')}
+                      style={styles.buttonTouch}>
+                      <Text style={styles.footerButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8EC63F' }}>
+                    <TouchableOpacity
+                      onPress={() => this.confirmProceedPayment()}
+                      style={styles.buttonTouch1}>
+                      <Text style={styles.footerButtonText}>Pay Online</Text>
+                    </TouchableOpacity>
+                  </Col>
+                </>
+                :
+                <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#0054A5' }}>
+                  <TouchableOpacity
+                    onPress={() => this.processToPayLater(this.state.selectedPayBy)}
+                    style={styles.buttonTouch}>
+                    <Text style={styles.footerButtonText}>Book an Appointment </Text>
+                  </TouchableOpacity>
+                </Col>
+              }
+            </Row>
+          </FooterTab>
+        </Footer>
+
       </Container>
     )
   }
@@ -430,7 +639,7 @@ const styles = StyleSheet.create({
   cardItemText2: {
     marginTop: 5,
     fontFamily: 'OpenSans',
-    fontSize: 12,
+    fontSize: 14,
     color: '#FFF',
     lineHeight: 15,
     width: '90%'
@@ -505,13 +714,11 @@ const styles = StyleSheet.create({
   subText: {
     fontFamily: 'Opensans',
     fontSize: 14,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginLeft: 5,
-    color: '#7F49C3'
+    color: '#000',
+    marginLeft: 5
   },
   textInput: {
-    borderColor: 'gray',
+    borderColor: '#909498',
     borderRadius: 10,
     borderWidth: 0.5,
     height: 100,
@@ -556,7 +763,7 @@ const styles = StyleSheet.create({
   },
   touchText: {
     fontFamily: 'OpenSans',
-    fontSize: 12,
+    fontSize: 14,
     color: '#fff',
     textAlign: 'center'
   },
@@ -568,32 +775,102 @@ const styles = StyleSheet.create({
   },
   firstCheckBox: {
     fontFamily: 'OpenSans',
-    fontSize: 12,
+    fontSize: 14,
     color: '#000',
     marginLeft: 20
   },
   nameAndAge: {
     fontFamily: 'OpenSans',
-    fontSize: 12,
+    fontSize: 14,
     color: '#000',
     marginTop: 5
   },
   genderText: {
     fontFamily: 'OpenSans',
-    fontSize: 12,
+    fontSize: 14,
     marginLeft: 10
   },
   commonText: {
     fontFamily: 'OpenSans',
-    fontSize: 12,
+    fontSize: 14,
     color: '#000',
     fontWeight: '500'
   },
   inputText: {
     backgroundColor: '#f2f2f2',
     color: '#000',
-    fontSize: 10,
+    fontSize: 14,
     height: 33,
+  },
+  buttonTouch: {
+    flexDirection: 'row',
+    paddingTop: 4,
+    paddingBottom: 5,
+    paddingLeft: 25,
+    paddingRight: 20,
+    borderRadius: 10
+  },
+  buttonTouch1: {
+
+    flexDirection: 'row',
+    paddingTop: 4,
+    paddingBottom: 5,
+    paddingLeft: 50,
+    paddingRight: 50,
+    borderRadius: 10
+  },
+  docName: {
+    fontSize: 15,
+    marginLeft: 10,
+    fontFamily: 'OpenSans',
+    color: '#7F49C3'
+  },
+  specialist: {
+    fontSize: 14,
+    fontFamily: 'OpenSans',
+    color: '#909498',
+    marginLeft: 10,
+  },
+  hospName: {
+    fontSize: 14,
+    fontFamily: 'OpenSans',
+    marginLeft: 10
+  },
+  hosAddress: {
+    fontSize: 13,
+    fontFamily: 'OpenSans',
+    color: '#909498',
+    marginLeft: 23
+  },
+  calDate: {
+    fontSize: 14,
+    fontFamily: 'OpenSans',
+    color: '#0054A5',
+    marginLeft: 5
+  },
+  clockTime: {
+    fontSize: 14,
+    fontFamily: 'OpenSans',
+    color: '#8EC63F',
+    marginLeft: 5
+  },
+  rupeesText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans',
+    textAlign: 'right',
+    color: '#8EC63F'
+  },
+  redRupesText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans',
+    textAlign: 'right',
+    color: 'red'
+  },
+  footerButtonText: {
+    fontSize: 16,
+    fontFamily: 'OpenSans',
+    color: '#fff',
+    fontWeight: '500'
   }
 
 

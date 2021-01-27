@@ -10,8 +10,12 @@ import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_PO
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { getReferalPoints } from '../../providers/profile/profile.action';
 import { deleteCartByIds } from '../../providers/pharmacy/pharmacy.action'
+import { validatePromoCode, applyPromoCode } from '../../providers/PromoCode/promo.action'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
+import { NavigationEvents } from 'react-navigation';
+
+
 import { connect } from 'react-redux';
 import { AuthService } from '../VideoConsulation/services';
 class PaymentPage extends Component {
@@ -50,7 +54,8 @@ class PaymentPage extends Component {
             isPaymentSuccess: false,
             creditPointsApplied: false,
             creditPointDiscountAmount: 0,
-            couponCodeDiscountAmount: 0
+            couponCodeDiscountAmount: 0,
+            promoCodeErrorMsg: ''
 
         }
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
@@ -106,7 +111,7 @@ class PaymentPage extends Component {
             })
             return false;
         }
-        console.log('Selected Saved Card Id ' + this.state.selectedSavedCardId);
+        
         if (this.state.selectedSavedCardId !== null) {
             var savedCards = this.state.savedCards;
             var selectedSavedCardId = this.state.selectedSavedCardId;
@@ -237,10 +242,10 @@ class PaymentPage extends Component {
             ...paymentMethodData,
             'notes[message]': 'New Appointment Booking: ' + this.userId
         }
-        console.log(JSON.stringify(options));
+       
         Razorpay.open(options).then((data) => {
             // handle success
-            console.log(data);
+        
             this.updatePaymentDetails(true, data, 'online', finalAmountToPayByOnline);
 
             if (this.state.saveCardCheckbox) {
@@ -248,7 +253,7 @@ class PaymentPage extends Component {
             }
 
         }).catch((error) => {
-            console.log(error);
+           
             this.updatePaymentDetails(false, error, 'online', finalAmountToPayByOnline);
         });
     }
@@ -263,9 +268,14 @@ class PaymentPage extends Component {
             finalAmountToPayByOnline
         }
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetailsWithDiscoutData, serviceType, this.userId, paymentMethodTitleCase);
-        console.log(response);
+      
         if (response.success) {
+            if (this.state.coupenCodeText !== null) {
+                this.applyPromoCode()
+
+            }
             if (serviceType === SERVICE_TYPES.APPOINTMENT) {
+                const fromNavigation = this.props.navigation.getParam('fromNavigation') || null
                 const { creditPointsApplied } = this.state;
                 if (creditPointsApplied === true) {
                     setTimeout(() => {
@@ -275,7 +285,8 @@ class PaymentPage extends Component {
                 this.props.navigation.navigate('paymentsuccess', {
                     successBookSlotDetails: bookSlotDetails,
                     paymentMethod: paymentMethodTitleCase,
-                    tokenNo: response.tokenNo
+                    tokenNo: response.tokenNo,
+                    fromNavigation: fromNavigation
                 });
             } else if (serviceType === SERVICE_TYPES.CHAT) {
                 this.props.navigation.navigate('SuccessChat');
@@ -302,9 +313,9 @@ class PaymentPage extends Component {
                     }
 
                     await AsyncStorage.removeItem('cartItems-' + this.userId);
-                  
+
                 }
-                  this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState:'CREATE_ORDER' })
+                this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState: 'CREATE_ORDER' })
                 Toast.show({
                     text: 'Payment Success',
                     type: 'success',
@@ -328,6 +339,15 @@ class PaymentPage extends Component {
                     type: 'success',
                     duration: 3000
                 })
+            }
+            else if (serviceType === SERVICE_TYPES.HOME_HEALTHCARE) {
+                const reqHomeHealthCare = {
+                    successBookSlotDetails: bookSlotDetails,
+                    paymentMethod: paymentMethodTitleCase,
+                    tokenNo: response.tokenNo,
+                    isFromHomeHealthCareConfirmation: true,
+                }
+                this.props.navigation.navigate('paymentsuccess', reqHomeHealthCare);
             }
         }
         else {
@@ -381,7 +401,7 @@ class PaymentPage extends Component {
         }
 
         cardPaymentDetails.monthyear = text;
-        console.log(cardPaymentDetails);
+        
 
         this.setState({ cardPaymentDetails })
         // Update the state, which in turns updates the value in the text field
@@ -409,7 +429,7 @@ class PaymentPage extends Component {
                 var saveCard = savedCards.find(savedCards => {
                     return savedCards.card_number === this.state.cardPaymentDetails.number.replace(/ /g, '');
                 });
-                console.log(saveCard)
+                
 
                 var cardRequestData = {
                     card_holder_name: this.state.cardPaymentDetails.name,
@@ -423,7 +443,7 @@ class PaymentPage extends Component {
                 if (saveCard) {
                     cardRequestData.card_id = saveCard.card_id;
                 }
-                console.log('cardRequestData ==> ', cardRequestData)
+                
                 const userId = await AsyncStorage.getItem('userId');
                 let endPoint = 'user/payment/ ' + userId;
                 putService(endPoint, cardRequestData);
@@ -435,12 +455,58 @@ class PaymentPage extends Component {
     }
 
     onSelectedItemsChange = (selectedItems) => {
-        console.log(selectedItems)
-        // this.setState({ selectedItems: [ selectedItems[selectedItems.length - 1] ] });
+        
+       
         this.setState({ selectedItems: selectedItems, selectedNetBank: selectedItems[0] });
     }
     onCouponPress(coupenCodeText) {
-        this.setState({ coupenCodeText: coupenCodeText.toUpperCase() })
+        if (this.state.promoCodeErrorMsg) {
+            this.setState({ coupenCodeText: coupenCodeText, promoCodeErrorMsg: ' ' })
+        } else {
+            this.setState({ coupenCodeText: coupenCodeText })
+        }
+    }
+    async validatePromoCode() {
+        let userId = await AsyncStorage.getItem('userId');
+        await this.setState({ isLoading: true })
+        if (this.state.coupenCodeText !== null) {
+            let reqData = {
+                promo_code: this.state.coupenCodeText,
+                user_type: "USER",
+                service_type: this.state.serviceType,
+                consumer_id: userId,
+                amount_to_apply_promo_code: this.state.amount
+            }
+       
+            let result = await validatePromoCode(reqData)
+            
+            if (result.success) {
+
+                this.setState({ couponCodeDiscountAmount: Number(result.data.promoCodeDiscountAmount), promoCodeApplyMsg: result.message, promoCodeErrorMsg: '', isLoading: false })
+            } else {
+                this.setState({ promoCodeErrorMsg: result.message, promoCodeApplyMsg: '', isLoading: false })
+            }
+        } else {
+            this.setState({ promoCodeErrorMsg: "please enter the promo code", isLoading: false })
+        }
+    }
+    async applyPromoCode() {
+        let userId = await AsyncStorage.getItem('userId');
+
+        if (this.state.coupenCodeText !== null) {
+            let reqData = {
+                promo_code: this.state.coupenCodeText,
+                user_type: "USER",
+                service_type: this.state.serviceType,
+                consumer_id: userId,
+                amount_to_apply_promo_code: this.state.amount
+            }
+
+            applyPromoCode(reqData)
+        }
+
+
+
     }
     async setPaymentByCreditApplied() {
         const hasCreditApplied = !this.state.creditPointsApplied;
@@ -461,7 +527,14 @@ class PaymentPage extends Component {
         }
         return Math.round(maxDicountAmountByCreditPoints);
     }
-
+    async backNavigation(payload) {
+        let hasReload = this.props.navigation.getParam('hasReload') || false
+        if (hasReload) {
+            let coupenCodeText = this.props.navigation.getParam('coupenCodeText') || null;
+            await this.setState({ coupenCodeText })
+            this.validatePromoCode()
+        }
+    }
     render() {
 
         const { savedCards, isLoading, isPaymentSuccess, amount, couponCodeDiscountAmount, creditPointDiscountAmount } = this.state;
@@ -469,42 +542,48 @@ class PaymentPage extends Component {
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
+                    <NavigationEvents
+                        onWillFocus={payload => { this.backNavigation(payload) }} />
                     <Spinner
                         visible={isLoading}
                     // textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
                     />
-                    {/*   <View style={{ backgroundColor: '#f2f2f2' }}>
+
+                    <View style={{ backgroundColor: '#f2f2f2' }}>
                         <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 10 }}>
                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>Select Options To Pay</Text>
                             <Grid style={{ marginRight: 15, marginLeft: 15, marginTop: 5 }}>
                                 <Col>
                                     <Form>
                                         <Item style={styles.transparentLabel1}>
-                                    <Input placeholder="Enter Your Coupon Code here" style={styles.firstTransparentLabel}
-                                            placeholderTextColor="#C1C1C1"
-                                            getRef={(input) => { this.enterCouponCode = input; }}
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            multiline={false}
-                                            value={this.state.coupenCodeText}
-                                            onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
-                                        />
-                                        <TouchableOpacity style={{ marginRight: 15,alignItems:'center',justifyContent:'center' }} >
-                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3',textAlign:'center' }}>APPLY</Text>
+                                            <Input placeholder="Enter Your Coupon Code here" style={styles.firstTransparentLabel}
+                                                placeholderTextColor="#C1C1C1"
+                                                getRef={(input) => { this.enterCouponCode = input; }}
+                                                keyboardType={'default'}
+                                                returnKeyType={'go'}
+                                                multiline={false}
+                                                value={this.state.coupenCodeText}
+                                                onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
+                                            />
+                                            <TouchableOpacity onPress={() => this.validatePromoCode()} style={{ marginRight: 15, alignItems: 'center', justifyContent: 'center' }} >
+                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3', textAlign: 'center' }}>APPLY</Text>
                                             </TouchableOpacity>
-                                       </Item>
+                                        </Item>
                                     </Form>
                                 </Col>
                             </Grid>
-                            <Row style={{marginRight: 15, marginLeft: 15, marginTop: 10}}>
-                                <Right style={{marginRight:5}}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode")}>
-                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold',color: '#775DA3',borderBottomColor:'#775DA3',borderBottomWidth:0.5,borderStyle:'dotted', }}>Available Promo Codes</Text>
-                                </TouchableOpacity>
+
+                            <Text style={{ color: 'green', marginLeft: 15, marginTop: 10 }}>{this.state.promoCodeApplyMsg}</Text>
+                            <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.promoCodeErrorMsg}</Text>
+                            <Row style={{ marginRight: 15, marginLeft: 15, marginTop: 10 }}>
+                                <Right style={{ marginRight: 5 }}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode",{isFilter:true,serviceType:this.state.serviceType})}>
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3', borderBottomColor: '#775DA3', borderBottomWidth: 0.5, borderStyle: 'dotted', }}>Available Promo Codes</Text>
+                                    </TouchableOpacity>
                                 </Right>
                             </Row>
                         </View>
-                    </View> */}
+                    </View>
                     <Grid style={{ marginTop: 10, marginLeft: 15, backgroundColor: '#FFF' }}>
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
@@ -566,7 +645,7 @@ class PaymentPage extends Component {
                                     checked={this.state.creditPointsApplied}
                                     onPress={() => this.setPaymentByCreditApplied()}
                                 />
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>Apply your {maxDicountAmountByCreditPoints} credit points to pay your appointment</Text>
                             </Row>
                         </Grid> : null}
 
@@ -705,16 +784,7 @@ class PaymentPage extends Component {
 
 
                 </Content>
-
-                <Footer style={{
-                    backgroundColor: '#fff'
-                }}>
-                    <FooterTab style={{ backgroundColor: '#fff', }}>
-                        <Button block onPress={() => this.makePaymentMethod()} block style={styles.paymentButton}>
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Pay</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
+                <TouchableOpacity  onPress={() => this.makePaymentMethod()} block style={styles.paymentButton}><Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'#fff' }}>Pay</Text></TouchableOpacity> 
             </Container >
         )
     }
@@ -1069,7 +1139,10 @@ const styles = StyleSheet.create({
 
     paymentButton: {
 
+        alignSelf: 'stretch',
         backgroundColor: '#775DA3',
+        height:45,justifyContent:'center',
+        alignItems:'center'
 
     },
     normalText:

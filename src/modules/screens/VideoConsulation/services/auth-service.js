@@ -16,7 +16,7 @@ export default class AuthService {
       let endPoint = 'video-consulting/connectycube/signup/user/' + userId;
       let response = await postService(endPoint, {});
       let respData = response.data;
-      console.log(respData)
+      
       if (respData.success === true) {
         const finalResponseData = respData.data;
         const connectyCubePw = this.genePw(userId, finalResponseData.connectycube_pw);
@@ -26,16 +26,16 @@ export default class AuthService {
           password: connectyCubePw
         }
         this.login(loginRequest).then(() => {
-          console.log('Successfully Logged in')
+        
         }).catch((e) => {
            alert('Login Failed because', JSON.stringify(e));
-           console.log(e); 
+           
         });
       }
       
       return respData;
     } catch (e) {
-      console.log('error occured',  e);
+     
       return {
           success: false,
           message: e + ' Occured! Please Try again'
@@ -85,12 +85,11 @@ export default class AuthService {
       }
       this.login(loginRequest).then(() => {
         NotifService.subcribeToPushNotificationConnectyCube();
-        console.log('Successfully Logged in to ConnectyCube');
+       
         resolve(true);
       }).catch((e) => {
-         alert('Login Failed because', JSON.stringify(e));
-         console.log(e); 
-         reject(false);
+          console.log(e); 
+          reject(false);
       });
     
     });

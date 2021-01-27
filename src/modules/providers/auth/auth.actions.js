@@ -1,4 +1,4 @@
-import { postService, putService, getService } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
@@ -12,6 +12,7 @@ export const AUTH_RESPONSE = 'AUTH_RESPONSE'
 export const NEW_PASSWORD = 'AUTH/NEW_PASSWORD';
 export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
 export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
+export const APP_LOADED = 'APP/LOADED';
 import { NOTIFICATION_RESET } from '../notification/notification.actions'
 import { AuthService } from '../../screens/VideoConsulation/services'
 import { store } from '../../../setup/store';
@@ -25,7 +26,7 @@ export async function ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(pro
     const response = await getService(endPoint);
     return response.data;
   } catch (Ex) {
-    console.log('Exception is getting on Get Email and Mobile Otp product config details =====>', Ex);
+
     return {
       success: false,
       statusCode: 500,
@@ -98,6 +99,7 @@ export async function login(userCredentials, isLoading = true) {
     let respData = response.data;
 
 
+
     if (respData.error || !respData.success) {
       store.dispatch({
         type: LOGIN_HAS_ERROR,
@@ -118,6 +120,7 @@ export async function login(userCredentials, isLoading = true) {
     }
 
   } catch (e) {
+
     store.dispatch({
       type: LOGIN_HAS_ERROR,
       message: e + ' Occured! Please Try again'
@@ -135,6 +138,7 @@ export async function generateOTP(reqData) {
     })
     let endPoint = 'auth/requestCodeFP'
     let response = await postService(endPoint, reqData);
+
     let responseData = response.data
     if (response.error || response.success == false) {
       store.dispatch({
@@ -189,15 +193,29 @@ export async function changePassword(reqData) {
   }
 
 }
+//
+export async function updateSmartHealthNewPassword(data) {
+  try {
+    let endPoint = 'auth/change_password';
+    let response = await smartHealthPutService(endPoint, data);
+    let respData = response.data;
+
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 /*Change Password*/
 export async function updateNewPassword(data) {
   try {
     let endPoint = 'auth/changeNewPassword';
     let response = await putService(endPoint, data);
-    console.log('response' + JSON.stringify(response));
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData))
+
     return respData;
   } catch (e) {
     return {
@@ -220,6 +238,8 @@ export async function logout() {
   await AsyncStorage.removeItem('basicProfileData');
   await AsyncStorage.removeItem('updatedDeviceToken');
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
+  await AsyncStorage.removeItem('is_corporate_user');
+  await AsyncStorage.removeItem('relationship')
 
   store.dispatch({
     type: LOGOUT
@@ -233,18 +253,25 @@ export async function logout() {
 
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
+  try {
+    if (userData.is_corporate_user) {
+      await AsyncStorage.setItem('is_corporate_user', 'true')
+    }
+    await AsyncStorage.setItem('token', token)
+    await AsyncStorage.setItem('userId', userData.userId)
+    await AsyncStorage.setItem('isLoggedIn', 'true');
+    AsyncStorage.setItem('user', JSON.stringify(userData))
+    axios.defaults.headers.common['x-access-token'] = token;
+    axios.defaults.headers.common['userId'] = userData.userId;
 
-  await AsyncStorage.setItem('token', token)
-  await AsyncStorage.setItem('userId', userData.userId)
-  await AsyncStorage.setItem('isLoggedIn', 'true');
-  AsyncStorage.setItem('user', JSON.stringify(userData))
-  axios.defaults.headers.common['x-access-token'] = token;
-  axios.defaults.headers.common['userId'] = userData.userId;
-  AsyncStorage
-  store.dispatch({
-    type: SET_USER,
-    details: userData
-  })
+    AsyncStorage
+    store.dispatch({
+      type: SET_USER,
+      details: userData
+    })
+  } catch (e) {
+    console.log(e)
+  }
 
 }
 export const hasLoggedIn = async (props) => {
@@ -256,7 +283,7 @@ export const hasLoggedIn = async (props) => {
       if (navigation.state) {
         debugger
         let stateParams = navigation.state.params;
-        console.log(stateParams);
+
         let routeName = navigation.state.routeName;
         store.dispatch({
           type: REDIRECT_NOTICE,
@@ -326,9 +353,9 @@ export async function userFiledsUpdate(userId, data) {
 /*Get post office name and details */
 export async function getPostOffNameAndDetails(pincode) {
   try {
-    console.log(pincode)
+
     let fullPath = 'pincode/' + pincode;
-    console.log("fullPath", fullPath)
+
     let response = await getService(fullPath);
     return response.data;
   } catch (e) {
@@ -388,7 +415,145 @@ export async function userEmailUpdate(userId, data, type) {
 }
 
 
+export async function getAllCompanyList() {
+  try {
+    let endPoint = 'corporates';
+    let response = await smartHealthGetService(endPoint);
 
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+export async function verifyEmployeeDetails(empCode, authCode) {
+  try {
+    let endPoint = `member-detail/${empCode}/${authCode}`;
+
+    let response = await smartHealthGetService(endPoint);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exception' + e.message,
+      success: false
+    }
+  }
+}
+
+
+export async function SmartHealthlogin(userCredentials, isLoading = true) {
+  try {
+
+    store.dispatch({
+      type: LOGIN_REQUEST,
+      isLoading
+    })
+
+    let endPoint = 'auth/member-login'
+    let req = {
+      userId: userCredentials.userEntry,
+      password: userCredentials.password
+    }
+
+
+    let response = await smartHealthPostService(endPoint, req);
+
+    if (response && response.data && response.data.access_token) {
+      await AsyncStorage.setItem('smartToken', response.data.access_token)
+      let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
+
+      let res = await smartHealthGetService(ends);
+    
+      if (res && res.data && res.data[0]) {
+        let reqData = res.data[0]
+       
+        if (reqData.relationship) {
+          await AsyncStorage.setItem('relationship', reqData.relationship)
+        }
+        let reqBody = {
+          type: 'user',
+          email: reqData.emailId,
+          password: userCredentials.password,
+          gender: reqData.gender === 'Male' ? 'M' : reqData.gender === 'Female' ? 'F' : 'O',
+          dob: reqData.dob,
+          is_corporate_user: true,
+          corporate_member_id: userCredentials.userEntry,
+          employee_code: reqData.employeeId,
+          first_name: reqData.firstName,
+          last_name: reqData.lastName,
+          address: {
+            type: 'Point',
+            address: {
+              no_and_street: reqData.address1 || '1',
+              address_line_1: reqData.address2 || ' ',
+              district: reqData.district || 'district',
+              city: reqData.city,
+              state: reqData.state,
+              country: reqData.countryCode,
+              pin_code: String(reqData.pinCode)
+            }
+          }
+
+        }
+        if (reqData.mobile) {
+          reqBody.mobile_no = reqData.mobile
+        }
+
+        let insertEndPoint = 'auth/smart_health/signUp';
+        let signUpResult = await postService(insertEndPoint, reqBody);
+
+
+        if (signUpResult.data.success) {
+          await AsyncStorage.setItem('memberId', reqData.memberId)
+          changePasswordEndPoint = 'member-users/member-id?id=' + reqData.memberId
+          console.log(changePasswordEndPoint)
+          let forgotResult = await smartHealthGetService(changePasswordEndPoint)
+
+          if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
+            await AsyncStorage.setItem('forceToChangePassword', 'true')
+          }
+          const token = signUpResult.data.token;
+          signUpResult.data.data.is_corporate_user = true;
+          await setUserLocally(token, signUpResult.data.data);
+
+          store.dispatch({
+            type: LOGIN_RESPONSE,
+            message: respData.data.message
+          })
+
+        } else {
+          store.dispatch({
+            type: LOGIN_HAS_ERROR,
+            message: "Invalid Login Credentials"
+          })
+        }
+
+
+      }
+
+
+    } else {
+      store.dispatch({
+        type: LOGIN_HAS_ERROR,
+        message: "Invalid Login Credentials"
+      })
+    }
+    return true
+
+  } catch (e) {
+
+    store.dispatch({
+      type: LOGIN_HAS_ERROR,
+      message: "Invalid Login Credentials"
+    });
+  }
+}
 
 
 

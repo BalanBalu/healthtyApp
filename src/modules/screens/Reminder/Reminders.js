@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import AwesomeAlert from 'react-native-awesome-alerts';
 var { width, height } = Dimensions.get('window');
-console.log('height', height);
+
 let datesBlackList = [{
   start: moment().subtract(7, 'days').toISOString(),
   end: moment().subtract(1, 'days').toISOString()
@@ -60,8 +60,6 @@ class Reminder extends Component {
       if (result.success) {
         let reminderData = result.data;
         this.reminderData = reminderData
-        // alert(JSON.stringify(this.reminderData))
-        console.log("data=========<<<<<<<<<<<<<", JSON.stringify(result.data))
         await this.setCalenderStripDatesAndData(this.state.currentDate)
       }
       return result.data;
@@ -96,7 +94,7 @@ class Reminder extends Component {
 
     // alert(JSON.stringify(reminderDataBySelectedDate))
     this.setState({ data: reminderDataBySelectedDate, selectedDate: selectedDate });
-    console.log("this.data++++++++++++", this.state.data)
+
   }
 
   onDateChanged = async (data1) => {
@@ -136,7 +134,6 @@ class Reminder extends Component {
       if (navigationData.action) {
         const { reminder: { reminderResponse: { data } } } = this.props;
         this.reminderData = data;
-        console.log("data=========>>>>>>>>>>>>>>", data)
         this.setCalenderStripDatesAndData(this.state.currentDate)
       }
     } catch (e) {
@@ -177,8 +174,6 @@ class Reminder extends Component {
 
   render() {
     const { index, isLoading, data, isCancel } = this.state;
-
-    // console.log('data=====>', JSON.stringify(data))
     const renderTimeList = (timeList) => {
       return timeList.map((item) => {
         return (
@@ -191,7 +186,7 @@ class Reminder extends Component {
         <AwesomeAlert
           show={isCancel}
           showProgress={false}
-          title={`Are you sure to delete your Reminder `}
+          title={`Are you sure you want to delete your reminder?`}
           closeOnTouchOutside={false}
           closeOnHardwareBackPress={true}
           showCancelButton={true}
@@ -245,7 +240,7 @@ class Reminder extends Component {
                 <View style={{ backgroundColor: '#F1F1F1', marginTop: height / 4, justifyContent: 'center', alignItems: 'center' }}>
 
                   <Image source={require('../../../../assets/images/Remindericon.png')} style={{ justifyContent: 'center', height: 150, width: 150 }} />
-                  <Text style={{ color: '#d83939', }}>No Reminder is available now!</Text>
+                  <Text style={{ color: '#d83939', }}>No Reminders !</Text>
                 </View>
                 :
 

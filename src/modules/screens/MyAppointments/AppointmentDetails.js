@@ -8,13 +8,16 @@ import { StyleSheet, AsyncStorage, TouchableOpacity, Modal, FlatList } from 'rea
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff, statusValue } from '../../../setup/helpers';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation, getAppointmentCode } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, dateDiff, statusValue, getMoment, isTimeAfter } from '../../../setup/helpers';
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName } from '../../common'
-import { translate } from "../../../setup/translator.helper"
+import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
+import { translate } from "../../../setup/translator.helper";
+import { updateEvent } from "../../../setup/calendarEvent";
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const hasReviewButtonShow = true
 
@@ -25,7 +28,7 @@ class AppointmentDetails extends Component {
     this.state = {
       data: {},
       appointmentId: '',
-      doctorId: '',
+      doctorId: null,
       userId: '',
       reviewData: [],
       reportData: null,
@@ -61,7 +64,7 @@ class AppointmentDetails extends Component {
       ]);
     }
     else {
-      let doctorId = appointmentData.doctor_id;
+      let doctorId = appointmentData.doctor_id || null;
       let appointmentId = appointmentData._id;
       const selectedTab = navigation.getParam('selectedIndex');
       // this.props.navigation.setParams({ reportedId: appointmentId });
@@ -96,24 +99,26 @@ class AppointmentDetails extends Component {
     try {
 
       let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
-      let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
+      if (this.state.doctorId !== null) {
+        let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
-      if (resultDetails.success) {
-        let educationDetails = '';
-        if (resultDetails.data.education != undefined) {
-          educationDetails = getAllEducation(resultDetails.data.education)
+        if (resultDetails.success) {
+          let educationDetails = '';
+          if (resultDetails.data.education != undefined) {
+            educationDetails = getAllEducation(resultDetails.data.education)
+          }
+          let specialistDetails = '';
+          if (resultDetails.data.specialist != undefined) {
+            specialistDetails = getAllSpecialist(resultDetails.data.specialist)
+          }
+
+
+          this.setState({
+            education: educationDetails,
+            doctorData: resultDetails.data,
+            specialist: specialistDetails.toString(),
+          })
         }
-        let specialistDetails = '';
-        if (resultDetails.data.specialist != undefined) {
-          specialistDetails = getAllSpecialist(resultDetails.data.specialist)
-        }
-
-
-        this.setState({
-          education: educationDetails,
-          doctorData: resultDetails.data,
-          specialist: specialistDetails.toString(),
-        })
       }
 
     }
@@ -205,7 +210,7 @@ class AppointmentDetails extends Component {
       this.setState({ isLoading: true });
       let userId = await AsyncStorage.getItem('userId');
       let requestData = {
-        doctorId: data.doctor_id,
+
         userId: userId,
         startTime: data.appointment_starttime,
         endTime: data.appointment_endtime,
@@ -213,12 +218,25 @@ class AppointmentDetails extends Component {
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
+      if (data.booked_for === 'HOSPITAL') {
+        requestData.hospitalAminId = data.location[0].hospital_admin_id
+      } else {
+        requestData.doctorId = data.doctor_id
+      }
 
-      let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+      let result = await appointmentStatusUpdate(this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
 
       if (result.success) {
         let temp = this.state.data
+        let appointment_starttime = getMoment(data.appointment_starttime).toISOString();
+        let appointment_endtime = getMoment(data.appointment_endtime).toISOString();
+        let address = ''
+        if (temp.location[0]) {
+          address = temp.location[0].location.address.city || temp.location[0].location.address.state
+        }
+
+        await updateEvent(temp.user_appointment_event_id, "Appointment booked with " + temp.location[0].name + " " + temp.location[0].type, appointment_starttime, appointment_endtime, address, temp.disease_description)
 
         temp.appointment_status = result.appointmentData.appointment_status
         Toast.show({
@@ -230,6 +248,7 @@ class AppointmentDetails extends Component {
         }
 
         this.setState({ data: temp });
+        this.props.navigation.setParams({ 'refreshPage': true });
       }
     }
     catch (e) {
@@ -251,6 +270,26 @@ class AppointmentDetails extends Component {
     }
   }
 
+
+
+  async onPressToGetAppointmentCode() {
+    try {
+
+
+      let result = await getAppointmentCode(this.state.appointmentId);
+
+      if (result.success) {
+        toastMeassage(result.message, 'success', 3000)
+      }
+
+
+
+    }
+    catch (e) {
+
+      console.log(e)
+    }
+  }
   async backNavigation() {
     const { navigation } = this.props;
     if (navigation.state.params) {
@@ -265,6 +304,8 @@ class AppointmentDetails extends Component {
 
       await this.setState({ isLoading: true, modalVisible: false })
       if (val.updatedVisible == true) {
+        toastMeassage('Thank you for your valuable feedback', 'success', 3000)
+        this.props.navigation.setParams({ 'refreshPage': true });
         this.getUserReviews()
       }
     } catch (e) {
@@ -328,7 +369,7 @@ class AppointmentDetails extends Component {
                     <Col style={{ width: '77%', marginTop: 10 }}>
                       <Row>
                         <Col size={9}>
-                          <Text style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
+                          <Text style={styles.Textname} >{getDoctorNameOrHospitalName(data)}</Text>
                           <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color: '#4c4c4c' }}>{education}</Text>
                           <Text style={styles.specialistTextStyle} >{specialist} </Text>
                         </Col>
@@ -384,7 +425,7 @@ class AppointmentDetails extends Component {
                       <Col size={7}>
                         <Row style={{ marginTop: 10 }}>
 
-                          <Text note style={styles.subText3}>Do you need to cancel this appointment ?</Text>
+                          <Text note style={styles.subText3}>Do you want to cancel this appointment ?</Text>
 
                         </Row>
                       </Col>
@@ -418,7 +459,22 @@ class AppointmentDetails extends Component {
                               <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
                             </Button>
                           </Row>
-                        </Col></Row> : null : null}
+                        </Col></Row> : null : data.appointment_status == 'APPROVED' && isTimeAfter(new Date().toISOString(), data.appointment_starttime) ?
+
+                      <Row>
+                        <Col size={5}>
+                          <Row style={{ marginTop: 10 }}>
+                            <Text note style={styles.subText3}>Do you need to get code ?</Text>
+                          </Row>
+                        </Col>
+                        <Col size={5}>
+                          <Row style={{ marginTop: 10 }}>
+                            <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode()}>
+                              <Text style={styles.ButtonText}>Get appointment Code</Text>
+                            </Button>
+                          </Row>
+                        </Col>
+                      </Row> : null}
                 </Grid>
                 <CardItem footer style={styles.cardItem2}>
                   <Grid>
@@ -432,7 +488,7 @@ class AppointmentDetails extends Component {
                       </Col>
                       <Col style={{ width: '50%', marginLeft: 5, }}>
                         <Row>
-                          <Icon name="md-clock" style={styles.iconStyle} />
+                          <AntDesign name='clockcircleo' style={styles.iconStyle} />
                           <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a') + '-' + formatDate(data.appointment_endtime, 'hh:mm a')}</Text>
                         </Row>
                       </Col>
@@ -498,7 +554,7 @@ class AppointmentDetails extends Component {
                       {data.previous_data != undefined && data.appointment_status === 'PROPOSED_NEW_TIME' &&
                         <Row style={styles.rowSubText}>
                           <Col style={{ width: '8%', paddingTop: 5 }}>
-                            <Icon name="md-clock" style={{ fontSize: 20, }} />
+                          <AntDesign name='clockcircleo' style={{ fontSize: 20, }} />
                           </Col>
                           <Col style={{ width: '92%', paddingTop: 5 }}>
                             <Text style={styles.innerSubText1}>Previous Time</Text>
@@ -579,7 +635,7 @@ class AppointmentDetails extends Component {
                   {data.location != undefined &&
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
-                        <Icon name="ios-pin" style={{ fontSize: 20, }} />
+                        <Icon name="location-sharp" style={{ fontSize: 20, }} />
                       </Col>
                       <Col style={{ width: '92%', paddingTop: 5 }}>
                         <Text style={styles.innerSubText}>{translate("Hospital")}</Text>
@@ -724,7 +780,7 @@ class AppointmentDetails extends Component {
                             <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
 
                               <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>{translate("Add Feedback")} </Text>
-                              <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                              <MaterialIcons name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></MaterialIcons>
                             </TouchableOpacity>
                           </View>
                         </Col>
@@ -750,6 +806,37 @@ class AppointmentDetails extends Component {
                           <Text note style={styles.downText}>{"Rs." + (paymentDetails.amount != undefined ? paymentDetails.amount : 0) + "/-"}</Text>
                         </Col>
                       </Row>
+                      {
+                      paymentDetails.coupon_code_discount_amount ?
+                        <Row style={{ marginTop: 10 }}>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={styles.downText}>coupon code discount amount
+                </Text>
+                          </Col>
+                          <Col style={{ width: '15%' }}>
+                            <Text style={styles.downText}>-</Text>
+                          </Col>
+                          <Col style={{ width: '25%' }}>
+                            <Text note style={styles.downText}>{"Rs." + paymentDetails.coupon_code_discount_amount}</Text>
+                          </Col>
+                        </Row> : null
+                    }
+                    {
+                      paymentDetails.credit_point_discount_amount ?
+                        <Row style={{ marginTop: 10 }}>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={styles.downText}>credit point discount amount
+                </Text>
+                          </Col>
+                          <Col style={{ width: '15%' }}>
+                            <Text style={styles.downText}>-</Text>
+                          </Col>
+                          <Col style={{ width: '25%' }}>
+                            <Text note style={styles.downText}>{"Rs." + paymentDetails.credit_point_discount_amount}</Text>
+                          </Col>
+                        </Row> : null
+                    }
+
                       <Row style={{ marginTop: 10 }}>
                         <Col style={{ width: '60%' }}>
                           <Text style={styles.downText}>{translate("Payment Made")}
@@ -790,22 +877,14 @@ class AppointmentDetails extends Component {
                 </View>
               </Grid>
             </View>}
-          <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              containerStyle={{ justifyContent: 'flex-end' }}
-              visible={this.state.modalVisible}
-            >
-              <InsertReview
-                data={this.state.data}
-                popupVisible={(data) => this.getvisble(data)}
+          {this.state.modalVisible === true ?
+            <InsertReview
+              data={this.state.data}
+              popupVisible={(data) => this.getvisble(data)}
 
-              >
+            /> : null}
 
-              </InsertReview>
-            </Modal>
-          </View>
+
           <Modal
             visible={this.state.proposedVisible}
             transparent={true}
@@ -857,7 +936,7 @@ class AppointmentDetails extends Component {
                         <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
                           onPress={() => this.SkipAction()} testID='confirmButton'>
 
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
+                          <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'SKIP'}</Text>
                         </TouchableOpacity>
                       </Col>
                       <Col size={3.4} style={{ marginRight: 3 }} >
@@ -974,7 +1053,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#FFF',
-    marginLeft: -10
+    marginLeft:10
+   
   },
   iconStyle: {
     fontSize: 20,

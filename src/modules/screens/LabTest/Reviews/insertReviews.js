@@ -106,15 +106,14 @@ export class labInsertReviews extends Component {
     render() {
         const { data, isAnonymous, isLabRecommended, ratingIndicatePopUp } = this.state;
         return (
-            < Container style={styles.container} >
-                <Content
-                    style={{
+            <Container style={styles.container}>
+                    <Grid style={{
                         backgroundColor: '#fff',
                         position: 'absolute',
-                        bottom: 0
+                        bottom: 5,
+                        marginLeft:10,
+                        marginRight:10,
                     }}>
-
-                    <Grid>
                         <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                             <Left>
                                 <Text style={{ color: '#fff', fontSize: 16 }}>{data.labInfo && data.labInfo.lab_name}</Text>
@@ -127,7 +126,7 @@ export class labInsertReviews extends Component {
 
                             <Row style={{ marginTop: 20 }}>
                                 <Left style={{ marginLeft: 20 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Cleanliness</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Service quality</Text>
                                 </Left>
                                 <Right style={{ marginRight: 20 }}>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 50 }}
@@ -168,22 +167,22 @@ export class labInsertReviews extends Component {
                                 </Right>
                             </Row>
                             <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
-                                <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
+                                <Col style={{ flexDirection: 'row', width: '45%', alignItems: "center", justifyContent: 'flex-start' }}>
                                          <CheckBox style={{borderRadius:5}}
                                              status={isAnonymous ? true : false}
                                                checked={this.state.isAnonymous}
                                                onPress={() => { this.setState({ isAnonymous: !isAnonymous }); }}
                                                />
-                                    <Text style={{ color: '#3C98EC', marginTop: 10, fontSize: 12,marginLeft:20 }}>Anonymous</Text>
+                                    <Text style={{ color: '#3C98EC', fontSize: 12,marginLeft:20 }}>Anonymous</Text>
                                 </Col>
-                                <Col style={{ flexDirection: 'row', width: '55%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
+                                <Col style={{ flexDirection: 'row', width: '55%', alignItems: "center", justifyContent: 'flex-start' }}>
 
                                       <CheckBox style={{borderRadius:5}}
                                              status={isLabRecommended ? true : false}
                                                checked={this.state.isLabRecommended}
                                              onPress={() => { this.setState({ isLabRecommended: !isLabRecommended }); }}
                                              />
-                                    <Text style={{ color: '#3C98EC', fontSize: 12, marginTop: 10,marginLeft:20 }}>Recommend this Lab</Text>
+                                    <Text style={{ color: '#3C98EC', fontSize: 12,marginLeft:20 }}>Recommend this Lab</Text>
                                 </Col>
 
                             </Row>
@@ -192,7 +191,7 @@ export class labInsertReviews extends Component {
                                 <TextInput
                                     style={{ height: 80, borderWidth: 1, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
                                     returnKeyType={'next'}
-                                    placeholder="Write Your Reviews"
+                                    placeholder="Write your reviews"
                                     multiline={true}
                                     keyboardType={'default'}
                                     textAlignVertical={'top'}
@@ -203,7 +202,7 @@ export class labInsertReviews extends Component {
                             </View>
                         </View>
 
-                        <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, }}>
+                        <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, marginBottom:10 }}>
 
                             <Col style={{ width: '50%' }}>
                             </Col>
@@ -215,9 +214,7 @@ export class labInsertReviews extends Component {
 
                         </Row>
                     </Grid>
-
-                </Content>
-            </Container >
+            </Container>
         );
     }
 }
@@ -227,8 +224,7 @@ export default labInsertReviews
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'transparent',
-        padding: 10,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         width: '100%',
         position: 'absolute',
         bottom: 0,

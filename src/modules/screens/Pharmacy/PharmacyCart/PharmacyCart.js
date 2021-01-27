@@ -3,9 +3,12 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage, getMedicineNameByProductName, getMedicineWeightUnit, setCartItemCountOnNavigation, renderMedicineImageByimageUrl } from '../CommomPharmacy';
-import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds } from '../../../providers/pharmacy/pharmacy.action';
+import { ProductIncrementDecreMent, getMedicineNameByProductName, getMedicineWeightUnit, setCartItemCountOnNavigation, renderMedicineImageByimageUrl, medicineRateAfterOffer ,ProductIncrementDecreMents} from '../CommomPharmacy';
+import { getproductDetailsByPharmacyId } from '../../../providers/pharmacy/pharmacy.action';
+import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds, createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
+
+import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/profile.action';
 
 let userId;
 class PharmacyCart extends Component {
@@ -14,23 +17,22 @@ class PharmacyCart extends Component {
         this.state = {
             cartItems: [],
             isLoading: true,
+           
 
         }
 
     }
 
-    async componentDidMount() {
-        await this.getAddToCart();
+    async componentDidMount() {  
+                await this.getAddToCart();
+            
     }
-
+   
     getAddToCart = async () => {
         try {
             this.setState({ isLoading: true })
             userId = await AsyncStorage.getItem('userId')
             let cartItems = await AsyncStorage.getItem('cartItems-' + userId) || [];
-            console.log('cartItemscartItemscartItemscartItems')
-            console.log(cartItems)
-
             if (cartItems.length === 0) {
                 this.setState({ cartItems: [], isLoading: false });
             } else {
@@ -38,8 +40,7 @@ class PharmacyCart extends Component {
                 this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
 
             }
-            console.log('cart===========')
-            console.log("cartItems", this.state.cartItems)
+
         }
 
         catch (e) {
@@ -57,8 +58,7 @@ class PharmacyCart extends Component {
     }
 
     async productQuantityOperator(item, operator, index) {
-        // let userId = await AsyncStorage.getItem('userId')
-        // let offeredAmount = medicineRateAfterOffer(item);
+        
         let offeredAmount = this.unitOfPrice(item);
         let result = await ProductIncrementDecreMent(item.item.quantity, offeredAmount, operator, item.item.maxThreashold)
         let temp = item;
@@ -75,11 +75,25 @@ class PharmacyCart extends Component {
                 style: { bottom: "50%" }
 
             })
+            return false
         }
+      
+            createCart(temp)
+            await AsyncStorage.setItem('hasCartReload', 'true')
+      
+
+
+
+
+
+
+
         let cartItems = this.state.cartItems
         cartItems[index] == temp
         this.setState({ cartItems })
-        await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
+      
+            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
+        
     }
 
     removeMedicine = async (index, removeData) => {
@@ -89,7 +103,6 @@ class PharmacyCart extends Component {
             data.splice(index, 1);
             this.setState({ cartItems: data });
 
-            // let userId = await AsyncStorage.getItem('userId')
             await AsyncStorage.setItem('hasCartReload', 'true')
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
             setCartItemCountOnNavigation(this.props.navigation)
@@ -103,7 +116,6 @@ class PharmacyCart extends Component {
         if (this.state.cartItems) {
 
             this.state.cartItems.map(element => {
-
 
                 total = total + element.item.totalPrice
             })
@@ -130,65 +142,20 @@ class PharmacyCart extends Component {
     }
     async procced() {
         const { cartItems } = this.state;
-
+        let hasCartReload = await AsyncStorage.getItem('hasCartReload')
+        if (hasCartReload) {
+            await AsyncStorage.removeItem('hasCartReload')
+        }
         this.props.navigation.navigate("MedicineCheckout", {
             medicineDetails: cartItems,
             orderOption: "pharmacyCart",
         })
-        // let order_items = []
-        // cartItems.map(element => {
 
-        //     order_items.push({
-        //         medicine_id: element.medicine_id,
-        //         pharmacy_id: element.pharmacy_id,
-        //         quantity: Number(element.userAddedMedicineQuantity),
-        //         medicine_weight: Number(element.medicine_weight),
-        //         medicine_weight_unit: element.medicine_weight_unit
-        //     })
-
-        // })
-        // console.log('availble status=====');
-        // console.log(JSON.stringify(order_items))
-        // let obj = {
-        //     order_items: order_items
-        // }
-        // let checkResult = await getmedicineAvailableStatus(obj)
-        // console.log(JSON.stringify(checkResult))
-        // if (checkResult.success === true) {
-        //     if (checkResult.data.length === cartItems.length) {
-        //         this.props.navigation.navigate("MedicineCheckout", {
-        //             medicineDetails: cartItems,
-        //             orderOption: "pharmacyCart",
-        //         })
-        //     } else {
-        //         Toast.show({
-        //             text: 'out of stack',
-        //             type: 'danger',
-        //             duration: 3000
-        //         })
-        //         cartItems.map((ele, index) => {
-        //             let value = checkResult.data.find(element => {
-
-        //                 return element.pharmacy_id === ele.pharmacy_id && element.medicine_id === ele.medicine_id
-        //             })
-        //             console.log(value)
-        //             if (value === undefined) {
-
-        //                 ele.is_outofStack = true
-
-        //                 cartItems.splice(index, 1, ele)
-        //             }
-        //         })
-        //         this.setState({ cartItems })
-
-        //     }
-        // } else {
-        //     Toast.show({
-        //         text: 'out of stack',
-        //         type: 'danger',
-        //         duration: 3000
-        //     })
-        // }
+    }
+    productDiscountedPrice(unitPrice,discountedAmount){
+      
+        let value=Number(unitPrice)-Number(discountedAmount)
+        return Number(Number(value).toFixed(2))
     }
     render() {
         const { isLoading, cartItems } = this.state;
@@ -224,7 +191,7 @@ class PharmacyCart extends Component {
                                     onPress={() =>
                                         this.props.navigation.pop()
                                     } testID='navigateToHome'>
-                                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Place Order</Text>
+                                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>{'Place Order'}</Text>
                                 </Button>
                             </Item>
                         </Card>
@@ -275,7 +242,7 @@ class PharmacyCart extends Component {
                                                     {item.item.discountedAmount !== undefined && item.item.discountedAmount !== 0 && item.item.discountedAmount !== null ?
                                                         <Row>
                                                             <Text style={{ fontSize: 9.5, marginTop: 30, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.item.unitPrice}</Text>
-                                                            <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.unitPrice - item.item.discountedAmount}</Text>
+                                                            <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {this.productDiscountedPrice(item.item.unitPrice ,item.item.discountedAmount)}</Text>
                                                         </Row>
                                                         : <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.item.unitPrice}</Text>}
                                                 </Col>

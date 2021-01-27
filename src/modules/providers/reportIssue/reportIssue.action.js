@@ -6,7 +6,7 @@ export async function insertReportIssue(data = true) {
     let endPoint = '/report';
 
     let response = await postService(endPoint, data);
-    console.log(response)
+   
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -22,7 +22,7 @@ export async function upDateReportIssue(reportedId, replyProviderId, data, isLoa
     let endPoint = '/report/' + reportedId + '/' + replyProviderId;
 
     let response = await putService(endPoint, data);
-    console.log(response)
+  
     let respData = response.data;
     return respData;
   } catch (e) {

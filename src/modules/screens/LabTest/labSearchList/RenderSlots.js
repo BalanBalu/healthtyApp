@@ -11,12 +11,13 @@ export default class RenderSlots extends Component {
         super(props)
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.shouldUpdate !== this.props.shouldUpdate;
+        if(nextProps.shouldUpdate == this.props.shouldUpdate) return false
+        return true
     }
 
     render() {
         const { slotData, selectedSlotIndex, onSlotItemPress, labId, selectedDate } = this.props;
-        console.log("slotData", slotData);
+     
 
         const { width } = Dimensions.get('screen');
         const itemWidth = (width) / 4;

@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { toDataUrl } from '../../../../setup/helpers';
-import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, Alert } from 'react-native';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getLabTestCateries } from '../../../providers/lab/lab.action';
 import FastImage from 'react-native-fast-image'
@@ -22,14 +22,26 @@ class LabCategories extends PureComponent {
   }
   getLabCategories = async () => {
     try {
-      const { bookappointment: { locationCordinates } } = this.props;
-      console.log("locationCordinates", locationCordinates)
+      const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
+      if (!isLocationSelected) {
+        Alert.alert(
+          "Location Warning",
+          "Please select the location to continue...!",
+          [
+            { text: "Cancel" },
+            {
+              text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
+            }
+          ],
+        );
+        return
+      }
       let locationData = {
         "coordinates": locationCordinates,
         "maxDistance": MAX_DISTANCE_TO_COVER
       }
       let result = await getLabTestCateries(JSON.stringify(locationData));
-      console.log("result", result)
+    
       if (result.success) {
         this.setState({ labData: result.data });
         this.mainLabData = result.data;
@@ -40,9 +52,21 @@ class LabCategories extends PureComponent {
     }
   }
   onPressCatItem = async (type, value) => {	
-    const { bookappointment: { locationCordinates } } = this.props;
-    console.log("locationCordinates", locationCordinates)
-    
+    const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
+  
+    if (!isLocationSelected) {
+      Alert.alert(
+        "Location Warning",
+        "Please select the location to continue...!",
+        [
+          { text: "Cancel" },
+          {
+            text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
+          }
+        ],
+      );
+      return
+    }
     const inputDataBySearch = [	
       {	
         type: 'geo',	
@@ -58,14 +82,13 @@ class LabCategories extends PureComponent {
         value	
       })	
     }
-    console.log('cate inputDataBySearch=====>', inputDataBySearch)	
     this.props.navigation.navigate('LabSearchList', { inputDataFromLabCat: inputDataBySearch })
   
   }
 
 
   filterCategories(searchValue) {
-    console.log("this.mainLabData", this.mainLabData);
+    
     const { labData } = this.state;
     if (searchValue === searchValue.replace(/^[^*|\":<>[\]{}`\\()'; @& $]+$/)) {
       return [];
@@ -135,9 +158,9 @@ class LabCategories extends PureComponent {
                       }}
                     />
                     <Text style={styles.mainText}>{item.lab_test_category_info.category_name}</Text>
-                    <Text style={styles.subText}>package starts from</Text>
+                    <Text style={styles.subText}>Package starts from</Text>
                     <Row>
-                      <Text style={styles.rsText}>₹ {item.minPriceWithoutOffer}</Text>
+                      <Text style={styles.rsText}> {item.minPriceWithoutOffer != item.minPriceWithOffer ?('₹'+item.minPriceWithoutOffer):null}</Text>
                       <Text style={styles.finalRs}>₹ {Math.round(item.minPriceWithOffer)}</Text>
                     </Row>
                   </TouchableOpacity>

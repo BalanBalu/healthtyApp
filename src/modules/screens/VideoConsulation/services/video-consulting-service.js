@@ -12,7 +12,7 @@ export const fetchAvailableDoctors4Video = async (docIds) => {
         if(docIds) {
             endPoint = endPoint + '&doctorIds=' + docIds
         }
-        console.log(endPoint);
+      
         let response = await getService(endPoint);
         let respData = response.data;
         return respData;
@@ -69,14 +69,13 @@ export const updateVideoConsuting = async (consultationId, request) => {
 export const sendNotification = async (doctorId, request) => {
     try {
         let endPoint = 'video-consulting/connectycube/notification/doctor/' + doctorId;
-        console.log(endPoint);
-        console.log(request);
+      
         let response = await postService(endPoint, request);
         let respData = response.data;
-        console.log(respData);
+        
         return respData;
     } catch (e) {
-        console.log(e);
+      
         return {
             success: false,
             message: e + ' Occured! Please Try again'
@@ -84,23 +83,44 @@ export const sendNotification = async (doctorId, request) => {
     }
 }
 export const authorizeConnectyCube = async () => {
-    let userId = await AsyncStorage.getItem('userId');
-    if(userId) {
-        let fields = "user_id,connectycube"
-        let endPoint = 'user/' + userId + '?fields=' + fields;
+    try {
+        let userId = await AsyncStorage.getItem('userId');
+        if(userId) {
+        let fields = "user_id,connectycube";
+        let endPoint = 'video-consulting/public/connectycube/user/' + userId + '?fields=' + fields;
         let response = await getService(endPoint);
         let respData = response.data;
         if(respData.success === true) {
             const result = respData.data;
             if(result.connectycube) {
                 const resp = await AuthService.loginToConnctyCube(userId, result.connectycube);
-                console.log('CoonectyCube LoggedIn Response' , resp);
+               
                 return resp;
             }
         }
     }
     return false;
+} catch (error) {
+    console.info('Error on Authorizing Connectycube ==> ', error);
+            
 }
+}
+
+export const createEmrByVideoConsultation = async ( request) => {
+    try {
+        let endPoint = 'video-consulting/consultation/update/emr';
+        console.log(JSON.stringify(request))
+        let response = await putService(endPoint, request);
+        let respData = response.data;
+        return respData;
+    } catch (e) {
+        return {
+            success: false,
+            message: e + ' Occured! Please Try again'
+        }
+    }
+}
+
 
 export const setUserLoggedIn = () => {
     store.dispatch({

@@ -34,19 +34,19 @@ class BasicInfo extends PureComponent {
                 is_user_meet_doctor_before: itemSelected,
                 has_skipped_user_meet_doctor_before: false
             }
-            console.log(data);
+        
             this.setState({ isLoading: true })
             let response = await prepareAppointmentUpdate(appointmentId, data)
 
             
-            console.log(response);
+            
             if (response.success) {
                 Toast.show({
                     text: response.message,
                     type: "success",
                     duration: 3000,
                 })
-                this.props.navigation.navigate('MedicalHistory', { AppointmentId: appointmentId });
+                this.props.navigation.navigate('EmrInfo', { AppointmentId: appointmentId });
             }
         }
         catch (e) {
@@ -79,7 +79,7 @@ class BasicInfo extends PureComponent {
                                     itemSelected: !this.state.itemSelected
                                 })} />
 
-                            <Text style={styles.innersubTexts}>Yes,I've seen this doctor before</Text>
+                            <Text style={styles.innersubTexts}>Yes,I've visited this doctor before</Text>
                         </View>
 
                         <View style={{ alignItems: 'center', flexDirection: 'row', marginTop: 15 }}>
@@ -87,14 +87,14 @@ class BasicInfo extends PureComponent {
                                 standardStyle={true}
                                 selected={!this.state.itemSelected}
                                 onPress={() => this.setState({ itemSelected: !this.state.itemSelected })} />
-                            <Text style={styles.innersubTexts}>No.I'm a new patient</Text>
+                            <Text style={styles.innersubTexts}>No,This is my first time</Text>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: 200, height: 38 }}>
                             <View style={{ width: '40%', }}>
                                 <TouchableOpacity style={styles.skipButton} onPress={() => {
                                     prepareAppointmentUpdate(this.state.appointmentId, { has_skipped_user_meet_doctor_before: true });
-                                    this.props.navigation.navigate('MedicalHistory', { AppointmentId: this.state.appointmentId });
+                                    this.props.navigation.navigate('EmrInfo', { fromNavigation:'APPOINTMENT_PREPARE',AppointmentId: this.state.appointmentId });
                                 }}>
                                     <Text style={styles.touchText}>Skip</Text>
                                 </TouchableOpacity>

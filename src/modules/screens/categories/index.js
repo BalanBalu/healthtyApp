@@ -5,11 +5,12 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
-import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
+import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
+import CheckLocationWarning from '../Home/LocationWarning';
 
 
 class Categories extends Component {
@@ -20,12 +21,13 @@ class Categories extends Component {
       categoriesMain: []
     }
   }
+
   componentDidMount() {
     this.getCatagries();
   }
   getCatagries = async () => {
     try {
-      let result = await catagries();
+      let result = await catagries('services=0');
       if (result.success) {
         this.setState({ data: result.data, categoriesMain: result.data })
         for (let i = 0; i < result.data.length; i++) {
@@ -42,17 +44,47 @@ class Categories extends Component {
       this.setState({ isLoading: false });
     }
   }
+  navigate = (categoryName, category_id) => {
+    CheckLocationWarning.checkLocationWarning(this.navigateToCategorySearch.bind(this), [categoryName, category_id]);
+  }
 
-  navigateToCategorySearch(categoryName) {
+  navigateToCategorySearch(categoryName, category_id) {
+    
+
+  
     const { bookappointment: { locationCordinates } } = this.props;
-    this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
-      inputKeywordFromSearch: categoryName,
-      locationDataFromSearch: {
-        type: 'geo',
-        "coordinates": locationCordinates,
-        maxDistance: MAX_DISTANCE_TO_COVER
+
+    let fromNavigation = this.props.navigation.getParam('fromNavigation') || null
+
+
+    if (fromNavigation === "HOSPITAl") {
+
+      this.props.navigation.navigate("HospitalList", {   // New Enhancement Router path
+        category_id: category_id
+      })
+    }
+    else if (fromNavigation === SERVICE_TYPES.HOME_HEALTHCARE) {
+      let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null;
+      const pinCode = userAddressInfo && userAddressInfo.address && userAddressInfo.address.pin_code;
+      const reqParamDataObj = {
+        categoryName,
+        categoryId: category_id
       }
-    })
+      if (pinCode) {
+        reqParamDataObj.userAddressInfo = userAddressInfo;
+        reqParamDataObj.pinCode = pinCode
+      }
+      this.props.navigation.navigate("Home Health Care", reqParamDataObj);
+    } else {
+      this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+        inputKeywordFromSearch: categoryName,
+        locationDataFromSearch: {
+          type: 'geo',
+          "coordinates": locationCordinates,
+          maxDistance: MAX_DISTANCE_TO_COVER
+        }
+      })
+    }
     // let serachInputvalues = [{
     //   type: 'category',
     //   value: categoryName
@@ -68,7 +100,7 @@ class Categories extends Component {
   }
 
   filterCategories(searchValue) {
-    console.log(this.state.data);
+   
     const { categoriesMain } = this.state;
     if (!searchValue) {
       this.setState({ searchValue, data: categoriesMain });
@@ -123,7 +155,7 @@ class Categories extends Component {
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>
-                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
+                  <TouchableOpacity onPress={() => this.navigate(item.category_name, item.category_id)}
                     style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                     <FastImage
                       source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
@@ -132,7 +164,7 @@ class Categories extends Component {
                       }}
                     />
                     <Text style={{
-                      fontSize: 10,
+                      fontSize: 12,
                       textAlign: 'center',
                       fontWeight: '200',
                       marginTop: 5,
@@ -163,7 +195,7 @@ function appoinmentsState(state) {
     bookappointment: state.bookappointment
   }
 }
-export default connect(appoinmentsState, { login, messageShow, messageHide })(Categories)
+export default connect(appoinmentsState)(Categories)
 
 
 const styles = StyleSheet.create({

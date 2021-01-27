@@ -56,7 +56,7 @@ class PastMedicalConditions extends PureComponent {
             if(checkBoxClick.length !==0){
             let response = await userFiledsUpdate(userId, data)
 
-            console.log(JSON.stringify(response))
+         
             if (response.success) {
                 Toast.show({
                     text: response.message,

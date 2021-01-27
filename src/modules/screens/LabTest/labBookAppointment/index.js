@@ -14,9 +14,11 @@ import { } from '../../../providers/labTest/labTestBookAppointment.action';
 import { fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import RenderLabLocation from '../RenderLabLocation';
 import { Loader } from '../../../../components/ContentLoader';
-import { addFavoritesToLabByUserService } from '../../../providers/labTest/labTestBookAppointment.action'
+import { addFavoritesToLabByUserService, getLabDetails, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService } from '../../../providers/labTest/labTestBookAppointment.action'
 import RenderLabCategories from '../RenderLabCategories';
 import styles from '../../CommonAll/styles'
+fields = "lab_name,mobile_no,location_code,location,extra_charges,available_lab_test_categories";
+
 class LabBookAppointment extends Component {
   availabilitySlotsDatesArry = [];
   slotData4ItemMap = new Map();
@@ -26,7 +28,7 @@ class LabBookAppointment extends Component {
     super(props)
     this.state = {
       selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
-      isLoading: false,
+      isLoading: true,
       onPressTabView: 1,
       selectedSlotIndex: -1,
       labId: null,
@@ -37,13 +39,15 @@ class LabBookAppointment extends Component {
       renderRefreshCount: 0,
       refreshCountOnDateFL: 1,
       buttonEnable: false,
+      labInfoData: {},
+      fetchAvailabiltySlots: props.navigation.getParam('fetchAvailabiltySlots') || false
     }
-
   }
+
 
   async componentDidMount() {
     const { navigation } = this.props;
-    const fromMyAppointment = navigation.getParam('fromMyAppointment') || false;
+    const { labInfoData, fetchAvailabiltySlots } = this.state;
     this.setState({ isLoading: true });
     const startDateByMoment = addMoment(this.state.selectedDate)
     const endDateByMoment = addMoment(this.state.selectedDate, 7, 'days');
@@ -51,19 +55,43 @@ class LabBookAppointment extends Component {
     if (userId) {
       this.setState({ isLoggedIn: true, userId });
     }
-    if (fromMyAppointment) {
-      // ...
-      //...
+    if (fetchAvailabiltySlots) {
+      let labDetailsObj = {}, result;
+      const labId = navigation.getParam('labId') || false;
+      const lab_test_categories_id = navigation.getParam('lab_test_categories_id') || false;
+
+      const labDetailsResp = await getLabDetails(labId, fields)
+      if (labDetailsResp.success && labDetailsResp.data && labDetailsResp.data[0]) {
+        result = labDetailsResp.data[0];
+        labDetailsObj.labInfo = {
+          lab_id: result.lab_id,
+          mobile_no: result.mobile_no || null,
+          lab_name: result.lab_name,
+          location: result.location,
+          location_code: result.location_code
+        }
+        labDetailsResp.data[0].available_lab_test_categories.map(CatInfo => {
+          if (lab_test_categories_id.includes(CatInfo.lab_test_categories_id)) {
+            labDetailsObj.labCatInfo = CatInfo;
+          }
+        })
+
+      }
+      this.setState({ labInfoData: labDetailsObj, labId });
+      await this.getLabTestAvailabilitySlots(labId, startDateByMoment, endDateByMoment);
+
     } else {
+      const labId = navigation.getParam('labId') || false;
+      const labInfoData = navigation.getParam('singleLabItemData');
+      await this.setState({ labInfoData, labId });
+
       this.availabilitySlotsDatesArry = navigation.getParam('availabilitySlotsDatesArry');
-      const { labTestData: { singleLabItemData } } = this.props;
-      if (Object.keys(singleLabItemData.slotData).length === 0) {
-        await this.getLabTestAvailabilitySlots(singleLabItemData.labId, startDateByMoment, endDateByMoment);
+      if (Object.keys(labInfoData.slotData).length === 0) {
+        await this.getLabTestAvailabilitySlots(labInfoData.labInfo.lab_id, startDateByMoment, endDateByMoment);
       }
       else {
-        this.slotData4ItemMap.set(String(singleLabItemData.labId), singleLabItemData.slotData)
+        this.slotData4ItemMap.set(String(labInfoData.labInfo.lab_id), labInfoData.slotData)
       }
-      this.setState({ labId: singleLabItemData.labId });
     }
     this.setState({ isLoading: false });
   }
@@ -81,7 +109,8 @@ class LabBookAppointment extends Component {
         endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
       }
       const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-      console.log('resultSlotsData======>', resultSlotsData);
+
+
       if (resultSlotsData.success) {
         const availabilityData = resultSlotsData.data;
         if (availabilityData.length != 0) {
@@ -95,6 +124,9 @@ class LabBookAppointment extends Component {
       }
     } catch (ex) {
       console.log('Ex getting on getAvailabilitySlots service======', ex.message);
+    }
+    finally {
+      this.setState({ isLoading: false });
     }
   }
 
@@ -121,6 +153,7 @@ class LabBookAppointment extends Component {
   renderDatesOnFlatList() {
     const { selectedDate, labId } = this.state
     const slotDataObj4Item = this.slotData4ItemMap.get(String(labId)) || {}
+
     if (Object.keys(slotDataObj4Item).length === 0) {
       return null;
     }
@@ -151,7 +184,6 @@ class LabBookAppointment extends Component {
     const { selectedDate, labId } = this.state;
     return (
       <View>
-
         <RenderSlots
           selectedSlotIndex={this.selectedSlotIndex}
           selectedDate={selectedDate}
@@ -166,8 +198,8 @@ class LabBookAppointment extends Component {
   }
 
   renderLabLocAddress() {
-    const { labTestData: { singleLabItemData } } = this.props;
-    const { labInfo } = singleLabItemData;
+    const { labInfoData } = this.state;
+    const { labInfo } = labInfoData || {};
     if (!labInfo.location) {
       return null;
     }
@@ -182,17 +214,18 @@ class LabBookAppointment extends Component {
     const { labInfo, labCatInfo } = labData;
     if (!selectedSlotItem) {
       Toast.show({
-        text: 'Please Select a Slot to continue booking',
+        text: 'Please select a slot to continue booking',
         type: 'warning',
         duration: 3000
       })
       return;
     }
+    let fee = (parseInt(labCatInfo.branch_details.price) - ((parseInt(labCatInfo.branch_details.offer) / 100) * parseInt(labCatInfo.branch_details.price)))
     let packageDetails = {
       lab_id: labInfo.lab_id,
       lab_test_categories_id: labCatInfo.lab_test_categories_id,
       lab_test_description: labCatInfo.category_discription || 'null',
-      fee: labCatInfo.price || 0,
+      fee: fee || labCatInfo.price || 0,
       extra_charges: labInfo.extra_charges || 0,
       mobile_no: labInfo.mobile_no || null,
       lab_name: labInfo.lab_name,
@@ -200,14 +233,12 @@ class LabBookAppointment extends Component {
       selectedSlotItem: selectedSlotItem,
       location: labInfo.location
     }
-    console.log("packageDetails", packageDetails);
-
     this.props.navigation.navigate('labConfirmation', { packageDetails })
   }
   /* Update Favorites for LabTest by UserId  */
   addToFavoritesList = async (labId) => {
     this.setState({ buttonEnable: true });
-    const updateResp =  await addFavoritesToLabByUserService(this.state.userId, labId);
+    const updateResp = await addFavoritesToLabByUserService(this.state.userId, labId);
     if (updateResp)
       Toast.show({
         text: 'Lab wish list updated successfully',
@@ -217,12 +248,10 @@ class LabBookAppointment extends Component {
     this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1, buttonEnable: false, });
   }
   render() {
-    const { selectedDate, isLoggedIn, showMoreOption, labId, onPressTabView, isLoading, buttonEnable } = this.state;
+    const { selectedDate, labInfoData, isLoggedIn, showMoreOption, labId, onPressTabView, isLoading, buttonEnable } = this.state;
     const slotDataObj4Item = this.slotData4ItemMap.get(String(labId)) || {}
-    const { labTestData: { singleLabItemData, patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
-    const { labInfo, labCatInfo } = singleLabItemData;
-    console.log("labCatInfo", labCatInfo);
-    
+    const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
+    const { labInfo, labCatInfo } = labInfoData;
     return (
       <Container style={styles.container}>
         {isLoading ?
@@ -261,7 +290,7 @@ class LabBookAppointment extends Component {
                   </Col>
                 </Row>
                 <Row style={{ marginBottom: 10 }}>
-                  <Col style={{ width: "25%", marginTop: 15, }}>
+                  <Col style={{ width: "22%", marginTop: 15, }}>
                     <RenderFavoritesCount
                       isFromLabBookApp={true}
                       favoritesCount={wishListCountByLabIds[labInfo.lab_id] ? wishListCountByLabIds[labInfo.lab_id] : '0'}
@@ -273,12 +302,12 @@ class LabBookAppointment extends Component {
                       totalRatingCount={reviewCountsByLabIds[labInfo.lab_id] ? reviewCountsByLabIds[labInfo.lab_id].average_rating : ' 0'}
                     />
                   </Col>
-                  <Col style={{ width: "25%", marginTop: 15, }}>
+                  <Col style={{ width: "26%", marginTop: 15, marginLeft: 25 }}>
                     <RenderOfferDetails
-                      offerInfo={labCatInfo && labCatInfo.offer ? labCatInfo.offer : ' '}
+                      offerInfo={labCatInfo && labCatInfo.offer ? labCatInfo.offer : labCatInfo.branch_details.offer ? labCatInfo.branch_details.offer : '0'}
                     />
                   </Col>
-                  <Col style={{ width: "25%", marginTop: 15, }}>
+                  <Col style={{ width: "27%", marginTop: 15, marginLeft: -25 }}>
                     <RenderPriceDetails
                       priceInfo={labCatInfo && labCatInfo ? labCatInfo : ' '}
                     />
@@ -327,7 +356,7 @@ class LabBookAppointment extends Component {
                   </View>
                 </View>
                 {this.renderLabLocAddress()}
-                {/* <RenderLabCategories> </RenderLabCategories> */}
+                <RenderLabCategories> </RenderLabCategories>
               </Content>
             }
           </Content>}
@@ -336,7 +365,7 @@ class LabBookAppointment extends Component {
           <Row>
             <Col style={{ marginRight: 40 }} >
               <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}
-                onPress={() => this.onPressContinueForPaymentReview(singleLabItemData, this.selectedSlotItem)}
+                onPress={() => this.onPressContinueForPaymentReview(labInfoData, this.selectedSlotItem)}
                 testID='clickButtonToPaymentReviewPage'>
                 <Row style={{ justifyContent: 'center', }}>
                   <Text style={{ marginLeft: -25, marginTop: 2, fontWeight: 'bold', justifyContent: 'center', alignItems: 'center' }}>BOOK APPOINTMENT</Text>
@@ -354,4 +383,3 @@ const LabTestBookAppointmentState = (state) => ({
   labTestData: state.labTestData
 })
 export default connect(LabTestBookAppointmentState)(LabBookAppointment)
-

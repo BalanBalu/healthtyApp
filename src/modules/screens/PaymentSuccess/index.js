@@ -4,7 +4,7 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, AsyncStorage } from 'react-native';
 import { formatDate } from '../../../setup/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
 import { RenderHospitalAddress, renderDoctorImage, getDoctorSpecialist, getDoctorEducation } from '../../common'
@@ -19,20 +19,27 @@ class PaymentSuccess extends Component {
 
             },
             paymentMethod: null,
-            tokenNo: null
+            tokenNo: null,
+            fromNavigation: null,
+            CorporateUser: false
+
 
         }
+        this.isFromHomeHealthCareConfirmation = false;
     }
 
     async componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressed);
         const { navigation } = this.props;
         const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
-        console.log(successBookSlotDetails);
+       
         const paymentMethod = navigation.getParam('paymentMethod');
+        const fromNavigation = navigation.getParam('fromNavigation') || null
         const tokenNo = navigation.getParam('tokenNo');
-        await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo });
-        console.log(paymentMethod);
+        this.isFromHomeHealthCareConfirmation = navigation.getParam('isFromHomeHealthCareConfirmation') || false;
+        await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo, fromNavigation });
+       
+
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressed);
@@ -53,9 +60,37 @@ class PaymentSuccess extends Component {
             </Row>
         )
     }
+    renderPatientLocation() {
+        const { successBookSlotDetails } = this.state;
+        const patientAddress = successBookSlotDetails && successBookSlotDetails.patient_location && successBookSlotDetails.patient_location.address;
+        if (patientAddress && Object.keys(patientAddress).length) {
+            return (
+                <Row style={styles.rowDetail1}>
+                    <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 16 }}>Address</Text>
+                    <Right>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.no_and_street ? patientAddress.no_and_street + ' ,' : ''} {patientAddress.city}</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.state}, {patientAddress.pin_code}</Text>
+                    </Right>
+                </Row>
+            )
+        }
+        return null
+    }
+
+    async homePageRedirect() {
+        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+       
+        this.setState({ CorporateUser: isCorporateUser })
+        const { CorporateUser } = this.state
+        if (CorporateUser === true) {
+            this.props.navigation.navigate('CorporateHome');
+        } else {
+            this.props.navigation.navigate('Home');
+        }
+    }
     render() {
         const { navigation } = this.props;
-        const { successBookSlotDetails, paymentMethod , tokenNo} = this.state;
+        const { successBookSlotDetails, paymentMethod, tokenNo, fromNavigation } = this.state;
         return (
             <Container style={styles.container}>
                 <ScrollView>
@@ -65,19 +100,29 @@ class PaymentSuccess extends Component {
                                 <Icon name="checkmark-circle" style={styles.circleIcon} />
                             </View>
                             <Text style={styles.successHeading}>SUCCESS</Text>
-                            <Text style={styles.subText}>Thank You For Choosing Our Service And Trust Our Doctor To Take Care Your Health</Text>
+                            <Text style={styles.subText}>Thank you for choosing our service ! We are grateful for the pleasure of serving you!</Text>
 
                             <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.5, marginTop: 10, marginLeft: 10, padding: 15, marginRight: 10 }}>
                                 <Col style={{ width: '25%', }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(successBookSlotDetails), title: 'Profile photo' })}>
-                                    <Thumbnail  source={renderDoctorImage(successBookSlotDetails)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
-                                </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(successBookSlotDetails), title: 'Profile photo' })}>
+                                        <Thumbnail source={renderDoctorImage(successBookSlotDetails)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
+                                    </TouchableOpacity>
                                 </Col>
                                 <Col style={{ width: '75%', marginTop: 10 }}>
-                                    <Row>
-                                        <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} {' '}
-                                            <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text> </Text>
-                                    </Row>
+                                    {fromNavigation === 'HOSPITAL' ?
+                                        <Row style={styles.rowDetail1}>
+
+                                            <Right>
+                                                <Text style={styles.subText}>{successBookSlotDetails.name || ' '}</Text>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
+                                            </Right>
+                                        </Row> :
+                                        <Row>
+                                            <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} {' '}
+                                                <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text> </Text>
+                                        </Row>
+                                    }
                                     <Row>
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
 
@@ -89,28 +134,28 @@ class PaymentSuccess extends Component {
                                 <Right>
                                     <Text style={[styles.subText, { fontWeight: 'bold' }]}> {tokenNo} </Text>
                                 </Right>
-                            </Row>  
-                            {successBookSlotDetails.slotData ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
+                            </Row>
+                            {successBookSlotDetails.slotData && fromNavigation === null && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : this.renderPatientLocation()}
 
-                            
+
                             <Row style={styles.rowDetail}>
                                 <Text style={styles.mainText}>Date</Text>
                                 <Right>
-                                    <Text style={styles.subText}> {successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')} </Text>
+                                    <Text style={styles.subText}> {
+                                        this.isFromHomeHealthCareConfirmation === false ?
+                                            successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY') : successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotDate, 'Do MMMM, YYYY')} </Text>
                                 </Right>
                             </Row>
-
+                            {this.isFromHomeHealthCareConfirmation === false ?
+                                <Row style={styles.rowDetail}>
+                                    <Text style={styles.mainText}>Time</Text>
+                                    <Right>
+                                        <Text style={styles.subText}> {successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} </Text>
+                                    </Right>
+                                </Row>
+                                : null}
                             <Row style={styles.rowDetail}>
-                                <Text style={styles.mainText}>Time</Text>
-                                <Right>
-                                    <Text style={styles.subText}> {successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} </Text>
-                                </Right>
-                            </Row>
-
-                            <Row style={styles.rowDetail}>
-
                                 <Text style={styles.mainText}>Doctor Fee</Text>
-
                                 <Right>
                                     <Text style={styles.subText}>{'\u20B9'}{successBookSlotDetails.slotData && successBookSlotDetails.slotData.fee} </Text>
 
@@ -128,7 +173,7 @@ class PaymentSuccess extends Component {
 
                             </Row>
                         </Card>
-                        <Button onPress={() => navigation.navigate('Home')}
+                        <Button onPress={() => this.homePageRedirect()}
                             block style={{ marginTop: 5, borderRadius: 10, marginBottom: 10, backgroundColor: '#5bb85d' }}>
                             <Text style={styles.customizedText}> Home </Text>
                         </Button>

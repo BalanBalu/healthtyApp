@@ -1,4 +1,8 @@
+
 # Medflic-Native-app
+
+Some Tutorials for Future Ref
+   1. SplashScreen https://www.netguru.com/codestories/how-to-add-a-splash-screen-to-a-react-native-application 
 
 How to Build Android APP
     1. Change the Config File URL

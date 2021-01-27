@@ -2,12 +2,14 @@ import React, { PureComponent } from 'react';
 import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, FlatList, AsyncStorage } from 'react-native';
 
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
 import CurrentLocation from './CurrentLocation';
 import { getPopularCities } from '../../providers/locations/location.action';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+
 class Locations extends PureComponent {
     constructor(props) {
         super(props)
@@ -16,7 +18,8 @@ class Locations extends PureComponent {
             popularLocations: [],
             isLoading: false,
             pressStatus: false,
-            selectedItem: 0
+            selectedItem: 0,
+            CorporateUser: false
         }
     }
 
@@ -112,7 +115,7 @@ class Locations extends PureComponent {
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.city_name}</Text>
                                             </Left>
                                             <Right style={{ marginRight: 10, }}>
-                                                <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
+                                                <MaterialIcons name="keyboard-arrow-right" style={{ fontSize: 20 }} />
                                             </Right>
                                         </ListItem>
 
@@ -129,13 +132,16 @@ class Locations extends PureComponent {
                                         <ListItem
                                             button
                                             onPress={() => {
-                                                store.dispatch({
+                                                const data = {
                                                     type: SET_PATIENT_LOCATION_DATA,
                                                     center: item.coordinates,
                                                     locationName: item.location,
                                                     isSearchByCurrentLocation: false,
                                                     isLocationSelected: true
-                                                })
+                                                }
+                                                store.dispatch(data)
+                                                AsyncStorage.setItem('manuallyEnabledLocation', JSON.stringify(data))
+
                                                 this.props.navigation.pop()
                                             }}
                                             button>
@@ -153,9 +159,18 @@ class Locations extends PureComponent {
                     </View>
                 </Content>
                 <View>
-                    <TouchableOpacity style={styles.fab} onPress={() => {
+                    <TouchableOpacity style={styles.fab} onPress={async () => {
+                        await AsyncStorage.removeItem('manuallyEnabledLocation');
                         CurrentLocation.getCurrentPosition();
-                        this.props.navigation.navigate("Home")
+                        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+                       
+                        this.setState({ CorporateUser: isCorporateUser })
+                        const { CorporateUser } = this.state
+                        if (CorporateUser === true) {
+                            this.props.navigation.navigate('CorporateHome');
+                        } else {
+                            this.props.navigation.navigate('Home');
+                        }
                     }}>
                         <Icon name="locate" style={styles.text}></Icon>
                     </TouchableOpacity>

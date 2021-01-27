@@ -113,9 +113,9 @@ class BookAppoinment extends Component {
       if (userId) {
         getPatientWishList(userId);
       }
-      console.log(resultDoctorDetails.data[0]);
+      
       availableHospitalIds = resultDoctorDetails.data[0].hospital ? resultDoctorDetails.data[0].hospital.map(ele => ele.hospital_id) : [];
-      console.log('availableHospitalIds', availableHospitalIds);
+      
       await this.setState({ doctorDetails: resultDoctorDetails.data[0], doctorId: doctorId });
       const docIdWithHosId = [{
         doctorId: doctorId,
@@ -138,7 +138,7 @@ class BookAppoinment extends Component {
       const servicesByCategories = this.formSerivesByCategories(singleDoctorData.specialist);
       await this.setState({ doctorId: singleDoctorData.doctorId, doctorData: singleDoctorData, doctorDetails, servicesByCategories });
 
-      console.log(this.state.doctorDetails);
+  
     }
     this.setState({ isLoading: false, slotDatesToShow: this.slotDatesToShow });
     this.callVideAndChat()
@@ -181,7 +181,7 @@ class BookAppoinment extends Component {
 
   /*FromAppointment list(Get availability slots)*/
   async getAvailabilitySlots(fromAppointmentDoctorId, startDate, endDate) {
-    console.log('started loading get availability');
+  
     this.setState({ isAvailabilityLoading: true });
     try {
       let totalSlotsInWeek = {
@@ -189,7 +189,7 @@ class BookAppoinment extends Component {
         endDate: formatDate(endDate, 'YYYY-MM-DD')
       }
       let resultData = await fetchAvailabilitySlots(fromAppointmentDoctorId, totalSlotsInWeek);
-      console.log('resultData', resultData);
+    
       if (resultData.success === true && resultData.data.length > 0) {
         for (let docCount = 0; docCount < resultData.data.length; docCount++) {
           let doctorSlotData = resultData.data[docCount];
@@ -214,10 +214,10 @@ class BookAppoinment extends Component {
           type: SET_SINGLE_DOCTOR_DATA,
           data: this.processedDoctorDetailsAndSlotData
         })
-        console.log(this.processedDoctorDetailsAndSlotData);
+        
         await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData || {} });
       } else {
-        console.log(obj);
+       
         let doctorDetailsData = this.state.doctorDetails; //this.doctorDetailsMap.get(doctorSlotData.doctorId)
         let obj = {
           ...doctorDetailsData,
@@ -245,7 +245,7 @@ class BookAppoinment extends Component {
       this.processedAvailabilityDates.push(now.format('YYYY-MM-DD'));
       now = now.add(1, 'day');
     }
-    console.log(this.processedAvailabilityDates);
+ 
   }
 
   getUserReview = async (doctorId) => {
@@ -334,7 +334,7 @@ class BookAppoinment extends Component {
     let selectedSlotIndex = slotIndex >= 0 ? slotIndex : 0;
 
     if (slotDataForTheSelectedDay === undefined) {
-      console.log('Selected Slot For the day is Undefined');
+   
       slotDataForTheSelectedDay = wholeSlotData[Object.keys(wholeSlotData)[0]]
     }
     if (slotDataForTheSelectedDay) {
@@ -396,7 +396,7 @@ class BookAppoinment extends Component {
   async onSlotItemPress(item, index) {
 
     const { doctorData, selectedDate } = this.state;
-    console.log(item);
+   
     let currentHostpitalId = item.location.hospital_id;
     let previouslyShowedHospitalId = this.selectedSlotLocationShowed.hospital_id;
 
@@ -406,7 +406,7 @@ class BookAppoinment extends Component {
     this.selectedSlotFee = item.fee;
     this.selectedSlotFeeWithoutOffer = item.feeWithoutOffer
 
-    console.log(item);
+    
     if (currentHostpitalId !== previouslyShowedHospitalId && (item.fee != this.showedFee)) {
       if (this.showedFee != null) {
         Toast.show({
@@ -434,10 +434,10 @@ class BookAppoinment extends Component {
     }
   }
   onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
-    console.log(selectedSlotItem);
+  
     if (!selectedSlotItem) {
       Toast.show({
-        text: 'Please Select a Slot to continue booking',
+        text: 'Please select a slot to continue booking',
         type: 'warning',
         duration: 3000
       })
@@ -466,7 +466,7 @@ class BookAppoinment extends Component {
         this.getDoctorAvailableDoctorData([this.state.doctorId]).catch(ex => { console.log(ex);return [] } ),
         this.getDoctorAvailableDoctorDataChat([this.state.doctorId]).catch(ex => { console.log(ex); return [] }),
     ])
-    console.log('availableDocsChat==>,', availableDocsChat);
+    
     availableDocsVideo.forEach(doc => {
         availabilityForVideo = true;
     });
@@ -487,14 +487,14 @@ getDoctorAvailableDoctorData = async(doctorIds) => {
            return availableDocData.data;
          }
     } catch (error) {
-            console.log(error);
+         
             return [];
     }
     return [];
  }
 
  getDoctorAvailableDoctorDataChat = async (doctorIds) => {
-  console.log('doctorIds' + JSON.stringify(doctorIds));
+
   try {
       let request = {};
       if(doctorIds) { 
@@ -515,7 +515,7 @@ getDoctorAvailableDoctorData = async(doctorIds) => {
 getMinVideoChatConsultFee(item) {
     let videoFee = null;
     let chatFee = null;
-    console.log(item);
+    
     if(item && item.availabilityData && item.availabilityData[0]) {
         videoFee = Number(item.availabilityData[0].fee);
     } 
@@ -650,14 +650,14 @@ getMinVideoChatConsultFee(item) {
                       {availabilityForChat === true ?
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
-                      <Icon name="ios-chatboxes" style={{fontSize:25,color:'#7F49C3'}} />
-                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:2}}>{translate("Chat")}</Text>
+                      <Icon name="chatbox" style={{fontSize:25,color:'#7F49C3',marginTop:2}} />
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>{translate("Chat")}</Text>
                     </TouchableOpacity>
                   </Col>
                   : null}
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}}>
-                      <Icon name="md-share" style={{fontSize:18,color:'#7F49C3'}} />
+                       <Icon name="share-social"  style={{fontSize:20,color:'#7F49C3'}} />
                       <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>{translate("Share")}</Text>
                     </TouchableOpacity>
                   </Col>
@@ -791,7 +791,7 @@ getMinVideoChatConsultFee(item) {
                           var categoryShownObj = { ...this.state.categoryShownObj }
                           categoryShownObj[item.category_id] = !categoryShownObj[item.category_id];
                           this.setState({ categoryShownObj })
-                          console.log(CATEGORY_BASE_URL + item.category_id + '.png');
+                          
                         }}>
                           <Row style={{ marginLeft: 20, marginTop: 20, borderTopColor: 'gray', borderTopWidth: 0.3 }}>
                             <Col style={{ width: '22%', paddingTop: 10 }}>
@@ -867,13 +867,12 @@ getMinVideoChatConsultFee(item) {
 
   renderHospitalLocation = (hopitalLocationData, doctorId) => {
     debugger
-    console.log(doctorId);
-    console.log(hopitalLocationData);
+   
     if (!hopitalLocationData) {
       return null;
     }
     let doctorIdHospitalId = doctorId + '-' + hopitalLocationData.hospital_id;
-    console.log(doctorIdHospitalId);
+    
     return hopitalLocationData ? <HospitalLocation number={doctorIdHospitalId} hopitalLocationData={hopitalLocationData} /> : null
   }
   renderDatesOnFlatlist(slotData, selectedDate) {

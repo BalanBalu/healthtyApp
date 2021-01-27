@@ -85,9 +85,9 @@ class MedicineSuggestionList extends Component {
                     <View style={{ flex: 1, }}>
                         <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, borderWidth: 1, borderColor: 'gray' }}>
                             <Input
-                                placeholder='Search for Medicines and Health Products...     '
+                                placeholder='Search for Medicines     '
                                 style={{ fontSize: 12, width: '300%' }}
-                                placeholderTextColor="#C1C1C1"
+                                placeholderTextColor="#909894"
                                 keyboardType={'default'}
                                 returnKeyType={'go'}
                                 value={this.state.medicineName}
@@ -96,7 +96,7 @@ class MedicineSuggestionList extends Component {
                                 multiline={false} />
                             <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => {
 
-                                this.props.navigation.navigate("medicineSearchList", { medicineName: this.state.medicineName })
+                                this.props.navigation.navigate("medicineSearchList", { medicineName: this.state.medicineName,byPharmacy:false })
                             }}  >
                                 <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
                             </TouchableOpacity>
@@ -136,7 +136,7 @@ class MedicineSuggestionList extends Component {
                                     renderItem={({ item }) => (
                                         <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }} onPress={() => {
 
-                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.description, medicineInfo: item })
+                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.description, medicineInfo: item,byPharmacy:false })
                                         }} >
                                             <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.description || ''}</Text>
                                             <Right>

@@ -5,7 +5,13 @@ export const initialState = {
     message: null,
     isLoading: false,
     details: null,
-    success: false
+    success: false,
+    fullCategoryFetched: false,
+    response: {
+      message: null,
+      success: false,
+      data: []
+    }
   }
 
   // State
@@ -25,7 +31,9 @@ export default (state = initialState, action) => {
           ...state,
           message: action.message,
           isLoading: false,
-          success: true
+          success: true,
+          fullCategoryFetched: true,
+          response: action.response
         }
   
       case CATAGRIES_ERROR:

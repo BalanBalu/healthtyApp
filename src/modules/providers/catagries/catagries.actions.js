@@ -12,7 +12,7 @@ export async function getSpecialistDataSuggestions(type, SuggestionReqData) {
     let endPoint = 'V2/doctor/search/' + type; // new path
     let response = await postService(endPoint, SuggestionReqData);
     let respData = response.data;
-    // console.log('respData'+JSON.stringify(respData))
+ 
     return respData;
   } catch (e) {
     return {
@@ -22,26 +22,28 @@ export async function getSpecialistDataSuggestions(type, SuggestionReqData) {
   }
 }
 
-export async function catagries(searchQueries = '') {
+export async function catagries(searchQueries = 'services=0') {
   try {
-    store.dispatch({
-      type: CATAGRIES_REQUEST,
-    })
+    if(store.getState().categories.fullCategoryFetched === true) {
+     
+      return store.getState().categories.response;
+    }
     let endPoint = 'category_services'
     if (searchQueries !== '') {
       endPoint = endPoint + '?' + searchQueries;
     }
-    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
 
-    // console.log(respData);
-    store.dispatch({
-      type: CATAGRIES_RESPONSE,
-      isLoading: false,
-      success: true,
-      message: respData.message
-    })
+    if(respData.success === true) {
+      store.dispatch({
+        type: CATAGRIES_RESPONSE,
+        isLoading: false,
+        success: true,
+        message: respData.message,
+        response: respData 
+      })
+    }
     return respData;
 
 

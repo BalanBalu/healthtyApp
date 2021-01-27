@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, AsyncStorage, FlatList } from 'react-native';
-import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, Toast, CardItem, Right, Body, Content, Input, Item, Row, Col, Form, Footer } from 'native-base';
-import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
+import { StyleSheet, TextInput, FlatList } from 'react-native';
+import { Container, Radio, Button, View, Text, Toast, Content, Row, Col, Form, Footer } from 'native-base';
 import { getCurrentVersion } from '../../providers/profile/profile.action';
-import { formatDate } from '../../../setup/helpers';
 import { onlySpaceNotAllowed } from '../../common';
-import { Loader } from '../../../components/ContentLoader'
 import Spinner from '../../../components/Spinner';
 
 
@@ -41,7 +38,7 @@ class CancelService extends Component {
        
       }
 
-      console.log(type)
+     
      
       let cancelList = await getCurrentVersion(type)
       // alert(JSON.stringify(cancelList))
@@ -66,7 +63,6 @@ class CancelService extends Component {
   }
   toggleRadio(data, index) {
     if (index !== -1) {
-      console.log(this.state.cancelReasonList)
       this.setState({ selectedIndex: index, reasonForCancel: data.value })
     }
   }
@@ -117,8 +113,7 @@ class CancelService extends Component {
             cancelable={false}
           /> : null}
           <View style={{ marginBottom: 40, }}>
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>{type}</Text>
-
+            <Text style={{ fontFamily: 'OpenSans', fontSize: 18, textAlign: 'center', fontWeight: 'bold' }}>{type}</Text>
             <Form>
               <View >
                 <FlatList data={cancelReasonList}

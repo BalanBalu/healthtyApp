@@ -11,6 +11,41 @@ export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 export const SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER = 'BOOK/SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER';
 import { store } from '../../../setup/store';
 
+
+export const searchByHomeHealthcareDocDetailsService = async (type, reqData, skipCount, limit) => {
+    try {
+        const endPoint = `doctor/home_healthcare/${type}?skip=${skipCount}&limit=${limit}`;
+        const response = await postService(endPoint, reqData);
+        const respData = response.data;
+        return respData;
+    } catch (ex) {
+        return {
+            success: false,
+            message: `Error Occurred on :${ex.message}`
+        }
+    }
+}
+
+
+export async function fetchDocHomeHealthcareAvailabilitySlotsService(doctorIds, dateFilter) {
+    try {
+        const endPoint = 'doctors/home_healthcare/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate=' + dateFilter.endDate;
+        const response = await postService(endPoint, doctorIds);
+        const respData = response.data;
+        return respData;
+    } catch (Ex) {
+       
+        return {
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on fetchAvailabilitySlots for Doctor : ${Ex}`
+        }
+    }
+}
+
+
+
 /*  Get multiple doctor details  */
 export const getMultipleDoctorDetails = async (doctorIds, fields) => {
     try {
@@ -19,7 +54,7 @@ export const getMultipleDoctorDetails = async (doctorIds, fields) => {
         const respData = response.data;
         return respData;
     } catch (Ex) {
-        console.log('Ex is getting on get  multiple Doctor details====>', Ex)
+        
         return {
             success: false,
             statusCode: 500,
@@ -37,7 +72,7 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
         const respData = response.data;
         return respData;
     } catch (Ex) {
-        console.log('Ex is getting on update Doctor sponsor view count by user====>', Ex)
+      
         return {
             success: false,
             statusCode: 500,
@@ -71,7 +106,7 @@ export async function fetchDoctorAvailabilitySlotsService(doctorIds, dateFilter,
         const respData = response.data;
         return respData;
     } catch (Ex) {
-        console.log('Ex is getting on fetchAvailabilitySlots for Doctor====>', Ex)
+        
         return {
             success: false,
             statusCode: 500,
@@ -100,12 +135,12 @@ export const serviceOfGetTotalReviewsCount4Doctors = async (doctorIds) => {
                 type: SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
                 data: docReviewListCountOfDoctorIDs
             })
-            // console.log('docReviewListCountOfDoctorIDs=====>', docReviewListCountOfDoctorIDs);
+ 
         }
         return reviewCountRes;
 
     } catch (Ex) {
-        console.log('Ex is getting on get Reviews count for Doctor====>', Ex)
+     
         return {
             success: false,
             statusCode: 500,
@@ -138,7 +173,7 @@ export const ServiceOfGetDoctorFavoriteListCount4Pat = async (doctorId) => {
         return favoritesList;
     }
     catch (Ex) {
-        console.log('Ex is getting on fetch total WishList for Doctor====>', Ex.message)
+       
         return {
             success: false,
             statusCode: 500,
@@ -156,7 +191,7 @@ export const addFavoritesToDocByUserService = async (userId, doctorId) => {
                 active: !patientFavoriteListCountOfDoctorIds.includes(doctorId)
             };
             const updateResponse = await updateFavoritesToDoctorByUser(userId, doctorId, reqData4updateWishList);
-            //   console.log('updateResponse'+JSON.stringify(updateResponse));
+           
             if (updateResponse.success) {
                 if (reqData4updateWishList.active) {
                     docFavoriteListCountOfDoctorIDs[doctorId] = docFavoriteListCountOfDoctorIDs[doctorId] ? docFavoriteListCountOfDoctorIDs[doctorId] + 1 : 1
@@ -179,7 +214,7 @@ export const addFavoritesToDocByUserService = async (userId, doctorId) => {
         }
     }
     catch (Ex) {
-        console.log('Ex is getting on update Wish list details for Doctor====>', Ex)
+       
         return {
             success: false,
             statusCode: 500,
@@ -198,7 +233,7 @@ export async function updateFavoritesToDoctorByUser(userId, doctorId, reqData4up
         return respData;
     }
     catch (Ex) {
-        console.log('Ex is getting on update Wish list details for Doctor====>', Ex)
+      
         return {
             success: false,
             statusCode: 500,
@@ -227,7 +262,7 @@ export const getFavoriteListCount4PatientService = async (userId) => {
         }
         return result;
     } catch (e) {
-        console.log(e.message);
+     
         return {
             message: 'exception' + e,
             success: false

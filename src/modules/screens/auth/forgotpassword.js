@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Container, Content, Button, Text, Form, Item, Input, Card, Footer, FooterTab, Toast, Icon, Label, Row } from 'native-base';
+import { View, Container, Content, Button, Text, Form, Item, Input, Card, Footer, FooterTab, Toast, Icon, Label, Row, Col, Radio } from 'native-base';
 import { generateOTP, changePassword } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
 import { StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native'
@@ -7,6 +7,8 @@ import styles from '../../screens/auth/styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { debounce, validateEmailAddress, acceptNumbersOnly } from '../../common';
 import Spinner from '../../../components/Spinner';
+import OTPTextInput from 'react-native-otp-textinput';
+import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from "../../../setup/config";
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
@@ -20,7 +22,8 @@ class Forgotpassword extends Component {
             errorMessage: '',
             userEntry: '',
             showPassword: true,
-            isPasswordMatch: false
+            isPasswordMatch: false,
+            isCorporateUserSelected: false
         }
         this.checkMatchPasswords = debounce(this.checkMatchPasswords, 500);
     }
@@ -38,21 +41,24 @@ class Forgotpassword extends Component {
     generateOtpCode = async () => {
         const { userEntry } = this.state;
         try {
-            
+
             await this.setState({ errorMessage: '', isLoading: true })
             let reqData = {
                 userEntry: userEntry,
                 type: 'user'
             };
+            if (this.state.isCorporateUserSelected) {
+                reqData.is_corporate_user = true
+            }
             let reqOtpResponse = await generateOTP(reqData)
-            console.log('reqOtpResponse::::' + JSON.stringify(reqOtpResponse))
+            
             if (reqOtpResponse.success == true)
                 await this.setState({ isOTPGenerated: true });
             else
                 this.setState({ errorMessage: reqOtpResponse.error });
         }
         catch (e) {
-            console.log(e);
+           
             Toast.show({
                 text: 'Something Went Wrong' + e,
                 duration: 3000
@@ -111,18 +117,44 @@ class Forgotpassword extends Component {
     }
     renderEnterEmail() {
         const { user: { isLoading } } = this.props;
-        const { userEntry } = this.state;
+        const { userEntry, isCorporateUserSelected } = this.state;
         return (
             <View>
                 <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Email / Phone</Label>
                 <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                     <Input placeholder="Email Or Phone" style={styles.transparentLabel2}
                         value={userEntry}
+                        autoCapitalize={false}
                         keyboardType={'email-address'}
                         onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
                         onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
                     />
                 </Item>
+                {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
+                    <Row style={{ marginTop: 10 }}>
+                        <Col size={3}>
+                            <Row style={{ alignItems: 'center' }}>
+                                <Radio
+                                    standardStyle={true}
+                                    selected={isCorporateUserSelected === false}
+                                    onPress={() => this.setState({ isCorporateUserSelected: false })}
+                                />
+                                <Text style={styles.firstCheckBox}>User</Text>
+                            </Row>
+                        </Col>
+                        <Col size={3}>
+                            <Row style={{ alignItems: 'center' }}>
+                                <Radio
+                                    standardStyle={true}
+                                    selected={isCorporateUserSelected === true}
+                                    onPress={() => this.setState({ isCorporateUserSelected: true })}
+                                />
+                                <Text style={styles.firstCheckBox}>Corporate</Text>
+                            </Row>
+                        </Col>
+                        <Col size={4}>
+                        </Col>
+                    </Row> : null}
                 {isLoading ?
                     <Spinner
                         visible={isLoading}
@@ -142,16 +174,19 @@ class Forgotpassword extends Component {
             <View>
                 <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>OTP</Label>
                 <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                    <Input placeholder="Enter your OTP" style={styles.authTransparentLabel}
-                        keyboardType="number-pad"
-                        autoFocus={true}
-                        autoCapitalize='none'
-                        value={otpCode}
-                        onChangeText={otpCode => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
-                        maxLength={6}
-                        returnKeyType={'next'}
-                        onSubmitEditing={() => { this.enterOtpTextInput._root.focus(); }}
-                        blurOnSubmit={false}
+                    <OTPTextInput
+                        ref={e => (this.otpInput = e)}
+                        inputCount={6}
+                        tintColor={'#775DA3'}
+                        inputCellLength={1}
+                        containerStyle={{
+                            marginLeft: -1,
+                        }}
+                        textInputStyle={{
+                            width: 38,
+                            fontWeight: 'bold'
+                        }}
+                        handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
                     />
                 </Item>
                 <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Password</Label>

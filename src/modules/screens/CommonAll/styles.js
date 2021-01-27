@@ -156,7 +156,7 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center'
     },
     offer: {
-        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green'
+        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green', marginLeft: 5
     },
     offer4LabBookApp: {
         fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', color: 'green'
@@ -237,12 +237,39 @@ export default styles = StyleSheet.create({
         borderRadius: 5
     },
     doneButton: {
+        color: '#FFFFFF',
         fontFamily: 'OpenSans',
-        fontSize: 15,
-        color: '#7F49C3',
+        fontSize: 13,
         textAlign: 'center',
         fontWeight: '700'
     },
+
+    defaultdoneButton: {
+        color: '#775DA3',
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        textAlign: 'center',
+        fontWeight: '500'
+    },
+
+    viewButtonBgGreeen: {
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 5,
+        paddingRight: 5,
+        borderRadius: 15,
+        backgroundColor: '#775DA3'
+    },
+    viewButtonBgGray: {
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 5,
+        paddingRight: 5,
+        borderRadius: 15,
+        borderColor: '#775DA3',
+        borderWidth: 0.5
+    },
+
     customText:
     {
         fontFamily: 'OpenSans',
@@ -250,7 +277,63 @@ export default styles = StyleSheet.create({
         fontSize: 14,
         marginTop: 5
     },
+    picodeText: {
+        fontFamily: 'OpenSans',
+        color: '#7F49C3',
+        fontSize: 13,
+    },
+    editPincodeButton: {
+        marginRight: 7,
+        borderColor: '#ff4e42',
+        borderWidth: 1.3,
+        alignItems: 'center',
+        alignSelf: 'center',
+        padding: 5,
+        borderRadius: 5
+    },
+    showingDoctorText: {
+        marginLeft: 5,
+        fontFamily: 'OpenSans',
+        color: '#000',
+        fontSize: 13,
+        marginTop: 5
 
+    },
+    specialismInput: {
+        backgroundColor: '#fff',
+        height: 35,
+        borderRadius: 2,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+        borderLeftWidth: 1,
+        borderRightWidth: 1
+    },
+    customButton: {
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 12,
+        backgroundColor: "#775DA3",
+        marginLeft: 15,
+        borderRadius: 10,
+        width: "auto",
+        height: 40,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center",
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    bookingButton: {
+        marginTop: 10,
+        backgroundColor: "#775DA3",
+        marginRight: 1,
+        borderRadius: 10,
+        width: "auto",
+        height: 30,
+        color: "white",
+        fontSize: 12,
+        textAlign: "center"
+    }
 })
 
 

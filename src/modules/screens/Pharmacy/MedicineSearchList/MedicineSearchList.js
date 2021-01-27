@@ -27,6 +27,7 @@ class MedicineSearchList extends Component {
         }
     }
     async componentDidMount() {
+
         this.setState({ isLoading: true })
         let medicineName = this.props.navigation.getParam('medicineName') || ''
 
@@ -57,8 +58,7 @@ class MedicineSearchList extends Component {
         try {
 
             let medicineResultData = await getMedicinesSearchList(enteredText, pagination);
-            console.log('MedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchListMedicineSearchList')
-            console.log(JSON.stringify(medicineResultData))
+         
             if (medicineResultData) {
                 let prodcuctIds = []
                 medicineResultData.map(ele => {
@@ -90,7 +90,6 @@ class MedicineSearchList extends Component {
     medicineSearchListByPharmacyId = async (pharmacyId) => {
         try {
             let medicineResultData = await getMedicinesSearchListByPharmacyId(pharmacyId, this.state.pagination);
-
 
             if (medicineResultData) {
                 let data = this.state.data.concat(medicineResultData);
@@ -137,7 +136,6 @@ class MedicineSearchList extends Component {
         try {
             if (val.isNavigate) {
                 let temp = [];
-                // console.log(val);
                 temp.push(val.medicineData)
                 await this.setState({ isBuyNow: false })
                 this.props.navigation.navigate("MedicineCheckout", {
@@ -153,15 +151,14 @@ class MedicineSearchList extends Component {
                 let userId = await AsyncStorage.getItem('userId')
                 if (userId) {
                     let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
-                    // console.log('card')
                     if (cart.length != 0) {
                         let cardData = JSON.parse(cart)
                         await this.setState({ cartItems: cardData })
-                      
+
                     }
                 }
                 this.setState({ isBuyNow: false })
-                await AsyncStorage.setItem('hasCartReload','true');
+                await AsyncStorage.setItem('hasCartReload', 'true');
             }
             else {
                 this.setState({ isBuyNow: false })
@@ -172,6 +169,7 @@ class MedicineSearchList extends Component {
         }
     }
     async backNavigation(payload) {
+        await this.setState({ isLoading: true })
         let hascartReload = await AsyncStorage.getItem('hasCartReload');
         let userId = await AsyncStorage.getItem('userId')
 
@@ -185,15 +183,19 @@ class MedicineSearchList extends Component {
 
                 }
                 setCartItemCountOnNavigation(this.props.navigation)
-                await this.setState({ cartItems: cartData })
+                await this.setState({ cartItems: cartData, isLoading: false })
             }
+        } else {
+            await this.setState({ pagination: 0, data: [] })
+            this.componentDidMount()
         }
+
     }
     handleLoadMore = async () => {
 
         const navigationByPharmacySelect = this.props.navigation.getParam('byPharmacy') || false;
         let pagination = this.state.pagination + 1;
-        this.setState({ pagination })
+        await this.setState({ pagination })
         if (navigationByPharmacySelect === true) {
 
             let pharmacyInfo = this.props.navigation.getParam('pharmacyInfo') || null;
@@ -229,11 +231,11 @@ class MedicineSearchList extends Component {
                         <View>
 
                             <View style={{ flex: 1, }}>
-                                <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, }}>
+                                <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 5, }}>
                                     <Input
-                                        placeholder='Search for Medicines and Health Products...     '
+                                        placeholder='Search for Medicines     '
                                         style={{ fontSize: 12, width: '300%' }}
-                                        placeholderTextColor="#C1C1C1"
+                                        placeholderTextColor="#909894"
                                         keyboardType={'default'}
                                         returnKeyType={'go'}
                                         value={this.state.medicineName}
@@ -258,7 +260,7 @@ class MedicineSearchList extends Component {
                                             onEndReached={this.handleLoadMore}
                                             onEndReachedThreshold={8}
                                             renderItem={({ item }) =>
-                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 2.5, }}>
+                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5, }}>
                                                     <Row onPress={() =>
                                                         this.props.navigation.navigate('MedicineInfo', {
                                                             medicineId: item.id,
@@ -277,55 +279,55 @@ class MedicineSearchList extends Component {
                                                         </Col>
                                                         <Col size={12.5}>
                                                             <Row>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(item)}</Text>
-                                                            {item.h1Product&&<Text style={{ color: 'red', fontFamily: 'OpenSans', fontSize: 8, marginTop: 5  }}>{'* Prescription'}</Text> }
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(item)}</Text>
+                                                                {item.h1Product && <Text style={{ color: 'red', fontFamily: 'OpenSans', fontSize: 10, marginTop: 12, marginLeft: 5 }}>{'* Prescription'}</Text>}
                                                             </Row>
                                                             {getIsAvailable(item, this.state.medicineDataAvailable) === false ?
-                                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
-                                                                <Row>
-                                                                    <Col size={5} style={{ flexDirection: 'row' }}>
-                                                                        <Text style={{ fontSize: 8, marginTop: 5, color: "#ff4e42" }}>{'MRP'}</Text>
+                                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginBottom: 25 }}>Currently Out of stock</Text> :
+                                                                <Row >
+                                                                    <Col size={5} style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                                                        <Text style={{ fontSize: 10, color: "#ff4e42" }}>{'MRP'}</Text>
                                                                         {item.discount !== undefined && item.discount !== null ?
-                                                                            <Row>
-                                                                                <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: 5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price || ''}</Text>
-                                                                                <Text style={{ fontSize: 13, marginTop: 5, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {medicineRateAfterOffer(item)}</Text>
+                                                                            <Row style={{ alignItems: 'center' }}>
+                                                                                <Text style={{ fontSize: 10, marginLeft: 1.5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price || ''}</Text>
+                                                                                <Text style={{ fontSize: 13, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {medicineRateAfterOffer(item)}</Text>
                                                                             </Row> :
-                                                                            <Text style={{ fontSize: 13, marginTop: 5, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {item.price}</Text>
+                                                                            <Text style={{ fontSize: 13, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {item.price || 0}</Text>
                                                                         }
                                                                     </Col>
                                                                     {cartItems.length === 0 || cartItems.findIndex(ele => ele.item.productId == item.id) === -1 ?
-                                                                        <Col size={3} style={{ height: 20, marginLeft: 4 }}>
+                                                                        <Col size={3.2} style={{ height: 20, marginTop: 25 }}>
                                                                             <Row>
-                                                                                <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
+                                                                                <TouchableOpacity style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, paddingBottom: 5, paddingTop: 2, paddingLeft: 5, paddingRight: 5 }}
                                                                                     onPress={() => this.selectedItems(item, 'Add to Cart')} >
                                                                                     <Row style={{ alignItems: 'center' }}>
-                                                                                        <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                                        <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
+                                                                                        <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15, paddingTop: 2.3 }} />
+                                                                                        <Text style={{ fontSize: 10, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
                                                                                     </Row>
                                                                                 </TouchableOpacity>
                                                                             </Row>
                                                                         </Col> :
 
-                                                                        <Col size={3} style={{ height: 20, marginLeft: 4 }}>
-                                                                            <Row>
-                                                                                <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
+                                                                        <Col size={3.2} style={{ height: 20, marginTop: 25 }}>
+                                                                            <Row >
+                                                                                <TouchableOpacity style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, paddingBottom: 5, paddingTop: 2, paddingLeft: 5, paddingRight: 5 }}
                                                                                     onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.find(ele => ele.item.productId === item.id))} >
                                                                                     {/* onPress={() =>  this.props.navigation.navigate("PharmacyCart")} > */}
                                                                                     <Row style={{ alignItems: 'center' }}>
                                                                                         <Text>{item.medicine_id}</Text>
-                                                                                        <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                                        <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.item.productId === item.id)].item.quantity}</Text>
+                                                                                        <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15, paddingTop: 2.3 }} />
+                                                                                        <Text style={{ fontSize: 10, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.item.productId === item.id)].item.quantity}</Text>
                                                                                     </Row>
                                                                                 </TouchableOpacity>
                                                                             </Row>
                                                                         </Col>}
-                                                                    <Col size={3.2} style={{ height: 20, marginLeft: 4, marginRight: 2.5 }}>
+                                                                    <Col size={3.2} style={{ height: 20, marginLeft: 7, marginTop: 25 }}>
                                                                         <Row>
-                                                                            <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f' }}
+                                                                            <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f', paddingLeft: 5, paddingRight: 5 }}
                                                                                 onPress={() => this.selectedItems(item, 'Buy Now')}>
                                                                                 <Row style={{ alignItems: 'center' }}>
-                                                                                    <Icon name='ios-cart' style={{ color: '#fff', fontSize: 11, marginLeft: 5, paddingTop: 2.3 }} />
-                                                                                    <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Buy Now</Text>
+                                                                                    <Icon name='ios-cart' style={{ color: '#fff', fontSize: 15, marginLeft: 5, paddingTop: 2.3 }} />
+                                                                                    <Text style={{ fontSize: 10, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Buy Now</Text>
                                                                                 </Row>
                                                                             </TouchableOpacity>
                                                                         </Row>

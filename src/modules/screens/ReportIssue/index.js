@@ -38,9 +38,6 @@ class ReportIssue extends Component {
         if (issueFor.status) {
           type ='REPORT_ISSUE_'+issueFor.serviceType +'_'+issueFor.status
         }
-     
-     
-      console.log(type)
       let reportIssueList = await getCurrentVersion(type)
       
       if (reportIssueList.success) {

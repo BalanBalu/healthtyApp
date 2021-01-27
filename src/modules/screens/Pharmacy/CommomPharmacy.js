@@ -12,25 +12,28 @@ export function medicineRateAfterOffer(item) {
   }
   if (item.discount === undefined || item.discount === null) {
 
-    amount = parseInt(item.price)
+    amount = Number(item.price)
     return amount
   }
   if (item.discount.type) {
 
     if (item.discount.type === 'PERCENT') {
-      let divided = (parseInt(item.discount.value) / 100) * parseInt(item.price)
-      amount = parseInt(item.price) - divided
-      return amount
+      let divided = (Number(item.discount.value) / 100) * Number(item.price)
+      amount = Number(item.price) - divided
+
     } else if (item.discount.type === 'Amount') {
-      amount = parseInt(item.price) - parseInt(item.discount.value);
-      return amount
+      amount = Number(item.price) - Number(item.discount.value);
+
     } else if (item.discount.type === 'AMOUNT') {
-      amount = parseInt(item.price) - parseInt(item.discount.value);
-      return amount
+      amount = Number(item.price) - Number(item.discount.value);
+
     }
   }
+  if (amount < 0) {
+    return 0
+  }
 
-  return amount
+  return Number(Number(amount).toFixed(2))
 
 
 }
@@ -40,12 +43,12 @@ export function medicineDiscountedAmount(item) {
 
   let amount = 0
   if (item === undefined || item === null) {
-    
+
     return amount
   }
   if (item.discount === undefined || item.discount === null) {
 
-  
+
     return amount
   }
   if (item.discount.type) {
@@ -53,14 +56,17 @@ export function medicineDiscountedAmount(item) {
     if (item.discount.type === 'PERCENT') {
       let divided = (parseInt(item.discount.value) / 100) * parseInt(item.price)
       amount = divided
-      return amount
+
     } else if (item.discount.type === 'Amount') {
       amount = parseInt(item.discount.value);
-      return amount
+
     } else if (item.discount.type === 'AMOUNT') {
       amount = parseInt(item.discount.value);
-      return amount
+
     }
+  }
+  if (amount < 0) {
+    return 0
   }
 
   return amount
@@ -74,7 +80,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
 
-  let totalAmount = price * quantity;
+  let totalAmount = Number(price) * Number(quantity);
   let threshold_message = null;
   let threshold_limit = threshold_limits || itemQuantity + 1
   if (threshold_limits) {
@@ -84,7 +90,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
     if (itemQuantity < threshold_limit) {
       quantity = ++itemQuantity;
-      totalAmount = quantity * price
+      totalAmount = Number(quantity) * Number(price)
     } else {
 
       threshold_message = `You can't add more than  ${String(threshold_limit)} items`
@@ -115,7 +121,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
 export function renderMedicineImage(data) {
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source = require('../../../../assets/images/noImage.jpg');
 
   if (data !== null && data !== undefined) {
 
@@ -134,7 +140,7 @@ export function renderMedicineImage(data) {
 }
 export function CartMedicineImage(data) {
 
-  let source = null
+  let source = null;
 
   if (data !== null && data !== undefined) {
 
@@ -142,19 +148,22 @@ export function CartMedicineImage(data) {
       let defaultImage = data.find(ele => {
         return ele.isDefault === true
       })
+
       if (defaultImage) {
-        source =  defaultImage.imageURL 
+
+        source = defaultImage.imageURL
       } else {
-        source = data[0].imageURL 
+        source = data[0].imageURL
       }
     }
   }
+
   return (source)
 }
 export function renderMedicineImageAnimation(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source = require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data.imageURL }
   }
@@ -164,8 +173,8 @@ export function renderMedicineImageAnimation(data) {
 export function renderMedicineImageByimageUrl(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
-  if (data&&data.image) {
+  let source = require('../../../../assets/images/noImage.jpg')
+  if (data && data.image) {
     source = { uri: data.image }
   }
   return (source)
@@ -173,7 +182,7 @@ export function renderMedicineImageByimageUrl(data) {
 export function renderMedicineImageView(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source = require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data }
   }
@@ -182,7 +191,7 @@ export function renderMedicineImageView(data) {
 export function renderPrescriptionImageAnimation(data) {
 
 
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source = require('../../../../assets/images/noImage.jpg')
   if (data) {
     source = { uri: data.prescription_path }
   }
@@ -197,7 +206,7 @@ export function renderPharmacyImage(data) {
 }
 export async function relativeTimeView(review_date) {
   try {
-    console.log(review_date)
+ 
     var postedDate = review_date;
     var currentDate = new Date();
     var relativeDate = dateDiff(postedDate, currentDate, 'days');
@@ -234,16 +243,12 @@ export function getAddress(location) {
     return ''
 }
 export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
-  console.log(gpsLocation)
+  
   if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
     let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 
     return result.toFixed(1) + ' Km'
-    // squareNarthCorinate = Math.pow((gpsLocation[0] - pharmacyLocation[0]), 2);
-    // squareeastCorinate = Math.pow((gpsLocation[1] - pharmacyLocation[1]), 2)
-    // add = squareNarthCorinate + squareeastCorinate
-    // let km = Math.sqrt(add).toFixed(1) + ' Km'
-    // return km
+
 
   }
   else {
@@ -303,7 +308,7 @@ export function getIsAvailable(data, availableData) {
     return ele.productId === data.id
   })
   if (item !== undefined) {
-    if (item.available > 1) {
+    if (item.available > 0) {
       isAvailable = true
     }
   }
@@ -323,26 +328,8 @@ export function getMedicineWeightUnit(weight, unit) {
   }
 }
 
-export function quantityPriceSort(data) {
-  data.forEach(element => {
-    if (element.medPharDetailInfo) {
-      if (element.medPharDetailInfo.variations) {
 
-        element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
-
-
-          if (firstVarlue.total_quantity === 0) return 1;
-          else if (secandValue.total_quantity === 0) return -1;
-          else return firstVarlue.price - secandValue.price;
-        });
-
-      }
-    }
-  })
-  return data
-}
-
-export  function ProductIncrementDecreMents(quantity, price, operation, threshold_limits) {
+export function ProductIncrementDecreMents(quantity, price, operation, threshold_limits) {
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
 
@@ -437,7 +424,7 @@ export const statusBar = {
   },
   "FAILED":
   {
-    status: 'order is failed try again',
+    status: 'Order Failed ! Try again',
     checked: true,
     color: 'green'
   },
@@ -461,6 +448,11 @@ export const statusBar = {
     status: 'confirm the order',
     checked: true,
     color: 'red'
+  },
+  "CONFIRM": {
+    status: 'confirm the order',
+    checked: true,
+    color: 'green'
   },
 
   "RETURNED": {

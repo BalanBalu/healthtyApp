@@ -27,7 +27,7 @@ export class MedInsertReview extends Component {
 
     const { data } = this.props;
     await this.setState({ data, userId: data.user_id, medicineId: data.medicine_id, modalVisible: data.modalVisible })
-    console.log("data", this.state.data)
+ 
   }
 
   submitReview = async (reviewType) => {
@@ -54,7 +54,7 @@ export class MedInsertReview extends Component {
 
         };
         let userId = await AsyncStorage.getItem('userId');
-        console.log("data", data)
+        
 
         let result = await InsertMedicineReviews(userId, data);
 
@@ -150,9 +150,9 @@ export class MedInsertReview extends Component {
                     </View>
                     <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
                       <TextInput
-                        style={{ height: 80, borderWidth: 0.3, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
+                        style={{ height: 80, borderWidth: 0.3, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14,color:'#909894' }}
                         returnKeyType={'next'}
-                        placeholder="Write Your Reviews"
+                        placeholder="Write your reviews"
                         multiline={true}
                         keyboardType={'default'}
                         textAlignVertical={'top'}
@@ -232,24 +232,28 @@ export class OrderInsertReview extends Component {
         this.setState({ errorMsg: '' });
 
 
-        reviewInsertData.isReviewSkipped = true,
+        reviewInsertData.isReviewSkipped = false,
           reviewInsertData.rating = rating,
-          reviewInsertData.reviewComment = comments
+          reviewInsertData.raviewComment = comments
 
       }
       else {
-        reviewInsertData.isReviewSkipped = false
+        reviewInsertData.isReviewSkipped = true
       }
-
+     
       let result = await InsertOrderReviews(userId, reviewInsertData);
      
 
       if (result) {
-        Toast.show({
-          text: 'review added successfully ',
-          type: "success",
-          duration: 3000
-        });
+      
+         if( reviewInsertData.isReviewSkipped!==true){
+          Toast.show({
+            text: 'review added successfully',
+            type: "success",
+            duration: 3000
+          });
+         }
+        
         this.props.popupVisible({
           visible: false,
           reviewUpdated: true

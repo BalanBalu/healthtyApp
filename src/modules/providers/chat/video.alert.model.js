@@ -22,7 +22,7 @@ class IncomingVideoCallAlert extends Component {
 
   render() {
     const { chat : { incomingVideoCall, onVideoScreen }, onPressReject, onPressAccept } = this.props
-    console.log('Video Alert Props===>', this.props);
+    
     if(onVideoScreen) {
         return null;
     }
@@ -80,12 +80,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => { 
   return ({
     onPressAccept: () => dispatch(() => { 
-      console.log('Accepted');
+      
       hideIncomingVideoModal(dispatch);
       RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
     }),
     onPressReject: () => dispatch(() => {
-      console.log('Rejected');
+    
       hideIncomingVideoModal(dispatch)
       RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false  });
     })

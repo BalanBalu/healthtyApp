@@ -94,6 +94,18 @@ export function getMoment(date) {
 export function getUnixTimeStamp(date) {
   return moment(date).unix();
 }
+export function setCurrentISOTime4GivenDate(date) {
+  const timestamp = date.valueOf();
+  const current = moment();
+  const selectedSlotDateWithCurrentTime = moment(timestamp).set({
+    'hour': current.hour(),
+    'minute': current.minute(),
+    'second': current.second()
+  });
+  return selectedSlotDateWithCurrentTime;
+}
+
+
 export function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
@@ -104,7 +116,7 @@ export function toTitleCase(str) {
 }
 export function findArrayObj(array, findNode, findValue) {
   let returnObj;
-  //console.log(findValue);
+
   for (let i = 0; i < array.length; i++) {
     if (array[i][findNode] === findValue) {
       returnObj = array[i];
@@ -134,7 +146,7 @@ export function intersection() {
   } else {
     lists = arguments;
   }
-  console.log(lists);
+ 
   for (var i = 0; i < lists.length; i++) {
     var currentList = lists[i];
     for (var y = 0; y < currentList.length; y++) {
@@ -171,8 +183,11 @@ export function getAllId(data) {
 
   let dataIds = [];
   data.map((element, index) => {
-    if (!dataIds.includes(element.doctor_id)) {
-      dataIds.push(element.doctor_id)
+    if (element.doctor_id) {
+      if (!dataIds.includes(element.doctor_id)) {
+
+        dataIds.push(element.doctor_id)
+      }
     }
 
 
@@ -203,14 +218,14 @@ export function toDataUrl(url) {
 export const statusValue = {
   "PAYMENT_IN_PROGRESS":
   {
-    text: 'waiting for  Payment process',
+    text: 'Waiting for  Payment process',
     color: '#3d70ff',
     icon: 'md-timer',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_IN_PROGRESS'
   },
   "PENDING":
   {
-    text: 'waiting for confirmation',
+    text: 'Waiting for confirmation',
     color: 'red',
     icon: 'checkmark-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PENDING',
@@ -298,8 +313,15 @@ export const notificationNavigation = {
   {
     navigationOption: 'LabAppointmentInfo'
   },
+  "HOME_TEST_APPOINTMENT":
+  {
+    navigationOption: 'HomeHealthcareAppointmentDetail'
+  },
+
 }
 
-
+export function isTimeAfter(date1, date2) {
+  return moment(date1).isAfter(date2)
+}
 
 

@@ -10,6 +10,8 @@ import notification from '../modules/providers/notification/notification.reducer
 import reminder from '../modules/providers/reminder/reminder.reducer';
 import labTestData from '../modules/providers/labTest/labTestBookAppointment.reducer';
 import bookAppointmentData from '../modules/providers/BookAppointmentFlow/reducer';
+import categories from '../modules/providers/catagries/catagries.reducer';
+import hospitalBookAppointmentData from '../modules/providers/hospitalBookAppointmentFlow/reducer';
 
 const rootReducer = combineReducers({
   user,
@@ -20,7 +22,9 @@ const rootReducer = combineReducers({
   chat,
   reminder,
   labTestData,
-  bookAppointmentData
+  bookAppointmentData,
+  categories,
+  hospitalBookAppointmentData
 });
 
 export const store = createStore(
