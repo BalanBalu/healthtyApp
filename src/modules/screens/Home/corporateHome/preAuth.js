@@ -1,5 +1,14 @@
 import React from 'react';
-import {Container, Text, View, Radio, DatePicker, Icon, Header, Content} from 'native-base';
+import {
+  Container,
+  Text,
+  View,
+  Radio,
+  DatePicker,
+  Icon,
+  Header,
+  Content,
+} from 'native-base';
 import {TextInput, StyleSheet, Image} from 'react-native';
 import {connect} from 'react-redux';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
@@ -13,23 +22,22 @@ class PreAuth extends React.PureComponent {
 
     this.state = {
       isLoading: false,
-      currentForm: 2,
+      currentForm: 1,
       chosenDate: new Date(1940, 0, 1),
       selectedGender: 'male',
       alreadyHaveInsurance: 'yes',
+      referenceID: 'SMTTH7',
       haveFamilyPhysician: 'yes',
     };
     this.onDOBChange = this.onDOBChange.bind(this);
   }
 
   onDOBChange(dob) {
-      console.log('bbbbbb', dob);
+    console.log('bbbbbb', dob);
     this.setState({chosenDate: dob});
-    
   }
 
   InsurerDetails = () => {
- 
     return (
       <ScrollView style={styles.body}>
         {/* <Text style={styles.formHeader}>
@@ -90,14 +98,12 @@ class PreAuth extends React.PureComponent {
               style={{marginLeft: 40}}
               standardStyle={true}
               selected={this.state.selectedGender === 'male' ? true : false}
-              
             />
             <Text style={{marginLeft: 10}}>Male</Text>
             <Radio
               style={{marginLeft: 40}}
               standardStyle={true}
               // selected={this.state.selectedGender === 'male' ? true : false}
-           
             />
             <Text style={{marginLeft: 10}}>Female</Text>
           </View>
@@ -143,7 +149,7 @@ class PreAuth extends React.PureComponent {
                 borderWidth: 2,
                 backgroundColor: '#fff',
               }}
-            //   defaultDate={new Date()}
+              //   defaultDate={new Date()}
               timeZoneOffsetInMinutes={undefined}
               modalTransparent={false}
               minimumDate={new Date(1940, 0, 1)}
@@ -161,14 +167,12 @@ class PreAuth extends React.PureComponent {
               onDateChange={dob => {
                 this.onDOBChange(dob);
               }}
-                disabled={this.dobIsEditable}
+              disabled={this.dobIsEditable}
             />
             <Icon
               name="calendar"
               style={{color: '#3E4459', marginTop: 8, marginLeft: 160}}
             />
-         
-
           </View>
           <Text style={styles.inputLabel}>G. Insurer ID Card No</Text>
           <TextInput
@@ -287,8 +291,11 @@ class PreAuth extends React.PureComponent {
             />
           </View>
 
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <TouchableOpacity
+              onPress={() => {
+                this.setState({currentForm: 1});
+              }}
               style={[
                 styles.buttonStyle,
                 {
@@ -310,6 +317,9 @@ class PreAuth extends React.PureComponent {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => {
+                this.setState({currentForm: 3});
+              }}
               style={[
                 styles.buttonStyle,
                 {
@@ -336,9 +346,165 @@ class PreAuth extends React.PureComponent {
     );
   };
 
+  DoctorDetails = () => {
+    return (
+      <ScrollView style={styles.body}>
+        <View style={{flexDirection: 'column'}}>
+          <Text style={styles.headerText}>
+            to be filled by the treating doctor / hospital
+          </Text>
+          <Text style={styles.inputLabel}>A. Name of treating doctor</Text>
+          <TextInput
+            placeholder={'Enter Name of treating doctor'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>B. Contact No</Text>
+          <TextInput
+            placeholder={'Enter contact no'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>
+            C. Name of illness/disease with presenting complaints
+          </Text>
+          <TextInput
+            placeholder={''}
+            style={[styles.inputText, {height: 100}]}
+          />
+          <Text style={styles.inputLabel}>D. Relevant clinical findings</Text>
+          <TextInput
+            placeholder={''}
+            style={[styles.inputText, {height: 100}]}
+          />
+          <Text style={styles.inputLabel}>
+            E. Duration of the present ailment in days
+          </Text>
+          <TextInput
+            placeholder={'Enter duration of present ailment'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>E.1. Date of first consultation</Text>
+          <View style={[{flexDirection: 'row'}, styles.inputText]}>
+            <DatePicker
+              style={{
+                borderColor: '#E0E1E4',
+                borderWidth: 2,
+                backgroundColor: '#fff',
+              }}
+              //   defaultDate={new Date()}
+              timeZoneOffsetInMinutes={undefined}
+              modalTransparent={false}
+              minimumDate={new Date(1940, 0, 1)}
+              maximumDate={subTimeUnit(new Date(), 1, 'year')}
+              animationType={'fade'}
+              androidMode={'default'}
+              placeHolderText={
+                this.state.chosenDate === ''
+                  ? 'Date Of Birth'
+                  : formatDate(this.state.chosenDate, 'DD-MM-YYYY')
+              }
+              textStyle={{color: '#5A5A5A'}}
+              value={this.state.chosenDate}
+              placeHolderTextStyle={{color: '#5A5A5A'}}
+              onDateChange={dob => {
+                this.onDOBChange(dob);
+              }}
+              disabled={this.dobIsEditable}
+            />
+            <Icon
+              name="calendar"
+              style={{color: '#3E4459', marginTop: 8, marginLeft: 160}}
+            />
+          </View>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({currentForm: 2});
+              }}
+              style={[
+                styles.buttonStyle,
+                {
+                  width: 160,
+                  backgroundColor: '#fff',
+                  borderColor: '#7F49C3',
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans',
+                  color: '#7F49C3',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  marginTop: 7,
+                  textTransform: 'uppercase',
+                }}>
+                Back
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({currentForm: 4});
+              }}
+              style={[
+                styles.buttonStyle,
+                {
+                  width: 160,
+                  backgroundColor: '#7F49C3',
+                  marginLeft: 10,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans',
+                  color: '#fff',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  marginTop: 7,
+                  textTransform: 'uppercase',
+                }}>
+                SUBMIT
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  };
+
+  FormComplete = () => {
+    return (
+      <ScrollView style={styles.body}>
+        <View style={{flexDirection: 'column'}}>
+          <Text style={styles.headerText}>
+            your request is being processed, will be notified on successful
+            completion of request, your reference id is {this.state.referenceID}
+          </Text>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress={() => {
+                this.setState({currentForm: 2});
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans',
+                  color: '#fff',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  marginTop: 7,
+                  textTransform: 'uppercase',
+                }}>
+                proceed to next step
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  };
+
   HospitalDetails = () => {
     return (
-      <Container style={styles.body}>
+      <ScrollView style={styles.body}>
         <Text style={styles.formHeader}>
           Request For cashless hospitalisation for health insurance policy part
           c (revised)
@@ -364,21 +530,27 @@ class PreAuth extends React.PureComponent {
           <TextInput placeholder={'Enter Email ID'} style={styles.inputText} />
           <Text style={styles.inputLabel}>Rohini ID</Text>
           <TextInput placeholder={'Enter Rohini ID'} style={styles.inputText} />
-          <TouchableOpacity style={styles.buttonStyle}>
-            <Text
-              style={{
-                fontFamily: 'OpenSans',
-                color: '#fff',
-                fontSize: 16,
-                textAlign: 'center',
-                marginTop: 7,
-                textTransform: 'uppercase',
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress={() => {
+                this.setState({currentForm: 2});
               }}>
-              proceed to next step
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans',
+                  color: '#fff',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  marginTop: 7,
+                  textTransform: 'uppercase',
+                }}>
+                proceed to next step
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </Container>
+      </ScrollView>
     );
   };
   render() {
@@ -387,7 +559,11 @@ class PreAuth extends React.PureComponent {
       return <this.HospitalDetails />;
     } else if (currentForm === 2) {
       return <this.InsurerDetails />;
-    }
+    } else if (currentForm === 3) {
+      return <this.DoctorDetails />;
+    } else if (currentForm === 4) {
+        return <this.FormComplete />;
+      }
   }
 }
 
@@ -400,7 +576,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     borderColor: '#7F49C3',
-    marginLeft: 40,
+    // marginLeft: 40,
     marginTop: 20,
     marginBottom: 10,
     borderTopWidth: 1,
