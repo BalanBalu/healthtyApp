@@ -24,6 +24,7 @@ import { store } from '../../../../setup/store';
 import { enumerateStartToEndDates } from '../../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
 import RenderDatesList from './RenderDateList'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 const CALL_AVAILABILITY_SLOTS_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 8;
 let doctorListOrder = 'ASC';
@@ -292,7 +293,7 @@ class DoctorList extends Component {
                     <Row style={{ height: 35, alignItems: 'center' }}>
                         <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, justifyContent: 'center' }} onPress={() => this.renderDocListByTopRated(doctorInfoListAndSlotsData)}>
                             <Col size={2.0} >
-                                <Icon name='ios-arrow-dropdown-circle' style={{ color: 'gray', fontSize: 24 }} />
+                                <MaterialIcons name='keyboard-arrow-down' style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
@@ -304,7 +305,7 @@ class DoctorList extends Component {
                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
                             </Col>
                             <Col size={2.0} style={{ marginLeft: 5 }}>
-                                <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25 }} />
+                                <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 20 }} />
                             </Col>
                         </Col>
                     </Row>

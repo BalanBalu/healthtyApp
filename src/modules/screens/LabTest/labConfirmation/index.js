@@ -55,6 +55,7 @@ class LabConfirmation extends Component {
         }
         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
         this.setState({ isCorporateUser });
+        console.log(`isCorporateUser`, this.state.isCorporateUser);
         
         await this.getUserProfile();
     }

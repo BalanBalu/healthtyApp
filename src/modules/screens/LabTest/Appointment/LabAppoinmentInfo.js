@@ -13,6 +13,8 @@ import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssu
 import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById, getUserReviews } from "../../../providers/lab/lab.action"
 import InsertReview from '../Reviews/insertReviews';
 import { renderLabProfileImage } from "../../CommonAll/components"
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
@@ -361,7 +363,7 @@ class LabAppointmentInfo extends Component {
                     </Col>
                     <Col style={{ width: '50%', justifyContent: 'center', alignItems: 'center' }}>
                       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Icon name="md-clock" style={styles.iconStyle} />
+                       <AntDesign name='clockcircleo' style={styles.iconStyle} />
                         <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a')}</Text>
                       </Row>
                     </Col>
@@ -460,7 +462,7 @@ class LabAppointmentInfo extends Component {
 
                 <Row style={[styles.rowSubText, { borderTopColor: '#909090', borderTopWidth: 0.3, paddingTop: 10 }]}>
                   <Col style={{ width: '8%', paddingTop: 5 }}>
-                    <Icon name="ios-pin" style={{ fontSize: 18, }} />
+                    <Icon name="location-sharp" style={{ fontSize: 18, }} />
                   </Col>
                   <Col style={{ width: '92%', paddingTop: 5 }}>
                     <Text style={styles.innerSubText}>Pick Up at Lab</Text>
@@ -545,7 +547,7 @@ class LabAppointmentInfo extends Component {
                           <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
 
                             <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
-                            <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                            <MaterialIcons name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></MaterialIcons>
                           </TouchableOpacity>
                         </View>
                       </Col>
@@ -819,7 +821,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: 'bold',
     color: '#FFF',
-    marginLeft: -10
+    marginLeft: 10
   },
   iconStyle: {
     fontSize: 20,

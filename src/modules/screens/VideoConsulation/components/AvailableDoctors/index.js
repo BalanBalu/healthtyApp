@@ -506,7 +506,7 @@ class AvailableDoctors4Video extends Component {
                             <Col style={[isBothPremium ? { width: '25%' } : { width: '35%' }, { marginRight: 5 }]}>
                                 <TouchableOpacity onPress={() => this.descriptionModalOpen(item.doctor_id, item.chat_service_config.chat_fee, SERVICE_TYPES.CHAT)}
                                     style={isBothPremium ? styles.ButtonStyle : isChatFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
-                                    <Icon name="ios-chatboxes" style={!isBothPremium && isChatFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
+                                    <Icon name="chatbox" style={!isBothPremium && isChatFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
                                     <Text style={isBothPremium && isChatFree ? styles.TextStyle : isChatFree ? styles.SponsorText : styles.TextStyle}>
                                         {isBothPremium ? 'Chat' : isChatFree ? 'Free Consult' : `Chat - ₹ ${item.chat_service_config.chat_fee}`}</Text>
                                 </TouchableOpacity>
