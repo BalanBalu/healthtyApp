@@ -1,8 +1,10 @@
 import React from 'react';
-import {Container, Text, View} from 'native-base';
-import {TextInput, StyleSheet} from 'react-native';
+import {Container, Text, View, Radio, DatePicker, Icon, Header, Content} from 'native-base';
+import {TextInput, StyleSheet, Image} from 'react-native';
 import {connect} from 'react-redux';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {subTimeUnit, formatDate} from '../../../../setup/helpers';
+
 // import styles from '../styles'
 
 class PreAuth extends React.PureComponent {
@@ -11,8 +13,328 @@ class PreAuth extends React.PureComponent {
 
     this.state = {
       isLoading: false,
+      currentForm: 2,
+      chosenDate: new Date(1940, 0, 1),
+      selectedGender: 'male',
+      alreadyHaveInsurance: 'yes',
+      haveFamilyPhysician: 'yes',
     };
+    this.onDOBChange = this.onDOBChange.bind(this);
   }
+
+  onDOBChange(dob) {
+      console.log('bbbbbb', dob);
+    this.setState({chosenDate: dob});
+    
+  }
+
+  InsurerDetails = () => {
+ 
+    return (
+      <ScrollView style={styles.body}>
+        {/* <Text style={styles.formHeader}>
+          Request For cashless hospitalisation for health insurance policy part
+          c (revised)
+        </Text> */}
+        <View style={{flexDirection: 'column'}}>
+          <Text style={styles.headerText}>
+            Details of third party administrator
+          </Text>
+          <Text style={styles.inputLabel}>A. Name of TPA Company</Text>
+          <TextInput
+            value={'MEDI ASSIT INSURANCE'}
+            style={[
+              styles.inputText,
+              {
+                backgroundColor: '#E1E2E5',
+                borderColor: '#7F49C3',
+                color: '#707070',
+              },
+            ]}
+          />
+          <Text style={styles.inputLabel}>B. Phone Number</Text>
+          <TextInput
+            value={'080 220686666'}
+            style={[
+              styles.inputText,
+              {
+                backgroundColor: '#E1E2E5',
+                borderColor: '#7F49C3',
+                color: '#707070',
+              },
+            ]}
+          />
+          <Text style={styles.inputLabel}>C. Toll Free Fax No</Text>
+          <TextInput
+            value={'1800 425 9559'}
+            style={[
+              styles.inputText,
+              {
+                backgroundColor: '#E1E2E5',
+                borderColor: '#7F49C3',
+                color: '#707070',
+              },
+            ]}
+          />
+          <Text style={styles.headerText}>
+            to be filled by insurer / patient
+          </Text>
+          <Text style={styles.inputLabel}>A. Name of the patient</Text>
+          <TextInput
+            placeholder={'Enter name of patient'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>B. Gender</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Radio
+              style={{marginLeft: 40}}
+              standardStyle={true}
+              selected={this.state.selectedGender === 'male' ? true : false}
+              
+            />
+            <Text style={{marginLeft: 10}}>Male</Text>
+            <Radio
+              style={{marginLeft: 40}}
+              standardStyle={true}
+              // selected={this.state.selectedGender === 'male' ? true : false}
+           
+            />
+            <Text style={{marginLeft: 10}}>Female</Text>
+          </View>
+          <Text style={styles.inputLabel}>C. Concat No</Text>
+          <TextInput
+            placeholder={'Enter contact no'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>D. Alternate Concat No</Text>
+          <TextInput
+            placeholder={'Enter alternate contact no'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>E. Age</Text>
+          <View style={{flexDirection: 'row'}}>
+            <TextInput
+              placeholder={'YY'}
+              style={[
+                styles.inputText,
+                {width: 160, marginRight: 0, textAlign: 'center'},
+              ]}
+            />
+            <TextInput
+              placeholder={'MM'}
+              style={[
+                styles.inputText,
+                {width: 160, marginLeft: 10, textAlign: 'center'},
+              ]}
+            />
+          </View>
+          <Text style={styles.inputLabel}>F. Date of birth</Text>
+          {/* 
+          style={{
+                borderColor: '#E0E1E4',
+                borderWidth: 2,
+                backgroundColor: '#fff',
+              }}
+          */}
+          <View style={[{flexDirection: 'row'}, styles.inputText]}>
+            <DatePicker
+              style={{
+                borderColor: '#E0E1E4',
+                borderWidth: 2,
+                backgroundColor: '#fff',
+              }}
+            //   defaultDate={new Date()}
+              timeZoneOffsetInMinutes={undefined}
+              modalTransparent={false}
+              minimumDate={new Date(1940, 0, 1)}
+              maximumDate={subTimeUnit(new Date(), 1, 'year')}
+              animationType={'fade'}
+              androidMode={'default'}
+              placeHolderText={
+                this.state.chosenDate === ''
+                  ? 'Date Of Birth'
+                  : formatDate(this.state.chosenDate, 'DD-MM-YYYY')
+              }
+              textStyle={{color: '#5A5A5A'}}
+              value={this.state.chosenDate}
+              placeHolderTextStyle={{color: '#5A5A5A'}}
+              onDateChange={dob => {
+                this.onDOBChange(dob);
+              }}
+                disabled={this.dobIsEditable}
+            />
+            <Icon
+              name="calendar"
+              style={{color: '#3E4459', marginTop: 8, marginLeft: 160}}
+            />
+         
+
+          </View>
+          <Text style={styles.inputLabel}>G. Insurer ID Card No</Text>
+          <TextInput
+            placeholder={'Enter Insurer ID Card No'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>
+            H. Policy number / Name of corporate
+          </Text>
+          <TextInput
+            placeholder={'Enter policy no / corporate name'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>I. Employee ID</Text>
+          <TextInput
+            placeholder={'Enter Employee ID'}
+            style={styles.inputText}
+          />
+          <Text style={[styles.inputLabel, {lineHeight: 26}]}>
+            J. Currently you have any other medical claim / insurance
+          </Text>
+          <View style={{flexDirection: 'row', marginBottom: 1}}>
+            <Radio
+              onPress={() => {
+                this.setState({alreadyHaveInsurance: 'yes'});
+              }}
+              style={{marginLeft: 40}}
+              standardStyle={true}
+              selected={
+                this.state.alreadyHaveInsurance === 'yes' ? true : false
+              }
+            />
+            <Text style={{marginLeft: 10}}>Yes</Text>
+            <Radio
+              onPress={() => {
+                this.setState({alreadyHaveInsurance: 'no'});
+              }}
+              style={{marginLeft: 40}}
+              standardStyle={true}
+              selected={this.state.alreadyHaveInsurance === 'no' ? true : false}
+            />
+            <Text style={{marginLeft: 10}}>No</Text>
+          </View>
+
+          <Text style={styles.inputLabel}>J.1. Insurer Name</Text>
+          <TextInput
+            placeholder={'Enter Employee ID'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>J.2. Give Details</Text>
+          <TextInput
+            placeholder={'Enter Employee ID'}
+            style={styles.inputText}
+          />
+
+          <Text style={[styles.inputLabel, {lineHeight: 26}]}>
+            K. If you have family physician
+          </Text>
+          <View style={{flexDirection: 'row', marginBottom: 20}}>
+            <Radio
+              onPress={() => {
+                this.setState({haveFamilyPhysician: 'yes'});
+              }}
+              style={{marginLeft: 40}}
+              standardStyle={true}
+              selected={this.state.haveFamilyPhysician === 'yes' ? true : false}
+            />
+            <Text style={{marginLeft: 10}}>Yes</Text>
+            <Radio
+              onPress={() => {
+                this.setState({haveFamilyPhysician: 'no'});
+              }}
+              style={{marginLeft: 40}}
+              standardStyle={true}
+              selected={this.state.haveFamilyPhysician === 'no' ? true : false}
+            />
+            <Text style={{marginLeft: 10}}>No</Text>
+          </View>
+          {this.state.haveFamilyPhysician === 'yes' ? (
+            <TextInput
+              placeholder={'Enter Physician name'}
+              style={styles.inputText}
+            />
+          ) : null}
+          {this.state.haveFamilyPhysician === 'yes' ? (
+            <View>
+              <Text style={styles.inputLabel}>K.1. Contact No</Text>
+              <TextInput
+                placeholder={'Enter Contact No'}
+                style={styles.inputText}
+              />
+            </View>
+          ) : null}
+          <Text style={styles.inputLabel}>
+            L. Occupation of insured patient
+          </Text>
+          <TextInput
+            placeholder={'Enter Occupation of insured patient'}
+            style={styles.inputText}
+          />
+          <Text style={styles.inputLabel}>M. Address of insured patient</Text>
+          <TextInput
+            placeholder={''}
+            style={[styles.inputText, {height: 100}]}
+          />
+          <Text style={styles.headerText}>Upload your aadhar copy</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginTop: 10,
+            }}>
+            <Image
+              source={require('../../../../../assets/images/documentCloud.png')}
+              style={{height: 60, width: 110}}
+            />
+          </View>
+
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={[
+                styles.buttonStyle,
+                {
+                  width: 160,
+                  backgroundColor: '#fff',
+                  borderColor: '#7F49C3',
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans',
+                  color: '#7F49C3',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  marginTop: 7,
+                  textTransform: 'uppercase',
+                }}>
+                Back
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.buttonStyle,
+                {
+                  width: 160,
+                  backgroundColor: '#7F49C3',
+                  marginLeft: 10,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans',
+                  color: '#fff',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  marginTop: 7,
+                  textTransform: 'uppercase',
+                }}>
+                Next
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  };
 
   HospitalDetails = () => {
     return (
@@ -40,7 +362,7 @@ class PreAuth extends React.PureComponent {
           />
           <Text style={styles.inputLabel}>Hospital Email ID</Text>
           <TextInput placeholder={'Enter Email ID'} style={styles.inputText} />
-     <Text style={styles.inputLabel}>Rohini ID</Text>
+          <Text style={styles.inputLabel}>Rohini ID</Text>
           <TextInput placeholder={'Enter Rohini ID'} style={styles.inputText} />
           <TouchableOpacity style={styles.buttonStyle}>
             <Text
@@ -60,7 +382,12 @@ class PreAuth extends React.PureComponent {
     );
   };
   render() {
-    return <this.HospitalDetails />;
+    const {currentForm} = this.state;
+    if (currentForm === 1) {
+      return <this.HospitalDetails />;
+    } else if (currentForm === 2) {
+      return <this.InsurerDetails />;
+    }
   }
 }
 
@@ -73,9 +400,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     borderColor: '#7F49C3',
-
     marginLeft: 40,
-
     marginTop: 20,
     marginBottom: 10,
     borderTopWidth: 1,
@@ -93,6 +418,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginLeft: 40,
     color: '#3E4459',
+    lineHeight: 26,
     fontFamily: 'OpenSans, sans-serif',
     marginRight: 40,
     marginTop: 20,
