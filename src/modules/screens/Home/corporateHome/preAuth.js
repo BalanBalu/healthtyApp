@@ -493,7 +493,7 @@ class PreAuth extends React.PureComponent {
                   marginTop: 7,
                   textTransform: 'uppercase',
                 }}>
-                proceed to next step
+                Go to Homepage
               </Text>
             </TouchableOpacity>
           </View>
