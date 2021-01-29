@@ -622,7 +622,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     marginLeft: 40,
     marginRight: 40,
-    marginBottom: 9,
+    marginBottom: 5,
     fontWeight: 'bold',
     color: '#3E4459',
     marginTop: 20,
