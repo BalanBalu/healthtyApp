@@ -100,6 +100,7 @@ import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
+import PreAuth from '../../modules/screens/Home/corporateHome/preAuth'
 import TextTicker from 'react-native-text-ticker';
 import { IS_ANDROID } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
@@ -259,6 +260,12 @@ export const smartHealthStack=createStackNavigator({
     screen: ReportDetails,
     navigationOptions: {
       title: 'Report details'
+    }
+  },
+  PreAuth: {
+    screen: PreAuth,
+    navigationOptions: {
+      title: 'Pre Authorisation'
     }
   },
   "CancelAppointment": {
