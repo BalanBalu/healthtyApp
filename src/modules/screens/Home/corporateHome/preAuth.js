@@ -23,7 +23,7 @@ class PreAuth extends React.PureComponent {
     this.state = {
       isLoading: false,
       currentForm: 1,
-      chosenDate: new Date(1940, 0, 1),
+      chosenDate: new Date(),
       selectedGender: 'male',
       alreadyHaveInsurance: 'yes',
       referenceID: 'SMTTH7',
@@ -149,9 +149,9 @@ class PreAuth extends React.PureComponent {
                 borderWidth: 2,
                 backgroundColor: '#fff',
               }}
-              //   defaultDate={new Date()}
+                defaultDate={new Date()}
               timeZoneOffsetInMinutes={undefined}
-              modalTransparent={false}
+              modalTransparent={true}
               minimumDate={new Date(1940, 0, 1)}
               maximumDate={subTimeUnit(new Date(), 1, 'year')}
               animationType={'fade'}
