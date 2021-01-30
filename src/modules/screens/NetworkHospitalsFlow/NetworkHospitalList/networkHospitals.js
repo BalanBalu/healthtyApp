@@ -1,45 +1,37 @@
 import React, { Component } from 'react';
-import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content, Card, Item, Input, Thumbnail, Toast } from 'native-base';
-import { Row, Col, Grid } from 'react-native-easy-grid';
-import { StyleSheet, View, TouchableOpacity, FlatList, ActivityIndicator, Image, AsyncStorage, TextInput, Alert } from 'react-native';
+import { Text, Container, Icon, Item, Input, Toast } from 'native-base';
+import { Row, Col } from 'react-native-easy-grid';
+import { View, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER_HOSPITALS } from '../../../../setup/config';
-// import RenderHospitalInfo from './RenderHospitalInfo';
+import RenderNetworkHospitalInfo from './renderNetworkHospitals';
+import { serviceOfSearchByNetworkHospitalDetails } from '../../../providers/hospitalBookAppointmentFlow/action';
 import { Loader } from '../../../../components/ContentLoader';
-// import styles from '../Styles';
+import Styles from '../styles';
 
-const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 7;
+const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
 class NewtowrkHospitals extends Component {
     constructor(props) {
         super(props)
         this.state = {
             hospitalName: '',
-            expandData: -1,
             hospitalInfoList: [],
-            isOnlyDateTimePickerVisible: false,
-            appointmentDateTime: new Date(),
             isLoading: true,
-            isLoadingMoreDocList: false,
+            isLoadingMoreHospitalList: false,
             enableSearchIcon: false,
-            isLoadingOnChangeDocList: false,
-            renderRefreshCount: 1,
+            isLoadingOnChangeHospitalList: false,
+            showFullInfoCard: -1,
         }
         this.isEnabledLoadMoreData = true;
         this.incrementPaginationCount = 0;
         this.hospitalInfoListArray = [];
-
-    
+        this.selectedTpaCode = props.navigation.getParam('tpaCode');
     }
 
     async componentDidMount() {
         try {
-            // const userId = await AsyncStorage.getItem('userId');
-            // await this.searchByHospitalDetails();
-            // if (userId) {
-            //     await this.getFavoriteCounts4PatByUserId(userId);
-            //     this.setState({ isLoggedIn: true })
-            // }
+            await this.searchByNetworkHospitalDetails();
         } catch (Ex) {
             Toast.show({
                 text: 'Something Went Wrong' + Ex,
@@ -52,34 +44,28 @@ class NewtowrkHospitals extends Component {
         }
     }
 
- 
-    searchByHospitalDetails = async () => {
+
+    searchByNetworkHospitalDetails = async () => {
         try {
             const { bookappointment: { locationCordinates } } = this.props;
-            let category_id = this.props.navigation.getParam('category_id') || null
             let reqData4ServiceCall = {
                 locationData: {
                     coordinates: locationCordinates,
                     maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
                 }
             }
-            if (category_id) {
-                reqData4ServiceCall.category_id = category_id
+            if (this.selectedTpaCode) {
+                reqData4ServiceCall.tpaCode = this.selectedTpaCode
             }
             if (this.state.hospitalName) reqData4ServiceCall.hospitalName = this.state.hospitalName;
-
-            const hospitalResp = await serviceOfSearchByHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
-
+            const hospitalResp = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
             if (hospitalResp.success) {
- 
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...hospitalResp.data];
-                const hospitalAdminIdsArray = hospitalResp.data.map(item => { return item.hospital_admin_id });
-                await serviceOfGetHospitalFavoriteListCount4Pat(hospitalAdminIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex));
-                this.setState({ hospitalInfoList: this.hospitalInfoListArray, category_id: category_id })
+                this.setState({ hospitalInfoList: this.hospitalInfoListArray })
             }
             else {
-                if (this.hospitalInfoListArray.length > 6) {
+                if (this.hospitalInfoListArray.length > 8) {
                     Toast.show({
                         text: 'No more hospitals Available!',
                         duration: 3000,
@@ -89,95 +75,15 @@ class NewtowrkHospitals extends Component {
                 this.isEnabledLoadMoreData = false;
             }
         } catch (Ex) {
+            console.log('Ex is getting on Get Network Hospitals ==>', Ex.message)
             Toast.show({
-                text: 'Something Went Wrong' + Ex,
+                text: 'Something Went Wrong' + Ex.message,
                 duration: 3000,
                 type: "danger"
             })
         }
     }
 
-
-  
-    onPressToContinue4PaymentReview = async (date) => {
-        if (date < this.minimumDate) {
-            Toast.show({
-                text: 'Please select the time greater than ' + formatDate(this.minimumDate, 'Do MMM HH:mm A'),
-                duration: 3000,
-                type: 'warning'
-            });
-            return false;
-        }
-
-
-
-        const { haspitalValue, index } = this.selectedHospitalsForBooking;
-        this.setState({ expandData: index })
-
-        let userId = await AsyncStorage.getItem('userId');
-        let reqData = {
-            user_id: userId,
-            hospital_admin_id: haspitalValue.hospital_admin_id,
-            startDate: date,
-            endDate: addTimeUnit(date, 30, 'minutes')
-        }
-        let response = await validateAppointment(reqData);
-
-        if (response.success == false) {
-            this.timeText = formatDate(response.data[0].appointment_starttime, 'hh:mm A')
-            Alert.alert(
-                "Appointment Warning",
-                `You already booked for the same hospital on ${this.timeText}, You want to book the appointment to continue`,
-                [
-                    { text: "Cancel" },
-                    {
-                        text: "Continue", onPress: () => this.proceedToAppointment(date),
-                    }
-                ],
-            );
-            return
-        } else {
-            this.proceedToAppointment(date)
-        }
-    }
-    getHospitalFee(data, category_id) {
-        let fee = 200;
-        
-        if (data&&data.categories_data) {
-
-            let find_categories_data = data.categories_data.find(ele => {
-                return ele.category_id === category_id
-            })
-
-            if (find_categories_data) {
-                fee = find_categories_data.fees;
-            }
-        }
-        return fee
-    }
-    proceedToAppointment(date) {
-        this.props.navigation.setParams({ 'conditionFromFilterPage': false });
-        let category_id = this.props.navigation.getParam('category_id') || null
-
-        const { haspitalValue, index } = this.selectedHospitalsForBooking;
-        let fee = this.getHospitalFee(haspitalValue, category_id);
-        let slotData = {
-            fee: fee,
-            slotStartDateAndTime: date,
-            category_id: category_id,
-            slotEndDateAndTime: addTimeUnit(date, 30, 'minutes'),
-            booked_for: 'HOSPITAL',
-            location: {
-                location: haspitalValue.location,
-                hospitalAdminId: haspitalValue.hospital_admin_id
-            }
-        }
-        let data = haspitalValue
-        data.slotData = slotData
-        data.slotData.location.type = 'Hospital';
-        this.props.navigation.navigate('Payment Review', { fromNavigation: 'HOSPITAL', resultconfirmSlotDetails: data })
-
-    }
     navigateToLocationMap() {
         Alert.alert(
             "Choose Location",
@@ -190,66 +96,59 @@ class NewtowrkHospitals extends Component {
             ],
         );
     }
-    addToFavoritesList = async (hospitalAdminId) => {
-        const userId = await AsyncStorage.getItem('userId');
-        const updateResp = await addFavoritesToHospitalByUserService(userId, hospitalAdminId);
-        if (updateResp.success) {
-            Toast.show({
-                text: 'Hospital wish list updated successfully',
-                type: "success",
-                duration: 3000,
-            });
-        }
-        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
-    }
 
     renderHospitalInformationCard(item, index) {
-        const { isLoggedIn, currentDate, category_id } = this.state;
-        const { bookappointment: { locationCordinates }, hospitalBookAppointmentData: { patientFavoriteListCountOfHospitalAdminIds, hospitalFavoriteListCountOfHospitalAdminIds } } = this.props;
+        const { showFullInfoCard } = this.state;
+        // const { bookappointment: { locationCordinates }} = this.props;
         return (
-            <RenderHospitalInfo
+            <RenderNetworkHospitalInfo
                 item={item}
-                index={index}
+                showFullInfoCard={showFullInfoCard}
+                onPressArrowIconSelectedIndex={index}
                 navigation={this.props.navigation}
-                category_id={category_id}
-                hospitalInfo={{ isLoggedIn, userLocDetails: locationCordinates, patientFavoriteListCountOfHospitalAdminIds, hospitalFavoriteListCountOfHospitalAdminIds }}
-                openDateTimePicker={(item, index) => this.openDateTimePicker(item, index)}
-                addToFavoritesList={(hospitalAdminId) => this.addToFavoritesList(hospitalAdminId)}
-
+                onPressUpOrDownArrowToViewFullInfo={(onPressArrowIconSelectedIndex, typeOfArrowIcon) => this.onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, typeOfArrowIcon)}
             // shouldUpdate={``}
             >
-            </RenderHospitalInfo>
+            </RenderNetworkHospitalInfo>
         )
     }
     loadMoreData = async () => {
         try {
-            this.setState({ isLoadingMoreDocList: true });
-            await this.searchByHospitalDetails();
+            this.setState({ isLoadingMoreHospitalList: true });
+            await this.searchByNetworkHospitalDetails();
         } catch (error) {
             console.log("Ex is getting on load more hospitals", error.message);
         }
         finally {
-            this.setState({ isLoadingMoreDocList: false })
+            this.setState({ isLoadingMoreHospitalList: false })
         }
     }
 
-    onPressSearchByHospitalName = async () => {
+    onPressSearchByNetworkHospitalName = async () => {
         try {
             this.isEnabledLoadMoreData = true;
             this.incrementPaginationCount = 0;
             this.hospitalInfoListArray = [];
-            this.setState({ isLoadingOnChangeDocList: true, hospitalInfoList: [] });
-            await this.searchByHospitalDetails()
+            this.setState({ isLoadingOnChangeHospitalList: true, hospitalInfoList: [] });
+            await this.searchByNetworkHospitalDetails()
         }
         catch (Ex) {
-            console.log('Ex is getting on Get Hospital list by hospital names')
+            console.log('Ex is getting on Get Network Hospital list by hospital names')
         }
         finally {
-            this.setState({ isLoadingOnChangeDocList: false })
+            this.setState({ isLoadingOnChangeHospitalList: false })
+        }
+    }
+    onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, typeOfArrowIcon) {
+        if (typeOfArrowIcon === 'DOWN') {
+            this.setState({ showFullInfoCard: onPressArrowIconSelectedIndex })
+        }
+        else {
+            this.setState({ showFullInfoCard: -1 })
         }
     }
     render() {
-        const { hospitalInfoList, isLoadingMoreDocList, enableSearchIcon, isLoading, isLoadingOnChangeDocList } = this.state;
+        const { hospitalInfoList, isLoadingMoreHospitalList, enableSearchIcon, isLoading, isLoadingOnChangeHospitalList } = this.state;
         const { bookappointment: { isLocationSelected, patientSearchLocationName, isSearchByCurrentLocation } } = this.props;
         const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'Showing Hospitals in Near Current Location' : 'Showing Hospitals in ' + patientSearchLocationName + ' City' : 'Please Choose your Location in Map';
         if (isLoading) return <Loader style='list' />;
@@ -267,7 +166,7 @@ class NewtowrkHospitals extends Component {
                     }}>
                         <Col size={8.1} style={{ justifyContent: 'center', }}>
                             <Input
-                                placeholder="Search your Hospitals"
+                                placeholder="Search your Network Hospitals"
                                 style={{
                                     color: 'gray',
                                     fontFamily: 'OpenSans',
@@ -280,15 +179,14 @@ class NewtowrkHospitals extends Component {
                                 underlineColorAndroid="transparent"
                             />
                         </Col>
-                        <Col size={0.9} style={enableSearchIcon ? styles.enableSearchIcon4Hospital : styles.disableSearchIcon4Hospital}>
-                            <TouchableOpacity onPress={() => enableSearchIcon ? this.onPressSearchByHospitalName() : null}>
+                        <Col size={0.9} style={enableSearchIcon ? Styles.enableSearchIcon4Hospital : Styles.disableSearchIcon4Hospital}>
+                            <TouchableOpacity onPress={() => enableSearchIcon ? this.onPressSearchByNetworkHospitalName() : null}>
                                 <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
                             </TouchableOpacity>
                         </Col>
                     </Row>
                 </View>
                 <View>
-                   
                     <Row style={{ padding: 5, height: 40 }}>
                         <Col size={8}>
                             <Text style={{
@@ -296,7 +194,6 @@ class NewtowrkHospitals extends Component {
                                 fontFamily: 'OpenSans',
                                 color: '#7F49C3',
                                 fontSize: 13,
-                                // marginTop: 5
                             }}>
                                 {locationText}
                                 {/* <Text style={{
@@ -323,10 +220,10 @@ class NewtowrkHospitals extends Component {
                         </Col>
                     </Row>
                 </View>
-                {isLoadingOnChangeDocList ?
+                {isLoadingOnChangeHospitalList ?
                     <View style={{ marginTop: 60 }}>
                         <ActivityIndicator
-                            animating={isLoadingOnChangeDocList}
+                            animating={isLoadingOnChangeHospitalList}
                             size="large"
                             color='blue'
                         />
@@ -348,12 +245,11 @@ class NewtowrkHospitals extends Component {
                             <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No Hospitals list found!</Text>
                         </Item>
                 }
-              
-                {isLoadingMoreDocList ?
+                {isLoadingMoreHospitalList ?
                     <View style={{ flex: 1, justifyContent: 'flex-end' }}>
                         <ActivityIndicator
                             style={{ marginBottom: 17 }}
-                            animating={isLoadingMoreDocList}
+                            animating={isLoadingMoreHospitalList}
                             size="large"
                             color='blue'
                         />
@@ -364,4 +260,7 @@ class NewtowrkHospitals extends Component {
     }
 }
 
-export default NewtowrkHospitals
+
+const NewtowrkHospitalsDataState = ({ NewtowrkHospitalsData, bookappointment } = state) => ({ NewtowrkHospitalsData, bookappointment })
+export default connect(NewtowrkHospitalsDataState)(NewtowrkHospitals)
+

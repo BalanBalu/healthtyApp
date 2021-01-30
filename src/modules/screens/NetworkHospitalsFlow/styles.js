@@ -62,5 +62,43 @@ export default  styles = StyleSheet.create({
       fontSize: 15,
       fontWeight: '700',
       color: '#fff'
-    }
+    },
+    gradientStyle: {
+      marginTop: 10,
+      borderRadius: 10,
+      justifyContent: 'center',
+      marginRight: 15,
+      marginLeft: 15,
+      padding: 10
+    },
+    subHeadingStyle: {
+      fontSize: 12,
+      marginTop: 5,
+      fontFamily: 'OpenSans'
+    },
+    subHeadingData: {
+      fontSize: 12,
+      color: 'gray',
+      marginTop: 5,
+      fontFamily: 'OpenSans'
+    },
+    cardStyle: {
+      marginTop: 15,
+      padding: 10,
+      marginRight: 15,
+      marginLeft: 15,
+      borderRadius: 5
+    },
+    enableSearchIcon4Hospital: {
+      backgroundColor: '#7E49C3',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
+  disableSearchIcon4Hospital: {
+      backgroundColor: 'gray',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+  }
   })

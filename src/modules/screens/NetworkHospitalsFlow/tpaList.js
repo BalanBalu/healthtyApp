@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container,  Content, Text, Icon, Input, View, Item } from 'native-base';
-import { Col,  Grid } from 'react-native-easy-grid';
+import { Container, Content, Text, Icon, Input, View, Item } from 'native-base';
+import { Col, Grid } from 'react-native-easy-grid';
 import { TouchableOpacity, FlatList } from 'react-native';
 import { smartHealthGetService } from '../../../setup/services/httpservices';
 import Styles from './styles';
@@ -8,7 +8,7 @@ import RenderTpaList from './renderTpaListView';
 import { Loader } from '../../../components/ContentLoader';
 import CheckLocationWarning from '../Home/LocationWarning';
 
-class TpaList extends Component {
+export default class TpaList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,7 +53,7 @@ class TpaList extends Component {
     )
   }
   onPressContinueToNextProcess = () => {
-this.props.navigation.navigate("NetworkHospitals",{tpaCode:this.selectedTpaItem})
+    this.props.navigation.navigate("NetworkHospitals", { tpaCode: this.state.selectedTpaItem })
   }
   onChangeTpaText() {
 
@@ -97,12 +97,12 @@ this.props.navigation.navigate("NetworkHospitals",{tpaCode:this.selectedTpaItem}
             </Item>
           }
         </Content>
-        <TouchableOpacity style={Styles.continueButton} onPress={() => selectedTpaItem ? this.onPressContinueToNextProcess() : null} >
-          <Text style={Styles.continueText}>{selectedTpaItem ? "Continue" : "Select TPA"}</Text>
-        </TouchableOpacity>
+        {tpaList && tpaList.length ?
+          <TouchableOpacity style={Styles.continueButton} onPress={() => selectedTpaItem ? this.onPressContinueToNextProcess() : null} >
+            <Text style={Styles.continueText}>{selectedTpaItem ? "Continue" : "Select TPA"}</Text>
+          </TouchableOpacity>
+          : null}
       </Container>
     );
   }
 }
-
-export default TpaList
