@@ -106,6 +106,9 @@ import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer'
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
+import TpaList from '../../modules/screens/NetworkHospitalsFlow/tpaList';
+import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/NetworkHospitalList/networkHospitals';
+
 
 
 export const smartHealthStack=createStackNavigator({
@@ -476,6 +479,18 @@ export const smartHealthStack=createStackNavigator({
     screen: HospitalList,
     navigationOptions: {
       title: 'Hospital List'
+    }
+  },
+  TpaList: {
+    screen: TpaList,
+    navigationOptions: {
+      title: 'Tpa List'
+    }
+  },
+  NetworkHospitals: {
+    screen: NetworkHospitals,
+    navigationOptions: {
+      title: 'Network Hospitals'
     }
   },
   // ========Appointment stack ==========
