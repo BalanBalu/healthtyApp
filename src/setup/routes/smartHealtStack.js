@@ -107,7 +107,7 @@ import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hosp
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
 import PolicyCoverage from '../../modules/screens/PolicyCoverage'
-
+import {PolicyConditions} from '../../modules/screens/PolicyCoverage/policyConditions'
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
     screen: CorporateHome,
@@ -565,9 +565,16 @@ export const smartHealthStack=createStackNavigator({
   PolicyCoverage: {
     screen: PolicyCoverage,
     navigationOptions: {
-      title: 'Policy Coverage '
+      title: 'Policy Coverage'
     }
   },
+  PolicyConditions: {
+    screen: PolicyConditions,
+    navigationOptions: {
+      title: 'Policy Conditions'
+    }
+  },
+
 
   // ============Zoom image ========================
   ImageView: {

@@ -5,9 +5,9 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity, } from 'react-native-gesture-handler';
 import ProgressBar from 'react-native-horizontal-progress-bar'
-import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions';
-import { getPolicyByPolicyNo } from '../../../providers/policy/policy.action';
-import { formatDate } from '../../../../setup/helpers';
+import { getMemberDetailsByEmail } from '../../providers/corporate/corporate.actions';''
+import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
+import { formatDate } from '../../../setup/helpers';
 
 class PolicyCoverage extends React.Component {
   constructor(props) {
@@ -47,7 +47,7 @@ class PolicyCoverage extends React.Component {
             <Card style={styles.cardStyle}>
               <Row style={{ borderBottomColor: 'gray', borderBottomWidth: 1, paddingBottom: 10 }}>
                 <Col size={2}>
-                  <Image source={require('../../../../../assets/images/male_user.png')} style={{ height: 45, width: 45 }} />
+                  <Image source={require('../../../../assets/images/male_user.png')} style={{ height: 45, width: 45 }} />
                 </Col>
                 <Col size={6}>
                   <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 10 }}>{memberDetails.firstName ? (memberDetails.firstName + ' ' + memberDetails.lastName) : '-'}</Text>
@@ -91,6 +91,7 @@ class PolicyCoverage extends React.Component {
               </View>
 
             </Card>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("PolicyConditions")}>
             <Card style={styles.cardStyle}>
               <Row>
                 <Col size={9} style={{ justifyContent: 'center' }}>
@@ -102,7 +103,7 @@ class PolicyCoverage extends React.Component {
                 </Col>
               </Row>
             </Card>
-
+            </TouchableOpacity>
           </View>
 
         </Content>
