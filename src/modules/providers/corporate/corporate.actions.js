@@ -62,3 +62,21 @@ export async function getEcardLink(bodyData) {
     }
   }
 }
+
+export async function createPreAuth(bodyData) {
+  try {
+    let endpoint = 'pre-auth'
+
+
+    let resp = await smartHealthPostService(endpoint, bodyData)
+
+    return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}

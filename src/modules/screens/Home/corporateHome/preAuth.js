@@ -13,8 +13,11 @@ import { TextInput, StyleSheet, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { subTimeUnit, formatDate } from '../../../../setup/helpers';
-import { validateEmailAddress, onlySpaceNotAllowed } from '../../../common'
+import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber, toastMeassage } from '../../../common'
+import { createPreAuth } from '../../../providers/corporate/corporate.actions'
 // import styles from '../styles'
+import { ImageUpload } from '../../../screens/commonScreen/imageUpload'
+import { uploadImage, } from '../../../providers/common/common.action'
 
 class PreAuth extends React.PureComponent {
   constructor(props) {
@@ -22,9 +25,10 @@ class PreAuth extends React.PureComponent {
 
     this.state = {
       isLoading: false,
-      currentForm: 1,
+      selectOptionPoopup: false,
+      currentForm: 2,
       chosenDate: new Date(),
-      selectedGender: 'male',
+      selectedGender: 'Male',
       alreadyHaveInsurance: 'yes',
       referenceID: 'SMTTH7',
       haveFamilyPhysician: 'yes',
@@ -33,14 +37,14 @@ class PreAuth extends React.PureComponent {
       hospitalId: '',
       hospitalEmail: '',
       rohiniId: '',
-      TpaCompany: '',
-      TpaCompanyPhoneNUmber: '',
-      TollFreeFaxNo: '',
+      tpaCompany: '',
+      tpaCompanyPhoneNumber: '',
+      tpaTollFreeFaxNo: '',
       patientName: '',
       contactNo: '',
       alterNateContactNumber: '',
-      ageInYr: '',
-      ageMonth: '',
+      patientAgeInYr: '',
+      patientAgeMonth: '',
       insurerId: '',
       policyNumber: '',
       employeeId: '',
@@ -49,14 +53,14 @@ class PreAuth extends React.PureComponent {
       physicianContactNumber: '',
       insurerPatientOccupation: '',
       insurerPatientAddress: '',
-      treatingDoctorName:'',
-      treatingDoctorContactNumber:'',
-      diseaseDiscription:'',
-      clinicalFindings:'',
-      durationOfPresent:'',
-      errorMsg:null
+      treatingDoctorName: '',
+      treatingDoctorContactNo: '',
+      diseaseDiscription: '',
+      releventClinical: '',
+      durationOfPresent: '',
+      errorMsg: null
     };
-    this.onDOBChange = this.onDOBChange.bind(this);
+    // this.onDOBChange = this.onDOBChange.bind(this);
   }
 
   onDOBChange(dob) {
@@ -64,8 +68,10 @@ class PreAuth extends React.PureComponent {
     this.setState({ chosenDate: dob });
   }
   submitFirstPage() {
+
     const { hospitalName, hospitalLocation, hospitalId, hospitalEmail, rohiniId } = this.state
     let errorMsg = !onlySpaceNotAllowed(hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalId) ? 'Kindly fill hospital id' : !onlySpaceNotAllowed(rohiniId) ? 'Kindly fill rohini Id' : !validateEmailAddress(hospitalEmail) ? 'Kindly enter valid mail id' : null
+
     if (errorMsg) {
 
       this.setState({ errorMsg: errorMsg });
@@ -74,23 +80,23 @@ class PreAuth extends React.PureComponent {
     }
   }
   submitSecandPage() {
-    const { TpaCompany, TpaCompanyPhoneNUmber, TollFreeFaxNo, patientName, contactNo,
-      alterNateContactNumber, ageInYr, ageMonth, insurerId, policyNumber, employeeId, insurerName,
+    const { tpaCompany, tpaCompanyPhoneNumber, tpaTollFreeFaxNo, patientName, contactNo,
+      alterNateContactNumber, patientAgeInYr, patientAgeMonth, insurerId, policyNumber, employeeId, insurerName,
       physicianName, physicianContactNumber, insurerPatientOccupation, insurerPatientAddress } = this.state
     let errorMsg = null
-    if (!onlySpaceNotAllowed(TpaCompany)) {
+    if (!onlySpaceNotAllowed(tpaCompany)) {
       errorMsg = 'Kindly fill tpa  company'
-    } else if (!onlySpaceNotAllowed(TpaCompanyPhoneNUmber)) {
-      errorMsg = 'Kindly fill tpa company phone number'
-    } else if (!onlySpaceNotAllowed(TollFreeFaxNo)) {
-      errorMsg = 'Kindly fill toll free fax no'
+    } else if (!validateMobileNumber(tpaCompanyPhoneNumber)) {
+      errorMsg = 'Kindly fill valid tpa company phone number'
+    } else if (!validateMobileNumber(tpaTollFreeFaxNo)) {
+      errorMsg = 'Kindly fill valid toll free fax no'
     } else if (!onlySpaceNotAllowed(patientName)) {
       errorMsg = 'Kindly fill patient name'
-    } else if (!onlySpaceNotAllowed(contactNo)) {
-      errorMsg = 'Kindly fill contact number'
-    } else if (!onlySpaceNotAllowed(ageInYr)) {
+    } else if (!validateMobileNumber(contactNo)) {
+      errorMsg = 'Kindly fill valid  contact number'
+    } else if (!onlySpaceNotAllowed(patientAgeInYr)) {
       errorMsg = 'Kindly fill age year'
-    } else if (!onlySpaceNotAllowed(ageMonth)) {
+    } else if (!onlySpaceNotAllowed(patientAgeMonth)) {
       errorMsg = 'Kindly fill age month'
     } else if (!onlySpaceNotAllowed(insurerId)) {
       errorMsg = 'Kindly fill insurer id '
@@ -102,18 +108,134 @@ class PreAuth extends React.PureComponent {
       errorMsg = 'Kindly fill insurer name'
     } else if (!onlySpaceNotAllowed(physicianName)) {
       errorMsg = 'Kindly fill physician name'
-    } else if (!onlySpaceNotAllowed(physicianContactNumber)) {
-      errorMsg = 'Kindly fill physician contact number'
+    } else if (!validateMobileNumber(physicianContactNumber)) {
+      errorMsg = 'Kindly fill  valid physician contact number'
     } else if (!onlySpaceNotAllowed(insurerPatientOccupation)) {
       errorMsg = 'Kindly fill insurer patient occupation'
     } else if (!onlySpaceNotAllowed(insurerPatientAddress)) {
       errorMsg = 'Kindly fill insurer patient address'
     }
+
     if (errorMsg) {
 
       this.setState({ errorMsg: errorMsg });
     } else {
-      this.setState({ currentForm: 2 });
+      this.setState({ currentForm: 3 });
+    }
+  }
+
+  async submitThirdPage() {
+    const {
+      hospitalName,
+      hospitalLocation,
+      hospitalId,
+      hospitalEmail,
+      rohiniId,
+      tpaCompany,
+      tpaCompanyPhoneNumber,
+      tpaTollFreeFaxNo,
+      patientName,
+      contactNo,
+      alterNateContactNumber,
+      patientAgeInYr,
+      patientAgeMonth,
+      insurerId,
+      policyNo,
+      employeeId,
+      insurerName,
+      physicianName,
+      physicianContactNumber,
+      insurerPatientOccupation,
+      insurerPatientAddress,
+      treatingDoctorName,
+      treatingDoctorContactNo,
+      diseaseDiscription,
+      releventClinical,
+      durationOfPresent
+    } = this.state
+    let errorMsg = null
+    if (!onlySpaceNotAllowed(treatingDoctorName)) {
+      errorMsg = 'Kindly fill doctor name'
+    } else if (!validateMobileNumber(treatingDoctorContactNo)) {
+      errorMsg = 'Kindly fill valid doctor phone number'
+    } else if (!onlySpaceNotAllowed(diseaseDiscription)) {
+      errorMsg = 'Kindly fill disease discription'
+    } else if (!onlySpaceNotAllowed(releventClinical)) {
+      errorMsg = 'Kindly fill clinical finding '
+    } else if (!onlySpaceNotAllowed(durationOfPresent)) {
+      errorMsg = 'Kindly fill duration of present '
+    }
+
+    if (errorMsg) {
+
+      this.setState({ errorMsg: errorMsg });
+    } else {
+      let reqData = {
+        hospitalName: hospitalName,
+        hospitalLocation: hospitalLocation,
+        hospitalId: hospitalId,
+        hospitalEmail: hospitalEmail,
+        rohiniId: rohiniId,
+        tpaCompany: tpaCompany,
+        tpaCompanyPhoneNumber: tpaCompanyPhoneNumber,
+        tpaTollFreeFaxNo: tpaTollFreeFaxNo,
+        patientName: patientName,
+        patientAgeInYr: patientAgeInYr,
+        patientAgeMonth: patientAgeMonth,
+        insurerId: insurerId,
+        policyNo: policyNo,
+        employeeId: employeeId,
+        insurerName: insurerName,
+        physicianName: physicianName,
+        physicianContactNumber: physicianContactNumber,
+        insurerPatientOccupation: insurerPatientOccupation,
+        insurerPatientAddress: insurerPatientAddress,
+        treatingDoctorName: treatingDoctorName,
+        treatingDoctorContactNo: treatingDoctorContactNo,
+        diseaseDiscription: diseaseDiscription,
+        releventClinical: releventClinical,
+        durationOfPresent: durationOfPresent
+      }
+      let result = await createPreAuth(reqData)
+    
+      
+      if (result) {
+        this.setState({ currentForm: 4, refNo: result.refNo || '5' });
+      }
+    }
+  }
+
+  imageUpload = async (data) => {
+    this.setState({ selectOptionPoopup: false })
+ 
+    if (data.image !== null) {
+      await this.uploadImageToServer(data.image);
+
+    }
+  }
+  uploadImageToServer = async (imagePath) => {
+
+    try {
+
+      let appendForm = "medicine"
+      let endPoint = 'images/upload'
+      const response = await uploadImage(imagePath, endPoint, appendForm)
+      
+      if (response.success) {
+        let data = this.state.imageData;
+        let temp = data.concat(response.data)
+
+        this.setState({ imageData: temp })
+        toastMeassage('image upload successfully', 'success', 3000)
+
+      } else {
+        toastMeassage('Problem Uploading Picture', 'danger', 3000)
+      }
+
+    } catch (e) {
+   
+      toastMeassage('Problem Uploading Picture' + e, 'danger', 3000)
+
     }
   }
   InsurerDetails = () => {
@@ -129,8 +251,8 @@ class PreAuth extends React.PureComponent {
           </Text>
           <Text style={styles.inputLabel}>A. Name of TPA Company</Text>
           <TextInput
-            value={this.state.TpaCompany}
-            onChangeText={(text) => this.setState({ TpaCompany: text })}
+            value={this.state.tpaCompany}
+            onChangeText={(text) => this.setState({ tpaCompany: text })}
             style={[
               styles.inputText,
               {
@@ -143,8 +265,8 @@ class PreAuth extends React.PureComponent {
           <Text style={styles.inputLabel}>B. Phone Number</Text>
           <TextInput
 
-            onChangeText={(text) => this.setState({ TpaCompanyPhoneNUmber: text })}
-            value={this.state.TpaCompanyPhoneNUmber}
+            onChangeText={(text) => this.setState({ tpaCompanyPhoneNumber: text })}
+            value={this.state.tpaCompanyPhoneNumber}
             style={[
               styles.inputText,
               {
@@ -156,8 +278,8 @@ class PreAuth extends React.PureComponent {
           />
           <Text style={styles.inputLabel}>C. Toll Free Fax No</Text>
           <TextInput
-            value={this.state.TollFreeFaxNo}
-            onChangeText={(text) => this.setState({ TollFreeFaxNo: text })}
+            value={this.state.tpaTollFreeFaxNo}
+            onChangeText={(text) => this.setState({ tpaTollFreeFaxNo: text })}
             style={[
               styles.inputText,
               {
@@ -182,13 +304,19 @@ class PreAuth extends React.PureComponent {
             <Radio
               style={{ marginLeft: 40 }}
               standardStyle={true}
-              selected={this.state.selectedGender === 'male' ? true : false}
+              onPress={() => {
+                this.setState({ selectedGender: 'Male' });
+              }}
+              selected={this.state.selectedGender === 'Male'}
             />
             <Text style={{ marginLeft: 10 }}>Male</Text>
             <Radio
               style={{ marginLeft: 40 }}
               standardStyle={true}
-            // selected={this.state.selectedGender === 'male' ? true : false}
+              onPress={() => {
+                this.setState({ selectedGender: 'Female' });
+              }}
+              selected={this.state.selectedGender === 'Female'}
             />
             <Text style={{ marginLeft: 10 }}>Female</Text>
           </View>
@@ -211,7 +339,7 @@ class PreAuth extends React.PureComponent {
               placeholder={'YY'}
 
 
-              onChangeText={(text) => this.setState({ ageInYr: text })}
+              onChangeText={(text) => this.setState({ patientAgeInYr: text })}
               style={[
                 styles.inputText,
                 { width: 160, marginRight: 0, textAlign: 'center' },
@@ -220,7 +348,7 @@ class PreAuth extends React.PureComponent {
             <TextInput
               placeholder={'MM'}
 
-              onChangeText={(text) => this.setState({ ageMonth: text })}
+              onChangeText={(text) => this.setState({ patientAgeMonth: text })}
               style={[
                 styles.inputText,
                 { width: 160, marginLeft: 10, textAlign: 'center' },
@@ -236,14 +364,14 @@ class PreAuth extends React.PureComponent {
               }}
           */}
           <View style={[{ flexDirection: 'row' }, styles.inputText]}>
-            
+
             <DatePicker
               style={{
                 borderColor: '#E0E1E4',
                 borderWidth: 2,
                 backgroundColor: '#fff',
               }}
-              defaultDate={this.state.chosenDate}
+              // defaultDate={this.state.chosenDate}
               timeZoneOffsetInMinutes={undefined}
               modalTransparent={true}
               minimumDate={new Date(1940, 0, 1)}
@@ -360,6 +488,12 @@ class PreAuth extends React.PureComponent {
               style={styles.inputText}
             />
           ) : null}
+          {
+            this.state.selectOptionPoopup ?
+              <ImageUpload
+                popupVisible={(data) => this.imageUpload(data)}
+              /> : null
+          }
           {this.state.haveFamilyPhysician === 'yes' ? (
             <View>
               <Text style={styles.inputLabel}>K.1. Contact No</Text>
@@ -394,11 +528,14 @@ class PreAuth extends React.PureComponent {
               justifyContent: 'center',
               marginTop: 10,
             }}>
-            <Image
-              // source={require('../../../../../assets/images/documentCloud.png')}
-              style={{ height: 60, width: 110 }}
-            />
+            <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
+              <Image
+                source={require('../../../../../assets/images/documentCloud.png')}
+                style={{ height: 60, width: 110 }}
+              />
+            </TouchableOpacity>
           </View>
+          <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
@@ -427,7 +564,7 @@ class PreAuth extends React.PureComponent {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-               this.submitSecandPage()
+                this.submitSecandPage()
               }}
               style={[
                 styles.buttonStyle,
@@ -464,14 +601,14 @@ class PreAuth extends React.PureComponent {
           </Text>
           <Text style={styles.inputLabel}>A. Name of treating doctor</Text>
           <TextInput
-              onChangeText={(text) => this.setState({ treatingDoctorName: text })}
+            onChangeText={(text) => this.setState({ treatingDoctorName: text })}
             placeholder={'Enter Name of treating doctor'}
             style={styles.inputText}
           />
           <Text style={styles.inputLabel}>B. Contact No</Text>
           <TextInput
-           
-            onChangeText={(text) => this.setState({ treatingDoctorContactNumber: text })}
+
+            onChangeText={(text) => this.setState({ treatingDoctorContactNo: text })}
             placeholder={'Enter contact no'}
             style={styles.inputText}
           />
@@ -480,14 +617,15 @@ class PreAuth extends React.PureComponent {
           </Text>
           <TextInput
             placeholder={''}
-            
+
             onChangeText={(text) => this.setState({ diseaseDiscription: text })}
             style={[styles.inputText, { height: 100 }]}
           />
           <Text style={styles.inputLabel}>D. Relevant clinical findings</Text>
           <TextInput
             placeholder={''}
-            onChangeText={(text) => this.setState({ clinicalFindings: text })}
+
+            onChangeText={(text) => this.setState({ releventClinical: text })}
             style={[styles.inputText, { height: 100 }]}
           />
           <Text style={styles.inputLabel}>
@@ -495,7 +633,7 @@ class PreAuth extends React.PureComponent {
           </Text>
           <TextInput
             placeholder={'Enter duration of present ailment'}
-    
+
             onChangeText={(text) => this.setState({ durationOfPresent: text })}
             style={styles.inputText}
           />
@@ -520,7 +658,7 @@ class PreAuth extends React.PureComponent {
               onDateChange={dob => {
                 this.onDOBChange(dob);
               }}
-              disabled={this.dobIsEditable}
+              disabled={false}
             />
             <Icon
               name="calendar"
@@ -554,7 +692,7 @@ class PreAuth extends React.PureComponent {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                this.setState({ currentForm: 4 });
+                this.submitThirdPage()
               }}
               style={[
                 styles.buttonStyle,
