@@ -106,7 +106,7 @@ import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer'
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
-
+import PolicyCoverage from '../../modules/screens/PolicyCoverage'
 
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
@@ -560,6 +560,12 @@ export const smartHealthStack=createStackNavigator({
     screen: labConfirmation,
     navigationOptions: {
       title: 'Lab Confirmation'
+    }
+  },
+  PolicyCoverage: {
+    screen: PolicyCoverage,
+    navigationOptions: {
+      title: 'Policy Coverage '
     }
   },
 

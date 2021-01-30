@@ -135,7 +135,7 @@ class CorporateHome extends PureComponent {
                                 navigation={navigate}
                             /> : null}
                         {isCorporateUser ?
-                            <CoverageCard /> : null}
+                            <CoverageCard  navigation={navigate}/> : null}
                         <SearchAndAppointmentCard
                             navigation={navigate}
                         />
