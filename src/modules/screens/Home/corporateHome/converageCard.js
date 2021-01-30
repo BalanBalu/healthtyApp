@@ -10,13 +10,15 @@ export const CoverageCard = (props) => {
     const { navigation } = props;
     switch (data) {
      
-      case 'Policy Cover':
-        return navigation("PolicyCoverage");
+      case 'PolicyStatus':
+        return navigation("PolicyStatus");
+        case 'Policy Cover':
+          return navigation("PolicyCoverage");
   
     }
   }
 
-  const data = [{ category_name: 'Claim Status', image: require('../../../../../assets/images/corporateHomePageIcons/Claim-status.png') }, { category_name: 'Policy Cover', image: require('../../../../../assets/images/corporateHomePageIcons/policy-cover.png'),navigate:'Policy Cover' }, { category_name: 'Claim Intimation', image: require('../../../../../assets/images/corporateHomePageIcons/claim-intimation.png') }, { category_name: 'Insurance Renewal', image: require('../../../../../assets/images/corporateHomePageIcons/insurance-renewal-reminder.png'),},]
+  const data = [{ category_name: 'Claim Status', image: require('../../../../../assets/images/corporateHomePageIcons/Claim-status.png'),navigate:'PolicyStatus' }, { category_name: 'Policy Cover', image: require('../../../../../assets/images/corporateHomePageIcons/policy-cover.png'),navigate:'Policy Cover' }, { category_name: 'Claim Intimation', image: require('../../../../../assets/images/corporateHomePageIcons/claim-intimation.png') }, { category_name: 'Insurance Renewal', image: require('../../../../../assets/images/corporateHomePageIcons/insurance-renewal-reminder.png'),},]
   return (
     <View>
       <Card style={{ width: '100%', paddingBottom: 10 }}>

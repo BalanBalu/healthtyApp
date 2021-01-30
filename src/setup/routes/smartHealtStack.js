@@ -108,6 +108,7 @@ import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
 import PolicyCoverage from '../../modules/screens/PolicyCoverage'
 import {PolicyConditions} from '../../modules/screens/PolicyCoverage/policyConditions'
+import PolicyStatus from '../../modules/screens/policyStatus'
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
     screen: CorporateHome,
@@ -572,6 +573,12 @@ export const smartHealthStack=createStackNavigator({
     screen: PolicyConditions,
     navigationOptions: {
       title: 'Policy Conditions'
+    }
+  },
+  PolicyStatus: {
+    screen: PolicyStatus,
+    navigationOptions: {
+      title: 'Claim Status'
     }
   },
 
