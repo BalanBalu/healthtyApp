@@ -132,12 +132,12 @@ import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
 import TextTicker from 'react-native-text-ticker';
-import { IS_ANDROID,CURRENT_APP_NAME , MY_SMART_HEALTH_CARE } from '../config';
+import { IS_ANDROID, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
-import {smartHealthStack}from './smartHealtStack'
+import { smartHealthStack } from './smartHealtStack'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -310,7 +310,7 @@ const HomeStack = createStackNavigator({
       },
     })
   },
-  CorporateHome: {
+  /* CorporateHome: {
     screen: CorporateHome,
 
     navigationOptions: ({ navigation }) => ({
@@ -387,7 +387,7 @@ const HomeStack = createStackNavigator({
         backgroundColor: '#7F49C3',
       },
     })
-  },
+   },*/
   EarnReward: {
     screen: EarnReward,
     navigationOptions: {
@@ -1227,8 +1227,8 @@ const HomeStack = createStackNavigator({
 
 const drawerNavigatorRoutes = {
   Home: {
-    screen: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE?smartHealthStack:HomeStack,
-    routeName: 'Home'
+    screen: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? smartHealthStack : HomeStack,
+    routeName: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home'
   },
   'Video and Chat Service': {
     screen: AvailableDoctors4Video,
@@ -1482,7 +1482,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
     {...props} />
 },
   {
-    initialRouteName: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE?'Home':'CorporateHome'
+    initialRouteName: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home'
   })
 
 export const DragwerLogos = {
@@ -1504,7 +1504,7 @@ const SmDrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
   overlayColor: 'rgba(0, 0, 0, 0.7)',
   contentComponent: props => <SideBar
     menuSubMenus={[
-    
+
       {
         menuName: 'Insurance Services',
         menuForCorporateUser: true,
@@ -1587,7 +1587,7 @@ export default createAppContainer(createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
     App: DrawerNavigator,
-    SmApp:SmDrawerNavigator,
+    SmApp: SmDrawerNavigator,
     Auth: AuthStack
   },
   {
