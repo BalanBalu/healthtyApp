@@ -107,6 +107,9 @@ import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer'
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
+import TpaList from '../../modules/screens/NetworkHospitalsFlow/tpaList';
+import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/NetworkHospitalList/networkHospitals';
+
 
 
 export const smartHealthStack=createStackNavigator({
@@ -485,6 +488,18 @@ export const smartHealthStack=createStackNavigator({
       title: 'Hospital List'
     }
   },
+  TpaList: {
+    screen: TpaList,
+    navigationOptions: {
+      title: 'Tpa List'
+    }
+  },
+  NetworkHospitals: {
+    screen: NetworkHospitals,
+    navigationOptions: {
+      title: 'Network Hospitals'
+    }
+  },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -649,7 +664,7 @@ export const smartHealthStack=createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Chats',
       headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('CorporateHome')}>
           <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
             <Icon
               style={

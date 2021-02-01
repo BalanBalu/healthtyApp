@@ -469,10 +469,10 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
       let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
 
       let res = await smartHealthGetService(ends);
-    
+
       if (res && res.data && res.data[0]) {
         let reqData = res.data[0]
-       
+
         if (reqData.relationship) {
           await AsyncStorage.setItem('relationship', reqData.relationship)
         }
@@ -511,11 +511,13 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
         if (signUpResult.data.success) {
           await AsyncStorage.setItem('memberId', reqData.memberId)
-          changePasswordEndPoint = 'member-users/member-id?id=' + reqData.memberId
-          console.log(changePasswordEndPoint)
+          await AsyncStorage.setItem('memberEmailId', reqData.emailId)
+          changePasswordEndPoint = 'member-users/member-id?id=' + reqData.emailId
+
           let forgotResult = await smartHealthGetService(changePasswordEndPoint)
 
           if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
+
             await AsyncStorage.setItem('forceToChangePassword', 'true')
           }
           const token = signUpResult.data.token;
@@ -556,4 +558,19 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 }
 
 
+export async function updateSmartNewPassword(data) {
+  try {
+    let endPoint = 'auth/change-password';
+
+    let response = await smartHealthPostService(endPoint, data);
+    respData = response.data;
+
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 

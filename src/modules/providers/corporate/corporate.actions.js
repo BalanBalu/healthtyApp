@@ -80,3 +80,20 @@ export async function createPreAuth(bodyData) {
     }
   }
 }
+
+
+export async function getPolicyDetailsByPolicyNo(policyNo) {
+  try {
+    let endPoint = 'policy/by-policyNo?pno='+policyNo;
+console.log(endPoint)
+    let response = await smartHealthGetService(endPoint);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
