@@ -106,6 +106,9 @@ import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer'
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
+import PolicyCoverage from '../../modules/screens/PolicyCoverage'
+import {PolicyConditions} from '../../modules/screens/PolicyCoverage/policyConditions'
+import PolicyStatus from '../../modules/screens/policyStatus'
 import TpaList from '../../modules/screens/NetworkHospitalsFlow/tpaList';
 import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/NetworkHospitalList/networkHospitals';
 
@@ -577,6 +580,25 @@ export const smartHealthStack=createStackNavigator({
       title: 'Lab Confirmation'
     }
   },
+  PolicyCoverage: {
+    screen: PolicyCoverage,
+    navigationOptions: {
+      title: 'Policy Coverage'
+    }
+  },
+  PolicyConditions: {
+    screen: PolicyConditions,
+    navigationOptions: {
+      title: 'Policy Conditions'
+    }
+  },
+  PolicyStatus: {
+    screen: PolicyStatus,
+    navigationOptions: {
+      title: 'Claim Status'
+    }
+  },
+
 
   // ============Zoom image ========================
   ImageView: {

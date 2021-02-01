@@ -27,3 +27,18 @@ export async function sendInsuranceInterests(data) {
         }
     }
 }
+
+export async function getInsuranceById(id) {
+    try {
+        let endPoint = '/insurers/' + id;
+        let response = await smartHealthGetService(endPoint);
+        let respData = response.data;
+        return respData;
+
+    } catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
