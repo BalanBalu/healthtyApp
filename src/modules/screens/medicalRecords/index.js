@@ -77,7 +77,7 @@ class MedicineRecords extends PureComponent {
     headerComponent() {
         const { data } = this.state
         return (
-            <View style={{ padding: 10, }}>
+            <View style={{ padding: 10 }}>
                 <Row style={styles.SearchRow}>
 
                     <Col size={9.1} style={{ justifyContent: 'center', }}>
@@ -99,12 +99,7 @@ class MedicineRecords extends PureComponent {
                     </Col>
 
                 </Row>
-                {data.length === 0 ?
-
-                    <RenderListNotFound
-                        text={'No medical Records found'}
-                    />
-                    : null}
+             
                 <Row style={{ marginTop: 15 }}>
                     <Right>
                         <TouchableOpacity style={{ backgroundColor: '#7E49C3', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }} onPress={() => {
@@ -114,6 +109,14 @@ class MedicineRecords extends PureComponent {
                         </TouchableOpacity>
                     </Right>
                 </Row>
+                {data.length === 0 ?
+                <View style={{marginTop:200}}>
+
+                <RenderListNotFound
+                    text={'No medical Records found'}
+                />
+                </View>
+                : null}
             </View>
         )
     }
@@ -195,7 +198,7 @@ class MedicineRecords extends PureComponent {
                     overlayColor="none"
                     cancelable={false}
                 />
-
+ 
                 <View style={{ flex: 1 }}>
 
                     <FlatList horizontal={false} 
@@ -271,7 +274,7 @@ class MedicineRecords extends PureComponent {
                     <RenderFooterLoader footerLoading={this.state.footerLoading} />
 
                 </View>
-
+           
                 {/* </Content> */}
             </Container>
 
