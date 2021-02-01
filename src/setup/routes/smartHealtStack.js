@@ -109,6 +109,11 @@ import LanguagePopUp from './languagePopUp'
 import PolicyCoverage from '../../modules/screens/PolicyCoverage'
 import {PolicyConditions} from '../../modules/screens/PolicyCoverage/policyConditions'
 import PolicyStatus from '../../modules/screens/policyStatus'
+import TpaList from '../../modules/screens/NetworkHospitalsFlow/tpaList';
+import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/NetworkHospitalList/networkHospitals';
+
+
+
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
     screen: CorporateHome,
@@ -479,6 +484,18 @@ export const smartHealthStack=createStackNavigator({
       title: 'Hospital List'
     }
   },
+  TpaList: {
+    screen: TpaList,
+    navigationOptions: {
+      title: 'Tpa List'
+    }
+  },
+  NetworkHospitals: {
+    screen: NetworkHospitals,
+    navigationOptions: {
+      title: 'Network Hospitals'
+    }
+  },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -662,7 +679,7 @@ export const smartHealthStack=createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Chats',
       headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('CorporateHome')}>
           <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
             <Icon
               style={

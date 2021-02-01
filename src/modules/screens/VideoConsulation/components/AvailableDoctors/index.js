@@ -21,10 +21,12 @@ import {
 } from '../../../../providers/chat/chat.action';
 import BookAppointmentPaymentUpdate from '../../../../providers/bookappointment/bookAppointment';
 import { AuthService } from '../../services'
+import {CURRENT_APP_NAME,MY_SMART_HEALTH_CARE} from '../../../../../setup/config'
 import moment from 'moment';
 class AvailableDoctors4Video extends Component {
     constructor(props) {
         super(props)
+        
         this.userId = null;
         this.state = {
             availableChatDoctors: [],
@@ -180,7 +182,7 @@ class AvailableDoctors4Video extends Component {
                     }
                     let response = await this.bookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.CHAT, this.userId, 'cash');
                     if (response.success) {
-                        this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                        this.props.navigation.navigate('SuccessChat', { manualNaviagationPage:CURRENT_APP_NAME===MY_SMART_HEALTH_CARE?'CorporateHome': 'Home' });
                         Toast.show({
                             text: 'Your Chat Consultation Request Success. We will notify Doctor',
                             type: 'success',
@@ -254,7 +256,7 @@ class AvailableDoctors4Video extends Component {
 
                     let response = await this.bookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.VIDEO_CONSULTING, this.userId, 'cash');
                     if (response.success) {
-                        this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                        this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME===MY_SMART_HEALTH_CARE?'CorporateHome':'Home' });
                         Toast.show({
                             text: 'Your Video Consultation Request Success. We will notify the Doctor',
                             type: 'success',

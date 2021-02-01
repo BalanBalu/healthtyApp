@@ -18,6 +18,21 @@ export async function serviceOfSearchByHospitalDetails(reqData, skipCount, limit
   }
 }
 
+/*  Search by Network hospitals for Corporate User */
+export async function serviceOfSearchByNetworkHospitalDetails(reqData, skipCount, limit) {
+  try {
+    const endPoint = `hospital/Network_hospital?skip=${skipCount}&limit=${limit}`;
+    let response = await postService(endPoint, reqData);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 
 export async function validateAppointment(reqData) {
