@@ -80,6 +80,20 @@ export async function createPreAuth(bodyData) {
     }
   }
 }
+export async function getMemberDetailsByEmail(emailId) {
+  try {
+    let endPoint = 'member-detail/memberId/by-email?email=' + emailId;
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
 
 
 export async function getPolicyDetailsByPolicyNo(policyNo) {

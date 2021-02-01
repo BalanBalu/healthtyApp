@@ -3,39 +3,33 @@ import { View, TouchableOpacity, Text, StyleSheet, Image, FlatList } from 'react
 import FastImage from 'react-native-fast-image'
 import { Icon, Card } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { NavigationActions } from 'react-navigation';
 
 
 export const CoverageCard = (props) => {
   const navigationTo = (data) => {
     const { navigation } = props;
     switch (data) {
+
+      case 'PolicyStatus':
+        return navigation("PolicyStatus");
+      case 'Policy Cover':
+        return navigation("PolicyCoverage");
       case 'Pre Auth':
         return navigation("PreAuth");
-     
+
     }
   }
-  
+
   const data = [
     {
+
       category_name: 'Pre Authorisation',
       image: require('../../../../../assets/images/corporateHomePageIcons/Claim-status.png'),
       navigate: 'Pre Auth',
+
     },
-    {
-      category_name: 'Policy Cover',
-      image: require('../../../../../assets/images/corporateHomePageIcons/policy-cover.png'),
-    },
-    {
-      category_name: 'Claim Intimation',
-      image: require('../../../../../assets/images/corporateHomePageIcons/claim-intimation.png'),
-    },
-    {
-      category_name: 'Insurance Renewal',
-      image: require('../../../../../assets/images/corporateHomePageIcons/insurance-renewal-reminder.png'),
-    },
-  ];
-    return (
+    { category_name: 'Claim Status', image: require('../../../../../assets/images/corporateHomePageIcons/Claim-status.png'), navigate: 'PolicyStatus' }, { category_name: 'Policy Cover', image: require('../../../../../assets/images/corporateHomePageIcons/policy-cover.png'), navigate: 'Policy Cover' }, { category_name: 'Claim Intimation', image: require('../../../../../assets/images/corporateHomePageIcons/claim-intimation.png') }, { category_name: 'Insurance Renewal', image: require('../../../../../assets/images/corporateHomePageIcons/insurance-renewal-reminder.png'), },]
+  return (
     <View>
       <Card style={{ width: '100%', paddingBottom: 10 }}>
         <Text style={{ fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', padding: 5, backgroundColor: '#E4D1FE' }}>Coverage</Text>
@@ -44,8 +38,7 @@ export const CoverageCard = (props) => {
           renderItem={({ item, index }) =>
             <View style={{ width: '25%', marginTop: 15, }}>
               <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity 
-                 onPress={() => navigationTo(item.navigate)}
+                <TouchableOpacity onPress={() => navigationTo(item.navigate)} 
                   style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5, borderRadius: 10, }}>
                   <FastImage
                     source={item.image}
