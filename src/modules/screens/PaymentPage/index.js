@@ -6,7 +6,7 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { putService, getService } from '../../../setup/services/httpservices';
 import Razorpay from 'react-native-customui';
-import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_POINTS } from '../../../setup/config';
+import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_POINTS,CURRENT_APP_NAME,MY_SMART_HEALTH_CARE } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { getReferalPoints } from '../../providers/profile/profile.action';
 import { deleteCartByIds } from '../../providers/pharmacy/pharmacy.action'
@@ -322,7 +322,7 @@ class PaymentPage extends Component {
                     duration: 3000
                 })
             } else if (serviceType === SERVICE_TYPES.VIDEO_CONSULTING) {
-                this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                this.props.navigation.navigate('SuccessChat', { manualNaviagationPage:CURRENT_APP_NAME===MY_SMART_HEALTH_CARE?'CorporateHome':'Home' });
                 Toast.show({
                     text: 'Payment Success',
                     type: 'success',
@@ -333,7 +333,7 @@ class PaymentPage extends Component {
                 }
             }
             else if (serviceType === SERVICE_TYPES.LAB_TEST) {
-                this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                this.props.navigation.navigate('SuccessChat', { manualNaviagationPage:CURRENT_APP_NAME===MY_SMART_HEALTH_CARE?'CorporateHome': 'Home' });
                 Toast.show({
                     text: 'Payment Success for Lab Test',
                     type: 'success',

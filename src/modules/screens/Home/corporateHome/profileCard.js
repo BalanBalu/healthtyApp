@@ -20,7 +20,7 @@ export const CorporateProfileCard = (props) => {
               </TouchableOpacity>
             </Col>
             <Col size={8} >
-              <Text style={styles.userName}>{`Hello ${getMemberNameWithStatus(data)}`}</Text>
+              <Text style={styles.userName}>{`${getMemberNameWithStatus(data)}`}</Text>
               <Text style={{ lineHeight: 20, fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>{data.insuranceCompany}</Text>
             </Col>
           </Row>

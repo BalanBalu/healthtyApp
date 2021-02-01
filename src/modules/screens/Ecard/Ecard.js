@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, ListItem, List, Content, Row, Col, Card, CardItem, Body, Grid, Right, Icon, Left } from 'native-base';
 import { View, FlatList, TouchableOpacity, Image, StyleSheet, Linking, AsyncStorage } from 'react-native';
-import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById, getEcardLink } from '../../providers/corporate/corporate.actions';
+import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById, getEcardLink,getPolicyDetailsByPolicyNo } from '../../providers/corporate/corporate.actions';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import Spinner from '../../../components/Spinner'
 import { toastMeassage } from '../../common'
@@ -15,8 +15,8 @@ class Ecard extends PureComponent {
         this.state = {
             data: [],
             isLoading: false,
-            showCard: 0,
-            show: true
+            selectedIndex: -1,
+            
 
         }
 
@@ -27,30 +27,39 @@ class Ecard extends PureComponent {
     }
     async getEcardDetail() {
         await this.setState({ isLoading: true })
-
         await this.setState({ isLoading: false, data: this.props.profile.corporateData || [] })
 
     }
 
     async open(data) {
-      
-        let requestObject = {
-            payer_code: data.payerCode,
-            member_id: data.memberId,
-            policy_no: data.policyNo,
-            first_name: data.firstName
-        }
-       
-        let result = await getEcardLink(requestObject)
-        if (result) {
-            Linking.openURL(result)
-        }else {
-                 toastMeassage('sorry unable  download', 'danger', 3000)
+        try {
+           
+            let policyResult = await getPolicyDetailsByPolicyNo(data.policyNo)
+         
+            if (policyResult && policyResult.TPA) {
+
+                let requestObject = {
+                    payer_code: policyResult.TPA,
+                    member_id: data.memberId,
+                    policy_no: data.policyNo,
+                    first_name: data.firstName
+                }
+
+                let result = await getEcardLink(requestObject)
+
+                if (result) {
+                  
+                    Linking.openURL(result)
+                } else {
+
+                    toastMeassage('sorry unable  download', 'danger', 3000)
+                }
             }
-        // if (!!result && result.status === 'True') {
-        //     let temp = JSON.parse(result.result)
-          
-        // } 
+           
+        } catch (e) {
+            
+            toastMeassage('sorry unable  download', 'danger', 3000) 
+        } 
 
     }
     getInsuranceAddress(data) {
@@ -72,15 +81,19 @@ class Ecard extends PureComponent {
         return temp
 
     }
-    toggleData(data) {
-       
-        this.setState({ showCard: data, show: !this.state.show })
+    toggleData(index) {
+        if (this.state.selectedIndex === index) {
+            this.setState({selectedIndex:-1})
+        } else {
+            this.setState({selectedIndex:index})      
+}
+      
     }
 
     employeeAndFamilyDetails(data, index) {
-        const { showCard, show } = this.state
-        const textValue = showCard === index && !show ? "Hide Ecard" : "Show Ecard"
-        const arrowIcon = showCard === index && !show ? "keyboard-arrow-up" : "keyboard-arrow-down"
+        
+    
+        const arrowIcon = this.state.selectedIndex === index ? "keyboard-arrow-up" : "keyboard-arrow-down"
 
         return (
             <View>
@@ -146,7 +159,7 @@ class Ecard extends PureComponent {
                         </CardItem>
                         <CardItem footer button onPress={() => this.toggleData(index)} style={{ backgroundColor: '#775DA3', height: 40 }}>
                             <Left style={{ marginLeft: 5 }}>
-                                <Text style={[styles.mainText, { fontWeight: '700', color: '#fff' }]}>{textValue}</Text>
+                                <Text style={[styles.mainText, { fontWeight: '700', color: '#fff' }]}>{this.state.selectedIndex === index  ?"Hide Ecard" : "Show Ecard"}</Text>
                             </Left>
                             <Right>
                                 <MaterialIcons name={arrowIcon} style={{ fontSize: 25, color: '#fff' }} />
@@ -154,7 +167,7 @@ class Ecard extends PureComponent {
                         </CardItem>
                     </Card>
                 </View>
-                {this.state.showCard === index && !this.state.show ?
+                {this.state.selectedIndex === index  ?
                     <View>
                         <View style={{ backgroundColor: '#f2f5f4', paddingTop: 10, justifyContent: 'center', alignItems: 'center', paddingBottom: 8, marginTop: 5 }}>
 

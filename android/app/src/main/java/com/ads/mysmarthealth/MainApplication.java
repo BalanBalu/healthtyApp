@@ -3,6 +3,8 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.razorpay.rn.RazorpayPackage;
 import com.razorpay.rn.RazorpayPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
