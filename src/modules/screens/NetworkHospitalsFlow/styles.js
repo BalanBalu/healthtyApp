@@ -9,8 +9,8 @@ export default  styles = StyleSheet.create({
       height: 40,
       borderWidth: 1,
       borderColor: 'gray',
-      marginRight: 10,
-      marginLeft: 10,
+      marginRight: 15,
+      marginLeft: 15,
       marginTop: 20,
       borderRadius: 5
     },
@@ -21,9 +21,8 @@ export default  styles = StyleSheet.create({
       borderRadius: 5,
     },
     flatlistMainView: {
-      marginTop: 10,
-      marginRight: 10,
-      marginLeft: 10
+     
+   
     },
     gradientStyle: {
       height: 65,
