@@ -25,6 +25,7 @@ class PreAuth extends React.PureComponent {
 
     this.state = {
       isLoading: false,
+      imageData:{},
       selectOptionPoopup: false,
       currentForm: 2,
       chosenDate: new Date(),
@@ -220,12 +221,12 @@ class PreAuth extends React.PureComponent {
       let appendForm = "medicine"
       let endPoint = 'images/upload'
       const response = await uploadImage(imagePath, endPoint, appendForm)
-      
+      alert(JSON.stringify(response))
       if (response.success) {
-        let data = this.state.imageData;
-        let temp = data.concat(response.data)
+        
+       
 
-        this.setState({ imageData: temp })
+        this.setState({ imageData: response.data })
         toastMeassage('image upload successfully', 'success', 3000)
 
       } else {
@@ -522,19 +523,133 @@ class PreAuth extends React.PureComponent {
             style={[styles.inputText, { height: 100 }]}
           />
           <Text style={styles.headerText}>Upload your aadhar copy</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginTop: 10,
-            }}>
-            <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
-              <Image
-                source={require('../../../../../assets/images/documentCloud.png')}
-                style={{ height: 60, width: 110 }}
-              />
-            </TouchableOpacity>
-          </View>
+          {this.state.imageData !== {} ?
+            <View
+
+              style={{
+
+                flex: 1,
+
+                marginLeft: 40,
+
+                marginRight: 40,
+
+                height: 130,
+
+                borderColor: '#424242',
+
+                borderRadius: 1,
+
+                backgroundColor: '#fff',
+
+
+                marginTop: 10,
+
+              }}>
+
+              <View style={{ flexDirection: 'row' }}>
+
+                <Icon
+
+                  name="document"
+
+                  style={{
+
+                    color: '#424242',
+
+                    marginTop: 8,
+
+                    marginLeft: 20,
+
+                  }}
+
+                />
+
+
+                <Text
+
+                  style={{
+
+                    fontFamily: 'openSans, sans-serif',
+
+                    fontSize: 20,
+
+                    marginTop: 8,
+
+                    marginLeft: 10,
+
+                    fontWeight: 'bold',
+
+                  }}>
+
+                  aadhar_copy.pdf
+
+  </Text>
+              </View>
+
+              <View style={{ flexDirection: 'column', marginTop: 0 }}>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 5 }}>
+
+                <TouchableOpacity>
+
+                  <Text
+
+                    style={{
+
+                      fontFamily: 'openSans, sans-serif',
+
+                      color: '#325A98',
+
+                      marginLeft: 60,
+
+                      marginRight: 10,
+
+                      fontSize: 20,
+
+                    }}>
+
+                    Download
+
+  </Text>
+
+                </TouchableOpacity>
+
+                <Text style={{ marginLeft: 5, marginRight: 5, fontSize: 20, fontFamily: 'openSans, sans-serif', }}>
+
+                  |
+
+  </Text>
+
+                <TouchableOpacity>
+
+                  <Text style={{ color: '#325A98', marginLeft: 10, fontSize: 20, fontFamily: 'openSans, sans-serif', }}>
+
+                    Replace
+
+  </Text>
+
+                </TouchableOpacity>
+
+              </View>
+
+            </View>
+            :
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginTop: 10,
+              }}>
+              <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
+                <Image
+                  source={require('../../../../../assets/images/documentCloud.png')}
+                  style={{ height: 60, width: 110 }}
+                />
+              </TouchableOpacity>
+            </View>
+          }
           <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
