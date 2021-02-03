@@ -153,7 +153,7 @@ class Login extends Component {
                     </Item>
                     {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
                       <Row style={{ marginTop: 10 }}>
-                         <Col size={3}>
+                         <Col size={4}>
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
                               standardStyle={true}
@@ -174,7 +174,7 @@ class Login extends Component {
                           </Row>
                         </Col>
                        
-                        <Col size={4}>
+                        <Col size={3}>
                         </Col>
                       </Row>
                       : null}
