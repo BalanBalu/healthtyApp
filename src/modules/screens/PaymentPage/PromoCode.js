@@ -13,6 +13,7 @@ class PromoCode extends Component {
             displayMore: false,
             selectedIndex:-1,
             data: []
+
         }
     }
 
@@ -20,6 +21,7 @@ class PromoCode extends Component {
         let data = [];
         this.getPromolistDatas(data)
     }
+
 
 
     getPromolistDatas = async (data) => {
@@ -48,9 +50,11 @@ class PromoCode extends Component {
             console.log(e)
         }
     }
+
     onCouponPress(coupenCodeText) {
         this.setState({ coupenCodeText: coupenCodeText.toUpperCase() })
     }
+
 
     displayMoreData(index) {
         if (this.state.selectedIndex === index) {
@@ -62,6 +66,7 @@ class PromoCode extends Component {
 
 
 
+
     getPromocode(promocode) {
         if (promocode.promo_code != undefined) {
             return `${promocode.promo_code || ''}`
@@ -70,6 +75,7 @@ class PromoCode extends Component {
         }
     }
 
+
     getDescription(data) {
         if (data.description != undefined) {
             return `${data.description || ''}`
@@ -77,6 +83,7 @@ class PromoCode extends Component {
             return null
         }
     }
+
     getPromocodeDiscription(data) {
         if (data.service_type != undefined) {
             return `${data.service_type || ''}`
@@ -85,6 +92,7 @@ class PromoCode extends Component {
         }
     }
     
+
     getPromoCodeMinimumAmountDisciption(data) {
         let discription=''
         if (data.minimum_amount_to_apply_coupon !== undefined) {
@@ -92,6 +100,7 @@ class PromoCode extends Component {
         } 
         return discription
     }
+
     getPromoCodeMinimumOfferAmount(data) {
         let discription = ''
         if (data.discount_number) {
@@ -105,9 +114,11 @@ class PromoCode extends Component {
             }
         return discription
     }
+
     OnCopyedValue() {
         if (this.state.coupenCodeText != null) { }
     }
+    
     navigateToPaymentPage(data) {
         this.props.navigation.navigate('paymentPage',{hasReload:true,coupenCodeText:data.promo_code})
         
