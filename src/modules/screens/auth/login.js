@@ -86,7 +86,7 @@ class Login extends Component {
   getUserProfile = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-      let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image"
+      let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
       let result = await fetchUserProfile(userId, fields);
       if (!result.error) storeBasicProfile(result)
     }
