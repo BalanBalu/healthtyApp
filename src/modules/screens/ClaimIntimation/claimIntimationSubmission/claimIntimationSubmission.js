@@ -15,6 +15,7 @@ import {
 } from 'native-base';
 import {Col, Row} from 'react-native-easy-grid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { subTimeUnit, formatDate } from "../../../../setup/helpers";
 
 
  export default class ClaimInitiationSubmission extends Component {
@@ -24,6 +25,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
       data: {},
       chosenDate: new Date(),
       isLoading: false,
+      dob: ''
     };
     this.setDate = this.setDate.bind(this);
   }
@@ -35,17 +37,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
   }
 
   render() {
-    if (this.state.isLoading) {
-      return (
-        <View style={styles.loader}>
-          <ActivityIndicator
-            size="large"
-            color="#7E49C3"
-            style={{marginTop: 100}}
-          />
-        </View>
-      );
-    }
+   const {policyNo,MemberId,HospitalName,admissionDate,ailment,contactNum,dob}=this.state;
     return (
       <Container>     
         <Content>   
@@ -57,8 +49,15 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
             </Text>
             <Item regular style={{borderRadius: 6}}>
               <Input
+              
                 placeholder="Enter Policy Number"
                 placeholderTextColor={'#CDD0D9'}
+                returnKeyType={'next'}
+                value={policyNo}
+                keyboardType={"default"}
+                onChangeText={enteredPolicyText => this.setState({ policyNo:enteredPolicyText })}
+                blurOnSubmit={false}
+                onSubmitEditing={() => { this.policyNo._root.focus(); }}
               />
             </Item>
           </Col>
@@ -72,8 +71,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 
             <Item regular style={{borderRadius: 6}}>
               <Input
-                placeholder="Enter your member Id"
-                placeholderTextColor={'#CDD0D9'}
+                 placeholder="Enter Member Id"
+                 placeholderTextColor={'#CDD0D9'}
+                 returnKeyType={'next'}
+                 value={MemberId}
+                 keyboardType={"number-pad"}
+                 onChangeText={enteredMemberIdText => this.setState({MemberId: enteredMemberIdText })}
+                 blurOnSubmit={false}
+                 onSubmitEditing={() => { this.MemberId._root.focus(); }}
               />
             </Item>
           </Col>
@@ -86,8 +91,15 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
             </Text>
             <Item regular style={{borderRadius: 6}}>
               <Input
-                placeholder="Enter Hospital Name"
+              
+                placeholder="Enter Hospital name"
                 placeholderTextColor={'#CDD0D9'}
+                returnKeyType={'next'}
+                value={HospitalName}
+                keyboardType={"default"}
+                onChangeText={HospitalName => this.setState({HospitalName })}
+                blurOnSubmit={false}
+                onSubmitEditing={() => { this.HospitalName._root.focus(); }}
               />
             </Item>
           </Col>
@@ -99,12 +111,29 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
               Date of Admission
             </Text>
             <TouchableOpacity>
-            <Item regular style={{borderRadius: 6, height: 50, width: 370 }}>        
-              <DatePicker
+            <Item regular style={{borderRadius: 6, height: 50, width: 370 }}>  
+
+              <DatePicker style={styles.userDetailLabel}
+                                                    defaultDate={dob}
+                                                    timeZoneOffsetInMinutes={undefined}
+                                                    modalTransparent={false}
+                                                    minimumDate={new Date(1940, 0, 1)}
+                                                    maximumDate={subTimeUnit(new Date(), 1, 'year')}
+                                                    animationType={"fade"}
+                                                    androidMode={"default"}
+                                                    placeHolderText={dob === '' ? "Date Of Birth" : formatDate(dob, 'DD-MM-YYYY')}
+                                                    textStyle={{ color: "#5A5A5A" }}
+                                                    value={dob}
+                                                    placeHolderTextStyle={{ color: "#5A5A5A" }}
+                                                    onDateChange={dob => {this.setState({ dob }) }}
+                                                    disabled={this.dobIsEditable}
+                                                />
+      
+              {/* <DatePicker
                 style={{ height: 45, width: 395 }}             
-                defaultDate={new Date(2018, 4, 4)}
-                minimumDate={new Date(2018, 1, 1)}
-                maximumDate={new Date(2018, 12, 31)}
+                defaultDate={new Date()}
+                minimumDate={new Date()}
+                maximumDate={new Date()}
                 locale={'en'}
                 timeZoneOffsetInMinutes={undefined}
                 modalTransparent={false}
@@ -115,7 +144,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
                 placeHolderTextStyle={{color: '#d3d3d3'}}
                 onDateChange={this.setDate}
                 disabled={false}
-              />   
+              />    */}
              <AntDesign name='calendar' style={{ fontSize: 20, color: '#775DA3' }} />
             </Item>
             </TouchableOpacity>

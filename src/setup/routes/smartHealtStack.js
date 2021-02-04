@@ -113,6 +113,7 @@ import PolicyStatus from '../../modules/screens/policyStatus'
 import TpaList from '../../modules/screens/NetworkHospitalsFlow/tpaList';
 import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/NetworkHospitalList/networkHospitals';
 import ClaimIntimationSubmission from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSubmission';
+import FamilyInfoList from '../../modules/screens/ClaimIntimation/familyInfoList';
 
 
 
@@ -508,6 +509,12 @@ export const smartHealthStack=createStackNavigator({
     screen: ClaimIntimationSubmission,
     navigationOptions: {
       title: 'Claim Intimation'
+    }
+  },
+  FamilyInfoList: {
+    screen: FamilyInfoList,
+    navigationOptions: {
+      title: 'Family List'
     }
   },
   // ========Appointment stack ==========
