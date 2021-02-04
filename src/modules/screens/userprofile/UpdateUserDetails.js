@@ -7,13 +7,14 @@ import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { Row, Col } from 'react-native-easy-grid';
 
-import { Image, BackHandler, AsyncStorage, ScrollView,Platform } from 'react-native';
+import { Image, BackHandler, AsyncStorage, ScrollView,Platform,TouchableOpacity } from 'react-native';
 import styles from './style.js';
 import {
     formatDate, subTimeUnit
 } from "../../../setup/helpers";
 import Spinner from '../../../components/Spinner';
 import { bloodGroupList, validateName } from "../../common";
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 
 class UpdateUserDetails extends Component {
@@ -32,7 +33,8 @@ class UpdateUserDetails extends Component {
             updateButton: true,
             errorMsg: '',
             firstNameMsg: '',
-            lastNameMsg: ''
+            lastNameMsg: '',
+            isOnlyDateTimePickerVisible: false,
 
         }
     }
@@ -146,7 +148,20 @@ class UpdateUserDetails extends Component {
             this.setState({ isLoading: false });
         }
     }
-
+    showOnlyDateTimePicker = () => {
+        this.setState({ isOnlyDateTimePickerVisible: true })
+      }
+      hideOnlyDateTimePicker = () => {
+        this.setState({ isOnlyDateTimePickerVisible: false })
+      }
+      handleOnlyDateTimePicker = (date) => {
+        try {
+          this.setState({ isOnlyDateTimePickerVisible: false, dob: date,updateButton: false, })
+        } catch (error) {
+          console.error('Error on Date Picker: ', error);
+        }
+      }
+    
 
     render() {
 
@@ -189,27 +204,22 @@ class UpdateUserDetails extends Component {
                                     />
                                 </Item>
                                 {this.state.lastNameMsg ? <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.lastNameMsg}</Text> : null}
-                                <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5, }}>
-                                    <Icon name='calendar' style={{ marginLeft: 10, color: '#775DA3' }} />
-                                    <DatePicker style={styles.transparentLabel2}
-                                        defaultDate={this.state.dob}
-                                        timeZoneOffsetInMinutes={undefined}
-                                        returnKeyType={'next'}
-                                        modalTransparent={false}
-                                        animationType={"fade"}
-                                        minimumDate={new Date(1940, 0, 1)}
-                                        maximumDate={subTimeUnit(new Date(), 1, 'year')}
-                                        androidMode={"default"}
-                                        placeHolderText={this.state.dob ? formatDate(this.state.dob, "DD/MM/YYYY") : "Date Of Birth"}
-                                        textStyle={{ fontSize: 13, color: "#5A5A5A" }}
-                                        value={this.state.dob}
-                                        placeHolderTextStyle={{ fontSize: 13, color: "#5A5A5A" }}
-                                        onDateChange={dob => {this.setState({ dob, updateButton: false }) }}
-                                        disabled={false}
-                                        testID="editDateOfBirth"
-                                    />
+                                <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5,flexDirection:'row',marginLeft: 15,alignItems:'center' }}>
+                                {/* <Item > */}
+                            <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+                            <Text style={this.state.dob != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.dob != null ?formatDate(this.state.dob, 'DD/MM/YYYY'):'Date of Birth'}</Text>
+                            <DateTimePicker
+                              mode={'date'}
+                              minimumDate={new Date(1940, 0, 1)}
+                              maximumDate={subTimeUnit(new Date(), 1, 'year')}
+                              value={this.state.dob}
+                              isVisible={this.state.isOnlyDateTimePickerVisible}
+                              onConfirm={this.handleOnlyDateTimePicker}
+                              onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
+                            />
+                                {/* </Item> */}
+                                </TouchableOpacity>
 
-                                </Item>
                                 <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5, }}>
                                     <Picker style={styles.transparentLabel2}
                                         mode="dropdown"
