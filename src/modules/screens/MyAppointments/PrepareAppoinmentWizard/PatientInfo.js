@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bookappointment.action'
 import styles from '../styles';
 import { formatDate } from "../../../../setup/helpers";
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 
 class PatientInfo extends PureComponent {
@@ -27,7 +28,8 @@ class PatientInfo extends PureComponent {
             marital_status: marital_status,
             selectedBloodGroup: blood_group,
             isLoading: false,
-            appointmentId: props.navigation.getParam('AppointmentId')
+            appointmentId: props.navigation.getParam('AppointmentId'),
+            isOnlyDateTimePickerVisible: false,
 
         }
     }
@@ -106,10 +108,22 @@ class PatientInfo extends PureComponent {
             this.setState({ isLoading: false })
         }
     }
-
+    showOnlyDateTimePicker = () => {
+        this.setState({ isOnlyDateTimePickerVisible: true })
+      }
+      hideOnlyDateTimePicker = () => {
+        this.setState({ isOnlyDateTimePickerVisible: false })
+      }
+      handleOnlyDateTimePicker = (date) => {
+        try {
+          this.setState({ isOnlyDateTimePickerVisible: false, date_of_birth : date })
+        } catch (error) {
+          console.error('Error on Date Picker: ', error);
+        }
+      }
 
     render() {
-        const { user_name, mobile_no, date_of_birth, selectedBloodGroup, gender, marital_status } = this.state;
+        const { user_name, mobile_no,date_of_birth, selectedBloodGroup, gender, marital_status } = this.state;
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
@@ -138,24 +152,20 @@ class PatientInfo extends PureComponent {
                         <View style={{ marginTop: 20, width: '100%', }}>
 
                             <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Date of birth</Text>
-                            <Form style={styles.formStyle2}>
-                                
-                                                <DatePicker
-                                                    defaultDate={new Date()}
-                                                    timeZoneOffsetInMinutes={undefined}
-                                                    modalTransparent={false}
-                                                    minimumDate={new Date(1940, 0, 1)}
-                                                    animationType={"fade"}
-                                                    androidMode={"default"}
-                                                    placeHolderText={ date_of_birth ? date_of_birth : 'Select Your DOB'}
-                                                    textStyle={{ color: "#5A5A5A",  textAlign: 'left', marginTop: -5 }}
-                                                    value={date_of_birth}
-                                                    placeHolderTextStyle={{ color: "#5A5A5A", marginTop: -5 }}
-                                                    onDateChange={date_of_birth => {  this.setState({ date_of_birth }) }}
-                                                    disabled={false}
-                                                />
-                                           
-                            </Form>
+                            <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={[styles.formStyle2,{flexDirection:'row'}]}>
+                                {/* <Item > */}
+                            <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+                            <Text style={this.state.date_of_birth != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.date_of_birth != null ?formatDate(this.state.date_of_birth, 'DD/MM/YYYY'):'Date of Birth'}</Text>
+                            <DateTimePicker
+                              mode={'date'}
+                              minimumDate={new Date(1940, 0, 1)}
+                              value={this.state.date_of_birth}
+                              isVisible={this.state.isOnlyDateTimePickerVisible}
+                              onConfirm={this.handleOnlyDateTimePicker}
+                              onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
+                            />
+                                {/* </Item> */}
+                                </TouchableOpacity>
                         </View>
 
                         <View style={{ marginTop: 20, width: '100%', }}>
