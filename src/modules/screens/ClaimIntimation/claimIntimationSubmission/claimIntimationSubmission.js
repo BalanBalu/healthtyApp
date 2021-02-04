@@ -1,229 +1,254 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-  StyleSheet,
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
 } from 'react-native';
 import {
   Container,
   Input,
   Item,
-  DatePicker,
-  Content
+  Content,
+  Icon
 } from 'native-base';
-import {Col, Row} from 'react-native-easy-grid';
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import { subTimeUnit, formatDate } from "../../../../setup/helpers";
+import { Col, Row } from 'react-native-easy-grid';
+import { subTimeUnit, addTimeUnit, formatDate } from "../../../../setup/helpers";
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import styles from '../Styles'
+import ModalPopup from '../../../../components/Shared/ModalPopup';
 
-
- export default class ClaimInitiationSubmission extends Component {
+export default class ClaimInitiationSubmission extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: {},
-      chosenDate: new Date(),
+      policyNo: '',
+      memberId: '',
+      HospitalName: '',
+      ailment: '',
+      contactNum: '',
+      selectedAdmissionDate: '',
+      errorMsg: '',
+      isVisibleDatePicker: false,
+      isModalVisible: false,
       isLoading: false,
-      dob: ''
     };
-    this.setDate = this.setDate.bind(this);
+    this.memberInfo = props.navigation.getParam('memberInfo');
   }
-  setDate(newDate) {
-    this.setState({chosenDate: newDate});
-  }
-  async componentDidMount() {
-    this.setState({isLoading: false});
+  async UNSAFE_componentWillMount() {
+    await this.setState({ policyNo: this.memberInfo && this.memberInfo.policyNo, memberId: this.memberInfo && this.memberInfo.memberId })
+
   }
 
+  onPressConfirmDateValue = (date) => {
+    try {
+      this.setState({ isVisibleDatePicker: false, selectedAdmissionDate: date })
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
+  }
+  onPressSubmitClaimData = async () => {
+    const { policyNo, memberId, HospitalName, selectedAdmissionDate, ailment, contactNum } = this.state;
+    try {
+      this.setState({ isLoading: true })
+      if (!policyNo) {
+        this.setState({ errorMsg: 'Please Enter Policy number', isModalVisible: true });
+        return false;
+      }
+      if (!memberId) {
+        this.setState({ errorMsg: "Please Enter Member Id", isModalVisible: true });
+        return false;
+      }
+      if (!HospitalName) {
+        this.setState({ errorMsg: "Please Enter Hospital name", isModalVisible: true });
+        return false;
+      }
+      if (!selectedAdmissionDate) {
+        this.setState({ errorMsg: "Please Choose Date of Admission", isModalVisible: true });
+        return false;
+      }
+      if (!ailment) {
+        this.setState({ errorMsg: "Please Enter Ailment", isModalVisible: true });
+        return false;
+      }
+      if (!contactNum) {
+        this.setState({ errorMsg: "Please Enter Member Contact Number", isModalVisible: true });
+        return false;
+      }
+      const claimIntimationReqData = {
+        policyNo,
+        memberId,
+        HospitalName,
+        admissionDate: selectedAdmissionDate,
+        ailment,
+        contactNumber: contactNum,
+        status: 'REQUEST_SENT'
+      }
+      console.log('claimUpdateResp', JSON.stringify(claimIntimationReqData))
+      // const claimUpdateResp=await this.serviceOfSubmitClaimIntimationReport();
+      // if(claimUpdateResp){
+
+      // }
+      this.props.navigation.navigate('ClaimIntimationSuccess');
+    } catch (error) {
+      this.setState({ errorMsg: 'Something Went Wrong' + error.message, isModalVisible: true })
+    }
+    finally {
+      this.setState({ isLoading: false })
+    }
+  }
   render() {
-   const {policyNo,MemberId,HospitalName,admissionDate,ailment,contactNum,dob}=this.state;
+    const { policyNo, memberId, HospitalName, ailment, contactNum, selectedAdmissionDate, isVisibleDatePicker, isModalVisible, errorMsg } = this.state;
     return (
-      <Container>     
-        <Content>   
-        <Row size={4} style={{marginLeft: 20,marginRight:20,marginTop:10}}>
-          <Col size={1}>
-            <Text
-              style={styles.text}>
-              Policy Number
+      <Container>
+        <Content>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Policy Number
             </Text>
-            <Item regular style={{borderRadius: 6}}>
-              <Input
-              
-                placeholder="Enter Policy Number"
-                placeholderTextColor={'#CDD0D9'}
-                returnKeyType={'next'}
-                value={policyNo}
-                keyboardType={"default"}
-                onChangeText={enteredPolicyText => this.setState({ policyNo:enteredPolicyText })}
-                blurOnSubmit={false}
-                onSubmitEditing={() => { this.policyNo._root.focus(); }}
-              />
-            </Item>
-          </Col>
-        </Row>
-        <Row size={4} style={{marginLeft: 20,marginRight:20,marginTop:10}}>
-          <Col size={1}>
-            <Text
-              style={styles.text}>
-              Member Id
+              <Item regular style={{ borderRadius: 6 }}>
+                <Input
+                  placeholder="Enter Policy Number"
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={policyNo}
+                  keyboardType={"default"}
+                  onChangeText={enteredPolicyText => this.setState({ policyNo: enteredPolicyText })}
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.enteredPolicyText._root.focus(); }}
+                />
+              </Item>
+            </Col>
+          </Row>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Member Id
             </Text>
 
-            <Item regular style={{borderRadius: 6}}>
-              <Input
-                 placeholder="Enter Member Id"
-                 placeholderTextColor={'#CDD0D9'}
-                 returnKeyType={'next'}
-                 value={MemberId}
-                 keyboardType={"number-pad"}
-                 onChangeText={enteredMemberIdText => this.setState({MemberId: enteredMemberIdText })}
-                 blurOnSubmit={false}
-                 onSubmitEditing={() => { this.MemberId._root.focus(); }}
-              />
-            </Item>
-          </Col>
-        </Row>
-        <Row size={4} style={{marginLeft: 20,marginRight:20,marginTop:10}}>
-          <Col size={1}>
-            <Text
-              style={styles.text}>
-              Hospital
+              <Item regular style={{ borderRadius: 6 }}>
+                <Input
+                  ref={(input) => { this.enteredPolicyText = input; }}
+                  placeholder="Enter Member Id"
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={memberId}
+                  keyboardType={"number-pad"}
+                  onChangeText={enteredMemberIdText => this.setState({ memberId: enteredMemberIdText })}
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.enteredMemberIdText._root.focus(); }}
+                />
+              </Item>
+            </Col>
+          </Row>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Hospital
             </Text>
-            <Item regular style={{borderRadius: 6}}>
-              <Input
-              
-                placeholder="Enter Hospital name"
-                placeholderTextColor={'#CDD0D9'}
-                returnKeyType={'next'}
-                value={HospitalName}
-                keyboardType={"default"}
-                onChangeText={HospitalName => this.setState({HospitalName })}
-                blurOnSubmit={false}
-                onSubmitEditing={() => { this.HospitalName._root.focus(); }}
-              />
-            </Item>
-          </Col>
-        </Row>
-        <Row size={4} style={{marginLeft: 20,marginRight:20,marginTop:10}}>
-          <Col size={1}>
-            <Text
-              style={styles.text}>
-              Date of Admission
+              <Item regular style={{ borderRadius: 6 }}>
+                <Input
+                  ref={(input) => { this.enteredMemberIdText = input; }}
+                  placeholder="Enter Hospital name"
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'done'}
+                  value={HospitalName}
+                  keyboardType={"default"}
+                  onChangeText={HospitalName => this.setState({ HospitalName })}
+                />
+              </Item>
+            </Col>
+          </Row>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Date of Admission
             </Text>
-            <TouchableOpacity>
-            <Item regular style={{borderRadius: 6, height: 50, width: 370 }}>  
-
-              <DatePicker style={styles.userDetailLabel}
-                                                    defaultDate={dob}
-                                                    timeZoneOffsetInMinutes={undefined}
-                                                    modalTransparent={false}
-                                                    minimumDate={new Date(1940, 0, 1)}
-                                                    maximumDate={subTimeUnit(new Date(), 1, 'year')}
-                                                    animationType={"fade"}
-                                                    androidMode={"default"}
-                                                    placeHolderText={dob === '' ? "Date Of Birth" : formatDate(dob, 'DD-MM-YYYY')}
-                                                    textStyle={{ color: "#5A5A5A" }}
-                                                    value={dob}
-                                                    placeHolderTextStyle={{ color: "#5A5A5A" }}
-                                                    onDateChange={dob => {this.setState({ dob }) }}
-                                                    disabled={this.dobIsEditable}
-                                                />
-      
-              {/* <DatePicker
-                style={{ height: 45, width: 395 }}             
-                defaultDate={new Date()}
-                minimumDate={new Date()}
-                maximumDate={new Date()}
-                locale={'en'}
-                timeZoneOffsetInMinutes={undefined}
-                modalTransparent={false}
-                animationType={'fade'}
-                androidMode={'default'}
-                placeHolderText="Enter date of admission"
-                textStyle={{color: '#000000'}}
-                placeHolderTextStyle={{color: '#d3d3d3'}}
-                onDateChange={this.setDate}
-                disabled={false}
-              />    */}
-             <AntDesign name='calendar' style={{ fontSize: 20, color: '#775DA3' }} />
-            </Item>
-            </TouchableOpacity>
-          </Col>
-        </Row>
-        <Row size={4} style={{marginLeft: 20,marginRight:20,marginTop:10}}>
-          <Col size={1}>
-            <Text
-              style={styles.text}>
-              Ailment
-            </Text>
-            <Item regular style={{borderRadius: 6}}>
-              <Input
-                placeholder="Enter ailment details"
-                placeholderTextColor={'#CDD0D9'}
-              />
-            </Item>
-          </Col>
-        </Row>
-        <Row size={4} style={{marginLeft: 20,marginRight:20,marginTop:10}}>
-          <Col size={1}>
-            <Text
-              style={styles.text}>
-              Contact Number
-            </Text>
-            <Item regular style={{borderRadius: 6}}>
-              <Input
-                placeholder="Enter contact number"
-                placeholderTextColor={'#CDD0D9'}
-              />
-            </Item>
-          </Col>
-        </Row>
-        <Row size={4} style={{marginLeft: 20,marginRight:20,marginTop:20,marginBottom:20}}>
-          <Col size={4}>
-            <View style={{display: 'flex'}}>
-              <View
-                style={{
-                  alignItems: 'center',
-                }}>
-                <TouchableOpacity style={styles.appButtonContainer}>
-                  <Text style={styles.appButtonText}>SUBMIT</Text>
+              <Item regular style={{ borderRadius: 6, height: 50, width: 370 }}>
+                <TouchableOpacity onPress={() => { this.setState({ isVisibleDatePicker: !isVisibleDatePicker }) }} style={{ flexDirection: 'row' }}>
+                  <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+                  <Text style={selectedAdmissionDate ? { marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', } : { color: '#909090' }}>{selectedAdmissionDate ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY') : 'Date of Birth'}</Text>
+                  <DateTimePicker
+                    mode={'date'}
+                    minimumDate={subTimeUnit(new Date(), 8, 'days')}
+                    maximumDate={addTimeUnit(new Date(), 8, 'days')}
+                    value={selectedAdmissionDate}
+                    isVisible={isVisibleDatePicker}
+                    onConfirm={this.onPressConfirmDateValue}
+                    onCancel={() => this.setState({ isVisibleDatePicker: !isVisibleDatePicker })}
+                  />
                 </TouchableOpacity>
+              </Item>
+            </Col>
+          </Row>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Ailment
+            </Text>
+              <Item regular style={{ borderRadius: 6 }}>
+                <Input
+                  placeholder="Enter Ailment"
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={ailment}
+                  keyboardType={"default"}
+                  onChangeText={ailment => this.setState({ ailment })}
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.ailment._root.focus(); }}
+                />
+              </Item>
+            </Col>
+          </Row>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Contact Number
+            </Text>
+              <Item regular style={{ borderRadius: 6 }}>
+                <Input
+                  ref={(input) => { this.ailment = input; }}
+                  placeholder="Enter Contact number"
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'done'}
+                  value={contactNum}
+                  keyboardType={"default"}
+                  onChangeText={contactNum => this.setState({ contactNum })}
+                />
+              </Item>
+            </Col>
+          </Row>
+          <View style={{ flex: 1 }}>
+            <ModalPopup
+              errorMessageText={errorMsg}
+              closeButtonText={'CLOSE'}
+              closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
+              visible={isModalVisible} />
+          </View>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 20, marginBottom: 20 }}>
+            <Col size={4}>
+              <View style={{ display: 'flex' }}>
+                <View
+                  style={{
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity onPress={() => this.onPressSubmitClaimData()} style={styles.appButtonContainer}>
+                    <Text style={styles.appButtonText}>SUBMIT</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
         </Content>
       </Container>
     );
   }
 }
-const width_proportion = '80%';
-const height_proportion = '40%';
-const styles = StyleSheet.create({
-  text: {
-    padding: 8,
-    paddingLeft: 0,
-    fontWeight: 'bold',
-    color: '#4B5164',
-  },
-  inputView: {
-    padding: 20,
-    display: 'flex',
-  },
-  appButtonContainer: {
-    elevation: 8,
-    width: 150,
-    backgroundColor: '#7F49C3',
-    borderRadius: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  appButtonText: {
-    fontSize: 18,
-    color: '#fff',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    textTransform: 'uppercase',
-  },
-});
 

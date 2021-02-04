@@ -83,6 +83,62 @@ export default  styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 5,
         
-    }
+    },
+    text: {
+        padding: 8,
+        paddingLeft: 0,
+        fontWeight: 'bold',
+        color: '#4B5164',
+      },
+      inputView: {
+        padding: 20,
+        display: 'flex',
+      },
+      appButtonContainer: {
+        elevation: 8,
+        width: 150,
+        backgroundColor: '#7F49C3',
+        borderRadius: 30,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+      },
+      appButtonText: {
+        fontSize: 18,
+        color: '#fff',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        textTransform: 'uppercase',
+      },
+
+      customizedText: {
+        fontFamily: 'OpenSans',
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#fff'
+    },
+ 
+    mainCard: {
+        borderRadius: 10,
+    },
+    circleIcon: {
+        color: '#5cb75d',
+        fontSize: 60
+    },
+    successHeading: {
+        textAlign: 'center',
+        fontFamily: 'OpenSans',
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
+    subText: {
+        textAlign: 'center',
+        fontFamily: 'OpenSans',
+        fontSize: 17,
+        marginTop: 5,
+        color: '#535353',
+        marginLeft: 20,
+        marginRight: 20
+    },
+  
 
   })
