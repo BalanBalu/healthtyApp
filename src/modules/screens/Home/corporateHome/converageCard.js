@@ -16,7 +16,8 @@ export const CoverageCard = (props) => {
         return navigation("PolicyCoverage");
       case 'Pre Auth':
         return navigation("PreAuth");
-
+case'ClaimIntimationSubmission':
+return navigation('ClaimIntimationSubmission')
     }
   }
 
@@ -28,7 +29,7 @@ export const CoverageCard = (props) => {
       navigate: 'Pre Auth',
 
     },
-    { category_name: 'Claim Status', image: require('../../../../../assets/images/corporateHomePageIcons/Claim-status.png'), navigate: 'PolicyStatus' }, { category_name: 'Policy Cover', image: require('../../../../../assets/images/corporateHomePageIcons/policy-cover.png'), navigate: 'Policy Cover' }, { category_name: 'Claim Intimation', image: require('../../../../../assets/images/corporateHomePageIcons/claim-intimation.png') }, { category_name: 'Insurance Renewal', image: require('../../../../../assets/images/corporateHomePageIcons/insurance-renewal-reminder.png'), },]
+    { category_name: 'Claim Status', image: require('../../../../../assets/images/corporateHomePageIcons/Claim-status.png'), navigate: 'PolicyStatus' }, { category_name: 'Policy Cover', image: require('../../../../../assets/images/corporateHomePageIcons/policy-cover.png'), navigate: 'Policy Cover' }, { category_name: 'Claim Intimation', image: require('../../../../../assets/images/corporateHomePageIcons/claim-intimation.png') , navigate: 'ClaimIntimationSubmission' }, { category_name: 'Insurance Renewal', image: require('../../../../../assets/images/corporateHomePageIcons/insurance-renewal-reminder.png'), },]
   return (
     <View>
       <Card style={{ width: '100%', paddingBottom: 10 }}>
