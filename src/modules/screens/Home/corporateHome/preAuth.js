@@ -27,11 +27,11 @@ class PreAuth extends React.PureComponent {
       isLoading: false,
       imageData:{},
       selectOptionPoopup: false,
-      currentForm: 2,
+      currentForm: 1,
       chosenDate: new Date(),
       selectedGender: 'Male',
       alreadyHaveInsurance: 'yes',
-      referenceID: 'SMTTH7',
+      referenceID: '',
       haveFamilyPhysician: 'yes',
       hospitalName: '',
       hospitalLocation: '',
@@ -200,8 +200,8 @@ class PreAuth extends React.PureComponent {
       let result = await createPreAuth(reqData)
     
       
-      if (result) {
-        this.setState({ currentForm: 4, refNo: result.refNo || '5' });
+      if (result&&result.referNo) {
+        this.setState({ currentForm: 4, referenceID: result.referNo || '5' });
       }
     }
   }

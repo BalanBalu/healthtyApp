@@ -504,6 +504,10 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
         if (reqData.mobile) {
           reqBody.mobile_no = reqData.mobile
         }
+        console.log(reqData.middleName)
+        if (reqData.middleName) {
+          reqBody.middle_name = reqData.middleName
+        }
 
         let insertEndPoint = 'auth/smart_health/signUp';
         let signUpResult = await postService(insertEndPoint, reqBody);
