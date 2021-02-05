@@ -80,6 +80,19 @@ export async function createPreAuth(bodyData) {
     }
   }
 }
+export async function serviceOfClaimIntimation(reqBodyData) {
+  try {
+    const endpoint = 'claim-intimation';
+    const resp = await smartHealthPostService(endpoint, reqBodyData)
+    return resp.data
+  } catch (Ex) {
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex.message,
+    }
+  }
+}
 export async function getMemberDetailsByEmail(emailId) {
   try {
     let endPoint = 'member-detail/memberId/by-email?email=' + emailId;
