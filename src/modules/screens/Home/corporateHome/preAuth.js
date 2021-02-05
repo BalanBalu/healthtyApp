@@ -9,7 +9,7 @@ import {
   Header,
   Content,
 } from 'native-base';
-import { TextInput, StyleSheet, Image } from 'react-native';
+import { TextInput, StyleSheet, Image,SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { subTimeUnit, formatDate } from '../../../../setup/helpers';
@@ -58,7 +58,13 @@ class PreAuth extends React.PureComponent {
       diseaseDiscription: '',
       releventClinical: '',
       durationOfPresent: '',
-      errorMsg: null
+      errorMsg: null,
+      TpaComErrorMsg:null,
+      MobileNumError:null,
+      tpaTollFreeFaxNoErrorMsg:null,
+      patientNameErrorMsg:null,
+      contactNoErrorMsg:null,
+      patientAgeErrorMsg:null
     };
     // this.onDOBChange = this.onDOBChange.bind(this);
   }
@@ -85,16 +91,56 @@ class PreAuth extends React.PureComponent {
       physicianName, physicianContactNumber, insurerPatientOccupation, insurerPatientAddress } = this.state
     let errorMsg = null
     if (!onlySpaceNotAllowed(tpaCompany)) {
-      errorMsg = 'Kindly fill tpa  company'
-    } else if (!validateMobileNumber(tpaCompanyPhoneNumber)) {
-      errorMsg = 'Kindly fill valid tpa company phone number'
-    } else if (!validateMobileNumber(tpaTollFreeFaxNo)) {
-      errorMsg = 'Kindly fill valid toll free fax no'
-    } else if (!onlySpaceNotAllowed(patientName)) {
-      errorMsg = 'Kindly fill patient name'
-    } else if (!validateMobileNumber(contactNo)) {
-      errorMsg = 'Kindly fill valid  contact number'
-    } else if (!onlySpaceNotAllowed(patientAgeInYr)) {
+      this.setState({ TpaComErrorMsg: 'Kindly fill tpa  company name' });
+      this.scrollViewRef.scrollTo({
+        y: this.TpaCompany.y,
+        animated: true
+      });
+      return false;
+  }
+  if (!validateMobileNumber(tpaCompanyPhoneNumber)) {
+    this.setState({ MobileNumError: 'Kindly fill valid tpa company phone number' });
+    this.scrollViewRef.scrollTo({
+      y: this.PhoneNumber.y,
+      animated: true
+    });
+    return false;
+}
+// if (!validateMobileNumber(tpaTollFreeFaxNo)) {
+//   this.setState({ tpaTollFreeFaxNoErrorMsg: 'Kindly fill valid toll free fax no' });
+//   this.scrollViewRef.scrollTo({
+//     y: this.tpaTollFreeFaxNoText.y,
+//     animated: true
+//   });
+//   return false;
+// }
+  
+if (!onlySpaceNotAllowed(patientName)) {
+  this.setState({ patientNameErrorMsg: 'Kindly fill patient name' });
+  this.scrollViewRef.scrollTo({
+    y: this.patientNameText.y,
+    animated: true
+  });
+  return false;
+}
+if (!validateMobileNumber(contactNo)) {
+  this.setState({ contactNoErrorMsg: 'Kindly fill valid  contact number' });
+  this.scrollViewRef.scrollTo({
+    y: this.contactNoText.y,
+    animated: true
+  });
+  return false;
+}
+if (!onlySpaceNotAllowed(patientAgeInYr)) {
+  this.setState({ patientAgeErrorMsg: 'Kindly fill age year' });
+  this.scrollViewRef.scrollTo({
+    y: this.patientAgeText.y,
+    animated: true
+  });
+  return false;
+}
+
+  if (!onlySpaceNotAllowed(patientAgeInYr)) {
       errorMsg = 'Kindly fill age year'
     } else if (!onlySpaceNotAllowed(patientAgeMonth)) {
       errorMsg = 'Kindly fill age month'
@@ -240,65 +286,105 @@ class PreAuth extends React.PureComponent {
   }
   InsurerDetails = () => {
     return (
-      <ScrollView style={styles.body}>
-        {/* <Text style={styles.formHeader}>
-          Request For cashless hospitalisation for health insurance policy part
-          c (revised)
-        </Text> */}
+      <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
         <View style={{ flexDirection: 'column' }}>
           <Text style={styles.headerText}>
             Details of third party administrator
           </Text>
-          <Text style={styles.inputLabel}>A. Name of TPA Company</Text>
+          <Text style={styles.inputLabel}
+             onLayout={event =>
+              (this.TpaCompany = event.nativeEvent.layout)
+            }>A. Name of TPA Company</Text>
           <TextInput
             value={this.state.tpaCompany}
-            onChangeText={(text) => this.setState({ tpaCompany: text })}
+            onChangeText={(text) => this.setState({ tpaCompany: text,TpaComErrorMsg:null })}
             style={[
               styles.inputText,
+              this.state.TpaComErrorMsg != null?
               {
                 backgroundColor: '#E1E2E5',
-                borderColor: '#7F49C3',
+                borderColor: 'red',
                 color: '#707070',
-              },
+              }:
+                styles.inputText
+              ,
             ]}
           />
-          <Text style={styles.inputLabel}>B. Phone Number</Text>
+          {this.state.TpaComErrorMsg !== null?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right' }}>{this.state.TpaComErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+           onLayout={event =>
+            (this.PhoneNumber = event.nativeEvent.layout)
+          }>B. Phone Number</Text>
           <TextInput
 
-            onChangeText={(text) => this.setState({ tpaCompanyPhoneNumber: text })}
+            onChangeText={(text) => this.setState({ tpaCompanyPhoneNumber: text,MobileNumError:null })}
             value={this.state.tpaCompanyPhoneNumber}
             style={[
               styles.inputText,
+              this.state.MobileNumError != null?
               {
                 backgroundColor: '#E1E2E5',
-                borderColor: '#7F49C3',
+                borderColor: 'red',
                 color: '#707070',
-              },
+              }:
+                styles.inputText
+              ,
             ]}
           />
-          <Text style={styles.inputLabel}>C. Toll Free Fax No</Text>
+            {this.state.MobileNumError !== null?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.MobileNumError}</Text>
+              :null}
+          {/* <Text style={styles.inputLabel}
+            onLayout={event =>
+              (this.tpaTollFreeFaxNoText = event.nativeEvent.layout)
+            }>C. Toll Free Fax No</Text>
           <TextInput
             value={this.state.tpaTollFreeFaxNo}
-            onChangeText={(text) => this.setState({ tpaTollFreeFaxNo: text })}
+            onChangeText={(text) => this.setState({ tpaTollFreeFaxNo: text,tpaTollFreeFaxNoErrorMsg:null })}
             style={[
               styles.inputText,
+              this.state.tpaTollFreeFaxNoErrorMsg != null?
               {
                 backgroundColor: '#E1E2E5',
-                borderColor: '#7F49C3',
+                borderColor: 'red',
                 color: '#707070',
-              },
+              }:
+                styles.inputText
+              ,
             ]}
           />
+           {this.state.tpaTollFreeFaxNoErrorMsg !== null?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.tpaTollFreeFaxNoErrorMsg}</Text>
+              :null} */}
           <Text style={styles.headerText}>
             to be filled by insurer / patient
           </Text>
-          <Text style={styles.inputLabel}>A. Name of the patient</Text>
+          <Text style={styles.inputLabel}
+           onLayout={event =>
+            (this.patientNameText = event.nativeEvent.layout)
+          }>A. Name of the patient</Text>
           <TextInput
 
-            onChangeText={(text) => this.setState({ patientName: text })}
+            onChangeText={(text) => this.setState({ patientName: text,patientNameErrorMsg:null })}
             placeholder={'Enter name of patient'}
-            style={styles.inputText}
+            style={[
+              styles.inputText,
+              this.state.patientNameErrorMsg != null?
+              {
+                backgroundColor: '#E1E2E5',
+                borderColor: 'red',
+                color: '#707070',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
+             {this.state.patientNameErrorMsg !== null?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientNameErrorMsg}</Text>
+              :null}
           <Text style={styles.inputLabel}>B. Gender</Text>
           <View style={{ flexDirection: 'row' }}>
             <Radio
@@ -320,12 +406,27 @@ class PreAuth extends React.PureComponent {
             />
             <Text style={{ marginLeft: 10 }}>Female</Text>
           </View>
-          <Text style={styles.inputLabel}>C. Concat No</Text>
+          <Text style={styles.inputLabel}
+           onLayout={event =>
+            (this.contactNoText = event.nativeEvent.layout)
+          }>C. Concat No</Text>
           <TextInput
             placeholder={'Enter contact no'}
-            onChangeText={(text) => this.setState({ contactNo: text })}
-            style={styles.inputText}
+            onChangeText={(text) => this.setState({ contactNo: text,contactNoErrorMsg:null })}
+            style={[ styles.inputText,
+              this.state.contactNoErrorMsg != null?
+              {
+                backgroundColor: '#E1E2E5',
+                borderColor: 'red',
+                color: '#707070',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
+           {this.state.contactNoErrorMsg !== null?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.contactNoErrorMsg}</Text>
+              :null}
           <Text style={styles.inputLabel}>D. Alternate Concat No</Text>
           <TextInput
             placeholder={'Enter alternate contact no'}
@@ -333,16 +434,30 @@ class PreAuth extends React.PureComponent {
             onChangeText={(text) => this.setState({ alterNateContactNumber: text })}
             style={styles.inputText}
           />
-          <Text style={styles.inputLabel}>E. Age</Text>
+          <Text style={styles.inputLabel}
+              onLayout={event =>
+                (this.patientAgeText = event.nativeEvent.layout)
+              }>E. Age</Text>
           <View style={{ flexDirection: 'row' }}>
             <TextInput
               placeholder={'YY'}
 
 
               onChangeText={(text) => this.setState({ patientAgeInYr: text })}
-              style={[
-                styles.inputText,
-                { width: 160, marginRight: 0, textAlign: 'center' },
+            
+              style={[ styles.inputText,
+                this.state.patientAgeErrorMsg != null?
+                {
+                  borderColor: 'red',
+                  color: '#707070',
+                  width: 160,
+                  marginRight:0
+                }:
+                  styles.inputText
+                ,
+                {
+                  width: 160,
+                }
               ]}
             />
             <TextInput
@@ -355,6 +470,9 @@ class PreAuth extends React.PureComponent {
               ]}
             />
           </View>
+          {this.state.patientAgeErrorMsg !== null?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientAgeErrorMsg}</Text>
+              :null}
           <Text style={styles.inputLabel}>F. Date of birth</Text>
           {/* 
           style={{
@@ -535,7 +653,6 @@ class PreAuth extends React.PureComponent {
               />
             </TouchableOpacity>
           </View>
-          <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
@@ -589,6 +706,7 @@ class PreAuth extends React.PureComponent {
           </View>
         </View>
       </ScrollView>
+      </SafeAreaView>
     );
   };
 
@@ -754,7 +872,8 @@ class PreAuth extends React.PureComponent {
 
   HospitalDetails = () => {
     return (
-      <ScrollView style={styles.body}>
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
         <Text style={styles.formHeader}>
           Request For cashless hospitalisation for health insurance policy part
           c (revised)
@@ -815,6 +934,7 @@ class PreAuth extends React.PureComponent {
           </View>
         </View>
       </ScrollView>
+      </SafeAreaView>
     );
   };
   render() {
@@ -877,7 +997,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 6,
     borderColor: '#E0E1E4',
-    borderWidth: 2,
+    borderWidth: 0.5,
     marginLeft: 40,
     backgroundColor: '#fff',
     marginRight: 40,
