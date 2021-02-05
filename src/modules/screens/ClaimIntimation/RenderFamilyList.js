@@ -21,56 +21,56 @@ item.full_name=this.getCorporateLoginName(item)
                     <Col size={0.5}>
                         <Text style={styles.NameText}>{index + 1}.</Text>
                     </Col>
-                    <Col size={5}>
+                    <Col size={6.5}>
                         <Text style={styles.NameText}>{item.full_name ? `${item.full_name}` : null} <Text style={styles.relationShipText}>{item && item.full_name&&item.relationship ? `( ${item.relationship} )` : null}
                         </Text>
                         </Text>
                     </Col>
-                    <Col size={5}>
+                    <Col size={3}>
                         <Text style={styles.ageText}>{item.age||0} years</Text>
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 10 }}>
                     <Col size={0.5}></Col>
-                    <Col size={4}>
+                    <Col size={5}>
                         <Row>
                             <Col size={3}>
                                 <Text style={styles.commonText}>Gender</Text>
                             </Col>
-                            <Col size={2}>
-                                <Text style={styles.commonText}>-</Text>
+                            <Col size={1}>
+                                <Text style={[styles.commonText,{marginLeft:5}]}>-</Text>
                             </Col>
-                            <Col size={5} >
+                            <Col size={6} >
                                 <Text style={[styles.commonText, { color: '#909498' }]}>{item.gender?item.gender: 'N/A'}</Text>
                             </Col>
                         </Row>
                     </Col>
-                    <Col size={4}>
+                    <Col size={5}>
                         {item.mobile ?
                             <Row>
                                 <Col size={3}>
                                     <Text style={styles.commonText}>Mobile</Text>
                                 </Col>
-                                <Col size={2}>
-                                    <Text style={styles.commonText}>-</Text>
+                                <Col size={1}>
+                                <Text style={[styles.commonText,{marginLeft:5}]}>-</Text>
                                 </Col>
-                                <Col size={5} style={{ alignItems: 'flex-end' }}>
+                                <Col size={6} style={{ alignItems: 'flex-end' }}>
                                     <Text style={[styles.commonText, { color: '#909498' }]}>{item.mobile}</Text>
                                 </Col>
                             </Row>
                             : null}
                     </Col>
                 </Row>
-                <View style={{ marginLeft: 10 }}>
+                <View style={{ marginLeft: 15 }}>
                     <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.7, marginTop: 15 }} />
                     <Row>
-                        <Col style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }} size={8}>
+                        <Col style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }} size={6}>
                             <TouchableOpacity style={styles.benefeciaryButton} onPress={() => onPressIsShowBeneficiaryInfo(index, isShowBeneficiaryInfoCard === index?'UP':'DOWN')}>
                                 <Text style={{ color: "#0054A5", fontSize: 14, fontFamily: 'OpenSans', }}>Show Benefeciary Details </Text>
                                 <MaterialIcons name={isShowBeneficiaryInfoCard === index ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 20, color: "#0054A5" }} />
                             </TouchableOpacity>
                         </Col>
-                        <Col style={{ alignItems: 'center', marginTop: 3 }} size={2}>
+                        <Col style={{ alignItems: 'flex-end', marginTop: 3,justifyContent:'flex-end' }} size={4}>
                             <TouchableOpacity style={styles.selectButton} onPress={() => onPressSelectBtnToGoNextProcess(item)}>
                                 <Text style={{ color: "#fff", fontSize: 14, fontFamily: 'OpenSans' }}>SELECT</Text>
                             </TouchableOpacity>
