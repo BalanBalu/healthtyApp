@@ -64,7 +64,9 @@ class PreAuth extends React.PureComponent {
       tpaTollFreeFaxNoErrorMsg:null,
       patientNameErrorMsg:null,
       contactNoErrorMsg:null,
-      patientAgeErrorMsg:null
+      patientAgeErrorMsg:null,
+      patientMonthErrorMsg:null,
+      patientIDCardErrorMsg:null
     };
     // this.onDOBChange = this.onDOBChange.bind(this);
   }
@@ -139,12 +141,24 @@ if (!onlySpaceNotAllowed(patientAgeInYr)) {
   });
   return false;
 }
+if (!onlySpaceNotAllowed(patientAgeMonth)) {
+  this.setState({ patientMonthErrorMsg: 'Kindly fill age month' });
+  this.scrollViewRef.scrollTo({
+    y: this.patientAgeText.y,
+    animated: true
+  });
+  return false;
+}
+if (!onlySpaceNotAllowed(patientAgeMonth)) {
+  this.setState({ patientIDCardErrorMsg: 'Kindly fill insurer id' });
+  this.scrollViewRef.scrollTo({
+    y: this.patientIDCardText.y,
+    animated: true
+  });
+  return false;
+}
 
-  if (!onlySpaceNotAllowed(patientAgeInYr)) {
-      errorMsg = 'Kindly fill age year'
-    } else if (!onlySpaceNotAllowed(patientAgeMonth)) {
-      errorMsg = 'Kindly fill age month'
-    } else if (!onlySpaceNotAllowed(insurerId)) {
+   if (!onlySpaceNotAllowed(insurerId)) {
       errorMsg = 'Kindly fill insurer id '
     } else if (!onlySpaceNotAllowed(policyNumber)) {
       errorMsg = 'Kindly fill policy number'
@@ -303,9 +317,8 @@ if (!onlySpaceNotAllowed(patientAgeInYr)) {
               styles.inputText,
               this.state.TpaComErrorMsg != null?
               {
-                backgroundColor: '#E1E2E5',
                 borderColor: 'red',
-                color: '#707070',
+               
               }:
                 styles.inputText
               ,
@@ -326,9 +339,7 @@ if (!onlySpaceNotAllowed(patientAgeInYr)) {
               styles.inputText,
               this.state.MobileNumError != null?
               {
-                backgroundColor: '#E1E2E5',
                 borderColor: 'red',
-                color: '#707070',
               }:
                 styles.inputText
               ,
@@ -374,9 +385,7 @@ if (!onlySpaceNotAllowed(patientAgeInYr)) {
               styles.inputText,
               this.state.patientNameErrorMsg != null?
               {
-                backgroundColor: '#E1E2E5',
                 borderColor: 'red',
-                color: '#707070',
               }:
                 styles.inputText
               ,
@@ -416,9 +425,7 @@ if (!onlySpaceNotAllowed(patientAgeInYr)) {
             style={[ styles.inputText,
               this.state.contactNoErrorMsg != null?
               {
-                backgroundColor: '#E1E2E5',
                 borderColor: 'red',
-                color: '#707070',
               }:
                 styles.inputText
               ,
@@ -443,13 +450,11 @@ if (!onlySpaceNotAllowed(patientAgeInYr)) {
               placeholder={'YY'}
 
 
-              onChangeText={(text) => this.setState({ patientAgeInYr: text })}
+              onChangeText={(text) => this.setState({ patientAgeInYr: text,patientAgeErrorMsg:null })}
             
               style={[ styles.inputText,
                 this.state.patientAgeErrorMsg != null?
                 {
-                  borderColor: 'red',
-                  color: '#707070',
                   width: 160,
                   marginRight:0
                 }:
@@ -463,15 +468,26 @@ if (!onlySpaceNotAllowed(patientAgeInYr)) {
             <TextInput
               placeholder={'MM'}
 
-              onChangeText={(text) => this.setState({ patientAgeMonth: text })}
-              style={[
-                styles.inputText,
-                { width: 160, marginLeft: 10, textAlign: 'center' },
-              ]}
+              onChangeText={(text) => this.setState({ patientAgeMonth: text,patientMonthErrorMsg:null })}
+                style={[ styles.inputText,
+                  this.state.patientMonthErrorMsg != null?
+                  {
+                    width: 160,
+                    marginRight:0
+                  }:
+                    styles.inputText
+                  ,
+                  {
+                    width: 160,
+                  }
+                ]}
             />
           </View>
-          {this.state.patientAgeErrorMsg !== null?
+          {this.state.patientAgeErrorMsg !== null  ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientAgeErrorMsg}</Text>
+              :null}
+              {this.state.patientMonthErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientMonthErrorMsg}</Text>
               :null}
           <Text style={styles.inputLabel}>F. Date of birth</Text>
           {/* 
@@ -509,13 +525,26 @@ if (!onlySpaceNotAllowed(patientAgeInYr)) {
               style={{ color: '#3E4459', marginTop: 8, marginLeft: 160 }}
             />
           </View>
-          <Text style={styles.inputLabel}>G. Insurer ID Card No</Text>
+          <Text style={styles.inputLabel}
+            onLayout={event =>
+              (this.patientIDCardText = event.nativeEvent.layout)
+            }>G. Insurer ID Card No</Text>
           <TextInput
 
             placeholder={'Enter Insurer ID Card No'}
-            onChangeText={(text) => this.setState({ insurerId: text })}
-            style={styles.inputText}
+            onChangeText={(text) => this.setState({ insurerId: text,patientIDCardErrorMsg:null })}
+            style={[ styles.inputText,
+              this.state.patientIDCardErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
+            {this.state.patientIDCardErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientIDCardErrorMsg}</Text>
+              :null}
           <Text style={styles.inputLabel}>
             H. Policy number / Name of corporate
           </Text>
