@@ -36,6 +36,20 @@ export async function ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(pro
   }
 }
 
+export async function generateOTPForSmartHealth(data) {
+  try {
+   
+    let endPoint = 'auth/member/reset-password';
+    let response = await smartHealthPostService(endPoint, data);
+   
+    let responseData = response.data;
+    return responseData
+  } catch (e) {
+   
+    console.log(e);
+  }
+}
+
 export async function generateOtpForEmailAndMobile(reqData, userId) {
   try {
     let endPoint = '/auth/generateOtpForEmailAndMobile/' + userId;
@@ -160,7 +174,25 @@ export async function generateOTP(reqData) {
     });
   }
 }
+// 
+export async function changePasswordForSmartHelath(reqData) {
+  try {
+   
+    let endPoint = 'auth/update-reset-password'
+    let response = await smartHealthPutService(endPoint, reqData);
+    let responseData = response.data
+    
+    return responseData
+  }
+  catch (e) {
+    console.log(e);
+    store.dispatch({
+      type: AUTH_HAS_ERROR,
+      message: e + ' Occured! Please Try again'
+    });
+  }
 
+}
 /*Forgot Password*/
 export async function changePassword(reqData) {
   try {
