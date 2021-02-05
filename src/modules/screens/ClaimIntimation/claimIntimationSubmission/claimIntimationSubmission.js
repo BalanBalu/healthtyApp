@@ -16,6 +16,7 @@ import { subTimeUnit, addTimeUnit, formatDate } from "../../../../setup/helpers"
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import styles from '../Styles'
 import ModalPopup from '../../../../components/Shared/ModalPopup';
+import { acceptNumbersOnly } from '../../../common';
 
 export default class ClaimInitiationSubmission extends Component {
   constructor(props) {
@@ -219,8 +220,8 @@ export default class ClaimInitiationSubmission extends Component {
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'done'}
                   value={contactNum}
-                  keyboardType={"default"}
-                  onChangeText={contactNum => this.setState({ contactNum })}
+                  keyboardType={"number-pad"}
+                  onChangeText={contactNum => acceptNumbersOnly(contactNum) == true || contactNum === '' ? this.setState({ contactNum }) : null}
                 />
               </Item>
             </Col>
