@@ -111,10 +111,25 @@ export async function getMemberDetailsByEmail(emailId) {
 
 export async function getPolicyDetailsByPolicyNo(policyNo) {
   try {
-    let endPoint = 'policy/by-policyNo?pno='+policyNo;
-console.log(endPoint)
+    let endPoint = 'policy/by-policyNo?pno=' + policyNo;
     let response = await smartHealthGetService(endPoint);
 
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit) {
+  try {
+    let endPoint = 'claim-data?payerCode=' + payer_code + '&policyno=' + policy_no + '&p=' + page + '&l=' + limit;
+    console.log(`endPoint`, endPoint);
+    
+    let response = await smartHealthGetService(endPoint);
     return response.data;
   } catch (e) {
 
