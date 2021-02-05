@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Image, FlatList } from 'react-native';
-import FastImage from 'react-native-fast-image'
-import { Icon, Card } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 export const PolicyConditions = (props) => {
 
     const { navigation } = props;
     let termsAndConditionList = navigation.getParam('termsAndConditionList');
-
     return (
         <View style={{ marginRight: 15, marginLeft: 15, marginTop: 5 }}>
             <FlatList
