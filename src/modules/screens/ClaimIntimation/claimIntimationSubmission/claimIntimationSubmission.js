@@ -3,6 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import {
   Container,
@@ -17,15 +18,15 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import styles from '../Styles'
 import ModalPopup from '../../../../components/Shared/ModalPopup';
 import { acceptNumbersOnly } from '../../../common';
+import { serviceOfClaimIntimation } from '../../../providers/corporate/corporate.actions';
 
 export default class ClaimInitiationSubmission extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {},
       policyNo: '',
       memberId: '',
-      HospitalName: '',
+      hospitalName: '',
       ailment: '',
       contactNum: '',
       selectedAdmissionDate: '',
@@ -49,9 +50,8 @@ export default class ClaimInitiationSubmission extends Component {
     }
   }
   onPressSubmitClaimData = async () => {
-    const { policyNo, memberId, HospitalName, selectedAdmissionDate, ailment, contactNum } = this.state;
+    const { policyNo, memberId, hospitalName, selectedAdmissionDate, ailment, contactNum } = this.state;
     try {
-      this.setState({ isLoading: true })
       if (!policyNo) {
         this.setState({ errorMsg: 'Please Enter Policy number', isModalVisible: true });
         return false;
@@ -60,7 +60,7 @@ export default class ClaimInitiationSubmission extends Component {
         this.setState({ errorMsg: "Please Enter Member Id", isModalVisible: true });
         return false;
       }
-      if (!HospitalName) {
+      if (!hospitalName) {
         this.setState({ errorMsg: "Please Enter Hospital name", isModalVisible: true });
         return false;
       }
@@ -76,21 +76,23 @@ export default class ClaimInitiationSubmission extends Component {
         this.setState({ errorMsg: "Please Enter Member Contact Number", isModalVisible: true });
         return false;
       }
+      this.setState({ isLoading: true })
       const claimIntimationReqData = {
         policyNo,
         memberId,
-        HospitalName,
-        admissionDate: selectedAdmissionDate,
+        hospitalName,
+        dateOfAdmission: selectedAdmissionDate,
         ailment,
         contactNumber: contactNum,
-        status: 'REQUEST_SENT'
+        status: 'REQUEST-SENT'
       }
-      console.log('claimUpdateResp', JSON.stringify(claimIntimationReqData))
-      // const claimUpdateResp=await this.serviceOfSubmitClaimIntimationReport();
-      // if(claimUpdateResp){
-
-      // }
-      this.props.navigation.navigate('ClaimIntimationSuccess');
+      const claimUpdateResp = await serviceOfClaimIntimation(claimIntimationReqData);
+      if (claimUpdateResp && claimUpdateResp.referenceNumber) {
+        this.props.navigation.navigate('ClaimIntimationSuccess');
+      }
+      else if (claimUpdateResp && claimUpdateResp.success === false) {
+        this.setState({ errorMsg: ' Error : Unable to Submit Claim Request', isModalVisible: true })
+      }
     } catch (error) {
       this.setState({ errorMsg: 'Something Went Wrong' + error.message, isModalVisible: true })
     }
@@ -99,7 +101,7 @@ export default class ClaimInitiationSubmission extends Component {
     }
   }
   render() {
-    const { policyNo, memberId, HospitalName, ailment, contactNum, selectedAdmissionDate, isVisibleDatePicker, isModalVisible, errorMsg } = this.state;
+    const { policyNo, memberId, hospitalName, ailment, contactNum, selectedAdmissionDate, isVisibleDatePicker, isModalVisible, errorMsg, isLoading } = this.state;
     return (
       <Container>
         <Content>
@@ -157,9 +159,9 @@ export default class ClaimInitiationSubmission extends Component {
                   placeholder="Enter Hospital name"
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'done'}
-                  value={HospitalName}
+                  value={hospitalName}
                   keyboardType={"default"}
-                  onChangeText={HospitalName => this.setState({ HospitalName })}
+                  onChangeText={hospitalName => this.setState({ hospitalName })}
                 />
               </Item>
             </Col>
@@ -233,20 +235,30 @@ export default class ClaimInitiationSubmission extends Component {
               closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
               visible={isModalVisible} />
           </View>
-          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 20, marginBottom: 20 }}>
-            <Col size={4}>
-              <View style={{ display: 'flex' }}>
-                <View
-                  style={{
-                    alignItems: 'center',
-                  }}>
-                  <TouchableOpacity onPress={() => this.onPressSubmitClaimData()} style={styles.appButtonContainer}>
-                    <Text style={styles.appButtonText}>SUBMIT</Text>
-                  </TouchableOpacity>
+          {isLoading ?
+            <View style={{ marginTop: 40 }}>
+              <ActivityIndicator
+                animating={isLoading}
+                size="large"
+                color='blue'
+              />
+            </View>
+            :
+            <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 20, marginBottom: 20 }}>
+              <Col size={4}>
+                <View style={{ display: 'flex' }}>
+                  <View
+                    style={{
+                      alignItems: 'center',
+                    }}>
+                    <TouchableOpacity onPress={() => this.onPressSubmitClaimData()} style={styles.appButtonContainer}>
+                      <Text style={styles.appButtonText}>SUBMIT</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            </Col>
-          </Row>
+              </Col>
+            </Row>
+          }
         </Content>
       </Container>
     );
