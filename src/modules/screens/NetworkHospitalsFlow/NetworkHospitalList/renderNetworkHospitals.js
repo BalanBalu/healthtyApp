@@ -11,7 +11,7 @@ export default class RenderNetworkHospitalInfo extends Component {
     super(props)
   }
   render() {
-    const { item, showFullInfoCard, onPressArrowIconSelectedIndex, onPressUpOrDownArrowToViewFullInfo, navigation } = this.props;
+    const { item, showFullInfoCard, onPressArrowIconSelectedIndex, onPressUpOrDownArrowToViewFullInfo, onPressGoPreAuthRequestForm, onPressGoPreConsultation, navigation } = this.props;
     const address = item.location && item.location.address;
     return (
       <View>
@@ -27,7 +27,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                   <Text style={{ fontSize: 18 }}>{item.name ? item.name : 'Un known Hospital'}</Text>
                 </Col>
                 <Col size={0.8} >
-                  <TouchableOpacity onPress={() => onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, 'UP')}>
+                  <TouchableOpacity onPress={() => onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, 'UP', item)}>
                     <MaterialIcons name={showFullInfoCard === onPressArrowIconSelectedIndex ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 25, color: '#000' }} />
                   </TouchableOpacity>
                 </Col>
@@ -66,7 +66,22 @@ export default class RenderNetworkHospitalInfo extends Component {
                 </Col>
                 <Col size={0.8}></Col>
               </Row>
+              <Row style={{ marginTop: 15 }}>
+                <Col size={4}>
+                  <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
+                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Pre Auth</Text>
+                  </TouchableOpacity>
+                </Col>
+                <Col size={4} style={{ marginLeft: 20 }}>
+                  <TouchableOpacity onPress={() => onPressGoPreConsultation()} style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }}>
+                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Consultation</Text>
+                  </TouchableOpacity>
+                </Col>
+                <Col size={2}>
+                </Col>
+              </Row>
             </LinearGradient>
+
           </View>
           :
           <Card style={Styles.cardStyle}>
@@ -83,7 +98,7 @@ export default class RenderNetworkHospitalInfo extends Component {
               </Col>
 
               <Col size={0.8} style={{ justifyContent: 'center' }}>
-                <TouchableOpacity onPress={() => onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, 'DOWN')}>
+                <TouchableOpacity onPress={() => onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, 'DOWN', item)}>
                   <MaterialIcons name={showFullInfoCard === onPressArrowIconSelectedIndex ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 25, color: '#000' }} />
                 </TouchableOpacity>
               </Col>
