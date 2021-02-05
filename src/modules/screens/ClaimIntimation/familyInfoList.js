@@ -14,13 +14,20 @@ class FamilyInfoList extends PureComponent {
             isShowBeneficiaryInfoCard: -1
         }
         this.navigationPage = props.navigation.getParam('navigationPage');
+        this.preAuthReqData = props.navigation.getParam('preAuthReqData');
+
     }
     UNSAFE_componentWillMount() {
         const { profile: { corporateData } } = this.props;
         this.setState({ familyList: corporateData || [] })
     }
     onPressSelectBtnToGoNextProcess = (selectedMemObj) => {
-        this.props.navigation.navigate('ClaimIntimationSubmission',{memberInfo:selectedMemObj})
+        if (this.navigationPage === 'ClaimIntimationSubmission') {
+            this.props.navigation.navigate(this.navigationPage, { memberInfo: selectedMemObj })
+        }
+        else if (this.navigationPage === 'PREAUTH') {
+            this.props.navigation.navigate(this.navigationPage, { memberInfo: selectedMemObj })
+        }
     }
 
     render() {
@@ -29,28 +36,28 @@ class FamilyInfoList extends PureComponent {
         return (
             <Container>
                 <Content style={{ padding: 10 }}>
-                        <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10,fontWeight:'bold' }}> {familyList && familyList.length ?'Family Information':null}</Text>
-                        {familyList && familyList.length ?
-                            <View style={{ marginTop: 10 }}>
-                                {familyList.map((item, index) =>
-                                 <RenderFamilyList
+                    <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10, fontWeight: 'bold' }}> {familyList && familyList.length ? 'Family Information' : null}</Text>
+                    {familyList && familyList.length ?
+                        <View style={{ marginTop: 10 }}>
+                            {familyList.map((item, index) =>
+                                <RenderFamilyList
                                     item={item}
                                     index={index}
                                     isShowBeneficiaryInfoCard={this.state.isShowBeneficiaryInfoCard}
                                     navigation={this.props.navigation}
-                                    onPressIsShowBeneficiaryInfo={(isShowBeneficiaryInfoCard, typeOfArrowIcon) =>this.setState({isShowBeneficiaryInfoCard:typeOfArrowIcon==='DOWN'?isShowBeneficiaryInfoCard:-1})
+                                    onPressIsShowBeneficiaryInfo={(isShowBeneficiaryInfoCard, typeOfArrowIcon) => this.setState({ isShowBeneficiaryInfoCard: typeOfArrowIcon === 'DOWN' ? isShowBeneficiaryInfoCard : -1 })
                                     }
                                     onPressSelectBtnToGoNextProcess={(selectedMemObj) => this.onPressSelectBtnToGoNextProcess(selectedMemObj)}
                                 // shouldUpdate={``}
                                 >
                                 </RenderFamilyList>)
-                                }
-                            </View>
-                            :
-                            <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > Family List Not Found!</Text>
-                            </Item>
-                        }
+                            }
+                        </View>
+                        :
+                        <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > Family List Not Found!</Text>
+                        </Item>
+                    }
                 </Content>
             </Container>
         )
