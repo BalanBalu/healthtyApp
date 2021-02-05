@@ -78,6 +78,7 @@ export default class ClaimInitiationSubmission extends Component {
       }
       this.setState({ isLoading: true })
       const claimIntimationReqData = {
+        email:this.memberInfo&&this.memberInfo.emailId?this.memberInfo.emailId:null,
         policyNo,
         memberId,
         hospitalName,
