@@ -11,12 +11,13 @@ import Styles from '../styles';
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
-class NewtowrkHospitals extends Component {
+class NetworkHospitals extends Component {
     constructor(props) {
         super(props)
         this.state = {
             hospitalName: '',
             hospitalInfoList: [],
+            selectedHospitalData: null,
             isLoading: true,
             isLoadingMoreHospitalList: false,
             enableSearchIcon: false,
@@ -26,7 +27,8 @@ class NewtowrkHospitals extends Component {
         this.isEnabledLoadMoreData = true;
         this.incrementPaginationCount = 0;
         this.hospitalInfoListArray = [];
-        this.selectedTpaCode = props.navigation.getParam('tpaCode');
+        this.selectedTpaInfoObj = props.navigation.getParam('TpaInfoObj') || null;
+        this.selectedTpaCode = props.navigation.getParam('TpaInfoObj') && props.navigation.getParam('TpaInfoObj').tpaCode || null;
     }
 
     async componentDidMount() {
@@ -96,7 +98,15 @@ class NewtowrkHospitals extends Component {
             ],
         );
     }
-
+    onPressGoPreAuthRequestForm = () => {
+        const preAuthReqData = {
+            hospitalInfo: this.state.selectedHospitalData,
+            tpaInfo: this.selectedTpaInfoObj
+        }
+        this.props.navigation.navigate("FamilyInfoList", { preAuthReqData, navigationPage: "PREAUTH" })     // shouldUpdate={``}
+    }
+    onPressGoPreConsultation = () => {
+    }
     renderHospitalInformationCard(item, index) {
         const { showFullInfoCard } = this.state;
         // const { bookappointment: { locationCordinates }} = this.props;
@@ -106,8 +116,12 @@ class NewtowrkHospitals extends Component {
                 showFullInfoCard={showFullInfoCard}
                 onPressArrowIconSelectedIndex={index}
                 navigation={this.props.navigation}
-                onPressUpOrDownArrowToViewFullInfo={(onPressArrowIconSelectedIndex, typeOfArrowIcon) => this.onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, typeOfArrowIcon)}
-            // shouldUpdate={``}
+                onPressUpOrDownArrowToViewFullInfo={(onPressArrowIconSelectedIndex, typeOfArrowIcon, selectedHospitalData) => this.onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, typeOfArrowIcon, selectedHospitalData)}
+                onPressGoPreAuthRequestForm={() => this.onPressGoPreAuthRequestForm()}
+                onPressGoPreConsultation={() => this.onPressGoPreConsultation()}
+
+
+
             >
             </RenderNetworkHospitalInfo>
         )
@@ -139,12 +153,12 @@ class NewtowrkHospitals extends Component {
             this.setState({ isLoadingOnChangeHospitalList: false })
         }
     }
-    onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, typeOfArrowIcon) {
+    onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, typeOfArrowIcon, selectedHospitalData) {
         if (typeOfArrowIcon === 'DOWN') {
-            this.setState({ showFullInfoCard: onPressArrowIconSelectedIndex })
+            this.setState({ showFullInfoCard: onPressArrowIconSelectedIndex, selectedHospitalData })
         }
         else {
-            this.setState({ showFullInfoCard: -1 })
+            this.setState({ showFullInfoCard: -1, selectedHospitalData: null })
         }
     }
     render() {
@@ -261,6 +275,6 @@ class NewtowrkHospitals extends Component {
 }
 
 
-const NewtowrkHospitalsDataState = ({ NewtowrkHospitalsData, bookappointment } = state) => ({ NewtowrkHospitalsData, bookappointment })
-export default connect(NewtowrkHospitalsDataState)(NewtowrkHospitals)
+const NetworkHospitalsDataState = ({ NetworkHospitalsData, bookappointment } = state) => ({ NetworkHospitalsData, bookappointment })
+export default connect(NetworkHospitalsDataState)(NetworkHospitals)
 

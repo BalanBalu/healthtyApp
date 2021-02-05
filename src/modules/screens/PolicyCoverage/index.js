@@ -505,8 +505,8 @@ class PolicyCoverage extends React.Component {
                     <Text style={styles.subHeadingData}>{memberDetails.policyNo ? memberDetails.policyNo : '-'}</Text>
                   </Col>
                   <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                    <Text style={styles.subHeadingStyle}>Valid Upto</Text>
-                    <Text style={styles.subHeadingData}>{formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YYYY") + "to " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YYYY")}</Text>
+                    <Text style={styles.subHeadingStyle}>Validity period</Text>
+                    <Text style={[styles.subHeadingData,{textAlign:'right'}]}>{formatDate(policyDetails.policyEffectiveFrom, "DD-YYYY") +" "+"to"+" " + formatDate(policyDetails.policyEffectiveTo, "DD-YYYY")}</Text>
                   </Col>
                 </Row>
                 <Row style={{ paddingBottom: 10, marginTop: 10 }}>
@@ -609,6 +609,10 @@ const styles = StyleSheet.create({
   policyConitionText: {
     fontFamily: 'OpenSans',
     fontSize: 15,
+  },
+  subHeadingData:{
+    fontFamily: 'OpenSans',
+    fontSize: 14,
   },
   policyConditionSubText: {
     fontFamily: 'OpenSans',
