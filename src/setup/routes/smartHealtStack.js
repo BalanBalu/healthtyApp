@@ -112,6 +112,9 @@ import {PolicyConditions} from '../../modules/screens/PolicyCoverage/policyCondi
 import PolicyStatus from '../../modules/screens/policyStatus'
 import TpaList from '../../modules/screens/NetworkHospitalsFlow/tpaList';
 import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/NetworkHospitalList/networkHospitals';
+import ClaimIntimationSubmission from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSubmission';
+import FamilyInfoList from '../../modules/screens/ClaimIntimation/familyInfoList';
+import ClaimIntimationSuccess from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSuccess';
 
 
 
@@ -144,7 +147,7 @@ export const smartHealthStack=createStackNavigator({
                   />
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
-                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <Icon name="location-sharp" style={{ color: '#fff', fontSize: 25, paddingLeft: 10, }} />
                   <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
                     <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
                       loop
@@ -167,10 +170,10 @@ export const smartHealthStack=createStackNavigator({
                 </TouchableOpacity>
               </Col>
 
-              <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
+              <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginLeft: 10 }}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
                   <View>
-                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold',fontSize:25 }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
                       <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
                   </View>
@@ -501,6 +504,24 @@ export const smartHealthStack=createStackNavigator({
     screen: NetworkHospitals,
     navigationOptions: {
       title: 'Network Hospitals'
+    }
+  },
+  ClaimIntimationSubmission: {
+    screen: ClaimIntimationSubmission,
+    navigationOptions: {
+      title: 'Claim Intimation'
+    }
+  },
+  FamilyInfoList: {
+    screen: FamilyInfoList,
+    navigationOptions: {
+      title: 'Family List'
+    }
+  },
+  ClaimIntimationSuccess: {
+    screen: ClaimIntimationSuccess,
+    navigationOptions: {
+      title: 'Claim Success'
     }
   },
   // ========Appointment stack ==========
