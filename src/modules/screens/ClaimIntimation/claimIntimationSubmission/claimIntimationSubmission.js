@@ -89,7 +89,7 @@ export default class ClaimInitiationSubmission extends Component {
       }
       const claimUpdateResp = await serviceOfClaimIntimation(claimIntimationReqData);
       if (claimUpdateResp && claimUpdateResp.referenceNumber) {
-        this.props.navigation.navigate('ClaimIntimationSuccess');
+        this.props.navigation.navigate('ClaimIntimationSuccess',{referenceNumber:claimUpdateResp.referenceNumber});
       }
       else if (claimUpdateResp && claimUpdateResp.success === false) {
         this.setState({ errorMsg: ' Error : Unable to Submit Claim Request', isModalVisible: true })
