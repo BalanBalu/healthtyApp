@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, Toast, View, Footer, Icon } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { StyleSheet, AsyncStorage, Touchable } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
@@ -156,7 +156,7 @@ export default class HomeHealthCareAddressChange extends Component {
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
                     <View style={{ marginTop: 10, marginBottom: 10 }} >
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3', alignSelf: 'center' }}>MY ADDRESS</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3', alignSelf: 'center',fontWeight:'700' }}>MY ADDRESS</Text>
                     </View>
                     <View>
                         <FlatList
@@ -165,10 +165,13 @@ export default class HomeHealthCareAddressChange extends Component {
                             renderItem={({ item, index }) => this.renderUserAddressList(item, index)}
                         />
                     </View>
-                    <Button transparent onPress={() => this.onPressGoToLocPage()}>
-                        <Icon name='add' style={{ color: 'gray' }} />
+                    <Row style={{alignItems:'center',justifyContent:'center',marginTop:10}}>
+                    <TouchableOpacity transparent onPress={() => this.onPressGoToLocPage()} style={{marginBottom:25,alignItems:'center',justifyContent:'center',flexDirection:'row',marginTop:10}}>
+                        <Icon name='add' style={{ color: '#7F49C3',fontSize:35,}} />
                         <Text uppercase={false} style={styles.customText}>ADD NEW ADDRESS</Text>
-                    </Button>
+                    </TouchableOpacity>
+                    </Row>
+                   
                 </Content>
                 <ConfirmPopup
                     warningMessageText={'Are you sure you want to delete this Address !'}
@@ -251,9 +254,8 @@ const styles = StyleSheet.create({
     customText: {
         marginLeft: 10,
         fontFamily: 'OpenSans',
-        fontSize: 13,
-        marginTop: 2,
-        color: 'gray'
+        fontSize: 15,
+        color: '#7F49C3'
     },
     customSubText: {
         marginLeft: 2,
