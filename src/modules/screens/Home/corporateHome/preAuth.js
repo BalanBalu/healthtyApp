@@ -26,7 +26,7 @@ class PreAuth extends React.PureComponent {
     this.state = {
       isLoading: false,
       selectOptionPoopup: false,
-      currentForm: 2,
+      currentForm: 1,
       chosenDate: new Date(),
       selectedGender: 'Male',
       alreadyHaveInsurance: 'yes',
@@ -66,7 +66,26 @@ class PreAuth extends React.PureComponent {
       contactNoErrorMsg:null,
       patientAgeErrorMsg:null,
       patientMonthErrorMsg:null,
-      patientIDCardErrorMsg:null
+      patientIDCardErrorMsg:null,
+      policyNoTextErrorMsg:null,
+      employeeIdTextErrorMsg:null,
+      insureNameTextErrorMsg:null,
+      PhysicianNameTextErrorMsg:null,
+      physicianContactNoTextErrorMsg:null,
+      insurerPatientOccupationsErrorMsg:null,
+      insurerPatientAddressTextErrorMsg:null,
+      treatingDoctorNameTextErrorMsg:null,
+      treatingDoctorContactNoTextErrorMsg:null,
+      diseaseDiscriptionTextErrorMsg:null,
+      releventClinicalTextErrorMsg:null,
+      durationOfPresentTextErrorMsg:null,
+      hospitalNameTextErrorMsg:null,
+      hospitalLocationTextErrorMsg:null,
+      hospitalIdTextErrorMsg:null,
+      rohiniIdTextErrorMsg:null,
+      hospitalEmailTextErrorMsg:null
+
+
     };
     // this.onDOBChange = this.onDOBChange.bind(this);
   }
@@ -78,6 +97,48 @@ class PreAuth extends React.PureComponent {
   submitFirstPage() {
 
     const { hospitalName, hospitalLocation, hospitalId, hospitalEmail, rohiniId } = this.state
+    
+    if (!onlySpaceNotAllowed(hospitalName)) {
+      this.setState({ hospitalNameTextErrorMsg: 'Kindly fill hospital name' });
+      this.scrollViewRef.scrollTo({
+        y: this.hospitalNameText.y,
+        animated: true
+      });
+      return false;
+  }
+  if (!onlySpaceNotAllowed(hospitalLocation)) {
+    this.setState({ hospitalLocationTextErrorMsg: 'Kindly fill hospital location' });
+    this.scrollViewRef.scrollTo({
+      y: this.hospitalLocationText.y,
+      animated: true
+    });
+    return false;
+}
+if (!onlySpaceNotAllowed(hospitalId)) {
+  this.setState({ hospitalIdTextErrorMsg: 'Kindly fill hospital id' });
+  this.scrollViewRef.scrollTo({
+    y: this.hospitalIdText.y,
+    animated: true
+  });
+  return false;
+}
+if (!onlySpaceNotAllowed(rohiniId)) {
+  this.setState({ rohiniIdTextErrorMsg: 'Kindly fill rohini Id' });
+  this.scrollViewRef.scrollTo({
+    y: this.rohiniIdText.y,
+    animated: true
+  });
+  return false;
+}
+if (!validateEmailAddress(hospitalEmail)) {
+  this.setState({ hospitalEmailTextErrorMsg: 'Kindly enter valid mail id' });
+  this.scrollViewRef.scrollTo({
+    y: this.hospitalEmailText.y,
+    animated: true
+  });
+  return false;
+}
+    
     let errorMsg = !onlySpaceNotAllowed(hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalId) ? 'Kindly fill hospital id' : !onlySpaceNotAllowed(rohiniId) ? 'Kindly fill rohini Id' : !validateEmailAddress(hospitalEmail) ? 'Kindly enter valid mail id' : null
 
     if (errorMsg) {
@@ -149,7 +210,7 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
   });
   return false;
 }
-if (!onlySpaceNotAllowed(patientAgeMonth)) {
+if (!onlySpaceNotAllowed(insurerId)) {
   this.setState({ patientIDCardErrorMsg: 'Kindly fill insurer id' });
   this.scrollViewRef.scrollTo({
     y: this.patientIDCardText.y,
@@ -157,24 +218,66 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
   });
   return false;
 }
+if (!onlySpaceNotAllowed(policyNumber)) {
+  this.setState({ policyNoTextErrorMsg: 'Kindly fill policy number' });
+  this.scrollViewRef.scrollTo({
+    y: this.policyNoText.y,
+    animated: true
+  });
+  return false;
+}
+if (!onlySpaceNotAllowed(employeeId)) {
+  this.setState({ employeeIdTextErrorMsg: 'Kindly fill employee ID' });
+  this.scrollViewRef.scrollTo({
+    y: this.EmployeeIdText.y,
+    animated: true
+  });
+  return false;
+}
+if (!onlySpaceNotAllowed(insurerName)) {
+  this.setState({ insureNameTextErrorMsg: 'Kindly fill insurer name' });
+  this.scrollViewRef.scrollTo({
+    y: this.InsureNameText.y,
+    animated: true
+  });
+  return false;
+}
+if (!onlySpaceNotAllowed(physicianName)) {
+  this.setState({ PhysicianNameTextErrorMsg: 'Kindly fill physician name' });
+  this.scrollViewRef.scrollTo({
+    y: this.personalPhysicianNameText.y,
+    animated: true
+  });
+  return false;
+}
+if (!validateMobileNumber(physicianContactNumber)) {
+  this.setState({ physicianContactNoTextErrorMsg: 'Kindly fill  valid physician contact number' });
+  this.scrollViewRef.scrollTo({
+    y: this.physicianContactNoText.y,
+    animated: true
+  });
+  return false;
+}
+if (!onlySpaceNotAllowed(insurerPatientOccupation)) {
+  this.setState({ insurerPatientOccupationsErrorMsg: 'Kindly fill insurer patient occupation' });
+  this.scrollViewRef.scrollTo({
+    y: this.insurerPatientOccupations.y,
+    animated: true
+  });
+  return false;
+}
+if (!onlySpaceNotAllowed(insurerPatientAddress)) {
+  this.setState({ insurerPatientAddressTextErrorMsg: 'Kindly fill insurer patient address' });
+  this.scrollViewRef.scrollTo({
+    y: this.insurerPatientAddressText.y,
+    animated: true
+  });
+  return false;
+}
 
-   if (!onlySpaceNotAllowed(insurerId)) {
-      errorMsg = 'Kindly fill insurer id '
-    } else if (!onlySpaceNotAllowed(policyNumber)) {
-      errorMsg = 'Kindly fill policy number'
-    } else if (!onlySpaceNotAllowed(employeeId)) {
-      errorMsg = 'Kindly fill employee id'
-    } else if (!onlySpaceNotAllowed(insurerName)) {
-      errorMsg = 'Kindly fill insurer name'
-    } else if (!onlySpaceNotAllowed(physicianName)) {
-      errorMsg = 'Kindly fill physician name'
-    } else if (!validateMobileNumber(physicianContactNumber)) {
-      errorMsg = 'Kindly fill  valid physician contact number'
-    } else if (!onlySpaceNotAllowed(insurerPatientOccupation)) {
-      errorMsg = 'Kindly fill insurer patient occupation'
-    } else if (!onlySpaceNotAllowed(insurerPatientAddress)) {
-      errorMsg = 'Kindly fill insurer patient address'
-    }
+
+
+      
 
     if (errorMsg) {
 
@@ -215,17 +318,47 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
     } = this.state
     let errorMsg = null
     if (!onlySpaceNotAllowed(treatingDoctorName)) {
-      errorMsg = 'Kindly fill doctor name'
-    } else if (!validateMobileNumber(treatingDoctorContactNo)) {
-      errorMsg = 'Kindly fill valid doctor phone number'
-    } else if (!onlySpaceNotAllowed(diseaseDiscription)) {
-      errorMsg = 'Kindly fill disease discription'
-    } else if (!onlySpaceNotAllowed(releventClinical)) {
-      errorMsg = 'Kindly fill clinical finding '
-    } else if (!onlySpaceNotAllowed(durationOfPresent)) {
-      errorMsg = 'Kindly fill duration of present '
+      this.setState({ treatingDoctorNameTextErrorMsg: 'Kindly fill doctor name' });
+      this.scrollViewRef.scrollTo({
+        y: this.treatingDoctorNameText.y,
+        animated: true
+      });
+      return false;
     }
-
+    if (!onlySpaceNotAllowed(treatingDoctorName)) {
+      this.setState({ treatingDoctorContactNoTextErrorMsg: 'Kindly fill valid doctor phone number' });
+      this.scrollViewRef.scrollTo({
+        y: this.treatingDoctorContactNoText.y,
+        animated: true
+      });
+      return false;
+    }
+    if (!onlySpaceNotAllowed(treatingDoctorName)) {
+      this.setState({ diseaseDiscriptionTextErrorMsg: 'Kindly fill disease description' });
+      this.scrollViewRef.scrollTo({
+        y: this.diseaseDiscriptionText.y,
+        animated: true
+      });
+      return false;
+    }
+    if (!onlySpaceNotAllowed(treatingDoctorName)) {
+      this.setState({ releventClinicalTextErrorMsg: 'Kindly fill clinical finding' });
+      this.scrollViewRef.scrollTo({
+        y: this.releventClinicalText.y,
+        animated: true
+      });
+      return false;
+    }
+    if (!onlySpaceNotAllowed(treatingDoctorName)) {
+      this.setState({ durationOfPresentTextErrorMsg: 'Kindly fill duration of present' });
+      this.scrollViewRef.scrollTo({
+        y: this.durationOfPresentText.y,
+        animated: true
+      });
+      return false;
+    }
+    
+    
     if (errorMsg) {
 
       this.setState({ errorMsg: errorMsg });
@@ -545,23 +678,52 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
             {this.state.patientIDCardErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientIDCardErrorMsg}</Text>
               :null}
-          <Text style={styles.inputLabel}>
+          <Text style={styles.inputLabel}
+              onLayout={event =>
+                (this.policyNoText = event.nativeEvent.layout)
+              }>
             H. Policy number / Name of corporate
           </Text>
           <TextInput
             placeholder={'Enter policy no / corporate name'}
 
-            onChangeText={(text) => this.setState({ policyNumber: text })}
-            style={styles.inputText}
+            onChangeText={(text) => this.setState({ policyNumber: text,policyNoTextErrorMsg:null })}
+            style={[ styles.inputText,
+              this.state.policyNoTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
-          <Text style={styles.inputLabel}>I. Employee ID</Text>
+          {this.state.policyNoTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.policyNoTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+          onLayout={event =>
+            (this.EmployeeIdText = event.nativeEvent.layout)
+          }>I. Employee ID</Text>
           <TextInput
 
             placeholder={'Enter Employee ID'}
-            onChangeText={(text) => this.setState({ employeeId: text })}
-            style={styles.inputText}
+            onChangeText={(text) => this.setState({ employeeId: text,employeeIdTextErrorMsg:null})}
+            style={[ styles.inputText,
+              this.state.employeeIdTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
-          <Text style={[styles.inputLabel, { lineHeight: 26 }]}>
+           {this.state.employeeIdTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.employeeIdTextErrorMsg}</Text>
+              :null}
+          <Text style={[styles.inputLabel, { lineHeight: 26 }]}
+              onLayout={event =>
+                (this.InsureNameText = event.nativeEvent.layout)
+              }>
             J. Currently you have any other medical claim / insurance
           </Text>
           <View style={{ flexDirection: 'row', marginBottom: 1 }}>
@@ -588,13 +750,23 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
           </View>
           {this.state.alreadyHaveInsurance === 'yes' ?
             <View>
-              <Text style={styles.inputLabel}>J.1. Insurer Name</Text>
+              <Text style={styles.inputLabel}
+           >J.1. Insurer Name</Text>
               <TextInput
-                onChangeText={(text) => this.setState({ insurerName: text })}
+                onChangeText={(text) => this.setState({ insurerName: text,insureNameTextErrorMsg:null})}
                 placeholder={'Enter insurer Name'}
-                style={styles.inputText}
+                style={[ styles.inputText,
+                  this.state.insureNameTextErrorMsg != null?
+                  {
+                    borderColor: 'red',
+                  }:
+                    styles.inputText
+                  ,
+                ]}
               />
-
+ {this.state.insureNameTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.insureNameTextErrorMsg}</Text>
+              :null}
               <Text style={styles.inputLabel}>J.2. Give Details</Text>
               <TextInput
                 value={this.state.employeeId}
@@ -604,7 +776,10 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
             </View>
             : null}
 
-          <Text style={[styles.inputLabel, { lineHeight: 26 }]}>
+          <Text style={[styles.inputLabel, { lineHeight: 26 }]}
+          onLayout={event =>
+            (this.personalPhysicianNameText = event.nativeEvent.layout)
+          }>
             K. If you have family physician
           </Text>
           <View style={{ flexDirection: 'row', marginBottom: 20 }}>
@@ -628,46 +803,100 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
             <Text style={{ marginLeft: 10 }}>No</Text>
           </View>
           {this.state.haveFamilyPhysician === 'yes' ? (
+            <View>
             <TextInput
 
-              onChangeText={(text) => this.setState({ physicianName: text })}
+              onChangeText={(text) => this.setState({ physicianName: text,PhysicianNameTextErrorMsg:null })}
               placeholder={'Enter Physician name'}
-              style={styles.inputText}
+              style={[ styles.inputText,
+                this.state.PhysicianNameTextErrorMsg != null?
+                {
+                  borderColor: 'red',
+                }:
+                  styles.inputText
+                ,
+              ]}
             />
+              {this.state.PhysicianNameTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.PhysicianNameTextErrorMsg}</Text>
+              :null}
+            </View>
+            
           ) : null}
+         
           {
             this.state.selectOptionPoopup ?
               <ImageUpload
                 popupVisible={(data) => this.imageUpload(data)}
               /> : null
           }
+          <Text  style={{marginTop:-20}}onLayout={event =>
+                  (this.physicianContactNoText = event.nativeEvent.layout)
+                }/>
           {this.state.haveFamilyPhysician === 'yes' ? (
             <View>
-              <Text style={styles.inputLabel}>K.1. Contact No</Text>
+              <Text style={styles.inputLabel}
+                >K.1. Contact No</Text>
               <TextInput
                 placeholder={'Enter Contact No'}
 
-                onChangeText={(text) => this.setState({ physicianContactNumber: text })}
-                style={styles.inputText}
+                onChangeText={(text) => this.setState({ physicianContactNumber: text,physicianContactNoTextErrorMsg:null })}
+                style={[ styles.inputText,
+                  this.state.physicianContactNoTextErrorMsg != null?
+                  {
+                    borderColor: 'red',
+                  }:
+                    styles.inputText
+                  ,
+                ]}
               />
+               {this.state.physicianContactNoTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.physicianContactNoTextErrorMsg}</Text>
+              :null}
             </View>
           ) : null}
-          <Text style={styles.inputLabel}>
+          <Text style={styles.inputLabel}
+          onLayout={event =>
+            (this.insurerPatientOccupations = event.nativeEvent.layout)
+          }>
             L. Occupation of insured patient
           </Text>
           <TextInput
 
-            onChangeText={(text) => this.setState({ insurerPatientOccupation: text })}
+            onChangeText={(text) => this.setState({ insurerPatientOccupation: text,insurerPatientOccupationsErrorMsg:null })}
             placeholder={'Enter Occupation of insured patient'}
-            style={styles.inputText}
+            style={[ styles.inputText,
+              this.state.insurerPatientOccupationsErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
-          <Text style={styles.inputLabel}>M. Address of insured patient</Text>
+           {this.state.insurerPatientOccupationsErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.insurerPatientOccupationsErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+             onLayout={event =>
+              (this.insurerPatientAddressText = event.nativeEvent.layout)
+            }>M. Address of insured patient</Text>
           <TextInput
             placeholder={''}
 
-            onChangeText={(text) => this.setState({ insurerPatientAddress: text })}
-            style={[styles.inputText, { height: 100 }]}
+            onChangeText={(text) => this.setState({ insurerPatientAddress: text ,insurerPatientAddressTextErrorMsg:null})}
+            style={[ styles.inputText,
+              this.state.insurerPatientAddressTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
+          {this.state.insurerPatientAddressTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.insurerPatientAddressTextErrorMsg}</Text>
+              :null}
           <Text style={styles.headerText}>Upload your aadhar copy</Text>
           <View
             style={{
@@ -746,44 +975,109 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
           <Text style={styles.headerText}>
             to be filled by the treating doctor / hospital
           </Text>
-          <Text style={styles.inputLabel}>A. Name of treating doctor</Text>
+          <Text style={styles.inputLabel}
+           onLayout={event =>
+            (this.treatingDoctorNameText = event.nativeEvent.layout)
+          }>A. Name of treating doctor</Text>
           <TextInput
-            onChangeText={(text) => this.setState({ treatingDoctorName: text })}
+            onChangeText={(text) => this.setState({ treatingDoctorName: text,treatingDoctorNameTextErrorMsg:null})}
             placeholder={'Enter Name of treating doctor'}
-            style={styles.inputText}
+            style={[ styles.inputText,
+              this.state.treatingDoctorNameTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
-          <Text style={styles.inputLabel}>B. Contact No</Text>
+          {this.state.treatingDoctorNameTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.treatingDoctorNameTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+           onLayout={event =>
+            (this.treatingDoctorContactNoText= event.nativeEvent.layout)
+          }>B. Contact No</Text>
           <TextInput
 
-            onChangeText={(text) => this.setState({ treatingDoctorContactNo: text })}
+            onChangeText={(text) => this.setState({ treatingDoctorContactNo: text,treatingDoctorContactNoTextErrorMsg:null })}
             placeholder={'Enter contact no'}
-            style={styles.inputText}
+            style={[ styles.inputText,
+              this.state.treatingDoctorContactNoTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
-          <Text style={styles.inputLabel}>
+           {this.state.treatingDoctorContactNoTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.treatingDoctorContactNoTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+           onLayout={event =>
+            (this.diseaseDiscriptionText= event.nativeEvent.layout)
+          }>
             C. Name of illness/disease with presenting complaints
           </Text>
           <TextInput
             placeholder={''}
 
-            onChangeText={(text) => this.setState({ diseaseDiscription: text })}
-            style={[styles.inputText, { height: 100 }]}
-          />
-          <Text style={styles.inputLabel}>D. Relevant clinical findings</Text>
+            onChangeText={(text) => this.setState({ diseaseDiscription: text,diseaseDiscriptionTextErrorMsg:null })}
+            style={[ styles.inputText,
+              this.state.diseaseDiscriptionTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
+           />
+           {this.state.diseaseDiscriptionTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.diseaseDiscriptionTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+          onLayout={event =>
+            (this.releventClinicalText= event.nativeEvent.layout)
+          }>D. Relevant clinical findings</Text>
           <TextInput
             placeholder={''}
 
-            onChangeText={(text) => this.setState({ releventClinical: text })}
-            style={[styles.inputText, { height: 100 }]}
-          />
-          <Text style={styles.inputLabel}>
+            onChangeText={(text) => this.setState({ releventClinical: text,releventClinicalTextErrorMsg:null })}
+            style={[ styles.inputText,
+              this.state.releventClinicalTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
+             />
+           {this.state.releventClinicalTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.releventClinicalTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+              onLayout={event =>
+                (this.durationOfPresentText= event.nativeEvent.layout)
+              }>
             E. Duration of the present ailment in days
           </Text>
           <TextInput
             placeholder={'Enter duration of present ailment'}
 
-            onChangeText={(text) => this.setState({ durationOfPresent: text })}
-            style={styles.inputText}
+            onChangeText={(text) => this.setState({ durationOfPresent: text,durationOfPresentTextErrorMsg:null })}
+            style={[ styles.inputText,
+              this.state.durationOfPresentTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
           />
+             {this.state.durationOfPresentTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.durationOfPresentTextErrorMsg}</Text>
+              :null}
           <Text style={styles.inputLabel}>E.1. Date of first consultation</Text>
           <View style={[{ flexDirection: 'row' }, styles.inputText]}>
             <DatePicker
@@ -909,40 +1203,104 @@ if (!onlySpaceNotAllowed(patientAgeMonth)) {
         </Text>
         <View style={{ flexDirection: 'column' }}>
           <Text style={styles.headerText}>enter hospital details</Text>
-          <Text style={styles.inputLabel}>Name of the hospital</Text>
+          <Text style={styles.inputLabel}
+              onLayout={event =>
+                (this.hospitalNameText= event.nativeEvent.layout)
+              }>Name of the hospital</Text>
           <TextInput
             placeholder={'Enter name of the hospital'}
-            style={styles.inputText}
-            onChangeText={(text) => this.setState({ hospitalName: text })}
+            style={[ styles.inputText,
+              this.state.hospitalNameTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
+            onChangeText={(text) => this.setState({ hospitalName: text,hospitalNameTextErrorMsg:null })}
           />
-          <Text style={styles.inputLabel}>Hospital Location</Text>
+            {this.state.hospitalNameTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.hospitalNameTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+           onLayout={event =>
+            (this.hospitalLocationText= event.nativeEvent.layout)
+          }>Hospital Location</Text>
           <TextInput
 
             placeholder={'Enter hospital location'}
-            style={styles.inputText}
-            onChangeText={(text) => this.setState({ hospitalLocation: text })}
+            style={[ styles.inputText,
+              this.state.hospitalLocationTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
+            onChangeText={(text) => this.setState({ hospitalLocation: text,hospitalLocationTextErrorMsg:null })}
           />
-          <Text style={styles.inputLabel}>Hospital ID</Text>
+            {this.state.hospitalLocationTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.hospitalLocationTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+             onLayout={event =>
+              (this.hospitalIdText= event.nativeEvent.layout)
+            }>Hospital ID</Text>
           <TextInput
             placeholder={'Enter hospital ID'}
-            style={styles.inputText}
+            style={[ styles.inputText,
+              this.state.hospitalIdTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
 
-            onChangeText={(text) => this.setState({ hospitalId: text })}
+            onChangeText={(text) => this.setState({ hospitalId: text,hospitalIdTextErrorMsg:null})}
           />
-          <Text style={styles.inputLabel}>Hospital Email ID</Text>
+           {this.state.hospitalIdTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.hospitalIdTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+           onLayout={event =>
+            (this.hospitalEmailText= event.nativeEvent.layout)
+          }>Hospital Email ID</Text>
           <TextInput
 
-            placeholder={'Enter Email ID'
-            } style={styles.inputText}
-            onChangeText={(text) => this.setState({ hospitalEmail: text })}
+            placeholder={'Enter Email ID'}
+            style={[ styles.inputText,
+              this.state.hospitalEmailTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
+            onChangeText={(text) => this.setState({ hospitalEmail: text,hospitalEmailTextErrorMsg:null })}
           />
-          <Text style={styles.inputLabel}>Rohini ID</Text>
+           {this.state.hospitalEmailTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.hospitalEmailTextErrorMsg}</Text>
+              :null}
+          <Text style={styles.inputLabel}
+            onLayout={event =>
+              (this.rohiniIdText= event.nativeEvent.layout)
+            }>Rohini ID</Text>
           <TextInput
             placeholder={'Enter Rohini ID'}
-            style={styles.inputText}
-
-            onChangeText={(text) => this.setState({ rohiniId: text })}
+            style={[ styles.inputText,
+              this.state.rohiniIdTextErrorMsg != null?
+              {
+                borderColor: 'red',
+              }:
+                styles.inputText
+              ,
+            ]}
+            onChangeText={(text) => this.setState({ rohiniId: text,rohiniIdTextErrorMsg:null })}
           />
+           {this.state.rohiniIdTextErrorMsg !== null ?
+              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.rohiniIdTextErrorMsg}</Text>
+              :null}
           <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
