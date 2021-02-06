@@ -26,7 +26,7 @@ class Login extends Component {
       checked: false,
       isModalVisible: false,
       showPassword: true,
-      isSelected:CURRENT_APP_NAME=== MY_SMART_HEALTH_CARE?'corporate_user':'user',
+      isSelected:CURRENT_APP_NAME=== MY_SMART_HEALTH_CARE?'corporate_user':'user' ,
       CorporateUser: false
     }
   }
@@ -86,7 +86,7 @@ class Login extends Component {
   getUserProfile = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-      let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image"
+      let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
       let result = await fetchUserProfile(userId, fields);
       if (!result.error) storeBasicProfile(result)
     }
@@ -119,9 +119,9 @@ class Login extends Component {
                   <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
 
                   <Form>
-                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>{isSelected === 'corporate_user' ? "Email" : "Mobile Number/ Email"}</Label>
+                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>{ isSelected === 'corporate_user' ? "Email" : "Mobile Number/ Email"}</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
-                      <Input placeholder={isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={styles.authTransparentLabel}
+                      <Input placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
                         returnKeyType={'next'}
                         value={userEntry}
@@ -157,8 +157,8 @@ class Login extends Component {
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
                               standardStyle={true}
-                              selected={isSelected === 'corporate_user'}
-                              onPress={() => this.setState({ isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                              selected={ isSelected === 'corporate_user'}
+                              onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
                             />
                             <Text style={styles.firstCheckBox}>Corporate</Text>
                           </Row>
@@ -167,8 +167,8 @@ class Login extends Component {
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
                               standardStyle={true}
-                              selected={isSelected === 'user'}
-                              onPress={() => this.setState({ isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
+                              selected={ isSelected === 'user'}
+                              onPress={() => this.setState({  isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
                             />
                             <Text style={styles.firstCheckBox}>User</Text>
                           </Row>

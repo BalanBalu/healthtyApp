@@ -53,6 +53,7 @@ class UpdatePassword extends Component {
                 let smartData = {
                     userType: 'MEMBER',
                     userId: memberEmailId,
+                    isForceToChangePassword:true,
                     oldPassword: this.state.oldPassword,
                     newPassword: this.state.newPassword
                 };
@@ -70,7 +71,7 @@ class UpdatePassword extends Component {
                     this.props.navigation.pop();
                 } else {
                     await Toast.show({
-                        text: 'Failed to change password',
+                        text: smartHealthResult&&smartHealthResult.message==="INVALID_CREDENTIAL"?"Old password doesn't match":'Failed to change password',
                         type: "danger",
                         duration: 3000
                     })

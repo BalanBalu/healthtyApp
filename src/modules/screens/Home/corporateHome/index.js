@@ -139,9 +139,9 @@ class CorporateHome extends PureComponent {
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
                     <View style={{ padding: 10 }}>
-                        {isCorporateUser&&corporateData && corporateData.length ?
+                        { isCorporateUser&&corporateData && corporateData.length ?
                             <CorporateProfileCard
-                                data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
+                                 data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
                             />
                             : null}
                         {isCorporateUser ?
