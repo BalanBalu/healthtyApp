@@ -247,14 +247,14 @@ class Ecard extends PureComponent {
                         <Spinner color='blue'
                             visible={isLoading}
                             overlayColor="none"
-                        /> : data.length == 0 ?
+                        /> :  !Array.isArray(data) || data.length === 0 ?
                             <View style={{ alignItems: 'center', justifyContent: 'center', height: 550 }}>
                                 <Text>No E-Card details found !</Text>
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
                                 <Text style={styles.familyHeader}>Employee Detail</Text>
-                                {data && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
+                                { data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
                                     this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null}
                                 <View style={styles.borderStyle} />
                                 <View>

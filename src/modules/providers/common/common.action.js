@@ -16,14 +16,14 @@ export async function uploadImage(imageData, endPoint, appendForm) {
     var formData = new FormData();
     if (Array.isArray(imageData) && imageData.length != 0) {
       imagePath.map((ele) => {
-        formData.append('medicine', {
+        formData.append(appendForm||'medicine', {
           uri: ele.path,
           type: 'image/jpeg',
           name: 'photo.jpg'
         });
       });
     } else {
-      formData.append('medicine', {
+      formData.append(appendForm||'medicine', {
         uri: imageData.path,
         type: 'image/jpeg',
         name: 'photo.jpg'

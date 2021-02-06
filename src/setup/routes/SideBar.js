@@ -85,7 +85,7 @@ class SideBar extends React.Component {
               <Col style={{ width: '70%' }}>
                 {hasLoggedIn ?
                   <View style={{ marginLeft: 10 }}>
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{this.activeUserData && (this.activeUserData.first_name + " " + this.activeUserData.last_name)}</Text>
+                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{this.activeUserData && (this.activeUserData.first_name + " "+this.activeUserData.middle_name + this.activeUserData.last_name)}</Text>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')} style={{ paddingRight: 10, paddingTop: 2, width: '100%' }}>
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#fff' }}>{translate("View Profile")}</Text>
                     </TouchableOpacity>

@@ -35,11 +35,11 @@ export default class TpaList extends Component {
       this.setState({ isLoading: false })
     }
   }
-  OnPressCheckLocWarningAndGoNextProcess = (tpaCode, index) => {
-    CheckLocationWarning.checkLocationWarning(this.onPressToggleBySelectTapItem.bind(this), [tpaCode, index]);
+  OnPressCheckLocWarningAndGoNextProcess = (selectedTpaItem, index) => {
+    CheckLocationWarning.checkLocationWarning(this.onPressToggleBySelectTapItem.bind(this), [selectedTpaItem, index]);
   }
-  onPressToggleBySelectTapItem = async (tpaCode, index) => {
-    this.setState({ selectedTpaItem: tpaCode, selectedIndex: index })
+  onPressToggleBySelectTapItem = async (selectedTpaItem, index) => {
+    this.setState({ selectedTpaItem, selectedIndex: index })
   }
   renderTPaListCards(item, index) {
     return (
@@ -47,16 +47,15 @@ export default class TpaList extends Component {
         item={item}
         selectedIndex={this.state.selectedIndex}
         index={index}
-        onPressToggleBySelectTapItem={(tpaCode, index) => this.OnPressCheckLocWarningAndGoNextProcess(tpaCode, index)}
+        onPressToggleBySelectTapItem={(selectedTpaItem, index) => this.OnPressCheckLocWarningAndGoNextProcess(selectedTpaItem, index)}
       >
       </RenderTpaList>
     )
   }
   onPressContinueToNextProcess = () => {
-    this.props.navigation.navigate("NetworkHospitals", { tpaCode: this.state.selectedTpaItem })
+    this.props.navigation.navigate("NetworkHospitals", { TpaInfoObj: this.state.selectedTpaItem })
   }
   onChangeTpaText() {
-
   }
   render() {
     const { tpaList, selectedTpaItem, isLoading } = this.state;
@@ -98,8 +97,8 @@ export default class TpaList extends Component {
           }
         </Content>
         {tpaList && tpaList.length ?
-          <TouchableOpacity style={Styles.continueButton} onPress={() => selectedTpaItem ? this.onPressContinueToNextProcess() : null} >
-            <Text style={Styles.continueText}>{selectedTpaItem ? "Continue" : "Select TPA"}</Text>
+          <TouchableOpacity style={Styles.continueButton} onPress={() => selectedTpaItem && Object.keys(selectedTpaItem).length ? this.onPressContinueToNextProcess() : null} >
+            <Text style={Styles.continueText}>{selectedTpaItem && Object.keys(selectedTpaItem).length ? "Continue" : "Select TPA"}</Text>
           </TouchableOpacity>
           : null}
       </Container>

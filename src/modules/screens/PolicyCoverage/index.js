@@ -1,6 +1,6 @@
 import React from 'react';
-import { Animated, Dimensions, Button, FlatList, StyleSheet, Image, AsyncStorage } from 'react-native';
-import { Container, Header, Content, List, ListItem, Body, Text, Left, Right, Icon, Input, View, Item, Card, CardItem } from 'native-base';
+import { StyleSheet, Image, AsyncStorage } from 'react-native';
+import { Container, Content,Text, View, Card, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity, } from 'react-native-gesture-handler';
@@ -28,7 +28,7 @@ class PolicyCoverage extends React.Component {
       if (result) {
         let policyData = await getPolicyByPolicyNo(result[0].policyNo);
         await this.setState({ memberDetails: result[0], policyDetails: policyData });
-        this.termsAndConditionListDetails()
+        await this.termsAndConditionListDetails()
       }
     } catch (ex) {
       console.log(ex)
@@ -470,8 +470,8 @@ class PolicyCoverage extends React.Component {
             }
           }
         }
-      }  
-      } catch (ex) {
+      }
+    } catch (ex) {
       console.log(ex)
     }
 
@@ -505,8 +505,8 @@ class PolicyCoverage extends React.Component {
                     <Text style={styles.subHeadingData}>{memberDetails.policyNo ? memberDetails.policyNo : '-'}</Text>
                   </Col>
                   <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                    <Text style={styles.subHeadingStyle}>Valid Upto</Text>
-                    <Text style={styles.subHeadingData}>{formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YYYY") + "to " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YYYY")}</Text>
+                    <Text style={styles.subHeadingStyle}>Validity period</Text>
+                    <Text style={[styles.subHeadingData,{textAlign:'right'}]}>{formatDate(policyDetails.policyEffectiveFrom, "DD-YYYY") +" "+"to"+" " + formatDate(policyDetails.policyEffectiveTo, "DD-YYYY")}</Text>
                   </Col>
                 </Row>
                 <Row style={{ paddingBottom: 10, marginTop: 10 }}>
@@ -531,7 +531,16 @@ class PolicyCoverage extends React.Component {
               </View>
 
             </Card>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate("PolicyConditions", { termsAndConditionList: this.termsAndConditionList })}>
+            <TouchableOpacity onPress={() => { 
+              if (this.termsAndConditionList&&this.termsAndConditionList.length!=0){
+              this.props.navigation.navigate("PolicyConditions", { termsAndConditionList: this.termsAndConditionList }) }
+              else{
+                Toast.show({
+                  text: 'No Details Available',
+                  type: "warning",
+                  duration: 3000
+                });
+              }}}>
               <Card style={styles.cardStyle}>
                 <Row>
                   <Col size={9} style={{ justifyContent: 'center' }}>
@@ -600,6 +609,10 @@ const styles = StyleSheet.create({
   policyConitionText: {
     fontFamily: 'OpenSans',
     fontSize: 15,
+  },
+  subHeadingData:{
+    fontFamily: 'OpenSans',
+    fontSize: 14,
   },
   policyConditionSubText: {
     fontFamily: 'OpenSans',
