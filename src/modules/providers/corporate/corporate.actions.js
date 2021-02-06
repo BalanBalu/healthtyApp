@@ -111,3 +111,19 @@ console.log(endPoint)
     }
   }
 }
+
+export async function getPreAuthListByEmpCodeAndPolicyNo(empCode,policyNo,page,limit) {
+  try {
+    let endPoint = 'pre-auth/policy/employeeId?policyNo='+policyNo+'&empId='+empCode+'&p='+page+'&l='+limit;
+console.log(endPoint)
+    let response = await smartHealthGetService(endPoint);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}

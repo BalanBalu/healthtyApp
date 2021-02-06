@@ -272,6 +272,8 @@ export async function logout() {
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
   await AsyncStorage.removeItem('is_corporate_user');
   await AsyncStorage.removeItem('relationship')
+  await AsyncStorage.removeItem('memberPolicyNo')
+  await AsyncStorage.removeItem('employeeCode')
 
   store.dispatch({
     type: LOGOUT
@@ -543,11 +545,14 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
         let insertEndPoint = 'auth/smart_health/signUp';
         let signUpResult = await postService(insertEndPoint, reqBody);
-
+console.log(JSON.stringify(reqData))
 
         if (signUpResult.data.success) {
           await AsyncStorage.setItem('memberId', reqData.memberId)
           await AsyncStorage.setItem('memberEmailId', reqData.emailId)
+          await AsyncStorage.setItem('memberPolicyNo', reqData.policyNo)
+          await AsyncStorage.setItem('employeeCode', reqData.employeeId)
+         
           changePasswordEndPoint = 'member-users/member-id?id=' + reqData.emailId
 
           let forgotResult = await smartHealthGetService(changePasswordEndPoint)

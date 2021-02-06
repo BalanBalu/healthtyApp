@@ -116,7 +116,7 @@ import ClaimIntimationSubmission from '../../modules/screens/ClaimIntimation/cla
 import FamilyInfoList from '../../modules/screens/ClaimIntimation/familyInfoList';
 import ClaimIntimationSuccess from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSuccess';
 
-
+import preAuthList from '../../modules/screens/Home/corporateHome/preAuthList'
 
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
@@ -618,6 +618,13 @@ export const smartHealthStack=createStackNavigator({
     screen: PolicyConditions,
     navigationOptions: {
       title: 'Policy Conditions'
+    }
+  },
+  
+  preAuthList: {
+    screen: preAuthList,
+    navigationOptions: {
+      title: 'Pre Auth List'
     }
   },
   PolicyStatus: {
