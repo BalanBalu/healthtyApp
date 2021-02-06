@@ -17,7 +17,7 @@ export const CoverageCard = (props) => {
       case 'Pre Auth':
         return navigation("PreAuth");
 case 'Claim Intimation':
-return navigation('FamilyInfoList')
+return navigation('FamilyInfoList',{navigationPage:"ClaimIntimationSubmission"})
 
     }
   }

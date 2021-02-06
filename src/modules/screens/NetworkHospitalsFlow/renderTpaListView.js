@@ -12,7 +12,7 @@ export default class RenderTpaList extends Component {
   render() {
     const { item, selectedIndex, index, onPressToggleBySelectTapItem, } = this.props;
     return (
-      <TouchableOpacity onPress={() => onPressToggleBySelectTapItem(item.tpaCode, index)} style={Styles.flatlistMainView}>
+      <TouchableOpacity onPress={() => onPressToggleBySelectTapItem(item, index)} style={Styles.flatlistMainView}>
         { item.tpaName ?
           <LinearGradient
             colors={['#F6F4FC', '#F1ECFB']}
@@ -27,7 +27,7 @@ export default class RenderTpaList extends Component {
                 <Radio
                   standardStyle={true}
                   selected={selectedIndex === index}
-                  onPress={() => onPressToggleBySelectTapItem(item.tpaCode, index)} />
+                  onPress={() => onPressToggleBySelectTapItem(item, index)} />
               </Col>
             </Row>
           </LinearGradient>

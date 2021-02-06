@@ -1,53 +1,54 @@
 import React from 'react';
 import {
-  Container,
   Text,
   View,
   Radio,
-  DatePicker,
   Icon,
-  Header,
-  Content,
+ 
 } from 'native-base';
 import { TextInput, StyleSheet, Image,SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { subTimeUnit, formatDate } from '../../../../setup/helpers';
+import { subTimeUnit, formatDate, dateDiff } from '../../../../setup/helpers';
 import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber, toastMeassage } from '../../../common'
 import { createPreAuth } from '../../../providers/corporate/corporate.actions'
 // import styles from '../styles'
 import { ImageUpload } from '../../../screens/commonScreen/imageUpload'
 import { uploadImage, } from '../../../providers/common/common.action'
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 class PreAuth extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      isLoading: false,
-      selectOptionPoopup: false,
-      currentForm: 1,
-      chosenDate: new Date(),
-      selectedGender: 'Male',
-      alreadyHaveInsurance: 'yes',
-      referenceID: 'SMTTH7',
-      haveFamilyPhysician: 'yes',
-      hospitalName: '',
-      hospitalLocation: '',
-      hospitalId: '',
-      hospitalEmail: '',
-      rohiniId: '',
-      tpaCompany: '',
-      tpaCompanyPhoneNumber: '',
-      tpaTollFreeFaxNo: '',
-      patientName: '',
-      contactNo: '',
-      alterNateContactNumber: '',
-      patientAgeInYr: '',
-      patientAgeMonth: '',
-      insurerId: '',
-      policyNumber: '',
-      employeeId: '',
+      hospitalInfo: {
+        hospitalName: '',
+        hospitalLocation: '',
+        hospitalId: '',
+        hospitalEmail: '',
+        rohiniId: ''
+      },
+      hospitalInfomation:{},
+      tpaInformation:{},
+      tpaInfo: {
+        tpaCompany: '',
+        tpaCompanyPhoneNumber: '',
+        tpaTollFreeFaxNo: ''
+      },
+      memberInformation: {},
+      memberInfo: {
+        patientName: '',
+        contactNo: '',
+        alterNateContactNumber: '',
+        patientAgeInYr: '',
+        patientAgeMonth: '',
+        insurerId: '',
+        policyNo: '',
+        employeeId: '',
+        selectedGender: 'Male',
+        dob: new Date(),
+      },
       insurerName: '',
       physicianName: '',
       physicianContactNumber: '',
@@ -58,7 +59,17 @@ class PreAuth extends React.PureComponent {
       diseaseDiscription: '',
       releventClinical: '',
       durationOfPresent: '',
+      isLoading: false,
+      imageData:null,
+      selectOptionPoopup: false,
+      currentForm: 1,
+      chosenDate: new Date(),
+      firstConsultantDate: new Date(),
+      alreadyHaveInsurance: 'yes',
+      referenceID: '',
+      haveFamilyPhysician: 'yes',
       errorMsg: null,
+      isOnlyDateTimePickerVisible: false,
       TpaComErrorMsg:null,
       MobileNumError:null,
       tpaTollFreeFaxNoErrorMsg:null,
@@ -84,10 +95,76 @@ class PreAuth extends React.PureComponent {
       hospitalIdTextErrorMsg:null,
       rohiniIdTextErrorMsg:null,
       hospitalEmailTextErrorMsg:null
-
-
     };
-    // this.onDOBChange = this.onDOBChange.bind(this);
+     this.onDOBChange = this.onDOBChange.bind(this);
+  }
+ async  componentDidMount() {
+    let preAuthInfo = this.props.navigation.getParam('preAuthInfo')
+  console.log(JSON.stringify(preAuthInfo))
+   let hospitalInfo = preAuthInfo.hospitalInfo || {};
+   let tpaInfo=preAuthInfo.tpaInfo||{}
+   let tpaInformation= {
+    tpaCompany: tpaInfo.tpaName||'',
+    tpaCompanyPhoneNumber:tpaInfo.tpaPhoneNumber|| '',
+    tpaTollFreeFaxNo: ''
+  }
+let  hospitalInfomation= {
+  hospitalName: hospitalInfo.name ||'',
+  hospitalLocation: hospitalInfo&&hospitalInfo.location&&hospitalInfo.location.address&&hospitalInfo.location.address.city||'',
+  hospitalId: '',
+  hospitalEmail: hospitalInfo.email,
+  rohiniId: ''
+   }
+   let memberInformation = this.props.navigation.getParam('memberInfo')
+   console.log(memberInfo)
+   let memberInfo= {
+    patientName: this.getMemberName(memberInformation),
+    contactNo: memberInformation.mobile||'',
+    alterNateContactNumber:memberInformation.phone|| '',
+    patientAgeInYr: memberInformation.age||'',
+    patientAgeMonth:memberInformation.month|| '',
+    insurerId: memberInformation.memberId||'',
+    policyNo: memberInformation.policyNo||'',
+     employeeId: memberInformation.employeeId || '',
+     selectedGender: memberInformation.gender||'',
+    dob:memberInformation.dob||new Date()
+  }
+   await this.setState({ hospitalInfo: hospitalInfomation,hospitalInfomation:hospitalInfomation,tpaInformation:tpaInformation,tpaInfo:tpaInformation,memberInfo:memberInfo,memberInformation:memberInfo })
+    
+    
+  
+  }
+  getMemberName(item) {
+    let name=''
+    if (item.firstName) {
+      name+=item.firstName+' '
+    }
+    if (item.middleName) {
+      name+=item.middleName+' '
+    }
+    if (item.lastName) {
+      name+=item.lastName+' '
+    }
+    return name
+      
+  }
+  showOnlyDateTimePicker = () => {
+    this.setState({ isOnlyDateTimePickerVisible: true })
+  }
+  hideOnlyDateTimePicker = () => {
+    this.setState({ isOnlyDateTimePickerVisible: false })
+  }
+  handleOnlyDateTimePicker = (date) => {
+    try {
+      let temp = this.state.memberInfo
+      temp.dob=date
+      this.setState({
+        isOnlyDateTimePickerVisible: false, 
+        memberInfo: temp
+      })
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
   }
 
   onDOBChange(dob) {
@@ -96,9 +173,10 @@ class PreAuth extends React.PureComponent {
   }
   submitFirstPage() {
 
-    const { hospitalName, hospitalLocation, hospitalId, hospitalEmail, rohiniId } = this.state
-    
-    if (!onlySpaceNotAllowed(hospitalName)) {
+    const { hospitalInfo} = this.state
+    let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalInfo.hospitalId) ? 'Kindly fill hospital id' : !onlySpaceNotAllowed(hospitalInfo.rohiniId) ? 'Kindly fill rohini Id' : !validateEmailAddress(hospitalInfo.hospitalEmail) ? 'Kindly enter valid mail id' : null
+
+    if (!onlySpaceNotAllowed(hospitalInfo.hospitalName)) {
       this.setState({ hospitalNameTextErrorMsg: 'Kindly fill hospital name' });
       this.scrollViewRef.scrollTo({
         y: this.hospitalNameText.y,
@@ -106,7 +184,7 @@ class PreAuth extends React.PureComponent {
       });
       return false;
   }
-  if (!onlySpaceNotAllowed(hospitalLocation)) {
+  if (!onlySpaceNotAllowed(hospitalInfo.hospitalLocation)) {
     this.setState({ hospitalLocationTextErrorMsg: 'Kindly fill hospital location' });
     this.scrollViewRef.scrollTo({
       y: this.hospitalLocationText.y,
@@ -114,7 +192,7 @@ class PreAuth extends React.PureComponent {
     });
     return false;
 }
-if (!onlySpaceNotAllowed(hospitalId)) {
+if (!onlySpaceNotAllowed(hospitalInfo.hospitalId)) {
   this.setState({ hospitalIdTextErrorMsg: 'Kindly fill hospital id' });
   this.scrollViewRef.scrollTo({
     y: this.hospitalIdText.y,
@@ -122,7 +200,7 @@ if (!onlySpaceNotAllowed(hospitalId)) {
   });
   return false;
 }
-if (!onlySpaceNotAllowed(rohiniId)) {
+if (!onlySpaceNotAllowed(hospitalInfo.rohiniId)) {
   this.setState({ rohiniIdTextErrorMsg: 'Kindly fill rohini Id' });
   this.scrollViewRef.scrollTo({
     y: this.rohiniIdText.y,
@@ -130,7 +208,7 @@ if (!onlySpaceNotAllowed(rohiniId)) {
   });
   return false;
 }
-if (!validateEmailAddress(hospitalEmail)) {
+if (!validateEmailAddress(hospitalInfo.hospitalEmail)) {
   this.setState({ hospitalEmailTextErrorMsg: 'Kindly enter valid mail id' });
   this.scrollViewRef.scrollTo({
     y: this.hospitalEmailText.y,
@@ -138,22 +216,25 @@ if (!validateEmailAddress(hospitalEmail)) {
   });
   return false;
 }
-    
-    let errorMsg = !onlySpaceNotAllowed(hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalId) ? 'Kindly fill hospital id' : !onlySpaceNotAllowed(rohiniId) ? 'Kindly fill rohini Id' : !validateEmailAddress(hospitalEmail) ? 'Kindly enter valid mail id' : null
+
+
+// this.setState({hospitalNameTextErrorMsg:'',hospitalLocationTextErrorMsg:'',hospitalIdTextErrorMsg:'',rohiniIdTextErrorMsg:'',
+//   hospitalEmailTextErrorMsg:null})
+
 
     if (errorMsg) {
 
       this.setState({ errorMsg: errorMsg });
     } else {
-      this.setState({ currentForm: 2 });
+      this.setState({ currentForm: 2,errorMsg:null });
     }
   }
   submitSecandPage() {
-    const { tpaCompany, tpaCompanyPhoneNumber, tpaTollFreeFaxNo, patientName, contactNo,
-      alterNateContactNumber, patientAgeInYr, patientAgeMonth, insurerId, policyNumber, employeeId, insurerName,
+    const { tpaInfo,memberInfo,insurerName,
       physicianName, physicianContactNumber, insurerPatientOccupation, insurerPatientAddress } = this.state
     let errorMsg = null
-    if (!onlySpaceNotAllowed(tpaCompany)) {
+
+    if (!onlySpaceNotAllowed(tpaInfo.tpaCompany)) {
       this.setState({ TpaComErrorMsg: 'Kindly fill tpa  company name' });
       this.scrollViewRef.scrollTo({
         y: this.TpaCompany.y,
@@ -161,123 +242,120 @@ if (!validateEmailAddress(hospitalEmail)) {
       });
       return false;
   }
-  if (!validateMobileNumber(tpaCompanyPhoneNumber)) {
-    this.setState({ MobileNumError: 'Kindly fill valid tpa company phone number' });
+  if (!onlySpaceNotAllowed(tpaInfo.tpaCompanyPhoneNumber)) {
+    this.setState({ MobileNumError: 'Kindly fill tpa  company mobile number' });
     this.scrollViewRef.scrollTo({
       y: this.PhoneNumber.y,
       animated: true
     });
     return false;
 }
-// if (!validateMobileNumber(tpaTollFreeFaxNo)) {
-//   this.setState({ tpaTollFreeFaxNoErrorMsg: 'Kindly fill valid toll free fax no' });
-//   this.scrollViewRef.scrollTo({
-//     y: this.tpaTollFreeFaxNoText.y,
-//     animated: true
-//   });
-//   return false;
-// }
   
-if (!onlySpaceNotAllowed(patientName)) {
-  this.setState({ patientNameErrorMsg: 'Kindly fill patient name' });
-  this.scrollViewRef.scrollTo({
-    y: this.patientNameText.y,
-    animated: true
-  });
-  return false;
-}
-if (!validateMobileNumber(contactNo)) {
-  this.setState({ contactNoErrorMsg: 'Kindly fill valid  contact number' });
-  this.scrollViewRef.scrollTo({
-    y: this.contactNoText.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(patientAgeInYr)) {
-  this.setState({ patientAgeErrorMsg: 'Kindly fill age year' });
-  this.scrollViewRef.scrollTo({
-    y: this.patientAgeText.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(patientAgeMonth)) {
-  this.setState({ patientMonthErrorMsg: 'Kindly fill age month' });
-  this.scrollViewRef.scrollTo({
-    y: this.patientAgeText.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(insurerId)) {
-  this.setState({ patientIDCardErrorMsg: 'Kindly fill insurer id' });
-  this.scrollViewRef.scrollTo({
-    y: this.patientIDCardText.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(policyNumber)) {
-  this.setState({ policyNoTextErrorMsg: 'Kindly fill policy number' });
-  this.scrollViewRef.scrollTo({
-    y: this.policyNoText.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(employeeId)) {
-  this.setState({ employeeIdTextErrorMsg: 'Kindly fill employee ID' });
-  this.scrollViewRef.scrollTo({
-    y: this.EmployeeIdText.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(insurerName)) {
-  this.setState({ insureNameTextErrorMsg: 'Kindly fill insurer name' });
-  this.scrollViewRef.scrollTo({
-    y: this.InsureNameText.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(physicianName)) {
-  this.setState({ PhysicianNameTextErrorMsg: 'Kindly fill physician name' });
-  this.scrollViewRef.scrollTo({
-    y: this.personalPhysicianNameText.y,
-    animated: true
-  });
-  return false;
-}
-if (!validateMobileNumber(physicianContactNumber)) {
-  this.setState({ physicianContactNoTextErrorMsg: 'Kindly fill  valid physician contact number' });
-  this.scrollViewRef.scrollTo({
-    y: this.physicianContactNoText.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(insurerPatientOccupation)) {
-  this.setState({ insurerPatientOccupationsErrorMsg: 'Kindly fill insurer patient occupation' });
-  this.scrollViewRef.scrollTo({
-    y: this.insurerPatientOccupations.y,
-    animated: true
-  });
-  return false;
-}
-if (!onlySpaceNotAllowed(insurerPatientAddress)) {
-  this.setState({ insurerPatientAddressTextErrorMsg: 'Kindly fill insurer patient address' });
-  this.scrollViewRef.scrollTo({
-    y: this.insurerPatientAddressText.y,
-    animated: true
-  });
-  return false;
-}
-
-
-
+  if (!onlySpaceNotAllowed(memberInfo.patientName)) {
+    this.setState({ patientNameErrorMsg: 'Kindly fill patient name' });
+    this.scrollViewRef.scrollTo({
+      y: this.patientNameText.y,
+      animated: true
+    });
+    return false;
+    }
+   
+    if (!onlySpaceNotAllowed(memberInfo.contactNo)) {
+      this.setState({ contactNoErrorMsg: 'Kindly fill valid  contact number' });
+      this.scrollViewRef.scrollTo({
+        y: this.contactNoText.y,
+        animated: true
+      });
+      return false;
+      }
+      if (!onlySpaceNotAllowed(memberInfo.patientAgeMonth)) {
+        this.setState({ patientAgeErrorMsg: 'Kindly fill age month' });
+        this.scrollViewRef.scrollTo({
+          y: this.patientAgeText.y,
+          animated: true
+        });
+        return false;
+        }
       
+        if (!onlySpaceNotAllowed(memberInfo.patientAgeMonth)) {
+          this.setState({ patientMonthErrorMsg: 'Kindly fill age month' });
+          this.scrollViewRef.scrollTo({
+            y: this.patientAgeText.y,
+            animated: true
+          });
+          return false;
+          }
+          if (!onlySpaceNotAllowed(memberInfo.insurerId)) {
+            this.setState({ patientIDCardErrorMsg: 'Kindly fill insurer id' });
+            this.scrollViewRef.scrollTo({
+              y: this.patientIDCardText.y,
+              animated: true
+            });
+            return false;
+            }
+
+            if (!onlySpaceNotAllowed(memberInfo.policyNo)) {
+              this.setState({ policyNoTextErrorMsg: 'Kindly fill policy number' });
+              this.scrollViewRef.scrollTo({
+                y: this.policyNoText.y,
+                animated: true
+              });
+              return false;
+              }
+              if (!onlySpaceNotAllowed(memberInfo.employeeId)) {
+                this.setState({ employeeIdTextErrorMsg: 'Kindly fill employee ID' });
+                this.scrollViewRef.scrollTo({
+                  y: this.EmployeeIdText.y,
+                  animated: true
+                });
+                return false;
+                }
+  if(this.state.alreadyHaveInsurance==='yes'){
+    if (!onlySpaceNotAllowed(insurerName)) {
+      this.setState({ insureNameTextErrorMsg: 'Kindly fill insurer name' });
+      this.scrollViewRef.scrollTo({
+        y: this.InsureNameText.y,
+        animated: true
+      });
+      return false;
+      }
+    } 
+    
+    if(this.state.haveFamilyPhysician ==='yes'){
+
+      if (!onlySpaceNotAllowed(physicianName)) {
+        this.setState({ PhysicianNameTextErrorMsg: 'Kindly fill physician name' });
+        this.scrollViewRef.scrollTo({
+          y: this.personalPhysicianNameText.y,
+          animated: true
+        });
+        return false;
+        }
+        if (!validateMobileNumber(physicianContactNumber)) {
+          this.setState({ physicianContactNoTextErrorMsg: 'Kindly fill  valid physician contact number' });
+          this.scrollViewRef.scrollTo({
+            y: this.physicianContactNoText.y,
+            animated: true
+          });
+          return false;
+          }
+   }
+   if (!onlySpaceNotAllowed(insurerPatientOccupation)) {
+    this.setState({ insurerPatientOccupationsErrorMsg: 'Kindly fill insurer patient occupation' });
+    this.scrollViewRef.scrollTo({
+      y: this.insurerPatientOccupations.y,
+      animated: true
+    });
+    return false;
+    }
+    if (!onlySpaceNotAllowed(insurerPatientAddress)) {
+    this.setState({ insurerPatientAddressTextErrorMsg: 'Kindly fill insurer patient address' });
+    this.scrollViewRef.scrollTo({
+      y: this.insurerPatientAddressText.y,
+      animated: true
+    });
+    return false;
+    }
 
     if (errorMsg) {
 
@@ -288,113 +366,112 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
   }
 
   async submitThirdPage() {
-    const {
-      hospitalName,
-      hospitalLocation,
-      hospitalId,
-      hospitalEmail,
-      rohiniId,
-      tpaCompany,
-      tpaCompanyPhoneNumber,
-      tpaTollFreeFaxNo,
-      patientName,
-      contactNo,
-      alterNateContactNumber,
-      patientAgeInYr,
-      patientAgeMonth,
-      insurerId,
-      policyNo,
-      employeeId,
-      insurerName,
-      physicianName,
-      physicianContactNumber,
-      insurerPatientOccupation,
-      insurerPatientAddress,
-      treatingDoctorName,
-      treatingDoctorContactNo,
-      diseaseDiscription,
-      releventClinical,
-      durationOfPresent
-    } = this.state
-    let errorMsg = null
-    if (!onlySpaceNotAllowed(treatingDoctorName)) {
-      this.setState({ treatingDoctorNameTextErrorMsg: 'Kindly fill doctor name' });
-      this.scrollViewRef.scrollTo({
-        y: this.treatingDoctorNameText.y,
-        animated: true
-      });
-      return false;
-    }
-    if (!onlySpaceNotAllowed(treatingDoctorName)) {
-      this.setState({ treatingDoctorContactNoTextErrorMsg: 'Kindly fill valid doctor phone number' });
-      this.scrollViewRef.scrollTo({
-        y: this.treatingDoctorContactNoText.y,
-        animated: true
-      });
-      return false;
-    }
-    if (!onlySpaceNotAllowed(treatingDoctorName)) {
-      this.setState({ diseaseDiscriptionTextErrorMsg: 'Kindly fill disease description' });
-      this.scrollViewRef.scrollTo({
-        y: this.diseaseDiscriptionText.y,
-        animated: true
-      });
-      return false;
-    }
-    if (!onlySpaceNotAllowed(treatingDoctorName)) {
-      this.setState({ releventClinicalTextErrorMsg: 'Kindly fill clinical finding' });
-      this.scrollViewRef.scrollTo({
-        y: this.releventClinicalText.y,
-        animated: true
-      });
-      return false;
-    }
-    if (!onlySpaceNotAllowed(treatingDoctorName)) {
-      this.setState({ durationOfPresentTextErrorMsg: 'Kindly fill duration of present' });
-      this.scrollViewRef.scrollTo({
-        y: this.durationOfPresentText.y,
-        animated: true
-      });
-      return false;
-    }
-    
-    
-    if (errorMsg) {
+    try {
+      const {
+        hospitalInfo,
+        tpaInfo,
+        memberInfo,
+        insurerName,
+        physicianName,
+        physicianContactNumber,
+        insurerPatientOccupation,
+        insurerPatientAddress,
+        treatingDoctorName,
+        treatingDoctorContactNo,
+        diseaseDiscription,
+        releventClinical,
+        durationOfPresent,
+        imageData
+      } = this.state
+      let errorMsg = null
 
-      this.setState({ errorMsg: errorMsg });
-    } else {
-      let reqData = {
-        hospitalName: hospitalName,
-        hospitalLocation: hospitalLocation,
-        hospitalId: hospitalId,
-        hospitalEmail: hospitalEmail,
-        rohiniId: rohiniId,
-        tpaCompany: tpaCompany,
-        tpaCompanyPhoneNumber: tpaCompanyPhoneNumber,
-        tpaTollFreeFaxNo: tpaTollFreeFaxNo,
-        patientName: patientName,
-        patientAgeInYr: patientAgeInYr,
-        patientAgeMonth: patientAgeMonth,
-        insurerId: insurerId,
-        policyNo: policyNo,
-        employeeId: employeeId,
-        insurerName: insurerName,
-        physicianName: physicianName,
-        physicianContactNumber: physicianContactNumber,
-        insurerPatientOccupation: insurerPatientOccupation,
-        insurerPatientAddress: insurerPatientAddress,
-        treatingDoctorName: treatingDoctorName,
-        treatingDoctorContactNo: treatingDoctorContactNo,
-        diseaseDiscription: diseaseDiscription,
-        releventClinical: releventClinical,
-        durationOfPresent: durationOfPresent
+      if (!onlySpaceNotAllowed(treatingDoctorName)) {
+        this.setState({ treatingDoctorNameTextErrorMsg: 'Kindly fill doctor name' });
+        this.scrollViewRef.scrollTo({
+          y: this.treatingDoctorNameText.y,
+          animated: true
+        });
+        return false;
       }
-      let result = await createPreAuth(reqData)
+      if (!validateMobileNumber(treatingDoctorContactNo)) {
+        this.setState({ treatingDoctorContactNoTextErrorMsg: 'Kindly fill valid doctor phone number' });
+        this.scrollViewRef.scrollTo({
+          y: this.treatingDoctorContactNoText.y,
+          animated: true
+        });
+        return false;
+      }
+      if (!onlySpaceNotAllowed(diseaseDiscription)) {
+        this.setState({ diseaseDiscriptionTextErrorMsg: 'Kindly fill disease description' });
+        this.scrollViewRef.scrollTo({
+          y: this.diseaseDiscriptionText.y,
+          animated: true
+        });
+        return false;
+      }
+      if (!onlySpaceNotAllowed(releventClinical)) {
+        this.setState({ releventClinicalTextErrorMsg: 'Kindly fill clinical finding' });
+        this.scrollViewRef.scrollTo({
+          y: this.releventClinicalText.y,
+          animated: true
+        });
+        return false;
+      }
+      if (!onlySpaceNotAllowed(durationOfPresent)) {
+        this.setState({ durationOfPresentTextErrorMsg: 'Kindly fill duration of present' });
+        this.scrollViewRef.scrollTo({
+          y: this.durationOfPresentText.y,
+          animated: true
+        });
+        return false;
+      }
+
+
+
+      if (errorMsg) {
+
+        this.setState({ errorMsg: errorMsg });
+      } else {
+        let reqData = {
+          hospitalName: hospitalInfo.hospitalName,
+          hospitalLocation: hospitalInfo.hospitalLocation,
+          hospitalId: hospitalInfo.hospitalId,
+          hospitalEmail: hospitalInfo.hospitalEmail,
+          rohiniId: hospitalInfo.rohiniId,
+          tpaCompany: tpaInfo.tpaCompany,
+          tpaCompanyPhoneNumber: tpaInfo.tpaCompanyPhoneNumber,
+          tpaTollFreeFaxNo: tpaInfo.tpaTollFreeFaxNo,
+          patientName: memberInfo.patientName,
+          patientDob:memberInfo.dob,
+          patientGender:memberInfo.selectedGender,
+          patientAgeInYr: memberInfo.patientAgeInYr,
+          patientAgeMonth: memberInfo.patientAgeMonth,
+          insurerId: memberInfo.insurerId,
+          policyNo: memberInfo.policyNo,
+          employeeId: memberInfo.employeeId,
+          insurerName: memberInfo.insurerName,
+          physicianName: physicianName,
+          physicianContactNumber: physicianContactNumber,
+          insurerPatientOccupation: insurerPatientOccupation,
+          insurerPatientAddress: insurerPatientAddress,
+          treatingDoctorName: treatingDoctorName,
+          treatingDoctorContactNo: treatingDoctorContactNo,
+          diseaseDiscription: diseaseDiscription,
+          releventClinical: releventClinical,
+          durationOfPresent: durationOfPresent
+        }
+        if (imageData) {
+          reqData.patientProof=imageData
+        }
+        let result = await createPreAuth(reqData)
     
-      
-      if (result) {
-        this.setState({ currentForm: 4, refNo: result.refNo || '5' });
+        
+        if (result && result.referenceNumber) {
+          this.setState({ currentForm: 4, referenceID: result.referenceNumber });
+        }
       }
+    } catch (e) {
+      alert(e)
     }
   }
 
@@ -410,19 +487,20 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
 
     try {
 
-      let appendForm = "medicine"
-      let endPoint = 'images/upload'
+      let appendForm = "adhar"
+      let endPoint = 'images/upload?path=adhar'
       const response = await uploadImage(imagePath, endPoint, appendForm)
-      
+    
       if (response.success) {
-        let data = this.state.imageData;
-        let temp = data.concat(response.data)
+        
+       
 
-        this.setState({ imageData: temp })
+        await this.setState({ imageData: response.data[0] })
+       
         toastMeassage('image upload successfully', 'success', 3000)
 
       } else {
-        toastMeassage('Problem Uploading Picture', 'danger', 3000)
+        toastMeassage('Problem Uploading Picture'+response.error, 'danger', 3000)
       }
 
     } catch (e) {
@@ -432,6 +510,7 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
     }
   }
   InsurerDetails = () => {
+    const {tpaInfo,tpaInformation,memberInfo,memberInformation}=this.state
     return (
       <SafeAreaView style={styles.container}>
       <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
@@ -444,8 +523,14 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
               (this.TpaCompany = event.nativeEvent.layout)
             }>A. Name of TPA Company</Text>
           <TextInput
-            value={this.state.tpaCompany}
-            onChangeText={(text) => this.setState({ tpaCompany: text,TpaComErrorMsg:null })}
+              value={tpaInfo.tpaCompany}
+              editable={tpaInformation.tpaCompany===''?true:false}
+              onChangeText={(text) => this.setState({
+                tpaInfo: {
+                  ...tpaInfo,
+                  tpaCompany: text
+                },TpaComErrorMsg:null
+              })}
             style={[
               styles.inputText,
               this.state.TpaComErrorMsg != null?
@@ -465,9 +550,16 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             (this.PhoneNumber = event.nativeEvent.layout)
           }>B. Phone Number</Text>
           <TextInput
-
-            onChangeText={(text) => this.setState({ tpaCompanyPhoneNumber: text,MobileNumError:null })}
-            value={this.state.tpaCompanyPhoneNumber}
+           value={tpaInfo.tpaCompanyPhoneNumber}
+           editable={tpaInformation.tpaCompanyPhoneNumber===''?true:false}
+           onChangeText={(text) => this.setState({
+             tpaInfo: {
+               ...tpaInfo,
+               tpaCompanyPhoneNumber: text,
+            
+             },   MobileNumError:null
+           })}
+          
             style={[
               styles.inputText,
               this.state.MobileNumError != null?
@@ -486,8 +578,14 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
               (this.tpaTollFreeFaxNoText = event.nativeEvent.layout)
             }>C. Toll Free Fax No</Text>
           <TextInput
-            value={this.state.tpaTollFreeFaxNo}
-            onChangeText={(text) => this.setState({ tpaTollFreeFaxNo: text,tpaTollFreeFaxNoErrorMsg:null })}
+             value={tpaInfo.tpaTollFreeFaxNo}
+             editable={tpaInformation.tpaTollFreeFaxNo===''?true:false}
+             onChangeText={(text) => this.setState({
+               tpaInfo: {
+                 ...tpaInfo,
+                 tpaTollFreeFaxNo: text
+               }
+             })}
             style={[
               styles.inputText,
               this.state.tpaTollFreeFaxNoErrorMsg != null?
@@ -511,8 +609,17 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             (this.patientNameText = event.nativeEvent.layout)
           }>A. Name of the patient</Text>
           <TextInput
+            value={memberInfo.patientName}
+            editable={memberInformation.patientName===''?true:false}
+            onChangeText={(text) => this.setState({
+              memberInfo: {
+                ...memberInfo,
+                patientName: text,
+               
+              }, patientNameErrorMsg:null
+            })}
 
-            onChangeText={(text) => this.setState({ patientName: text,patientNameErrorMsg:null })}
+          
             placeholder={'Enter name of patient'}
             style={[
               styles.inputText,
@@ -532,29 +639,51 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             <Radio
               style={{ marginLeft: 40 }}
               standardStyle={true}
+              disabled={memberInformation.selectedGender?true:false} 
               onPress={() => {
-                this.setState({ selectedGender: 'Male' });
+                this.setState({
+                  memberInfo: {
+                    ...memberInfo,
+                    selectedGender: 'Male'
+                  }
+                
+                });
               }}
-              selected={this.state.selectedGender === 'Male'}
+              selected={memberInfo.selectedGender === 'Male'}
             />
             <Text style={{ marginLeft: 10 }}>Male</Text>
             <Radio
               style={{ marginLeft: 40 }}
               standardStyle={true}
+              disabled={memberInformation.selectedGender?true:false} 
               onPress={() => {
-                this.setState({ selectedGender: 'Female' });
+                this.setState({
+                  memberInfo: {
+                    ...memberInfo,
+                    selectedGender: 'Female'
+                  }
+                
+                });
               }}
-              selected={this.state.selectedGender === 'Female'}
+              selected={memberInfo.selectedGender === 'Female'}
             />
             <Text style={{ marginLeft: 10 }}>Female</Text>
           </View>
           <Text style={styles.inputLabel}
-           onLayout={event =>
-            (this.contactNoText = event.nativeEvent.layout)
-          }>C. Concat No</Text>
+            onLayout={event =>
+              (this.contactNoText = event.nativeEvent.layout)
+            }>C. Contact No</Text>
           <TextInput
             placeholder={'Enter contact no'}
-            onChangeText={(text) => this.setState({ contactNo: text,contactNoErrorMsg:null })}
+            value={memberInfo.contactNo}
+            editable={memberInformation.contactNo===''?true:false}
+            onChangeText={(text) => this.setState({
+              memberInfo: {
+                ...memberInfo,
+                contactNo: text,
+               
+              }, contactNoErrorMsg:null
+            })}
             style={[ styles.inputText,
               this.state.contactNoErrorMsg != null?
               {
@@ -581,12 +710,42 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
           <View style={{ flexDirection: 'row' }}>
             <TextInput
               placeholder={'YY'}
-
-
-              onChangeText={(text) => this.setState({ patientAgeInYr: text,patientAgeErrorMsg:null })}
-            
+              value={memberInfo.patientAgeInYr}
+              editable={memberInformation.patientAgeInYr===''?true:false}
+              onChangeText={(text) => this.setState({
+                memberInfo: {
+                  ...memberInfo,
+                  patientAgeInYr: text,
+                  
+                },
+                patientAgeErrorMsg:null
+              })}
+                style={[ styles.inputText,
+                  this.state.patientAgeErrorMsg != null?
+                  {
+                    width: 160,
+                    marginRight:0
+                  }:
+                    styles.inputText
+                  ,
+                  {
+                    width: 160,
+                  }]}
+    
+            />
+            <TextInput
+              placeholder={'MM'}
+              value={memberInfo.patientAgeMonth}
+              editable={memberInformation.patientAgeMonth===''?true:false}
+              onChangeText={(text) => this.setState({
+                memberInfo: {
+                  ...memberInfo,
+                  patientAgeMonth: text
+                }
+              })}
+             
               style={[ styles.inputText,
-                this.state.patientAgeErrorMsg != null?
+                this.state.patientMonthErrorMsg != null?
                 {
                   width: 160,
                   marginRight:0
@@ -598,23 +757,6 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 }
               ]}
             />
-            <TextInput
-              placeholder={'MM'}
-
-              onChangeText={(text) => this.setState({ patientAgeMonth: text,patientMonthErrorMsg:null })}
-                style={[ styles.inputText,
-                  this.state.patientMonthErrorMsg != null?
-                  {
-                    width: 160,
-                    marginRight:0
-                  }:
-                    styles.inputText
-                  ,
-                  {
-                    width: 160,
-                  }
-                ]}
-            />
           </View>
           {this.state.patientAgeErrorMsg !== null  ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientAgeErrorMsg}</Text>
@@ -623,6 +765,25 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientMonthErrorMsg}</Text>
               :null}
           <Text style={styles.inputLabel}>F. Date of birth</Text>
+          <View style={{ marginTop: 20, width: '100%', }}>
+
+<Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Date of birth</Text>
+<TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={[styles.formStyle2,{flexDirection:'row'}]}>
+    {/* <Item > */}
+<Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+<Text style={memberInfo.dob != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{memberInfo.dob != null ?formatDate(memberInfo.dob, 'DD/MM/YYYY'):'Date of Birth'}</Text>
+<DateTimePicker
+  mode={'date'}
+  minimumDate={new Date(1940, 0, 1)}
+  value={memberInfo.dob}
+  isVisible={this.state.isOnlyDateTimePickerVisible}
+  onConfirm={this.handleOnlyDateTimePicker}
+  onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
+/>
+    {/* </Item> */}
+    </TouchableOpacity>
+</View>
+
           {/* 
           style={{
                 borderColor: '#E0E1E4',
@@ -630,7 +791,7 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 backgroundColor: '#fff',
               }}
           */}
-          <View style={[{ flexDirection: 'row' }, styles.inputText]}>
+          {/* <View style={[{ flexDirection: 'row' }, styles.inputText]}>
 
             <DatePicker
               style={{
@@ -638,7 +799,7 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 borderWidth: 2,
                 backgroundColor: '#fff',
               }}
-              // defaultDate={this.state.chosenDate}
+              defaultDate={memberInfo.dob}
               timeZoneOffsetInMinutes={undefined}
               modalTransparent={true}
               minimumDate={new Date(1940, 0, 1)}
@@ -646,34 +807,31 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
               animationType={'fade'}
               androidMode={'default'}
               textStyle={{ color: '#5A5A5A' }}
-              value={this.state.chosenDate}
+              value={memberInfo.dob}
               placeHolderTextStyle={{ color: '#5A5A5A' }}
               onDateChange={dob => {
                 this.onDOBChange(dob);
               }}
-              disabled={this.dobIsEditable}
+              // disabled={this.dobIsEditable}
             />
             <Icon
               name="calendar"
               style={{ color: '#3E4459', marginTop: 8, marginLeft: 160 }}
             />
-          </View>
-          <Text style={styles.inputLabel}
-            onLayout={event =>
-              (this.patientIDCardText = event.nativeEvent.layout)
-            }>G. Insurer ID Card No</Text>
+          </View> */}
+          <Text style={styles.inputLabel}>G. Insurer ID Card No</Text>
           <TextInput
 
             placeholder={'Enter Insurer ID Card No'}
-            onChangeText={(text) => this.setState({ insurerId: text,patientIDCardErrorMsg:null })}
-            style={[ styles.inputText,
-              this.state.patientIDCardErrorMsg != null?
-              {
-                borderColor: 'red',
-              }:
-                styles.inputText
-              ,
-            ]}
+            value={memberInfo.insurerId}
+              editable={memberInformation.insurerId===''?true:false}
+              onChangeText={(text) => this.setState({
+                memberInfo: {
+                  ...memberInfo,
+                  insurerId: text
+                }
+              })}
+            style={styles.inputText}
           />
             {this.state.patientIDCardErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.patientIDCardErrorMsg}</Text>
@@ -686,8 +844,14 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
           </Text>
           <TextInput
             placeholder={'Enter policy no / corporate name'}
-
-            onChangeText={(text) => this.setState({ policyNumber: text,policyNoTextErrorMsg:null })}
+            value={memberInfo.policyNo}
+            editable={memberInformation.policyNo===''?true:false}
+            onChangeText={(text) => this.setState({
+              memberInfo: {
+                ...memberInfo,
+                policyNo: text
+              }
+            })}
             style={[ styles.inputText,
               this.state.policyNoTextErrorMsg != null?
               {
@@ -707,7 +871,15 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
           <TextInput
 
             placeholder={'Enter Employee ID'}
-            onChangeText={(text) => this.setState({ employeeId: text,employeeIdTextErrorMsg:null})}
+            value={memberInfo.employeeId}
+            editable={memberInformation.employeeId===''?true:false}
+            onChangeText={(text) => this.setState({
+              memberInfo: {
+                ...memberInfo,
+                employeeId: text
+              }
+            })}
+         
             style={[ styles.inputText,
               this.state.employeeIdTextErrorMsg != null?
               {
@@ -769,17 +941,22 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
               :null}
               <Text style={styles.inputLabel}>J.2. Give Details</Text>
               <TextInput
-                value={this.state.employeeId}
+              
                 placeholder={'Enter Employee ID'}
+                value={memberInfo.employeeId}
+                editable={memberInformation.employeeId===''?true:false}
+                onChangeText={(text) => this.setState({
+                  memberInfo: {
+                    ...memberInfo,
+                    employeeId: text
+                  }
+                })}
                 style={styles.inputText}
               />
             </View>
             : null}
 
-          <Text style={[styles.inputLabel, { lineHeight: 26 }]}
-          onLayout={event =>
-            (this.personalPhysicianNameText = event.nativeEvent.layout)
-          }>
+          <Text style={[styles.inputLabel, { lineHeight: 26 }]}>
             K. If you have family physician
           </Text>
           <View style={{ flexDirection: 'row', marginBottom: 20 }}>
@@ -802,8 +979,12 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             />
             <Text style={{ marginLeft: 10 }}>No</Text>
           </View>
+          <Text onLayout={event =>
+                (this.personalPhysicianNameText = event.nativeEvent.layout)
+              } stye={{marginTop:-20}}/>
           {this.state.haveFamilyPhysician === 'yes' ? (
             <View>
+             
             <TextInput
 
               onChangeText={(text) => this.setState({ physicianName: text,PhysicianNameTextErrorMsg:null })}
@@ -830,13 +1011,12 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 popupVisible={(data) => this.imageUpload(data)}
               /> : null
           }
-          <Text  style={{marginTop:-20}}onLayout={event =>
-                  (this.physicianContactNoText = event.nativeEvent.layout)
-                }/>
+          <Text  style={{marginTop:-20}}  onLayout={event =>
+                (this.physicianContactNoText = event.nativeEvent.layout)
+              }/>
           {this.state.haveFamilyPhysician === 'yes' ? (
             <View>
-              <Text style={styles.inputLabel}
-                >K.1. Contact No</Text>
+              <Text style={styles.inputLabel} >K.1. Contact No</Text>
               <TextInput
                 placeholder={'Enter Contact No'}
 
@@ -898,19 +1078,59 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.insurerPatientAddressTextErrorMsg}</Text>
               :null}
           <Text style={styles.headerText}>Upload your aadhar copy</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginTop: 10,
-            }}>
-            <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
-              <Image
-                source={require('../../../../../assets/images/documentCloud.png')}
-                style={{ height: 60, width: 110 }}
-              />
-            </TouchableOpacity>
-          </View>
+          {this.state.imageData !== null ?
+            <View
+              style={{
+                flex: 1,
+                marginLeft: 40,
+                marginRight: 40,
+                height: 130,
+                borderColor: '#424242',
+                borderRadius: 1,
+                backgroundColor: '#fff',
+                marginTop: 10,
+              }}>
+              <View style={{ flexDirection: 'row' }}>
+                <Icon name="document"
+                  style={{
+                    color: '#424242',
+                    marginTop: 8,
+                    marginLeft: 20,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'openSans, sans-serif',
+                    fontSize: 12,
+                    marginTop: 8,
+                    marginLeft: 10,
+                    fontWeight: 'bold',
+                  }}>
+
+                 {this.state.imageData.file_name}
+
+  </Text>
+              </View>
+
+              <View style={{ flexDirection: 'column', marginTop: 0 }}>
+              </View>
+            </View>
+            :
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginTop: 10,
+              }}>
+              <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
+                <Image
+                  source={require('../../../../../assets/images/documentCloud.png')}
+                  style={{ height: 60, width: 110 }}
+                />
+              </TouchableOpacity>
+            </View>
+          }
+          <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
@@ -1079,14 +1299,31 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.durationOfPresentTextErrorMsg}</Text>
               :null}
           <Text style={styles.inputLabel}>E.1. Date of first consultation</Text>
-          <View style={[{ flexDirection: 'row' }, styles.inputText]}>
+          <View style={{ marginTop: 20, width: '100%', }}>
+<TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={[styles.formStyle2,{flexDirection:'row'}]}>
+    {/* <Item > */}
+<Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+<Text style={this.state.firstConsultantDate != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.firstConsultantDate != null ?formatDate(this.state.firstConsultantDate, 'DD/MM/YYYY'):'Date of Birth'}</Text>
+<DateTimePicker
+  mode={'date'}
+  minimumDate={new Date(1940, 0, 1)}
+  value={this.state.firstConsultantDate}
+  isVisible={this.state.isOnlyDateTimePickerVisible}
+  onConfirm={this.handleOnlyDateTimePicker}
+  onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
+/>
+    {/* </Item> */}
+    </TouchableOpacity>
+</View>
+
+          {/* <View style={[{ flexDirection: 'row' }, styles.inputText]}>
             <DatePicker
               style={{
                 borderColor: '#E0E1E4',
                 borderWidth: 2,
                 backgroundColor: '#fff',
               }}
-              //   defaultDate={new Date()}
+               defaultDate={new Date()}
               timeZoneOffsetInMinutes={undefined}
               modalTransparent={false}
               minimumDate={new Date(1940, 0, 1)}
@@ -1104,8 +1341,9 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             <Icon
               name="calendar"
               style={{ color: '#3E4459', marginTop: 8, marginLeft: 160 }}
-            />
-          </View>
+            /> 
+          </View>*/}
+          <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
               onPress={() => {
@@ -1173,7 +1411,7 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             <TouchableOpacity
               style={styles.buttonStyle}
               onPress={() => {
-                this.setState({ currentForm: 2 });
+               this.props.navigation.navigate('CorporateHome')
               }}>
               <Text
                 style={{
@@ -1194,6 +1432,7 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
   };
 
   HospitalDetails = () => {
+    const {hospitalInfo,hospitalInfomation}=this.state
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
@@ -1208,6 +1447,8 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 (this.hospitalNameText= event.nativeEvent.layout)
               }>Name of the hospital</Text>
           <TextInput
+            value={hospitalInfo.hospitalName}
+            editable={hospitalInfomation.hospitalName===''?true:false}
             placeholder={'Enter name of the hospital'}
             style={[ styles.inputText,
               this.state.hospitalNameTextErrorMsg != null?
@@ -1217,7 +1458,14 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 styles.inputText
               ,
             ]}
-            onChangeText={(text) => this.setState({ hospitalName: text,hospitalNameTextErrorMsg:null })}
+            onChangeText={(text) => this.setState({
+              hospitalInfo: {
+                ...hospitalInfo,
+                hospitalName: text,
+               
+              },
+              hospitalNameTextErrorMsg:null
+            })}
           />
             {this.state.hospitalNameTextErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.hospitalNameTextErrorMsg}</Text>
@@ -1227,7 +1475,8 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             (this.hospitalLocationText= event.nativeEvent.layout)
           }>Hospital Location</Text>
           <TextInput
-
+           value={hospitalInfo.hospitalLocation}
+           editable={hospitalInfomation.hospitalLocation===''?true:false}
             placeholder={'Enter hospital location'}
             style={[ styles.inputText,
               this.state.hospitalLocationTextErrorMsg != null?
@@ -1237,7 +1486,13 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 styles.inputText
               ,
             ]}
-            onChangeText={(text) => this.setState({ hospitalLocation: text,hospitalLocationTextErrorMsg:null })}
+            onChangeText={(text) => this.setState({
+              hospitalInfo: {
+                ...hospitalInfo,
+                hospitalLocation: text,
+                
+              },hospitalLocationTextErrorMsg:null
+            })}
           />
             {this.state.hospitalLocationTextErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.hospitalLocationTextErrorMsg}</Text>
@@ -1248,6 +1503,16 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             }>Hospital ID</Text>
           <TextInput
             placeholder={'Enter hospital ID'}
+           
+            value={hospitalInfo.hospitalId}
+            editable={hospitalInfomation.hospitalId===''?true:false}
+            onChangeText={(text) => this.setState({
+              hospitalInfo: {
+                ...hospitalInfo,
+                hospitalId: text,
+                
+              },hospitalIdTextErrorMsg:null
+            })}
             style={[ styles.inputText,
               this.state.hospitalIdTextErrorMsg != null?
               {
@@ -1257,7 +1522,6 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
               ,
             ]}
 
-            onChangeText={(text) => this.setState({ hospitalId: text,hospitalIdTextErrorMsg:null})}
           />
            {this.state.hospitalIdTextErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.hospitalIdTextErrorMsg}</Text>
@@ -1267,8 +1531,10 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
             (this.hospitalEmailText= event.nativeEvent.layout)
           }>Hospital Email ID</Text>
           <TextInput
-
-            placeholder={'Enter Email ID'}
+             value={hospitalInfo.hospitalEmail}
+             editable={hospitalInfomation.hospitalEmail===''?true:false}
+            placeholder={'Enter Email ID'
+            }
             style={[ styles.inputText,
               this.state.hospitalEmailTextErrorMsg != null?
               {
@@ -1277,7 +1543,14 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 styles.inputText
               ,
             ]}
-            onChangeText={(text) => this.setState({ hospitalEmail: text,hospitalEmailTextErrorMsg:null })}
+            onChangeText={(text) => this.setState({
+              hospitalInfo: {
+                ...hospitalInfo,
+                hospitalEmail: text,
+               
+              },
+              hospitalEmailTextErrorMsg:null
+            })}
           />
            {this.state.hospitalEmailTextErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.hospitalEmailTextErrorMsg}</Text>
@@ -1296,7 +1569,17 @@ if (!onlySpaceNotAllowed(insurerPatientAddress)) {
                 styles.inputText
               ,
             ]}
-            onChangeText={(text) => this.setState({ rohiniId: text,rohiniIdTextErrorMsg:null })}
+            value={hospitalInfo.rohiniId}
+            editable={hospitalInfomation.rohiniId===''?true:false}
+            onChangeText={(text) => this.setState({
+              hospitalInfo: {
+                ...hospitalInfo,
+                rohiniId: text,
+               
+              },
+              rohiniIdTextErrorMsg:null
+
+            })}
           />
            {this.state.rohiniIdTextErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.rohiniIdTextErrorMsg}</Text>
