@@ -10,6 +10,8 @@ import { NavigationEvents } from 'react-navigation';
 import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'react-native';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner'
+import {primaryColor} from '../../../setup/config'
+
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import { SHOW_MOBILE_AND_EMAIL_ENTRIES, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../../../setup/config';
@@ -212,11 +214,11 @@ class Signup extends Component {
                                         visible={isModalVisible} />
                                 </View>
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
-                                    <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
+                                    <Text uppercase={true} style={[styles.cardHead, { color: primaryColor }]}>Sign up</Text>
                                     <Form>
                                         {this.isShowMobileEntryView === false ? null :
                                             <View>
-                                                <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
+                                                <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>Mobile Number</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                                     <Input placeholder="Mobile Number" style={styles.authTransparentLabel}
                                                         returnKeyType={'next'}
@@ -235,7 +237,7 @@ class Signup extends Component {
 
 
                                             <View>
-                                                <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email</Label>
+                                                <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>Email</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
 
                                                     <Input placeholder="email" style={styles.authTransparentLabel}
@@ -252,7 +254,7 @@ class Signup extends Component {
 
                                             </View>
                                         }
-                                        <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Password</Label>
+                                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Password</Label>
 
                                         <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
                                             <Input placeholder="Password" style={{ fontSize: 15, paddingLeft: 15, }}
@@ -266,12 +268,12 @@ class Signup extends Component {
                                                 onSubmitEditing={() => { this.userPassword._root.focus(); }}
                                             // maxLength={16}
                                             />
-                                            {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
-                                                : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                                            {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                                                : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
                                             }
                                         </Item>
 
-                                        <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Referral Code</Label>
+                                        <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>Referral Code</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Input placeholder="Referral Code (Optional)" style={styles.authTransparentLabel}
                                                 ref={(input) => { this.userPassword = input; }}
@@ -346,7 +348,7 @@ class Signup extends Component {
                                     </Form>
                                 </View>
                                 <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
-                                    <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', color: '#775DA3' }}>Already Have An Account ?</Text>
+                                    <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', color: primaryColor }}>Already Have An Account ?</Text>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
                                         <Text uppercase={true} style={{ color: '#fff', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Sign In</Text>
                                     </TouchableOpacity>

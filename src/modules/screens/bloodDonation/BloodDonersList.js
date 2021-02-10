@@ -4,6 +4,7 @@ import { StyleSheet, TextInput, TouchableOpacity, Image, Linking, Platform,Async
 import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import { bloodDonationList,fetchUserProfile } from '../../providers/profile/profile.action';
+import {primaryColor} from '../../../setup/config'
 
 import Spinner from '../../../components/Spinner'
 import { translate } from "../../../setup/translator.helper"
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   footerStyle: {
-    backgroundColor: '#7E49C3',
+    backgroundColor: primaryColor,
     justifyContent: 'center',
 
   },

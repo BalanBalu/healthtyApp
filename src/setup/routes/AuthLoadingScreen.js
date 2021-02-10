@@ -4,6 +4,8 @@ import {
 } from 'react-native';
 import { setUserLocally, APP_LOADED } from '../../modules/providers/auth/auth.actions';
 import { store } from '../store';
+import {primaryColor} from '../../setup/config'
+
 import SplashScreen from 'react-native-splash-screen';
 import {CURRENT_APP_NAME,MY_SMART_HEALTH_CARE,MY_MEDFLIC} from '../config'
 class AuthLoadingScreen extends React.Component {
@@ -45,7 +47,7 @@ class AuthLoadingScreen extends React.Component {
          flex: 1,
          justifyContent: 'center',
          alignItems: 'center',
-         backgroundColor: '#7357a2'
+         backgroundColor: primaryColor
        }}>
      </View>
   }

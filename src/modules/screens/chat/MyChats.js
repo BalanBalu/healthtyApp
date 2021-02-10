@@ -3,6 +3,7 @@ import { Container, Content, View, Text,Thumbnail,Row,Col, Toast } from 'native-
 import {StyleSheet, FlatList, AsyncStorage , TouchableOpacity, BackHandler} from 'react-native'
 import { NavigationEvents } from "react-navigation";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
+import {primaryColor} from '../../../setup/config'
 
 import {
     getAllChats, SET_LAST_MESSAGES_DATA
@@ -219,7 +220,7 @@ msg:{
     fontSize:14,
     color:'#fff',
     borderRadius:30,
-    backgroundColor:'#7E49C3',
+    backgroundColor:primaryColor,
     width:'35%',
     textAlign:'center'
 },

@@ -4,6 +4,7 @@ import Mapbox from '../../screens/bookappoinment/Mapbox';
 
 import { Text, Card, List, ListItem, Left, Body, Icon, Right } from 'native-base';
 import { Row, Grid } from 'react-native-easy-grid';
+import {primaryColor} from '../../../setup/config'
 
 
 export default class RenderLabLocation extends Component {
@@ -41,7 +42,7 @@ export default class RenderLabLocation extends Component {
                         <List>
                             <ListItem avatar>
                                 <Left>
-                                    <Icon name="locate" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
+                                    <Icon name="locate" style={{ color: primaryColor, fontSize: 20 }}></Icon>
                                 </Left>
                                 <Body>
                                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.no_and_street}</Text>
@@ -51,7 +52,7 @@ export default class RenderLabLocation extends Component {
                                 </Body>
                                 <Right>
                                 <TouchableOpacity style={{flexDirection: 'row' }} >
-                                    <Icon name="directions" type="MaterialIcons" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
+                                    <Icon name="directions" type="MaterialIcons" style={{ color: primaryColor, fontSize: 20 }}></Icon>
                                     <Text onPress={()=> this.openMap(locationData.coordinates[0], locationData.coordinates[1], name)}
                                         style={{ fontFamily: 'OpenSans',
                                                  fontSize:13,

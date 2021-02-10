@@ -9,6 +9,8 @@ import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { renderDoctorImage, getName, getHomeHealthCareUserAddress } from '../../../common';
 import { formatDate, statusValue } from "../../../../setup/helpers";
 import styles from '../Styles'
+import {primaryColor} from '../../../../setup/config'
+
 export default class RenderAppointmentList extends Component {
     constructor(props) {
         super(props)
@@ -69,12 +71,12 @@ export default class RenderAppointmentList extends Component {
                             <Text style={styles.mainText}>{item.degree}</Text>
                             {item.appointmentResult && item.appointmentResult.patient_location && item.appointmentResult.patient_location.address ?
                                 <View>
-                                    <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visit home address :</Text>
+                                    <Text style={[styles.mainText, { color: primaryColor }]}>Visit home address :</Text>
                                     <Text style={styles.subinnerText} note>{getHomeHealthCareUserAddress(item.appointmentResult.patient_location.address)}
                                     </Text>
                                 </View>
                                 : null}
-                            <Text style={[styles.mainText, { color: '#7F49C3' }]}>Visited On :</Text>
+                            <Text style={[styles.mainText, { color: primaryColor }]}>Visited On :</Text>
                             <Text style={styles.subinnerText} note>
                                 {formatDate(item.appointmentResult.appointment_date, "dddd,MMMM DD-YYYY")} </Text>
                             <Row>

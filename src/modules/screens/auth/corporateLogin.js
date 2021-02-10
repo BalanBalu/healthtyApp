@@ -13,6 +13,7 @@ import Spinner from '../../../components/Spinner';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
 import { onlySpaceNotAllowed } from '../../common';
 import ModalPopup from '../../../components/Shared/ModalPopup';
+import {primaryColor} from '../../../setup/config'
 
 
 
@@ -99,10 +100,10 @@ class SmartHealthLogin extends PureComponent {
                                     visible={isLoading}
                                 />
                                 <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }}>
-                                    <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
+                                    <Text uppercase={true} style={[styles.cardHead, { color: primaryColor }]}>Login</Text>
                                     <Form>
 
-                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Employee Code</Label>
+                                        <Label style={{ marginTop: 20, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>Employee Code</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 10 }}>
                                             <Input placeholder="Enter Employee Code" style={styles.authTransparentLabel}
                                                 placeholderTextColor={'#909090'}
@@ -113,12 +114,12 @@ class SmartHealthLogin extends PureComponent {
                                                 blurOnSubmit={false}
                                             />
                                         </Item>
-                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Authorizer Code</Label>
+                                        <Label style={{ marginTop: 20, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>Authorizer Code</Label>
 
                                         <OTPTextInput
                                             ref={e => (this.otpInput = e)}
                                             inputCount={4}
-                                            tintColor={'#775DA3'}
+                                            tintColor={primaryColor}
                                             inputCellLength={1}
                                             handleTextChange={(text) => {
                                                 this.setState({ authorizerCode: text })

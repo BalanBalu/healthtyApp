@@ -6,6 +6,8 @@ import StarRating from 'react-native-star-rating';
 import { RenderFavoritesComponent, onPressPreviewImagesInZoom, SingleImageViewInSquareShape } from '../../../screens/CommonAll/components';
 import { hospitalProfileImages, getKiloMeterCalculation } from '../../../common'
 import styles from '../Styles'
+import {primaryColor, secondaryColor} from '../../../../setup/config'
+
 export default class RenderHospitalInfo extends Component {
     constructor(props) {
         super(props)
@@ -67,7 +69,7 @@ if(find_categories_data){
                                             marginTop: 5,
                                             fontFamily: 'OpenSans',
                                             fontSize: 15,
-                                            color: '#7E49C3',
+                                            color: primaryColor,
                                             fontWeight: 'bold'
                                         }}></Icon>
 

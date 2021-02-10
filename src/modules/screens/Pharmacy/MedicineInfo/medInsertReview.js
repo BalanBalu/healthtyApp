@@ -10,6 +10,8 @@ import { formatDate } from '../../../../setup/helpers';
 import StarRating from 'react-native-star-rating';
 import { InsertMedicineReviews, InsertOrderReviews } from '../../../providers/pharmacy/pharmacy.action'
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
+import {primaryColor} from '../../../../setup/config'
+
 
 export class MedInsertReview extends Component {
   constructor(props) {
@@ -129,7 +131,7 @@ export class MedInsertReview extends Component {
                 marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey'
               }}>
 
-                <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
+                <Row style={{ backgroundColor: primaryColor, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                   <Left>
                     <Text style={{ color: '#fff', fontSize: 16 }}>{this.state.data.medicine_name}</Text>
                   </Left>
@@ -308,7 +310,7 @@ export class OrderInsertReview extends Component {
                 marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey'
               }}>
 
-                <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
+                <Row style={{ backgroundColor: primaryColor, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                   <Left>
                     <Text style={{ color: '#fff', fontSize: 16 }}>{this.state.data.medicine_name}</Text>
                   </Left>

@@ -808,7 +808,7 @@ const styles = StyleSheet.create({
     showText: {
         fontSize: 12,
         fontFamily: 'OpenSans',
-        color: '#7F49C3',
+        color: '#128283',
         marginTop: 10
     },
     circleDev: {

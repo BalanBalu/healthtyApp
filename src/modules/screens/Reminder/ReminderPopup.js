@@ -4,6 +4,8 @@ import {
   Input, Left, Right, Icon, Footer, Badge, Form, CardItem
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import {primaryColor} from '../../../setup/config'
+
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 class ReminderPopup extends Component {
@@ -59,16 +61,16 @@ class ReminderPopup extends Component {
                     <Row style={styles.topRow}>
                       <Left>
                         <TouchableOpacity onPress={() => { this.setModalVisible(false); }}>
-                          <Icon name='ios-information-circle-outline' style={{ fontSize: 20, color: '#7F49C3' }} />
+                          <Icon name='ios-information-circle-outline' style={{ fontSize: 20, color: primaryColor }} />
                         </TouchableOpacity>
                       </Left>
                       <Right>
                         <Row>
                           <TouchableOpacity onPress={() => { this.setModalVisible(false); }}>
-                            <Icon name='ios-trash' style={{ color: '#7F49C3', fontSize: 20 }} />
+                            <Icon name='ios-trash' style={{ color: primaryColor, fontSize: 20 }} />
                           </TouchableOpacity>
                           <TouchableOpacity style={{ marginLeft: 15, fontSize: 25 }}>
-                            <Icon name="create" style={{ fontSize: 20, color: '#7F49C3' }} />
+                            <Icon name="create" style={{ fontSize: 20, color: primaryColor }} />
                           </TouchableOpacity>
                         </Row>
                       </Right>
@@ -79,7 +81,7 @@ class ReminderPopup extends Component {
                     <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
                       <Row>
                         <Col size={1}>
-                          <Icon name='ios-calculator' style={{ fontSize: 20, color: '#7F49C3' }} />
+                          <Icon name='ios-calculator' style={{ fontSize: 20, color: primaryColor }} />
                         </Col>
                         <Col size={9}>
                           <Text style={styles.innerText}>Scheduled for 12:00 AM,today,April 3</Text>
@@ -87,7 +89,7 @@ class ReminderPopup extends Component {
                       </Row>
                       <Row style={{ marginTop: 10 }}>
                         <Col size={1}>
-                          <MaterialCommunityIcons name='note-outline' style={{ fontSize: 18, color: '#7F49C3', marginLeft: -2 }} />
+                          <MaterialCommunityIcons name='note-outline' style={{ fontSize: 18, color: primaryColor, marginLeft: -2 }} />
                         </Col>
                         <Col size={9}>
                           <Text style={styles.innerText}>10 mg,take 1 pill(s)</Text>
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: 'OpenSans',
     fontSize: 14,
-    color: '#7F49C3',
+    color: primaryColor,
     marginTop: 5
   },
   NormalColor: {
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     borderRadius: 50 / 2,
-    backgroundColor: '#7F49C3',
+    backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center'
   }

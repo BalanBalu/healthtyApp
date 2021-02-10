@@ -13,6 +13,8 @@ import { deleteCartByIds } from '../../providers/pharmacy/pharmacy.action'
 import { validatePromoCode, applyPromoCode } from '../../providers/PromoCode/promo.action'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
+import {primaryColor} from '../../../setup/config'
+
 import { NavigationEvents } from 'react-navigation';
 
 
@@ -566,7 +568,7 @@ class PaymentPage extends Component {
                                                 onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
                                             />
                                             <TouchableOpacity onPress={() => this.validatePromoCode()} style={{ marginRight: 15, alignItems: 'center', justifyContent: 'center' }} >
-                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3', textAlign: 'center' }}>APPLY</Text>
+                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: primaryColor, textAlign: 'center' }}>APPLY</Text>
                                             </TouchableOpacity>
                                         </Item>
                                     </Form>
@@ -578,7 +580,7 @@ class PaymentPage extends Component {
                             <Row style={{ marginRight: 15, marginLeft: 15, marginTop: 10 }}>
                                 <Right style={{ marginRight: 5 }}>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode",{isFilter:true,serviceType:this.state.serviceType})}>
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3', borderBottomColor: '#775DA3', borderBottomWidth: 0.5, borderStyle: 'dotted', }}>Available Promo Codes</Text>
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: primaryColor, borderBottomColor: primaryColor, borderBottomWidth: 0.5, borderStyle: 'dotted', }}>Available Promo Codes</Text>
                                     </TouchableOpacity>
                                 </Right>
                             </Row>
@@ -1140,7 +1142,7 @@ const styles = StyleSheet.create({
     paymentButton: {
 
         alignSelf: 'stretch',
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         height:45,justifyContent:'center',
         alignItems:'center'
 

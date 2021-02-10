@@ -8,6 +8,8 @@ import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge, toastMeassage } from '../../common';
 import { SERVICE_TYPES } from '../../../setup/config';
+import {primaryColor} from '../../../setup/config'
+
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
@@ -410,7 +412,7 @@ export default class PaymentReview extends Component {
                 </View>
                 : null}
               <Row>
-                <Icon name="create" style={{ fontSize: 20, marginLeft: 10, marginTop: 20, color: '#7F49C3' }} />
+                <Icon name="create" style={{ fontSize: 20, marginLeft: 10, marginTop: 20, color: primaryColor }} />
                 <Text style={styles.subText}> Your Reason For Checkup</Text>
               </Row>
               <Form style={{ marginRight: 1, marginLeft: -13 }}>
@@ -754,7 +756,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   touchStyle: {
-    backgroundColor: '#7F49C3',
+    backgroundColor: primaryColor,
     borderRadius: 3,
     paddingLeft: 30,
     paddingRight: 30,
@@ -770,7 +772,7 @@ const styles = StyleSheet.create({
   subHead: {
     fontFamily: 'OpenSans',
     fontSize: 14,
-    color: '#7F49C3',
+    color: primaryColor,
     fontWeight: 'bold'
   },
   firstCheckBox: {
@@ -823,7 +825,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginLeft: 10,
     fontFamily: 'OpenSans',
-    color: '#7F49C3'
+    color: primaryColor
   },
   specialist: {
     fontSize: 14,

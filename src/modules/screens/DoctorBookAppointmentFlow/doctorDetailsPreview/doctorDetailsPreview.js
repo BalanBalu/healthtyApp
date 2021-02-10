@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image, Share } from 'react-native';
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
 import { store } from '../../../../setup/store';
+import {primaryColor} from '../../../../setup/config'
+
 import {
     addFavoritesToDocByUserService,
     getFavoriteListCount4PatientService,
@@ -440,10 +442,10 @@ class DoctorDetailsPreview extends Component {
                     </Card>
                     <Row style={{ marginLeft: 5, marginRight: 5, marginTop: 10 }}>
                         <Segment>
-                            <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 5, alignItems: 'center', justifyContent: 'center' }, onPressTabView === 1 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => { this.setState({ onPressTabView: 1 }) }}>
+                            <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 5, alignItems: 'center', justifyContent: 'center' }, onPressTabView === 1 ? { borderBottomColor: primaryColor } : { borderBottomColor: '#000' }]} onPress={() => { this.setState({ onPressTabView: 1 }) }}>
                                 <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center' }}>About</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 5, alignContent: 'center', justifyContent: 'center' }, onPressTabView === 2 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => {
+                            <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 5, alignContent: 'center', justifyContent: 'center' }, onPressTabView === 2 ? { borderBottomColor: primaryColor } : { borderBottomColor: '#000' }]} onPress={() => {
                                 if (!isLoadedUserReview) {
                                     this.getPatientReviews(doctorData.doctor_id);
                                 }
@@ -466,7 +468,7 @@ class DoctorDetailsPreview extends Component {
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{doctorData.professional_statement} <Text style={{ fontFamily: 'OpenSans', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: false })}>...Hide</Text></Text>}
                                     </View>
                                     <Row style={{ marginLeft: 5, marginRight: 5, paddingBottom: 5 }}>
-                                        <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#775DA3' }}></Text></Right>
+                                        <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: primaryColor }}></Text></Right>
                                     </Row>
                                 </View> : null}
 
@@ -603,7 +605,7 @@ class DoctorDetailsPreview extends Component {
 
                 </Content>
 
-                <Footer style={{ backgroundColor: '#7E49C3', }}>
+                <Footer style={{ backgroundColor: primaryColor, }}>
                     <Row>
                         <Col style={{ marginRight: 40 }} >
                             <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}

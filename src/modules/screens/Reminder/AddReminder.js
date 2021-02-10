@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
+import {primaryColor, secondaryColor} from '../../../setup/config'
+
 import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders, getReminderData } from '../../providers/reminder/reminder.action.js';
 import { IS_ANDROID, IS_IOS } from '../../../setup/config';
 import { translate } from "../../../setup/translator.helper"
@@ -604,7 +606,7 @@ class AddReminder extends Component {
                       <Row>
                         <Text style={{ textAlign: 'left', marginTop: 10, marginLeft: 10 }}>{translate("Notify Me")}</Text>
                         <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff', alignSelf: 'center', marginTop: 2 }} trackColor={{ true: '#6FC41A', false: 'grey' }}
-                          trackColor={{ true: '#7F49C3' }}
+                          trackColor={{ true: primaryColor }}
                           thumbColor={"#F2F2F2"}
                           onValueChange={(val) => this.setState({ is_reminder_enabled: val })}
                           value={is_reminder_enabled}
@@ -863,6 +865,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
     fontFamily: 'OpenSans',
-    fontSize: 14, color: '#7F49C3'
+    fontSize: 14, color: primaryColor
   }
 })

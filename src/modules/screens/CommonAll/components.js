@@ -7,6 +7,8 @@ import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions,
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import styles from './styles';
 import { formatDate } from "../../../setup/helpers";
+import {primaryColor} from '../../../setup/config'
+
 
 
 const onPressPreviewImagesInZoom = (data, navigation) => {
@@ -83,7 +85,7 @@ const RenderProposeNewPopPage = (props) => {
                     <Col size={8} >
                         <Row>
                             <Col size={3} style={{ marginRight: 3 }}>
-                                <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
+                                <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: primaryColor }}
                                     onPress={() => props.skipAction()} testID='confirmButton'>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
                                 </TouchableOpacity>

@@ -243,7 +243,7 @@ class MedicineSearchList extends Component {
                                         onChangeText={enteredText => this.props.navigation.navigate('MedicineSuggestionList', { medicineName: enteredText })}
                                         multiline={false} />
                                     <TouchableOpacity style={{ alignItems: 'flex-end' }} >
-                                        <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+                                        <Icon name='ios-search' style={{ color: '#128283', fontSize: 20 }} />
                                     </TouchableOpacity>
                                 </Item>
                             </View>

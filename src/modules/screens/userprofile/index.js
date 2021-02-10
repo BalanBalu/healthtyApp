@@ -23,6 +23,8 @@ import {
   Radio,
   Switch,
 } from 'native-base';
+import {primaryColor} from '../../../setup/config'
+
 import {
   fetchUserProfile,
   storeBasicProfile,
@@ -348,7 +350,7 @@ class Profile extends Component {
         ) : (
             <Content style={styles.bodyContent}>
               <LinearGradient
-                colors={['#7E49C3', '#C86DD7']}
+                colors={[primaryColor, '#C86DD7']}
                 style={{ height: 180 }}>
                 <Grid>
                   <Row>
@@ -559,7 +561,7 @@ class Profile extends Component {
 
                 <ListItem avatar>
                   <Left>
-                    <Icon name="ios-body" style={{ color: '#7E49C3' }} />
+                    <Icon name="ios-body" style={{ color: primaryColor }} />
                   </Left>
                   <Body>
                     <Row>
@@ -589,7 +591,7 @@ class Profile extends Component {
                 </ListItem>
                 <ListItem avatar>
                   <Left>
-                    <Icon name="ios-home" style={{ color: '#7E49C3' }} />
+                    <Icon name="ios-home" style={{ color: primaryColor }} />
                   </Left>
                   <Body>
                     <Text style={styles.customText}>Family details</Text>
@@ -708,7 +710,7 @@ class Profile extends Component {
                     <Left>
                       <Icon
                         name="ios-flame"
-                        style={{ color: '#7E49C3', marginTop: 5 }}
+                        style={{ color: primaryColor, marginTop: 5 }}
                       />
                     </Left>
 
@@ -742,7 +744,7 @@ class Profile extends Component {
                   : null}
                 <ListItem avatar>
                   <Left>
-                    <Icon name="mail" style={{ color: '#7E49C3' }} />
+                    <Icon name="mail" style={{ color: primaryColor }} />
                   </Left>
 
                   <Body>
@@ -783,7 +785,7 @@ class Profile extends Component {
 
                 <ListItem avatar>
                   <Left>
-                    <Icon name="locate" style={{ color: '#7E49C3' }} />
+                    <Icon name="locate" style={{ color: primaryColor }} />
                   </Left>
 
                   <Body>
@@ -841,7 +843,7 @@ class Profile extends Component {
 
                 <ListItem avatar>
                   <Left>
-                    <Icon name="call" style={{ color: '#7E49C3' }} />
+                    <Icon name="call" style={{ color: primaryColor }} />
                   </Left>
 
                   <Body>
@@ -869,7 +871,7 @@ class Profile extends Component {
                     <Icon
                       name="heartbeat"
                       type="FontAwesome"
-                      style={{ color: '#7E49C3' }}
+                      style={{ color: primaryColor }}
                     />
                   </Left>
                   <Body>
@@ -922,7 +924,7 @@ class Profile extends Component {
 
                 <ListItem avatar>
                   <Left>
-                    <Icon name="briefcase" style={{ color: '#7E49C3' }} />
+                    <Icon name="briefcase" style={{ color: primaryColor }} />
                   </Left>
                   <Body>
                     <TouchableOpacity
@@ -1113,7 +1115,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     borderRadius: 20,
     fontSize: 10,
-    backgroundColor: '#7357A2',
+    backgroundColor: primaryColor,
     marginTop: 5,
     alignItems: 'center',
     justifyContent: 'center',

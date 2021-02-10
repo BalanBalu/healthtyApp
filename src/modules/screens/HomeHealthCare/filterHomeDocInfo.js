@@ -5,6 +5,8 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER } from '../../providers/BookAppointmentFlow/action'
 import { connect } from 'react-redux';
 import { store } from '../../../setup/store';
+import {primaryColor} from '../../../setup/config'
+
 let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
 let selectedCount = 0
 class FilterDocInfo extends Component {
@@ -388,9 +390,9 @@ class FilterDocInfo extends Component {
                             <Col size={5} >
                                 <TouchableOpacity
                                     onPress={this.clearSelectedData}
-                                    style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}>
+                                    style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: primaryColor, borderWidth: 0.5 }}>
 
-                                    <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
+                                    <Text style={{ color: primaryColor, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 20 }}>
@@ -404,7 +406,7 @@ class FilterDocInfo extends Component {
                                 </TouchableOpacity>
                             </Col>
                         </Row>
-                        {languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#ffffff', fontFamily: 'OpenSans', fontSize: 12, fontWeight: '600', position: "absolute", backgroundColor: '#775DA3', height: 25, width: 25, borderRadius: 25 / 2, textAlign: 'center', marginLeft: 25, marginTop: 35, paddingTop: 2 }}>{selectedCount}</Text> : null}
+                        {languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#ffffff', fontFamily: 'OpenSans', fontSize: 12, fontWeight: '600', position: "absolute", backgroundColor: primaryColor, height: 25, width: 25, borderRadius: 25 / 2, textAlign: 'center', marginLeft: 25, marginTop: 35, paddingTop: 2 }}>{selectedCount}</Text> : null}
                     </View>
                 </Content>
             </Container >
@@ -430,7 +432,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 15,
         paddingRight: 15,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5
     },
 
@@ -455,7 +457,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         borderColor: 'gray',
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5
     },
     defaultGenderColor: {
@@ -471,7 +473,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         borderRadius: 30,
-        backgroundColor: '#775DA3'
+        backgroundColor: primaryColor
     },
     viewDocButtonBgGray: {
         paddingTop: 10,
@@ -479,7 +481,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         borderRadius: 30,
-        borderColor: '#775DA3',
+        borderColor: primaryColor,
         borderWidth: 0.5
     },
     defaultDaysTextColor: {
@@ -508,7 +510,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     defaultApplyTextColor: {
-        color: '#775DA3',
+        color: primaryColor,
         fontFamily: 'OpenSans',
         fontSize: 13,
         textAlign: 'center',

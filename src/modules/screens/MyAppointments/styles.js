@@ -1,5 +1,6 @@
 // Imports
 import { StyleSheet } from 'react-native'
+import {primaryColor} from '../../../setup/config'
 
 
 
@@ -38,7 +39,7 @@ export default StyleSheet.create({
     borderRadius: 5,
     height: 45,
     width: '30%',
-    backgroundColor: '#775DA3',
+    backgroundColor: primaryColor,
     textAlign: 'center',
     justifyContent:'center',
     margin: 5
@@ -95,7 +96,7 @@ centerContent: {
     alignItems: 'center'
 },
 textContent: {
-    color: '#7F49C3',
+    color: primaryColor,
     fontSize: 22,
     fontFamily: "OpenSans",
     fontWeight: '700',
@@ -236,5 +237,4 @@ radioText1: {
     marginLeft: 10,
     color: '#909090'
 }
-
 })

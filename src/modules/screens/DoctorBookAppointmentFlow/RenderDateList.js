@@ -6,6 +6,7 @@ import { formatDate } from '../../../setup/helpers';
 import { reducer } from '../CommonAll/functions';
 import styles from '../CommonAll/styles'
 import moment from 'moment';
+import {primaryColor} from '../../../setup/config'
 
 export default class RenderDatesList extends Component {
     constructor(props) {
@@ -39,7 +40,7 @@ export default class RenderDatesList extends Component {
                     return (
                         <View>
                             <Col style={{ justifyContent: 'center' }}>
-                                <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
+                                <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: primaryColor, alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
                                     onPress={() => onDateChanged(item, doctorIdHostpitalId, indexOfItem)}>
                                     <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
                                     <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>

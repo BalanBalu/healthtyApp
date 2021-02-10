@@ -15,6 +15,7 @@ import InsertReview from '../Reviews/insertReviews';
 import { renderLabProfileImage } from "../../CommonAll/components"
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import {primaryColor} from '../../../../setup/config'
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
@@ -695,7 +696,7 @@ class LabAppointmentInfo extends Component {
                           <Row>
 
                             <Col size={3} style={{ marginRight: 3 }}>
-                              <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
+                              <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: primaryColor }}
                                 onPress={() => this.skipAction()} testID='confirmButton'>
 
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'SKIP'}</Text>
@@ -1066,7 +1067,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 45,
     width: '30%',
-    backgroundColor: '#775DA3',
+    backgroundColor: primaryColor,
     textAlign: 'center',
     justifyContent: 'center',
     margin: 5
@@ -1082,7 +1083,7 @@ const styles = StyleSheet.create({
   },
   reviewButton: {
     marginTop: 12,
-    backgroundColor: '#775DA3',
+    backgroundColor: primaryColor,
     borderRadius: 10,
     height: 40,
     color: 'white',

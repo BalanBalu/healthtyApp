@@ -8,6 +8,8 @@ import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff, formatDate, subTimeUnit } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
+import {primaryColor} from '../../../../setup/config'
+
 import { insertAppointment, updateLapAppointment, validateAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../../CommonAll/functions'
 import { SERVICE_TYPES } from '../../../../setup/config'
@@ -475,7 +477,7 @@ class LabConfirmation extends Component {
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                             <Row>
                                 <Col size={5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Lab Address</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Lab Address</Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 </Col>
@@ -487,7 +489,7 @@ class LabConfirmation extends Component {
                         null}
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5,marginBottom:20 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Package Details</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Package Details</Text>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{packageDetails.category_name}
@@ -624,7 +626,7 @@ const styles = StyleSheet.create({
 
     loginButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     normalText:
@@ -695,7 +697,7 @@ const styles = StyleSheet.create({
         fontSize: 13
     },
     touchStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
         borderRadius: 1,
         paddingLeft: 30,
         paddingRight: 30,

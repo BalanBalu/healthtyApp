@@ -6,6 +6,7 @@ import {
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { Row, Col } from 'react-native-easy-grid';
+import {primaryColor} from '../../../setup/config'
 
 import { Image, BackHandler, AsyncStorage, ScrollView,Platform } from 'react-native';
 import styles from './style.js';
@@ -190,7 +191,7 @@ class UpdateUserDetails extends Component {
                                 </Item>
                                 {this.state.lastNameMsg ? <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.lastNameMsg}</Text> : null}
                                 <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5, }}>
-                                    <Icon name='calendar' style={{ marginLeft: 10, color: '#775DA3' }} />
+                                    <Icon name='calendar' style={{ marginLeft: 10, color: primaryColor }} />
                                     <DatePicker style={styles.transparentLabel2}
                                         defaultDate={this.state.dob}
                                         timeZoneOffsetInMinutes={undefined}
@@ -263,7 +264,7 @@ class UpdateUserDetails extends Component {
                                             <Col size={3} style={{alignItems:'center',flexDirection:'row'}}>
                                                     <Radio
                                                         standardStyle={true}
-                                                        selectedColor={'#775DA3'}
+                                                        selectedColor={primaryColor}
                                                         onPress={() => this.setState({ gender: 'O', updateButton: false })}
                                                         selected={this.state.gender === 'O'}/>
                                                     <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12, marginLeft:5  }}>Others</Text>

@@ -7,6 +7,7 @@ import { NavigationEvents } from 'react-navigation';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from 'moment';
 import { getAddress } from '../../common';
+import {primaryColor} from '../../../setup/config'
 
 // import { fetchUserProfile } from '../../../providers/profile/profile.action';
 // import { dateDiff, formatDate, subTimeUnit } from '../../../../setup/helpers';
@@ -26,7 +27,7 @@ const PatientAddress = (props) => {
             {patientAddress.length != 0 ?
                 <Row style={{ marginTop: 8,marginBottom:8 }}>
                     <Col size={5}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3',marginLeft:10 }}>Saved Address</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor,marginLeft:10 }}>Saved Address</Text>
                     </Col>
                     <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                         <TouchableOpacity onPress={() => onPressAddNewAddress()}>

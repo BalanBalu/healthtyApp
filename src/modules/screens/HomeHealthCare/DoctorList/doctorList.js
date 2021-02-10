@@ -4,6 +4,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
 import styles from '../../CommonAll/styles'
+import {primaryColor} from '../../../../setup/config'
+
 import {
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,
     SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS,
@@ -320,7 +322,7 @@ class DoctorList extends Component {
                     }}>{"Showing Doctors in the"}
                         <Text style={{
                             fontFamily: 'OpenSans',
-                            color: '#7F49C3',
+                            color: primaryColor,
                             fontSize: 13,
                         }}>{" "}PinCode - {reqPinCode}</Text>
                     </Text>
@@ -659,7 +661,7 @@ class DoctorList extends Component {
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
                                                         <Text style={this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? { fontSize: 12, alignSelf: 'flex-start', color: '#000', fontFamily: 'OpenSans' } : { color: '#a90e0e', fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}> {this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? "You Selected Appointment on" : "Appointment is Not Available"}</Text>
-                                                        <Text style={{ alignSelf: 'flex-start', fontWeight: 'bold', color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 5 }}>{this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? formatDate(this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate].slotDate, 'ddd DD MMM YYYY') : null}</Text>
+                                                        <Text style={{ alignSelf: 'flex-start', fontWeight: 'bold', color: primaryColor, fontSize: 12, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 5 }}>{this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? formatDate(this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate].slotDate, 'ddd DD MMM YYYY') : null}</Text>
                                                     </Col>
                                                     <Col size={4}>
                                                         <TouchableOpacity

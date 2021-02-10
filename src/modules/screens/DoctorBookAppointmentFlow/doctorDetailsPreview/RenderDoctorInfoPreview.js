@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../../common';
+import {primaryColor} from '../../../../setup/config'
 
 export default class RenderDoctorInfoPreview extends Component {
     constructor(props) {
@@ -82,23 +83,23 @@ export default class RenderDoctorInfoPreview extends Component {
                     {isVideoAvailability === true ?
                         <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
                             <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate("Video and Chat Service")}>
-                                <Icon name="ios-videocam" style={{ fontSize: 25, color: '#7F49C3' }} />
-                                <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3', marginTop: 3 }}>Video</Text>
+                                <Icon name="ios-videocam" style={{ fontSize: 25, color: primaryColor }} />
+                                <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: primaryColor, marginTop: 3 }}>Video</Text>
                             </TouchableOpacity>
                         </Col>
                         : null}
                     {isChatAvailability === true ?
                         <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
                             <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }} onPress={() => navigation.navigate("Video and Chat Service")}>
-                                <Icon name="chatbox" style={{ fontSize: 20, color: '#7F49C3',marginTop:2 }} />
-                                <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3',  }}>Chat</Text>
+                                <Icon name="chatbox" style={{ fontSize: 20, color: primaryColor,marginTop:2 }} />
+                                <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: primaryColor,  }}>Chat</Text>
                             </TouchableOpacity>
                         </Col>
                         : null}
                     <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
                         <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }} onPress={() => shareDocInfo(doctorData)}>
-                            <Icon name="share-social" style={{ fontSize: 20, color: '#7F49C3' }} />
-                            <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3', }}>Share</Text>
+                            <Icon name="share-social" style={{ fontSize: 20, color: primaryColor }} />
+                            <Text style={{ marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, color: primaryColor, }}>Share</Text>
                         </TouchableOpacity>
                     </Col>
                 </Row>

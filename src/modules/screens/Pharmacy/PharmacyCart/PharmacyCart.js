@@ -7,6 +7,7 @@ import { ProductIncrementDecreMent, getMedicineNameByProductName, getMedicineWei
 import { getproductDetailsByPharmacyId } from '../../../providers/pharmacy/pharmacy.action';
 import { getmedicineAvailableStatus, deleteCartById, deleteCartByIds, createCart, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
+import {primaryColor, secondaryColor} from '../../../../setup/config'
 
 import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/profile.action';
 
@@ -369,7 +370,7 @@ const styles = StyleSheet.create({
 
     loginButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     normalText:
@@ -455,7 +456,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginTop: 12,
-        backgroundColor: "#775DA3",
+        backgroundColor: primaryColor,
         marginLeft: 15,
         borderRadius: 10,
         width: "auto",

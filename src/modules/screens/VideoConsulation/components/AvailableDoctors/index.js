@@ -6,6 +6,8 @@ import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
 import {
     renderDoctorImage,
 } from '../../../../common';
+import {primaryColor} from '../../../../../setup/config'
+
 import Spinner from '../../../../../components/Spinner';
 import {
     fetchAvailableDoctors4Video, createVideoConsuting
@@ -563,7 +565,7 @@ class AvailableDoctors4Video extends Component {
                     <Spinner
                         visible={isLoading}
                     />
-                    <View style={{ backgroundColor: '#7E49C3' }}>
+                    <View style={{ backgroundColor: primaryColor }}>
                         <View style={{ marginTop: 20 }}>
                             <Text style={styles.SubText}>Search for Doctors</Text>
 
@@ -754,7 +756,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     },
     SearchStyle: {
-        backgroundColor: '#7E49C3',
+        backgroundColor: primaryColor,
         width: '85%',
         alignItems: 'center',
         borderTopRightRadius: 20,
@@ -818,7 +820,7 @@ const styles = StyleSheet.create({
         marginLeft: 5
     },
     headerStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
         marginTop: -10,
         marginLeft: -10,
         marginRight: -10,

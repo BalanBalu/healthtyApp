@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
 import { login, generateOtpCodeForCreateAccount, verifyOtpCodeForCreateAccount, generateOtpForEmailAndMobile, verifyOtpForEmailAndMobileNo } from '../../providers/auth/auth.actions';
 import Spinner from '../../../components/Spinner';
+import {primaryColor} from '../../../setup/config'
 
 class RenderOtpInput extends Component {
     constructor(props) {
@@ -205,7 +206,7 @@ class RenderOtpInput extends Component {
                         <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{errorMsg}</Text>
                     </View>
                     {/* <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10, marginTop: 10 }}>
-                        <Text uppercase={false} style={{ color: '#000', fontSize: 16, fontFamily: 'OpenSans', color: '#775DA3' }}>Go Back To</Text>
+                        <Text uppercase={false} style={{ color: '#000', fontSize: 16, fontFamily: 'OpenSans', color: primaryColor }}>Go Back To</Text>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignInButton}>
                             <Text uppercase={true} style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign In</Text>
                         </TouchableOpacity>
@@ -225,7 +226,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         marginTop: 20,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         marginLeft: 15,
         borderRadius: 5,
     },
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     smallSignInButton: {
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         marginLeft: 15,
         borderRadius: 20,
         paddingRight: 20,

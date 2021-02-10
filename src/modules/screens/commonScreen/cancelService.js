@@ -4,6 +4,7 @@ import { Container, Radio, Button, View, Text, Toast, Content, Row, Col, Form, F
 import { getCurrentVersion } from '../../providers/profile/profile.action';
 import { onlySpaceNotAllowed } from '../../common';
 import Spinner from '../../../components/Spinner';
+import {primaryColor} from '../../../setup/config'
 
 
 class CancelService extends Component {
@@ -122,7 +123,7 @@ class CancelService extends Component {
                     <View>
                       <Row onPress={() => this.toggleRadio(item, index)} style={{ marginTop: 10 }}>
                         <Radio borderColor='black' selected={selectedIndex === index ? true : false} onPress={() => this.toggleRadio(item, index)}
-                          selectedColor={"#775DA3"} testID='checkOption_1Selected' />
+                          selectedColor={primaryColor} testID='checkOption_1Selected' />
                         <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15, marginTop: 3 }}>{item.value}</Text>
                       </Row>
                       {selectedIndex === index ?

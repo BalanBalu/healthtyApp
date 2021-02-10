@@ -245,7 +245,7 @@ class UploadEmr extends Component {
                                 <Col size={5} style={{ backgroundColor: '#fff' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })} style={styles.buttonTouch}>
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '400' }}>Add More </Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#128283', fontWeight: '400' }}>Add More </Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>

@@ -8,6 +8,8 @@ import { searchSuggestionsForQuestionsAndAnswers, getAllPublicForumDetails } fro
 import { Loader } from '../../../components/ContentLoader';
 import { formatDate } from "../../../setup/helpers";
 import { connect } from 'react-redux'
+import {primaryColor, secondaryColor} from '../../../setup/config'
+
 import { renderForumImage } from '../../common';
 import { NavigationEvents } from 'react-navigation';
 
@@ -125,9 +127,9 @@ class PublicForum extends PureComponent {
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 13, marginLeft: 10 }}>Ask Query To Qualified Doctors</Text>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold', marginTop: 5, marginLeft: 10 }}>To Get Your Solution</Text>
                                 <Row>
-                                    <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 3, paddingBottom: 3, borderColor: '#7F49C3', borderWidth: 2, marginLeft: 10, height: 30, borderRadius: 2,marginTop:10 }}
+                                    <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 3, paddingBottom: 3, borderColor: primaryColor, borderWidth: 2, marginLeft: 10, height: 30, borderRadius: 2,marginTop:10 }}
                                         onPress={() => this.props.navigation.navigate("PostForum")} >
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', color: '#7F49C3' }}>Post your questions</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', color: primaryColor }}>Post your questions</Text>
                                     </TouchableOpacity>
                                 </Row>
                             </View>

@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import { getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { debounce } from '../../common';
+import {primaryColor} from '../../../setup/config'
+
 import LocationWarning from './LocationWarning';
 class RenderSuggestionsList extends PureComponent {
     constructor(props) {
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     SearchStyle: {
-        backgroundColor: '#7E49C3',
+        backgroundColor: primaryColor,
         width: '85%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -236,7 +238,7 @@ const styles = StyleSheet.create({
        
     },
     valueText: {
-        color: '#775DA3',
+        color: primaryColor,
         marginTop: 2,
         fontFamily: 'OpenSans',
         fontSize: 15,

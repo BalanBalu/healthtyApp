@@ -114,7 +114,7 @@ export class labInsertReviews extends Component {
                         marginLeft:10,
                         marginRight:10,
                     }}>
-                        <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
+                        <Row style={{ backgroundColor: '#128283', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                             <Left>
                                 <Text style={{ color: '#fff', fontSize: 16 }}>{data.labInfo && data.labInfo.lab_name}</Text>
                             </Left>

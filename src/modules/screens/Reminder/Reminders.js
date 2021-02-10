@@ -5,6 +5,8 @@ import { FlatList } from 'react-native-gesture-handler';
 import CalendarStrip from 'react-native-calendar-strip';
 import { getReminderData, addReminderdata } from '../../providers/reminder/reminder.action.js';
 import { formatDate } from "../../../setup/helpers";
+import {primaryColor} from '../../../setup/config'
+
 import RNCalendarEvents from 'react-native-calendar-events';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
@@ -218,11 +220,11 @@ class Reminder extends Component {
                 style={{ paddingTop: 2, paddingBottom: 2 }}
                 calendarHeaderStyle={{ color: 'gray' }}
                 calendarColor={'#fff'}
-                highlightColor={'#7F49C3'}
+                highlightColor={primaryColor}
                 dateNumberStyle={{ color: 'gray' }}
                 dateNameStyle={{ color: 'gray' }}
-                highlightDateNumberStyle={{ color: 'white', backgroundColor: '#7F49C3', borderRadius: 15, padding: 5, height: 30, width: 30, fontSize: 12 }}
-                highlightDateNameStyle={{ color: '#7F49C3' }}
+                highlightDateNumberStyle={{ color: 'white', backgroundColor: primaryColor, borderRadius: 15, padding: 5, height: 30, width: 30, fontSize: 12 }}
+                highlightDateNameStyle={{ color: primaryColor }}
                 borderHighlightColor={'white'}
                 onDateSelected={(date) => this.onDateChanged(date)}
                 iconContainer={{ flex: 0.1 }}
@@ -268,7 +270,7 @@ class Reminder extends Component {
                                 <Col size={3} style={{ justifyContent: 'center' }}>
 
                                   <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
-                                    trackColor={{ true: '#7F49C3' }}
+                                    trackColor={{ true: primaryColor }}
                                     thumbColor={"#F2F2F2"}
                                     onValueChange={(val) => this.updateToggleFunction(item, val)}
                                     value={item.is_reminder_enabled}
@@ -345,6 +347,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
     fontFamily: 'OpenSans',
-    fontSize: 14, color: '#7F49C3'
+    fontSize: 14, color: primaryColor
   }
 })

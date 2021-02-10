@@ -1,79 +1,126 @@
-import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Image, FlatList } from 'react-native';
-import FastImage from 'react-native-fast-image'
-import { Icon, Card } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { NavigationActions } from 'react-navigation';
+import React from 'react';
+import {Text, View} from 'native-base';
+import {TouchableHighlight} from 'react-native-gesture-handler';
+import styles from './styles';
+import {
+  PreAuthDrawing,
+  ClaimStatusDrawing,
+  PolicyCoverageDrawing,
+  ClaimInitiationDrawing,
+  InsuranceRenewalDrawing,
+} from './svgDrawings';
+import {primaryColor, secondaryColorTouch} from '../../../../setup/config';
 
-
-export const CoverageCard = (props) => {
-  
-  const data = [{ category_name: 'Claim Status', image: require('../../../../../assets/images/corporateHomePageIcons/Claim-status.png'), }, { category_name: 'Policy Cover', image: require('../../../../../assets/images/corporateHomePageIcons/policy-cover.png'), }, { category_name: 'Claim Intimation', image: require('../../../../../assets/images/corporateHomePageIcons/claim-intimation.png'), }, { category_name: 'Insurance Renewal', image: require('../../../../../assets/images/corporateHomePageIcons/insurance-renewal-reminder.png') },]
+export const CoverageCard = props => {
+  const {navigation} = props;
   return (
-    <View>
-      <Card style={{ width: '100%', paddingBottom: 10 }}>
-        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', padding: 5, backgroundColor: '#E4D1FE' }}>Coverage</Text>
-        <FlatList horizontal={false} numColumns={4}
-          data={data}
-          renderItem={({ item, index }) =>
-            <View style={{ width: '25%', marginTop: 15, }}>
-              <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity 
-                  style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5, borderRadius: 10, }}>
-                  <FastImage
-                    source={item.image}
-                    style={{
-                      width: 45, height: 45, alignItems: 'center'
-                    }}
-                  />
+    <View
+      style={{
+        // height: 300,
+        flex: 1,
+        marginTop: 6,
+      }}>
+      <Text style={styles.headingText}>Coverage</Text>
 
-                </TouchableOpacity>
-               
-              </Col>
-              <Text style={{
-                  fontSize: 12,
-                  textAlign: 'center',
-                  fontWeight: '700',
-                  color: '#7F49C3',
-                  paddingLeft: 5,
-                  paddingRight: 5,
-                  paddingTop: 1,
-                  paddingBottom: 1,
-                  height:35
-                }}>{item.category_name}</Text>
+      <View style={styles.flexRow}>
+        <TouchableHighlight
+          style={styles.rectBox}
+          activeOpacity={0.6}
+          underlayColor={secondaryColorTouch}
+          onPress={() => navigation('PreAuth')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <PreAuthDrawing />
+              <Text style={styles.boxText}>Pre Auth</Text>
             </View>
-          }
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </Card>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.rectBox}
+          activeOpacity={0.6}
+          underlayColor={secondaryColorTouch}
+          onPress={() => navigation('PolicyStatus')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <ClaimStatusDrawing />
 
+              <Text style={styles.boxText}>Claim Status</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.rectBox}
+          activeOpacity={0.6}
+          underlayColor={secondaryColorTouch}
+          onPress={() => navigation('PolicyCoverage')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <PolicyCoverageDrawing />
 
+              <Text style={styles.boxText}>Policy Cover</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          marginTop: 15,
+        }}>
+        <TouchableHighlight
+          style={styles.rectBox}
+          activeOpacity={0.6}
+          underlayColor={secondaryColorTouch}
+          onPress={() => navigation('claimInititation')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 3,
+              }}>
+              <ClaimInitiationDrawing />
+
+              <Text style={styles.inititationText1}>Claim</Text>
+              <Text style={styles.initiationText2}>Initiation</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+        style={styles.rectBox}
+            activeOpacity={0.6}
+            underlayColor={secondaryColorTouch}
+            onPress={() => navigation('InsuranceRenewal')}>
+        <View >
+          
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 4,
+              }}>
+              <InsuranceRenewalDrawing />
+
+              <Text style={styles.insuranceRenewalText}>Insurance Renewal</Text>
+            </View>
+         
+        </View>
+
+        </TouchableHighlight>
+
+        <View style={[styles.rectBoxNone]} />
+      </View>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  userName: {
-    color: '#7F49C3',
-    fontFamily: 'OpenSans',
-    fontSize: 16,
-    fontWeight: '700'
-
-  },
-  mainCol: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: 'gray',
-    borderRadius: 5,
-    borderWidth: 0.1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0.5 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 10,
-    padding: 1,
-    marginTop: 15,
-    marginLeft: 11,
-    marginBottom: 1, width: '20%', backgroundColor: '#fafafa',
-  }
-});
+};

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import {primaryColor} from '../../../setup/config'
 
 export default styles = StyleSheet.create({
     containers: {
@@ -13,7 +14,7 @@ export default styles = StyleSheet.create({
     subHead: {
         fontFamily: 'OpenSans',
         fontSize: 14,
-        color: '#7F49C3',
+        color: primaryColor,
         fontWeight: 'bold'
     },
 
@@ -58,7 +59,7 @@ export default styles = StyleSheet.create({
         height: 33,
     },
     touchStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
         borderRadius: 1,
         paddingLeft: 30,
         paddingRight: 30,
@@ -411,7 +412,7 @@ export default styles = StyleSheet.create({
         borderRadius: 5,
         height: 45,
         width: '30%',
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         textAlign: 'center',
         justifyContent: 'center',
         margin: 5
@@ -427,7 +428,7 @@ export default styles = StyleSheet.create({
     },
     reviewButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 10,
         height: 40,
         color: 'white',
@@ -461,7 +462,7 @@ export default styles = StyleSheet.create({
     },
 
     appoinmentPrepareStyle2: {
-        backgroundColor: "#775DA3",
+        backgroundColor: primaryColor,
         paddingTop: 8,
         paddingBottom: 8,
         paddingRight: 10,
@@ -550,7 +551,7 @@ export default styles = StyleSheet.create({
     },
     picodeText: {
         fontFamily: 'OpenSans',
-        color: '#7F49C3',
+        color: primaryColor,
         fontSize: 13,
     },
     editPincodeButton: {
@@ -681,7 +682,7 @@ export default styles = StyleSheet.create({
     docName: {
         fontSize: 15,
         fontFamily: 'OpenSans',
-        color: '#7F49C3'
+        color: primaryColor
     },
     specialist: {
         fontSize: 12,
@@ -723,7 +724,7 @@ export default styles = StyleSheet.create({
     },
     bookingButton: {
         marginTop: 10,
-        backgroundColor: "#775DA3",
+        backgroundColor: primaryColor,
         marginRight: 1,
         borderRadius: 10,
         width: "auto",

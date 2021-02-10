@@ -15,6 +15,8 @@ import Spinner from '../../../components/Spinner';
 import Razorpay from 'react-native-customui';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from "../../../setup/config";
+import {primaryColor} from '../../../setup/config'
+
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -116,10 +118,10 @@ class Login extends Component {
                     visible={isModalVisible} />
                 </View>
                 <View style={{ marginLeft: 10, marginRight: 10 }}>
-                  <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
+                  <Text uppercase={true} style={[styles.cardHead, { color: primaryColor }]}>Login</Text>
 
                   <Form>
-                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>{isSelected === 'corporate_user' ? "Email" : "Mobile Number/ Email"}</Label>
+                    <Label style={{ marginTop: 20, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>{isSelected === 'corporate_user' ? "Email" : "Mobile Number/ Email"}</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
                       <Input placeholder={isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
@@ -132,7 +134,7 @@ class Login extends Component {
                         onSubmitEditing={() => { this.userEntry._root.focus(); }}
                       />
                     </Item>
-                    <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Password</Label>
+                    <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Password</Label>
                     <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
                       <Input placeholder="Password" style={{ fontSize: 15, fontFamily: 'OpenSans', paddingLeft: 15, }}
                         ref={(input) => { this.userEntry = input; }}
@@ -147,8 +149,8 @@ class Login extends Component {
                       />
 
 
-                      {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
-                        : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                      {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                        : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
                       }
                     </Item>
                     {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
@@ -200,7 +202,7 @@ class Login extends Component {
                     </View>
 
                     <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
-                      <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: '#775DA3' }}>Don't Have An Account ?</Text>
+                      <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: primaryColor }}>Don't Have An Account ?</Text>
                       <TouchableOpacity onPress={() => {
                         this.props.navigation.navigate('signup')
                       }} style={styles.smallSignUpButton}>

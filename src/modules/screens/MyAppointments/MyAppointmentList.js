@@ -17,7 +17,7 @@ import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
 import { translate } from "../../../setup/translator.helper"
-
+import {primaryColor, secondaryColor} from '../../../setup/config'
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -394,10 +394,10 @@ class MyAppoinmentList extends Component {
 						selectedIndex={this.state.selectedIndex}
 						onTabPress={this.handleIndexChange}
 						activeTabStyle={{
-							backgroundColor: "#775DA3",
-							borderColor: "#775DA3"
+							backgroundColor: primaryColor,
+							borderColor: primaryColor
 						}}
-						tabStyle={{ borderColor: "#775DA3" }} />
+						tabStyle={{ borderColor: primaryColor }} />
 
 					{isLoading == true ?
 						(
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
 	},
 	bookingButton: {
 		marginTop: 10,
-		backgroundColor: "#775DA3",
+		backgroundColor: primaryColor,
 		marginRight: 1,
 		borderRadius: 10,
 		width: "auto",
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		marginTop: 12,
-		backgroundColor: "#775DA3",
+		backgroundColor: primaryColor,
 		marginLeft: 15,
 		borderRadius: 10,
 		width: "auto",

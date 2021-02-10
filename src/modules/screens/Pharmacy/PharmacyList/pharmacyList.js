@@ -6,6 +6,8 @@ import {  getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.ac
 import { connect } from 'react-redux';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import { getAddress } from  '../../../common';
+import {primaryColor, secondaryColor} from '../../../../setup/config'
+
 import { setCartItemCountOnNavigation,renderPharmacyImage,getKiloMeterCalculation } from '../CommomPharmacy';
 class PharmacyList extends Component {
     constructor(props) {
@@ -69,7 +71,7 @@ class PharmacyList extends Component {
                                 // onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
                                 multiline={false} />
                             <TouchableOpacity style={{ alignItems: 'flex-end' }} >
-                                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+                                <Icon name='ios-search' style={{ color: primaryColor, fontSize: 20 }} />
                             </TouchableOpacity>
                         </Item>
                         <FlatList
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: "700",
-        color: '#775DA3'
+        color: primaryColor
     },
     kmText: {
         fontFamily: 'OpenSans',

@@ -8,6 +8,8 @@ import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { Loader } from '../../../components/ContentLoader';
 import { SERVICE_TYPES } from '../../../setup/config'
+import {primaryColor} from '../../../setup/config'
+
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import ConfirmPopup from '../../../components/Shared/ConfirmPopup';
 import RenderUserAddressList from './RenderUserAddressList';
@@ -156,7 +158,7 @@ export default class HomeHealthCareAddressChange extends Component {
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
                     <View style={{ marginTop: 10, marginBottom: 10 }} >
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3', alignSelf: 'center' }}>MY ADDRESS</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor, alignSelf: 'center' }}>MY ADDRESS</Text>
                     </View>
                     <View>
                         <FlatList
@@ -182,7 +184,7 @@ export default class HomeHealthCareAddressChange extends Component {
                     }}
                     cancelButtonAction={() => this.setState({ isVisibleDeletePop: !isVisibleDeletePop })}
                     visible={isVisibleDeletePop} />
-                <Footer style={{ backgroundColor: '#7E49C3', }}>
+                <Footer style={{ backgroundColor: primaryColor, }}>
                     <Row>
                         <Col style={{ marginRight: 40 }} >
                             <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}
@@ -233,7 +235,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     normalText: {

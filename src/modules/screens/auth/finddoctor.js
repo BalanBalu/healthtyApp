@@ -6,6 +6,8 @@ import { userInitialState } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {primaryColor} from '../../../setup/config'
+
 class FindDoctor extends Component {
   constructor(props) {
     super(props)
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
 
   container:
   {
-    backgroundColor: '#775DA3',
+    backgroundColor: primaryColor,
   },
 
   bodyContent: {
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: 12,
-    backgroundColor: '#775DA3',
+    backgroundColor: primaryColor,
     borderRadius: 5,
     marginBottom: 50,
     fontSize: 15,

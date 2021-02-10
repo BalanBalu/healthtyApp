@@ -11,6 +11,8 @@ import { getRelativeTime, dateDiff, formatDate } from '../../../setup/helpers';
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { connect } from 'react-redux';
 import { store } from '../../../setup/store';
+import {primaryColor} from '../../../setup/config'
+
 
 import { SET_LAST_MESSAGES_DATA, updateChatUpdatedTime, insertPushNotification } from '../../providers/chat/chat.action';
 import { NavigationEvents } from "react-navigation";
@@ -243,7 +245,7 @@ class IndividualChat extends Component {
                                 <Item style={styles.mainItem}>
                                     <Right>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Card style={{ borderRadius: 10, backgroundColor: '#7E49C3', }}>
+                                            <Card style={{ borderRadius: 10, backgroundColor: primaryColor, }}>
                                                 <Text style={styles.textstyle}>{item.message}</Text>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 8, color: 'gray', bottom: 0, right: 0, textAlign: 'right', color: '#fff', padding: 5, }}>
                                                     {formatDate(item.created_at, "MMM DD, YYYY  hh:mm:ss A")}
@@ -288,7 +290,7 @@ class IndividualChat extends Component {
                         <Row style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                             {/* <Col style={styles.col1}>
                     <View style={styles.circle}>
-                       <Icon name="ios-camera" style={{ color: '#7E49C3', fontSize:25,padding:2}} />
+                       <Icon name="ios-camera" style={{ color: primaryColor, fontSize:25,padding:2}} />
                     </View>
                   </Col> */}
                             <Col size={1.3} style={{ justifyContent: 'center', alignContent: 'center' }}>
@@ -334,7 +336,7 @@ class IndividualChat extends Component {
                         </Row> :
                         <Row>
                             <Col style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={{ color: '#7E49C3', fontSize: 15, padding: 2, textAlign: 'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
+                                <Text style={{ color: primaryColor, fontSize: 15, padding: 2, textAlign: 'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
                             </Col>
                         </Row>
                     }
@@ -371,7 +373,7 @@ const styles = StyleSheet.create({
         width: 35,
         height: 35,
         borderRadius: 35 / 2,
-        backgroundColor: '#7E49C3',
+        backgroundColor: primaryColor,
         alignItems: 'center',
         justifyContent: 'center'
     },

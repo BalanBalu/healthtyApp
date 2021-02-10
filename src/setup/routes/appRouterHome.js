@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { createAppContainer, createSwitchNavigator, NavigationBackAction } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
+import {primaryColor} from '../../setup/config'
 
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SideBar from './SideBar';
@@ -138,6 +139,7 @@ import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hosp
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
 import {smartHealthStack}from './smartHealtStack'
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -187,7 +189,7 @@ const HomeStack = createStackNavigator({
         <View
           style={{
             height: IS_ANDROID ? 60 : 90,
-            backgroundColor: '#7F49C3',
+            backgroundColor: primaryColor,
             justifyContent: 'center',
           }}>
           <View
@@ -306,7 +308,7 @@ const HomeStack = createStackNavigator({
   
         ), */
       headerStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
       },
     })
   },
@@ -320,7 +322,7 @@ const HomeStack = createStackNavigator({
         <View
           style={{
             height: IS_ANDROID ? 60 : 90,
-            backgroundColor: '#7F49C3',
+            backgroundColor: primaryColor,
             justifyContent: 'center',
           }}>
           <View
@@ -384,7 +386,7 @@ const HomeStack = createStackNavigator({
 
 
       headerStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
       },
     })
   },
@@ -1176,7 +1178,7 @@ const HomeStack = createStackNavigator({
 
         <TouchableOpacity onPress={() => { navigation.navigate('AddReminder') }} style={{ backgroundColor: '#ffffff', borderRadius: 10, height: 30, paddingLeft: 10, paddingRight: 10, marginRight: 10, }}>
           <Row>
-            <Icon name="ios-add-circle" style={{ color: '#7E49C3', fontFamily: 'opensans-semibold', fontSize: 20, marginTop: 3 }}></Icon>
+            <Icon name="ios-add-circle" style={{ color: primaryColor, fontFamily: 'opensans-semibold', fontSize: 20, marginTop: 3 }}></Icon>
             <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginLeft: 5, fontWeight: 'bold', marginTop: 5 }}>Add</Text>
           </Row>
         </TouchableOpacity>
@@ -1219,7 +1221,7 @@ const HomeStack = createStackNavigator({
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3' },
+      headerStyle: { backgroundColor: primaryColor },
       headerTintColor: 'white',
     })
   })

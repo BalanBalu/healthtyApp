@@ -361,7 +361,7 @@ class LabBookAppointment extends Component {
             }
           </Content>}
 
-        <Footer style={{ backgroundColor: '#7E49C3', }}>
+        <Footer style={{ backgroundColor: '#128283', }}>
           <Row>
             <Col style={{ marginRight: 40 }} >
               <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}
