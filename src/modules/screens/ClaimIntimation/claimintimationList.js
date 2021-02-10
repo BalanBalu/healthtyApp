@@ -30,7 +30,7 @@ class ClaimIntimationList extends PureComponent {
         <Content>
         <View style={{justifyContent:'center',alignItems:'center',marginTop:15}}>
                     <Card style={{borderRadius:20}}>
-                    <TouchableOpacity style={{flexDirection:'row',paddingHorizontal:10,borderRadius:20,borderColor:'#7F49C3',borderWidth:1,paddingVertical:3}} onPress={()=>{this.props.navigation.navigate("DocumentList")}}>
+                    <TouchableOpacity style={{flexDirection:'row',paddingHorizontal:10,borderRadius:20,borderColor:'#7F49C3',borderWidth:1,paddingVertical:3}} onPress={()=>{this.props.navigation.navigate('FamilyInfoList',{navigationPage:"ClaimIntimationSubmission"})}}>
                      <MaterialIcons name="add" style={{fontSize:20,color:'#7F49C3'}}/>
                       <Text style={{fontSize:15,fontFamily:'OpenSans',color:'#7F49C3',fontWeight:'600'}}>Add New</Text>
                       </TouchableOpacity>
