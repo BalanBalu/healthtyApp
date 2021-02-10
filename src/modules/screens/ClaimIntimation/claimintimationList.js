@@ -28,6 +28,15 @@ class ClaimIntimationList extends PureComponent {
     return (
       <Container>
         <Content>
+        <View style={{justifyContent:'center',alignItems:'center',marginTop:15}}>
+                    <Card style={{borderRadius:20}}>
+                    <TouchableOpacity style={{flexDirection:'row',paddingHorizontal:10,borderRadius:20,borderColor:'#7F49C3',borderWidth:1,paddingVertical:3}} onPress={()=>{this.props.navigation.navigate("DocumentList")}}>
+                     <MaterialIcons name="add" style={{fontSize:20,color:'#7F49C3'}}/>
+                      <Text style={{fontSize:15,fontFamily:'OpenSans',color:'#7F49C3',fontWeight:'600'}}>Add New</Text>
+                      </TouchableOpacity>
+                    </Card>
+                   
+                    </View>
           <FlatList
             data={data}
             keyExtractor={(item, index) => index.toString()}
@@ -117,6 +126,8 @@ class ClaimIntimationList extends PureComponent {
                     </Card>
                   </View>
                   :
+                  <View>
+                    
                   <Card style={styles.cardStyle}>
                     <Row>
                       <Col size={9}>
@@ -151,7 +162,9 @@ class ClaimIntimationList extends PureComponent {
                         </TouchableOpacity>
                       </Col>
                     </Row>
-                  </Card>}
+                  </Card>
+                  </View>
+                  }
               </View>
             } />
         </Content>
