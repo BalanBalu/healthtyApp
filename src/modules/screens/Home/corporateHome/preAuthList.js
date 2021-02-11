@@ -5,7 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import {getPreAuthListByEmpCodeAndPolicyNo} from '../../../providers/corporate/corporate.actions'
+import { getPreAuthListByEmpCodeAndPolicyNo } from '../../../providers/corporate/corporate.actions'
 import { RenderFooterLoader } from '../../../common';
 import { formatDate } from '../../../../setup/helpers';
 import Spinner from "../../../../components/Spinner";
@@ -16,8 +16,9 @@ class preAuthList extends Component {
     this.state = {
       data: [],
       categoriesMain: [],
-      isLoading : false ,
+      isLoading: false,
     }
+    this.page=1
   }
   async componentDidMount() {
     this.setState({ isLoading: false })
@@ -27,41 +28,42 @@ class preAuthList extends Component {
   async getPreAuthList() {
     let employee_code = await AsyncStorage.getItem("employeeCode");
     let policyNo = await AsyncStorage.getItem("memberPolicyNo");
-    
+
     if (employee_code && policyNo) {
       let result = await getPreAuthListByEmpCodeAndPolicyNo(employee_code, policyNo, this.page, 10)
+     
       if (result && result.docs && result.docs[0]) {
         let temp = this.state.data
-        temp.concat(result.docs) 
+        temp.concat(result.docs)
         if (temp.length === result.total) {
           this.isAllLoaded = true;
+        }
+
+        this.setState({ data: temp })
       }
-      
-        this.setState({data:result.docs})
-      }
-     
+
     }
   }
   handleLoadMore = async () => {
     if (this.isAllLoaded === false) {
-        this.onEndReachedCalledDuringMomentum = true;
-       this.page=this.page+1;
-        this.setState({ footerLoading: true });
-        await this.getPreAuthList()
+      this.onEndReachedCalledDuringMomentum = true;
+      this.page = this.page + 1;
+      this.setState({ footerLoading: true });
+      await this.getPreAuthList()
     }
   }
   renderFooter() {
     return (
-        <RenderFooterLoader footerLoading={this.state.footerLoading} />
+      <RenderFooterLoader footerLoading={this.state.footerLoading} />
     );
-}
+  }
   render() {
-const {data,isLoading}=this.state
+    const { data, isLoading } = this.state
     // const data = [{ InsuranceCompanyName: 'New India Assurance Company Limited', hospitalName: 'Fortis Malar Hospital', policyStatus: 'Paid', address: 'Adyar, Chennai,Tamil Nadu', claimStatus: 'Self' }, { InsuranceCompanyName: 'Oriental Insurance Company Limited', policyStatus: 'Unpaid', hospitalName: 'Apollo Hospital', address: 'Greams Lane, Off, Greams Road, Thousand Lights, Chennai', claimStatus: 'Family' },]
 
     return (
       <Container style={styles.container}>
-        
+
         {/* <View style={{ marginTop: 15, marginLeft: 15, marginRight: 15, marginBottom: 0 }}>
           <Card style={{ justifyContent: 'center', alignItems: 'center', padding: 10, borderRadius: 5 }}>
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -91,7 +93,7 @@ const {data,isLoading}=this.state
           </Card>
         </View> */}
         <Content >
-          
+
           {isLoading === false ?
             <Spinner
               color="blue"
@@ -107,18 +109,24 @@ const {data,isLoading}=this.state
                 justifyContent: 'center', alignItems: 'center',
               }}>
 
-           
+
                 <Text>No pre Auth Found</Text>
 
               </View> :
               <View style={{ marginLeft: 15, marginRight: 15, marginBottom: 15 }}>
+                <View style={{justifyContent:'flex-end',alignItems:'flex-end',marginTop:15}}>
+                  <TouchableOpacity style={{ flexDirection: 'row', borderColor: '#7F49C3', borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('TpaList', { navigationPage: 'PRE_AUTH' })}>
+                    <MaterialIcons name="add" style={{color:'#7F49C3',fontSize:20}}/>
+                          <Text style={{fontFamily:'OpenSans',fontSize:15,color:'#7F49C3'}}>Add Pre Auth</Text>
+                  </TouchableOpacity>
+                </View>
                 <FlatList
                   data={data}
                   onEndReached={() => this.handleLoadMore()}
                   onEndReachedThreshold={0.5}
                   ListFooterComponent={this.renderFooter.bind(this)}
                   renderItem={({ item, index }) =>
-                    <Card style={{ padding: 10, borderRadius: 5 }}>
+                    <Card style={{ padding: 10, borderRadius: 5,marginTop:10}}>
                       <Row>
 
                         <Col size={8}>
@@ -132,7 +140,7 @@ const {data,isLoading}=this.state
                         </Col>
                       </Row>
                       <Row style={{ borderBottomColor: 'gray', borderBottomWidth: 0.3, paddingBottom: 10 }}>
-                  
+
                         <Col size={9}>
                           <Row style={{ marginTop: 5, }}>
                             <Col size={4}>
@@ -178,7 +186,7 @@ const {data,isLoading}=this.state
                               <Text style={styles.commonText}>{item.hospitalLocation}</Text>
                             </Col>
                           </Row>
-                  
+
 
                         </Col>
                         <Col size={1}>
@@ -198,7 +206,7 @@ const {data,isLoading}=this.state
                       </Row>
                     </Card>
                   } />
-          
+
               </View>}
         </Content>
       </Container>

@@ -27,6 +27,7 @@ class NetworkHospitals extends Component {
         this.isEnabledLoadMoreData = true;
         this.incrementPaginationCount = 0;
         this.hospitalInfoListArray = [];
+        this.navigationPage=props.navigation.getParam('navigationPage') || null;
         this.selectedTpaInfoObj = props.navigation.getParam('TpaInfoObj') || null;
         this.selectedTpaCode = props.navigation.getParam('TpaInfoObj') && props.navigation.getParam('TpaInfoObj').tpaCode || null;
     }
@@ -116,6 +117,7 @@ class NetworkHospitals extends Component {
                 showFullInfoCard={showFullInfoCard}
                 onPressArrowIconSelectedIndex={index}
                 navigation={this.props.navigation}
+                navigationPage={this.navigationPage}
                 onPressUpOrDownArrowToViewFullInfo={(onPressArrowIconSelectedIndex, typeOfArrowIcon, selectedHospitalData) => this.onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, typeOfArrowIcon, selectedHospitalData)}
                 onPressGoPreAuthRequestForm={() => this.onPressGoPreAuthRequestForm()}
                 onPressGoPreConsultation={() => this.onPressGoPreConsultation()}

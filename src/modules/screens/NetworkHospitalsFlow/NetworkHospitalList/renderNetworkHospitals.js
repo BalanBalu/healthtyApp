@@ -11,7 +11,7 @@ export default class RenderNetworkHospitalInfo extends Component {
     super(props)
   }
   render() {
-    const { item, showFullInfoCard, onPressArrowIconSelectedIndex, onPressUpOrDownArrowToViewFullInfo, onPressGoPreAuthRequestForm, onPressGoPreConsultation, navigation } = this.props;
+    const { item, showFullInfoCard, onPressArrowIconSelectedIndex, onPressUpOrDownArrowToViewFullInfo, onPressGoPreAuthRequestForm, onPressGoPreConsultation, navigation,navigationPage } = this.props;
     const address = item.location && item.location.address;
     return (
       <View>
@@ -65,21 +65,35 @@ export default class RenderNetworkHospitalInfo extends Component {
                   <Text style={Styles.subHeadingData}>{item.email ? item.email : 'N/A'}</Text>
                 </Col>
                 <Col size={0.8}></Col>
-              </Row>
-              <Row style={{ marginTop: 15 }}>
+              </Row>{
+                navigationPage === 'PRE_AUTH' ?
+                <Row style={{ marginTop: 15 }}>
                 <Col size={4}>
                   <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
-                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Pre Auth</Text>
+                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>continue</Text>
                   </TouchableOpacity>
                 </Col>
                 <Col size={4} style={{ marginLeft: 20 }}>
-                  <TouchableOpacity onPress={() => onPressGoPreConsultation()} style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }}>
-                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Consultation</Text>
-                  </TouchableOpacity>
+                
                 </Col>
                 <Col size={2}>
                 </Col>
-              </Row>
+              </Row>:
+                  <Row style={{ marginTop: 15 }}>
+                    <Col size={4}>
+                      <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
+                        <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Pre Auth</Text>
+                      </TouchableOpacity>
+                    </Col>
+                    <Col size={4} style={{ marginLeft: 20 }}>
+                      <TouchableOpacity onPress={() => onPressGoPreConsultation()} style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }}>
+                        <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Consultation</Text>
+                      </TouchableOpacity>
+                    </Col>
+                    <Col size={2}>
+                    </Col>
+                  </Row> 
+                 }
             </LinearGradient>
 
           </View>
