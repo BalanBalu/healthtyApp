@@ -515,7 +515,7 @@ class PolicyCoverage extends React.Component {
                     <Text style={styles.subHeadingData}>{memberDetails.insuranceCompany ? memberDetails.insuranceCompany : '-'}</Text>
                   </Col>
                 </Row>
-                <Text style={[styles.subText, { marginTop: 5 }]}>Balance Sum Insured</Text>
+                <Text style={styles.subHeadingStyle}>Balance Sum Insured</Text>
                 <View style={{ marginTop: 2 }}>
                   <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>{memberDetails.balSumInsured ? memberDetails.balSumInsured : 0}<Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#909090' }}>{" "}/{memberDetails.sumInsured ? memberDetails.sumInsured : 0}</Text></Text>
                 </View>

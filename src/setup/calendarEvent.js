@@ -43,19 +43,9 @@ export async function requestCalendarPermissions() {
     let requestCalendarPermission = await RNCalendarEvents.authorizeEventStore();
     return requestCalendarPermission;
   } catch (error) {
-    Alert.alert(
-      // CURRENT_APP_NAME + " Need your Calendar Permission to Store your Appointments"
-      'Calendar Permission',
-      "Allow "+ CURRENT_APP_NAME + " to access your Calendar to Store your Appointments",
-      [
-        {text: 'DENY',
-         onPress: () => console.log('Cancel Pressed!'),
-        },
-        {text: 'ALLOW', },
-      ],
-      { cancelable: false }
-      );
-    return false;
+    let status = RNCalendarEvents.requestPermissions((readOnly = false));
+    
+    return status;
   }
 };
 

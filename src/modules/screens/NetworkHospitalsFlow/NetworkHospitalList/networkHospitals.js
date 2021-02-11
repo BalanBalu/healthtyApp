@@ -8,6 +8,8 @@ import RenderNetworkHospitalInfo from './renderNetworkHospitals';
 import { serviceOfSearchByNetworkHospitalDetails } from '../../../providers/hospitalBookAppointmentFlow/action';
 import { Loader } from '../../../../components/ContentLoader';
 import Styles from '../styles';
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
@@ -168,14 +170,12 @@ class NetworkHospitals extends Component {
         if (isLoading) return <Loader style='list' />;
         return (
             <Container>
-                <View style={{ paddingBottom: 5, paddingStart: 5, paddingEnd: 5, height: 45 }}>
+                <View style={{ paddingBottom: 5,  height: 45,marginHorizontal:15,}}>
                     <Row style={{
                         backgroundColor: 'white',
                         borderColor: '#000',
                         borderWidth: 0.5,
                         height: 32,
-                        marginRight: 10,
-                        marginLeft: 5,
                         marginTop: 5, borderRadius: 5
                     }}>
                         <Col size={8.1} style={{ justifyContent: 'center', }}>
@@ -201,38 +201,33 @@ class NetworkHospitals extends Component {
                     </Row>
                 </View>
                 <View>
-                    <Row style={{ padding: 5, height: 40 }}>
-                        <Col size={8}>
+                    <TouchableOpacity onPress={() => this.navigateToLocationMap()}>
+                    <Row style={{ padding: 5, height: 40,marginHorizontal:15,marginVertical:5,backgroundColor:'#EFEFF0',borderRadius:5 }}>
+                        <Col size={1} style={{justifyContent:'center'}}>
+                          
+                                    <MaterialIcons color={'#7F49C3'} name="my-location" style={{ fontSize: 20 }}></MaterialIcons>
+                         
+                      
+                        </Col>
+                        <Col size={8} style={{justifyContent:'center'}}>
                             <Text style={{
-                                marginLeft: 5,
                                 fontFamily: 'OpenSans',
-                                color: '#7F49C3',
+                                color: '#000',
                                 fontSize: 13,
                             }}>
                                 {locationText}
-                                {/* <Text style={{
-                                            fontFamily: 'OpenSans',
-                                            color: '#7F49C3',
-                                            fontSize: 13,
-                                        }}>{" "}location - {"Chennai"}</Text> */}
+                              
                             </Text>
                         </Col>
-                        <Col size={2}>
-                            <Row style={{ justifyContent: 'flex-end' }}>
-                                <TouchableOpacity style={{
-                                    marginRight: 12,
-                                    borderColor: 'blue',
-                                    borderWidth: 2,
-                                    alignItems: 'center',
-                                    alignSelf: 'center',
-                                    padding: 5,
-                                    borderRadius: 14
-                                }} onPress={() => this.navigateToLocationMap()} >
-                                    <Icon color={'white'} name="locate" style={{ fontSize: 20 }}></Icon>
+                        <Col size={1} style={{justifyContent:'center'}}>
+                          
+                                <TouchableOpacity style={{marginLeft:10}}  >
+                                    <MaterialIcons color={'black'} name="keyboard-arrow-right" style={{ fontSize: 20 }}></MaterialIcons>
                                 </TouchableOpacity>
-                            </Row>
+                           
                         </Col>
                     </Row>
+                    </TouchableOpacity>
                 </View>
                 {isLoadingOnChangeHospitalList ?
                     <View style={{ marginTop: 60 }}>
