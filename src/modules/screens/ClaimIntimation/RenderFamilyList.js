@@ -34,13 +34,13 @@ item.full_name=this.getCorporateLoginName(item)
                     <Col size={0.5}></Col>
                     <Col size={5}>
                         <Row>
-                            <Col size={3}>
+                            <Col size={4}>
                                 <Text style={styles.commonText}>Gender</Text>
                             </Col>
                             <Col size={1}>
                                 <Text style={[styles.commonText,{marginLeft:5}]}>-</Text>
                             </Col>
-                            <Col size={6} >
+                            <Col size={5} >
                                 <Text style={[styles.commonText, { color: '#909498' }]}>{item.gender?item.gender: 'N/A'}</Text>
                             </Col>
                         </Row>
@@ -48,13 +48,13 @@ item.full_name=this.getCorporateLoginName(item)
                     <Col size={5}>
                         {item.mobile ?
                             <Row>
-                                <Col size={3}>
+                                <Col size={4}>
                                     <Text style={styles.commonText}>Mobile</Text>
                                 </Col>
                                 <Col size={1}>
                                 <Text style={[styles.commonText,{marginLeft:5}]}>-</Text>
                                 </Col>
-                                <Col size={6} style={{ alignItems: 'flex-end' }}>
+                                <Col size={5} style={{ alignItems: 'flex-end' }}>
                                     <Text style={[styles.commonText, { color: '#909498' }]}>{item.mobile}</Text>
                                 </Col>
                             </Row>
@@ -64,9 +64,9 @@ item.full_name=this.getCorporateLoginName(item)
                 <View style={{ marginLeft: 15 }}>
                     <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.7, marginTop: 15 }} />
                     <Row>
-                        <Col style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }} size={6}>
+                        <Col style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3,}} size={6}>
                             <TouchableOpacity style={styles.benefeciaryButton} onPress={() => onPressIsShowBeneficiaryInfo(index, isShowBeneficiaryInfoCard === index?'UP':'DOWN')}>
-                                <Text style={{ color: "#0054A5", fontSize: 14, fontFamily: 'OpenSans', }}>Show Benefeciary Details </Text>
+                                <Text style={{ color: "#0054A5", fontSize: 14, fontFamily: 'OpenSans', }}>Show Beneficiary Details</Text>
                                 <MaterialIcons name={isShowBeneficiaryInfoCard === index ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 20, color: "#0054A5" }} />
                             </TouchableOpacity>
                         </Col>

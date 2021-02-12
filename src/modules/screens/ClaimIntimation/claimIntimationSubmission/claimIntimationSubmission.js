@@ -173,10 +173,10 @@ export default class ClaimInitiationSubmission extends Component {
                 style={styles.text}>
                 Date of Admission
             </Text>
-              <Item regular style={{ borderRadius: 6, height: 50, width: 370 }}>
+              <Item regular style={{ borderRadius: 6, height: 50, }}>
                 <TouchableOpacity onPress={() => { this.setState({ isVisibleDatePicker: !isVisibleDatePicker }) }} style={{ flexDirection: 'row' }}>
                   <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
-                  <Text style={selectedAdmissionDate ? { marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', } : { color: '#909090' }}>{selectedAdmissionDate ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY') : 'Date of Birth'}</Text>
+                  <Text style={selectedAdmissionDate ? { marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center',marginTop:8,color:'#000' } : { color: '#909090',fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center',marginTop:8 }}>{selectedAdmissionDate ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY') : 'Date of Admission'}</Text>
                   <DateTimePicker
                     mode={'date'}
                     minimumDate={subTimeUnit(new Date(), 8, 'days')}
