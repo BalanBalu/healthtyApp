@@ -340,6 +340,25 @@ export default styles = StyleSheet.create({
         marginTop: 5
 
     },
+    slotDefaultBgColorForLab: {
+        backgroundColor: '#ced6e0',
+        borderColor: '#000',
+        marginTop: 10,
+        height: 60,
+        borderRadius: 5,
+        justifyContent: 'center',
+        // marginLeft: 5
+    },
+    slotSelectedBgColorForLab: {
+
+        backgroundColor: '#775DA3',
+        borderColor: '#000',
+        marginTop: 10,
+        height: 60,
+        borderRadius: 6,
+        justifyContent: 'center',
+        //marginLeft: 5
+    },
 })
 
 

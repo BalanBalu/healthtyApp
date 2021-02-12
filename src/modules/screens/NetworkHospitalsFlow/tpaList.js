@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Icon, Input, View, Item } from 'native-base';
+import { Container, Content, Text, Icon, Input, View, Item, Button } from 'native-base';
 import { Col, Grid } from 'react-native-easy-grid';
 import { TouchableOpacity, FlatList } from 'react-native';
 import { smartHealthGetService } from '../../../setup/services/httpservices';
@@ -7,6 +7,8 @@ import Styles from './styles';
 import RenderTpaList from './renderTpaListView';
 import { Loader } from '../../../components/ContentLoader';
 import CheckLocationWarning from '../Home/LocationWarning';
+import { debounce } from '../../common';
+
 
 export default class TpaList extends Component {
   constructor(props) {
@@ -15,8 +17,11 @@ export default class TpaList extends Component {
       tpaList: [],
       selectedTpaItem: null,
       selectedIndex: null,
+      visibleClearIcon: '',
       isLoading: true
     }
+    this.callGetSuggestionListService = debounce(this.callGetSuggestionListService, 300);
+    this.initialTpaList = [];
   }
   async componentDidMount() {
     await this.fetchTpaListfromSMHserver();  // Get all TPA list from smart health server
@@ -26,7 +31,8 @@ export default class TpaList extends Component {
       const endPoint = 'tpa-master';
       const tpaListResp = await smartHealthGetService(endPoint);
       if (tpaListResp && tpaListResp.data && tpaListResp.data.length) {
-        this.setState({ tpaList: tpaListResp.data })
+        this.setState({ tpaList: tpaListResp.data });
+        this.initialTpaList = tpaListResp.data;
       }
     } catch (error) {
       console.log('Ex is getting on get All TPA list', error.message)
@@ -56,10 +62,33 @@ export default class TpaList extends Component {
     let navigationPage = this.props.navigation.getParam('navigationPage')||null;
     this.props.navigation.navigate("NetworkHospitals", { TpaInfoObj: this.state.selectedTpaItem ,navigationPage:navigationPage})
   }
-  onChangeTpaText() {
+  getSuggestionListFunction = async (enteredText) => {
+    await this.setState({ visibleClearIcon: enteredText });
+    if (this.initialTpaList && this.initialTpaList.length) {
+      this.callGetSuggestionListService(enteredText);  // Call the Suggestion API with Debounce method
+    }
   }
+
+
+  callGetSuggestionListService(enteredText) {
+    const lowerCaseOfEnteredText = enteredText.toLowerCase();
+    const resultedTpaList = [];
+    this.initialTpaList && this.initialTpaList.forEach(tpaItem => {
+      const lowerCaseOfTpaName = tpaItem && tpaItem.tpaName.toLowerCase();
+      let findIndex = lowerCaseOfTpaName.indexOf(lowerCaseOfEnteredText);
+      if (findIndex !== -1) {
+        tpaItem.findIndex = findIndex === 0 ? findIndex + 1 : findIndex;
+        resultedTpaList.push(tpaItem)
+      }
+    })
+    resultedTpaList.sort((a, b) => a.findIndex - b.findIndex)  // Finally sort the suggestion list array
+    this.setState({ tpaList: resultedTpaList });
+  }
+  clearTotalTextFromSearchBar = () => {
+    this.setState({ visibleClearIcon: '', selectedTpaItem: null, selectedIndex: null, tpaList: this.initialTpaList })
+  };
   render() {
-    const { tpaList, selectedTpaItem, isLoading } = this.state;
+    const { tpaList, selectedTpaItem, visibleClearIcon, isLoading } = this.state;
     if (isLoading) return <Loader style='list' />;
     return (
       <Container>
@@ -69,15 +98,24 @@ export default class TpaList extends Component {
               <Col size={10}>
                 <Item style={Styles.inputItem}>
                   <Input
-                    placeholder='Search for Insurance companies     '
+                    placeholder='Search by Insurance companies     '
                     style={{ fontSize: 14, width: '300%' }}
                     placeholderTextColor="#909894"
                     keyboardType={'default'}
-                    onChangeText={(text) => this.onChangeTpaText(text)}
+                    onChangeText={enteredText => this.getSuggestionListFunction(enteredText)}
                     returnKeyType={'done'}
-                    multiline={false} />
+                    multiline={false}
+                    value={visibleClearIcon}
+                    underlineColorAndroid="transparent"
+                  />
                   <TouchableOpacity style={{ alignItems: 'flex-end' }}>
-                    <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 22 }} />
+                    {visibleClearIcon ?
+                      <Button transparent onPress={() => this.clearTotalTextFromSearchBar()} style={{ justifyContent: 'flex-start', marginLeft: -10 }}>
+                        <Icon name="ios-close" style={{ fontSize: 25, color: 'gray' }} />
+                      </Button>
+                      :
+                      <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 22 }} />
+                    }
                   </TouchableOpacity>
                 </Item>
               </Col>
@@ -93,7 +131,7 @@ export default class TpaList extends Component {
             />
             :
             <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No TPA list found!</Text>
+              <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} >{visibleClearIcon ? "No TPA list found!...Try again" : "No TPA list found!"}</Text>
             </Item>
           }
         </Content>

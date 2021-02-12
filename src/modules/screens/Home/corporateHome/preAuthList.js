@@ -93,7 +93,12 @@ class preAuthList extends Component {
           </Card>
         </View> */}
         <Content >
-
+        <View style={{justifyContent:'flex-end',alignItems:'flex-end',marginTop:15}}>
+                  <TouchableOpacity style={{ flexDirection: 'row', borderColor: '#7F49C3', borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('TpaList', { navigationPage: 'PRE_AUTH' })}>
+                    <MaterialIcons name="add" style={{color:'#7F49C3',fontSize:20}}/>
+                          <Text style={{fontFamily:'OpenSans',fontSize:15,color:'#7F49C3'}}>Add Pre Auth</Text>
+                  </TouchableOpacity>
+                </View>
           {isLoading === false ?
             <Spinner
               color="blue"
@@ -114,12 +119,7 @@ class preAuthList extends Component {
 
               </View> :
               <View style={{ marginLeft: 15, marginRight: 15, marginBottom: 15 }}>
-                <View style={{justifyContent:'flex-end',alignItems:'flex-end',marginTop:15}}>
-                  <TouchableOpacity style={{ flexDirection: 'row', borderColor: '#7F49C3', borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('TpaList', { navigationPage: 'PRE_AUTH' })}>
-                    <MaterialIcons name="add" style={{color:'#7F49C3',fontSize:20}}/>
-                          <Text style={{fontFamily:'OpenSans',fontSize:15,color:'#7F49C3'}}>Add Pre Auth</Text>
-                  </TouchableOpacity>
-                </View>
+                
                 <FlatList
                   data={data}
                   onEndReached={() => this.handleLoadMore()}

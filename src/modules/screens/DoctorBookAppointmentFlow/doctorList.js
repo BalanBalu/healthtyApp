@@ -673,21 +673,21 @@ class DoctorList extends Component {
         const { currentDate, expandItemOfDocIdHospitalsToShowSlotsData, isLoadingDatesAndSlots } = this.state;
         return (
 
-            <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
+            <Card style={{ padding: 2, borderRadius: 10,  }}>
                 <List style={{ borderBottomWidth: 0 }}>
-                    <ListItem>
+                    <ListItem style={{ borderBottomWidth: 0 }}>
                         <Grid >
                             {this.renderDoctorInformationCard(item)}
                             <Row style={{ borderTopColor: '#000', borderTopWidth: 0.4, marginTop: 5 }} >
-                                <Col style={{ width: "5%" }}>
+                                <Col size={0.8}>
                                     <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
                                 </Col>
-                                <Col style={{ width: "80%" }}>
+                                <Col size={7.5}>
                                     <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getNextAvailableDateAndTime(item.slotData && item.slotData[this.selectedDate4DocIdHostpitalIdToStoreInObj[item.doctorIdHostpitalId] || currentDate], item)}</Text>
                                 </Col>
-                                <Col style={{ width: "15%" }}>
+                                <Col size={1.7}>
                                     {!expandItemOfDocIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
-                                        <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId, indexOfItem)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, width: 66, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
+                                        <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId, indexOfItem)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 30,  justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
                                             <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
                                         </TouchableOpacity> :
                                         null}
