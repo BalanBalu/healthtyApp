@@ -4,41 +4,60 @@ import { Container, Content, Text, Left, Right, View, Card, } from 'native-base'
 import { Col, Row, } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { getClaimIntimationWithPagination } from '../../providers/corporate/corporate.actions';
 
+const LIMIT = 10;
 
 class ClaimIntimationList extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      showCard: 0,
+      showCard: -1,
       show: true,
+      claimList: []
+
+    }
+    this.pagination = 1;
+
+  }
+  componentDidMount() {
+    this.getClaimIntimationDetails()
+  }
+  getClaimIntimationDetails = async () => {
+    try {
+      let searchText = null;
+      let result = await getClaimIntimationWithPagination(searchText, this.pagination, LIMIT);
+      if (result) {
+        await this.setState({ claimList: result.docs });
+      }
+    } catch (ex) {
+      console.log(ex)
     }
 
   }
-
 
   toggleData(data) {
     const { showCard, show } = this.state
     this.setState({ showCard: data, show: !this.state.show, })
   }
   render() {
-    let data = [{ PatientName: 'Hrithikesh', address: 'NorthPark Street,Ambattur,Chennai,Tamil Nadu ', policyNo: 892158775654646464567, MAID: '7853657346', claimBy: 'self', claimStatus: 'Paid', ClaimAmount: '12,555', hospital: 'Apollo Hospital' }, { PatientName: 'HariKrishnan', address: 'NorthPark Street ,Ambattur,Chennai,Tamil Nadu', policyNo: 463636894667575824475, MAID: '7853657346', claimBy: 'Family', claimStatus: 'Paid', ClaimAmount: '10,355', hospital: 'Fortis Malar Hospital' },]
-    const { showCard, show, } = this.state
+    // let data = [{ PatientName: 'Hrithikesh', address: 'NorthPark Street,Ambattur,Chennai,Tamil Nadu ', policyNo: 892158775654646464567, MAID: '7853657346', claimBy: 'self', claimStatus: 'Paid', ClaimAmount: '12,555', hospital: 'Apollo Hospital' }, { PatientName: 'HariKrishnan', address: 'NorthPark Street ,Ambattur,Chennai,Tamil Nadu', policyNo: 463636894667575824475, MAID: '7853657346', claimBy: 'Family', claimStatus: 'Paid', ClaimAmount: '10,355', hospital: 'Fortis Malar Hospital' },]
+    const { showCard, show, claimList} = this.state
 
     return (
       <Container>
         <Content>
-        <View style={{justifyContent:'center',alignItems:'center',marginTop:15}}>
-                    <Card style={{borderRadius:20}}>
-                    <TouchableOpacity style={{flexDirection:'row',paddingHorizontal:10,borderRadius:20,borderColor:'#7F49C3',borderWidth:1,paddingVertical:3}} onPress={()=>{this.props.navigation.navigate('FamilyInfoList',{navigationPage:"ClaimIntimationSubmission"})}}>
-                     <MaterialIcons name="add" style={{fontSize:20,color:'#7F49C3'}}/>
-                      <Text style={{fontSize:15,fontFamily:'OpenSans',color:'#7F49C3',fontWeight:'600'}}>Add New</Text>
-                      </TouchableOpacity>
-                    </Card>
-                   
-                    </View>
+          <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
+            <Card style={{ borderRadius: 20 }}>
+              <TouchableOpacity style={{ flexDirection: 'row', paddingHorizontal: 10, borderRadius: 20, borderColor: '#7F49C3', borderWidth: 1, paddingVertical: 3 }} onPress={() => { this.props.navigation.navigate('FamilyInfoList', { navigationPage: "ClaimIntimationSubmission" }) }}>
+                <MaterialIcons name="add" style={{ fontSize: 20, color: '#7F49C3' }} />
+                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '600' }}>Add New</Text>
+              </TouchableOpacity>
+            </Card>
+
+          </View>
           <FlatList
-            data={data}
+            data={claimList}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) =>
               <View>
@@ -47,8 +66,7 @@ class ClaimIntimationList extends PureComponent {
                     <Card style={styles.cardStyles}>
                       <Row style={styles.gradientStyle}>
                         <Col size={9}>
-                          <Text style={{ fontSize: 18, color: '#fff' }}>{item.PatientName}</Text>
-
+                          <Text style={{ fontSize: 18, color: '#fff' }}>{item.employeeName}</Text>
                         </Col>
                         <Col size={0.8} >
                           <TouchableOpacity onPress={() => this.toggleData(index)}>
@@ -65,106 +83,106 @@ class ClaimIntimationList extends PureComponent {
                           </Col>
 
                         </Row>
-                        <Row style={{ marginTop: 5 }}>
+                        {/* <Row style={{ marginTop: 5 }}>
                           <Col size={4}><Text style={styles.subHeadingStyle}>MAID</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.MAID}</Text>
                           </Col>
 
-                        </Row>
+                        </Row> */}
                         <Row style={{ marginTop: 5 }}>
                           <Col size={4}><Text style={styles.subHeadingStyle}>Claim By</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
-                            <Text style={styles.subHeadingData}>{item.claimBy}</Text>
+                            <Text style={styles.subHeadingData}>{item.claimBy ? item.claimBy:`-`}</Text>
                           </Col>
                         </Row>
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim Status</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Status</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
-                            <Text style={styles.subHeadingData}>{item.claimStatus}</Text>
+                            <Text style={styles.subHeadingData}>{item.status}</Text>
                           </Col>
                         </Row>
-                        <Row style={{ marginTop: 5 }}>
+                        {/* <Row style={{ marginTop: 5 }}>
                           <Col size={4}><Text style={styles.subHeadingStyle}>Claim Amount</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.ClaimAmount}</Text>
                           </Col>
-                        </Row>
+                        </Row> */}
                         <Row style={{ marginTop: 5 }}>
                           <Col size={4}><Text style={styles.subHeadingStyle}>Hospital</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
-                            <Text style={styles.subHeadingData}>{item.hospital}</Text>
+                            <Text style={styles.subHeadingData}>{item.hospitalName}</Text>
                           </Col>
                         </Row>
-                        <Row style={{ marginTop: 5 }}>
+                        {/* <Row style={{ marginTop: 5 }}>
                           <Col size={4}><Text style={styles.subHeadingStyle}>Hospital Address</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.address}</Text>
                           </Col>
-                        </Row>
+                        </Row> */}
                       </View>
                       <View style={styles.subView}>
                         <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
                           <Left>
-                            <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList")}>
+                            <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { uploadData: item.claimIntimationDocuments, data: item})}>
                               <Text style={styles.linkHeader}>View Document</Text>
                             </TouchableOpacity>
                           </Left>
-                          <Right>
-                            <TouchableOpacity style={styles.ecardButton} >
+                          {/* <Right>
+                            <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { docsUpload: true,data: item })}>
                               <Text style={styles.linkHeader}>Upload Document</Text>
                             </TouchableOpacity>
-                          </Right>
+                          </Right> */}
                         </Row>
                       </View>
                     </Card>
                   </View>
                   :
                   <View>
-                    
-                  <Card style={styles.cardStyle}>
-                    <Row>
-                      <Col size={9}>
-                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '700' }}
-                          numberOfLines={1}
-                          ellipsizeMode="tail">{item.PatientName}</Text>
-                        <Row>
-                          <Col size={3}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#909090', marginTop: 5 }}
-                              numberOfLines={1}
-                              ellipsizeMode="tail">Policy No</Text>
-                          </Col>
-                          <Col size={0.5}>
-                            <Text style={{ marginTop: 5 }}>:</Text>
-                          </Col>
-                          <Col size={6.5}>
-                            <Text style={styles.subHeadingData}
-                              numberOfLines={1}
-                              ellipsizeMode="tail">{item.policyNo}</Text>
-                          </Col>
-                        </Row>
-                        {/* <Text style={styles.subHeadingData}
+
+                    <Card style={styles.cardStyle}>
+                      <Row>
+                        <Col size={9}>
+                          <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '700' }}
+                            numberOfLines={1}
+                            ellipsizeMode="tail">{item.employeeName}</Text>
+                          {/* <Row>
+                            <Col size={3}>
+                              <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#909090', marginTop: 5 }}
+                                numberOfLines={1}
+                                ellipsizeMode="tail">Policy No</Text>
+                            </Col>
+                            <Col size={0.5}>
+                              <Text style={{ marginTop: 5 }}>:</Text>
+                            </Col>
+                            <Col size={6.5}>
+                              <Text style={styles.subHeadingData}
+                                numberOfLines={1}
+                                ellipsizeMode="tail">{item.policyNo}</Text>
+                            </Col>
+                          </Row> */}
+                          {/* <Text style={styles.subHeadingData}
                               numberOfLines={1}
                               ellipsizeMode="tail">{item.address}</Text> */}
 
 
-                      </Col>
+                        </Col>
 
-                      <Col size={0.8} style={{ justifyContent: 'center' }}>
-                        <TouchableOpacity onPress={() => this.toggleData(index)}>
-                          <MaterialIcons name={showCard === index && !show ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 25, color: '#000' }} />
-                        </TouchableOpacity>
-                      </Col>
-                    </Row>
-                  </Card>
+                        <Col size={0.8} style={{ justifyContent: 'center' }}>
+                          <TouchableOpacity onPress={() => this.toggleData(index)}>
+                            <MaterialIcons name={showCard === index && !show ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 25, color: '#000' }} />
+                          </TouchableOpacity>
+                        </Col>
+                      </Row>
+                    </Card>
                   </View>
-                  }
+                }
               </View>
             } />
         </Content>

@@ -139,6 +139,27 @@ export default  styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20
     },
-  
+    headerText: {
+    textTransform: 'uppercase',
+    fontWeight: '700',
+    marginLeft: 40,
+    color: '#3E4459',
+    lineHeight: 26,
+    fontFamily: 'OpenSans, sans-serif',
+    marginRight: 40,
+    marginTop: 20,
+  },
+  cardStyles: {
+    marginTop: 15,
+    marginRight: 15,
+    marginLeft: 15,
+    borderRadius: 5,
+    padding: 10
+  },
+  innerCardText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    color: '#4765FF'
+  },
 
   })
