@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Text, Item, Card, Left, Right, Content } from 'native-base';
+import { Container, Text, Item, Card, Left, Right, Content, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, ActivityIndicator } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -7,7 +7,7 @@ import { getMemberDetailsByEmail, getClaimsDataByPayerCode } from '../../provide
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-const LIMIT = 50;
+const LIMIT = 5;
 
 class PolicyStatus extends Component {
   constructor(props) {
@@ -47,10 +47,22 @@ class PolicyStatus extends Component {
     try {
       const { memberDetails, policyDetails } = this.state
       let result = await getClaimsDataByPayerCode(policyDetails.TPA, memberDetails.policyNo, this.pagination, LIMIT);
+
       if (result && result.docs && result.docs.length) {
-        this.pagination = this.pagination + LIMIT;
+        this.pagination = this.pagination + 1;
         this.claimsDataArray = [...this.claimsDataArray, ...result.docs]
         this.setState({ claimsData: this.claimsDataArray });
+      }
+
+      else {
+        if (this.claimsDataArray.length > 4) {
+          Toast.show({
+            text: 'No more data Available!',
+            duration: 5000,
+            type: "success"
+          })
+        }
+        this.isEnabledLoadMoreData = false;
       }
     } catch (ex) {
       console.log(ex)
@@ -70,17 +82,17 @@ class PolicyStatus extends Component {
     }
 
   }
-  // loadMoreData = async () => {
-  //   try {
-  //     this.setState({ isLoadingMoreData: true });
-  //     await this.getClaimDetails();
-  //   } catch (error) {
-  //     console.log("Ex is getting on load more hospitals", error.message);
-  //   }
-  //   finally {
-  //     this.setState({ isLoadingMoreData: false })
-  //   }
-  // }
+  loadMoreData = async () => {
+    try {
+      this.setState({ isLoadingMoreData: true });
+      await this.getClaimDetails();
+    } catch (error) {
+      console.log("Ex is getting on load more data", error.message);
+    }
+    finally {
+      this.setState({ isLoadingMoreData: false })
+    }
+  }
 
 
   render() {
@@ -121,12 +133,14 @@ class PolicyStatus extends Component {
             <FlatList
               data={claimsData}
               keyExtractor={(item, index) => index.toString()}
-              // onEndReachedThreshold={1}
+              onEndReachedThreshold={1}
 
-              // onEndReached={() => {
-              //   this.loadMoreData();
+              onEndReached={() => {
+                if (this.isEnabledLoadMoreData) {
+                  this.loadMoreData();
+                }
 
-              // }}
+              }}
               renderItem={({ item, index }) =>
                 <View>
                  <View>
@@ -255,6 +269,16 @@ class PolicyStatus extends Component {
               <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No Claim list found!</Text>
             </Item>
           }
+          {isLoadingMoreData ?
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              <ActivityIndicator
+                style={{ marginBottom: 17 }}
+                animating={isLoadingMoreData}
+                size="large"
+                color='blue'
+              />
+            </View>
+            : null}
         </Content>
       </Container>
     )
