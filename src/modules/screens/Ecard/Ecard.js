@@ -106,52 +106,52 @@ class Ecard extends PureComponent {
                                     <Col size={0.5}>
                                         <Text style={styles.mainText}>{index}.</Text>
                                     </Col>
-                                    <Col size={3}>
+                                    <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Member Name</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
                                     </Col>
-                                    <Col size={6}>
+                                    <Col size={5}>
                                         <Text style={styles.mainText}>{this.getMemberName(data)}</Text>
                                     </Col>
                                 </Grid>
                                 <Grid style={{ marginTop: 8 }}>
                                     <Col size={0.5}>
                                     </Col>
-                                    <Col size={3}>
+                                    <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Member Code</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
                                     </Col>
-                                    <Col size={6}>
+                                    <Col size={5}>
                                         <Text style={styles.mainText}>{data.memberId}</Text>
                                     </Col>
                                 </Grid>
                                 <Grid style={{ marginTop: 8 }}>
                                     <Col size={0.5}>
                                     </Col>
-                                    <Col size={3}>
+                                    <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Gender</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
                                     </Col>
-                                    <Col size={6}>
+                                    <Col size={5}>
                                         <Text style={styles.mainText}>{data.gender}</Text>
                                     </Col>
                                 </Grid>
                                 <Grid style={{ marginTop: 8 }}>
                                     <Col size={0.5}>
                                     </Col>
-                                    <Col size={3}>
+                                    <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Age</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
                                     </Col>
-                                    <Col size={6}>
+                                    <Col size={5}>
                                         <Text style={styles.mainText}>{data.age} Years</Text>
                                     </Col>
                                 </Grid>
@@ -177,7 +177,7 @@ class Ecard extends PureComponent {
 
                         </View>
                         <Row style={{ backgroundColor: '#1C5BA8', padding: 5, paddingBottom: 25 }}>
-                            <Col size={2.5}>
+                            <Col size={3.5}>
                                 <Text style={styles.innerText}>Policy No.</Text>
                                 <Text style={styles.innerText}>Health India ID</Text>
                                 <Text style={styles.innerText}>Member code</Text>
@@ -201,7 +201,7 @@ class Ecard extends PureComponent {
 
 
                             </Col>
-                            <Col size={5.5}>
+                            <Col size={6}>
                                 <Text style={styles.innerText}>{data.policyNo}</Text>
                                 <Text style={styles.innerText}>{data.health_india_Id || ' '}</Text>
                                 <Text style={styles.innerText}>{data.memberId}</Text>
@@ -212,15 +212,15 @@ class Ecard extends PureComponent {
                                 <Text style={styles.innerText}>{data.employeeId}</Text>
                                 <Text style={styles.innerText}>{data.PolicyEndDate || ' '}</Text>
                             </Col>
-                            <Col size={1.8} style={{ alignItems: 'center' }}>
+                            {/* <Col size={1.8} style={{ alignItems: 'center' }}>
 
-                            </Col>
+                            </Col> */}
                         </Row>
                         <Row style={{ backgroundColor: '#5CB533', paddingBottom: 5, paddingTop: 5 }}>
-                            <Col size={2} style={styles.colStyle}>
+                            <Col size={2.6} style={styles.colStyle}>
                                 <Image source={require('../../../../assets/images/healthIndia.png')} style={{ height: 60, width: 80 }} />
                             </Col>
-                            <Col size={8} style={styles.colStyle}>
+                            <Col size={7.4} style={styles.colStyle}>
                                 <Text style={styles.footerText}>{data.GroupName}</Text>
                                 <Text style={styles.addressText}>{this.getInsuranceAddress(data.Address)}</Text>
                             </Col>
