@@ -44,8 +44,8 @@ export async function requestCalendarPermissions() {
     return requestCalendarPermission;
   } catch (error) {
     let status = RNCalendarEvents.requestPermissions((readOnly = false));
-    
-    return status;
+   return status;
+
   }
 };
 

@@ -35,6 +35,8 @@ import CheckLocationWarning from './LocationWarning';
 import { CorporateHome } from './corporateHome'
 import { toastMeassage } from '../../common'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import { requestCalendarPermissions, createCalendar } from '../../../setup/calendarEvent';
+import RNCalendarEvents from "react-native-calendar-events";
 
 
 
@@ -294,6 +296,42 @@ class Home extends Component {
             console.log(e)
         }
     }
+    navigateBycalenderPermission=async()=>{
+        const permissionResult = await requestCalendarPermissions()
+        console.log("permissionResult",permissionResult)
+        if (permissionResult === 'authorized') {
+          createCalendar();
+          this.props.navigation.navigate("Categories")
+        }
+        else{
+            let status = await RNCalendarEvents.checkPermissions((readOnly = false));
+            // console.log("status",status)
+        if(status === 'restricted'){
+            Alert.alert(
+               'Alert',
+                "Calendar permission is necessary to proceed, Do you want to give permission now in settings page",
+                
+                [
+               {text: 'ALLOW',
+               onPress: () => this.navigateToSettings(),}
+                ],
+                
+          
+          
+               { cancelable: false }
+          
+          
+               );
+            // alert("Calendar permission")
+            // Linking.openSettings();
+          }
+        }
+       
+    }
+    navigateToSettings =  () => {
+        Linking.openSettings();
+    }
+
     backNavigation = async (navigationData) => {
         try {
             let userId = await AsyncStorage.getItem('userId')
@@ -348,7 +386,7 @@ class Home extends Component {
                         <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                             <Col style={{ width: '50%', }}>
                                 <TouchableOpacity onPress={() =>
-                                    this.props.navigation.navigate("Categories")
+                                  this.navigateBycalenderPermission()
                                 }>
                                     <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                         <Row style={styles.rowStyle}>
