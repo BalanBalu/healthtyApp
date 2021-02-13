@@ -483,16 +483,12 @@ class PreAuth extends React.PureComponent {
 
     try {
 
-      let appendForm = "adhar"
-      let endPoint = 'images/upload?path=adhar'
+      let appendForm = "preAuth"
+      let endPoint = 'images/upload?path=preAuth'
       const response = await uploadImage(imagePath, endPoint, appendForm)
-
       if (response.success) {
-
-
-
-        await this.setState({ imageData: response.data[0] })
-
+        this.uploadedData = [...this.state.imageData, ...response.data]
+        await this.setState({ imageData: this.uploadedData })
         toastMeassage('image upload successfully', 'success', 3000)
 
       } else {

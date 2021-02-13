@@ -5,6 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Styles from '../styles';
+import { getDistance } from '../../CommonAll/functions'
 
 export default class RenderNetworkHospitalInfo extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ export default class RenderNetworkHospitalInfo extends Component {
               style={Styles.gradientStyle}>
               <Row>
                 <Col size={9}>
-                  <Text style={{ fontSize: 18 }}>{item.name ? item.name : 'Un known Hospital'}</Text>
+                  <Text style={{ fontSize: 16 }}>{item.name ? item.name : 'Un known Hospital'}</Text>
                 </Col>
                 <Col size={0.8} >
                   <TouchableOpacity onPress={() => onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, 'UP', item)}>
@@ -36,7 +37,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                 <Col size={2}><Text style={Styles.subHeadingStyle}>Address</Text></Col>
                 <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                 <Col size={7}>
-                  <Text style={Styles.subHeadingData}> {address && Object.keys(address).length ?
+                  <Text style={Styles.subHeadingData}>{address && Object.keys(address).length ?
                     `${address.no_and_street}, ${address.district}, ${address.city}, ${address.state}`
                     : null}</Text>
                 </Col>
@@ -66,15 +67,23 @@ export default class RenderNetworkHospitalInfo extends Component {
                 </Col>
                 <Col size={0.8}></Col>
               </Row>
+              <Row style={{ marginTop: 5 }}>
+                <Col size={2}><Text style={Styles.subHeadingStyle}>Distance</Text></Col>
+                <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                <Col size={7}>
+                  <Text style={Styles.subHeadingData}>{getDistance(item.distInKiloMeter)}</Text>
+                </Col>
+                <Col size={0.8}></Col>
+              </Row>
               <Row style={{ marginTop: 15 }}>
-                <Col size={4}>
-                  <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
-                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Pre Auth</Text>
+                <Col size={4} style={{height:25}}>
+                  <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center',height:25,justifyContent:'center' }} onPress={() => onPressGoPreAuthRequestForm()}>
+                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>Pre Auth</Text>
                   </TouchableOpacity>
                 </Col>
-                <Col size={4} style={{ marginLeft: 20 }}>
-                  <TouchableOpacity onPress={() => onPressGoPreConsultation()} style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }}>
-                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Consultation</Text>
+                <Col size={4} style={{ marginLeft: 20,height:25 }}>
+                  <TouchableOpacity onPress={() => onPressGoPreConsultation()} style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center',height:25,justifyContent:'center'  }}>
+                    <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>Consultation</Text>
                   </TouchableOpacity>
                 </Col>
                 <Col size={2}>
@@ -84,6 +93,7 @@ export default class RenderNetworkHospitalInfo extends Component {
 
           </View>
           :
+          <TouchableOpacity onPress={() => onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, 'DOWN', item)}>
           <Card style={Styles.cardStyle}>
             <Row>
               <Col size={9}>
@@ -103,7 +113,9 @@ export default class RenderNetworkHospitalInfo extends Component {
                 </TouchableOpacity>
               </Col>
             </Row>
-          </Card>}
+          </Card>
+          </TouchableOpacity>
+          }
       </View>
     )
   }

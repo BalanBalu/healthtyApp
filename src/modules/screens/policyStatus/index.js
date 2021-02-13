@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Container, Text, Item, Card, Left, Right, Content } from 'native-base';
+import { Container, Text, Item, Card, Left, Right, Content, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, ActivityIndicator } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { getMemberDetailsByEmail, getClaimsDataByPayerCode } from '../../providers/corporate/corporate.actions'; ''
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
-const LIMIT = 50;
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+const LIMIT = 5;
 
 class PolicyStatus extends Component {
   constructor(props) {
@@ -15,7 +16,9 @@ class PolicyStatus extends Component {
       memberDetails: {},
       policyDetails: {},
       claimsData: [],
-      isLoadingMoreData: false
+      isLoadingMoreData: false,
+      showCard: 0,
+      show: true,
     }
     this.isEnabledLoadMoreData = true;
     this.pagination = 1;
@@ -44,35 +47,63 @@ class PolicyStatus extends Component {
     try {
       const { memberDetails, policyDetails } = this.state
       let result = await getClaimsDataByPayerCode(policyDetails.TPA, memberDetails.policyNo, this.pagination, LIMIT);
+
       if (result && result.docs && result.docs.length) {
-        this.pagination = this.pagination + LIMIT;
+        this.pagination = this.pagination + 1;
         this.claimsDataArray = [...this.claimsDataArray, ...result.docs]
         this.setState({ claimsData: this.claimsDataArray });
+      }
+
+      else {
+        if (this.claimsDataArray.length > 4) {
+          Toast.show({
+            text: 'No more data Available!',
+            duration: 5000,
+            type: "success"
+          })
+        }
+        this.isEnabledLoadMoreData = false;
       }
     } catch (ex) {
       console.log(ex)
     }
 
   }
-  // loadMoreData = async () => {
-  //   try {
-  //     this.setState({ isLoadingMoreData: true });
-  //     await this.getClaimDetails();
-  //   } catch (error) {
-  //     console.log("Ex is getting on load more hospitals", error.message);
-  //   }
-  //   finally {
-  //     this.setState({ isLoadingMoreData: false })
-  //   }
-  // }
+  toggleData(data) {
+    console.log(data)
+
+    const { showCard, show } = this.state
+    console.log(showCard)
+    if(data===showCard){
+         this.setState({ showCard: data, show: !this.state.show, })
+    }
+    else{
+      this.setState({ showCard: data,show: false})
+    }
+
+  }
+  loadMoreData = async () => {
+    try {
+      this.setState({ isLoadingMoreData: true });
+      await this.getClaimDetails();
+    } catch (error) {
+      console.log("Ex is getting on load more data", error.message);
+    }
+    finally {
+      this.setState({ isLoadingMoreData: false })
+    }
+  }
 
 
   render() {
     const { memberDetails, policyDetails, claimsData, isLoadingMoreData } = this.state
+    // console.log("claimsData++++++++++",claimsData)
+    const { showCard, show, } = this.state
+
     return (
       <Container>
-        <Content>
-          <Card style={{ justifyContent: 'center', alignItems: 'center', padding: 10, borderRadius: 5 }}>
+        <Content contentContainerStyle={{margin:15,}}>
+          <Card style={{ justifyContent: 'center', alignItems: 'center', padding: 10, borderRadius: 5, }}>
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               <AnimatedCircularProgress
                 size={140}
@@ -91,7 +122,7 @@ class PolicyStatus extends Component {
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.nameText}>{memberDetails.firstName ? (memberDetails.firstName + ' ' + memberDetails.lastName) : '-'}</Text>
                 <Text style={styles.policyText}>Policy No : <Text style={styles.commonText}>{memberDetails.policyNo ? memberDetails.policyNo : '-'}</Text></Text>
-                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YYYY") + "to " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YYYY")}</Text></Text>
+                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{formatDate(policyDetails.policyEffectiveFrom, "DD/YYYY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD/YYYY")}</Text></Text>
               </View>
 
             </View>
@@ -102,96 +133,152 @@ class PolicyStatus extends Component {
             <FlatList
               data={claimsData}
               keyExtractor={(item, index) => index.toString()}
-              // onEndReachedThreshold={1}
+              onEndReachedThreshold={1}
 
-              // onEndReached={() => {
-              //   this.loadMoreData();
+              onEndReached={() => {
+                if (this.isEnabledLoadMoreData) {
+                  this.loadMoreData();
+                }
 
-              // }}
+              }}
               renderItem={({ item, index }) =>
                 <View>
-                  <Card style={{ padding: 10, borderRadius: 5 }}>
-                    <Row>
+                 <View>
+                {this.state.showCard === index && !this.state.show ?
+                  <View>
+                    <Card style={styles.cardStyles}>
+                      <Row style={styles.gradientStyle}>
+                        <Col size={9}>
+                          <Text style={{ fontSize: 16, color: '#fff' }}>{item.EMPLOYEE_NAME}</Text>
 
-                      <Col size={8}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, lineHeight: 25, fontWeight: '700', color: '#7F49C3' }}>{item.INSURANCE_COMPANY_NAME}</Text>
+                        </Col>
+                        <Col size={0.8} >
+                          <TouchableOpacity onPress={() => this.toggleData(index)}>
+                            <MaterialIcons name={showCard === index && !show ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 25, color: '#fff' }} />
+                          </TouchableOpacity>
+                        </Col>
+                      </Row>
+                      <View style={styles.mainView}>
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Policy No</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{item.POLICY_NUMBER}</Text>
+                          </Col>
+
+                        </Row>
+                        {/* <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>MAID</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{item.MAID}</Text>
+                          </Col>
+
+                        </Row> */}
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim By</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{item.PATIENT_REALTION}</Text>
+                          </Col>
+                        </Row>
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim Status</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{item.CLAIM_STATUS}</Text>
+                          </Col>
+                        </Row>
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim Amount</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{item.AMOUNT}</Text>
+                          </Col>
+                        </Row>
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Claimed Date</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{item.CLAIM_REGISTERED_DATE}</Text>
+                          </Col>
+                        </Row>
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Hospital</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{item.HOSPITAL_NAME}</Text>
+                          </Col>
+                        </Row>
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Hospital Address</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{(item.HOSPITAL_CITY + " " + item.HOSPITAL_STATE + " " + item.PIN_CODE)}</Text>
+                          </Col>
+                        </Row>
+                      </View>
+                      
+                    </Card>
+                  </View>
+                  :
+                  <View>
+                       <TouchableOpacity onPress={() => this.toggleData(index)}>
+                  <Card style={styles.cardStyle}>
+                    <Row>
+                      <Col size={9}>
+                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '700' }}
+                          numberOfLines={1}
+                          ellipsizeMode="tail">{item.EMPLOYEE_NAME}</Text>
+                        <Row>
+                          <Col size={3}>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#909090', marginTop: 5 }}
+                              numberOfLines={1}
+                              ellipsizeMode="tail">Policy No</Text>
+                          </Col>
+                          <Col size={0.5}>
+                            <Text style={{ marginTop: 5 }}>:</Text>
+                          </Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}
+                              numberOfLines={1}
+                              ellipsizeMode="tail">{item.POLICY_NUMBER}</Text>
+                          </Col>
+                        </Row>
+                        {/* <Text style={styles.subHeadingData}
+                              numberOfLines={1}
+                              ellipsizeMode="tail">{item.address}</Text> */}
+
 
                       </Col>
-                      <Col size={2} >
-                        <TouchableOpacity disabled style={item.CLAIM_STATUS === 'PAID' ? { backgroundColor: 'green', borderRadius: 5, padding: 2, marginTop: 2 } : { backgroundColor: '#FECE83', borderRadius: 5, padding: 2, marginTop: 2 }}>
-                          <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: '600', textAlign: 'center', fontSize: 14 }}>{item.CLAIM_STATUS}</Text>
+
+                      <Col size={0.8} style={{ justifyContent: 'center' }}>
+                        <TouchableOpacity onPress={() => this.toggleData(index)}>
+                          <MaterialIcons name={showCard === index && !show ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 25, color: '#000' }} />
                         </TouchableOpacity>
                       </Col>
                     </Row>
-                    <Row style={{ borderBottomColor: 'gray', borderBottomWidth: 0.3, paddingBottom: 10 }}>
-                      <Col size={9}>
-                        <Row style={{ marginTop: 5, }}>
-                          <Col size={4}>
-                            <Text style={styles.commonBoldText}>Hospital</Text>
-                          </Col>
-                          <Col size={0.5}>
-                            <Text>:</Text>
-                          </Col>
-                          <Col size={5.5}>
-                            <Text style={styles.commonText}>{item.HOSPITAL_NAME}</Text>
-                          </Col>
-                        </Row>
-                        <Row style={{ marginTop: 5, }}>
-                          <Col size={4}>
-                            <Text style={styles.commonBoldText}>Address</Text>
-                          </Col>
-                          <Col size={0.5}>
-                          </Col>
-
-                          <Col size={5.5}>
-                            <Text style={styles.commonText}>{(item.HOSPITAL_CITY + " " + item.HOSPITAL_STATE + " " + item.PIN_CODE)}</Text>
-                          </Col>
-                        </Row>
-                        <Row style={{ marginTop: 5, }}>
-                          <Col size={4}>
-                            <Text style={styles.commonBoldText}>Claimed By</Text>
-                          </Col>
-                          <Col size={0.5}>
-                            <Text>:</Text>
-                          </Col>
-                          <Col size={5.5}>
-                            <Text style={styles.commonText}>{item.PATIENT_REALTION}</Text>
-                          </Col>
-                        </Row>
-                        <Row style={{ marginTop: 5, }}>
-                          <Col size={4}>
-                            <Text style={styles.commonBoldText}>Claimed Date</Text>
-                          </Col>
-                          <Col size={0.5}>
-                            <Text>:</Text>
-                          </Col>
-                          <Col size={5.5}>
-                            <Text style={styles.commonText}>{item.CLAIM_REGISTERED_DATE}</Text>
-                          </Col>
-                        </Row>
-                      </Col>
-                      <Col size={1}>
-
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: 5 }}>
-                      <Left>
-                        <Text style={styles.commonBoldText}>Date</Text>
-                        <Text style={styles.boldText}>{item.DATE_OF_SETTLEMENT}</Text>
-
-                      </Left>
-                      <Right>
-                        <Text style={styles.commonBoldText}>Amount</Text>
-                        <Text style={styles.boldText}>{item.AMOUNT}</Text>
-                      </Right>
-                    </Row>
                   </Card>
+                  </TouchableOpacity>
+                  </View>
+                  }
+              </View>  
                 </View>
               } />
             : <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No Claim list found!</Text>
             </Item>
           }
+          {isLoadingMoreData ?
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              <ActivityIndicator
+                style={{ marginBottom: 17 }}
+                animating={isLoadingMoreData}
+                size="large"
+                color='blue'
+              />
+            </View>
+            : null}
         </Content>
       </Container>
     )
@@ -247,6 +334,56 @@ const styles = StyleSheet.create({
     color: '#7F49C3',
     marginTop: 2,
     fontWeight: 'bold'
+  },
+  gradientStyle: {
+    justifyContent: 'center',
+    backgroundColor: '#7F49C3',
+    padding: 8
+  },
+  cardStyle: {
+    padding: 10,
+    marginTop: 10,
+    // marginBottom:25
+  },
+  subHeadingStyle: {
+    fontSize: 14,
+    marginTop: 5,
+    fontFamily: 'OpenSans',
+    color: '#909090'
+  },
+  subHeadingData: {
+    fontSize: 15,
+    color: '#000',
+    marginTop: 5,
+    fontFamily: 'OpenSans'
+  },
+  cardStyles: {
+    marginTop: 15,
+    borderRadius: 5
+  },
+  ecardButton: {
+    marginTop: 15,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  linkHeader: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    textDecorationColor: '#7F49C3',
+    textDecorationLine: 'underline',
+    color: '#7F49C3'
+  },
+  mainView: {
+    marginLeft: 10,
+    marginRight: 10,
+    paddingBottom: 5
+  },
+  subView: {
+    marginLeft: 10,
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 15
   }
 
 });
