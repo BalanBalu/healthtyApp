@@ -47,12 +47,12 @@ export class ImageUpload extends Component {
             });
         } else {
             ImagePicker.openPicker({
-                // multiple: true,
+                multiple: true,
                 width: 300,
                 height: 400,
-                cropping: true,
+                // cropping: true,
                 // cropperCircleOverlay: true,
-                freeStyleCropEnabled: true,
+                // freeStyleCropEnabled: true,
                 avoidEmptySpaceAroundImage: true,
             }).then(image => {
               
