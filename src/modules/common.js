@@ -545,3 +545,19 @@ export function getDoctorNameOrHospitalName(data) {
     return name
 
 }
+
+export function RenderDocumentUpload(data) {
+   
+    let source = null;
+    if (data.type === 'image / jpg') {
+        source = require('../../assets/images/Image.png')
+    } else if (data.type === 'application/pdf') {
+        source = require('../../assets/images/pdf.png')
+    } else if (data.type === 'text/plain') {
+        source = require('../../assets/images/Word-icon.png')
+    } else {
+        source = require('../../assets/images/Image.png')
+    }
+    return (source)
+}
+

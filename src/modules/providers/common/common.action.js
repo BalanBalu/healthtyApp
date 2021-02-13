@@ -15,7 +15,7 @@ export async function uploadImage(imageData, endPoint, appendForm) {
   try {
     var formData = new FormData();
     if (Array.isArray(imageData) && imageData.length != 0) {
-      imagePath.map((ele) => {
+      imageData.map((ele) => {
         formData.append(appendForm||'medicine', {
           uri: ele.path,
           type: 'image/jpeg',
@@ -29,12 +29,8 @@ export async function uploadImage(imageData, endPoint, appendForm) {
         name: 'photo.jpg'
       });
     }
-
-
     var res = await uploadMultiPart(endPoint, formData);
-
     return res.data
-
   } catch (e) {
 
     return {

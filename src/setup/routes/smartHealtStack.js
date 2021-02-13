@@ -117,6 +117,9 @@ import FamilyInfoList from '../../modules/screens/ClaimIntimation/familyInfoList
 import ClaimIntimationSuccess from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSuccess';
 
 import preAuthList from '../../modules/screens/Home/corporateHome/preAuthList'
+import ClaimIntimationList from '../../modules/screens/ClaimIntimation/claimintimationList'
+import DocumentList from '../../modules/screens/ClaimIntimation/documentList'
+
 
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
@@ -522,6 +525,18 @@ export const smartHealthStack=createStackNavigator({
     screen: ClaimIntimationSuccess,
     navigationOptions: {
       title: 'Claim Success'
+    }
+  },
+  ClaimIntimationList: {
+    screen: ClaimIntimationList,
+    navigationOptions: {
+      title: 'ClaimIntimation List'
+    }
+  },
+  DocumentList: {
+    screen: DocumentList,
+    navigationOptions: {
+      title: 'Document List'
     }
   },
   // ========Appointment stack ==========

@@ -18,12 +18,13 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import styles from '../Styles'
 import ModalPopup from '../../../../components/Shared/ModalPopup';
 import { acceptNumbersOnly } from '../../../common';
-import { serviceOfClaimIntimation } from '../../../providers/corporate/corporate.actions';
 
 export default class ClaimInitiationSubmission extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      name: '',
+      email: '',
       policyNo: '',
       memberId: '',
       hospitalName: '',
@@ -38,7 +39,7 @@ export default class ClaimInitiationSubmission extends Component {
     this.memberInfo = props.navigation.getParam('memberInfo');
   }
   async UNSAFE_componentWillMount() {
-    await this.setState({ policyNo: this.memberInfo && this.memberInfo.policyNo, memberId: this.memberInfo && this.memberInfo.memberId })
+    await this.setState({ policyNo: this.memberInfo && this.memberInfo.policyNo, name: this.memberInfo && this.memberInfo.full_name, email: this.memberInfo && this.memberInfo.emailId, memberId: this.memberInfo && this.memberInfo.memberId })
 
   }
 
@@ -79,6 +80,7 @@ export default class ClaimInitiationSubmission extends Component {
       this.setState({ isLoading: true })
       const claimIntimationReqData = {
         email:this.memberInfo&&this.memberInfo.emailId?this.memberInfo.emailId:null,
+        employeeName: this.memberInfo && this.memberInfo.full_name ? this.memberInfo.full_name : null,
         policyNo,
         memberId,
         hospitalName,
@@ -87,12 +89,11 @@ export default class ClaimInitiationSubmission extends Component {
         contactNumber: contactNum,
         status: 'REQUEST-SENT'
       }
-      const claimUpdateResp = await serviceOfClaimIntimation(claimIntimationReqData);
-      if (claimUpdateResp && claimUpdateResp.referenceNumber) {
-        this.props.navigation.navigate('ClaimIntimationSuccess',{referenceNumber:claimUpdateResp.referenceNumber});
+      if (claimIntimationReqData) {
+        this.props.navigation.navigate('DocumentList', { docsUpload: true, data: claimIntimationReqData });
       }
-      else if (claimUpdateResp && claimUpdateResp.success === false) {
-        this.setState({ errorMsg: ' Error : Unable to Submit Claim Request', isModalVisible: true })
+      else {
+        this.setState({ errorMsg: ' Error : Unable to Continue Claim Request', isModalVisible: true })
       }
     } catch (error) {
       this.setState({ errorMsg: 'Something Went Wrong' + error.message, isModalVisible: true })
@@ -102,7 +103,8 @@ export default class ClaimInitiationSubmission extends Component {
     }
   }
   render() {
-    const { policyNo, memberId, hospitalName, ailment, contactNum, selectedAdmissionDate, isVisibleDatePicker, isModalVisible, errorMsg, isLoading } = this.state;
+    const { policyNo,name, email, memberId, hospitalName, ailment, contactNum, selectedAdmissionDate, isVisibleDatePicker, isModalVisible, errorMsg, isLoading } = this.state;
+   
     return (
       <Container>
         <Content>
@@ -122,6 +124,46 @@ export default class ClaimInitiationSubmission extends Component {
                   onChangeText={enteredPolicyText => this.setState({ policyNo: enteredPolicyText })}
                   blurOnSubmit={false}
                   onSubmitEditing={() => { this.enteredPolicyText._root.focus(); }}
+                />
+              </Item>
+            </Col>
+          </Row>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Name
+            </Text>
+              <Item regular style={{ borderRadius: 6 }}>
+                <Input
+                  placeholder="Enter Name"
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={name}
+                  keyboardType={"default"}
+                  onChangeText={name => this.setState({ name: name })}
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.name._root.focus(); }}
+                />
+              </Item>
+            </Col>
+          </Row>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Email Id
+            </Text>
+              <Item regular style={{ borderRadius: 6 }}>
+                <Input
+                  placeholder="Enter mail did"
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={email}
+                  keyboardType={"default"}
+                  onChangeText={mailId => this.setState({ email: mailId })}
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.mailId._root.focus(); }}
                 />
               </Item>
             </Col>
@@ -253,7 +295,7 @@ export default class ClaimInitiationSubmission extends Component {
                       alignItems: 'center',
                     }}>
                     <TouchableOpacity onPress={() => this.onPressSubmitClaimData()} style={styles.appButtonContainer}>
-                      <Text style={styles.appButtonText}>SUBMIT</Text>
+                      <Text style={styles.appButtonText}>CONTINUE</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

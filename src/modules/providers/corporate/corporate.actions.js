@@ -1,4 +1,4 @@
-import { postService, putService, getService, smartHealthGetService, smartHealthPostService, postServiceExternal } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService, postServiceExternal } from '../../../setup/services/httpservices';
 import { getCorporateUserEcardDetailsEndpoint, getECardLinkEndpoint } from '../../../setup/services/corporateEndpoint';
 import { AuthId } from '../../../setup/config'
 
@@ -32,6 +32,7 @@ export async function getCorporateEmployeeDetailsById(empCode) {
     let endPoint = '/member-detail/member-family-member?emp_code=' + empCode
 
     let response = await smartHealthGetService(endPoint);
+    console.log(`response`, response);
 
     return response.data;
   } catch (e) {
@@ -152,6 +153,38 @@ export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit
     return {
       message: 'exceptio1n' + e,
       success: false
+    }
+  }
+}
+export async function getClaimIntimationWithPagination(searchText,page,limit) {
+  try {
+    let endPoint;
+    if (searchText){
+      endPoint = 'claim-intimation/page?searchText=' + searchText + '&p=' + page + '&l=' + limit;
+    }else{
+      endPoint = 'claim-intimation/page?p=' + page + '&l=' + limit;
+    }
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+export async function serviceOfUpdateClaimIntimation(reqBodyData) {
+  try {
+    const endpoint = 'claim-intimation';
+    const resp = await smartHealthPutService(endpoint, reqBodyData)
+    return resp.data
+  } catch (Ex) {
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex.message,
     }
   }
 }

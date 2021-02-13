@@ -71,7 +71,7 @@ export default  styles = StyleSheet.create({
       padding: 10
     },
     subHeadingStyle: {
-      fontSize: 12,
+      fontSize: 13,
       marginTop: 5,
       fontFamily: 'OpenSans'
     },
@@ -93,11 +93,15 @@ export default  styles = StyleSheet.create({
       width: '100%',
       alignItems: 'center',
       justifyContent: 'center',
+      borderBottomRightRadius:5,
+      borderTopRightRadius:5
   },
   disableSearchIcon4Hospital: {
       backgroundColor: 'gray',
       width: '100%',
       alignItems: 'center',
       justifyContent: 'center',
+      borderBottomRightRadius:5,
+      borderTopRightRadius:5
   }
   })

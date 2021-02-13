@@ -25,7 +25,7 @@ export default class RenderNetworkHospitalInfo extends Component {
               style={Styles.gradientStyle}>
               <Row>
                 <Col size={9}>
-                  <Text style={{ fontSize: 18 }}>{item.name ? item.name : 'Un known Hospital'}</Text>
+                  <Text style={{ fontSize: 16 }}>{item.name ? item.name : 'Un known Hospital'}</Text>
                 </Col>
                 <Col size={0.8} >
                   <TouchableOpacity onPress={() => onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, 'UP', item)}>
@@ -37,7 +37,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                 <Col size={2}><Text style={Styles.subHeadingStyle}>Address</Text></Col>
                 <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                 <Col size={7}>
-                  <Text style={Styles.subHeadingData}> {address && Object.keys(address).length ?
+                  <Text style={Styles.subHeadingData}>{address && Object.keys(address).length ?
                     `${address.no_and_street}, ${address.district}, ${address.city}, ${address.state}`
                     : null}</Text>
                 </Col>
