@@ -1396,8 +1396,7 @@ class PreAuth extends React.PureComponent {
       <ScrollView style={styles.body}>
         <View style={{ flexDirection: 'column' }}>
           <Text style={styles.headerText}>
-            your request is being processed, will be notified on successful
-            completion of request, your reference id is {this.state.referenceID}
+          Your request has been submitted successfully. Reference No:  {this.state.referenceID}
           </Text>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity

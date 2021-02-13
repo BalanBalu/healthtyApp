@@ -38,14 +38,14 @@ export async function ServiceOfgetMobileAndEmailOtpServicesFromProductConfig(pro
 
 export async function generateOTPForSmartHealth(data) {
   try {
-   
+
     let endPoint = 'auth/member/reset-password';
     let response = await smartHealthPostService(endPoint, data);
-   
+
     let responseData = response.data;
     return responseData
   } catch (e) {
-   
+
     console.log(e);
   }
 }
@@ -177,11 +177,11 @@ export async function generateOTP(reqData) {
 // 
 export async function changePasswordForSmartHelath(reqData) {
   try {
-   
+
     let endPoint = 'auth/update-reset-password'
     let response = await smartHealthPutService(endPoint, reqData);
     let responseData = response.data
-    
+
     return responseData
   }
   catch (e) {
@@ -272,6 +272,8 @@ export async function logout() {
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
   await AsyncStorage.removeItem('is_corporate_user');
   await AsyncStorage.removeItem('relationship')
+  await AsyncStorage.removeItem('memberPolicyNo')
+  await AsyncStorage.removeItem('employeeCode')
 
   store.dispatch({
     type: LOGOUT
@@ -492,9 +494,11 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
       userId: userCredentials.userEntry,
       password: userCredentials.password
     }
+  
 
 
     let response = await smartHealthPostService(endPoint, req);
+   
 
     if (response && response.data && response.data.access_token) {
       await AsyncStorage.setItem('smartToken', response.data.access_token)
@@ -518,7 +522,7 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
           corporate_member_id: userCredentials.userEntry,
           employee_code: reqData.employeeId,
           first_name: reqData.firstName,
-          last_name: reqData.lastName,
+
           address: {
             type: 'Point',
             address: {
@@ -536,18 +540,34 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
         if (reqData.mobile) {
           reqBody.mobile_no = reqData.mobile
         }
-        console.log(reqData.middleName)
+
+        let name = ''
         if (reqData.middleName) {
-          reqBody.middle_name = reqData.middleName
+          name = reqData.middleName
         }
+        if (reqData.lastName) {
+          if (name === '') {
+            name = reqData.lastName
+          } else {
+            name = name + ' ' + reqData.lastName
+          }
+        }
+
+        reqBody.last_name = name
+
+       
 
         let insertEndPoint = 'auth/smart_health/signUp';
         let signUpResult = await postService(insertEndPoint, reqBody);
-
+      
+      
 
         if (signUpResult.data.success) {
           await AsyncStorage.setItem('memberId', reqData.memberId)
           await AsyncStorage.setItem('memberEmailId', reqData.emailId)
+          await AsyncStorage.setItem('memberPolicyNo', reqData.policyNo)
+          await AsyncStorage.setItem('employeeCode', reqData.employeeId)
+
           changePasswordEndPoint = 'member-users/member-id?id=' + reqData.emailId
 
           let forgotResult = await smartHealthGetService(changePasswordEndPoint)
@@ -577,6 +597,7 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
 
     } else {
+      
       store.dispatch({
         type: LOGIN_HAS_ERROR,
         message: "Invalid Login Credentials"

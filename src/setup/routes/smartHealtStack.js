@@ -115,6 +115,8 @@ import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/Network
 import ClaimIntimationSubmission from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSubmission';
 import FamilyInfoList from '../../modules/screens/ClaimIntimation/familyInfoList';
 import ClaimIntimationSuccess from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSuccess';
+
+import preAuthList from '../../modules/screens/Home/corporateHome/preAuthList'
 import ClaimIntimationList from '../../modules/screens/ClaimIntimation/claimintimationList'
 import DocumentList from '../../modules/screens/ClaimIntimation/documentList'
 
@@ -631,6 +633,13 @@ export const smartHealthStack=createStackNavigator({
     screen: PolicyConditions,
     navigationOptions: {
       title: 'Policy Conditions'
+    }
+  },
+  
+  preAuthList: {
+    screen: preAuthList,
+    navigationOptions: {
+      title: 'Pre Auth List'
     }
   },
   PolicyStatus: {
