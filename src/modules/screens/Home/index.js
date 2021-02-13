@@ -309,7 +309,7 @@ class Home extends Component {
         if(status === 'restricted'){
             Alert.alert(
                'Alert',
-                "Calendar permission is necessary to proceed, Do you want to give permission now in settings page",
+                "Calendar permission is necessary to proceed, You want to give permission now in settings page",
                 
                 [
                {text: 'ALLOW',
