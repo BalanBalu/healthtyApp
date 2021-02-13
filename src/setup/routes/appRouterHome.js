@@ -139,6 +139,7 @@ import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hosp
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
 import {smartHealthStack}from './smartHealtStack'
+import  ContactUs from '../../modules/screens/contactUs.js'
 
 const AuthRoutes = {
   login: {
@@ -463,6 +464,13 @@ const HomeStack = createStackNavigator({
     })
   },
 
+   //Contact Us
+   ContactUs: {
+    screen: ContactUs,
+    navigationOptions: {
+      title: 'Contact Us'
+    }
+  },
   ///  =============Appointments Stack ==================
   "My Appointments": {
     screen: MyAppoinmentList,
@@ -1293,6 +1301,11 @@ const drawerNavigatorRoutes = {
     screen: MedicineRecords,
     routeName: "Health Records"
   },
+   //Contact Us
+   ContactUs: {
+    screen: ContactUs,
+    routeName: "ContactUs"
+  },
 
 }
 export const corporateUserSideBarMenuList = [
@@ -1370,8 +1383,14 @@ export const corporateUserSideBarMenuList = [
         routeName: drawerNavigatorRoutes["Health Records"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
       },
+      {
+        name: 'ContactUs',
+        routeName: drawerNavigatorRoutes["ContactUs"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+      },
     ]
-  }
+  },
+  
 ]
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -1478,6 +1497,11 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             routeName: drawerNavigatorRoutes["Health Records"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
+          {
+            name: 'ContactUs',
+            routeName: drawerNavigatorRoutes["ContactUs"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
         ]
       }
     ]}
@@ -1574,6 +1598,11 @@ const SmDrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           {
             name: 'Health Records',
             routeName: drawerNavigatorRoutes["Health Records"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'ContactUs',
+            routeName: drawerNavigatorRoutes["ContactUs"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
         ]

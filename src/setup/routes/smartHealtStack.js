@@ -106,6 +106,7 @@ import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer'
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
+import  ContactUs from '../../modules/screens/contactUs.js'
 
 
 export const smartHealthStack=createStackNavigator({
@@ -422,7 +423,13 @@ export const smartHealthStack=createStackNavigator({
       title: 'Success'
     }
   },
-
+  //Contact Us
+  ContactUs: {
+    screen: ContactUs,
+    navigationOptions: {
+      title: 'Contact Us'
+    }
+  },
   //================ Lab Test ===============
   LabAppointmentInfo: {
     screen: LabAppointmentInfo,
