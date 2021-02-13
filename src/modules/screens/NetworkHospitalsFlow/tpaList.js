@@ -59,7 +59,8 @@ export default class TpaList extends Component {
     )
   }
   onPressContinueToNextProcess = () => {
-    this.props.navigation.navigate("NetworkHospitals", { TpaInfoObj: this.state.selectedTpaItem })
+    let navigationPage = this.props.navigation.getParam('navigationPage')||null;
+    this.props.navigation.navigate("NetworkHospitals", { TpaInfoObj: this.state.selectedTpaItem ,navigationPage:navigationPage})
   }
   getSuggestionListFunction = async (enteredText) => {
     await this.setState({ visibleClearIcon: enteredText });

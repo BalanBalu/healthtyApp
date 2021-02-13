@@ -29,8 +29,8 @@ export async function getCorporateUserEcardDetails(bodyData) {
 
 export async function getCorporateEmployeeDetailsById(empCode) {
   try {
-    console.log(`empCode`, empCode);
-    let endPoint = 'member-detail/member-family-member?emp_code=' + empCode
+    let endPoint = '/member-detail/member-family-member?emp_code=' + empCode
+
     let response = await smartHealthGetService(endPoint);
     console.log(`response`, response);
 
@@ -124,6 +124,22 @@ export async function getPolicyDetailsByPolicyNo(policyNo) {
     }
   }
 }
+
+export async function getPreAuthListByEmpCodeAndPolicyNo(empCode,policyNo,page,limit) {
+  try {
+    let endPoint = 'pre-auth/policy/employeeId?policyNo='+policyNo+'&empId='+empCode+'&p='+page+'&l='+limit;
+console.log(endPoint)
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
 
 export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit) {
   try {
