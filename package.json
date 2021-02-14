@@ -1,5 +1,5 @@
 {
-  "name": "medflic",
+  "name": "drmedflic",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "build-android": "npx jetify && cd android && ./gradlew clean && ./gradlew assembleRelease"
+    "build-android": "npx jetify && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.10.0",
@@ -33,7 +33,7 @@
     "react-native": "0.62.2",
     "react-native-autocomplete-input": "^4.1.0",
     "react-native-awesome-alerts": "^1.3.2",
-    "react-native-calendar-events": "^2.2.0",
+    "react-native-calendar-events": "^1.7.3",
     "react-native-calendar-strip": "^1.4.1",
     "react-native-callkeep": "^3.0.12",
     "react-native-circular-progress": "^1.3.6",

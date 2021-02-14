@@ -160,7 +160,7 @@ class Login extends Component {
                               selected={ isSelected === 'corporate_user'}
                               onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
                             />
-                            <Text style={styles.firstCheckBox}>Corporate</Text>
+                            <Text style={styles.firstCheckBox}>User</Text>
                           </Row>
                         </Col>
                         <Col size={3}>
@@ -170,7 +170,7 @@ class Login extends Component {
                               selected={ isSelected === 'user'}
                               onPress={() => this.setState({  isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
                             />
-                            <Text style={styles.firstCheckBox}>User</Text>
+                            <Text style={styles.firstCheckBox}>Corporate</Text>
                           </Row>
                         </Col>
                        

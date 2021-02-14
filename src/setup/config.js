@@ -3,13 +3,14 @@ export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
 /*** Change ON Prod Start ***/
+export const API_URL = 'https://medflic-api.aopks.com/api/';
 
-export const API_URL = 'https://medflic-qa-api.aopks.com/api/';
+export const SMART_HEALTH_API_URL = 'https://api.mysmarthealth.in/';
 
-export const SMART_HEALTH_API_URL = 'https://sh-qa-api.aopks.com/';
-export const INVENTORY_API_URL = 'https://med-inv-qa-api.aopks.com/';
+export const INVENTORY_API_URL = 'https://med-inv-api.aopks.com/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category/';
-export const CHAT_API_URL = 'https://chat-qa-api.aopks.com';
+export const CHAT_API_URL = 'https://chat-api.aopks.com';
+
 
 export const MAP_BOX_TOKEN = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjand4NWV2djQwZGFkNDNtejhkYXVwbW0zIn0.SxLkBv_NwpDKUIl-e499rg';
 export const MAP_BOX_PUBLIC_TOKEN = 'pk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjBrZHMwdW16NGVtamFhNnE4aDIwIn0.s629-J2w7AeQITCLhdl0pw'
@@ -27,8 +28,8 @@ export const CONNECTY_CUBE = [{
   },
 }
 ]
-export const CURRENT_PRODUCT_VERSION_CODE = 18;
-export const CURRENT_PRODUCT_ANDROID_VERSION_CODE = '1.0.20';
+export const CURRENT_PRODUCT_VERSION_CODE = 23;
+export const CURRENT_PRODUCT_ANDROID_VERSION_CODE = '1.0.23';
 export const CURRENT_PRODUCT_IOS_VERSION_CODE = '16.0.0';
 
 /*** Change ON Prod End ***/

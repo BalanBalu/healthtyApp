@@ -1,4 +1,4 @@
-package com.ads.medflic;
+package com.ads.mysmarthealth;
 import android.content.Intent;
 import android.os.Bundle;
 

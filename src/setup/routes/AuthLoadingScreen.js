@@ -5,7 +5,8 @@ import {
 import { setUserLocally, APP_LOADED } from '../../modules/providers/auth/auth.actions';
 import { store } from '../store';
 import SplashScreen from 'react-native-splash-screen';
-import {CURRENT_APP_NAME,MY_SMART_HEALTH_CARE,MY_MEDFLIC} from '../config'
+import {CURRENT_APP_NAME,MY_SMART_HEALTH_CARE,MY_MEDFLIC} from '../config';
+
 class AuthLoadingScreen extends React.Component {
    constructor (props) {
     super(props);
@@ -18,7 +19,6 @@ class AuthLoadingScreen extends React.Component {
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
     const token = await AsyncStorage.getItem('token')
-    let  user=null
     if (token && token !== 'undefined' && token !== '') {
       user = JSON.parse(await AsyncStorage.getItem('user'));
       if (user) {
@@ -27,9 +27,8 @@ class AuthLoadingScreen extends React.Component {
     }
     const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
     this.setState({ CorporateUser:isCorporateUser })
-    const { CorporateUser } = this.state
    
-        this.props.navigation.navigate(CURRENT_APP_NAME === MY_MEDFLIC?'App':CURRENT_APP_NAME === MY_SMART_HEALTH_CARE&&token?'SmApp':'Auth');
+    this.props.navigation.navigate(CURRENT_APP_NAME === MY_MEDFLIC?'App':CURRENT_APP_NAME === MY_SMART_HEALTH_CARE&&token?'SmApp':'Auth');
     
     SplashScreen.hide();
     store.dispatch({

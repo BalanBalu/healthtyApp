@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ads.medflic.ExampleActivity"
+    tools:context="com.ads.mysmarthealth.ExampleActivity"
     android:weightSum="100"
 
     android:background="@drawable/main_bg">
