@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Container, Content, Button, Text, Form, Item, Input, Card, Footer, FooterTab, Toast, Icon, Label, Row, Col, Radio } from 'native-base';
-import { generateOTP, changePassword } from '../../providers/auth/auth.actions';
+import { generateOTP, generateOTPForSmartHealth, changePassword, changePasswordForSmartHelath } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
 import { StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native'
 import styles from '../../screens/auth/styles';
@@ -23,8 +23,12 @@ class Forgotpassword extends Component {
             userEntry: '',
             showPassword: true,
             isPasswordMatch: false,
-            isCorporateUserSelected: false
+            isCorporateUserSelected: false,
+            corporateName: '',
+            employeeId: '',
+
         }
+        this.smartHealthOtpData = null
         this.checkMatchPasswords = debounce(this.checkMatchPasswords, 500);
     }
     checkEnteredPasswords = async (confirmPassword) => {
@@ -43,22 +47,39 @@ class Forgotpassword extends Component {
         try {
 
             await this.setState({ errorMessage: '', isLoading: true })
-            let reqData = {
-                userEntry: userEntry,
-                type: 'user'
-            };
-            if (this.state.isCorporateUserSelected) {
-                reqData.is_corporate_user = true
+            if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
+                let reqObject = {
+                    userId: userEntry,
+                    employeeId: this.state.employeeId,
+                    corporate: this.state.corporateName
+                }
+                let smartHealthReqOtpResponse = await generateOTPForSmartHealth(reqObject)
+      
+                if (smartHealthReqOtpResponse && smartHealthReqOtpResponse.otp) {
+                    this.smartHealthOtpData = smartHealthReqOtpResponse
+                   
+                    await this.setState({ isOTPGenerated: true });
+                } else {
+                    this.setState({ errorMessage: smartHealthReqOtpResponse.message==='INVALID_CORPORATE'?'Entered corporate name is incorrect':smartHealthReqOtpResponse.message==='INVALID_USERID'?'Entered Email name is incorrect':smartHealthReqOtpResponse.message==='INVALID_EMPLOYEEID'?'Entered Employee id is incorrect':'Invalid credentials'});
+                }
+            } else {
+                let reqData = {
+                    userEntry: userEntry,
+                    type: 'user'
+                };
+                if (this.state.isCorporateUserSelected) {
+                    reqData.is_corporate_user = true
+                }
+                let reqOtpResponse = await generateOTP(reqData)
+
+                if (reqOtpResponse.success == true)
+                    await this.setState({ isOTPGenerated: true });
+                else
+                    this.setState({ errorMessage: reqOtpResponse.error });
             }
-            let reqOtpResponse = await generateOTP(reqData)
-            
-            if (reqOtpResponse.success == true)
-                await this.setState({ isOTPGenerated: true });
-            else
-                this.setState({ errorMessage: reqOtpResponse.error });
         }
         catch (e) {
-           
+
             Toast.show({
                 text: 'Something Went Wrong' + e,
                 duration: 3000
@@ -78,13 +99,35 @@ class Forgotpassword extends Component {
                 return false;
             }
             await this.setState({ errorMessage: '', isLoading: true })
-            let reqData = {
-                userId: this.props.user.userId,
-                otp: otpCode,
-                password: password,
-                type: 'user'
-            };
-            let reqOtpVerifyResponse = await changePassword(reqData);
+            let reqOtpVerifyResponse = {};
+            if (CURRENT_APP_NAME === MY_SMART_HEALTH_CARE && this.state.isCorporateUserSelected) {
+                if (this.smartHealthOtpData) {
+                    let reqDataObj = {
+                        userId: this.smartHealthOtpData.userId,
+                        otp: otpCode,
+                        newPassword: password,
+                        userType: 'MEMBER'
+                    };
+                    let result = await changePasswordForSmartHelath(reqDataObj);
+
+                    if (result === 'SUCCESS') {
+                        reqOtpVerifyResponse.success = true,
+                            reqOtpVerifyResponse.message = "password changed successfully"
+                    } else {
+                        reqOtpVerifyResponse.error = "invalid otp"
+                    }
+                }
+            } else {
+
+                let reqData = {
+                    userId: this.props.user.userId,
+                    otp: otpCode,
+                    password: password,
+                    type: 'user'
+                };
+                reqOtpVerifyResponse = await changePassword(reqData);
+            }
+
             if (reqOtpVerifyResponse.success === true) {
                 Toast.show({
                     text: reqOtpVerifyResponse.message,
@@ -120,16 +163,60 @@ class Forgotpassword extends Component {
         const { userEntry, isCorporateUserSelected } = this.state;
         return (
             <View>
-                <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Email / Phone</Label>
-                <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                    <Input placeholder="Email Or Phone" style={styles.transparentLabel2}
-                        value={userEntry}
-                        autoCapitalize={false}
-                        keyboardType={'email-address'}
-                        onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
-                        onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
-                    />
-                </Item>
+                {isCorporateUserSelected === false ?
+                    <View>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Email / Phone</Label>
+                        <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                            <Input placeholder="Email Or Phone" style={styles.transparentLabel2}
+                                value={userEntry}
+                                autoCapitalize={false}
+                                keyboardType={'email-address'}
+                                onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
+                                onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
+                            />
+                        </Item>
+                    </View> :
+
+
+                    <View>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Email </Label>
+
+                        <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                            <Input placeholder="Email" style={styles.transparentLabel2}
+                                value={userEntry}
+                                autoCapitalize={false}
+                                keyboardType={'email-address'}
+                                onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
+                                onSubmitEditing={() => { this.employeeId._root.focus(); }}
+                            // onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
+                            />
+                        </Item>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Employee Id</Label>
+                        <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                            <Input placeholder="Employee Id" style={styles.transparentLabel2}
+                                value={this.state.employeeId}
+                                autoCapitalize={false}
+                                ref={(input) => { this.employeeId = input; }}
+                                keyboardType={'email-address'}
+                                onChangeText={employeeId => this.setState({ employeeId: employeeId.replace(/\s/g, "") })}
+                                onSubmitEditing={() => { this.corporateName._root.focus(); }}
+                            // onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
+                            />
+                        </Item>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Corporate Name</Label>
+                        <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                            <Input placeholder="Corporate Name" style={styles.transparentLabel2}
+                                ref={(input) => { this.corporateName = input; }}
+                                value={this.state.corporateName}
+                                autoCapitalize={false}
+                                keyboardType={'email-address'}
+                                onChangeText={corporateName => this.setState({ corporateName: corporateName })}
+                                onSubmitEditing={() => { corporateName !== '' ? this.generateOtpCode() : null }}
+                            />
+                        </Item>
+                    </View>
+
+                }
                 {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
                     <Row style={{ marginTop: 10 }}>
                         <Col size={3}>

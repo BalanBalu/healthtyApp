@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   menuIcon: {
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingLeft: 5,
+    paddingRight: 5,
     paddingTop: 5,
     paddingBottom: 5
   },

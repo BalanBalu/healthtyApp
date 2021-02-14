@@ -470,7 +470,7 @@ export default class PaymentReview extends Component {
               {fromNavigation !== 'HOSPITAL' && bookSlotDetails.slotData ?
                 <View style={{ marginTop: 10 }}>
                   <Row>
-                    <Icon name="ios-pin" style={{ fontSize: 20, marginLeft: 2 }} />
+                    <Icon name="location-sharp" style={{ fontSize: 20, marginLeft: 2 }} />
                     <Text style={styles.hospName}>{bookSlotDetails.slotData.location.name}</Text>
                   </Row>
                   <Text style={styles.hosAddress}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}

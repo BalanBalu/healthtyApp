@@ -28,11 +28,17 @@ class CorporateHome extends PureComponent {
         let relationship = await AsyncStorage.getItem("relationship") || null;
         
         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
-       this.setState({isCorporateUser,relationship})
-        this.getCorporateDatails(userId)
+        this.setState({ isCorporateUser, relationship })
+        if (isCorporateUser) {
+            this.getCorporateDatails(userId)
+        }
         this.initialFunction();
     }
 
+    doLogout() {
+        logout();
+        this.props.navigation.navigate('login');
+    }
     initialFunction = async () => {
         try {
 
@@ -40,9 +46,11 @@ class CorporateHome extends PureComponent {
             let userId = await AsyncStorage.getItem("userId");
             if (userId) {
                 const { notification: { notificationCount }, navigation } = this.props
-                navigation.setParams({
-                    notificationBadgeCount: notificationCount
-                });
+                
+                    navigation.setParams({
+                        notificationBadgeCount: notificationCount
+                    });
+                
                 this.getMarkedAsReadedNotification(userId);
             }
         }
@@ -54,9 +62,10 @@ class CorporateHome extends PureComponent {
     getCorporateDatails = async (userId) => {
         try {
 
-            let fields = "corporate_user_id,employee_code";
+            let fields = "corporate_member_id,employee_code";
             let userResult = await fetchUserProfile(userId, fields);
-            if (!userResult.error) {
+           
+            if (userResult) {
                 let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
 
                 if (!!corporateResult && !corporateResult.error) {
@@ -66,10 +75,15 @@ class CorporateHome extends PureComponent {
                         type: SET_CORPORATE_DATA,
                         data: corporateResult
                     })
+
                     // await this.setState({ data: corporateResult })
 
 
                 }
+            }
+            let forceToChangePassword = await AsyncStorage.getItem('forceToChangePassword') || null
+            if (forceToChangePassword) {
+                this.props.navigation.navigate('UpdatePassword', { updatedata: {} });
             }
 
         } catch (error) {
@@ -125,9 +139,9 @@ class CorporateHome extends PureComponent {
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
                     <View style={{ padding: 10 }}>
-                        {isCorporateUser&&corporateData && corporateData.length ?
+                        { isCorporateUser&&corporateData && corporateData.length ?
                             <CorporateProfileCard
-                                data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
+                                 data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
                             />
                             : null}
                         {isCorporateUser ?
@@ -135,7 +149,7 @@ class CorporateHome extends PureComponent {
                                 navigation={navigate}
                             /> : null}
                         {isCorporateUser ?
-                            <CoverageCard /> : null}
+                            <CoverageCard  navigation={navigate}/> : null}
                         <SearchAndAppointmentCard
                             navigation={navigate}
                         />

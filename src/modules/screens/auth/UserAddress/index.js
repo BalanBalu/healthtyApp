@@ -39,11 +39,11 @@ export default class UserAddress extends Component {
                 {Platform.OS === "ios" ?
                     <View style={style.iosSlide}>
                         <Text style={[style.welcome, { marginTop: 20 }]}>Hi, Add Your Location</Text>
-                        <Icon name='pin' style={{ fontSize: 30, color: '#775DA3', marginLeft: 10, marginTop: 20 }} />
+                        <Icon name="location-sharp" style={{ fontSize: 30, color: '#775DA3', marginLeft: 10, marginTop: 20 }} />
                     </View> :
                     <Item style={style.slide}>
                         <Text style={style.welcome}>Hi, Add Your Location </Text>
-                        <Icon name='pin' style={{ fontSize: 50, color: '#775DA3', marginLeft: 10 }} />
+                        <Icon name="location-sharp" style={{ fontSize: 50, color: '#775DA3', marginLeft: 10 }} />
                     </Item>
                 }
                 <MapboxAutocomplete

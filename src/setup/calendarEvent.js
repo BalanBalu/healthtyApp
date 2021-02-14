@@ -1,6 +1,7 @@
 import RNCalendarEvents from "react-native-calendar-events";
 
 import { Text, View, Button, Alert, BackHandler, AsyncStorage } from "react-native";
+import AntDesign from 'react-native-vector-icons/AntDesign'
 const CALENDERID = 'calenderId';
 import { CURRENT_APP_NAME } from "../setup/config";
 /*
@@ -42,8 +43,9 @@ export async function requestCalendarPermissions() {
     let requestCalendarPermission = await RNCalendarEvents.authorizeEventStore();
     return requestCalendarPermission;
   } catch (error) {
-    Alert.alert(CURRENT_APP_NAME + " Need your Calendar Permission to Store your Apppointments");
-    return false;
+    let status = RNCalendarEvents.requestPermissions((readOnly = false));
+   return status;
+
   }
 };
 

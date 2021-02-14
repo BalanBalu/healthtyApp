@@ -21,10 +21,12 @@ import {
 } from '../../../../providers/chat/chat.action';
 import BookAppointmentPaymentUpdate from '../../../../providers/bookappointment/bookAppointment';
 import { AuthService } from '../../services'
+import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../../../../../setup/config'
 import moment from 'moment';
 class AvailableDoctors4Video extends Component {
     constructor(props) {
         super(props)
+
         this.userId = null;
         this.state = {
             availableChatDoctors: [],
@@ -54,7 +56,7 @@ class AvailableDoctors4Video extends Component {
             this.getDoctorAvailableDoctorData(doctorIds).catch(ex => { console.log(ex); return [] }),
             this.getDoctorAvailableDoctorDataChat(doctorIds).catch(ex => { console.log(ex); return [] }),
         ])
-        
+
         availableDocsVideo.forEach(doc => {
             doc.availableForVideo = true;
             availablityMap.set(doc.doctor_id, doc);
@@ -99,10 +101,10 @@ class AvailableDoctors4Video extends Component {
                 let doctorIds = resultData.data.map((element) => {
                     return element.doctor_id
                 });
-             
+
                 this.callVideAndChat(doctorIds);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
             } else {
-                
+
                 this.setState({ isLoading: false, availableChatDoctors: [], availableVideoDoctors: [] })
             }
         } catch (error) {
@@ -123,13 +125,13 @@ class AvailableDoctors4Video extends Component {
                 return availableDocData.data;
             }
         } catch (error) {
-          
+
             return [];
         }
         return [];
     }
     getDoctorAvailableDoctorDataChat = async (doctorIds) => {
-       
+
         try {
             let request = {};
             if (doctorIds) {
@@ -151,7 +153,7 @@ class AvailableDoctors4Video extends Component {
             this.setState({ isLoading: true });
             const { description } = this.state
             const amount = fee;
-            
+
             let freeService = false;
             if (fee == 0) {
                 freeService = true;
@@ -171,7 +173,7 @@ class AvailableDoctors4Video extends Component {
             const createChatResponse = await createChat(createChatRequest)
             this.setState({ isLoading: false });
             if (createChatResponse.success) {
-              
+
                 if (freeService === true) {
                     const bookSlotDetails = {
                         doctorId: doctorId,
@@ -180,7 +182,7 @@ class AvailableDoctors4Video extends Component {
                     }
                     let response = await this.bookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.CHAT, this.userId, 'cash');
                     if (response.success) {
-                        this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                        this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home' });
                         Toast.show({
                             text: 'Your Chat Consultation Request Success. We will notify Doctor',
                             type: 'success',
@@ -237,13 +239,13 @@ class AvailableDoctors4Video extends Component {
                 status_by: 'USER',
                 statusUpdateReason: 'NEW VIDEO CONSULTATION',
                 // description: description,
-                consultation_description:description
+                consultation_description: description
             }
 
             const createVideoConsultingResponse = await createVideoConsuting(videoConsultRequest)
             this.setState({ isLoading: false });
             if (createVideoConsultingResponse.success) {
-                
+
                 if (freeService === true) {
                     videoConsultRequest.status = POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING;
                     const bookSlotDetails = {
@@ -254,7 +256,7 @@ class AvailableDoctors4Video extends Component {
 
                     let response = await this.bookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.VIDEO_CONSULTING, this.userId, 'cash');
                     if (response.success) {
-                        this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                        this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home' });
                         Toast.show({
                             text: 'Your Video Consultation Request Success. We will notify the Doctor',
                             type: 'success',
@@ -268,7 +270,7 @@ class AvailableDoctors4Video extends Component {
                             duration: 3000
                         });
                     }
-                   
+
                 } else {
                     this.setState({ isLoading: false });
                     this.props.navigation.navigate('paymentPage', {
@@ -319,7 +321,7 @@ class AvailableDoctors4Video extends Component {
     getMinVideoChatConsultFee(item) {
         let videoFee = null;
         let chatFee = null;
-    
+
         if (item && item.availabilityData && item.availabilityData[0]) {
             videoFee = Number(item.availabilityData[0].fee);
         }
@@ -580,8 +582,8 @@ class AvailableDoctors4Video extends Component {
                                         blurOnSubmit={false}
                                     />
                                 </Col>
-                                <Col size={0.9} style={{ justifyContent: 'center', borderRightRadius: 10 }}>
-                                    <TouchableOpacity onPress={() => this.searchAvailableDoctorsByKeywords(keyword)} style={styles.SearchStyle}>
+                                <Col size={0.9} style={keyword ? styles.SearchStyle : styles.dissableSearchStyle}>
+                                    <TouchableOpacity onPress={() => keyword ? this.searchAvailableDoctorsByKeywords(keyword) : null}>
                                         <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
                                     </TouchableOpacity>
                                 </Col>
@@ -755,6 +757,15 @@ const styles = StyleSheet.create({
     },
     SearchStyle: {
         backgroundColor: '#7E49C3',
+        width: '85%',
+        alignItems: 'center',
+        borderTopRightRadius: 20,
+        borderBottomRightRadius: 20,
+        marginTop: 2,
+        marginBottom: 2
+    },
+    dissableSearchStyle: {
+        backgroundColor: 'gray',
         width: '85%',
         alignItems: 'center',
         borderTopRightRadius: 20,

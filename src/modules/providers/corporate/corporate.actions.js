@@ -1,4 +1,4 @@
-import { postService, putService, getService, smartHealthGetService, smartHealthPostService, postServiceExternal } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService, postServiceExternal } from '../../../setup/services/httpservices';
 import { getCorporateUserEcardDetailsEndpoint, getECardLinkEndpoint } from '../../../setup/services/corporateEndpoint';
 import { AuthId } from '../../../setup/config'
 
@@ -29,9 +29,10 @@ export async function getCorporateUserEcardDetails(bodyData) {
 
 export async function getCorporateEmployeeDetailsById(empCode) {
   try {
-    let endPoint = 'member-detail/' + empCode;
-
+    console.log(`empCode`, empCode);
+    let endPoint = 'member-detail/member-family-member?emp_code=' + empCode
     let response = await smartHealthGetService(endPoint);
+    console.log(`response`, response);
 
     return response.data;
   } catch (e) {
@@ -59,6 +60,131 @@ export async function getEcardLink(bodyData) {
       success: false,
       statusCode: 500,
       error: Ex,
+    }
+  }
+}
+
+export async function createPreAuth(bodyData) {
+  try {
+    let endpoint = 'pre-auth'
+
+
+    let resp = await smartHealthPostService(endpoint, bodyData)
+
+    return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}
+export async function serviceOfClaimIntimation(reqBodyData) {
+  try {
+    const endpoint = 'claim-intimation';
+    const resp = await smartHealthPostService(endpoint, reqBodyData)
+    return resp.data
+  } catch (Ex) {
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex.message,
+    }
+  }
+}
+export async function getMemberDetailsByEmail(emailId) {
+  try {
+    let endPoint = 'member-detail/memberId/by-email?email=' + emailId;
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+
+
+export async function getPolicyDetailsByPolicyNo(policyNo) {
+  try {
+    let endPoint = 'policy/by-policyNo?pno=' + policyNo;
+    let response = await smartHealthGetService(endPoint);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+export async function getPreAuthListByEmpCodeAndPolicyNo(empCode,policyNo,page,limit) {
+  try {
+    let endPoint = 'pre-auth/policy/employeeId?policyNo='+policyNo+'&empId='+empCode+'&p='+page+'&l='+limit;
+console.log(endPoint)
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit) {
+  try {
+    let endPoint = 'claim-data?payerCode=' + payer_code + '&policyno=' + policy_no + '&p=' + page + '&l=' + limit;
+    console.log(`endPoint`, endPoint);
+    
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+export async function getClaimIntimationWithPagination(searchText,page,limit) {
+  try {
+    let endPoint;
+    if (searchText){
+      endPoint = 'claim-intimation/page?searchText=' + searchText + '&p=' + page + '&l=' + limit;
+    }else{
+      endPoint = 'claim-intimation/page?p=' + page + '&l=' + limit;
+    }
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+export async function serviceOfUpdateClaimIntimation(reqBodyData) {
+  try {
+    const endpoint = 'claim-intimation';
+    const resp = await smartHealthPutService(endpoint, reqBodyData)
+    return resp.data
+  } catch (Ex) {
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex.message,
     }
   }
 }
