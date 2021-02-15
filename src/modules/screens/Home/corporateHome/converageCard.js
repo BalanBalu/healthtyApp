@@ -27,7 +27,7 @@ export const CoverageCard = props => {
           style={styles.rectBox}
           activeOpacity={0.6}
           underlayColor={secondaryColorTouch}
-          onPress={() => navigation('PreAuth')}>
+          onPress={() => navigation('preAuthList')}>
           <View>
             <View
               style={{
@@ -84,7 +84,7 @@ export const CoverageCard = props => {
           style={styles.rectBox}
           activeOpacity={0.6}
           underlayColor={secondaryColorTouch}
-          onPress={() => navigation('claimInititation')}>
+          onPress={() => navigation('ClaimIntimationList')}>
           <View>
             <View
               style={{

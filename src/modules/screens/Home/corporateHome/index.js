@@ -7,10 +7,11 @@ import { TransactionHistoryCard } from './transactionHistoryCard'
 import { CoverageCard } from './converageCard'
 import { connect } from 'react-redux'
 import { Container, Content, Button, Card, Input, Left, Right, Icon, Toast } from 'native-base';
-import { getCorporateEmployeeDetailsById } from '../../../providers/corporate/corporate.actions'
-import { fetchUserProfile, SET_CORPORATE_DATA } from '../../../providers/profile/profile.action';
+import { getCorporateEmployeeDetailsById, getTpaInfoByTpaCode } from '../../../providers/corporate/corporate.actions'
+import { fetchUserProfile, SET_CORPORATE_DATA, SET_MEMBER_POLICY_INFO,SET_MEMBER_TPA_DATA } from '../../../providers/profile/profile.action';
 import { store } from '../../../../setup/store';
 import { fetchUserMarkedAsReadedNotification } from '../../../providers/notification/notification.actions';
+import { getPolicyByPolicyNo } from '../../../providers/policy/policy.action';
 import CurrentLocation from '../CurrentLocation';
 import { NavigationEvents } from 'react-navigation'
 
@@ -20,13 +21,13 @@ class CorporateHome extends PureComponent {
         super(props)
         this.state = {
             isCorporateUser: false,
-            relationship:null
+            relationship: null
         }
     }
     async componentDidMount() {
         let userId = await AsyncStorage.getItem("userId");
         let relationship = await AsyncStorage.getItem("relationship") || null;
-        
+
         const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
         this.setState({ isCorporateUser, relationship })
         if (isCorporateUser) {
@@ -46,11 +47,11 @@ class CorporateHome extends PureComponent {
             let userId = await AsyncStorage.getItem("userId");
             if (userId) {
                 const { notification: { notificationCount }, navigation } = this.props
-                
-                    navigation.setParams({
-                        notificationBadgeCount: notificationCount
-                    });
-                
+
+                navigation.setParams({
+                    notificationBadgeCount: notificationCount
+                });
+
                 this.getMarkedAsReadedNotification(userId);
             }
         }
@@ -64,7 +65,7 @@ class CorporateHome extends PureComponent {
 
             let fields = "corporate_member_id,employee_code";
             let userResult = await fetchUserProfile(userId, fields);
-           
+
             if (userResult) {
                 let corporateResult = await getCorporateEmployeeDetailsById(userResult.employee_code);
 
@@ -75,10 +76,26 @@ class CorporateHome extends PureComponent {
                         type: SET_CORPORATE_DATA,
                         data: corporateResult
                     })
-
-                    // await this.setState({ data: corporateResult })
-
-
+                    const memberPolicyNo = corporateResult && corporateResult.length && corporateResult[0].policyNo;
+                    if (memberPolicyNo) {
+                        const policyData = await getPolicyByPolicyNo(memberPolicyNo);
+                        if (policyData && Object.keys(policyData).length) {
+                            if (policyData && policyData.TPA) {
+                                const memberTpaResp = await getTpaInfoByTpaCode(policyData.TPA);
+                                const memberTpaData = memberTpaResp && memberTpaResp.length && memberTpaResp[0];
+                                if (memberTpaData) {
+                                    await store.dispatch({
+                                        type: SET_MEMBER_TPA_DATA,
+                                        data: memberTpaData
+                                    })
+                                }
+                            }
+                            await store.dispatch({
+                                type: SET_MEMBER_POLICY_INFO,
+                                data: policyData
+                            })
+                        }
+                    }
                 }
             }
             let forceToChangePassword = await AsyncStorage.getItem('forceToChangePassword') || null
@@ -120,7 +137,7 @@ class CorporateHome extends PureComponent {
     render() {
         let corporateData = this.props.profile.corporateData;
         const { navigate } = this.props.navigation;
-        const { isCorporateUser,relationship } = this.state;
+        const { isCorporateUser, relationship } = this.state;
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount },
             navigation } = this.props;
         if (locationUpdatedCount !== this.locationUpdatedCount) {
@@ -133,15 +150,15 @@ class CorporateHome extends PureComponent {
             this.locationUpdatedCount = locationUpdatedCount;
 
         }
-        
+
         return (
-            <Container style={[styles.container, {backgroundColor: '#FAFBFF'}]}>
+            <Container style={[styles.container, { backgroundColor: '#FAFBFF' }]}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
                     <View style={{ padding: 10 }}>
-                        { isCorporateUser&&corporateData && corporateData.length ?
+                        {isCorporateUser && corporateData && corporateData.length ?
                             <CorporateProfileCard
-                                 data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
+                                data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
                             />
                             : null}
                         {isCorporateUser ?
@@ -149,7 +166,7 @@ class CorporateHome extends PureComponent {
                                 navigation={navigate}
                             /> : null}
                         {isCorporateUser ?
-                            <CoverageCard  navigation={navigate}/> : null}
+                            <CoverageCard navigation={navigate} /> : null}
                         <SearchAndAppointmentCard
                             navigation={navigate}
                         />

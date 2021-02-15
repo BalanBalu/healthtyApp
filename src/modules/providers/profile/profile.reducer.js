@@ -1,4 +1,4 @@
-import { PROFILE_REQUEST, PROFILE_RESPONSE, PROFILE_ERROR, REVIEWS_REQUEST, REVIEWS_RESPONSE, REVIEWS_ERROR, AVAILABLE_CREDIT_POINTS, SET_REFER_CODE, SET_USER_DATA_FOR_PREPARATION, SET_CORPORATE_DATA } from './profile.action';
+import { PROFILE_REQUEST, PROFILE_RESPONSE, PROFILE_ERROR, REVIEWS_REQUEST, REVIEWS_RESPONSE, REVIEWS_ERROR, AVAILABLE_CREDIT_POINTS, SET_REFER_CODE, SET_USER_DATA_FOR_PREPARATION, SET_CORPORATE_DATA,SET_MEMBER_POLICY_INFO,SET_MEMBER_TPA_DATA } from './profile.action';
 
 // Initial State
 export const initialState = {
@@ -48,7 +48,9 @@ export const initialState = {
     use_caffeinated_drink: undefined,
     physically_or_verbally_hurt_you: false,
     exercise: false,
-    corporateData: []
+    corporateData: [],
+    memberPolicyInfo:null,
+    memberTpaInfo:null
   }
 }
 
@@ -139,6 +141,16 @@ export default (state = initialState, action) => {
         ...state,
         corporateData: action.data
       }
+          case SET_MEMBER_POLICY_INFO:
+      return {
+        ...state,
+       memberPolicyInfo: action.data
+     }
+     case SET_MEMBER_TPA_DATA:
+      return {
+        ...state,
+       memberTpaInfo: action.data
+     }
     default:
       return state;
   }
