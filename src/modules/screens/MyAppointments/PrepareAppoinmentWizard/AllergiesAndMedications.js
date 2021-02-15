@@ -237,7 +237,7 @@ class AllergiesAndMedications extends PureComponent {
 
                             </View>
                             <TouchableOpacity onPress={() => this.onAddNewAlergics()}
-                                style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#7F49C3', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
+                                style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#128283', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
                                 <Icon name="md-add" style={{ fontSize: 15, color: '#fff' }} />
                                 <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: 'bold' }}>Add</Text>
                             </TouchableOpacity>
@@ -316,7 +316,7 @@ class AllergiesAndMedications extends PureComponent {
 
                                     </Form>
                                     <TouchableOpacity onPress={() => this.onAddNewMedicineInfo()}
-                                        style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#7F49C3', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
+                                        style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#128283', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
                                         <Icon name="md-add" style={{ fontSize: 15, color: '#fff' }} />
                                         <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: 'bold' }}>Add</Text>
                                     </TouchableOpacity>

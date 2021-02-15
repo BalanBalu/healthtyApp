@@ -3,6 +3,8 @@ import { Container, Content, Text, Segment, Button, Card, Right, Thumbnail, Icon
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
 import styles from '../styles';
+import {primaryColor} from '../../../setup/config'
+
 
 export default class RenderDescription extends Component {
     constructor(props) {
@@ -23,7 +25,7 @@ export default class RenderDescription extends Component {
             //         <Text style={{ fontFamily: 'OpenSans', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: false })}>...Hide</Text>
             //     </View>
             //     <Row style={{ marginLeft: 5, marginRight: 5, paddingBottom: 5 }}>
-            //         <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#775DA3' }}></Text></Right>
+            //         <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: primaryColor }}></Text></Right>
             //     </Row>
             // </View>
 
@@ -39,7 +41,7 @@ export default class RenderDescription extends Component {
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{labDescriptionData} <Text style={styles.viewMoreAndHideText} onPress={() => onPressShowAndHide(false)}>...Hide</Text></Text>}
                 </View>
                 <Row style={{ marginLeft: 5, marginRight: 5, paddingBottom: 5 }}>
-                    <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#775DA3' }}></Text></Right>
+                    <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: primaryColor }}></Text></Right>
                 </Row>
             </View>
         )

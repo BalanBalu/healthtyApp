@@ -18,6 +18,7 @@ import InsertReview from '../Reviews/insertReviews';
 import { renderLabProfileImage } from "../../CommonAll/components"
 import { store } from '../../../../setup/store'
 import { SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
+import {primaryColor} from '../../../../setup/config'
 
 class LabAppointmentList extends Component {
     constructor(props) {
@@ -207,10 +208,10 @@ class LabAppointmentList extends Component {
                             selectedIndex={this.state.selectedIndex}
                             onTabPress={this.handleIndexChange}
                             activeTabStyle={{
-                                backgroundColor: "#775DA3",
-                                borderColor: "#775DA3"
+                                backgroundColor: primaryColor,
+                                borderColor: primaryColor
                             }}
-                            tabStyle={{ borderColor: "#775DA3" }} />
+                            tabStyle={{ borderColor: primaryColor }} />
                     </Card>
                     <View style={{ marginTop: 5 }}>
                         {isLoading == true ?
@@ -384,7 +385,7 @@ const styles = StyleSheet.create({
     },
     bookingButton: {
         marginTop: 10,
-        backgroundColor: "#775DA3",
+        backgroundColor: primaryColor,
         marginRight: 1,
         borderRadius: 10,
         width: "auto",

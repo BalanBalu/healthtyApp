@@ -9,6 +9,8 @@ import { fetchUserProfile, getCorporateUserFamilyDetails, getPolicYDetailsByid }
 import {getCorporateEmployeeDetailsById} from '../../providers/corporate/corporate.actions'
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { dateDiff } from '../../../setup/helpers';
+import {primaryColor} from '../../../setup/config'
+
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
 import { getRandomInt } from '../../common';
 const POSSIBLE_FAMILY_MEMBERS = {
@@ -382,7 +384,7 @@ class TestDetails extends PureComponent {
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
-                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Appointment for?</Text>
+                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Appointment for?</Text>
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                     {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
@@ -486,7 +488,7 @@ class TestDetails extends PureComponent {
                                 } />
                             {(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === false) || (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others').length === 0) ?
                                 <View style={{ marginTop: 8, }}>
-                                    {familyDetailsData.length !== 0 ? <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#7F49C3', textAlign: 'center', }}>(OR)</Text> : null}
+                                    {familyDetailsData.length !== 0 ? <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: primaryColor, textAlign: 'center', }}>(OR)</Text> : null}
                                     <Text style={styles.subHead}>Add other patient's details</Text>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={6}>
@@ -611,7 +613,7 @@ const styles = StyleSheet.create({
 
     },
     touchStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
         borderRadius: 3,
         paddingLeft: 30,
         paddingRight: 30,
@@ -646,7 +648,7 @@ const styles = StyleSheet.create({
     NameText: {
         fontSize: 12,
         fontFamily: 'OpenSans',
-        color: '#7F49C3'
+        color: primaryColor
     },
     ageText: {
         fontSize: 12,

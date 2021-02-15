@@ -4,6 +4,8 @@ import { Col, Row } from 'react-native-easy-grid';
 import { Image, TouchableOpacity, StyleSheet , View, } from 'react-native';
 import { getAddress } from '../../../common'
 import { formatDate } from '../../../../setup/helpers';
+import {primaryColor, secondaryColor} from '../../../../setup/config'
+
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { renderLabProfileImage } from '../../CommonAll/components';
 const LabHeader = (props) => {
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
     docName: {
         fontSize: 15,
         fontFamily: 'OpenSans',
-        color: '#7F49C3',
+        color: primaryColor,
     },
     hosAddress: {
         fontSize: 12,

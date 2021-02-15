@@ -7,6 +7,8 @@ import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from 
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
 import { enumerateStartToEndDates } from '../../CommonAll/functions'
 import { Loader } from '../../../../components/ContentLoader';
+import {primaryColor, secondaryColor} from '../../../../setup/config'
+
 import { formatDate, addMoment, getMoment, intersection } from '../../../../setup/helpers';
 import styles from '../../CommonAll/styles'
 import RenderDates from './RenderDateList';
@@ -865,9 +867,9 @@ class labSearchList extends Component {
                                                         <Row>
                                                             <Col size={5} style={{ marginLeft: 20 }}>
                                                                 <TouchableOpacity disabled={selectedSubCategory.length != 0 || values.length != 0 || testOption != '' ? false : true}
-                                                                    style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}
+                                                                    style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: primaryColor, borderWidth: 0.5 }}
                                                                     onPress={() => this.clearFilteredData()}>
-                                                                    <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>CLEAR</Text>
+                                                                    <Text style={{ color: primaryColor, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>CLEAR</Text>
                                                                 </TouchableOpacity>
                                                             </Col>
                                                             <Col size={5}>

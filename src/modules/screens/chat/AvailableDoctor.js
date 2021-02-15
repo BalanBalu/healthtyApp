@@ -12,6 +12,8 @@ import {
 import {
     renderDoctorImage,
 } from '../../common';
+import {primaryColor} from '../../../setup/config'
+
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { SERVICE_TYPES } from '../../../setup/config'
 class AvailableDoctors4Chat extends Component {
@@ -130,7 +132,7 @@ class AvailableDoctors4Chat extends Component {
             <Container>
                 <Content>
 
-                    <View style={{ backgroundColor: '#7E49C3' }}>
+                    <View style={{ backgroundColor: primaryColor }}>
                         <View style={{ marginTop: 20 }}>
                             <Text style={styles.SubText}>Search for Doctors</Text>
 
@@ -305,7 +307,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     },
     SearchStyle: {
-        backgroundColor: '#7E49C3',
+        backgroundColor: primaryColor,
         width: '85%',
         alignItems: 'center',
         borderTopRightRadius: 20,

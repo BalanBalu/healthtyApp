@@ -3,6 +3,7 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image } from 'react-native';
+import {primaryColor} from '../../../../setup/config'
 
 class OrderPaymentSuccess extends Component {
     constructor(props) {
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
 
     loginButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
 

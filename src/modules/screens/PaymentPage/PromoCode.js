@@ -154,7 +154,7 @@ class PromoCode extends Component {
                                             </Col>
                                             <Col size={6}>
                                                 <TouchableOpacity onPress={() => this.navigateToPaymentPage(item)}>
-                                                    <Text style={{ color: '#775DA3', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> APPLY</Text>
+                                                    <Text style={{ color: '#128283', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> APPLY</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                         </Row>

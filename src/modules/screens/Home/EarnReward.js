@@ -9,6 +9,8 @@ import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import Spinner from "../../../components/Spinner";
 import { SHARE_URL, CURRENT_APP_NAME,API_URL } from '../../../setup/config'
 import { connect } from 'react-redux';
+import {primaryColor} from '../../../setup/config'
+
 class EarnReward extends Component {
   constructor(props) {
     super(props)
@@ -71,7 +73,7 @@ class EarnReward extends Component {
             <Text style={styles.mainHead}>Free Rewards !</Text>
             <Text style={[styles.mainHead, { marginTop: 10, color: 'grey' }]}>Your Reward Points</Text>
 
-            <Text style={[styles.mainHead, { marginTop: 10, fontWeight: 'bold', borderColor: '#7E49C3', borderWidth: 2, borderRadius: 25, padding: 10, alignSelf: 'center' }]}>{availableCreditPoints}</Text>
+            <Text style={[styles.mainHead, { marginTop: 10, fontWeight: 'bold', borderColor: primaryColor, borderWidth: 2, borderRadius: 25, padding: 10, alignSelf: 'center' }]}>{availableCreditPoints}</Text>
 
             <Text style={styles.codeText}>Your Code</Text>
             <Text style={styles.numText}>{refer_code || ''}</Text>
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'OpenSans',
     fontSize: 18,
-    color: '#7E49C3',
+    color: primaryColor,
     fontWeight: '700'
   },
   subHead: {
@@ -184,12 +186,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'OpenSans',
     fontSize: 18,
-    color: '#7E49C3',
+    color: primaryColor,
     marginTop: 10,
     fontWeight: '700'
   },
   touchbutton: {
-    backgroundColor: '#7E49C3',
+    backgroundColor: primaryColor,
     borderRadius: 20,
     paddingLeft: 40,
     paddingRight: 40,
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   innerText: {
-    color: '#775DA3',
+    color: primaryColor,
     fontSize: 14,
     textAlign: 'left',
     marginLeft: 15,

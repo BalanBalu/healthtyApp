@@ -1,134 +1,149 @@
-import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Image, FlatList,Linking,Alert } from 'react-native';
-import FastImage from 'react-native-fast-image'
-import { Icon, Card } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { NavigationActions } from 'react-navigation';
-import { requestCalendarPermissions, createCalendar } from '../../../../setup/calendarEvent';
-import RNCalendarEvents from "react-native-calendar-events";
+import React from 'react';
+import {TouchableOpacity} from 'react-native';
+import {View, Text} from 'native-base';
+import {
+  PreAuthDrawing,
+  ClaimStatusDrawing,
+  PolicyCoverageDrawing,
+  ClaimInitiationDrawing,
+  InsuranceRenewalDrawing,
+  LabTestDrawing,
+  HospitalDrawing,
+  ConsultationDrawing,
+  MyChatsDrawing,
+  HomeTestDrawing,
+  VideoConsultDrawing,
+} from './svgDrawings';
 
-export const SearchAndAppointmentCard = (props) => {
-  const navigateToSettings =  () => {
-    Linking.openSettings();
-}
-  const navigateBycalenderPermission=async()=>{
-    const permissionResult = await requestCalendarPermissions()
-    console.log("permissionResult",permissionResult)
-    if (permissionResult === 'authorized') {
-      createCalendar();
-      const { navigation } = props;
-      navigation("Categories")
-    }
-    else{
-        let status = await RNCalendarEvents.checkPermissions((readOnly = false));
-        // console.log("status",status)
-    if(status === 'restricted'){
-        Alert.alert(
-           'Alert',
-            "Calendar permission is necessary to proceed, You want to give permission now in settings page",
-            [
-           {text: 'ALLOW',
-           onPress: () => navigateToSettings(),}
-            ],
-            
-      
-      
-           { cancelable: false }
-      
-      
-           );
-        // alert("Calendar permission")
-        // Linking.openSettings();
-      }
-    }
-   
-}
+import styles from './styles';
+import {TouchableHighlight} from 'react-native-gesture-handler';
+import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../../setup/config';
 
-  const navigationTo = (data) => {
-    const { navigation } = props;
-    switch (data) {
-      case 'Doctor List':
-        return navigateBycalenderPermission();
-      case 'Home Health Care':
-        return navigation("Home Healthcare Address List", { fromNavigation: "HOME_HEALTH_CARE" });
-      case 'Tpa List':
-        return navigation('TpaList');
-      case 'Lab Test':
-        return navigation("Lab Test");
-      case 'Video and Chat Service':
-        return navigation("Video and Chat Service");
-      case 'Reminder':
-        return navigation("Reminder");
-    }
-  }
-  
-  const data = [{ category_name: 'Consultation', image: require('../../../../../assets/images/corporateHomePageIcons/consultation.png'), navigate: 'Doctor List' }, { category_name: 'Home test', image: require('../../../../../assets/images/corporateHomePageIcons/home-test.png'), navigate: 'Home Health Care' }, { category_name: 'Hospital', image: require('../../../../../assets/images/corporateHomePageIcons/hospital_a.png'), navigate: 'Tpa List' }, { category_name: 'Lab test', image: require('../../../../../assets/images/corporateHomePageIcons/Lab-test.png'), navigate: 'Lab Test' },
-  { category_name: 'My Chats', image: require('../../../../../assets/images/corporateHomePageIcons/chat.png'), navigate: 'Video and Chat Service' }, { category_name: 'Video Consult', image: require('../../../../../assets/images/corporateHomePageIcons/video-consultation.png'), navigate: 'Video and Chat Service' },]
+export const SearchAndAppointmentCard = props => {
+  const {navigation} = props;
+
   return (
-    <View>
-      <Card style={{ width: '100%', paddingBottom: 10 }}>
-        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', padding: 5, backgroundColor: '#E4D1FE' }}>Search & Book Appoinment </Text>
+    <View
+      style={{
+        // height: 300,
+        flex: 1,
+        marginTop: 6,
+        // marginTop: -15
+      }}>
+      <Text style={styles.headingText}>Search & Book Appoinment</Text>
 
-        <FlatList horizontal={false} numColumns={4}
-          data={data}
-          renderItem={({ item, index }) =>
-            <View style={{ width: '25%', marginTop: 15, }}>
-              <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity onPress={() => navigationTo(item.navigate)}
-                  style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5, borderRadius: 10, }}>
-                  <FastImage
-                    source={item.image}
-                    style={{
-                      width: 45, height: 45, alignItems: 'center'
-                    }}
-                  />
-
-                </TouchableOpacity>
-                <Text style={{
-                  fontSize: 12,
-                  textAlign: 'center',
-                  fontWeight: '700',
-                  color: '#7F49C3',
-                  paddingLeft: 5,
-                  paddingRight: 5,
-                  paddingTop: 1,
-                  paddingBottom: 1
-                }}>{item.category_name}</Text>
-              </Col>
-
+      <View style={styles.flexRow}>
+      <TouchableHighlight
+      style={styles.rectBox}
+            activeOpacity={0.6}
+            underlayColor={secondaryColorTouch}
+            onPress={() => navigation('Lab Test')}>
+        <View >
+          
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <LabTestDrawing />
+              <Text style={styles.boxText}>Lab Test</Text>
             </View>
-          }
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </Card>
+         
+        </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+            activeOpacity={0.6}
+            underlayColor={secondaryColorTouch}
+            style={styles.rectBox}
+            onPress={() => navigation('TpaList')}>
+        <View>
+          
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 13.5,
+              }}>
+              <HospitalDrawing />
+              <Text style={styles.boxText}>Hospital</Text>
+            </View>
+         
+        </View>
+        </TouchableHighlight>
 
+        <TouchableHighlight
+         activeOpacity={0.6}
+         underlayColor={secondaryColorTouch}
+          style={styles.rectBox}
+          
+          onPress={() => navigation('Categories')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <ConsultationDrawing />
 
+              <Text style={styles.boxText}>Consultation</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+      </View>
+      <View style={[styles.flexRow, {marginTop: 15}]}>
+        <TouchableHighlight
+         activeOpacity={0.6}
+         underlayColor={secondaryColorTouch}
+          style={styles.rectBox}
+         
+          onPress={() => navigation('Home Healthcare Address List')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <HomeTestDrawing />
+              <Text style={styles.boxText}>Home Test</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.rectBox}
+          activeOpacity={0.6}
+          
+          underlayColor='#B1D9D9'
+          number={0.1}
+          onPress={() => navigation('Video and Chat Service')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <MyChatsDrawing />
+
+              <Text style={styles.boxText}>My Chats</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.rectBox}
+          activeOpacity={0.6}
+          underlayColor={secondaryColorTouch}
+          onPress={() => navigation('Video and Chat Service')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <VideoConsultDrawing />
+
+              <Text style={styles.boxText}>Video Consult</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+      </View>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  userName: {
-    color: '#7F49C3',
-    fontFamily: 'OpenSans',
-    fontSize: 16,
-    fontWeight: '700'
-
-  },
-  mainCol: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: 'gray',
-    borderRadius: 5,
-    borderWidth: 0.1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0.5 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 10,
-    padding: 1,
-    marginTop: 15,
-    marginLeft: 11,
-    marginBottom: 1, width: '20%', backgroundColor: '#fafafa',
-  }
-});
+};

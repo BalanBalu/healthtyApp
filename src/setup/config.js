@@ -59,9 +59,16 @@ export const SHOW_MOBILE_AND_EMAIL_ENTRIES = {
   PT_SHOW_OTP_ENTRY: 'PT_SHOW_OTP_ENTRY'
 }
 
+/* Theme Colors Start */
+/* Color code #128283 hex, 'rgba(18, 130, 131, 1)' rgba */
+export const primaryColor = 'rgba(18, 130, 131, 1)'
+export const secondaryColor = 'rgba(18, 130, 131, 0.7)'
+export const secondaryColorTouch = '#B1D9D9'
+/* Theme Colors End */
+
 export const MY_SMART_HEALTH_CARE = 'My SmartHealth';
 export const MY_MEDFLIC = 'Medflic';
 export const CURRENT_APP_NAME = MY_SMART_HEALTH_CARE;
 
-export const ANDROID_BUNDLE_IDENTIFIER = CURRENT_APP_NAME === MY_MEDFLIC ? 'com.ads.medflic' : 'com.ads.mysmarthealth';
+export const ANDROID_BUNDLE_IDENTIFIER = CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'com.ads.medflic' : 'com.ads.mysmarthealth';
 

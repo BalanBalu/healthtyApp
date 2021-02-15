@@ -8,6 +8,8 @@ import { serviceOfSearchByHospitalDetails, serviceOfGetFavoriteListCount4Patient
 import { MAX_DISTANCE_TO_COVER_HOSPITALS } from '../../../../setup/config'
 import { addTimeUnit, formatDate, getMoment } from '../../../../setup/helpers';
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import {primaryColor} from '../../../../setup/config'
+
 import RenderHospitalInfo from './RenderHospitalInfo';
 import { Loader } from '../../../../components/ContentLoader';
 import styles from '../Styles';
@@ -347,14 +349,14 @@ class HospitalList extends Component {
                             <Text style={{
                                 marginLeft: 5,
                                 fontFamily: 'OpenSans',
-                                color: '#7F49C3',
+                                color: primaryColor,
                                 fontSize: 13,
                                 // marginTop: 5
                             }}>
                                 {locationText}
                                 {/* <Text style={{
                                             fontFamily: 'OpenSans',
-                                            color: '#7F49C3',
+                                            color: primaryColor,
                                             fontSize: 13,
                                         }}>{" "}location - {"Chennai"}</Text> */}
                             </Text>

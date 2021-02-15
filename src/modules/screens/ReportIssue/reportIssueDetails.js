@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#775DA3'
+    color: '#128283'
   },
   date: {
     fontFamily: 'OpenSans',

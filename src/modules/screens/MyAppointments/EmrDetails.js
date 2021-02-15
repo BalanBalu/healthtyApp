@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
     fontFamily: 'OpenSans',
-    fontSize: 14, color: '#7F49C3'
+    fontSize: 14, color: '#128283'
   },
   profileImage: {
     marginLeft: 'auto',

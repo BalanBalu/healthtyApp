@@ -4,6 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
+import {primaryColor} from '../../../setup/config'
 
 import {
     searchDoctorList, fetchAvailabilitySlots,
@@ -743,7 +744,7 @@ class doctorSearchList extends Component {
                                 {'\u20B9'}{feeWithoutOffer}</Text> : null
                         }
                     </Text>
-                    <TouchableOpacity onPress={() => this.navigateToBookAppointmentPage(item)} style={{ backgroundColor: '#7F49C3', borderRadius: 10, marginLeft: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 2, paddingBottom: 2, justifyContent: 'center', }}>
+                    <TouchableOpacity onPress={() => this.navigateToBookAppointmentPage(item)} style={{ backgroundColor: primaryColor, borderRadius: 10, marginLeft: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 2, paddingBottom: 2, justifyContent: 'center', }}>
                         <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
                     </TouchableOpacity>
                 </Row>
@@ -798,7 +799,7 @@ class doctorSearchList extends Component {
                                 :
                                 <View>
                                     <View style={{ borderBottomColor: '#B6B6B6', borderBottomWidth: 0.5, paddingBottom: 8 }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: primaryColor, fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
 
                                         <ScrollView
                                             horizontal={true}
@@ -1022,7 +1023,7 @@ class doctorSearchList extends Component {
                 }}
                 renderItem={({ item }) =>
                     <Col style={{ justifyContent: 'center' }}>
-                        <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
+                        <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: primaryColor, alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
                             onPress={() => this.onDateChanged(item, doctorIdHostpitalId)}>
                             <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
                             <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
@@ -1075,7 +1076,7 @@ const styles = StyleSheet.create({
     },
     slotBookedBgColor: {
 
-        backgroundColor: '#A9A9A9', //'#775DA3',
+        backgroundColor: '#A9A9A9', //primaryColor,
         borderColor: '#000',
         marginTop: 10, height: 30,
         borderRadius: 5,
@@ -1086,7 +1087,7 @@ const styles = StyleSheet.create({
     },
     slotSelectedBgColor: {
 
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderColor: '#000',
         marginTop: 10,
         height: 30,

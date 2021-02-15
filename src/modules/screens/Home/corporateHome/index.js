@@ -133,9 +133,9 @@ class CorporateHome extends PureComponent {
             this.locationUpdatedCount = locationUpdatedCount;
 
         }
-
+        
         return (
-            <Container style={styles.container}>
+            <Container style={[styles.container, {backgroundColor: '#FAFBFF'}]}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
                     <View style={{ padding: 10 }}>

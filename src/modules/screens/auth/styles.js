@@ -1,6 +1,6 @@
 // Imports
 import { StyleSheet } from 'react-native'
-
+import {primaryColor, secondaryColor} from '../../../setup/config'
 
 
 // Styles
@@ -104,7 +104,7 @@ export default StyleSheet.create({
         height: 45,
         marginTop: 20,
         borderRadius: 5,
-        // borderColor:'#775DA3',
+        // borderColor:primaryColor,
         fontFamily: 'OpenSans',
         fontSize: 15
     },
@@ -126,7 +126,7 @@ export default StyleSheet.create({
     },
     loginButton: {
         marginTop: 20,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         marginLeft: 15,
         borderRadius: 5,
     },
@@ -137,11 +137,11 @@ export default StyleSheet.create({
     },
     forgotButton: {
         marginTop: 20,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     smallSignUpButton: {
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         marginLeft: 10,
         borderRadius: 20,
         paddingRight: 15,
@@ -151,7 +151,8 @@ export default StyleSheet.create({
     },
     loginButton1: {
         marginTop: 20,
-        backgroundColor: '#775DA3',
+        // backgroundColor: 'rgba(18, 130, 131, 1)',
+        backgroundColor: primaryColor,
         borderRadius: 20,
         justifyContent: 'center',
         paddingRight: 35,
@@ -161,7 +162,9 @@ export default StyleSheet.create({
     },
     loginButton1Disable: {
         marginTop: 20,
-        backgroundColor: '#9777c7',
+        backgroundColor: secondaryColor,
+        // backgroundColor: 'rgba(18, 130, 131, 0.7)',
+        
         borderRadius: 20,
         justifyContent: 'center',
         paddingRight: 35,
@@ -170,7 +173,7 @@ export default StyleSheet.create({
         paddingTop: 8
     },
     UserButton1: {
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 20,
         justifyContent: 'center',
         paddingRight: 35,
@@ -179,7 +182,7 @@ export default StyleSheet.create({
         paddingTop: 8
     },
     detailsButton: {
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         marginLeft: 15,
         borderRadius: 5,
         marginTop: -20,
@@ -189,7 +192,7 @@ export default StyleSheet.create({
         color: 'gray',
         fontFamily: 'OpenSans',
         fontSize: 13,
-        color: '#775DA3',
+        color: primaryColor,
 
 
     },
@@ -213,7 +216,7 @@ export default StyleSheet.create({
         marginLeft: 16,
         borderRadius: 5,
         paddingLeft: 20,
-        color: '#775DA3',
+        color: primaryColor,
         height: 45,
         padding: 10,
         fontFamily: 'OpenSans',

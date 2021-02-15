@@ -10,6 +10,8 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUC
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
+import {primaryColor} from '../../../setup/config'
+
 import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/DashBoardImage/ChatAndVideo.jpg');
@@ -610,7 +612,7 @@ class Home extends Component {
                                 </Left>
                                 <Right>
                                     <TouchableOpacity onPress={() => this.navigetToCategories()} style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 5, paddingTop: 5, borderRadius: 5, color: '#fff', flexDirection: 'row' }}>
-                                        <Text style={{ color: '#775DA3', fontSize: 13, textAlign: 'center', fontWeight: 'bold' }}>{translate('View All')}</Text>
+                                        <Text style={{ color: primaryColor, fontSize: 13, textAlign: 'center', fontWeight: 'bold' }}>{translate('View All')}</Text>
                                     </TouchableOpacity>
                                 </Right>
                             </Row>
@@ -776,7 +778,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold',
         padding: 5,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 20,
         color: 'white',
         width: "95%",
@@ -824,7 +826,7 @@ const styles = StyleSheet.create({
         marginTop: 5, borderRadius: 20
     },
     SearchStyle: {
-        backgroundColor: '#7E49C3',
+        backgroundColor: primaryColor,
         width: '85%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -874,7 +876,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     innerText: {
-        color: '#775DA3',
+        color: primaryColor,
         fontSize: 14,
         textAlign: 'left',
         marginLeft: 15,

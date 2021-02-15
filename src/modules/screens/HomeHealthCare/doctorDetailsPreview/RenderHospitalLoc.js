@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
 import Mapbox from '../../bookappoinment/Mapbox';
-
+import {primaryColor, secondaryColor} from '../../../../setup/config'
 import { Text, Card, List, ListItem, Left, Body, Icon } from 'native-base';
 import { Row, Grid } from 'react-native-easy-grid';
 
@@ -32,7 +32,7 @@ export default class RenderHospitalLoc extends Component {
                         <List>
                             <ListItem avatar>
                                 <Left>
-                                    <Icon name="locate" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
+                                    <Icon name="locate" style={{ color: primaryColor, fontSize: 20 }}></Icon>
                                 </Left>
                                 <Body>
                                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.no_and_street}</Text>

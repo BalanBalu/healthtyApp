@@ -8,6 +8,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { toastMeassage } from '../../common';
 import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById } from '../../providers/corporate/corporate.actions';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
+import {primaryColor} from '../../../setup/config'
 
 class EcardDetails extends React.Component {
   constructor(props) {
@@ -87,7 +88,7 @@ class EcardDetails extends React.Component {
           <Text style={styles.titleText2}>E-Card Details..</Text>
           <ListItem avatar>
             <Left>
-              <Icon name="info-circle" style={{ color: '#7E49C3', fontSize: 20 }} />
+              <Icon name="info-circle" style={{ color: primaryColor, fontSize: 20 }} />
             </Left>
             <Body>
               <View testID="onPressUpdateContact">
@@ -99,7 +100,7 @@ class EcardDetails extends React.Component {
           </ListItem>
           <ListItem avatar>
             <Left>
-              <MaterialIcons name="people" style={{ color: '#7E49C3', fontSize: 20 }} />
+              <MaterialIcons name="people" style={{ color: primaryColor, fontSize: 20 }} />
             </Left>
             <Body>
               <View testID="onPressUpdateContact">
@@ -137,7 +138,7 @@ class EcardDetails extends React.Component {
           </ListItem>
           {/* <ListItem avatar>
           <Left>
-            <FontAwesome name="shield" style={{ color: '#7E49C3', fontSize: 15 }} />
+            <FontAwesome name="shield" style={{ color: primaryColor, fontSize: 15 }} />
           </Left>
 
           <Body>

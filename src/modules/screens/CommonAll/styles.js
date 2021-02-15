@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import {primaryColor, secondaryColor} from '../../../setup/config'
 
 export default styles = StyleSheet.create({
     container:
@@ -24,7 +25,7 @@ export default styles = StyleSheet.create({
         textAlign: 'center'
     },
     slotBookedBgColor: {
-        backgroundColor: '#A9A9A9', //'#775DA3',
+        backgroundColor: '#A9A9A9', //primaryColor,
         borderColor: '#000',
         marginTop: 10, height: 30,
         borderRadius: 5,
@@ -33,7 +34,7 @@ export default styles = StyleSheet.create({
     },
     slotSelectedBgColor: {
 
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderColor: '#000',
         marginTop: 10,
         height: 30,
@@ -184,7 +185,7 @@ export default styles = StyleSheet.create({
         paddingLeft: 5,
         paddingRight: 5,
         paddingTop: 1,
-        color: '#7F49C3'
+        color: primaryColor
     },
 
     homeTextButton: {
@@ -192,7 +193,7 @@ export default styles = StyleSheet.create({
         paddingRight: 10,
         paddingTop: 2,
         paddingBottom: 2,
-        borderColor: '#7F49C3',
+        borderColor: primaryColor,
         borderWidth: 1,
         borderRadius: 5
     },
@@ -245,7 +246,7 @@ export default styles = StyleSheet.create({
     },
 
     defaultdoneButton: {
-        color: '#775DA3',
+        color: primaryColor,
         fontFamily: 'OpenSans',
         fontSize: 13,
         textAlign: 'center',
@@ -258,7 +259,7 @@ export default styles = StyleSheet.create({
         paddingLeft: 5,
         paddingRight: 5,
         borderRadius: 15,
-        backgroundColor: '#775DA3'
+        backgroundColor: primaryColor
     },
     viewButtonBgGray: {
         paddingTop: 10,
@@ -266,7 +267,7 @@ export default styles = StyleSheet.create({
         paddingLeft: 5,
         paddingRight: 5,
         borderRadius: 15,
-        borderColor: '#775DA3',
+        borderColor: primaryColor,
         borderWidth: 0.5
     },
 
@@ -279,7 +280,7 @@ export default styles = StyleSheet.create({
     },
     picodeText: {
         fontFamily: 'OpenSans',
-        color: '#7F49C3',
+        color: primaryColor,
         fontSize: 13,
     },
     editPincodeButton: {
@@ -312,7 +313,7 @@ export default styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginTop: 12,
-        backgroundColor: "#775DA3",
+        backgroundColor: primaryColor,
         marginLeft: 15,
         borderRadius: 10,
         width: "auto",
@@ -325,7 +326,7 @@ export default styles = StyleSheet.create({
     },
     bookingButton: {
         marginTop: 10,
-        backgroundColor: "#775DA3",
+        backgroundColor: primaryColor,
         marginRight: 1,
         borderRadius: 10,
         width: "auto",

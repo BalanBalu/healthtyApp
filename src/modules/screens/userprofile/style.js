@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import {primaryColor} from '../../../setup/config'
 
 export default StyleSheet.create({
 
@@ -37,7 +38,7 @@ export default StyleSheet.create({
         width: 40,
         fontSize: 20,
         borderRadius: 25,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         marginTop: 10,
         paddingLeft: 12,
         paddingTop: 10,
@@ -57,7 +58,7 @@ export default StyleSheet.create({
 
     addressButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
         fontFamily: 'OpenSans',
         marginLeft: 15,
@@ -177,7 +178,7 @@ export default StyleSheet.create({
     },
     skipButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
         fontFamily: 'OpenSans',
     },
@@ -194,7 +195,7 @@ export default StyleSheet.create({
     button2: {
 
         borderRadius: 10,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         justifyContent: 'center',
         padding: 10,
         marginTop: 10,
@@ -230,7 +231,7 @@ export default StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         justifyContent: 'center',
-        borderColor: '#775DA3',
+        borderColor: primaryColor,
         borderWidth: 2
     },
     buttonText: {

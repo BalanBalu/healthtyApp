@@ -9,6 +9,8 @@ import { addTimeUnit, subTimeUnit, getAllId } from "../../../../setup/helpers";
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 import { getAllEducation, getAllSpecialist } from '../../../common'
 import Spinner from "../../../../components/Spinner";
+import {primaryColor} from '../../../../setup/config'
+
 import { getMultipleDoctorDetails } from "../../../providers/bookappointment/bookappointment.action";
 import InsertReview from '../Reviews/insertReviews';
 import { RenderNoAppointmentsFounds } from '../../CommonAll/components';
@@ -276,10 +278,10 @@ export default class AppointmentList extends Component {
                         selectedIndex={selectedIndex}
                         onTabPress={this.onChangeUpComingOrPastTabs}
                         activeTabStyle={{
-                            backgroundColor: "#775DA3",
-                            borderColor: "#775DA3"
+                            backgroundColor: primaryColor,
+                            borderColor: primaryColor
                         }}
-                        tabStyle={{ borderColor: "#775DA3" }} />
+                        tabStyle={{ borderColor: primaryColor }} />
                 </Card>
                 {isLoading ?
                     <Spinner

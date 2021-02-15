@@ -7,6 +7,7 @@ import { bloodDonationFilter, bloodDonationList } from '../../providers/profile/
 import { object } from 'prop-types';
 import { translate } from "../../../setup/translator.helper"
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import {primaryColor} from '../../../setup/config'
 
 class BloodDonerFilters extends Component {
   constructor(props) {
@@ -485,8 +486,8 @@ class BloodDonerFilters extends Component {
             </ListItem>
           </List>
         </View>
-        <TouchableOpacity onPress={() => this.filteredTotalDataList1()} style={{ backgroundColor: '#7E49C3' }}>
-          <Footer style={{ backgroundColor: '#7E49C3', justifyContent: 'center', alignItems: 'center' }}>
+        <TouchableOpacity onPress={() => this.filteredTotalDataList1()} style={{ backgroundColor: primaryColor }}>
+          <Footer style={{ backgroundColor: primaryColor, justifyContent: 'center', alignItems: 'center' }}>
 
             <Text uppercase={true} style={styles.searchText}>{translate("search")}</Text>
 

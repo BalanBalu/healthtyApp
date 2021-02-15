@@ -10,6 +10,8 @@ import { Loader } from '../../../components/ContentLoader';
 import { SERVICE_TYPES } from '../../../setup/config'
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import ConfirmPopup from '../../../components/Shared/ConfirmPopup';
+import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
+
 import RenderUserAddressList from './RenderUserAddressList';
 const USER_FIELDS = "first_name,last_name,mobile_no,email,address,delivery_address,home_healthcare_address"
 
@@ -156,7 +158,7 @@ export default class HomeHealthCareAddressChange extends Component {
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
                     <View style={{ marginTop: 10, marginBottom: 10 }} >
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3', alignSelf: 'center',fontWeight:'700' }}>MY ADDRESS</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor, alignSelf: 'center',fontWeight:'700' }}>MY ADDRESS</Text>
                     </View>
                     <View>
                         <FlatList
@@ -167,7 +169,7 @@ export default class HomeHealthCareAddressChange extends Component {
                     </View>
                     <Row style={{alignItems:'center',justifyContent:'center',marginTop:10}}>
                     <TouchableOpacity transparent onPress={() => this.onPressGoToLocPage()} style={{marginBottom:25,alignItems:'center',justifyContent:'center',flexDirection:'row',marginTop:10}}>
-                        <Icon name='add' style={{ color: '#7F49C3',fontSize:35,}} />
+                        <Icon name='add' style={{ color: primaryColor,fontSize:35,}} />
                         <Text uppercase={false} style={styles.customText}>ADD NEW ADDRESS</Text>
                     </TouchableOpacity>
                     </Row>
@@ -185,7 +187,7 @@ export default class HomeHealthCareAddressChange extends Component {
                     }}
                     cancelButtonAction={() => this.setState({ isVisibleDeletePop: !isVisibleDeletePop })}
                     visible={isVisibleDeletePop} />
-                <Footer style={{ backgroundColor: '#7E49C3', }}>
+                <Footer style={{ backgroundColor: primaryColor, }}>
                     <Row>
                         <Col style={{ marginRight: 40 }} >
                             <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}
@@ -255,7 +257,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontFamily: 'OpenSans',
         fontSize: 15,
-        color: '#7F49C3'
+        color: primaryColor
     },
     customSubText: {
         marginLeft: 2,

@@ -6,6 +6,8 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { getMemberDetailsByEmail, getClaimsDataByPayerCode } from '../../providers/corporate/corporate.actions'; ''
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
+import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 const LIMIT = 5;
 
@@ -109,8 +111,8 @@ class PolicyStatus extends Component {
                 size={140}
                 width={10}
                 fill={50}
-                tintColor="#7F49C3"
-                backgroundColor="#AAB3DC">
+                tintColor={primaryColor}
+                backgroundColor='rgba(18, 130, 131, 0.3)'>
                 {() => (
                   <View>
                     <Text style={styles.usedAmount}>{memberDetails.balSumInsured ? memberDetails.balSumInsured : 0}</Text>
@@ -309,7 +311,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '700',
-    color: '#7F49C3'
+    color: primaryColor
   },
   policyText: {
     fontFamily: 'OpenSans',

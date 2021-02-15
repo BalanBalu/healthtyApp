@@ -5,6 +5,8 @@ import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform, Modal } fr
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import ImagePicker from 'react-native-image-crop-picker';
+import {primaryColor} from '../../../../setup/config'
+
 import { uploadMultiPart } from '../../../../setup/services/httpservices'
 import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/profile.action';
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
@@ -501,7 +503,7 @@ class MedicineCheckout extends Component {
                                     <View >
                                         <Row style={{ marginTop: 10, marginBottom: 10 }}>
                                             <Col size={5}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Delivery Address</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Delivery Address</Text>
                                             </Col>
                                             {deliveryAddressArray.length != 0 ?
                                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
@@ -569,7 +571,7 @@ class MedicineCheckout extends Component {
                                         </Col> */}
                                         <Row >
                                             <Col size={5}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Store Address</Text>
                                             </Col>
                                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                                 <TouchableOpacity onPress={() => this.changePharmacy()}>
@@ -587,7 +589,7 @@ class MedicineCheckout extends Component {
 
 
                                 <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5, marginBottom: 20 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Order Details</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Order Details</Text>
                                     {isPrescription === false ?
                                         this.state.medicineDetails.length != 0 ?
                                             <FlatList
@@ -835,7 +837,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     normalText: {

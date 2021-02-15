@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { toastMeassage } from '../../common';
+import {primaryColor} from '../../../setup/config'
 
 class Insurance extends Component {
   constructor(props) {
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginLeft: 5,
     marginRight: 5,
-    borderColor: '#7E49C3',
+    borderColor: primaryColor,
   },
   cardText1: {
     color: '#000',
@@ -203,13 +204,13 @@ const styles = StyleSheet.create({
     marginTop:5
   },
   cardText3: {
-    color: '#7E49C3',
+    color: primaryColor,
     fontSize: 14,
     fontWeight: 'bold',
   },
   Button: {
     marginTop: 20,
-    backgroundColor: '#7E49C3',
+    backgroundColor: primaryColor,
     // marginLeft: 90,
     // marginRight: 90,
     // marginBottom: 30,
@@ -244,7 +245,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   SearchStyle: {
-    backgroundColor: '#7E49C3',
+    backgroundColor: primaryColor,
     width: '85%',
     alignItems: 'center',
     justifyContent: 'center',

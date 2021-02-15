@@ -6,6 +6,8 @@ import {
   Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
   Text, Thumbnail, Content, CheckBox, Item, Input
 } from 'native-base';
+import {primaryColor, secondaryColor} from '../../../setup/config'
+
 //import {ScrollView} from 'react-native-gesture-handler';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
@@ -141,7 +143,7 @@ export class InsertReview extends Component {
               bottom: 0,
               marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey'
             }}>
-              <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
+              <Row style={{ backgroundColor: primaryColor, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                 <Left>
                   <Text style={{ color: '#fff', fontSize: 16 }}>{getDoctorNameOrHospitalName(data)}</Text>
                 </Left>

@@ -4,6 +4,8 @@ import {
     Container, Content, Text, View, Button, H3, Item, Card,
     Input, Left, Right, Icon, Footer, Badge, Form, CardItem
 } from 'native-base';
+import {primaryColor} from '../../../setup/config'
+
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal, TextInput, Platform } from 'react-native';
 
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
         paddingTop: 2, 
         paddingBottom: 2, 
         borderRadius: 5, 
-        backgroundColor: '#775DA3'
+        backgroundColor: primaryColor
     },
     cancelButton:{
         paddingLeft: 10, 

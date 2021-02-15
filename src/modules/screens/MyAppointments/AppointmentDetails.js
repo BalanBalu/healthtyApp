@@ -7,6 +7,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, TouchableOpacity, Modal, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
+import {primaryColor} from '../../../setup/config'
+
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation, getAppointmentCode } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff, statusValue, getMoment, isTimeAfter } from '../../../setup/helpers';
@@ -933,7 +935,7 @@ class AppointmentDetails extends Component {
                     <Row>
 
                       <Col size={3} style={{ marginRight: 3 }}>
-                        <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
+                        <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: primaryColor }}
                           onPress={() => this.SkipAction()} testID='confirmButton'>
 
                           <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'SKIP'}</Text>
@@ -1318,7 +1320,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 45,
     width: '30%',
-    backgroundColor: '#775DA3',
+    backgroundColor: primaryColor,
     textAlign: 'center',
     justifyContent: 'center',
     margin: 5
@@ -1334,7 +1336,7 @@ const styles = StyleSheet.create({
   },
   reviewButton: {
     marginTop: 12,
-    backgroundColor: '#775DA3',
+    backgroundColor: primaryColor,
     borderRadius: 10,
     height: 40,
     color: 'white',
@@ -1374,7 +1376,7 @@ const styles = StyleSheet.create({
   },
   bookingButton: {
     marginTop: 10,
-    backgroundColor: "#775DA3",
+    backgroundColor: primaryColor,
     marginRight: 1,
     borderRadius: 10,
     width: "auto",
@@ -1384,7 +1386,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   appoinmentPrepareStyle2: {
-    backgroundColor: "#775DA3",
+    backgroundColor: primaryColor,
     paddingTop: 8,
     paddingBottom: 8,
     paddingRight: 10,

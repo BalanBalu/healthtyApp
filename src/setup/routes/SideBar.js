@@ -7,6 +7,8 @@ import FastImage from 'react-native-fast-image'
 import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE, IS_ANDROID, CURRENT_APP_NAME,MY_SMART_HEALTH_CARE } from '../config'
 import { translate } from "../../setup/translator.helper"
 import { corporateUserSideBarMenuList } from "./appRouterHome";
+import {primaryColor, secondaryColor, secondaryColorTouch} from '../../setup/config';
+
 
 class SideBar extends React.Component {
   activeUserData = {};
@@ -72,7 +74,7 @@ class SideBar extends React.Component {
       <Container>
 
         <Content>
-          <View style={{ height: 120, backgroundColor: '#7f49c3', }}>
+          <View style={{ height: 120, backgroundColor: '#128283', }}>
 
             <FastImage square source={require('../../../assets/images/Logo.png')} style={{ flex: 1, width: undefined, height: undefined, opacity: 0.1, transform: [{ rotate: '-2deg' }] }} />
 
@@ -160,7 +162,7 @@ class SideBar extends React.Component {
           <View style={{ marginTop: 10, marginLeft: 2 }}>
             <ListItem avatar style={{ marginTop: -15 }}>
               <Icon name='ios-power' style={{
-                fontSize: 15, color: '#7D4ac1',
+                fontSize: 15, color: '#128283',
               }} />
               <Body style={{ borderBottomWidth: 0, }}>
                 <Text onPress={() => this.signInOrSignup(hasLoggedIn)}
@@ -171,7 +173,7 @@ class SideBar extends React.Component {
         </Content>
         <View>
           <Footer style={{ marginTop: 10, backgroundColor: '#fff', }}>
-            <FooterTab style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#7f49c3' }}>
+            <FooterTab style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#128283' }}>
               <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontWeight: '700', fontSize: 20, color: '#fff' }}>{CURRENT_APP_NAME}</Text>
               <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 15, color: '#000' }}>Version {IS_ANDROID ? CURRENT_PRODUCT_ANDROID_VERSION_CODE : CURRENT_PRODUCT_IOS_VERSION_CODE}</Text>
             </FooterTab>

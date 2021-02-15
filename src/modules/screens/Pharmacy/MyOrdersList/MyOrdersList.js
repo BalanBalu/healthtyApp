@@ -10,6 +10,7 @@ import { formatDate } from '../../../../setup/helpers';
 import { statusBar } from '../CommomPharmacy'
 import Spinner from '../../../../components/Spinner';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
+import {primaryColor} from '../../../../setup/config'
 
 class MyOrdersList extends Component {
     constructor(props) {
@@ -340,7 +341,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: '500',
         fontFamily: 'OpenSans',
-        color: '#7F49C3',
+        color: primaryColor,
         marginTop: 5,
     },
     Head1: {
@@ -384,7 +385,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     normalText:

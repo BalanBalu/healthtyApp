@@ -3,6 +3,9 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import styles from '../modules/screens/auth/styles';
 import { Container, Header, Content, Row, Col, H2, H3, Button, Card, Left, Right, Body, Icon, Title } from 'native-base';
 import { CURRENT_APP_NAME } from '../setup/config'
+
+import {primaryColor} from '../setup/config'
+
 class TermsAndConditions extends Component {
   constructor() {
     super();
@@ -12,7 +15,7 @@ class TermsAndConditions extends Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Header style={{ backgroundColor: '#7E49C3' }}>
+        <Header style={{ backgroundColor: primaryColor }}>
           <Row >
             <Col style={{ marginLeft: 10, marginTop: 10, width: '25%' }}>
               <Image source={require('../../assets/images/Logo.png')} style={{ height: 40, width: 40 }} />
@@ -338,7 +341,7 @@ const termsStyles = StyleSheet.create({
     bottom: 0,
     right: 0,
     marginRight: 15,
-    backgroundColor: '#7E49C3',
+    backgroundColor: primaryColor,
     padding: 12, marginBottom: 12,
     borderRadius: 20,
     paddingLeft: 24,

@@ -9,6 +9,7 @@ import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineIma
 import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
+import {primaryColor} from '../../../../setup/config'
 
 import Autocomplete from '../../../../components/Autocomplete'
 import Spinner from '../../../../components/Spinner'
@@ -211,7 +212,7 @@ class PharmacyHome extends Component {
                 <NavigationEvents
                     onWillFocus={payload => { this.backNavigation(payload) }}
                 />
-                <View style={{ backgroundColor: '#7F49C3', padding: 5, paddingBottom: 10, height: 45 }}>
+                <View style={{ backgroundColor: primaryColor, padding: 5, paddingBottom: 10, height: 45 }}>
                     <Grid>
                         <Col size={10}>
                             <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 5 }}>
@@ -225,7 +226,7 @@ class PharmacyHome extends Component {
                                     returnKeyType={'go'}
                                     multiline={false} />
                                 <TouchableOpacity style={{ alignItems: 'flex-end' }}>
-                                    <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+                                    <Icon name='ios-search' style={{ color: primaryColor, fontSize: 20 }} />
                                 </TouchableOpacity>
                             </Item>
                         </Col>
@@ -239,10 +240,10 @@ class PharmacyHome extends Component {
                             size={6} style={{ justifyContent: 'center', backgroundColor: '#fff', height: 30, borderColor: 'gray', borderWidth: 0.3, borderRadius: 2 }}>
                             <Row>
                                 <Col size={.5}>
-                                    <Icon name='location-sharp' style={{ fontSize: 15, color: '#775DA3', marginTop: 5, marginLeft: 4 }} />
+                                    <Icon name='location-sharp' style={{ fontSize: 15, color: primaryColor, marginTop: 5, marginLeft: 4 }} />
                                 </Col>
                                 <Col size={5.5} style={{ justifyContent: 'center' }}>
-                                    <Text style={{ fontSize: 10, color: '#775DA3', marginLeft: 5 }}>Search Near by Stores</Text>
+                                    <Text style={{ fontSize: 10, color: primaryColor, marginLeft: 5 }}>Search Near by Stores</Text>
                                 </Col>
                             </Row>
 
@@ -578,7 +579,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: "700",
-        color: '#775DA3'
+        color: primaryColor
     },
     hosname: {
         fontFamily: 'OpenSans',
@@ -686,7 +687,7 @@ const styles = StyleSheet.create({
         lineHeight: 20
     },
     uploadTouchable: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
         paddingRight: 10,
         paddingBottom: 4,
         paddingTop: 4,

@@ -11,6 +11,8 @@ import { userFiledsUpdate, logout, getPostOffNameAndDetails } from '../../../pro
 import Geolocation from 'react-native-geolocation-service';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 // import Qs from 'qs';
+import {primaryColor} from '../../../../setup/config'
+
 import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../../components/Spinner';
 import locationIcon from '../../../../../assets/marker.png';
@@ -718,7 +720,7 @@ const styles = StyleSheet.create({
     },
     confirmUpdateLocBtn: {
         marginTop: 25,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
         fontFamily: 'OpenSans',
         marginLeft: 15,
@@ -726,7 +728,7 @@ const styles = StyleSheet.create({
         borderRadius: 15
     },
     SearchStyle: {
-        backgroundColor: '#7E49C3',
+        backgroundColor: primaryColor,
         width: '10%',
         alignItems: 'center',
         justifyContent: 'center',

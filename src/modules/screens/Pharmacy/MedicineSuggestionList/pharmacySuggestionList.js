@@ -6,6 +6,8 @@ import { Item, Text, Icon, Header, Left, Row, Grid, Col, Input, Container, Conte
 import { getSuggestionMedicines } from '../../../providers/pharmacy/pharmacy.action';
 import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { setCartItemCountOnNavigation } from '../CommomPharmacy'
+import {primaryColor, secondaryColor} from '../../../../setup/config'
+
 import { connect } from 'react-redux'
 const debounce = (fun, delay) => {
     let timer = null;
@@ -98,7 +100,7 @@ class MedicineSuggestionList extends Component {
 
                                 this.props.navigation.navigate("medicineSearchList", { medicineName: this.state.medicineName,byPharmacy:false })
                             }}  >
-                                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+                                <Icon name='ios-search' style={{ color: primaryColor, fontSize: 20 }} />
                             </TouchableOpacity>
                         </Item>
                     </View>
@@ -140,7 +142,7 @@ class MedicineSuggestionList extends Component {
                                         }} >
                                             <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.description || ''}</Text>
                                             <Right>
-                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>{item.typeName || ''}</Text>
+                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, color: primaryColor }}>{item.typeName || ''}</Text>
                                             </Right>
                                         </Row>
                                     )}

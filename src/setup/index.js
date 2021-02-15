@@ -27,7 +27,6 @@ import * as RNLocalize from "react-native-localize";
 import OfflineNotice from '../components/offlineNotice';
 
 
-
 export default class App extends Component {
   userId = null;
   constructor(props) {
@@ -117,6 +116,8 @@ export default class App extends Component {
       console.log(e)
     }
   }
+
+  
 
 
   

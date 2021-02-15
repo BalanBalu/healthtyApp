@@ -102,7 +102,7 @@ class MedicineRecords extends PureComponent {
              
                 <Row style={{ marginTop: 15 }}>
                     <Right>
-                        <TouchableOpacity style={{ backgroundColor: '#7E49C3', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }} onPress={() => {
+                        <TouchableOpacity style={{ backgroundColor: '#128283', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }} onPress={() => {
                             this.props.navigation.navigate('UploadEmr', { prevState: this.props.navigation.state })
                         }}>
                             <Text style={{ color: '#fff', fontSize: 15 }} >Upload</Text>

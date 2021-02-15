@@ -7,6 +7,7 @@ import { getproductDetailsByPharmacyId } from '../../../providers/pharmacy/pharm
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 import Spinner from '../../../../components/Spinner';
 import {  getCurrentVersion } from '../../../providers/profile/profile.action';
+import {primaryColor, secondaryColor} from '../../../../setup/config'
 
 
 class ReOrder extends Component {
@@ -384,7 +385,7 @@ const styles = StyleSheet.create({
 
     loginButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     normalText:
@@ -470,7 +471,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginTop: 12,
-        backgroundColor: "#775DA3",
+        backgroundColor: primaryColor,
         marginLeft: 15,
         borderRadius: 10,
         width: "auto",

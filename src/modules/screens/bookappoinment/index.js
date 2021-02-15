@@ -14,6 +14,8 @@ import {
   Spinner
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import {primaryColor} from '../../../setup/config'
+
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
@@ -642,23 +644,23 @@ getMinVideoChatConsultFee(item) {
                 {availabilityForVideo  === true ?
                 <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                     <TouchableOpacity style={{flexDirection:'row'}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
-                      <Icon name="ios-videocam" style={{fontSize:25,color:'#7F49C3'}}/>
-                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',marginTop:3}}>{translate("Video")}</Text>
+                      <Icon name="ios-videocam" style={{fontSize:25,color:primaryColor}}/>
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:primaryColor,marginTop:3}}>{translate("Video")}</Text>
                     </TouchableOpacity>
                   </Col> 
                   : null}
                       {availabilityForChat === true ?
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}} onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
-                      <Icon name="chatbox" style={{fontSize:25,color:'#7F49C3',marginTop:2}} />
-                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>{translate("Chat")}</Text>
+                      <Icon name="chatbox" style={{fontSize:25,color:primaryColor,marginTop:2}} />
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:primaryColor,}}>{translate("Chat")}</Text>
                     </TouchableOpacity>
                   </Col>
                   : null}
                   <Col size={3.3}  style={{justifyContent:'center',alignItems:"center"}}>
                   <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}}>
-                       <Icon name="share-social"  style={{fontSize:20,color:'#7F49C3'}} />
-                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:'#7F49C3',}}>{translate("Share")}</Text>
+                       <Icon name="share-social"  style={{fontSize:20,color:primaryColor}} />
+                      <Text style={{marginLeft:5,fontFamily:'OpenSans',fontSize:13,color:primaryColor,}}>{translate("Share")}</Text>
                     </TouchableOpacity>
                   </Col>
 
@@ -681,10 +683,10 @@ getMinVideoChatConsultFee(item) {
             </Card>
             <Row style={{ marginLeft: 5, marginRight: 5,marginTop:10 }}>
               <Segment>
-                <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 5, alignItems: 'center', justifyContent: 'center' }, pressTab === 1 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => { this.onSegemntClick(1) }}>
+                <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 5, alignItems: 'center', justifyContent: 'center' }, pressTab === 1 ? { borderBottomColor: primaryColor } : { borderBottomColor: '#000' }]} onPress={() => { this.onSegemntClick(1) }}>
                   <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center' }}>{translate("About")}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 5, alignContent: 'center', justifyContent: 'center' }, pressTab === 2 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => {
+                <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 5, alignContent: 'center', justifyContent: 'center' }, pressTab === 2 ? { borderBottomColor: primaryColor } : { borderBottomColor: '#000' }]} onPress={() => {
                   if (!isLoadedUserReview) {
                     this.getUserReview(doctorData.doctor_id);
                   }
@@ -707,7 +709,7 @@ getMinVideoChatConsultFee(item) {
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{doctorData.professional_statement} <Text style={{ fontFamily: 'OpenSans', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: false })}>...Hide</Text></Text>}
                     </View>
                     <Row style={{ marginLeft: 5, marginRight: 5, paddingBottom: 5 }}>
-                      <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#775DA3' }}></Text></Right>
+                      <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: primaryColor }}></Text></Right>
                     </Row>
                   </View> : null}
 
@@ -847,7 +849,7 @@ getMinVideoChatConsultFee(item) {
 
           </Content>}
 
-        <Footer style={{ backgroundColor: '#7E49C3', }}>
+        <Footer style={{ backgroundColor: primaryColor, }}>
           <Row>
             <Col style={{ marginRight: 40 }} >
               <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}
@@ -907,7 +909,7 @@ getMinVideoChatConsultFee(item) {
         }}
         renderItem={({ item }) =>
           <Col style={{ justifyContent: 'center' }}>
-            <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
+            <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: primaryColor, alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
               onPress={() => this.onDateChanged(item)}>
               <Text style={[{ textAlign: 'center', fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
               <Text style={[{ textAlign: 'center', fontSize: 10, fontFamily: 'OpenSans', lineHeight: 11 }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
@@ -1076,7 +1078,7 @@ const styles = StyleSheet.create({
     margin: 5
   },
   slotBookedBgColor: {
-    backgroundColor: '#A9A9A9', //'#775DA3',
+    backgroundColor: '#A9A9A9', //primaryColor,
     borderColor: '#000',
     marginTop: 10, height: 30,
     borderRadius: 5,
@@ -1086,7 +1088,7 @@ const styles = StyleSheet.create({
   },
   slotSelectedBgColor: {
 
-    backgroundColor: '#775DA3',
+    backgroundColor: primaryColor,
     borderColor: '#000',
     marginTop: 10, height: 30,
     borderRadius: 5,

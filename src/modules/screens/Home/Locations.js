@@ -3,6 +3,7 @@ import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content } 
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, View, TouchableOpacity, FlatList, AsyncStorage } from 'react-native';
+import {primaryColor} from '../../../setup/config'
 
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
         right: 30,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#686cc3',
+        backgroundColor: primaryColor,
     },
     text: {
         fontSize: 30,

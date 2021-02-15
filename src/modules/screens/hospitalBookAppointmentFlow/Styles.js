@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import {primaryColor} from '../../../setup/config'
 
 export default styles = StyleSheet.create({
     kmText: {
@@ -11,7 +12,7 @@ export default styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 14,
         fontWeight: "700",
-        color: '#775DA3'
+        color: primaryColor
     },
     location: {
         fontFamily: 'OpenSans',
@@ -35,7 +36,7 @@ export default styles = StyleSheet.create({
     },
     picodeText: {
         fontFamily: 'OpenSans',
-        color: '#7F49C3',
+        color: primaryColor,
         fontSize: 13,
     },
     editPincodeButton: {
@@ -79,7 +80,7 @@ export default styles = StyleSheet.create({
         fontSize: 12,
     },
     enableSearchIcon4Hospital: {
-        backgroundColor: '#7E49C3',
+        backgroundColor: primaryColor,
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',

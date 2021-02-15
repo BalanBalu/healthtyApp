@@ -4,6 +4,7 @@ import Mapbox from './Mapbox';
 
 import { Text,  Card, List, ListItem, Left,  Body, Icon } from 'native-base';
 import { Row, Grid } from 'react-native-easy-grid';
+import {primaryColor} from '../../../setup/config'
 
 
 export default class HospitalLocation extends Component {
@@ -33,7 +34,7 @@ export default class HospitalLocation extends Component {
           <List>
           <ListItem avatar>
             <Left>
-              <Icon name="locate" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
+              <Icon name="locate" style={{ color: primaryColor, fontSize: 20 }}></Icon>
             </Left>
              <Body>
                 <Text note style={{fontFamily:'OpenSans',fontSize:16}}>{addressData.no_and_street}</Text>

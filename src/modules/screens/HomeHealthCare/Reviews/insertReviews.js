@@ -129,7 +129,7 @@ export class InsertReview extends Component {
                             bottom: 0,
                             marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey'
                         }}>
-                            <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
+                            <Row style={{ backgroundColor: '#128283', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                                 <Left>
                                     <Text style={{ color: '#fff', fontSize: 16 }}>{getName(data.doctorInfo)}</Text>
                                 </Left>

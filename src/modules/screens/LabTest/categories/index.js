@@ -8,6 +8,8 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList, Alert } from 'reac
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getLabTestCateries } from '../../../providers/lab/lab.action';
 import FastImage from 'react-native-fast-image'
+import {primaryColor, secondaryColor} from '../../../../setup/config'
+
 
 class LabCategories extends PureComponent {
   constructor(props) {
@@ -272,7 +274,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     paddingTop: 1,
-    color: '#7F49C3'
+    color: primaryColor
   },
   subText: {
     fontSize: 8,

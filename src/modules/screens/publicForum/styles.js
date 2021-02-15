@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import {primaryColor} from '../../../setup/config'
 
 export default StyleSheet.create({
   container:
@@ -37,7 +38,7 @@ export default StyleSheet.create({
   },
   answerText: {
     textAlign: 'right',
-    color: '#7F49C3',
+    color: primaryColor,
     fontSize: 12
   },
   dateText: {
@@ -55,7 +56,7 @@ export default StyleSheet.create({
     paddingRight: 5,
     paddingTop: 2,
     paddingBottom: 2,
-    borderColor: '#7F49C3',
+    borderColor: primaryColor,
     borderWidth: 0.5
   },
   colstyle: {
@@ -66,7 +67,7 @@ export default StyleSheet.create({
   iconStyle: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#7F49C3',
+    backgroundColor: primaryColor,
     height: 30,
     borderRadius: 2,
     marginLeft: 5
@@ -111,7 +112,7 @@ export default StyleSheet.create({
   postAnswerButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#7F49C3',
+    backgroundColor: primaryColor,
     padding: 10,
     borderRadius: 5,
     marginTop: 20
@@ -168,7 +169,7 @@ export default StyleSheet.create({
     paddingBottom: 10
   },
   pageCountText: {
-    color: '#7F49C3',
+    color: primaryColor,
     fontSize: 14,
     fontWeight: 'bold'
   },

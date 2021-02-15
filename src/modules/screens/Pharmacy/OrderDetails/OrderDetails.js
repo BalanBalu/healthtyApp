@@ -4,6 +4,8 @@ import {
 } from 'native-base';
 import StarRating from 'react-native-star-rating';
 import { Col, Row } from 'react-native-easy-grid';
+import {primaryColor} from '../../../../setup/config'
+
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, BackHandler } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
 import { getMedicineOrderDetails, upDateOrderData, getOrderTracking, getMedicineOrderDetailsByOrderId } from '../../../providers/pharmacy/pharmacy.action';
@@ -342,7 +344,7 @@ class OrderDetails extends Component {
                                 } />
 
                             : null}
-                        <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
+                        <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: primaryColor, marginTop: 10 }}>Ordered Medicines</Text>
                         {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined && orderDetails.prescriptions.length !== 0 ?
 
                             <View style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 10, justifyContent: 'center', alignItems: 'center', }}>
@@ -476,7 +478,7 @@ class OrderDetails extends Component {
                                 </Row>
 
                             </View> : null}
-                    <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Medicine order Report</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: primaryColor, marginTop: 10 }}>Medicine order Report</Text>
 
                     {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
@@ -513,7 +515,7 @@ class OrderDetails extends Component {
                     }
                     {orderDetails.status === 'DELIVERED' && orderDetails.rating !== null && orderDetails.rating !== 0 ?
                         <View>
-                            <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Review</Text>
+                            <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: primaryColor, marginTop: 10 }}>Review</Text>
 
                             <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                 disabled={false}
@@ -525,7 +527,7 @@ class OrderDetails extends Component {
                         :
                         (orderDetails.status === 'DELIVERED' && orderDetails.rating === null) ?
                             <View>
-                                <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Add Review</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: primaryColor, marginTop: 10 }}>Add Review</Text>
 
 
                                 <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
@@ -644,7 +646,7 @@ const styles = StyleSheet.create({
 
     loginButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     normalText:
@@ -783,7 +785,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
-        color: '#7F49C3'
+        color: primaryColor
     },
     rsText: {
         fontFamily: 'OpenSans',
@@ -800,7 +802,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
-        color: '#7F49C3'
+        color: primaryColor
     },
     totalsText: {
         fontFamily: 'OpenSans',
@@ -823,7 +825,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
-        color: '#7F49C3'
+        color: primaryColor
     },
     rightText: {
         fontFamily: 'OpenSans',
@@ -848,11 +850,11 @@ const styles = StyleSheet.create({
         height: 12,
         width: 12,
         borderRadius: 12 / 2,
-        backgroundColor: '#7F49C3'
+        backgroundColor: primaryColor
     },
     TouchLegth: {
         height: 60,
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
         padding: 1,
         width: 4,
         marginLeft: 4
@@ -874,11 +876,11 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: '500',
         fontFamily: 'OpenSans',
-        color: '#7F49C3', marginTop: 8
+        color: primaryColor, marginTop: 8
     },
     reviewButton: {
         marginTop: 12,
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderRadius: 10,
         height: 40,
         color: 'white',

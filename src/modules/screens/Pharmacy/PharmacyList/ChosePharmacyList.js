@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: "700",
-        color: '#775DA3'
+        color: '#128283'
     },
     kmText: {
         fontFamily: 'OpenSans',

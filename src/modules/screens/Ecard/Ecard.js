@@ -7,6 +7,7 @@ import Spinner from '../../../components/Spinner'
 import { toastMeassage } from '../../common'
 import { connect } from 'react-redux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {primaryColor} from '../../../setup/config'
 
 import { CURRENT_APP_NAME } from "../../../setup/config";
 class Ecard extends PureComponent {
@@ -157,7 +158,7 @@ class Ecard extends PureComponent {
                                 </Grid>
                             </Body>
                         </CardItem>
-                        <CardItem footer button onPress={() => this.toggleData(index)} style={{ backgroundColor: '#775DA3', height: 40 }}>
+                        <CardItem footer button onPress={() => this.toggleData(index)} style={{ backgroundColor: primaryColor, height: 40 }}>
                             <Left style={{ marginLeft: 5 }}>
                                 <Text style={[styles.mainText, { fontWeight: '700', color: '#fff' }]}>{this.state.selectedIndex === index  ?"Hide Ecard" : "Show Ecard"}</Text>
                             </Left>

@@ -6,6 +6,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
+import {primaryColor} from '../../setup/config'
+
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import Updateheightweight from "../../modules/screens/userprofile/Updateheightweight";
 import UpdateFamilyMembers from "../../modules/screens/userprofile/UpdateFamilyMembers";
@@ -132,7 +134,7 @@ export const smartHealthStack=createStackNavigator({
         <View
           style={{
             height: IS_ANDROID ? 60 : 90,
-            backgroundColor: '#7F49C3',
+            backgroundColor: primaryColor,
             justifyContent: 'center',
           }}>
           <View
@@ -193,7 +195,7 @@ export const smartHealthStack=createStackNavigator({
         </View>
       ),
       headerStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
       },
     })
   },
@@ -846,7 +848,7 @@ export const smartHealthStack=createStackNavigator({
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3' },
+      headerStyle: { backgroundColor: primaryColor },
       headerTintColor: 'white',
     })
   })
