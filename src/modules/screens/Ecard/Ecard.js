@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, ListItem, List, Content, Row, Col, Card, CardItem, Body, Grid, Right, Icon, Left } from 'native-base';
 import { View, FlatList, TouchableOpacity, Image, StyleSheet, Linking, AsyncStorage } from 'react-native';
-import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById, getEcardLink } from '../../providers/corporate/corporate.actions';
+import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById, getEcardLink,getPolicyDetailsByPolicyNo } from '../../providers/corporate/corporate.actions';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import Spinner from '../../../components/Spinner'
 import { toastMeassage } from '../../common'
@@ -16,8 +16,8 @@ class Ecard extends PureComponent {
         this.state = {
             data: [],
             isLoading: false,
-            showCard: 0,
-            show: true
+            selectedIndex: -1,
+            
 
         }
 
@@ -28,30 +28,39 @@ class Ecard extends PureComponent {
     }
     async getEcardDetail() {
         await this.setState({ isLoading: true })
-
         await this.setState({ isLoading: false, data: this.props.profile.corporateData || [] })
 
     }
 
     async open(data) {
+        try {
+           
+            let policyResult = await getPolicyDetailsByPolicyNo(data.policyNo)
+         
+            if (policyResult && policyResult.TPA) {
 
-        let requestObject = {
-            payer_code: data.payerCode,
-            member_id: data.memberId,
-            policy_no: data.policyNo,
-            first_name: data.firstName
-        }
+                let requestObject = {
+                    payer_code: policyResult.TPA,
+                    member_id: data.memberId,
+                    policy_no: data.policyNo,
+                    first_name: data.firstName
+                }
 
-        let result = await getEcardLink(requestObject)
-        if (result) {
-            Linking.openURL(result)
-        } else {
-            toastMeassage('sorry unable  download', 'danger', 3000)
-        }
-        // if (!!result && result.status === 'True') {
-        //     let temp = JSON.parse(result.result)
+                let result = await getEcardLink(requestObject)
 
-        // } 
+                if (result) {
+                  
+                    Linking.openURL(result)
+                } else {
+
+                    toastMeassage('sorry unable  download', 'danger', 3000)
+                }
+            }
+           
+        } catch (e) {
+            
+            toastMeassage('sorry unable  download', 'danger', 3000) 
+        } 
 
     }
     getInsuranceAddress(data) {
@@ -73,15 +82,19 @@ class Ecard extends PureComponent {
         return temp
 
     }
-    toggleData(data) {
-
-        this.setState({ showCard: data, show: !this.state.show })
+    toggleData(index) {
+        if (this.state.selectedIndex === index) {
+            this.setState({selectedIndex:-1})
+        } else {
+            this.setState({selectedIndex:index})      
+}
+      
     }
 
     employeeAndFamilyDetails(data, index) {
-        const { showCard, show } = this.state
-        const textValue = showCard === index && !show ? "Hide Ecard" : "Show Ecard"
-        const arrowIcon = showCard === index && !show ? "keyboard-arrow-up" : "keyboard-arrow-down"
+        
+    
+        const arrowIcon = this.state.selectedIndex === index ? "keyboard-arrow-up" : "keyboard-arrow-down"
 
         return (
             <View>
@@ -94,52 +107,52 @@ class Ecard extends PureComponent {
                                     <Col size={0.5}>
                                         <Text style={styles.mainText}>{index}.</Text>
                                     </Col>
-                                    <Col size={3}>
+                                    <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Member Name</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
                                     </Col>
-                                    <Col size={6}>
+                                    <Col size={5}>
                                         <Text style={styles.mainText}>{this.getMemberName(data)}</Text>
                                     </Col>
                                 </Grid>
                                 <Grid style={{ marginTop: 8 }}>
                                     <Col size={0.5}>
                                     </Col>
-                                    <Col size={3}>
+                                    <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Member Code</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
                                     </Col>
-                                    <Col size={6}>
+                                    <Col size={5}>
                                         <Text style={styles.mainText}>{data.memberId}</Text>
                                     </Col>
                                 </Grid>
                                 <Grid style={{ marginTop: 8 }}>
                                     <Col size={0.5}>
                                     </Col>
-                                    <Col size={3}>
+                                    <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Gender</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
                                     </Col>
-                                    <Col size={6}>
+                                    <Col size={5}>
                                         <Text style={styles.mainText}>{data.gender}</Text>
                                     </Col>
                                 </Grid>
                                 <Grid style={{ marginTop: 8 }}>
                                     <Col size={0.5}>
                                     </Col>
-                                    <Col size={3}>
+                                    <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Age</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
                                     </Col>
-                                    <Col size={6}>
+                                    <Col size={5}>
                                         <Text style={styles.mainText}>{data.age} Years</Text>
                                     </Col>
                                 </Grid>
@@ -147,7 +160,7 @@ class Ecard extends PureComponent {
                         </CardItem>
                         <CardItem footer button onPress={() => this.toggleData(index)} style={{ backgroundColor: primaryColor, height: 40 }}>
                             <Left style={{ marginLeft: 5 }}>
-                                <Text style={[styles.mainText, { fontWeight: '700', color: '#fff' }]}>{textValue}</Text>
+                                <Text style={[styles.mainText, { fontWeight: '700', color: '#fff' }]}>{this.state.selectedIndex === index  ?"Hide Ecard" : "Show Ecard"}</Text>
                             </Left>
                             <Right>
                                 <MaterialIcons name={arrowIcon} style={{ fontSize: 25, color: '#fff' }} />
@@ -155,7 +168,7 @@ class Ecard extends PureComponent {
                         </CardItem>
                     </Card>
                 </View>
-                {this.state.showCard === index && !this.state.show ?
+                {this.state.selectedIndex === index  ?
                     <View>
                         <View style={{ backgroundColor: '#f2f5f4', paddingTop: 10, justifyContent: 'center', alignItems: 'center', paddingBottom: 8, marginTop: 5 }}>
 
@@ -165,7 +178,7 @@ class Ecard extends PureComponent {
 
                         </View>
                         <Row style={{ backgroundColor: '#1C5BA8', padding: 5, paddingBottom: 25 }}>
-                            <Col size={2.5}>
+                            <Col size={3.5}>
                                 <Text style={styles.innerText}>Policy No.</Text>
                                 <Text style={styles.innerText}>Health India ID</Text>
                                 <Text style={styles.innerText}>Member code</Text>
@@ -189,7 +202,7 @@ class Ecard extends PureComponent {
 
 
                             </Col>
-                            <Col size={5.5}>
+                            <Col size={6}>
                                 <Text style={styles.innerText}>{data.policyNo}</Text>
                                 <Text style={styles.innerText}>{data.health_india_Id || ' '}</Text>
                                 <Text style={styles.innerText}>{data.memberId}</Text>
@@ -200,15 +213,15 @@ class Ecard extends PureComponent {
                                 <Text style={styles.innerText}>{data.employeeId}</Text>
                                 <Text style={styles.innerText}>{data.PolicyEndDate || ' '}</Text>
                             </Col>
-                            <Col size={1.8} style={{ alignItems: 'center' }}>
+                            {/* <Col size={1.8} style={{ alignItems: 'center' }}>
 
-                            </Col>
+                            </Col> */}
                         </Row>
                         <Row style={{ backgroundColor: '#5CB533', paddingBottom: 5, paddingTop: 5 }}>
-                            <Col size={2} style={styles.colStyle}>
+                            <Col size={2.6} style={styles.colStyle}>
                                 <Image source={require('../../../../assets/images/healthIndia.png')} style={{ height: 60, width: 80 }} />
                             </Col>
-                            <Col size={8} style={styles.colStyle}>
+                            <Col size={7.4} style={styles.colStyle}>
                                 <Text style={styles.footerText}>{data.GroupName}</Text>
                                 <Text style={styles.addressText}>{this.getInsuranceAddress(data.Address)}</Text>
                             </Col>
@@ -235,14 +248,14 @@ class Ecard extends PureComponent {
                         <Spinner color='blue'
                             visible={isLoading}
                             overlayColor="none"
-                        /> : !Array.isArray(data) || data.length === 0 ?
+                        /> :  !Array.isArray(data) || data.length === 0 ?
                             <View style={{ alignItems: 'center', justifyContent: 'center', height: 550 }}>
                                 <Text>No E-Card details found !</Text>
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
                                 <Text style={styles.familyHeader}>Employee Detail</Text>
-                                {data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
+                                { data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
                                     this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null}
                                 <View style={styles.borderStyle} />
                                 <View>

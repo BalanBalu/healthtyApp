@@ -10,7 +10,7 @@ import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
 import { subTimeUnit, formatDate } from "../../../setup/helpers";
 import { bloodGroupList } from "../../common";
-import {primaryColor} from '../../../setup/config'
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 class UserDetails extends Component {
     constructor(props) {
@@ -25,6 +25,8 @@ class UserDetails extends Component {
             selectedBloodGroup: null,
             isBloodDonor: false,
             isLoading: false,
+            isOnlyDateTimePickerVisible: false,
+
 
         };
         this.dobIsEditable = false
@@ -114,6 +116,20 @@ class UserDetails extends Component {
             });
         }
     }
+    showOnlyDateTimePicker = () => {
+        this.setState({ isOnlyDateTimePickerVisible: true })
+      }
+      hideOnlyDateTimePicker = () => {
+        this.setState({ isOnlyDateTimePickerVisible: false })
+      }
+      handleOnlyDateTimePicker = (date) => {
+        try {
+          this.setState({ isOnlyDateTimePickerVisible: false, dob: date, })
+        } catch (error) {
+          console.error('Error on Date Picker: ', error);
+        }
+      }
+    
 
     render() {
         const { navigation, user: { isLoading } } = this.props;
@@ -156,8 +172,21 @@ class UserDetails extends Component {
                                             </Item>
 
                                             <Row style={styles.authTransparentLabel}>
-                                                <Icon name='calendar' style={{ color: primaryColor, marginTop: 8 }} />
-                                                <DatePicker style={styles.userDetailLabel}
+                                                <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={{flexDirection:'row'}}>
+                                                <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+                            <Text style={this.state.dob != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.dob != null ?formatDate(this.state.dob, 'DD/MM/YYYY'):'Date of Birth'}</Text>
+                            <DateTimePicker
+                              mode={'date'}
+                              minimumDate={new Date(1940, 0, 1)}
+                              maximumDate={subTimeUnit(new Date(), 1, 'year')}
+                              value={this.state.dob}
+                              isVisible={this.state.isOnlyDateTimePickerVisible}
+                              onConfirm={this.handleOnlyDateTimePicker}
+                              onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
+                            />
+                            </TouchableOpacity>
+                                               
+                                                {/* <DatePicker style={styles.userDetailLabel}
                                                     defaultDate={dob}
                                                     timeZoneOffsetInMinutes={undefined}
                                                     modalTransparent={false}
@@ -171,7 +200,7 @@ class UserDetails extends Component {
                                                     placeHolderTextStyle={{ color: "#5A5A5A" }}
                                                     onDateChange={dob => {this.setState({ dob }) }}
                                                     disabled={this.dobIsEditable}
-                                                />
+                                                /> */}
                                             </Row>
                                             <View style={{ marginLeft: 2 }}>
                                                 <Item last style={[styles.userDetailLabel, { borderBottomWidth: 0, paddingLeft: 0, marginLeft: 0 }]}>
@@ -208,7 +237,7 @@ class UserDetails extends Component {
                                                     onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'
                                                 />
 
-                                                <Text style={{ marginLeft: 20, color: primaryColor, fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
+                                                <Text style={{ marginLeft: 20, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
                                             </Row>
 
                                             <View>
@@ -226,7 +255,7 @@ class UserDetails extends Component {
                                         </Form>
                                     </View>
                                     <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10, marginTop: 10 }}>
-                                        <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: primaryColor }}>Already Have An Account ?</Text>
+                                        <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: '#775DA3' }}>Already Have An Account ?</Text>
                                         <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
                                             <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign In</Text>
                                         </TouchableOpacity>

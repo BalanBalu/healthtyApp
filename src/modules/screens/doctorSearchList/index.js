@@ -841,9 +841,9 @@ class doctorSearchList extends Component {
         return (
             <View>
 
-                <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
+                <Card style={{ padding: 2, borderRadius: 10, }}>
                     <List style={{ borderBottomWidth: 0 }}>
-                        <ListItem>
+                        <ListItem style={{ borderBottomWidth: 0 }}>
                             <Grid >
                                 <Row onPress={() => this.navigateToBookAppointmentPage(item)}>
                                     <Col style={{ width: '10%' }}>
@@ -929,16 +929,16 @@ class doctorSearchList extends Component {
 
 
                                 <Row style={{ borderTopColor: '#000', borderTopWidth: 0.4, marginTop: 5 }} >
-                                    <Col style={{ width: "5%" }}>
+                                    <Col size={0.8}>
 
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
 
                                     </Col>
-                                    <Col style={{ width: "80%" }}>
+                                    <Col size={7.5}>
 
                                         <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
                                     </Col>
-                                    <Col style={{ width: "15%" }}>
+                                    <Col size={1.7}>
                                         {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
                                             <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
                                                 <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>

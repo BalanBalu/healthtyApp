@@ -21,7 +21,7 @@ const LabHeader = (props) => {
         <Col size={8.4}>
             <Text style={styles.docName}>{props.packageDetails.lab_name }</Text>
             <Row style={{marginTop:10}}>
-                <Icon name="ios-pin" style={{ fontSize: 15 }} />
+                <Icon name="location-sharp" style={{ fontSize: 15 }} />
                 <Text note style={styles.hosAddress}>{getAddress(props.packageDetails.location)}.</Text>
             </Row>
             <Row style={{marginTop:10}}>

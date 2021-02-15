@@ -13,6 +13,7 @@ class PromoCode extends Component {
             displayMore: false,
             selectedIndex:-1,
             data: []
+
         }
     }
 
@@ -20,6 +21,7 @@ class PromoCode extends Component {
         let data = [];
         this.getPromolistDatas(data)
     }
+
 
 
     getPromolistDatas = async (data) => {
@@ -37,7 +39,6 @@ class PromoCode extends Component {
             } else {
                 result = await getPromodataList(data)
             }
-            
            
             if (result.success) {
                 this.setState({ data: result.data })
@@ -48,9 +49,11 @@ class PromoCode extends Component {
             console.log(e)
         }
     }
+
     onCouponPress(coupenCodeText) {
         this.setState({ coupenCodeText: coupenCodeText.toUpperCase() })
     }
+
 
     displayMoreData(index) {
         if (this.state.selectedIndex === index) {
@@ -62,6 +65,7 @@ class PromoCode extends Component {
 
 
 
+
     getPromocode(promocode) {
         if (promocode.promo_code != undefined) {
             return `${promocode.promo_code || ''}`
@@ -70,6 +74,7 @@ class PromoCode extends Component {
         }
     }
 
+
     getDescription(data) {
         if (data.description != undefined) {
             return `${data.description || ''}`
@@ -77,6 +82,7 @@ class PromoCode extends Component {
             return null
         }
     }
+
     getPromocodeDiscription(data) {
         if (data.service_type != undefined) {
             return `${data.service_type || ''}`
@@ -85,6 +91,7 @@ class PromoCode extends Component {
         }
     }
     
+
     getPromoCodeMinimumAmountDisciption(data) {
         let discription=''
         if (data.minimum_amount_to_apply_coupon !== undefined) {
@@ -92,6 +99,7 @@ class PromoCode extends Component {
         } 
         return discription
     }
+
     getPromoCodeMinimumOfferAmount(data) {
         let discription = ''
         if (data.discount_number) {
@@ -105,9 +113,11 @@ class PromoCode extends Component {
             }
         return discription
     }
+
     OnCopyedValue() {
         if (this.state.coupenCodeText != null) { }
     }
+    
     navigateToPaymentPage(data) {
         this.props.navigation.navigate('paymentPage',{hasReload:true,coupenCodeText:data.promo_code})
         
@@ -148,16 +158,6 @@ class PromoCode extends Component {
                                                 </TouchableOpacity>
                                             </Col>
                                         </Row>
-                                      
-                                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
-                                          
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>{this.getPromoCodeMinimumAmountDisciption(item)}</Text>
-                                        </Row>
-                                        
-                                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
-                                          
-                                          <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>{this.getPromoCodeMinimumOfferAmount(item)}</Text>
-                                      </Row>
                                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
                                             {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>{this.getPromocodeDiscription(item)}</Text>
@@ -185,7 +185,6 @@ class PromoCode extends Component {
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid on all modes of payments</Text>
                                                 </Row>
-                                              
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid only on select {this.getPromocodeDiscription(item)}</Text>

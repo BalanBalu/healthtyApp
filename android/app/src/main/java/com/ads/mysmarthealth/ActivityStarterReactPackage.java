@@ -1,4 +1,4 @@
-package com.ads.medflic;
+package com.ads.mysmarthealth;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.ReactPackage;

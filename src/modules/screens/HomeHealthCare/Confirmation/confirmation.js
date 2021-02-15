@@ -164,7 +164,10 @@ class HomeTestConfirmation extends Component {
         const finalAmountBySelectedPersons = bookSlotDetails.slotData && bookSlotDetails.slotData.fee ? (bookSlotDetails.slotData.fee * patDetailsArray.length) : 0;
         bookSlotDetails.slotData.fee = finalAmountBySelectedPersons;
         bookSlotDetails.patient_data = patientData;
-        if (userAddressInfo) bookSlotDetails.patient_location = userAddressInfo;
+        if (userAddressInfo) {
+            if (userAddressInfo.address_type) delete userAddressInfo.address_type;
+            bookSlotDetails.patient_location = userAddressInfo;
+        }
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', bookSlotDetails, SERVICE_TYPES.HOME_HEALTHCARE, userId, 'cash');

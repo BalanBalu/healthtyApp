@@ -28,12 +28,15 @@ export default class RenderSlots extends Component {
             renderItem={({ item, index }) => {
                 return (
                    
-                    <Col style={{ width: itemWidth - 10 }}>
+                    <Col style={{ width: itemWidth - 15 }}>
                         <TouchableOpacity disabled={item.isSlotBooked}
                             style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ?
-                                styles.slotSelectedBgColor : styles.slotDefaultBgColor}
+                                styles.slotSelectedBgColorForLab : styles.slotDefaultBgColorForLab}
                             onPress={() => onSlotItemPress(labId, item, index)}>
-                            <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} to {formatDate(item.slotEndDateAndTime, 'hh:mm A')} </Text>
+                            <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')}  </Text>
+                            <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}>to </Text>
+                            <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}>{formatDate(item.slotEndDateAndTime, 'hh:mm A')}</Text>
+
                         </TouchableOpacity>
                     </Col>
                 )

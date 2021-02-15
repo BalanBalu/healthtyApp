@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { createAppContainer, createSwitchNavigator, NavigationBackAction } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
-import {primaryColor} from '../../setup/config'
 
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SideBar from './SideBar';
@@ -133,14 +132,12 @@ import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
 import TextTicker from 'react-native-text-ticker';
-import { IS_ANDROID,CURRENT_APP_NAME , MY_SMART_HEALTH_CARE } from '../config';
+import { IS_ANDROID, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
-import {smartHealthStack}from './smartHealtStack'
-import  ContactUs from '../../modules/screens/contactUs.js'
-
+import { smartHealthStack } from './smartHealtStack'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -190,7 +187,7 @@ const HomeStack = createStackNavigator({
         <View
           style={{
             height: IS_ANDROID ? 60 : 90,
-            backgroundColor: primaryColor,
+            backgroundColor: '#7F49C3',
             justifyContent: 'center',
           }}>
           <View
@@ -309,11 +306,11 @@ const HomeStack = createStackNavigator({
   
         ), */
       headerStyle: {
-        backgroundColor: primaryColor,
+        backgroundColor: '#7F49C3',
       },
     })
   },
-  CorporateHome: {
+  /* CorporateHome: {
     screen: CorporateHome,
 
     navigationOptions: ({ navigation }) => ({
@@ -323,7 +320,7 @@ const HomeStack = createStackNavigator({
         <View
           style={{
             height: IS_ANDROID ? 60 : 90,
-            backgroundColor: primaryColor,
+            backgroundColor: '#7F49C3',
             justifyContent: 'center',
           }}>
           <View
@@ -387,10 +384,10 @@ const HomeStack = createStackNavigator({
 
 
       headerStyle: {
-        backgroundColor: primaryColor,
+        backgroundColor: '#7F49C3',
       },
     })
-  },
+   },*/
   EarnReward: {
     screen: EarnReward,
     navigationOptions: {
@@ -464,13 +461,6 @@ const HomeStack = createStackNavigator({
     })
   },
 
-   //Contact Us
-   ContactUs: {
-    screen: ContactUs,
-    navigationOptions: {
-      title: 'Contact Us'
-    }
-  },
   ///  =============Appointments Stack ==================
   "My Appointments": {
     screen: MyAppoinmentList,
@@ -1186,7 +1176,7 @@ const HomeStack = createStackNavigator({
 
         <TouchableOpacity onPress={() => { navigation.navigate('AddReminder') }} style={{ backgroundColor: '#ffffff', borderRadius: 10, height: 30, paddingLeft: 10, paddingRight: 10, marginRight: 10, }}>
           <Row>
-            <Icon name="ios-add-circle" style={{ color: primaryColor, fontFamily: 'opensans-semibold', fontSize: 20, marginTop: 3 }}></Icon>
+            <Icon name="ios-add-circle" style={{ color: '#7E49C3', fontFamily: 'opensans-semibold', fontSize: 20, marginTop: 3 }}></Icon>
             <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginLeft: 5, fontWeight: 'bold', marginTop: 5 }}>Add</Text>
           </Row>
         </TouchableOpacity>
@@ -1229,7 +1219,7 @@ const HomeStack = createStackNavigator({
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: primaryColor },
+      headerStyle: { backgroundColor: '#7E49C3' },
       headerTintColor: 'white',
     })
   })
@@ -1237,8 +1227,8 @@ const HomeStack = createStackNavigator({
 
 const drawerNavigatorRoutes = {
   Home: {
-    screen: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE?smartHealthStack:HomeStack,
-    routeName: 'Home'
+    screen: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? smartHealthStack : HomeStack,
+    routeName: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home'
   },
   'Video and Chat Service': {
     screen: AvailableDoctors4Video,
@@ -1300,11 +1290,6 @@ const drawerNavigatorRoutes = {
   "Health Records": {
     screen: MedicineRecords,
     routeName: "Health Records"
-  },
-   //Contact Us
-   ContactUs: {
-    screen: ContactUs,
-    routeName: "ContactUs"
   },
 
 }
@@ -1383,14 +1368,8 @@ export const corporateUserSideBarMenuList = [
         routeName: drawerNavigatorRoutes["Health Records"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
       },
-      {
-        name: 'ContactUs',
-        routeName: drawerNavigatorRoutes["ContactUs"].routeName,
-        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-      },
     ]
-  },
-  
+  }
 ]
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -1497,18 +1476,13 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             routeName: drawerNavigatorRoutes["Health Records"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
-          {
-            name: 'ContactUs',
-            routeName: drawerNavigatorRoutes["ContactUs"].routeName,
-            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-          },
         ]
       }
     ]}
     {...props} />
 },
   {
-    initialRouteName: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE?'Home':'CorporateHome'
+    initialRouteName: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home'
   })
 
 export const DragwerLogos = {
@@ -1530,7 +1504,7 @@ const SmDrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
   overlayColor: 'rgba(0, 0, 0, 0.7)',
   contentComponent: props => <SideBar
     menuSubMenus={[
-    
+
       {
         menuName: 'Insurance Services',
         menuForCorporateUser: true,
@@ -1600,11 +1574,6 @@ const SmDrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             routeName: drawerNavigatorRoutes["Health Records"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
           },
-          {
-            name: 'ContactUs',
-            routeName: drawerNavigatorRoutes["ContactUs"].routeName,
-            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-          },
         ]
       }
     ]}
@@ -1618,7 +1587,7 @@ export default createAppContainer(createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
     App: DrawerNavigator,
-    SmApp:SmDrawerNavigator,
+    SmApp: SmDrawerNavigator,
     Auth: AuthStack
   },
   {

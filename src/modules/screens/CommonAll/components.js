@@ -291,6 +291,44 @@ const RenderEditingPincode = (props) => {
 
     )
 }
+/*  Render Corporate Beneficiary Information */
+const RenderBeneficiaryInfo = (props) => {
+    const { data,isShowBeneficiaryInfoCard } = props;
+    if (!isShowBeneficiaryInfoCard) return null;
+  return (
+    <View style={{ backgroundColor: '#fff',marginTop:5}}>
+    <Row>
+        <Col size={4}>
+            <Text style={styles.beneficiaryFontStyle}>Beneficiary</Text>
+            <Text style={styles.beneficiaryFontStyle}>Policy Number</Text>
+            <Text style={styles.beneficiaryFontStyle}>Policy Effective From</Text>
+            <Text style={styles.beneficiaryFontStyle}>Policy End Date</Text>
+            <Text style={styles.beneficiaryFontStyle}>Sum Insured</Text>
+            <Text style={styles.beneficiaryFontStyle}>BSI</Text>
+            <Text style={styles.beneficiaryFontStyle}>Eligible Amount</Text>
+        </Col>
+        <Col size={0.5}>
+            <Text style={styles.beneficiaryFontStyle}>:</Text>
+            <Text style={styles.beneficiaryFontStyle}>:</Text>
+            <Text style={styles.beneficiaryFontStyle}>:</Text>
+            <Text style={styles.beneficiaryFontStyle}>:</Text>
+            <Text style={styles.beneficiaryFontStyle}>:</Text>
+            <Text style={styles.beneficiaryFontStyle}>:</Text>
+            <Text style={styles.beneficiaryFontStyle}>:</Text>
+        </Col>
+        <Col size={5.5}>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.full_name?data.full_name:null}</Text>
+                <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.policyNo||null}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.policyEffectiveFrom?formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY'):null}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.policyEffectiveTo?formatDate(data.policyEffectiveTo, 'DD/MM/YYYY'):null}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.sumInsured?data.sumInsured:0}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.balSumInsured?data.balSumInsured:0}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}> ₹ 0.00</Text>
+        </Col>
+    </Row>
+</View>
+  )
+}
 
 export {
     renderLabProfileImage,
@@ -306,5 +344,6 @@ export {
     RenderNoAppointmentsFounds,
     RenderProposeNewPopPage,
     onPressPreviewImagesInZoom,
-    SingleImageViewInSquareShape
+    SingleImageViewInSquareShape,
+    RenderBeneficiaryInfo
 }

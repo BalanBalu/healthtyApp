@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, Toast, View, Footer, Icon } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { StyleSheet, AsyncStorage, } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { Loader } from '../../../components/ContentLoader';
 import { SERVICE_TYPES } from '../../../setup/config'
-import {primaryColor} from '../../../setup/config'
-
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import ConfirmPopup from '../../../components/Shared/ConfirmPopup';
+import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
+
 import RenderUserAddressList from './RenderUserAddressList';
 const USER_FIELDS = "first_name,last_name,mobile_no,email,address,delivery_address,home_healthcare_address"
 
@@ -158,7 +158,7 @@ export default class HomeHealthCareAddressChange extends Component {
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
                     <View style={{ marginTop: 10, marginBottom: 10 }} >
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor, alignSelf: 'center' }}>MY ADDRESS</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor, alignSelf: 'center',fontWeight:'700' }}>MY ADDRESS</Text>
                     </View>
                     <View>
                         <FlatList
@@ -167,10 +167,13 @@ export default class HomeHealthCareAddressChange extends Component {
                             renderItem={({ item, index }) => this.renderUserAddressList(item, index)}
                         />
                     </View>
-                    <Button transparent onPress={() => this.onPressGoToLocPage()}>
-                        <Icon name='add' style={{ color: 'gray' }} />
+                    <Row style={{alignItems:'center',justifyContent:'center',marginTop:10}}>
+                    <TouchableOpacity transparent onPress={() => this.onPressGoToLocPage()} style={{marginBottom:25,alignItems:'center',justifyContent:'center',flexDirection:'row',marginTop:10}}>
+                        <Icon name='add' style={{ color: primaryColor,fontSize:35,}} />
                         <Text uppercase={false} style={styles.customText}>ADD NEW ADDRESS</Text>
-                    </Button>
+                    </TouchableOpacity>
+                    </Row>
+                   
                 </Content>
                 <ConfirmPopup
                     warningMessageText={'Are you sure you want to delete this Address !'}
@@ -235,7 +238,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         marginTop: 12,
-        backgroundColor: primaryColor,
+        backgroundColor: '#775DA3',
         borderRadius: 5,
     },
     normalText: {
@@ -253,9 +256,8 @@ const styles = StyleSheet.create({
     customText: {
         marginLeft: 10,
         fontFamily: 'OpenSans',
-        fontSize: 13,
-        marginTop: 2,
-        color: 'gray'
+        fontSize: 15,
+        color: primaryColor
     },
     customSubText: {
         marginLeft: 2,

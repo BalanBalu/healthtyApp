@@ -431,7 +431,7 @@ class MyAppoinmentList extends Component {
 										}}
 										note
 									>
-										No appoinments are scheduled
+										No appointments are scheduled
 								</Text>
 									<Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
 										<Button style={[styles.bookingButton, styles.customButton]}

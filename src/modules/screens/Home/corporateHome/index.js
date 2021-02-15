@@ -6,8 +6,6 @@ import { SearchAndAppointmentCard } from './searchAndAppointmentcard'
 import { TransactionHistoryCard } from './transactionHistoryCard'
 import { CoverageCard } from './converageCard'
 import { connect } from 'react-redux'
-import {CURRENT_APP_NAME} from '../../../../setup/config'
-
 import { Container, Content, Button, Card, Input, Left, Right, Icon, Toast } from 'native-base';
 import { getCorporateEmployeeDetailsById } from '../../../providers/corporate/corporate.actions'
 import { fetchUserProfile, SET_CORPORATE_DATA } from '../../../providers/profile/profile.action';
@@ -34,7 +32,6 @@ class CorporateHome extends PureComponent {
         if (isCorporateUser) {
             this.getCorporateDatails(userId)
         }
-        
         this.initialFunction();
     }
 
@@ -136,17 +133,17 @@ class CorporateHome extends PureComponent {
             this.locationUpdatedCount = locationUpdatedCount;
 
         }
-
+        
         return (
             <Container style={[styles.container, {backgroundColor: '#FAFBFF'}]}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
                     <View style={{ padding: 10 }}>
-                        {/* {isCorporateUser&&corporateData && corporateData.length ? */}
+                        { isCorporateUser&&corporateData && corporateData.length ?
                             <CorporateProfileCard
-                                // data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
+                                 data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
                             />
-                            {/* : null} */}
+                            : null}
                         {isCorporateUser ?
                             <ProfileFamilyCard
                                 navigation={navigate}

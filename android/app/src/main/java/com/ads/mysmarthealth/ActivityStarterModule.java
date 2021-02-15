@@ -1,4 +1,4 @@
-package com.ads.medflic;
+package com.ads.mysmarthealth;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.ads.medflic.ExampleActivity;
+import com.ads.mysmarthealth.ExampleActivity;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;

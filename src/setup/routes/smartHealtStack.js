@@ -2,10 +2,12 @@
 import React, { Component } from 'react';
 
 import { createStackNavigator } from 'react-navigation-stack';
-import {primaryColor} from '../../setup/config'
+
 import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
+import {primaryColor} from '../../setup/config'
+
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import Updateheightweight from "../../modules/screens/userprofile/Updateheightweight";
 import UpdateFamilyMembers from "../../modules/screens/userprofile/UpdateFamilyMembers";
@@ -100,13 +102,25 @@ import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
+import PreAuth from '../../modules/screens/Home/corporateHome/preAuth'
 import TextTicker from 'react-native-text-ticker';
 import { IS_ANDROID } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
 import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hospitalList/hospitalList';
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
-import  ContactUs from '../../modules/screens/contactUs.js'
+import PolicyCoverage from '../../modules/screens/PolicyCoverage'
+import {PolicyConditions} from '../../modules/screens/PolicyCoverage/policyConditions'
+import PolicyStatus from '../../modules/screens/policyStatus'
+import TpaList from '../../modules/screens/NetworkHospitalsFlow/tpaList';
+import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/NetworkHospitalList/networkHospitals';
+import ClaimIntimationSubmission from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSubmission';
+import FamilyInfoList from '../../modules/screens/ClaimIntimation/familyInfoList';
+import ClaimIntimationSuccess from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSuccess';
+
+import preAuthList from '../../modules/screens/Home/corporateHome/preAuthList'
+import ClaimIntimationList from '../../modules/screens/ClaimIntimation/claimintimationList'
+import DocumentList from '../../modules/screens/ClaimIntimation/documentList'
 
 
 export const smartHealthStack=createStackNavigator({
@@ -138,7 +152,7 @@ export const smartHealthStack=createStackNavigator({
                   />
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
-                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <Icon name="location-sharp" style={{ color: '#fff', fontSize: 25, paddingLeft: 10, }} />
                   <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
                     <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
                       loop
@@ -161,10 +175,10 @@ export const smartHealthStack=createStackNavigator({
                 </TouchableOpacity>
               </Col>
 
-              <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
+              <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginLeft: 10 }}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
                   <View>
-                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold',fontSize:25 }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
                       <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
                   </View>
@@ -260,6 +274,12 @@ export const smartHealthStack=createStackNavigator({
     screen: ReportDetails,
     navigationOptions: {
       title: 'Report details'
+    }
+  },
+  PreAuth: {
+    screen: PreAuth,
+    navigationOptions: {
+      title: 'Pre Authorisation'
     }
   },
   "CancelAppointment": {
@@ -423,13 +443,7 @@ export const smartHealthStack=createStackNavigator({
       title: 'Success'
     }
   },
-  //Contact Us
-  ContactUs: {
-    screen: ContactUs,
-    navigationOptions: {
-      title: 'Contact Us'
-    }
-  },
+
   //================ Lab Test ===============
   LabAppointmentInfo: {
     screen: LabAppointmentInfo,
@@ -483,6 +497,48 @@ export const smartHealthStack=createStackNavigator({
     screen: HospitalList,
     navigationOptions: {
       title: 'Hospital List'
+    }
+  },
+  TpaList: {
+    screen: TpaList,
+    navigationOptions: {
+      title: 'Tpa List'
+    }
+  },
+  NetworkHospitals: {
+    screen: NetworkHospitals,
+    navigationOptions: {
+      title: 'Network Hospitals'
+    }
+  },
+  ClaimIntimationSubmission: {
+    screen: ClaimIntimationSubmission,
+    navigationOptions: {
+      title: 'Claim Intimation'
+    }
+  },
+  FamilyInfoList: {
+    screen: FamilyInfoList,
+    navigationOptions: {
+      title: 'Family List'
+    }
+  },
+  ClaimIntimationSuccess: {
+    screen: ClaimIntimationSuccess,
+    navigationOptions: {
+      title: 'Claim Success'
+    }
+  },
+  ClaimIntimationList: {
+    screen: ClaimIntimationList,
+    navigationOptions: {
+      title: 'ClaimIntimation List'
+    }
+  },
+  DocumentList: {
+    screen: DocumentList,
+    navigationOptions: {
+      title: 'Document List'
     }
   },
   // ========Appointment stack ==========
@@ -569,6 +625,32 @@ export const smartHealthStack=createStackNavigator({
       title: 'Lab Confirmation'
     }
   },
+  PolicyCoverage: {
+    screen: PolicyCoverage,
+    navigationOptions: {
+      title: 'Policy Coverage'
+    }
+  },
+  PolicyConditions: {
+    screen: PolicyConditions,
+    navigationOptions: {
+      title: 'Policy Conditions'
+    }
+  },
+  
+  preAuthList: {
+    screen: preAuthList,
+    navigationOptions: {
+      title: 'Pre Auth List'
+    }
+  },
+  PolicyStatus: {
+    screen: PolicyStatus,
+    navigationOptions: {
+      title: 'Claim Status'
+    }
+  },
+
 
   // ============Zoom image ========================
   ImageView: {
@@ -649,7 +731,7 @@ export const smartHealthStack=createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Chats',
       headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('CorporateHome')}>
           <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
             <Icon
               style={

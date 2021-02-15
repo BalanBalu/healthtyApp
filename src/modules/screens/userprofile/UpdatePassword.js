@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, View, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, Row } from 'native-base';
 import { AsyncStorage, ScrollView } from 'react-native';
-import { updateNewPassword,updateSmartNewPassword } from '../../providers/auth/auth.actions';
+import { updateNewPassword, updateSmartNewPassword } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import styles from './style.js'
 import Spinner from '../../../components/Spinner';
@@ -46,41 +46,62 @@ class UpdatePassword extends Component {
                 return false;
             }
             this.setState({ errorMsg: '', isLoading: true });
-            let userId = await AsyncStorage.getItem('userId');
-            let data = {
-                type: 'user',
-                userId: userId,
-                oldPassword: this.state.oldPassword,
-                newPassword: this.state.newPassword
-            };
-            let is_corporate_user = await AsyncStorage.getItem('is_corporate_user')||null
+
+            let is_corporate_user = await AsyncStorage.getItem('is_corporate_user') || null
             if (is_corporate_user) {
-                let memberId = await AsyncStorage.getItem('memberId')||null
+                let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null
                 let smartData = {
                     userType: 'MEMBER',
-                    userId: memberId,
+                    userId: memberEmailId,
+                    isForceToChangePassword:true,
                     oldPassword: this.state.oldPassword,
                     newPassword: this.state.newPassword
                 };
-                updateSmartNewPassword(smartData);
-            }
-            let result = await updateNewPassword(data);
-            if (result.success) {
-                await Toast.show({
-                    text: 'Your Password is changed Successfully',
-                    type: "success",
-                    duration: 3000,
+                console.log(JSON.stringify(smartData))
+                let smartHealthResult = await updateSmartNewPassword(smartData);
+                console.log(smartHealthResult)
+                if (smartHealthResult && smartHealthResult.userId) {
+                    await AsyncStorage.removeItem('forceToChangePassword')
+                    await Toast.show({
+                        text: 'Your Password is changed Successfully',
+                        type: "success",
+                        duration: 3000,
 
-                })
-                this.props.navigation.navigate('Profile');
+                    })
+                    this.props.navigation.pop();
+                } else {
+                    await Toast.show({
+                        text: smartHealthResult&&smartHealthResult.message==="INVALID_CREDENTIAL"?"Old password doesn't match":'Failed to change password',
+                        type: "danger",
+                        duration: 3000
+                    })
+                }
+            } else {
+                let userId = await AsyncStorage.getItem('userId');
+                let data = {
+                    type: 'user',
+                    userId: userId,
+                    oldPassword: this.state.oldPassword,
+                    newPassword: this.state.newPassword
+                };
+                let result = await updateNewPassword(data);
+                if (result.success) {
+                    await Toast.show({
+                        text: 'Your Password is changed Successfully',
+                        type: "success",
+                        duration: 3000,
 
-            }
-            else {
-                await Toast.show({
-                    text: result.message,
-                    type: "danger",
-                    duration: 3000
-                })
+                    })
+                    this.props.navigation.navigate('Profile');
+
+                }
+                else {
+                    await Toast.show({
+                        text: result.message,
+                        type: "danger",
+                        duration: 3000
+                    })
+                }
             }
 
             this.setState({ isLoading: false });

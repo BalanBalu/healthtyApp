@@ -543,7 +543,7 @@ class labSearchList extends Component {
 
         return (
             <View>
-                <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
+                <Card style={{ padding: 2, borderRadius: 10, }}>
                     <List style={{ borderBottomWidth: 0 }}>
                         <ListItem style={{ borderBottomWidth: 0 }}>
                             <Grid>
@@ -603,14 +603,14 @@ class labSearchList extends Component {
                                         />
                                     </Col>
                                 </Row>
-                                <Row  >
-                                    <Col style={{ width: "5%" }}>
+                                <Row  style={{borderTopWidth:0.3,borderTopColor:'gray',marginTop:10}}>
+                                    <Col size={0.8}>
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
                                     </Col>
-                                    <Col style={{ width: "80%" }}>
+                                    <Col size={7.5}>
                                         <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}>Available On {moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY')} </Text>
                                     </Col>
-                                    <Col style={{ width: "15%" }}>
+                                    <Col size={1.7}>
                                         {!expandedLabIdToShowSlotsData.includes(item.labInfo.lab_id) ?
                                             <TouchableOpacity onPress={() => this.onBookPress(item.labInfo.lab_id)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
                                                 <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>

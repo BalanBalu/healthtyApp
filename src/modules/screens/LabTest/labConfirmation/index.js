@@ -12,7 +12,7 @@ import {primaryColor} from '../../../../setup/config'
 
 import { insertAppointment, updateLapAppointment, validateAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../../CommonAll/functions'
-import { SERVICE_TYPES } from '../../../../setup/config'
+import { SERVICE_TYPES,CURRENT_APP_NAME,MY_SMART_HEALTH_CARE } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import LabHeader from './Header';
@@ -263,8 +263,7 @@ class LabConfirmation extends Component {
                 this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
                 let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', requestData, SERVICE_TYPES.LAB_TEST, userId, 'cash');
                 if (response.success) {
-                    const manualNaviagationPage = this.state.isCorporateUser ? 'CorporateHome':'Home'
-                    this.props.navigation.navigate('SuccessChat', { manualNaviagationPage });
+                    this.props.navigation.navigate('SuccessChat', { manualNaviagationPage:CURRENT_APP_NAME===MY_SMART_HEALTH_CARE?'CorporateHome': 'Home' });
                     Toast.show({
                         text: 'Appointment has Succcessfully Requested',
                         type: "success",

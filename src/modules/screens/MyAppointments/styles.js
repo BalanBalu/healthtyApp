@@ -164,7 +164,7 @@ formStyle2: {
     marginTop: 10,
     width: '100%',
     height: 35,
-    justifyContent: 'center'
+   
 },
 flatlistText: {
     fontFamily: "OpenSans",

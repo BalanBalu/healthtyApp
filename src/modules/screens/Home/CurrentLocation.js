@@ -29,10 +29,11 @@ export default class CurrentLocation {
           if (isGranted) {
             CallKeepService.setupCallkeep();
             console.log('You ARE RUNNING ON ANDROID')
-            const permissionResult = await requestCalendarPermissions()
-            if (permissionResult === 'authorized') {
-              createCalendar();
-            }
+            // const permissionResult = await requestCalendarPermissions()
+            // console.log("permissionResult",permissionResult)
+            // if (permissionResult === 'authorized') {
+            //   createCalendar();
+            // }
 
             CallCurrentLocation.callCurrentLocation();
 
@@ -51,10 +52,10 @@ export default class CurrentLocation {
         setTimeout(async () => {
           Geolocation.requestAuthorization();
           CallKeepService.setupCallkeep();
-          const permissionResult = await requestCalendarPermissions()
-          if (permissionResult === 'authorized') {
-            createCalendar();
-          }
+          // const permissionResult = await requestCalendarPermissions()
+          // if (permissionResult === 'authorized') {
+          //   createCalendar();
+          // }
           console.log('Getting Current Llocation Androud');
           CallCurrentLocation.callCurrentLocation();
         });

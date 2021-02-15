@@ -1,10 +1,6 @@
-
 import { Platform } from 'react-native';
-
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
-
-
 
 /*** Change ON Prod Start ***/
 
@@ -31,8 +27,8 @@ export const CONNECTY_CUBE = [{
   },
 }
 ]
-export const CURRENT_PRODUCT_VERSION_CODE = 18;
-export const CURRENT_PRODUCT_ANDROID_VERSION_CODE = '1.0.20';
+export const CURRENT_PRODUCT_VERSION_CODE = 23;
+export const CURRENT_PRODUCT_ANDROID_VERSION_CODE = '1.0.23';
 export const CURRENT_PRODUCT_IOS_VERSION_CODE = '16.0.0';
 
 /*** Change ON Prod End ***/
@@ -63,15 +59,16 @@ export const SHOW_MOBILE_AND_EMAIL_ENTRIES = {
   PT_SHOW_OTP_ENTRY: 'PT_SHOW_OTP_ENTRY'
 }
 
-export const MY_SMART_HEALTH_CARE = 'My SmartHealth';
-export const MY_MEDFLIC = 'Medflic';
-// export const CURRENT_APP_NAME = MY_MEDFLIC;
-export const CURRENT_APP_NAME = MY_SMART_HEALTH_CARE;
 /* Theme Colors Start */
+/* Color code #128283 hex, 'rgba(18, 130, 131, 1)' rgba */
 export const primaryColor = 'rgba(18, 130, 131, 1)'
 export const secondaryColor = 'rgba(18, 130, 131, 0.7)'
 export const secondaryColorTouch = '#B1D9D9'
 /* Theme Colors End */
 
-export const ANDROID_BUNDLE_IDENTIFIER = CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'com.ads.mysmarthealth' : 'com.ads.medflic';
+export const MY_SMART_HEALTH_CARE = 'My SmartHealth';
+export const MY_MEDFLIC = 'Medflic';
+export const CURRENT_APP_NAME = MY_SMART_HEALTH_CARE;
+
+export const ANDROID_BUNDLE_IDENTIFIER = CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'com.ads.medflic' : 'com.ads.mysmarthealth';
 
