@@ -13,7 +13,7 @@ import { store } from '../../../../setup/store';
 import { fetchUserMarkedAsReadedNotification } from '../../../providers/notification/notification.actions';
 import CurrentLocation from '../CurrentLocation';
 import { NavigationEvents } from 'react-navigation'
-
+import {ContactUsCard} from './contactUsCard'
 class CorporateHome extends PureComponent {
     locationUpdatedCount = 0;
     constructor(props) {
@@ -154,6 +154,8 @@ class CorporateHome extends PureComponent {
                             navigation={navigate}
                         />
                         <TransactionHistoryCard
+                            navigation={navigate} />
+                            <ContactUsCard
                             navigation={navigate} />
 
                     </View>

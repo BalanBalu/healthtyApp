@@ -7,7 +7,7 @@ import {
   ClaimStatusDrawing,
   PolicyCoverageDrawing,
   ClaimInitiationDrawing,
-  InsuranceRenewalDrawing,
+  HospitalDrawing,
 } from './svgDrawings';
 import {primaryColor, secondaryColorTouch} from '../../../../setup/config';
 
@@ -99,24 +99,22 @@ export const CoverageCard = props => {
           </View>
         </TouchableHighlight>
         <TouchableHighlight
-        style={styles.rectBox}
             activeOpacity={0.6}
             underlayColor={secondaryColorTouch}
-            onPress={() => navigation('InsuranceRenewal')}>
-        <View >
+            style={styles.rectBox}
+            onPress={() => navigation('TpaList')}>
+        <View>
           
             <View
               style={{
                 alignItems: 'center',
-                marginTop: 4,
+                marginTop: 13.5,
               }}>
-              <InsuranceRenewalDrawing />
-
-              <Text style={styles.insuranceRenewalText}>Insurance Renewal</Text>
+              <HospitalDrawing />
+              <Text style={styles.boxText}>Hospital</Text>
             </View>
          
         </View>
-
         </TouchableHighlight>
 
         <View style={[styles.rectBoxNone]} />

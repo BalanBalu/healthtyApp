@@ -44,7 +44,7 @@ export const ProfileFamilyCard = props => {
             style={{
               color: '#fff',
               fontFamily: 'openSans, sans-serif',
-              fontSize: 17,
+              fontSize: 15,
               lineHeight: 24,
             }}>
             View E card and family {'\n'}profile from here{' '}
