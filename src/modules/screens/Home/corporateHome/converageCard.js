@@ -94,7 +94,7 @@ export const CoverageCard = props => {
               <ClaimInitiationDrawing />
 
               <Text style={styles.inititationText1}>Claim</Text>
-              <Text style={styles.initiationText2}>Initiation</Text>
+              <Text style={styles.initiationText2}>Intimation</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -111,7 +111,7 @@ export const CoverageCard = props => {
                 marginTop: 13.5,
               }}>
               <HospitalDrawing />
-              <Text style={styles.boxText}>Hospital</Text>
+              <Text style={styles.inititationText1}>Network Hospital</Text>
             </View>
          
         </View>

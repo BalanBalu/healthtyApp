@@ -14,13 +14,20 @@ import { fetchUserMarkedAsReadedNotification } from '../../../providers/notifica
 import CurrentLocation from '../CurrentLocation';
 import { NavigationEvents } from 'react-navigation'
 import {ContactUsCard} from './contactUsCard'
+import {PolicyCoverageCard} from './policyCoverageCard'
+import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions'; 
+import { getPolicyByPolicyNo } from '../../../providers/policy/policy.action';
+import { formatDate } from '../../../../setup/helpers';
+
 class CorporateHome extends PureComponent {
     locationUpdatedCount = 0;
     constructor(props) {
         super(props)
         this.state = {
             isCorporateUser: false,
-            relationship:null
+            relationship:null,
+            memberDetails: {},
+            policyDetails: {}
         }
     }
     async componentDidMount() {
@@ -33,7 +40,21 @@ class CorporateHome extends PureComponent {
             this.getCorporateDatails(userId)
         }
         this.initialFunction();
+        this.getMemberDetailsByEmail()
     }
+    getMemberDetailsByEmail = async () => {
+        try {
+          let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
+          let result = await getMemberDetailsByEmail(memberEmailId);
+          if (result) {
+            let policyData = await getPolicyByPolicyNo(result[0].policyNo);
+            await this.setState({ memberDetails: result[0]});
+          }
+        } catch (ex) {
+          console.log(ex)
+        }
+    
+      }
 
     doLogout() {
         logout();
@@ -120,7 +141,8 @@ class CorporateHome extends PureComponent {
     render() {
         let corporateData = this.props.profile.corporateData;
         const { navigate } = this.props.navigation;
-        const { isCorporateUser,relationship } = this.state;
+
+        const { isCorporateUser,relationship,memberDetails } = this.state;
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount },
             navigation } = this.props;
         if (locationUpdatedCount !== this.locationUpdatedCount) {
@@ -140,10 +162,13 @@ class CorporateHome extends PureComponent {
                     <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
                     <View style={{ padding: 10 }}>
                         { isCorporateUser&&corporateData && corporateData.length ?
-                            <CorporateProfileCard
-                                 data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
+                            <PolicyCoverageCard
+                                //  data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
+                                data={memberDetails}
+
                             />
                             : null}
+
                         {isCorporateUser ?
                             <ProfileFamilyCard
                                 navigation={navigate}

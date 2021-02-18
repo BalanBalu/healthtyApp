@@ -1328,6 +1328,21 @@ export const corporateUserSideBarMenuList = [
 
       },
       {
+        name: 'Doctor Consultation',
+        routeName: 'Categories', 
+        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+      },
+      {
+        name: 'Lab Test',
+        routeName: 'Lab Test', 
+        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+      },
+      {
+        name: 'Network Hospital',
+        routeName: 'TpaList', 
+        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+      },
+      {
         name: 'Video and Chat',
         routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
@@ -1525,12 +1540,27 @@ const SmDrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
         subMenus: [
           {
             name: 'Home Health Care',
-            routeName: 'Home Healthcare Address List', // drawerNavigatorRoutes["Home Health Care"].routeName,
+            routeName: 'Home Healthcare Address List', 
             icon: require('../../../assets/images/drawerIcons/homeTest.png'),
             params: {
               fromNavigation: "HOME_HEALTH_CARE"
             }
 
+          },
+          {
+            name: 'Consultation',
+            routeName: 'Categories', 
+            icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+          },
+          {
+            name: 'Lab Test',
+            routeName: 'Lab Test', 
+            icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+          },
+          {
+            name: 'Network Hospital',
+            routeName: 'TpaList', 
+            icon: require('../../../assets/images/drawerIcons/homeTest.png'),
           },
           {
             name: 'Video and Chat',

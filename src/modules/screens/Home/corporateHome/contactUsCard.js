@@ -57,7 +57,7 @@ export const ContactUsCard = props => {
                   fontSize: 15,
                   lineHeight: 24,
                   marginLeft:5
-                }}>+918921595072</Text>
+                }}>+918921267876</Text>
             </View>
           </View>
           <Row style={{ marginTop: 10, marginLeft: 20 }}>
