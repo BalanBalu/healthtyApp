@@ -42,7 +42,7 @@ class Forgotpassword extends Component {
     }
 
     /*  Generate OTP Code for Reset Password   */
-    generateOtpCode = async () => {
+    generateOtpCode = async (isResendOtp) => {
         const { userEntry } = this.state;
         try {
 
@@ -54,13 +54,20 @@ class Forgotpassword extends Component {
                     corporate: this.state.corporateName
                 }
                 let smartHealthReqOtpResponse = await generateOTPForSmartHealth(reqObject)
-      
+
                 if (smartHealthReqOtpResponse && smartHealthReqOtpResponse.otp) {
                     this.smartHealthOtpData = smartHealthReqOtpResponse
-                   
+
                     await this.setState({ isOTPGenerated: true });
+                    if (isResendOtp) {
+                        Toast.show({
+                            text: 'OTP is Resent successfully',
+                            duration: 3000,
+                            type: "success"
+                        })
+                    }
                 } else {
-                    this.setState({ errorMessage: smartHealthReqOtpResponse.message==='INVALID_CORPORATE'?'Entered corporate name is incorrect':smartHealthReqOtpResponse.message==='INVALID_USERID'?'Entered Email name is incorrect':smartHealthReqOtpResponse.message==='INVALID_EMPLOYEEID'?'Entered Employee id is incorrect':'Invalid credentials'});
+                    this.setState({ errorMessage: smartHealthReqOtpResponse.message === 'INVALID_CORPORATE' ? 'Entered corporate name is incorrect' : smartHealthReqOtpResponse.message === 'INVALID_USERID' ? 'Entered Email name is incorrect' : smartHealthReqOtpResponse.message === 'INVALID_EMPLOYEEID' ? 'Entered Employee id is incorrect' : 'Invalid credentials' });
                 }
             } else {
                 let reqData = {
@@ -71,11 +78,10 @@ class Forgotpassword extends Component {
                     reqData.is_corporate_user = true
                 }
                 let reqOtpResponse = await generateOTP(reqData)
-
                 if (reqOtpResponse.success == true)
                     await this.setState({ isOTPGenerated: true });
                 else
-                    this.setState({ errorMessage: reqOtpResponse.error });
+                    this.setState({ errorMessage: reqOtpResponse.error&& reqOtpResponse.error.code? reqOtpResponse.error.code:reqOtpResponse.error});
             }
         }
         catch (e) {
@@ -97,6 +103,10 @@ class Forgotpassword extends Component {
             if (isPasswordMatch != true) {
                 this.setState({ errorMessage: 'Passwords do not match' });
                 return false;
+            }
+            if (password.length > 16) {
+                this.setState({ errorMessage: "Password Accepted Max 16 Characters only" });
+                return false
             }
             await this.setState({ errorMessage: '', isLoading: true })
             let reqOtpVerifyResponse = {};
@@ -186,9 +196,9 @@ class Forgotpassword extends Component {
                                 value={userEntry}
                                 autoCapitalize={false}
                                 keyboardType={'email-address'}
+                                returnKeyType={'next'}
                                 onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
                                 onSubmitEditing={() => { this.employeeId._root.focus(); }}
-                            // onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
                             />
                         </Item>
                         <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Employee Id</Label>
@@ -198,9 +208,9 @@ class Forgotpassword extends Component {
                                 autoCapitalize={false}
                                 ref={(input) => { this.employeeId = input; }}
                                 keyboardType={'email-address'}
+                                returnKeyType={'next'}
                                 onChangeText={employeeId => this.setState({ employeeId: employeeId.replace(/\s/g, "") })}
                                 onSubmitEditing={() => { this.corporateName._root.focus(); }}
-                            // onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
                             />
                         </Item>
                         <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Corporate Name</Label>
@@ -210,8 +220,9 @@ class Forgotpassword extends Component {
                                 value={this.state.corporateName}
                                 autoCapitalize={false}
                                 keyboardType={'email-address'}
+                                returnKeyType={'done'}
                                 onChangeText={corporateName => this.setState({ corporateName: corporateName })}
-                                onSubmitEditing={() => { corporateName !== '' ? this.generateOtpCode() : null }}
+                                onSubmitEditing={(corporateName) => { corporateName !== '' ? this.generateOtpCode() : null }}
                             />
                         </Item>
                     </View>
@@ -259,11 +270,20 @@ class Forgotpassword extends Component {
         const { otpCode, password, confirmPassword, showPassword, isPasswordMatch } = this.state;
         return (
             <View>
-                <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>OTP</Label>
+                <Row>
+                    <Col size={5}>
+                        <Text style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>OTP</Text>
+                    </Col>
+                    <Col size={5}>
+                        <TouchableOpacity onPress={() => this.generateOtpCode(true)} >
+                            <Text style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold', alignSelf: 'flex-end' }}>RESEND</Text>
+                        </TouchableOpacity>
+                    </Col>
+                </Row>
                 <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                     <OTPTextInput
                         ref={e => (this.otpInput = e)}
-                        inputCount={6}
+                        inputCount={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE && this.state.isCorporateUserSelected ? 4 : 6}
                         tintColor={'#775DA3'}
                         inputCellLength={1}
                         containerStyle={{
