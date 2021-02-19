@@ -156,13 +156,13 @@ export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit
     }
   }
 }
-export async function getClaimIntimationWithPagination(searchText,page,limit) {
+export async function getClaimIntimationWithPagination(searchText,employeeId,policyNo,page,limit) {
   try {
     let endPoint;
     if (searchText){
-      endPoint = 'claim-intimation/page?searchText=' + searchText + '&p=' + page + '&l=' + limit;
+      endPoint = 'claim-intimation/page?searchText=' + searchText +'&empId='+employeeId+ '&policyNo='+policyNo+'&p=' + page + '&l=' + limit;
     }else{
-      endPoint = 'claim-intimation/page?p=' + page + '&l=' + limit;
+      endPoint = 'claim-intimation/page?empId='+employeeId+ '&policyNo='+policyNo+'&p=' + page + '&l=' + limit;
     }
     let response = await smartHealthGetService(endPoint);
     return response.data;

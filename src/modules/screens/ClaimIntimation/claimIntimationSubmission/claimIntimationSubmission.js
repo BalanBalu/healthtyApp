@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from 'react-native';
 import {
   Container,
@@ -53,6 +54,7 @@ export default class ClaimInitiationSubmission extends Component {
   onPressSubmitClaimData = async () => {
     const { policyNo, memberId, hospitalName, selectedAdmissionDate, ailment, contactNum } = this.state;
     try {
+      let employeeId = await AsyncStorage.getItem("employeeCode");
       if (!policyNo) {
         this.setState({ errorMsg: 'Please Enter Policy number', isModalVisible: true });
         return false;
@@ -81,6 +83,7 @@ export default class ClaimInitiationSubmission extends Component {
       const claimIntimationReqData = {
         email:this.memberInfo&&this.memberInfo.emailId?this.memberInfo.emailId:null,
         employeeName: this.memberInfo && this.memberInfo.full_name ? this.memberInfo.full_name : null,
+        employeeId,
         policyNo,
         memberId,
         hospitalName,
