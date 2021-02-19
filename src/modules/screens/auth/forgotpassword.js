@@ -43,9 +43,35 @@ class Forgotpassword extends Component {
 
     /*  Generate OTP Code for Reset Password   */
     generateOtpCode = async (isResendOtp) => {
-        const { userEntry } = this.state;
+        const { userEntry, employeeId,corporateName} = this.state;
         try {
-
+            if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
+                if (!userEntry) {
+                    this.setState({ errorMessage: 'Enter your Email' });
+                    return false;
+                }
+                if (validateEmailAddress(userEntry)===false) {
+                    this.setState({ errorMessage: 'You Entered Email is Not valid' });
+                    return false;
+                }
+                if (!employeeId) {
+                    this.setState({ errorMessage: "kindly enter your EmployeeId" });
+                    return false
+                }
+                if (!corporateName) {
+                    this.setState({ errorMessage: "kindly enter your Corporate Name" });
+                    return false
+                }
+            }else{
+                if (!userEntry) {
+                    this.setState({ errorMessage: 'Enter your Email' });
+                    return false;
+                }
+                if (validateEmailAddress(userEntry)===false) {
+                    this.setState({ errorMessage: 'You Entered Email is Not valid' });
+                    return false;
+                }
+            }
             await this.setState({ errorMessage: '', isLoading: true })
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
                 let reqObject = {
@@ -100,14 +126,27 @@ class Forgotpassword extends Component {
     changePassword = async () => {
         const { otpCode, password, isPasswordMatch } = this.state;
         try {
-            if (isPasswordMatch != true) {
-                this.setState({ errorMessage: 'Passwords do not match' });
+            if (!otpCode) {
+                this.setState({ errorMessage: 'kindly enter received OTP' });
+                return false;
+            }
+            if (!password) {
+                this.setState({ errorMessage: 'kindly enter your Password' });
+                return false;
+            }
+            if (password.length < 6) {
+                this.setState({ errorMessage: "Password is required Min 6 Characters" });
                 return false;
             }
             if (password.length > 16) {
                 this.setState({ errorMessage: "Password Accepted Max 16 Characters only" });
                 return false
             }
+            if (isPasswordMatch != true) {
+                this.setState({ errorMessage: 'Passwords do not match' });
+                return false;
+            }
+         
             await this.setState({ errorMessage: '', isLoading: true })
             let reqOtpVerifyResponse = {};
             if (CURRENT_APP_NAME === MY_SMART_HEALTH_CARE && this.state.isCorporateUserSelected) {
@@ -222,7 +261,7 @@ class Forgotpassword extends Component {
                                 keyboardType={'email-address'}
                                 returnKeyType={'done'}
                                 onChangeText={corporateName => this.setState({ corporateName: corporateName })}
-                                onSubmitEditing={(corporateName) => { corporateName !== '' ? this.generateOtpCode() : null }}
+                                onSubmitEditing={() => { this.state.corporateName !== '' ? this.generateOtpCode() : null }}
                             />
                         </Item>
                     </View>
@@ -258,8 +297,8 @@ class Forgotpassword extends Component {
                         visible={isLoading}
                     /> : null}
                 <Button
-                    style={userEntry == '' ? styles.forgotButtonDisable : styles.forgotButton}
-                    block success disabled={userEntry == ''} onPress={() => this.generateOtpCode()}>
+                    style={styles.forgotButton}
+                    block success onPress={() => this.generateOtpCode()}>
                     <Text style={styles.ButtonText}>Generate OTP</Text>
                 </Button>
             </View>
@@ -327,8 +366,8 @@ class Forgotpassword extends Component {
                         visible={isLoading}
                     /> : null}
                 <Button
-                    style={(otpCode && password && confirmPassword) == '' ? styles.forgotButtonDisable : styles.forgotButton}
-                    block success disabled={(otpCode && password && confirmPassword) == ''} onPress={() => this.changePassword()}>
+                    style={styles.forgotButton}
+                    block success onPress={() => this.changePassword()}>
                     <Text style={styles.ButtonText}>Reset Password</Text>
                 </Button>
             </View>
