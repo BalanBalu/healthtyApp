@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet,AsyncStorage } from 'react-native';
 import { Container, Content, Text, Left, Right, View, Card, } from 'native-base';
 import { Col, Row, } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getClaimIntimationWithPagination } from '../../providers/corporate/corporate.actions';
+import { log } from 'react-native-reanimated';
 
 const LIMIT = 10;
 
@@ -26,7 +27,9 @@ class ClaimIntimationList extends PureComponent {
   getClaimIntimationDetails = async () => {
     try {
       let searchText = null;
-      let result = await getClaimIntimationWithPagination(searchText, this.pagination, LIMIT);
+      let memberPolicyNo = await AsyncStorage.getItem("memberPolicyNo");
+      let employeeId = await AsyncStorage.getItem("employeeCode");
+      let result = await getClaimIntimationWithPagination(searchText,employeeId,memberPolicyNo, this.pagination, LIMIT);
       if (result) {
         await this.setState({ claimList: result.docs });
       }
@@ -41,7 +44,6 @@ class ClaimIntimationList extends PureComponent {
     this.setState({ showCard: data, show: !this.state.show, })
   }
   render() {
-    // let data = [{ PatientName: 'Hrithikesh', address: 'NorthPark Street,Ambattur,Chennai,Tamil Nadu ', policyNo: 892158775654646464567, MAID: '7853657346', claimBy: 'self', claimStatus: 'Paid', ClaimAmount: '12,555', hospital: 'Apollo Hospital' }, { PatientName: 'HariKrishnan', address: 'NorthPark Street ,Ambattur,Chennai,Tamil Nadu', policyNo: 463636894667575824475, MAID: '7853657346', claimBy: 'Family', claimStatus: 'Paid', ClaimAmount: '10,355', hospital: 'Fortis Malar Hospital' },]
     const { showCard, show, claimList} = this.state
 
     return (
