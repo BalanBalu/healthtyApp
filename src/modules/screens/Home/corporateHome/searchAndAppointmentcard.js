@@ -105,7 +105,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               <MyChatsDrawing />
 
-              <Text style={styles.boxText}>My Chats</Text>
+              <Text style={styles.boxText}>Chat Consult</Text>
             </View>
           </View>
         </TouchableHighlight>

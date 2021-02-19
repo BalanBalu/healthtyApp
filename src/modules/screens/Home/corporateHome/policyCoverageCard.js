@@ -48,21 +48,13 @@ export const PolicyCoverageCard = props => {
                             {data.firstName ? (data.firstName + ' ' + data.lastName) : '-'}
                         </Text>
                         <View style={{ flexDirection: 'row' }}>
+                            
                             <Text
                                 style={{
                                     color: '#fff',
                                     fontFamily: 'openSans, sans-serif',
                                     fontSize: 12,
                                     lineHeight: 24,
-
-                                }}>Policy Number</Text>
-                            <Text
-                                style={{
-                                    color: '#fff',
-                                    fontFamily: 'openSans, sans-serif',
-                                    fontSize: 12,
-                                    lineHeight: 24,
-                                    marginLeft: 5,
                                     fontWeight: 'bold'
                                 }}>{data.policyNo ? data.policyNo : '-'}</Text>
                         </View>

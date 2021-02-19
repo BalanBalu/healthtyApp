@@ -30,8 +30,8 @@ class NetworkHospitals extends Component {
         this.incrementPaginationCount = 0;
         this.hospitalInfoListArray = [];
         this.navigationPage=props.navigation.getParam('navigationPage') || null;
-        this.selectedTpaInfoObj = props.navigation.getParam('TpaInfoObj') || null;
-        this.selectedTpaCode = props.navigation.getParam('TpaInfoObj') && props.navigation.getParam('TpaInfoObj').tpaCode || null;
+        this.selectedTpaInfoObj = props.profile&&props.profile.memberTpaInfo||null;
+        this.selectedTpaCode =  props.profile&&props.profile.memberTpaInfo&&props.profile.memberTpaInfo.tpaCode || null;
     }
 
     async componentDidMount() {
@@ -272,6 +272,6 @@ class NetworkHospitals extends Component {
 }
 
 
-const NetworkHospitalsDataState = ({ NetworkHospitalsData, bookappointment } = state) => ({ NetworkHospitalsData, bookappointment })
+const NetworkHospitalsDataState = ({ NetworkHospitalsData, bookappointment,profile } = state) => ({ NetworkHospitalsData, bookappointment,profile })
 export default connect(NetworkHospitalsDataState)(NetworkHospitals)
 

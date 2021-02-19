@@ -145,8 +145,10 @@ class SideBar extends React.Component {
                           }
                         }
                         }>
+                          
+                       
                         <Image square source={item.icon}
-                          style={{ height: 20, width: 20, }}
+                          style={ item.contactIcon === 'Contact Us' ? {height: 14, width: 20,}:{height: 20, width: 20}}
                         />
                         <Body style={{ borderBottomWidth: 0, }}>
                           <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{translate(item.name)}</Text>
@@ -162,7 +164,7 @@ class SideBar extends React.Component {
           <View style={{ marginTop: 10, marginLeft: 2 }}>
             <ListItem avatar style={{ marginTop: -15 }}>
               <Icon name='ios-power' style={{
-                fontSize: 15, color: '#128283',
+                fontSize: 20, color: '#128283',
               }} />
               <Body style={{ borderBottomWidth: 0, }}>
                 <Text onPress={() => this.signInOrSignup(hasLoggedIn)}

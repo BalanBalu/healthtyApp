@@ -188,3 +188,18 @@ export async function serviceOfUpdateClaimIntimation(reqBodyData) {
     }
   }
 }
+
+
+
+export async function getTpaInfoByTpaCode(tpaCode) {
+  try {
+    let endPoint ='tpa-master/tpaCode?tpaCode=' + tpaCode
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}

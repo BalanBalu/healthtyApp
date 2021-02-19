@@ -121,6 +121,7 @@ import ClaimIntimationSuccess from '../../modules/screens/ClaimIntimation/claimI
 import preAuthList from '../../modules/screens/Home/corporateHome/preAuthList'
 import ClaimIntimationList from '../../modules/screens/ClaimIntimation/claimintimationList'
 import DocumentList from '../../modules/screens/ClaimIntimation/documentList'
+import ContactUs from '../../modules/screens/contactUs'
 
 
 export const smartHealthStack=createStackNavigator({
@@ -490,6 +491,13 @@ export const smartHealthStack=createStackNavigator({
     screen: MedicineRecords,
     navigationOptions: {
       title: 'Medicine Records'
+    }
+  },
+   ///  =============Contact Us ==================
+   ContactUs: {
+    screen: ContactUs,
+    navigationOptions: {
+      title: 'ContactUs',
     }
   },
   //================  Appoinment Booking Through Hospitals ===============
