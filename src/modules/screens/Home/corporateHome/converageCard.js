@@ -103,7 +103,7 @@ export const CoverageCard = props => {
             activeOpacity={0.6}
             underlayColor={secondaryColorTouch}
             style={styles.rectBox}
-            onPress={() => navigation('TpaList')}>
+            onPress={() => navigation('NetworkHospitals')}>
         <View>
           
             <View
