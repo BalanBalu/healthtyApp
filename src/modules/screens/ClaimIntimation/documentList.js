@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
-import { FlatList, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { FlatList, StyleSheet, Image, ActivityIndicator,PermissionsAndroid,ToastAndroid } from 'react-native';
 import { Container, Content, Text, View, Card, Item } from 'native-base';
 import { Col, Row, } from 'react-native-easy-grid';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from './Styles'
-
+import RNFetchBlob from 'rn-fetch-blob';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ImageUpload } from '../../screens/commonScreen/imageUpload'
 import { toastMeassage, RenderDocumentUpload } from '../../common'
@@ -103,7 +103,54 @@ class DocumentList extends PureComponent {
       this.setState({ isLoading: false })
     }
   }
-  
+  actualDownload = (imageUrl,fileName) => {
+    this.setState({
+      loading: true,
+    });
+    let dirs = RNFetchBlob.fs.dirs;
+    RNFetchBlob.config({
+      // add this option that makes response data to be stored as a file,
+      // this is much more performant.
+      path: dirs.DownloadDir + '/'+fileName,
+      fileCache: true,
+    })
+      .fetch(
+        'GET',
+        imageUrl,
+        {},
+      )
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        toastMeassage('Your file has been downloaded to downloads folder!')
+      });
+  };
+
+  async downloadFile(imageUrl,fileName) {
+    try {
+      console.log("imageUrl",imageUrl)
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission',
+          message: 'App needs access to memory to download the file ',
+        },
+      );
+      console.log("granted",granted)
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        this.actualDownload(imageUrl,fileName);
+      } else {
+        Alert.alert(
+          'Permission Denied!',
+          'You need to give storage permission to download the file',
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
   render() {
     const { showCard, show, selectOptionPoopup, docsUpload, uploadData, isLoading } = this.state
     return (
@@ -148,7 +195,7 @@ class DocumentList extends PureComponent {
                       </Col>
                       {!docsUpload ?
                         <Col style={{ width: '10%' }}>
-                          <TouchableOpacity style={{ alignItems: 'center', marginTop: 5 }}>
+                          <TouchableOpacity onPress={() => this.downloadFile(item.original_imageURL,item.original_file_name)} style={{ alignItems: 'center', marginTop: 5 }}>
                             <MaterialIcons name="file-download" style={{ fontSize: 20, color: 'red' }} />
                           </TouchableOpacity>
                         </Col> : null}
@@ -197,7 +244,7 @@ class DocumentList extends PureComponent {
                         alignItems: 'center',
                       }}>
                       <TouchableOpacity onPress={() => this.onPressSubmitClaimData()} style={styles.appButtonContainer}>
-                        <Text style={styles.appButtonText}>CONTINUE</Text>
+                        <Text style={styles.appButtonText}>SUBMIT</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
