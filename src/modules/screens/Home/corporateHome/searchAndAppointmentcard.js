@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity,Image} from 'react-native';
 import {View, Text} from 'native-base';
 import {
   PreAuthDrawing,
@@ -30,7 +30,7 @@ export const SearchAndAppointmentCard = props => {
         marginTop: 6,
         // marginTop: -15
       }}>
-      <Text style={styles.headingText}>Search & Book Appoinment</Text>
+      <Text style={styles.headingText}>Search & Book Appointment</Text>
 
       <View style={styles.flexRow}>
       <TouchableHighlight
@@ -52,25 +52,6 @@ export const SearchAndAppointmentCard = props => {
         </View>
         </TouchableHighlight>
         <TouchableHighlight
-            activeOpacity={0.6}
-            underlayColor={secondaryColorTouch}
-            style={styles.rectBox}
-            onPress={() => navigation('NetworkHospitals')}>
-        <View>
-          
-            <View
-              style={{
-                alignItems: 'center',
-                marginTop: 13.5,
-              }}>
-              <HospitalDrawing />
-              <Text style={styles.boxText}>Hospital</Text>
-            </View>
-         
-        </View>
-        </TouchableHighlight>
-
-        <TouchableHighlight
          activeOpacity={0.6}
          underlayColor={secondaryColorTouch}
           style={styles.rectBox}
@@ -88,8 +69,6 @@ export const SearchAndAppointmentCard = props => {
             </View>
           </View>
         </TouchableHighlight>
-      </View>
-      <View style={[styles.flexRow, {marginTop: 15}]}>
         <TouchableHighlight
          activeOpacity={0.6}
          underlayColor={secondaryColorTouch}
@@ -102,11 +81,15 @@ export const SearchAndAppointmentCard = props => {
                 alignItems: 'center',
                 marginTop: 10,
               }}>
-              <HomeTestDrawing />
-              <Text style={styles.boxText}>Home Test</Text>
+              {/* <HomeTestDrawing /> */}
+              <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{height:63,width:45,marginTop:-3}}/>
+              <Text style={[styles.boxText,{marginTop:-3}]}>Home Test</Text>
             </View>
           </View>
         </TouchableHighlight>
+      </View>
+      <View style={[styles.flexRow, {marginTop: 15}]}>
+      
         <TouchableHighlight
           style={styles.rectBox}
           activeOpacity={0.6}
@@ -122,7 +105,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               <MyChatsDrawing />
 
-              <Text style={styles.boxText}>My Chats</Text>
+              <Text style={styles.boxText}>Chat Consult</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -143,6 +126,7 @@ export const SearchAndAppointmentCard = props => {
             </View>
           </View>
         </TouchableHighlight>
+         <View style={[styles.rectBoxNone]} />
       </View>
     </View>
   );

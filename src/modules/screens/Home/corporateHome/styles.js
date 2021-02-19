@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 
   inititationText1: {
     fontSize: 14,
-    marginTop: 5,
+    marginTop: 2,
     color: primaryColor,
     fontWeight: '700',
     textAlign: 'center',
@@ -85,6 +85,21 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
     width: 200,
     height: 150,
+  },
+  usedAmount: {
+    fontFamily: 'OpenSans',
+    fontSize: 18,
+    color: '#000',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginLeft: 5
+
+  },
+  totalAmount: {
+    fontFamily: 'OpenSans',
+    fontSize: 13,
+    color: '#909090',
+    textAlign: 'center'
   },
 });
 

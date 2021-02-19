@@ -7,7 +7,8 @@ import {
   ClaimStatusDrawing,
   PolicyCoverageDrawing,
   ClaimInitiationDrawing,
-  InsuranceRenewalDrawing,
+  HospitalDrawing,
+  InsuranceRenewalDrawing
 } from './svgDrawings';
 import {primaryColor, secondaryColorTouch} from '../../../../setup/config';
 
@@ -94,32 +95,46 @@ export const CoverageCard = props => {
               <ClaimInitiationDrawing />
 
               <Text style={styles.inititationText1}>Claim</Text>
-              <Text style={styles.initiationText2}>Initiation</Text>
+              <Text style={styles.initiationText2}>Intimation</Text>
             </View>
           </View>
         </TouchableHighlight>
         <TouchableHighlight
-        style={styles.rectBox}
             activeOpacity={0.6}
             underlayColor={secondaryColorTouch}
-            onPress={() => navigation('InsuranceRenewal')}>
-        <View >
+            style={styles.rectBox}
+            onPress={() => navigation('TpaList')}>
+        <View>
           
             <View
               style={{
                 alignItems: 'center',
-                marginTop: 4,
+                marginTop: 13.5,
               }}>
-              <InsuranceRenewalDrawing />
-
-              <Text style={styles.insuranceRenewalText}>Insurance Renewal</Text>
+              <HospitalDrawing />
+              <Text style={styles.inititationText1}>Network Hospital</Text>
             </View>
          
         </View>
-
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.rectBox}
+          activeOpacity={0.6}
+          underlayColor={secondaryColorTouch}
+          onPress={() => navigation('PolicyCoverage')}>
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <InsuranceRenewalDrawing />
+              <Text style={[styles.inititationText1,{marginTop:-3}]}>Insurance Renewal</Text>
+            </View>
+          </View>
         </TouchableHighlight>
 
-        <View style={[styles.rectBoxNone]} />
+        {/* <View style={[styles.rectBoxNone]} /> */}
       </View>
     </View>
   );
