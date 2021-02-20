@@ -46,7 +46,8 @@ export default class MapBox extends Component {
                 state: null,
                 country: null,
                 pin_code: null
-            }
+            },
+            fromHospitalList:false
         }
         this.onRegionDidChange = this.onRegionDidChange.bind(this);
         this.onRegionIsChanging = this.onRegionIsChanging.bind(this);
@@ -72,7 +73,18 @@ export default class MapBox extends Component {
             const fromProfile = navigation.getParam('fromProfile') || false
             let showAllAddressFields = navigation.getParam('mapEdit') || false
             this.navigationOption = navigation.getParam('navigationOption') || null
+            const fromHospitalList = navigation.getParam('fromHospitalList') || false
             let locationData = this.props.navigation.getParam('locationData');
+            if (fromHospitalList) {
+                await this.setState({ fromHospitalList: true })
+                if (locationData) {
+                    await this.setState({ coordinates: locationData.center, })
+                }
+                else {
+                    this.getCurrentLocation();
+                }
+            }
+
             if (fromProfile) {
                 await this.setState({ fromProfile: true })
                 if (locationData) {
@@ -405,8 +417,22 @@ export default class MapBox extends Component {
     //     }
     // }
 
+    confirmLocation(){
+        const {fromHospitalList,coordinates,address}= this.state
+        if(fromHospitalList === true){
+            console.log("city",address.address_line_1)
+
+            this.props.navigation.navigate("NetworkHospitals",{coordinates:coordinates,fromMapBox:"fromMapBox",choosedLocation:address.address_line_1})
+        }
+        else{
+            this.setState({ showAllAddressFields: true })
+        }
+    }
+    
+
     render() {
         const { coordinates, zoom, searchBoxLocFullText, center, address: { no_and_street, address_line_1, pin_code, city, state, country, post_office_name, district }, showAllAddressFields, editable, isLoading } = this.state;
+    //  console.log("Coordinates+++++++++",coordinates)
         return (
             <Container>
                 <NavigationEvents
@@ -457,7 +483,7 @@ export default class MapBox extends Component {
                     <Card>
                         <CardItem bordered>
                             <Body>
-                                <Button style={{ borderRadius: 15 }} iconLeft block success onPress={() => this.setState({ showAllAddressFields: true })}>
+                                <Button style={{ borderRadius: 15 }} iconLeft block success onPress={() => this.confirmLocation()}>
                                     <Icon name='paper-plane'></Icon>
                                     <Text>Confirm Location</Text>
                                 </Button>
