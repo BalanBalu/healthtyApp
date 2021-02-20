@@ -40,7 +40,6 @@ class NetworkHospitals extends Component {
 
     async componentDidMount() {
         try {
-        console.log(this.state.locationCoordinate)
             await this.searchByNetworkHospitalDetails();
         } catch (Ex) {
             Toast.show({
@@ -58,9 +57,7 @@ class NetworkHospitals extends Component {
     searchByNetworkHospitalDetails = async () => {
         try {
             const {fromMapBox,locationCoordinate} = this.state
-            console.log("fromMapBox",fromMapBox)
 
-             console.log("locationCoordinate",locationCoordinate)
             // if(fromHospitalList){
             //     let locationCordinates = this.state.fromMapBox;
             // }
@@ -68,41 +65,27 @@ class NetworkHospitals extends Component {
             //     const { bookappointment: { locationCordinates } } = this.props;
             // }
             const { bookappointment: { locationCordinates } } = this.props;
-            console.log("locationCordinates",locationCordinates)
             let coordinates = fromMapBox  ? locationCoordinate : locationCordinates
-            console.log("coordinates",coordinates)
             let reqData4ServiceCall = {
                 locationData: {
                     coordinates: coordinates,
                     maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
                 }
             }
-            console.log("reqData4ServiceCall",reqData4ServiceCall)
-            console.log("reqData4ServiceCall----",this.state.hospitalInfoList)
 
             // if (this.selectedTpaCode) {
             //     reqData4ServiceCall.tpaCode = this.selectedTpaCode
             // }
-            console.log("hospitalName222----",this.state.hospitalName)
-            console.log("incrementPaginationCount----",this.incrementPaginationCount)
-            console.log("PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST----",PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST)
 
 
 
             // if (this.state.hospitalName) reqData4ServiceCall.hospitalName = this.state.hospitalName;
             const hospitalResp = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
-            console.log("hospitalResp333----",hospitalResp)
 
             if (hospitalResp.success) {
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...hospitalResp.data];
-                console.log("hospitalInfoList----",this.state.hospitalInfoList)
-
                 this.setState({ hospitalInfoList: this.hospitalInfoListArray })
-                console.log("hospitalInfoList++++",this.state.hospitalInfoList)
-
-                console.log("reqData4ServiceCall",this.state.hospitalInfoList)
-
             }
             else {
                 if (this.hospitalInfoListArray.length > 8) {
@@ -209,10 +192,7 @@ class NetworkHospitals extends Component {
                 const fromMapBox = navigation.getParam('fromMapBox') || false
                 const choosedLocation = navigation.getParam('choosedLocation') || false
                 const locationCoordinate = navigation.getParam('coordinates') || null
-                console.log("locationCoordinate66666",locationCoordinate)
-    
                 await  this.setState({fromMapBox,locationCoordinate,choosedLocation})
-                console.log(this.state.choosedLocation)
                 await  this.searchByNetworkHospitalDetails();
             // }
           } 
@@ -226,7 +206,6 @@ class NetworkHospitals extends Component {
         const { bookappointment: { isLocationSelected, patientSearchLocationName, isSearchByCurrentLocation } } = this.props;
         const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'Showing Hospitals in Near Current Location' : 'Showing Hospitals in ' + patientSearchLocationName + ' City' : 'Please Choose your Location in Map';
         if (isLoading) return <Loader style='list' />;
-        console.log("Haii")
         return (
             <Container>
                 <View style={{ paddingBottom: 5,  height: 45,marginHorizontal:15,}}>
