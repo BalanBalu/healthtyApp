@@ -15,7 +15,7 @@ import { subTimeUnit, formatDate, dateDiff } from '../../../../setup/helpers';
 import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber, toastMeassage } from '../../../common'
 import { createPreAuth } from '../../../providers/corporate/corporate.actions'
 // import styles from '../styles'
-import { ImageUpload } from '../../../screens/commonScreen/imageUpload'
+// import { ImageUpload } from '../../../screens/commonScreen/imageUpload'
 import { uploadImage, } from '../../../providers/common/common.action'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
@@ -102,7 +102,9 @@ class PreAuth extends React.PureComponent {
   }
   async componentDidMount() {
     let preAuthInfo = this.props.navigation.getParam('preAuthInfo')
-    console.log(JSON.stringify(preAuthInfo))
+    let currentForm = this.props.navigation.getParam('currentForm')||1
+    let uploadDocs = this.props.navigation.getParam('uploadDocs')||1
+
     let hospitalInfo = preAuthInfo.hospitalInfo || {};
     let tpaInfo = preAuthInfo.tpaInfo || {}
     let tpaInformation = {
@@ -118,7 +120,6 @@ class PreAuth extends React.PureComponent {
       rohiniId: ''
     }
     let memberInformation = this.props.navigation.getParam('memberInfo')
-    console.log(memberInfo)
     let memberInfo = {
       patientName: this.getMemberName(memberInformation),
       contactNo: memberInformation.mobile || '',
@@ -131,10 +132,7 @@ class PreAuth extends React.PureComponent {
       selectedGender: memberInformation.gender || '',
       dob: memberInformation.dob || new Date()
     }
-    await this.setState({ hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo })
-
-
-
+    await this.setState({ hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo,currentForm,imageData:uploadDocs })
   }
   getMemberName(item) {
     let name = ''
@@ -170,7 +168,6 @@ class PreAuth extends React.PureComponent {
   }
 
   onDOBChange(dob) {
-    console.log('bbbbbb', dob);
     this.setState({ chosenDate: dob });
   }
   submitFirstPage() {
@@ -359,7 +356,9 @@ class PreAuth extends React.PureComponent {
 
       this.setState({ errorMsg: errorMsg });
     } else {
-      this.setState({ currentForm: 3 });
+      this.props.navigation.navigate('DocumentList', { docsUpload: true,preAuthData:true });
+
+      // this.setState({ currentForm: 3 });
     }
   }
 
@@ -469,40 +468,10 @@ class PreAuth extends React.PureComponent {
         }
       }
     } catch (e) {
-      alert(e)
+      console.log(e)
     }
   }
 
-  imageUpload = async (data) => {
-    this.setState({ selectOptionPoopup: false })
-
-    if (data.image !== null) {
-      await this.uploadImageToServer(data.image);
-
-    }
-  }
-  uploadImageToServer = async (imagePath) => {
-
-    try {
-
-      let appendForm = "preAuth"
-      let endPoint = 'images/upload?path=preAuth'
-      const response = await uploadImage(imagePath, endPoint, appendForm)
-      if (response.success) {
-        this.uploadedData = [...this.state.imageData, ...response.data]
-        await this.setState({ imageData: this.uploadedData })
-        toastMeassage('image upload successfully', 'success', 3000)
-
-      } else {
-        toastMeassage('Problem Uploading Picture' + response.error, 'danger', 3000)
-      }
-
-    } catch (e) {
-
-      toastMeassage('Problem Uploading Picture' + e, 'danger', 3000)
-
-    }
-  }
   InsurerDetails = () => {
     const { tpaInfo, tpaInformation, memberInfo, memberInformation } = this.state
     return (
@@ -1075,12 +1044,12 @@ class PreAuth extends React.PureComponent {
 
             ) : null}
 
-            {
+            {/* {
               this.state.selectOptionPoopup ?
                 <ImageUpload
                   popupVisible={(data) => this.imageUpload(data)}
                 /> : null
-            }
+            } */}
             <Text style={{ marginTop: -20 }} onLayout={event =>
               (this.physicianContactNoText = event.nativeEvent.layout)
             } />
@@ -1147,7 +1116,7 @@ class PreAuth extends React.PureComponent {
             {this.state.insurerPatientAddressTextErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.insurerPatientAddressTextErrorMsg}</Text>
               : null}
-            <Text style={styles.headerText}>Upload your aadhar copy</Text>
+            {/* <Text style={styles.headerText}>Upload your aadhar copy</Text>
             {this.state.imageData !== null ?
               <View
                 style={{
@@ -1199,7 +1168,7 @@ class PreAuth extends React.PureComponent {
                   />
                 </TouchableOpacity>
               </View>
-            }
+            } */}
             {/* <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text> */}
 
             <View

@@ -30,16 +30,14 @@ class preAuthList extends Component {
     let policyNo = await AsyncStorage.getItem("memberPolicyNo");
 
     if (employee_code && policyNo) {
-      let result = await getPreAuthListByEmpCodeAndPolicyNo(employee_code, policyNo, this.page, 10)
-     
+      let result = await getPreAuthListByEmpCodeAndPolicyNo(policyNo,employee_code, this.page, 10)
       if (result && result.docs && result.docs[0]) {
-        let temp = this.state.data
-        temp.concat(result.docs)
-        if (temp.length === result.total) {
-          this.isAllLoaded = true;
-        }
-
-        this.setState({ data: temp })
+        // let temp = this.state.data
+        // temp.concat(result.docs)
+        // if (temp.length === result.total) {
+        //   this.isAllLoaded = true;
+        // }
+        this.setState({ data: result.docs })
       }
 
     }
@@ -199,10 +197,11 @@ class preAuthList extends Component {
                           <Text style={styles.boldText}>{formatDate(item.createdDate, 'DD/MM/YYYY')}</Text>
 
                         </Left>
-                        {/* <Right>
-                      <Text style={styles.commonBoldText}>Amount</Text>
-                      <Text style={styles.boldText}>50000</Text>
-                    </Right> */}
+                        <Right>
+                       <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { uploadData: item.patientProof, data: item})}>
+                              <Text style={styles.linkHeader}>View Document</Text>
+                            </TouchableOpacity>
+                    </Right>
                       </Row>
                     </Card>
                   } />
@@ -229,6 +228,19 @@ const styles = StyleSheet.create({
     marginLeft: 5
 
   },
+  linkHeader: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    textDecorationColor: '#7F49C3',
+    textDecorationLine: 'underline',
+    color: '#7F49C3'
+  },
+  ecardButton: {
+    marginTop: 15,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
   totalAmount: {
     fontFamily: 'OpenSans',
     fontSize: 13,

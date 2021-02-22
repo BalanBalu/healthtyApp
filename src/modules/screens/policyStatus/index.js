@@ -33,9 +33,12 @@ class PolicyStatus extends Component {
   getMemberDetailsByEmail = async () => {
     try {
       let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo') || null;
+
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        let policyData = await getPolicyByPolicyNo(result[0].policyNo);
+        console.log(memberPolicyNo)
+        let policyData = await getPolicyByPolicyNo(memberPolicyNo);
         await this.setState({ memberDetails: result[0], policyDetails: policyData });
         await this.getClaimDetails()
 
@@ -48,6 +51,7 @@ class PolicyStatus extends Component {
   getClaimDetails = async () => {
     try {
       const { memberDetails, policyDetails } = this.state
+      console.log("policyDetails",policyDetails)
       let result = await getClaimsDataByPayerCode(policyDetails.TPA, memberDetails.policyNo, this.pagination, LIMIT);
 
       if (result && result.docs && result.docs.length) {
@@ -99,7 +103,6 @@ class PolicyStatus extends Component {
 
   render() {
     const { memberDetails, policyDetails, claimsData, isLoadingMoreData } = this.state
-    // console.log("claimsData++++++++++",claimsData)
     const { showCard, show, } = this.state
 
     return (
@@ -124,7 +127,7 @@ class PolicyStatus extends Component {
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.nameText}>{memberDetails.firstName ? (memberDetails.firstName + ' ' + memberDetails.lastName) : '-'}</Text>
                 <Text style={styles.policyText}>Policy No : <Text style={styles.commonText}>{memberDetails.policyNo ? memberDetails.policyNo : '-'}</Text></Text>
-                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{formatDate(policyDetails.policyEffectiveFrom, "DD/YYYY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD/YYYY")}</Text></Text>
+                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD/YYYY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD/YYYY")):'N/A'}</Text></Text>
               </View>
 
             </View>

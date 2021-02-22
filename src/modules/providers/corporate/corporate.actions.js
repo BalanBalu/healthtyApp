@@ -125,7 +125,7 @@ export async function getPolicyDetailsByPolicyNo(policyNo) {
   }
 }
 
-export async function getPreAuthListByEmpCodeAndPolicyNo(empCode,policyNo,page,limit) {
+export async function getPreAuthListByEmpCodeAndPolicyNo(policyNo,empCode,page,limit) {
   try {
     let endPoint = 'pre-auth/policy/employeeId?policyNo='+policyNo+'&empId='+empCode+'&p='+page+'&l='+limit;
 console.log(endPoint)
