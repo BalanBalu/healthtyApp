@@ -29,7 +29,7 @@ class Ecard extends PureComponent {
     async getEcardDetail() {
         await this.setState({ isLoading: true })
         await this.setState({ isLoading: false, data: this.props.profile.corporateData || [] })
-
+console.log("data",this.state.data)
     }
 
     async open(data) {
