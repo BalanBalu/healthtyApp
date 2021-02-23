@@ -39,9 +39,14 @@ class ClaimIntimationList extends PureComponent {
 
   }
 
-  toggleData(data) {
+  toggleData(index,typeOfArrowIcon) {
     const { showCard, show } = this.state
-    this.setState({ showCard: data, show: !this.state.show, })
+    if (typeOfArrowIcon === 'DOWN') {
+      this.setState({ showCard: index,show:!this.state.show  })
+  }
+  else {
+      this.setState({ showCard: -1,show:null })
+  }
   }
   render() {
     const { showCard, show, claimList} = this.state
@@ -58,6 +63,7 @@ class ClaimIntimationList extends PureComponent {
             </Card>
 
           </View>
+          
           <FlatList
             data={claimList}
             keyExtractor={(item, index) => index.toString()}
@@ -71,7 +77,7 @@ class ClaimIntimationList extends PureComponent {
                           <Text style={{ fontSize: 18, color: '#fff' }}>{item.employeeName}</Text>
                         </Col>
                         <Col size={0.8} >
-                          <TouchableOpacity onPress={() => this.toggleData(index)}>
+                          <TouchableOpacity onPress={() => this.toggleData(index,'UP')}>
                             <MaterialIcons name={showCard === index && !show ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 25, color: '#fff' }} />
                           </TouchableOpacity>
                         </Col>
@@ -147,6 +153,7 @@ class ClaimIntimationList extends PureComponent {
                   </View>
                   :
                   <View>
+          <TouchableOpacity  onPress={() => this.toggleData(index,'DOWN')}>
 
                     <Card style={styles.cardStyle}>
                       <Row>
@@ -177,12 +184,13 @@ class ClaimIntimationList extends PureComponent {
                         </Col>
 
                         <Col size={0.8} style={{ justifyContent: 'center' }}>
-                          <TouchableOpacity onPress={() => this.toggleData(index)}>
+                          <TouchableOpacity onPress={() => this.toggleData(index,'DOWN')}>
                             <MaterialIcons name={showCard === index && !show ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 25, color: '#000' }} />
                           </TouchableOpacity>
                         </Col>
                       </Row>
                     </Card>
+                    </TouchableOpacity>
                   </View>
                 }
               </View>

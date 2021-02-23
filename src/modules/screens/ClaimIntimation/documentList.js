@@ -10,15 +10,16 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ImageUpload } from '../../screens/commonScreen/imageUpload'
 import { toastMeassage, RenderDocumentUpload } from '../../common'
 import { uploadImage } from '../../providers/common/common.action'
-import { serviceOfClaimIntimation, serviceOfUpdateClaimIntimation } from '../../providers/corporate/corporate.actions'
+import { serviceOfClaimIntimation, serviceOfUpdateClaimIntimation,serviceOfUpdatePreAuthDocs } from '../../providers/corporate/corporate.actions'
 import ConfirmPopup from '../../shared/confirmPopup'
+import RenderDocumentList from './renderDocumentList'
 class DocumentList extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
       selectOptionPoopup: false,
       docsUpload: false,
-      claimDetails: {},
+      data: {},
       isLoading: false,
       uploadData: [],
       deletePopupVisible: false,
@@ -27,9 +28,10 @@ class DocumentList extends PureComponent {
 
   componentDidMount() {
     let docsUpload = this.props.navigation.getParam('docsUpload') || false;
-    let claimDetails = this.props.navigation.getParam('data') || null;
+    let preAuthData = this.props.navigation.getParam('preAuthData') || false;
+    let data = this.props.navigation.getParam('data') || null;
     let uploadData = this.props.navigation.getParam('uploadData') || [];
-    this.setState({ docsUpload, claimDetails, uploadData })
+    this.setState({ docsUpload, data, uploadData,preAuthData })
   }
 
   imageUpload = async (data) => {
@@ -41,27 +43,41 @@ class DocumentList extends PureComponent {
 
   uploadImageToServer = async (imagePath) => {
     try {
-      let appendForm = "claimIntimation"
-      let endPoint = 'images/upload?path=claimIntimation'
+      this.setState({ isLoading: true })
+      let appendForm,endPoint;
+      if(this.state.preAuthData){
+        appendForm = "preAuth"
+        endPoint = 'images/upload?path=preAuth'
+  
+      }else{
+      appendForm = "claimIntimation"
+      endPoint = 'images/upload?path=claimIntimation'
+      }
       const response = await uploadImage(imagePath, endPoint, appendForm)
       if (response.success) {
         this.uploadedData = [...this.state.uploadData, ...response.data]
         await this.setState({ uploadData: this.uploadedData })
-        toastMeassage('image upload successfully', 'success', 3000)
+        toastMeassage('Image upload successfully', 'success', 3000)
       } else {
         toastMeassage('Problem Uploading Picture' + response.error, 'danger', 3000)
       }
     } catch (e) {
       toastMeassage('Problem Uploading Picture' + e, 'danger', 3000)
     }
+    finally {
+      this.setState({ isLoading: false })
+    }
   }
+  onPressSubmitPreAuthData= async () => {
+    this.props.navigation.navigate('PreAuth', { currentForm: 3,uploadDocs:this.state.uploadData });
 
+  }
   onPressSubmitClaimData = async () => {
     try {
       this.setState({ isLoading: true })
       let claimIntimationReqData = {
         claimIntimationDocuments: this.state.uploadData,
-        ...this.state.claimDetails
+        ...this.state.data
       }
       const claimUpdateResp = await serviceOfClaimIntimation(claimIntimationReqData);
       if (claimUpdateResp && claimUpdateResp.referenceNumber) {
@@ -85,14 +101,24 @@ class DocumentList extends PureComponent {
   deleteDocs = async () => {
     try {
       let temp = this.state.uploadData;
+      let reqData;
       temp.splice(this.state.selectedDocsIndex4Delete, 1);
       await this.setState({ uploadData: this.state.uploadData });
-      if (this.state.claimDetails._id) {
-        let reqData = {
-          claimIntimationDocuments: this.state.uploadData,
-          _id: this.state.claimDetails._id
+      if (this.state.data._id) {
+        if(this.state.preAuthData){
+          reqData = {
+            patientProof: this.state.uploadData,
+            _id: this.state.data._id
+          }
+        let re= await serviceOfUpdatePreAuthDocs(reqData);
+        }else{
+          reqData = {
+            claimIntimationDocuments: this.state.uploadData,
+            _id: this.state.data._id
+          }
+         await serviceOfUpdateClaimIntimation(reqData);
         }
-       await serviceOfUpdateClaimIntimation(reqData);
+        toastMeassage('Image deleted successfully', 'success', 3000)
       } else {
         toastMeassage('Something Went Wrong')
       }
@@ -104,32 +130,30 @@ class DocumentList extends PureComponent {
     }
   }
   actualDownload = (imageUrl,fileName) => {
-    this.setState({
-      loading: true,
-    });
-    let dirs = RNFetchBlob.fs.dirs;
-    RNFetchBlob.config({
-      // add this option that makes response data to be stored as a file,
-      // this is much more performant.
-      path: dirs.DownloadDir + '/'+fileName,
-      fileCache: true,
+  
+  const { dirs } = RNFetchBlob.fs;
+  RNFetchBlob.config({
+    fileCache: true,
+    addAndroidDownloads: {
+    useDownloadManager: true,
+    notification: true,
+    mediaScannable: true,
+    title: fileName,
+    path: `${dirs.DownloadDir}`+`/`+fileName,
+    },
+  })
+    .fetch('GET', imageUrl, {})
+    .then((res) => {
+      toastMeassage('Your file has been downloaded to downloads folder!')
+      console.log('The file saved to ', res.path());
     })
-      .fetch(
-        'GET',
-        imageUrl,
-        {},
-      )
-      .then((res) => {
-        this.setState({
-          loading: false,
-        });
-        toastMeassage('Your file has been downloaded to downloads folder!')
-      });
+    .catch((e) => {
+      console.log(e)
+    });
   };
 
   async downloadFile(imageUrl,fileName) {
     try {
-      console.log("imageUrl",imageUrl)
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         {
@@ -137,8 +161,6 @@ class DocumentList extends PureComponent {
           message: 'App needs access to memory to download the file ',
         },
       );
-      console.log("granted",granted)
-
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         this.actualDownload(imageUrl,fileName);
       } else {
@@ -151,8 +173,21 @@ class DocumentList extends PureComponent {
       console.log(err);
     }
   }
+  renderDocumentList(item,index){
+    const { docsUpload } = this.state;
+        return (
+            <RenderDocumentList
+                item={item}
+                docsUpload={docsUpload}
+                deleteSelectedDocs={(index) => this.deleteSelectedDocs(index)}
+                downloadFile={(imageUrl,fileName)=>this.downloadFile(imageUrl,fileName)}
+            >
+            </RenderDocumentList>
+        )
+  }
   render() {
-    const { showCard, show, selectOptionPoopup, docsUpload, uploadData, isLoading } = this.state
+    const { showCard, show, selectOptionPoopup, docsUpload, uploadData, isLoading,preAuthData } = this.state
+
     return (
       <Container>
         <Content>
@@ -184,30 +219,8 @@ class DocumentList extends PureComponent {
               data={uploadData}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index }) =>
-                <View>
-                  <Card style={styles.cardStyles}>
-                    <Row>
-                      <Col style={{ width: '10%' }}>
-                        <Image source={RenderDocumentUpload(item)} style={{ width: 25, height: 25 }} />
-                      </Col>
-                      <Col style={{ width: '70%' }}>
-                        <Text style={styles.innerCardText}>{item.original_file_name}</Text>
-                      </Col>
-                      {!docsUpload ?
-                        <Col style={{ width: '10%' }}>
-                          <TouchableOpacity onPress={() => this.downloadFile(item.original_imageURL,item.original_file_name)} style={{ alignItems: 'center', marginTop: 5 }}>
-                            <MaterialIcons name="file-download" style={{ fontSize: 20, color: 'red' }} />
-                          </TouchableOpacity>
-                        </Col> : null}
-                      {!docsUpload ?
-                        <Col style={{ width: '10%' }}>
-                          <TouchableOpacity onPress={() => this.deleteSelectedDocs(index)} style={{ alignItems: 'center', marginTop: 5 }}>
-                            <EvilIcons name="trash" style={{ fontSize: 20, color: 'red' }} />
-                          </TouchableOpacity>
-                        </Col> : null}
-                    </Row>
-                  </Card>
-                </View>
+              
+                this.renderDocumentList(item, index)
               } /> :
             !docsUpload ?
               <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
@@ -234,8 +247,8 @@ class DocumentList extends PureComponent {
                 color='blue'
               />
             </View>
-            :
-            docsUpload && (uploadData && uploadData.length != 0) ?
+            :null}
+            {docsUpload && (uploadData && uploadData.length != 0)&&!preAuthData ?
               <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 20, marginBottom: 20 }}>
                 <Col size={4}>
                   <View style={{ display: 'flex' }}>
@@ -249,7 +262,20 @@ class DocumentList extends PureComponent {
                     </View>
                   </View>
                 </Col>
-              </Row> : null
+              </Row> :docsUpload && (uploadData && uploadData.length != 0) && preAuthData?<Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 20, marginBottom: 20 }}>
+                <Col size={4}>
+                  <View style={{ display: 'flex' }}>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                      }}>
+                      <TouchableOpacity onPress={() => this.onPressSubmitPreAuthData()} style={styles.appButtonContainer}>
+                        <Text style={styles.appButtonText}>Next</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Col>
+              </Row>:null
           }
         </Content>
       </Container>
