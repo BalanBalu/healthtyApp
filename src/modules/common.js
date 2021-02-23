@@ -8,6 +8,18 @@ import { setI18nConfig } from '../setup/translator.helper';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
+
+
+export function getFullName(data) {
+    let name = 'unKnown'
+    if (data &&Object.keys(data).length) {
+name=`${data.first_name?data.first_name+' ':''}${data.middle_name?data.middle_name+' ':''}${data.last_name?data.last_name:''}`;
+name=name?name:'unKnown';
+}
+    return name
+}
+
+
 export function hospitalProfileImages(data) {
     let source = null;
     if (data && data.profile_image) {
