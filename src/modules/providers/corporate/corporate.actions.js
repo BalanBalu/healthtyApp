@@ -189,6 +189,19 @@ export async function serviceOfUpdateClaimIntimation(reqBodyData) {
   }
 }
 
+export async function serviceOfUpdatePreAuthDocs(reqBodyData) {
+  try {
+    const endpoint = 'pre-auth';
+    const resp = await smartHealthPutService(endpoint, reqBodyData)
+    return resp.data
+  } catch (Ex) {
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex.message,
+    }
+  }
+}
 
 
 export async function getTpaInfoByTpaCode(tpaCode) {

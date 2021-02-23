@@ -10,7 +10,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ImageUpload } from '../../screens/commonScreen/imageUpload'
 import { toastMeassage, RenderDocumentUpload } from '../../common'
 import { uploadImage } from '../../providers/common/common.action'
-import { serviceOfClaimIntimation, serviceOfUpdateClaimIntimation } from '../../providers/corporate/corporate.actions'
+import { serviceOfClaimIntimation, serviceOfUpdateClaimIntimation,serviceOfUpdatePreAuthDocs } from '../../providers/corporate/corporate.actions'
 import ConfirmPopup from '../../shared/confirmPopup'
 import RenderDocumentList from './renderDocumentList'
 class DocumentList extends PureComponent {
@@ -57,7 +57,7 @@ class DocumentList extends PureComponent {
       if (response.success) {
         this.uploadedData = [...this.state.uploadData, ...response.data]
         await this.setState({ uploadData: this.uploadedData })
-        toastMeassage('image upload successfully', 'success', 3000)
+        toastMeassage('Image upload successfully', 'success', 3000)
       } else {
         toastMeassage('Problem Uploading Picture' + response.error, 'danger', 3000)
       }
@@ -101,14 +101,24 @@ class DocumentList extends PureComponent {
   deleteDocs = async () => {
     try {
       let temp = this.state.uploadData;
+      let reqData;
       temp.splice(this.state.selectedDocsIndex4Delete, 1);
       await this.setState({ uploadData: this.state.uploadData });
       if (this.state.data._id) {
-        let reqData = {
-          claimIntimationDocuments: this.state.uploadData,
-          _id: this.state.data._id
+        if(this.state.preAuthData){
+          reqData = {
+            patientProof: this.state.uploadData,
+            _id: this.state.data._id
+          }
+        let re= await serviceOfUpdatePreAuthDocs(reqData);
+        }else{
+          reqData = {
+            claimIntimationDocuments: this.state.uploadData,
+            _id: this.state.data._id
+          }
+         await serviceOfUpdateClaimIntimation(reqData);
         }
-       await serviceOfUpdateClaimIntimation(reqData);
+        toastMeassage('Image deleted successfully', 'success', 3000)
       } else {
         toastMeassage('Something Went Wrong')
       }

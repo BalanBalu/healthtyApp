@@ -198,7 +198,7 @@ class preAuthList extends Component {
 
                         </Left>
                         <Right>
-                       <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { uploadData: item.patientProof, data: item})}>
+                       <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { uploadData: item.patientProof, data: item,preAuthData:true})}>
                               <Text style={styles.linkHeader}>View Document</Text>
                             </TouchableOpacity>
                     </Right>
