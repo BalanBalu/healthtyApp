@@ -1320,12 +1320,14 @@ export const corporateUserSideBarMenuList = [
       {
         name: 'E Card',
         routeName: drawerNavigatorRoutes['E Card'].routeName,
-        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        icon: require('../../../assets/images/drawerIcons/EcardDesign.png'),
+        largeIcon:{height: 15, width: 28}
       },
       {
         name: 'Insurance',
         routeName: drawerNavigatorRoutes['Insurance'].routeName,
-        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        icon: require('../../../assets/images/drawerIcons/Insurance.png'),
+        largeIcon:{height: 25, width: 28}
       }]
   },
   {
@@ -1337,28 +1339,33 @@ export const corporateUserSideBarMenuList = [
         icon: require('../../../assets/images/drawerIcons/homeTest.png'),
         params: {
           fromNavigation: "HOME_HEALTH_CARE"
-        }
+        },
+        largeIcon:{height: 20, width: 20,}
 
       },
       {
         name: 'Doctor Consultation',
         routeName: 'Categories', 
         icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+        largeIcon:{height: 20, width: 20,}
       },
       {
         name: 'Lab Test',
         routeName: 'Lab Test', 
-        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+        icon: require('../../../assets/images/drawerIcons/labTest.png'),
+        largeIcon:{height: 21, width: 19,}
       },
       {
         name: 'Network Hospital',
         routeName: 'TpaList', 
         icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+        largeIcon:{height: 20, width: 20,}
       },
       {
         name: 'Video and Chat',
         routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
-        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        icon: require('../../../assets/images/drawerIcons/ChatVideo.png'),
+        largeIcon:{height: 22, width: 20,}
 
       }
     ]
@@ -1370,37 +1377,44 @@ export const corporateUserSideBarMenuList = [
         name: 'My Appointments',
         routeName: drawerNavigatorRoutes["My Appointments"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon:{height: 20, width: 20,}
       },
       {
         name: 'My Home Healthcare Appointments',
         routeName: drawerNavigatorRoutes["My Home Healthcare Appointments"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon:{height: 20, width: 20,}
       },
       {
         name: 'My Chat Consultations',
         routeName: drawerNavigatorRoutes["My Chats"].routeName,
         icon: require('../../../assets/images/drawerIcons/Chat.png'),
+        largeIcon:{height: 20, width: 20,}
       },
       {
         name: 'My Video Consultations',
         routeName: drawerNavigatorRoutes["My Video Consultations"].routeName,
         icon: require('../../../assets/images/drawerIcons/Chat.png'),
+        largeIcon:{height: 20, width: 20,}
       },
       {
         name: 'My Lab Test Appointments',
         routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon:{height: 20, width: 20,}
       },
       {
         name: 'Health Records',
         routeName: drawerNavigatorRoutes["Health Records"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon:{height: 20, width: 20,}
       },
       {
         name: 'Contact Us',
         routeName: drawerNavigatorRoutes["ContactUs"].routeName,
         icon: require('../../../assets/images/drawerIcons/ContactUsIcon.png'),
-        contactIcon: 'Contact Us'
+        largeIcon: 'Contact Us',
+        largeIcon:{height: 14, width: 20,}
       },
     ]
   }
@@ -1424,6 +1438,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'E Card',
             routeName: drawerNavigatorRoutes['E Card'].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+           
           },
           {
             name: 'Insurance',

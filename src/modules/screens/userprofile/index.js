@@ -412,7 +412,7 @@ class Profile extends Component {
 
                         <MaterialIcons
                           name="create"
-                          style={{ fontSize: 20, marginTop: 10, marginLeft: 25 }}
+                          style={{ fontSize: 20, marginTop: 10, marginLeft: 25,color:'#000' }}
                           onPress={() => this.editProfile('UpdateUserDetails')}
                         />
                       </View>
