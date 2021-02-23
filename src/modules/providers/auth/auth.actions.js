@@ -494,12 +494,10 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
       userId: userCredentials.userEntry,
       password: userCredentials.password
     }
-  
+
 
 
     let response = await smartHealthPostService(endPoint, req);
-   
-
     if (response && response.data && response.data.access_token) {
       await AsyncStorage.setItem('smartToken', response.data.access_token)
       let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
@@ -508,7 +506,6 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
       if (res && res.data && res.data[0]) {
         let reqData = res.data[0]
-
         if (reqData.relationship) {
           await AsyncStorage.setItem('relationship', reqData.relationship)
         }
@@ -521,8 +518,6 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
           is_corporate_user: true,
           corporate_member_id: userCredentials.userEntry,
           employee_code: reqData.employeeId,
-          first_name: reqData.firstName,
-
           address: {
             type: 'Point',
             address: {
@@ -540,7 +535,9 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
         if (reqData.mobile) {
           reqBody.mobile_no = reqData.mobile
         }
-
+        if (reqData.firstName) {
+          reqBody.first_name = reqData.firstName
+        }
         let name = ''
         if (reqData.middleName) {
           name = reqData.middleName
@@ -552,16 +549,14 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
             name = name + ' ' + reqData.lastName
           }
         }
+        if (name) {
+          reqBody.last_name = name
+        }
 
-        reqBody.last_name = name
 
-       
 
         let insertEndPoint = 'auth/smart_health/signUp';
         let signUpResult = await postService(insertEndPoint, reqBody);
-      
-      
-
         if (signUpResult.data.success) {
           await AsyncStorage.setItem('memberId', reqData.memberId)
           await AsyncStorage.setItem('memberEmailId', reqData.emailId)
@@ -579,12 +574,10 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
           const token = signUpResult.data.token;
           signUpResult.data.data.is_corporate_user = true;
           await setUserLocally(token, signUpResult.data.data);
-
           store.dispatch({
             type: LOGIN_RESPONSE,
-            message: respData.data.message
+            message: signUpResult && signUpResult.data.message
           })
-
         } else {
           store.dispatch({
             type: LOGIN_HAS_ERROR,
@@ -597,7 +590,7 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
 
     } else {
-      
+
       store.dispatch({
         type: LOGIN_HAS_ERROR,
         message: "Invalid Login Credentials"
@@ -612,7 +605,6 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
     return true
 
   } catch (e) {
-
     store.dispatch({
       type: LOGIN_HAS_ERROR,
       message: "Invalid Login Credentials"
