@@ -255,8 +255,44 @@ export function getAllSpecialist(data) {
 }
 
 export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
-export const relationship = ['Select Relationship', 'Father', 'Mother', 'Husband', 'Wife', 'Son', 'Daughter']
-
+export const relationship = [
+    { code: "1", value: "AUNTY", checkedData: false, },
+    { code: "2", value: "BROTHER", checkedData: false, },
+    { code: "3", value: "COUSIN", checkedData: false, },
+    { code: "4", value: "COUSIN FEMALE", checkedData: false, },
+    { code: "5", value: "COUSIN MALE", checkedData: false, },
+    { code: "6", value: "DAUGHTER", checkedData: false, },
+    { code: "7", value: "DAUGHTER IN LAW", checkedData: false, },
+    { code: "8", value: "DEPENDENT", checkedData: false, },
+    { code: "9", value: "FATHER", checkedData: false, },
+    { code: "10", value: "FATHER IN LAW", checkedData: false, },
+    { code: "11", value: "GRAND DAUGHTER", checkedData: false, },
+    { code: "12", value: "GRAND FATHER", checkedData: false, },
+    { code: "13", value: "GRAND FATHER IN LAW", checkedData: false, },
+    { code: "14", value: "GRAND MOTHER", checkedData: false, },
+    { code: "15", value: "GRAND SON", checkedData: false, },
+    { code: "16", value: "JOINT ACCOUNT FEMALE", checkedData: false, },
+    { code: "17", value: "JOINT ACCOUNT MALE", checkedData: false, },
+    { code: "18", value: "LIVE IN FEMALE", checkedData: false, },
+    { code: "19", value: "LIVE IN MALE", checkedData: false, },
+    { code: "20", value: "MATERNAL AUNT", checkedData: false, },
+    { code: "21", value: "MATERNAL UNCLE", checkedData: false, },
+    { code: "22", value: "MOTHER", checkedData: false, },
+    { code: "23", value: "MOTHER IN LAW", checkedData: false, },
+    { code: "24", value: "NEPHEW", checkedData: false, },
+    { code: "25", value: "NIECE", checkedData: false, },
+    { code: "26", value: "OTHERS FEMALE", checkedData: false, },
+    { code: "27", value: "OTHERS MALE", checkedData: false, },
+    { code: "28", value: "PARENT", checkedData: false, },
+    { code: "29", value: "PATERNAL AUNT", checkedData: false, },
+    { code: "30", value: "PATERNAL UNCLE", checkedData: false, },
+    { code: "31", value: "SISTER", checkedData: false, },
+    { code: "32", value: "SISTER IN LAW", checkedData: false, },
+    { code: "33", value: "SON", checkedData: false, },
+    { code: "34", value: "SON IN LAW", checkedData: false, },
+    { code: "35", value: "UNCLE", checkedData: false, },
+    { code: "36", value: "WIFE", checkedData: false, },
+]
 export const appointmentIssue = [
     { id: 0, value: 'If you see "Your payment was declined due to an issue with your account"' },
     { id: 1, value: 'You accidentally entered incorrect credit/debit card details like name on the card, card number, CVV, 3D secure PIN and expiry date incorrect.' },
