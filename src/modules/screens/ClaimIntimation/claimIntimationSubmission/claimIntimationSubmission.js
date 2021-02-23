@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from 'react-native';
 import {
   Container,
@@ -53,6 +54,7 @@ export default class ClaimInitiationSubmission extends Component {
   onPressSubmitClaimData = async () => {
     const { policyNo, memberId, hospitalName, selectedAdmissionDate, ailment, contactNum } = this.state;
     try {
+      let employeeId = await AsyncStorage.getItem("employeeCode");
       if (!policyNo) {
         this.setState({ errorMsg: 'Please Enter Policy number', isModalVisible: true });
         return false;
@@ -77,10 +79,19 @@ export default class ClaimInitiationSubmission extends Component {
         this.setState({ errorMsg: "Please Enter Member Contact Number", isModalVisible: true });
         return false;
       }
+      if (contactNum.length < 10) {
+        this.setState({ errorMsg: "Contact Number is required Min 10 Characters", isModalVisible: true });
+        return false;
+    }
+    if (contactNum.length > 15) {
+        this.setState({ errorMsg: "Contact Number Accepted Max 15 Characters only", isModalVisible: true });
+        return false
+    }
       this.setState({ isLoading: true })
       const claimIntimationReqData = {
         email:this.memberInfo&&this.memberInfo.emailId?this.memberInfo.emailId:null,
         employeeName: this.memberInfo && this.memberInfo.full_name ? this.memberInfo.full_name : null,
+        employeeId,
         policyNo,
         memberId,
         hospitalName,
@@ -122,6 +133,7 @@ export default class ClaimInitiationSubmission extends Component {
                   value={policyNo}
                   keyboardType={"default"}
                   onChangeText={enteredPolicyText => this.setState({ policyNo: enteredPolicyText })}
+                  editable={policyNo==undefined?true:false}
                   blurOnSubmit={false}
                   onSubmitEditing={() => { this.enteredPolicyText._root.focus(); }}
                 />
@@ -141,6 +153,7 @@ export default class ClaimInitiationSubmission extends Component {
                   returnKeyType={'next'}
                   value={name}
                   keyboardType={"default"}
+                  editable={name==undefined?true:false}
                   onChangeText={name => this.setState({ name: name })}
                   blurOnSubmit={false}
                   onSubmitEditing={() => { this.name._root.focus(); }}
@@ -161,6 +174,7 @@ export default class ClaimInitiationSubmission extends Component {
                   returnKeyType={'next'}
                   value={email}
                   keyboardType={"default"}
+                  editable={email==undefined?true:false}
                   onChangeText={mailId => this.setState({ email: mailId })}
                   blurOnSubmit={false}
                   onSubmitEditing={() => { this.mailId._root.focus(); }}
@@ -183,6 +197,7 @@ export default class ClaimInitiationSubmission extends Component {
                   returnKeyType={'next'}
                   value={memberId}
                   keyboardType={"number-pad"}
+                  editable={memberId==undefined?true:false}
                   onChangeText={enteredMemberIdText => this.setState({ memberId: enteredMemberIdText })}
                   blurOnSubmit={false}
                   onSubmitEditing={() => { this.enteredMemberIdText._root.focus(); }}
@@ -221,8 +236,8 @@ export default class ClaimInitiationSubmission extends Component {
                   <Text style={selectedAdmissionDate ? { marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center',marginTop:8,color:'#000' } : { color: '#909090',fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center',marginTop:8 }}>{selectedAdmissionDate ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY') : 'Date of Admission'}</Text>
                   <DateTimePicker
                     mode={'date'}
-                    minimumDate={subTimeUnit(new Date(), 8, 'days')}
-                    maximumDate={addTimeUnit(new Date(), 8, 'days')}
+                    minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                    maximumDate={new Date()}
                     value={selectedAdmissionDate}
                     isVisible={isVisibleDatePicker}
                     onConfirm={this.onPressConfirmDateValue}

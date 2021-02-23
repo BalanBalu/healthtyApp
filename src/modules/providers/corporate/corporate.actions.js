@@ -125,7 +125,7 @@ export async function getPolicyDetailsByPolicyNo(policyNo) {
   }
 }
 
-export async function getPreAuthListByEmpCodeAndPolicyNo(empCode,policyNo,page,limit) {
+export async function getPreAuthListByEmpCodeAndPolicyNo(policyNo,empCode,page,limit) {
   try {
     let endPoint = 'pre-auth/policy/employeeId?policyNo='+policyNo+'&empId='+empCode+'&p='+page+'&l='+limit;
 console.log(endPoint)
@@ -156,13 +156,13 @@ export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit
     }
   }
 }
-export async function getClaimIntimationWithPagination(searchText,page,limit) {
+export async function getClaimIntimationWithPagination(searchText,employeeId,policyNo,page,limit) {
   try {
     let endPoint;
     if (searchText){
-      endPoint = 'claim-intimation/page?searchText=' + searchText + '&p=' + page + '&l=' + limit;
+      endPoint = 'claim-intimation/page?searchText=' + searchText +'&empId='+employeeId+ '&policyNo='+policyNo+'&p=' + page + '&l=' + limit;
     }else{
-      endPoint = 'claim-intimation/page?p=' + page + '&l=' + limit;
+      endPoint = 'claim-intimation/page?empId='+employeeId+ '&policyNo='+policyNo+'&p=' + page + '&l=' + limit;
     }
     let response = await smartHealthGetService(endPoint);
     return response.data;
@@ -189,6 +189,19 @@ export async function serviceOfUpdateClaimIntimation(reqBodyData) {
   }
 }
 
+export async function serviceOfUpdatePreAuthDocs(reqBodyData) {
+  try {
+    const endpoint = 'pre-auth';
+    const resp = await smartHealthPutService(endpoint, reqBodyData)
+    return resp.data
+  } catch (Ex) {
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex.message,
+    }
+  }
+}
 
 
 export async function getTpaInfoByTpaCode(tpaCode) {
