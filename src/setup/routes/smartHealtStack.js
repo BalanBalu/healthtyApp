@@ -280,7 +280,7 @@ export const smartHealthStack=createStackNavigator({
   PreAuth: {
     screen: PreAuth,
     navigationOptions: {
-      title: 'Pre Authorisation'
+      title: 'Pre Authorization'
     }
   },
   "CancelAppointment": {

@@ -6,16 +6,13 @@ import {
   Icon,
 
 } from 'native-base';
-import { TextInput, StyleSheet, Image, SafeAreaView } from 'react-native';
+import { TextInput, StyleSheet,  SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../../setup/config';
 
 import { subTimeUnit, formatDate, dateDiff } from '../../../../setup/helpers';
 import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber, toastMeassage } from '../../../common'
-import { createPreAuth } from '../../../providers/corporate/corporate.actions'
-// import styles from '../styles'
-// import { ImageUpload } from '../../../screens/commonScreen/imageUpload'
+import { createPreAuthRequest } from '../../../providers/corporate/corporate.actions'
 import { uploadImage, } from '../../../providers/common/common.action'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
@@ -24,6 +21,7 @@ class PreAuth extends React.PureComponent {
     super(props);
 
     this.state = {
+      currentForm: 1,
       hospitalInfo: {
         hospitalName: '',
         hospitalLocation: '',
@@ -64,7 +62,6 @@ class PreAuth extends React.PureComponent {
       isLoading: false,
       imageData: null,
       selectOptionPoopup: false,
-      currentForm: 1,
       chosenDate: new Date(),
       firstConsultantDate: new Date(),
       alreadyHaveInsurance: 'yes',
@@ -226,7 +223,9 @@ class PreAuth extends React.PureComponent {
   }
   submitSecandPage() {
     const { tpaInfo, memberInfo, insurerName,
-      physicianName, physicianContactNumber, insurerPatientOccupation, insurerPatientAddress } = this.state
+      physicianName, physicianContactNumber, insurerPatientOccupation, insurerPatientAddress,
+      hospitalInfo,      
+    } = this.state
     let errorMsg = null
 
     if (!onlySpaceNotAllowed(tpaInfo.tpaCompany)) {
@@ -353,125 +352,34 @@ class PreAuth extends React.PureComponent {
     }
 
     if (errorMsg) {
-
       this.setState({ errorMsg: errorMsg });
     } else {
-      this.props.navigation.navigate('DocumentList', { docsUpload: true,preAuthData:true });
-
-      // this.setState({ currentForm: 3 });
+      let reqData = {
+        hospitalName: hospitalInfo.hospitalName,
+        hospitalLocation: hospitalInfo.hospitalLocation,
+        hospitalId: hospitalInfo.hospitalId,
+        hospitalEmail: hospitalInfo.hospitalEmail,
+        rohiniId: hospitalInfo.rohiniId,
+        tpaCompany: tpaInfo.tpaCompany,
+        tpaCompanyPhoneNumber: tpaInfo.tpaCompanyPhoneNumber,
+        tpaTollFreeFaxNo: tpaInfo.tpaTollFreeFaxNo,
+        patientName: memberInfo.patientName,
+        patientDob: memberInfo.dob,
+        patientGender: memberInfo.selectedGender,
+        patientAgeInYr: memberInfo.patientAgeInYr,
+        patientAgeMonth: memberInfo.patientAgeMonth,
+        insurerId: memberInfo.insurerId,
+        policyNo: memberInfo.policyNo,
+        employeeId: memberInfo.employeeId,
+        insurerName: memberInfo.insurerName,
+        physicianName: physicianName,
+        physicianContactNumber: physicianContactNumber,
+        insurerPatientOccupation: insurerPatientOccupation,
+        insurerPatientAddress: insurerPatientAddress
+      }
+      this.props.navigation.navigate('DocumentList', { docsUpload: true,preAuthData:true,preAuthReqData:reqData });
     }
   }
-
-  async submitThirdPage() {
-    try {
-      const {
-        hospitalInfo,
-        tpaInfo,
-        memberInfo,
-        insurerName,
-        physicianName,
-        physicianContactNumber,
-        insurerPatientOccupation,
-        insurerPatientAddress,
-        treatingDoctorName,
-        treatingDoctorContactNo,
-        diseaseDiscription,
-        releventClinical,
-        durationOfPresent,
-        imageData
-      } = this.state
-      let errorMsg = null
-
-      if (!onlySpaceNotAllowed(treatingDoctorName)) {
-        this.setState({ treatingDoctorNameTextErrorMsg: 'Kindly fill doctor name' });
-        this.scrollViewRef.scrollTo({
-          y: this.treatingDoctorNameText.y,
-          animated: true
-        });
-        return false;
-      }
-      if (!validateMobileNumber(treatingDoctorContactNo)) {
-        this.setState({ treatingDoctorContactNoTextErrorMsg: 'Kindly fill valid doctor phone number' });
-        this.scrollViewRef.scrollTo({
-          y: this.treatingDoctorContactNoText.y,
-          animated: true
-        });
-        return false;
-      }
-      if (!onlySpaceNotAllowed(diseaseDiscription)) {
-        this.setState({ diseaseDiscriptionTextErrorMsg: 'Kindly fill disease description' });
-        this.scrollViewRef.scrollTo({
-          y: this.diseaseDiscriptionText.y,
-          animated: true
-        });
-        return false;
-      }
-      if (!onlySpaceNotAllowed(releventClinical)) {
-        this.setState({ releventClinicalTextErrorMsg: 'Kindly fill clinical finding' });
-        this.scrollViewRef.scrollTo({
-          y: this.releventClinicalText.y,
-          animated: true
-        });
-        return false;
-      }
-      if (!onlySpaceNotAllowed(durationOfPresent)) {
-        this.setState({ durationOfPresentTextErrorMsg: 'Kindly fill duration of present' });
-        this.scrollViewRef.scrollTo({
-          y: this.durationOfPresentText.y,
-          animated: true
-        });
-        return false;
-      }
-
-
-
-      if (errorMsg) {
-
-        this.setState({ errorMsg: errorMsg });
-      } else {
-        let reqData = {
-          hospitalName: hospitalInfo.hospitalName,
-          hospitalLocation: hospitalInfo.hospitalLocation,
-          hospitalId: hospitalInfo.hospitalId,
-          hospitalEmail: hospitalInfo.hospitalEmail,
-          rohiniId: hospitalInfo.rohiniId,
-          tpaCompany: tpaInfo.tpaCompany,
-          tpaCompanyPhoneNumber: tpaInfo.tpaCompanyPhoneNumber,
-          tpaTollFreeFaxNo: tpaInfo.tpaTollFreeFaxNo,
-          patientName: memberInfo.patientName,
-          patientDob: memberInfo.dob,
-          patientGender: memberInfo.selectedGender,
-          patientAgeInYr: memberInfo.patientAgeInYr,
-          patientAgeMonth: memberInfo.patientAgeMonth,
-          insurerId: memberInfo.insurerId,
-          policyNo: memberInfo.policyNo,
-          employeeId: memberInfo.employeeId,
-          insurerName: memberInfo.insurerName,
-          physicianName: physicianName,
-          physicianContactNumber: physicianContactNumber,
-          insurerPatientOccupation: insurerPatientOccupation,
-          insurerPatientAddress: insurerPatientAddress,
-          treatingDoctorName: treatingDoctorName,
-          treatingDoctorContactNo: treatingDoctorContactNo,
-          diseaseDiscription: diseaseDiscription,
-          releventClinical: releventClinical,
-          durationOfPresent: durationOfPresent
-        }
-        if (imageData) {
-          reqData.patientProof = imageData
-        }
-        let result = await createPreAuth(reqData)
-
-
-        if (result && result.referenceNumber) {
-          this.setState({ currentForm: 4, referenceID: result.referenceNumber });
-        }
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
   InsurerDetails = () => {
     const { tpaInfo, tpaInformation, memberInfo, memberInformation } = this.state
     return (
@@ -536,34 +444,7 @@ class PreAuth extends React.PureComponent {
             {this.state.MobileNumError !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.MobileNumError}</Text>
               : null}
-            {/* <Text style={styles.inputLabel}
-            onLayout={event =>
-              (this.tpaTollFreeFaxNoText = event.nativeEvent.layout)
-            }>C. Toll Free Fax No</Text>
-          <TextInput
-             value={tpaInfo.tpaTollFreeFaxNo}
-             editable={tpaInformation.tpaTollFreeFaxNo===''?true:false}
-             onChangeText={(text) => this.setState({
-               tpaInfo: {
-                 ...tpaInfo,
-                 tpaTollFreeFaxNo: text
-               }
-             })}
-            style={[
-              styles.inputText,
-              this.state.tpaTollFreeFaxNoErrorMsg != null?
-              {
-                backgroundColor: '#E1E2E5',
-                borderColor: 'red',
-                color: '#707070',
-              }:
-                styles.inputText
-              ,
-            ]}
-          />
-           {this.state.tpaTollFreeFaxNoErrorMsg !== null?
-              <Text style={{ color: 'red', marginRight: 40, marginTop: 10,textAlign:'right',fontSize:14 }}>{this.state.tpaTollFreeFaxNoErrorMsg}</Text>
-              :null} */}
+
             <Text style={styles.headerText}>
               to be filled by insurer / patient
           </Text>
@@ -634,40 +515,7 @@ class PreAuth extends React.PureComponent {
             />
             <Text style={{marginLeft: 10}}>Female</Text>
           </View>
-            {/* <View style={{ flexDirection: 'row' }}>
-              <Radio
-                style={{ marginLeft: 40 }}
-                standardStyle={true}
-                disabled={memberInformation.selectedGender ? true : false}
-                onPress={() => {
-                  this.setState({
-                    memberInfo: {
-                      ...memberInfo,
-                      selectedGender: 'Male'
-                    }
-
-                  });
-                }}
-                selected={memberInfo.selectedGender === 'Male'}
-              />
-              <Text style={{ marginLeft: 10 }}>Male</Text>
-              <Radio
-                style={{ marginLeft: 40 }}
-                standardStyle={true}
-                disabled={memberInformation.selectedGender ? true : false}
-                onPress={() => {
-                  this.setState({
-                    memberInfo: {
-                      ...memberInfo,
-                      selectedGender: 'Female'
-                    }
-
-                  });
-                }}
-                selected={memberInfo.selectedGender === 'Female'}
-              />
-              <Text style={{ marginLeft: 10 }}>Female</Text>
-            </View> */}
+           
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.contactNoText = event.nativeEvent.layout)
@@ -815,41 +663,6 @@ class PreAuth extends React.PureComponent {
             </TouchableOpacity>
           </View>
 
-            {/* 
-          style={{
-                borderColor: '#E0E1E4',
-                borderWidth: 2,
-                backgroundColor: '#fff',
-              }}
-          */}
-            {/* <View style={[{ flexDirection: 'row' }, styles.inputText]}>
-
-            <DatePicker
-              style={{
-                borderColor: '#E0E1E4',
-                borderWidth: 2,
-                backgroundColor: '#fff',
-              }}
-              defaultDate={memberInfo.dob}
-              timeZoneOffsetInMinutes={undefined}
-              modalTransparent={true}
-              minimumDate={new Date(1940, 0, 1)}
-              maximumDate={subTimeUnit(new Date(), 1, 'year')}
-              animationType={'fade'}
-              androidMode={'default'}
-              textStyle={{ color: '#5A5A5A' }}
-              value={memberInfo.dob}
-              placeHolderTextStyle={{ color: '#5A5A5A' }}
-              onDateChange={dob => {
-                this.onDOBChange(dob);
-              }}
-              // disabled={this.dobIsEditable}
-            />
-            <Icon
-              name="calendar"
-              style={{ color: '#3E4459', marginTop: 8, marginLeft: 160 }}
-            />
-          </View> */}
             <Text style={styles.inputLabel}>G. Insurer ID Card No</Text>
             <TextInput
 
@@ -1044,12 +857,6 @@ class PreAuth extends React.PureComponent {
 
             ) : null}
 
-            {/* {
-              this.state.selectOptionPoopup ?
-                <ImageUpload
-                  popupVisible={(data) => this.imageUpload(data)}
-                /> : null
-            } */}
             <Text style={{ marginTop: -20 }} onLayout={event =>
               (this.physicianContactNoText = event.nativeEvent.layout)
             } />
@@ -1116,60 +923,6 @@ class PreAuth extends React.PureComponent {
             {this.state.insurerPatientAddressTextErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.insurerPatientAddressTextErrorMsg}</Text>
               : null}
-            {/* <Text style={styles.headerText}>Upload your aadhar copy</Text>
-            {this.state.imageData !== null ?
-              <View
-                style={{
-                  flex: 1,
-                  marginLeft: 40,
-                  marginRight: 40,
-                  height: 130,
-                  borderColor: '#424242',
-                  borderRadius: 1,
-                  backgroundColor: '#fff',
-                  marginTop: 10,
-                }}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Icon name="document"
-                    style={{
-                      color: '#424242',
-                      marginTop: 8,
-                      marginLeft: 20,
-                    }}
-                  />
-                  <Text
-                    style={{
-                      fontFamily: 'openSans, sans-serif',
-                      fontSize: 12,
-                      marginTop: 8,
-                      marginLeft: 10,
-                      fontWeight: 'bold',
-                    }}>
-
-                    {this.state.imageData.file_name}
-
-                  </Text>
-                </View>
-
-                <View style={{ flexDirection: 'column', marginTop: 0 }}>
-                </View>
-              </View>
-              :
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  marginTop: 10,
-                }}>
-                <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
-                  <Image
-                    source={require('../../../../../assets/images/documentuploadgreen.png')}
-                    style={{ height: 60, width: 110 }}
-                  />
-                </TouchableOpacity>
-              </View>
-            } */}
-            {/* <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text> */}
 
             <View
             style={{
@@ -1236,300 +989,6 @@ class PreAuth extends React.PureComponent {
     );
   };
 
-  DoctorDetails = () => {
-    return (
-      <ScrollView style={styles.body}>
-        <View style={{ flexDirection: 'column' }}>
-          <Text style={styles.headerText}>
-            to be filled by the treating doctor / hospital
-          </Text>
-          <Text style={styles.inputLabel}
-            onLayout={event =>
-              (this.treatingDoctorNameText = event.nativeEvent.layout)
-            }>A. Name of treating doctor</Text>
-          <TextInput
-            onChangeText={(text) => this.setState({ treatingDoctorName: text, treatingDoctorNameTextErrorMsg: null })}
-            placeholder={'Enter Name of treating doctor'}
-            style={[styles.inputText,
-            this.state.treatingDoctorNameTextErrorMsg != null ?
-              {
-                borderColor: 'red',
-              } :
-              styles.inputText
-              ,
-            ]}
-          />
-          {this.state.treatingDoctorNameTextErrorMsg !== null ?
-            <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.treatingDoctorNameTextErrorMsg}</Text>
-            : null}
-          <Text style={styles.inputLabel}
-            onLayout={event =>
-              (this.treatingDoctorContactNoText = event.nativeEvent.layout)
-            }>B. Contact No</Text>
-          <TextInput
-
-            onChangeText={(text) => this.setState({ treatingDoctorContactNo: text, treatingDoctorContactNoTextErrorMsg: null })}
-            placeholder={'Enter contact no'}
-            style={[styles.inputText,
-            this.state.treatingDoctorContactNoTextErrorMsg != null ?
-              {
-                borderColor: 'red',
-              } :
-              styles.inputText
-              ,
-            ]}
-          />
-          {this.state.treatingDoctorContactNoTextErrorMsg !== null ?
-            <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.treatingDoctorContactNoTextErrorMsg}</Text>
-            : null}
-          <Text style={styles.inputLabel}
-            onLayout={event =>
-              (this.diseaseDiscriptionText = event.nativeEvent.layout)
-            }>
-            C. Name of illness/disease with presenting complaints
-          </Text>
-          <TextInput
-            placeholder={'Enter name of illness/disease'}
-
-            onChangeText={(text) => this.setState({ diseaseDiscription: text, diseaseDiscriptionTextErrorMsg: null })}
-            style={[styles.inputText,
-            this.state.diseaseDiscriptionTextErrorMsg != null ?
-              {
-                borderColor: 'red',
-              } :
-              styles.inputText
-              ,
-            ]}
-          />
-          {this.state.diseaseDiscriptionTextErrorMsg !== null ?
-            <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.diseaseDiscriptionTextErrorMsg}</Text>
-            : null}
-          <Text style={styles.inputLabel}
-            onLayout={event =>
-              (this.releventClinicalText = event.nativeEvent.layout)
-            }>D. Relevant clinical findings</Text>
-          <TextInput
-            placeholder={'Enter relevant clinical findings'}
-
-            onChangeText={(text) => this.setState({ releventClinical: text, releventClinicalTextErrorMsg: null })}
-            style={[styles.inputText,
-            this.state.releventClinicalTextErrorMsg != null ?
-              {
-                borderColor: 'red',
-              } :
-              styles.inputText
-              ,
-            ]}
-          />
-          {this.state.releventClinicalTextErrorMsg !== null ?
-            <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.releventClinicalTextErrorMsg}</Text>
-            : null}
-          <Text style={styles.inputLabel}
-            onLayout={event =>
-              (this.durationOfPresentText = event.nativeEvent.layout)
-            }>
-            E. Duration of the present ailment in days
-          </Text>
-          <TextInput
-            placeholder={'Enter duration of present ailment'}
-
-            onChangeText={(text) => this.setState({ durationOfPresent: text, durationOfPresentTextErrorMsg: null })}
-            style={[styles.inputText,
-            this.state.durationOfPresentTextErrorMsg != null ?
-              {
-                borderColor: 'red',
-              } :
-              styles.inputText
-              ,
-            ]}
-          />
-          {this.state.durationOfPresentTextErrorMsg !== null ?
-            <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.durationOfPresentTextErrorMsg}</Text>
-            : null}
-          <Text style={styles.inputLabel}>E.1. Date of first consultation</Text>
-          <View style={[styles.inputText, {marginTop: 2, marginLeft: 20}]}>
-            <TouchableOpacity
-              style={[
-                styles.formStyle2,
-                {
-                  flexDirection: 'row',
-
-                  marginTop: '2%',
-                },
-              ]}
-              onPress={() => {
-                this.setState({
-                  isOnlyDateTimePickerVisible: !this.state
-                    .isOnlyDateTimePickerVisible,
-                });
-              }}
-              style={[styles.formStyle2, {flexDirection: 'row'}]}>
-              {/* <Item > */}
-              <Icon
-                name="md-calendar"
-                style={{
-                  padding: 5,
-                  fontSize: 20,
-                  marginTop: 7,
-                  color: '#128283',
-                }}
-              />
-              <Text
-                style={
-                  this.state.firstConsultantDate != null
-                    ? {
-                        marginTop: 14,
-                        marginBottom: 7,
-                        marginLeft: 5,
-                        fontFamily: 'OpenSans',
-                        fontSize: 13,
-                        textAlign: 'center',
-                      }
-                    : {color: '#909090'}
-                }>
-                {this.state.firstConsultantDate != null
-                  ? formatDate(this.state.firstConsultantDate, 'DD/MM/YYYY')
-                  : 'Date of Birth'}
-              </Text>
-              <DateTimePicker
-                mode={'date'}
-                minimumDate={new Date(1940, 0, 1)}
-                value={this.state.firstConsultantDate}
-                isVisible={this.state.isOnlyDateTimePickerVisible}
-                onConfirm={this.handleOnlyDateTimePicker}
-                onCancel={() =>
-                  this.setState({
-                    isOnlyDateTimePickerVisible: !this.state
-                      .isOnlyDateTimePickerVisible,
-                  })
-                }
-              />
-              {/* </Item> */}
-            </TouchableOpacity>
-          </View>
-
-          {/* <View style={[{ flexDirection: 'row' }, styles.inputText]}>
-            <DatePicker
-              style={{
-                borderColor: '#E0E1E4',
-                borderWidth: 2,
-                backgroundColor: '#fff',
-              }}
-               defaultDate={new Date()}
-              timeZoneOffsetInMinutes={undefined}
-              modalTransparent={false}
-              minimumDate={new Date(1940, 0, 1)}
-              maximumDate={subTimeUnit(new Date(), 1, 'year')}
-              animationType={'fade'}
-              androidMode={'default'}
-              textStyle={{ color: '#5A5A5A' }}
-              value={this.state.chosenDate}
-              placeHolderTextStyle={{ color: '#5A5A5A' }}
-              onDateChange={dob => {
-                this.onDOBChange(dob);
-              }}
-              disabled={false}
-            />
-            <Icon
-              name="calendar"
-              style={{ color: '#3E4459', marginTop: 8, marginLeft: 160 }}
-            /> 
-          </View>*/}
-          {/* <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{this.state.errorMsg}</Text> */}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginTop: 10,
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({currentForm: 2});
-              }}
-              style={[
-                styles.buttonStyle,
-                {
-                  // width: '44%',
-                  backgroundColor: '#fff',
-                  marginLeft: 20,
-                  marginRight: 2,
-                  borderColor: '#128283',
-                },
-              ]}>
-              <Text
-                style={{
-                  fontFamily: 'OpenSans',
-                  color: '#128283',
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginTop: 7,
-                  textTransform: 'uppercase',
-                }}>
-                Back
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                this.submitThirdPage();
-              }}
-              style={[
-                styles.buttonStyle,
-                {
-                  // width: '44%',
-                  backgroundColor: '#128283',
-                  marginLeft: 2,
-                  borderColor: '#128283',
-                  marginRight: 20,
-                },
-              ]}>
-              <Text
-                style={{
-                  fontFamily: 'OpenSans',
-                  color: '#fff',
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginTop: 7,
-                  textTransform: 'uppercase',
-                }}>
-                Submit
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    );
-  };
-
-  FormComplete = () => {
-    return (
-      <ScrollView style={styles.body}>
-        <View style={{ flexDirection: 'column' }}>
-          <Text style={styles.headerText}>
-          Your request has been submitted successfully. Reference No:  {this.state.referenceID}
-          </Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 14 }}>
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              onPress={() => {
-                this.props.navigation.navigate('CorporateHome')
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'OpenSans',
-                  color: '#fff',
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginTop: 7,
-                  textTransform: 'uppercase',
-                }}>
-                Go to Homepage
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    );
-  };
 
   HospitalDetails = () => {
     const { hospitalInfo, hospitalInfomation } = this.state
@@ -1537,8 +996,7 @@ class PreAuth extends React.PureComponent {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
           <Text style={styles.formHeader}>
-            Request For cashless hospitalisation for health insurance policy part
-            c (revised)
+            Request For cashless hospitalization for health insurance policy
         </Text>
           <View style={{ flexDirection: 'column' }}>
             <Text style={styles.headerText}>enter hospital details</Text>
@@ -1548,7 +1006,7 @@ class PreAuth extends React.PureComponent {
               }>Name of the hospital</Text>
             <TextInput
               value={hospitalInfo.hospitalName}
-              editable={hospitalInfomation.hospitalName === '' ? true : false}
+              editable={hospitalInfomation.hospitalName === ''}
               placeholder={'Enter name of the hospital'}
               style={[styles.inputText,
               this.state.hospitalNameTextErrorMsg != null ?
@@ -1723,16 +1181,11 @@ class PreAuth extends React.PureComponent {
       return <this.HospitalDetails />;
     } else if (currentForm === 2) {
       return <this.InsurerDetails />;
-    } else if (currentForm === 3) {
-      return <this.DoctorDetails />;
-    } else if (currentForm === 4) {
-      return <this.FormComplete />;
     }
   }
 }
 
 const styles = StyleSheet.create({
-  /* Hospital Details styling Start */
   body: {
     backgroundColor: '#fff',
     fontFamily: 'OpenSans, sans-serif',

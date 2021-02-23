@@ -10,7 +10,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ImageUpload } from '../../screens/commonScreen/imageUpload'
 import { toastMeassage, RenderDocumentUpload } from '../../common'
 import { uploadImage } from '../../providers/common/common.action'
-import { serviceOfClaimIntimation, serviceOfUpdateClaimIntimation,serviceOfUpdatePreAuthDocs } from '../../providers/corporate/corporate.actions'
+import { serviceOfClaimIntimation, serviceOfUpdateClaimIntimation,serviceOfUpdatePreAuthDocs ,serviceOfSubmitPreAuthReq} from '../../providers/corporate/corporate.actions'
 import ConfirmPopup from '../../shared/confirmPopup'
 import RenderDocumentList from './renderDocumentList'
 class DocumentList extends PureComponent {
@@ -24,6 +24,7 @@ class DocumentList extends PureComponent {
       uploadData: [],
       deletePopupVisible: false,
     }
+    this.preAuthReqData= props.navigation.getParam('preAuthReqData') || null;
   }
 
   componentDidMount() {
@@ -32,6 +33,9 @@ class DocumentList extends PureComponent {
     let data = this.props.navigation.getParam('data') || null;
     let uploadData = this.props.navigation.getParam('uploadData') || [];
     this.setState({ docsUpload, data, uploadData,preAuthData })
+
+
+
   }
 
   imageUpload = async (data) => {
@@ -68,10 +72,7 @@ class DocumentList extends PureComponent {
       this.setState({ isLoading: false })
     }
   }
-  onPressSubmitPreAuthData= async () => {
-    this.props.navigation.navigate('PreAuth', { currentForm: 3,uploadDocs:this.state.uploadData });
-
-  }
+ 
   onPressSubmitClaimData = async () => {
     try {
       this.setState({ isLoading: true })
@@ -81,10 +82,34 @@ class DocumentList extends PureComponent {
       }
       const claimUpdateResp = await serviceOfClaimIntimation(claimIntimationReqData);
       if (claimUpdateResp && claimUpdateResp.referenceNumber) {
-        this.props.navigation.navigate('ClaimIntimationSuccess', { referenceNumber: claimUpdateResp.referenceNumber });
+        this.props.navigation.navigate('ClaimIntimationSuccess', { referenceNumber: claimUpdateResp.referenceNumber,successMsg:'Your Claim Intimation request is being processed, will be notified on successful completion of request, your reference id is' });
       }
       else if (claimUpdateResp && claimUpdateResp.success === false) {
         toastMeassage('Unable to Submit Claim Request')
+      }
+    } catch (error) {
+      toastMeassage('Something Went Wrong' + error.message)
+    }
+    finally {
+      this.setState({ isLoading: false })
+    }
+  }
+
+
+  onPressSubmitPreAuthData = async () => {
+    try {
+      this.setState({ isLoading: true })
+      const preAuthReqData=this.preAuthReqData;
+if(this.state.uploadData&&this.state.uploadData.length&&preAuthReqData){
+  preAuthReqData.patientProof= this.state.uploadData;
+}
+      const preAuthUpdateResp = await serviceOfSubmitPreAuthReq(preAuthReqData);
+      if (preAuthUpdateResp && preAuthUpdateResp.referenceNumber) {
+        this.props.navigation.navigate('ClaimIntimationSuccess', { referenceNumber: preAuthUpdateResp.referenceNumber ,successMsg:`Your pre-auth request is successfully sent to the hospital. Kindly contact hospital for further process.
+        Will be notified on successful completion, app reference id is                       `});
+      }
+      else if (preAuthUpdateResp && preAuthUpdateResp.success === false) {
+        toastMeassage('Unable to Submit PreAuth Request')
       }
     } catch (error) {
       toastMeassage('Something Went Wrong' + error.message)
@@ -270,7 +295,7 @@ class DocumentList extends PureComponent {
                         alignItems: 'center',
                       }}>
                       <TouchableOpacity onPress={() => this.onPressSubmitPreAuthData()} style={styles.appButtonContainer}>
-                        <Text style={styles.appButtonText}>Next</Text>
+                        <Text style={styles.appButtonText}>SUBMIT</Text>
                       </TouchableOpacity>
                     </View>
                   </View>

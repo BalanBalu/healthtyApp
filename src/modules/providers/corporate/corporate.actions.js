@@ -64,7 +64,7 @@ export async function getEcardLink(bodyData) {
   }
 }
 
-export async function createPreAuth(bodyData) {
+export async function serviceOfSubmitPreAuthReq(bodyData) {
   try {
     let endpoint = 'pre-auth'
 
