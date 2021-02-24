@@ -112,7 +112,7 @@ class NetworkHospitals extends Component {
             hospitalInfo: this.state.selectedHospitalData,
             tpaInfo: this.selectedTpaInfoObj
         }
-        this.props.navigation.navigate("FamilyInfoList", { preAuthReqData, navigationPage: "PREAUTH" })     // shouldUpdate={``}
+        this.props.navigation.navigate("FamilyInfoList", { preAuthReqData, navigationPage: "PreAuthSubmission" })     // shouldUpdate={``}
     }
     onPressGoPreConsultation = () => {
     }

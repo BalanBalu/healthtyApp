@@ -33,7 +33,7 @@ export const CoverageCard = props => {
           style={styles.rectBox}
           activeOpacity={0.6}
           underlayColor={secondaryColorTouch}
-          onPress={() => navigation('preAuthList')}>
+          onPress={() => navigation('PreAuthList')}>
           <View>
             <View
               style={{

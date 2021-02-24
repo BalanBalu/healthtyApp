@@ -29,7 +29,7 @@ export default class ClaimPaymentSuccess extends PureComponent {
                                     marginRight: 20,
                                     fontWeight: 'bold'
                                 }}>
-                            " {this.props.navigation.getParam('referenceNumber') ? this.props.navigation.getParam('referenceNumber') : null} "</Text></Text>
+                             {this.props.navigation.getParam('referenceNumber') ?`" ${this.props.navigation.getParam('referenceNumber')} "` : null}</Text></Text>
                         </Card>
                         <Button onPress={() => this.props.navigation.navigate('CorporateHome')}
                             block style={{ marginTop: 5, borderRadius: 10, marginBottom: 10, backgroundColor: '#5bb85d' }}>

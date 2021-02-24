@@ -6,14 +6,11 @@ import {
   Icon,
 
 } from 'native-base';
-import { TextInput, StyleSheet,  SafeAreaView } from 'react-native';
+import { TextInput, StyleSheet, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-
-import { subTimeUnit, formatDate, dateDiff } from '../../../../setup/helpers';
-import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber, toastMeassage } from '../../../common'
-import { createPreAuthRequest } from '../../../providers/corporate/corporate.actions'
-import { uploadImage, } from '../../../providers/common/common.action'
+import { formatDate } from '../../../../setup/helpers';
+import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber } from '../../../common'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
 class PreAuth extends React.PureComponent {
@@ -99,8 +96,8 @@ class PreAuth extends React.PureComponent {
   }
   async componentDidMount() {
     let preAuthInfo = this.props.navigation.getParam('preAuthInfo')
-    let currentForm = this.props.navigation.getParam('currentForm')||1
-    let uploadDocs = this.props.navigation.getParam('uploadDocs')||1
+    let currentForm = this.props.navigation.getParam('currentForm') || 1
+    let uploadDocs = this.props.navigation.getParam('uploadDocs') || 1
 
     let hospitalInfo = preAuthInfo.hospitalInfo || {};
     let tpaInfo = preAuthInfo.tpaInfo || {}
@@ -129,7 +126,7 @@ class PreAuth extends React.PureComponent {
       selectedGender: memberInformation.gender || '',
       dob: memberInformation.dob || new Date()
     }
-    await this.setState({ hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo,currentForm,imageData:uploadDocs })
+    await this.setState({ hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
   }
   getMemberName(item) {
     let name = ''
@@ -224,7 +221,7 @@ class PreAuth extends React.PureComponent {
   submitSecandPage() {
     const { tpaInfo, memberInfo, insurerName,
       physicianName, physicianContactNumber, insurerPatientOccupation, insurerPatientAddress,
-      hospitalInfo,      
+      hospitalInfo,
     } = this.state
     let errorMsg = null
 
@@ -377,7 +374,7 @@ class PreAuth extends React.PureComponent {
         insurerPatientOccupation: insurerPatientOccupation,
         insurerPatientAddress: insurerPatientAddress
       }
-      this.props.navigation.navigate('DocumentList', { docsUpload: true,preAuthData:true,preAuthReqData:reqData });
+      this.props.navigation.navigate('DocumentList', { docsUpload: true, isFromPreAuthReq: true, preAuthReqData: reqData });
     }
   }
   InsurerDetails = () => {
@@ -479,43 +476,43 @@ class PreAuth extends React.PureComponent {
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.patientNameErrorMsg}</Text>
               : null}
             <Text style={styles.inputLabel}>B. Gender</Text>
-            <View style={{flexDirection: 'row', marginTop: 2}}>
-            <Radio
-              color={'#128283'}
-              selectedColor={'#128283'}
-              style={{marginLeft: 20}}
-              standardStyle={true}
-              disabled={memberInformation.selectedGender ? true : false}
-              onPress={() => {
-                this.setState({
-                  memberInfo: {
-                    ...memberInfo,
-                    selectedGender: 'Male',
-                  },
-                });
-              }}
-              selected={memberInfo.selectedGender === 'Male'}
-            />
-            <Text style={{marginLeft: 10}}>Male</Text>
-            <Radio
-              color={'#128283'}
-              selectedColor={'#128283'}
-              style={{marginLeft: 20}}
-              standardStyle={true}
-              disabled={memberInformation.selectedGender ? true : false}
-              onPress={() => {
-                this.setState({
-                  memberInfo: {
-                    ...memberInfo,
-                    selectedGender: 'Female',
-                  },
-                });
-              }}
-              selected={memberInfo.selectedGender === 'Female'}
-            />
-            <Text style={{marginLeft: 10}}>Female</Text>
-          </View>
-           
+            <View style={{ flexDirection: 'row', marginTop: 2 }}>
+              <Radio
+                color={'#128283'}
+                selectedColor={'#128283'}
+                style={{ marginLeft: 20 }}
+                standardStyle={true}
+                disabled={memberInformation.selectedGender ? true : false}
+                onPress={() => {
+                  this.setState({
+                    memberInfo: {
+                      ...memberInfo,
+                      selectedGender: 'Male',
+                    },
+                  });
+                }}
+                selected={memberInfo.selectedGender === 'Male'}
+              />
+              <Text style={{ marginLeft: 10 }}>Male</Text>
+              <Radio
+                color={'#128283'}
+                selectedColor={'#128283'}
+                style={{ marginLeft: 20 }}
+                standardStyle={true}
+                disabled={memberInformation.selectedGender ? true : false}
+                onPress={() => {
+                  this.setState({
+                    memberInfo: {
+                      ...memberInfo,
+                      selectedGender: 'Female',
+                    },
+                  });
+                }}
+                selected={memberInfo.selectedGender === 'Female'}
+              />
+              <Text style={{ marginLeft: 10 }}>Female</Text>
+            </View>
+
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.contactNoText = event.nativeEvent.layout)
@@ -554,47 +551,47 @@ class PreAuth extends React.PureComponent {
               onLayout={event =>
                 (this.patientAgeText = event.nativeEvent.layout)
               }>E. Age</Text>
-             <View style={{flexDirection: 'row'}}>
-            <TextInput
-              placeholder={'YY'}
-              value={memberInfo.patientAgeInYr}
-              editable={memberInformation.patientAgeInYr === '' ? true : false}
-              onChangeText={text =>
-                this.setState({
-                  memberInfo: {
-                    ...memberInfo,
-                    patientAgeInYr: text,
+            <View style={{ flexDirection: 'row' }}>
+              <TextInput
+                placeholder={'YY'}
+                value={memberInfo.patientAgeInYr}
+                editable={memberInformation.patientAgeInYr === '' ? true : false}
+                onChangeText={text =>
+                  this.setState({
+                    memberInfo: {
+                      ...memberInfo,
+                      patientAgeInYr: text,
+                    },
+                  })
+                }
+                style={[
+                  styles.inputText,
+                  { width: '44%', marginRight: 0, textAlign: 'center' },
+                ]}
+              />
+              <TextInput
+                placeholder={'MM'}
+                value={memberInfo.patientAgeMonth}
+                editable={memberInformation.patientAgeMonth === '' ? true : false}
+                onChangeText={text =>
+                  this.setState({
+                    memberInfo: {
+                      ...memberInfo,
+                      patientAgeMonth: text,
+                    },
+                  })
+                }
+                style={[
+                  styles.inputText,
+                  {
+                    width: '44%',
+                    marginLeft: 5,
+                    textAlign: 'center',
+                    marginRight: 20,
                   },
-                })
-              }
-              style={[
-                styles.inputText,
-                {width: '44%', marginRight: 0, textAlign: 'center'},
-              ]}
-            />
-            <TextInput
-              placeholder={'MM'}
-              value={memberInfo.patientAgeMonth}
-              editable={memberInformation.patientAgeMonth === '' ? true : false}
-              onChangeText={text =>
-                this.setState({
-                  memberInfo: {
-                    ...memberInfo,
-                    patientAgeMonth: text,
-                  },
-                })
-              }
-              style={[
-                styles.inputText,
-                {
-                  width: '44%',
-                  marginLeft: 5,
-                  textAlign: 'center',
-                  marginRight: 20,
-                },
-              ]}
-            />
-          </View>
+                ]}
+              />
+            </View>
             {this.state.patientAgeErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.patientAgeErrorMsg}</Text>
               : null}
@@ -602,37 +599,37 @@ class PreAuth extends React.PureComponent {
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.patientMonthErrorMsg}</Text>
               : null}
             <Text style={styles.inputLabel}>F. Date of birth</Text>
-            <View style={[styles.inputText, {marginTop: 2}]}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  isOnlyDateTimePickerVisible: !this.state
-                    .isOnlyDateTimePickerVisible,
-                });
-              }}
-              style={[
-                styles.formStyle2,
-                {
-                  flexDirection: 'row',
-
-                  marginTop: '2%',
-                },
-              ]}>
-              {/* <Item > */}
-              <Icon
-                name="md-calendar"
-                style={{
-                  padding: 5,
-                  paddingLeft: 2,
-                  fontSize: 20,
-                  marginTop: 1,
-                  color: '#128283',
+            <View style={[styles.inputText, { marginTop: 2 }]}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({
+                    isOnlyDateTimePickerVisible: !this.state
+                      .isOnlyDateTimePickerVisible,
+                  });
                 }}
-              />
-              <Text
-                style={
-                  memberInfo.dob != null
-                    ? {
+                style={[
+                  styles.formStyle2,
+                  {
+                    flexDirection: 'row',
+
+                    marginTop: '2%',
+                  },
+                ]}>
+                {/* <Item > */}
+                <Icon
+                  name="md-calendar"
+                  style={{
+                    padding: 5,
+                    paddingLeft: 2,
+                    fontSize: 20,
+                    marginTop: 1,
+                    color: '#128283',
+                  }}
+                />
+                <Text
+                  style={
+                    memberInfo.dob != null
+                      ? {
                         marginTop: 7,
                         marginBottom: 7,
                         marginLeft: 5,
@@ -640,28 +637,28 @@ class PreAuth extends React.PureComponent {
                         fontSize: 13,
                         textAlign: 'center',
                       }
-                    : {color: '#909090'}
-                }>
-                {memberInfo.dob != null
-                  ? formatDate(memberInfo.dob, 'DD/MM/YYYY')
-                  : 'Date of Birth'}
-              </Text>
-              <DateTimePicker
-                mode={'date'}
-                minimumDate={new Date(1940, 0, 1)}
-                value={memberInfo.dob}
-                isVisible={this.state.isOnlyDateTimePickerVisible}
-                onConfirm={this.handleOnlyDateTimePicker}
-                onCancel={() =>
-                  this.setState({
-                    isOnlyDateTimePickerVisible: !this.state
-                      .isOnlyDateTimePickerVisible,
-                  })
-                }
-              />
-              {/* </Item> */}
-            </TouchableOpacity>
-          </View>
+                      : { color: '#909090' }
+                  }>
+                  {memberInfo.dob != null
+                    ? formatDate(memberInfo.dob, 'DD/MM/YYYY')
+                    : 'Date of Birth'}
+                </Text>
+                <DateTimePicker
+                  mode={'date'}
+                  minimumDate={new Date(1940, 0, 1)}
+                  value={memberInfo.dob}
+                  isVisible={this.state.isOnlyDateTimePickerVisible}
+                  onConfirm={this.handleOnlyDateTimePicker}
+                  onCancel={() =>
+                    this.setState({
+                      isOnlyDateTimePickerVisible: !this.state
+                        .isOnlyDateTimePickerVisible,
+                    })
+                  }
+                />
+                {/* </Item> */}
+              </TouchableOpacity>
+            </View>
 
             <Text style={styles.inputLabel}>G. Insurer ID Card No</Text>
             <TextInput
@@ -742,32 +739,32 @@ class PreAuth extends React.PureComponent {
               }>
               J. Currently you have any other medical claim / insurance
           </Text>
-          <View style={{flexDirection: 'row', marginBottom: 1, marginTop: 2}}>
-            <Radio
-              color={'#128283'}
-              selectedColor={'#128283'}
-              onPress={() => {
-                this.setState({alreadyHaveInsurance: 'yes'});
-              }}
-              style={{marginLeft: 20}}
-              standardStyle={true}
-              selected={
-                this.state.alreadyHaveInsurance === 'yes' ? true : false
-              }
-            />
-            <Text style={{marginLeft: 10}}>Yes</Text>
-            <Radio
-              color={'#128283'}
-              selectedColor={'#128283'}
-              onPress={() => {
-                this.setState({alreadyHaveInsurance: 'no'});
-              }}
-              style={{marginLeft: 20}}
-              standardStyle={true}
-              selected={this.state.alreadyHaveInsurance === 'no' ? true : false}
-            />
-            <Text style={{marginLeft: 10}}>No</Text>
-          </View>
+            <View style={{ flexDirection: 'row', marginBottom: 1, marginTop: 2 }}>
+              <Radio
+                color={'#128283'}
+                selectedColor={'#128283'}
+                onPress={() => {
+                  this.setState({ alreadyHaveInsurance: 'yes' });
+                }}
+                style={{ marginLeft: 20 }}
+                standardStyle={true}
+                selected={
+                  this.state.alreadyHaveInsurance === 'yes' ? true : false
+                }
+              />
+              <Text style={{ marginLeft: 10 }}>Yes</Text>
+              <Radio
+                color={'#128283'}
+                selectedColor={'#128283'}
+                onPress={() => {
+                  this.setState({ alreadyHaveInsurance: 'no' });
+                }}
+                style={{ marginLeft: 20 }}
+                standardStyle={true}
+                selected={this.state.alreadyHaveInsurance === 'no' ? true : false}
+              />
+              <Text style={{ marginLeft: 10 }}>No</Text>
+            </View>
             {this.state.alreadyHaveInsurance === 'yes' ?
               <View>
                 <Text style={styles.inputLabel}
@@ -807,30 +804,30 @@ class PreAuth extends React.PureComponent {
             <Text style={[styles.inputLabel, { lineHeight: 26 }]}>
               K. If you have family physician
           </Text>
-          <View style={{flexDirection: 'row', marginBottom: '0.5%', marginTop: 2}}>
-            <Radio
-              color={'#128283'}
-              selectedColor={'#128283'}
-              onPress={() => {
-                this.setState({haveFamilyPhysician: 'yes'});
-              }}
-              style={{marginLeft: 20}}
-              standardStyle={true}
-              selected={this.state.haveFamilyPhysician === 'yes' ? true : false}
-            />
-            <Text style={{marginLeft: 10}}>Yes</Text>
-            <Radio
-              color={'#128283'}
-              selectedColor={'#128283'}
-              onPress={() => {
-                this.setState({haveFamilyPhysician: 'no'});
-              }}
-              style={{marginLeft: 20}}
-              standardStyle={true}
-              selected={this.state.haveFamilyPhysician === 'no' ? true : false}
-            />
-            <Text style={{marginLeft: 10}}>No</Text>
-          </View>
+            <View style={{ flexDirection: 'row', marginBottom: '0.5%', marginTop: 2 }}>
+              <Radio
+                color={'#128283'}
+                selectedColor={'#128283'}
+                onPress={() => {
+                  this.setState({ haveFamilyPhysician: 'yes' });
+                }}
+                style={{ marginLeft: 20 }}
+                standardStyle={true}
+                selected={this.state.haveFamilyPhysician === 'yes' ? true : false}
+              />
+              <Text style={{ marginLeft: 10 }}>Yes</Text>
+              <Radio
+                color={'#128283'}
+                selectedColor={'#128283'}
+                onPress={() => {
+                  this.setState({ haveFamilyPhysician: 'no' });
+                }}
+                style={{ marginLeft: 20 }}
+                standardStyle={true}
+                selected={this.state.haveFamilyPhysician === 'no' ? true : false}
+              />
+              <Text style={{ marginLeft: 10 }}>No</Text>
+            </View>
             <Text onLayout={event =>
               (this.personalPhysicianNameText = event.nativeEvent.layout)
             } stye={{ marginTop: -20 }} />
@@ -925,64 +922,64 @@ class PreAuth extends React.PureComponent {
               : null}
 
             <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginTop: 10,
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({currentForm: 1});
-              }}
-              style={[
-                styles.buttonStyle,
-                {
-                  // width: '44%',
-                  backgroundColor: '#fff',
-                  marginLeft: 20,
-                  marginRight: 5,
-                  borderColor: '#128283',
-                },
-              ]}>
-              <Text
-                style={{
-                  fontFamily: 'OpenSans',
-                  color: '#128283',
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginTop: 7,
-                  textTransform: 'uppercase',
-                }}>
-                Back
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginTop: 10,
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({ currentForm: 1 });
+                }}
+                style={[
+                  styles.buttonStyle,
+                  {
+                    // width: '44%',
+                    backgroundColor: '#fff',
+                    marginLeft: 20,
+                    marginRight: 5,
+                    borderColor: '#128283',
+                  },
+                ]}>
+                <Text
+                  style={{
+                    fontFamily: 'OpenSans',
+                    color: '#128283',
+                    fontSize: 16,
+                    textAlign: 'center',
+                    marginTop: 7,
+                    textTransform: 'uppercase',
+                  }}>
+                  Back
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                this.submitSecandPage();
-              }}
-              style={[
-                styles.buttonStyle,
-                {
-                  // width: '44%',
-                  backgroundColor: '#128283',
-                  marginLeft: 5,
-                  borderColor: '#128283',
-                  marginRight: 20,
-                },
-              ]}>
-              <Text
-                style={{
-                  fontFamily: 'OpenSans',
-                  color: '#fff',
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginTop: 7,
-                  textTransform: 'uppercase',
-                }}>
-                Next
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.submitSecandPage();
+                }}
+                style={[
+                  styles.buttonStyle,
+                  {
+                    // width: '44%',
+                    backgroundColor: '#128283',
+                    marginLeft: 5,
+                    borderColor: '#128283',
+                    marginRight: 20,
+                  },
+                ]}>
+                <Text
+                  style={{
+                    fontFamily: 'OpenSans',
+                    color: '#fff',
+                    fontSize: 16,
+                    textAlign: 'center',
+                    marginTop: 7,
+                    textTransform: 'uppercase',
+                  }}>
+                  Next
               </Text>
-            </TouchableOpacity>
-          </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -1147,29 +1144,29 @@ class PreAuth extends React.PureComponent {
            
 
             </View> */}
-             <TouchableOpacity
-            style={[
-              styles.buttonStyle,
-              {
-                marginLeft: 20,
-                marginRight: 20,
-                marginTop: 14,
-                marginBottom: 14,
-              },
-            ]}
-            onPress={() => this.submitFirstPage()}>
-            <Text
-              style={{
-                fontFamily: 'OpenSans',
-                color: '#fff',
-                fontSize: 16,
-                textAlign: 'center',
-                marginTop: 7,
-                textTransform: 'uppercase',
-              }}>
-              proceed to next step
+            <TouchableOpacity
+              style={[
+                styles.buttonStyle,
+                {
+                  marginLeft: 20,
+                  marginRight: 20,
+                  marginTop: 14,
+                  marginBottom: 14,
+                },
+              ]}
+              onPress={() => this.submitFirstPage()}>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans',
+                  color: '#fff',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  marginTop: 7,
+                  textTransform: 'uppercase',
+                }}>
+                proceed to next step
             </Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
