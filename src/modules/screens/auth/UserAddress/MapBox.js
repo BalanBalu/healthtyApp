@@ -11,7 +11,7 @@ import { userFiledsUpdate, logout, getPostOffNameAndDetails } from '../../../pro
 import Geolocation from 'react-native-geolocation-service';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 // import Qs from 'qs';
-import {primaryColor} from '../../../../setup/config'
+import { primaryColor } from '../../../../setup/config'
 
 import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../../components/Spinner';
@@ -46,12 +46,13 @@ export default class MapBox extends Component {
                 state: null,
                 country: null,
                 pin_code: null
-            }
+            },
         }
         this.onRegionDidChange = this.onRegionDidChange.bind(this);
         this.onRegionIsChanging = this.onRegionIsChanging.bind(this);
         this.onDidFinishLoadingMap = this.onDidFinishLoadingMap.bind(this);
         this.navigationOption = null;
+        this.isFromNetworkHospital = props.navigation.getParam('isFromNetworkHospital') || false;
     }
     async componentDidMount() {
         try {
@@ -405,8 +406,27 @@ export default class MapBox extends Component {
     //     }
     // }
 
+    confirmLocation() {
+        if (this.isFromNetworkHospital === true) {
+            const { coordinates, address } = this.state
+            const reqData4NetworkHosp = {
+                coordinates,
+                selectedCityName: address.address_line_1
+            }
+            if (coordinates && coordinates.length) {
+                reqData4NetworkHosp.isFromMapBox = true;
+            }
+            this.props.navigation.navigate("NetworkHospitals", reqData4NetworkHosp)
+        }
+        else {
+            this.setState({ showAllAddressFields: true })
+        }
+    }
+
+
     render() {
         const { coordinates, zoom, searchBoxLocFullText, center, address: { no_and_street, address_line_1, pin_code, city, state, country, post_office_name, district }, showAllAddressFields, editable, isLoading } = this.state;
+        //  console.log("Coordinates+++++++++",coordinates)
         return (
             <Container>
                 <NavigationEvents
@@ -457,7 +477,7 @@ export default class MapBox extends Component {
                     <Card>
                         <CardItem bordered>
                             <Body>
-                                <Button style={{ borderRadius: 15 }} iconLeft block success onPress={() => this.setState({ showAllAddressFields: true })}>
+                                <Button style={{ borderRadius: 15 }} iconLeft block success onPress={() => this.confirmLocation()}>
                                     <Icon name='paper-plane'></Icon>
                                     <Text>Confirm Location</Text>
                                 </Button>

@@ -19,8 +19,7 @@ export default class ClaimPaymentSuccess extends PureComponent {
                                 <Icon name="checkmark-circle" style={styles.circleIcon} />
                             </View>
                             <Text style={styles.successHeading}>SUCCESS</Text>
-                            <Text style={styles.subText}>Your Claim Intimation request is being processed, will be notified on successful
-            completion of request, your reference id is   <Text style={{
+                            <Text style={styles.subText}>{ this.props.navigation.getParam('successMsg') ? this.props.navigation.getParam('successMsg') : null}  <Text style={{
                                     textAlign: 'center',
                                     fontFamily: 'OpenSans',
                                     fontSize: 18,
@@ -29,7 +28,8 @@ export default class ClaimPaymentSuccess extends PureComponent {
                                     marginLeft: 20,
                                     marginRight: 20,
                                     fontWeight: 'bold'
-                                }}>" {this.props.navigation.getParam('referenceNumber') ? this.props.navigation.getParam('referenceNumber') : null} "</Text></Text>
+                                }}>
+                             {this.props.navigation.getParam('referenceNumber') ?`" ${this.props.navigation.getParam('referenceNumber')} "` : null}</Text></Text>
                         </Card>
                         <Button onPress={() => this.props.navigation.navigate('CorporateHome')}
                             block style={{ marginTop: 5, borderRadius: 10, marginBottom: 10, backgroundColor: '#5bb85d' }}>
