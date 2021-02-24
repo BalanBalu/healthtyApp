@@ -25,8 +25,8 @@ class FamilyInfoList extends PureComponent {
         if (this.navigationPage === 'ClaimIntimationSubmission') {
             this.props.navigation.navigate(this.navigationPage, { memberInfo: selectedMemObj })
         }
-        else if (this.navigationPage === 'PREAUTH') {
-            this.props.navigation.navigate('PreAuth', { memberInfo: selectedMemObj,preAuthInfo: this.preAuthReqData  })
+        else if (this.navigationPage === 'PreAuthSubmission') {
+            this.props.navigation.navigate('PreAuthSubmission', { memberInfo: selectedMemObj,preAuthInfo: this.preAuthReqData  })
         }
     }
 
