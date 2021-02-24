@@ -122,7 +122,7 @@ import preAuthList from '../../modules/screens/Home/corporateHome/preAuthList'
 import ClaimIntimationList from '../../modules/screens/ClaimIntimation/claimintimationList'
 import DocumentList from '../../modules/screens/ClaimIntimation/documentList'
 import ContactUs from '../../modules/screens/contactUs'
-
+import AddInsurance from '../../modules/screens/Insurance/addInsurance'
 
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
@@ -850,7 +850,13 @@ export const smartHealthStack=createStackNavigator({
   Insurance: {
     screen: Insurance,
     navigationOptions: {
-      title: 'Insurance'
+      title: 'My Insurance Policies'
+    }
+  },
+  AddInsurance: {
+    screen: AddInsurance,
+    navigationOptions: {
+      title: 'Add Insurance'
     }
   },
 },
