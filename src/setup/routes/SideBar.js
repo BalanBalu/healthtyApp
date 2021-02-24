@@ -147,7 +147,7 @@ class SideBar extends React.Component {
                           
                        
                         <Image square source={item.icon}
-                          style={ item.contactIcon === 'Contact Us' ? {height: 14, width: 20,}:{height: 20, width: 20}}
+                          style={item.largeIcon}
                         />
                         <Body style={{ borderBottomWidth: 0, }}>
                           <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{translate(item.name)}</Text>

@@ -8,10 +8,20 @@ import styles from './styles'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { formatDate } from '../../../../setup/helpers';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 
 export const PolicyCoverageCard = props => {
     const { navigation, data } = props;
+    const percentageCalculation =(total,balance)=>{
+        if(total !=0){
+            let percentage = (balance/total) * (100);
+            return percentage
+        }else {
+            return 0;
+        }
+
+    }
     return (
         <TouchableHighlight activeOpacity={0.6}
             underlayColor="#fff" >
@@ -94,18 +104,22 @@ export const PolicyCoverageCard = props => {
                             />
                         </Svg>
                     </View>
-                    <View style={{ marginTop: -57.5, marginLeft: 225, marginBottom: 10 }}>
-                        <CircleProgessImage />
-                    </View>
-                    <Row style={{ position: 'absolute', marginLeft: 205, marginTop: 40 }}>
-                        <Col>
-                            <Text
+                    <View style={{position:'absolute',right:15,top:15}}>
+                    <AnimatedCircularProgress
+                size={80}
+                width={7}
+                // fill={10}
+                fill={percentageCalculation(data.sumInsured,data.balSumInsured)}
+                tintColor={primaryColor}
+                backgroundColor='rgba(18, 130, 131, 0.3)'>
+                {() => (
+                  <View>
+                     <Text
                                 style={{
                                     color: '#000',
                                     fontFamily: 'openSans, sans-serif',
                                     fontSize: 11,
                                     lineHeight: 24,
-                                    marginLeft: 5,
                                     textAlign: 'center',
                                     marginTop: 15
                                 }}>Rs. {data.sumInsured ? data.sumInsured : 0}</Text>
@@ -119,9 +133,10 @@ export const PolicyCoverageCard = props => {
                                     marginTop: -5
 
                                 }}>Total</Text>
-                        </Col>
-                    </Row>
-                    <Row style={{ marginLeft: 90, marginTop: -40 }}>
+                  </View>
+                )}
+              </AnimatedCircularProgress>
+              <Row style={{position:'absolute',right:60,top:65 }}>
                         <Col>
                             <Text
                                 style={{
@@ -147,6 +162,8 @@ export const PolicyCoverageCard = props => {
                                 }}>Balance sum</Text>
                         </Col>
                     </Row>
+                    </View>
+                   
                 </View>
             </View>
         </TouchableHighlight>
