@@ -64,7 +64,7 @@ export async function getEcardLink(bodyData) {
   }
 }
 
-export async function createPreAuth(bodyData) {
+export async function serviceOfSubmitPreAuthReq(bodyData) {
   try {
     let endpoint = 'pre-auth'
 
@@ -125,14 +125,12 @@ export async function getPolicyDetailsByPolicyNo(policyNo) {
   }
 }
 
-export async function getPreAuthListByEmpCodeAndPolicyNo(policyNo,empCode,page,limit) {
+export async function serviceOfGetPreAuthList(policyNo,empCode,page,limit) {
   try {
-    let endPoint = 'pre-auth/policy/employeeId?policyNo='+policyNo+'&empId='+empCode+'&p='+page+'&l='+limit;
-console.log(endPoint)
-    let response = await smartHealthGetService(endPoint);
+    const endPoint = 'pre-auth/policy/employeeId?policyNo='+policyNo+'&empId='+empCode+'&p='+page+'&l='+limit;
+    const response = await smartHealthGetService(endPoint);
     return response.data;
   } catch (e) {
-
     return {
       message: 'exceptio1n' + e,
       success: false
