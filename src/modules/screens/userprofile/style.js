@@ -67,7 +67,7 @@ export default StyleSheet.create({
     },
     addressButtonDisable: {
         marginTop: 12,
-        backgroundColor: '#9777c7',
+        backgroundColor: primaryColor,
         borderRadius: 5,
         fontFamily: 'OpenSans',
         marginLeft: 15,

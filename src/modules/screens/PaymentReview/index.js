@@ -15,6 +15,7 @@ import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { dateDiff } from '../../../setup/helpers';
 import { TestDetails, POSSIBLE_FAMILY_MEMBERS } from './testDeatils'
 import { PayBySelection, POSSIBLE_PAY_METHODS } from './PayBySelection';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props)
@@ -486,7 +487,7 @@ export default class PaymentReview extends Component {
                   <Text style={styles.calDate}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                 </Col>
                 <Col size={5} style={{ flexDirection: 'row' }}>
-                  <Icon name="md-clock" style={{ fontSize: 20, color: '#8EC63F' }} />
+                  <AntDesign name="clockcircleo" style={{ fontSize: 18, color: '#8EC63F' }} />
                   <Text style={styles.clockTime}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                 </Col>
               </Row>

@@ -15,7 +15,7 @@ import {
 import Spinner from '../../../components/Spinner';
 import { bloodGroupList, validateName } from "../../common";
 import DateTimePicker from 'react-native-modal-datetime-picker';
-
+import {primaryColor} from '../../../setup/config'
 
 class UpdateUserDetails extends Component {
     constructor(props) {
@@ -206,7 +206,7 @@ class UpdateUserDetails extends Component {
                                 {this.state.lastNameMsg ? <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.lastNameMsg}</Text> : null}
                                 <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5,flexDirection:'row',marginLeft: 15,alignItems:'center' }}>
                                 {/* <Item > */}
-                            <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+                            <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: primaryColor }} />
                             <Text style={this.state.dob != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.dob != null ?formatDate(this.state.dob, 'DD/MM/YYYY'):'Date of Birth'}</Text>
                             <DateTimePicker
                               mode={'date'}
@@ -223,17 +223,17 @@ class UpdateUserDetails extends Component {
                                 <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5, }}>
                                     <Picker style={styles.transparentLabel2}
                                         mode="dropdown"
-                                        placeholderStyle={{ fontSize: 15, marginLeft: -5 }}
-                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20 }} />}
-                                        textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
+                                        placeholderStyle={{ fontSize: 15, marginLeft: -5, }}
+                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: primaryColor, fontSize: 20 }} />}
+                                        textStyle={{  left: 0, marginLeft: -5, color: primaryColor, }}
                                         note={false}
                                         itemStyle={{
-                                         
+                                            color: primaryColor,
                                             paddingLeft: 10,
                                             fontSize: 16,
                                         }}
-                                        itemTextStyle={{ color: '#5cb85c', }}
-                                        style={{ width: "100%"  }}
+                                        itemTextStyle={{ color: primaryColor, }}
+                                        style={{ width: "100%", color: primaryColor,  }}
                                         onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample, updateButton: false }) }}
                                         selectedValue={this.state.selectedBloodGroup}
                                         testID="editBloodGroup"
