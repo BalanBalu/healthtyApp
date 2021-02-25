@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Row, Grid, Col } from 'react-native-easy-grid';
-import { Container, View, Text, Button, Icon, Input, Card, Content, CheckBox } from 'native-base';
+import { Row, Col } from 'react-native-easy-grid';
+import { Container, View, Text, Icon, Card, Content, CheckBox } from 'native-base';
 import { getInsuranceData, sendInsuranceInterests } from '../../providers/insurance/insurance.action';
 import {
   StyleSheet,
@@ -127,54 +127,54 @@ class Insurance extends Component {
     return (
       <Container >
         <Content style={{ padding: 10 }}>
-          <View style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-            <TouchableOpacity style={{ borderColor: '#128283', borderWidth: 1, flexDirection: 'row', borderRadius: 5, padding: 5 }} onPress={() => this.props.navigation.navigate('AddInsurance')}>
+          <View style={styles.mainView}>
+            <TouchableOpacity style={styles.addInsuranceButton} onPress={() => this.props.navigation.navigate('AddInsurance')}>
               <Icon name="add-circle-outline" style={{ fontSize: 20, color: '#128283' }} />
-              <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#128283', marginTop: 2, fontWeight: 'bold' }}>Add Insurance</Text>
+              <Text style={styles.addInsuranceText}>Add Insurance</Text>
             </TouchableOpacity>
             <FlatList
               data={data}
               renderItem={({ item, index }) =>
-                <Card style={{ marginTop: 10, padding: 10, borderRadius: 5 }}>
-                  <View style={{ paddingBottom: 10, borderBottomColor: 'gray', borderBottomWidth: 0.5 }}>
-                    <View style={{ flexDirection: 'row', width: '100%' }}>
-                      <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', width: '70%' }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#128283', lineHeight: 20 }}>{item.corporateName}</Text>
+                <Card style={styles.CardStyle}>
+                  <View style={styles.mainVieww}>
+                    <View style={styles.commonStyleView}>
+                      <View style={styles.HeadingTextView}>
+                        <Text style={styles.HeadingText}>{item.corporateName}</Text>
                       </View>
-                      <View style={{ justifyContent: 'flex-start', alignItems: 'flex-end', width: '30%' }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000', lineHeight: 20 }}>{item.Totalamount}</Text>
-                      </View>
-                    </View>
-                    <View style={{ flexDirection: 'row', width: '100%', marginTop: 8 }}>
-                      <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', width: '50%' }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000' }}>Policy period</Text>
-                      </View>
-                      <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', width: '50%' }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#000' }}>{item.policyPeriod}</Text>
+                      <View style={styles.rightTextView}>
+                        <Text style={styles.rightText}>{item.Totalamount}</Text>
                       </View>
                     </View>
-                    <View style={{ flexDirection: 'row', width: '100%', marginTop: 8 }}>
-                      <View style={{ justifyContent: 'flex-start', alignItems: 'flex-start', width: '50%' }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000' }}>Policy start date</Text>
+                    <View style={[styles.commonStyleView, { marginTop: 8 }]}>
+                      <View style={styles.leftView}>
+                        <Text style={styles.leftText}>Policy period</Text>
                       </View>
-                      <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', width: '50%' }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#000' }}>{item.policyStartdate}</Text>
+                      <View style={styles.dividingView}>
+                        <Text style={styles.smallrightText}>{item.policyPeriod}</Text>
+                      </View>
+                    </View>
+                    <View style={[styles.commonStyleView, { marginTop: 8 }]}>
+                      <View style={styles.leftView}>
+                        <Text style={styles.leftText}>Policy start date</Text>
+                      </View>
+                      <View style={styles.dividingView}>
+                        <Text style={styles.smallrightText}>{item.policyStartdate}</Text>
                       </View>
 
                     </View>
-                    <View style={{ flexDirection: 'row', width: '100%', marginTop: 8 }}>
-                      <View style={{ justifyContent: 'flex-start', width: '50%' }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000' }}>Policy end date</Text>
+                    <View style={[styles.commonStyleView, { marginTop: 8 }]}>
+                      <View style={styles.leftView}>
+                        <Text style={styles.leftText}>Policy end date</Text>
                       </View>
-                      <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', width: '50%' }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#000' }}>{item.policyEndDate}</Text>
+                      <View style={styles.dividingView}>
+                        <Text style={styles.smallrightText}>{item.policyEndDate}</Text>
                       </View>
 
                     </View>
                   </View>
                   <View style={{ justifyContent: 'flex-start', alignItems: 'flex-end', marginTop: 8 }}>
-                    <TouchableOpacity style={{ flexDirection: 'row', borderRadius: 5, paddingHorizontal: 10, backgroundColor: '#128283', paddingVertical: 5 }}>
-                      <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#fff', fontWeight: 'bold' }}>Insurance Renewal</Text>
+                    <TouchableOpacity style={styles.renewalButton}>
+                      <Text style={styles.renewalButtonText}>Insurance Renewal</Text>
                     </TouchableOpacity>
                   </View>
                 </Card>
@@ -312,6 +312,95 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
   },
+  mainView: {
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  addInsuranceButton: {
+    borderColor: '#128283',
+    borderWidth: 1,
+    flexDirection: 'row',
+    borderRadius: 5,
+    padding: 5
+  },
+  addInsuranceText: {
+    fontFamily: 'OpenSans',
+    fontSize: 13,
+    color: '#128283',
+    marginTop: 2,
+    fontWeight: 'bold'
+  },
+  CardStyle: {
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 5
+  },
+  mainVieww: {
+    paddingBottom: 10,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5
+  },
+  commonStyleView: {
+    flexDirection: 'row',
+    width: '100%'
+  },
+  HeadingTextView: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: '70%'
+  },
+  HeadingText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    color: '#128283',
+    lineHeight: 20
+  },
+  rightTextView: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    width: '30%'
+  },
+  rightText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    color: '#000',
+    lineHeight: 20
+  },
+  dividingView: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    width: '50%'
+  },
+  smallrightText: {
+    fontFamily: 'OpenSans',
+    fontSize: 13,
+    color: '#000'
+  },
+  leftView: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: '50%'
+  },
+  leftText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    color: '#000'
+  },
+  renewalButton: {
+    flexDirection: 'row',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#128283',
+    paddingVertical: 5
+  },
+  renewalButtonText: {
+    fontFamily: 'OpenSans',
+    fontSize: 13,
+    color: '#fff',
+    fontWeight: 'bold'
+  }
 });
 
 function homeState(state) {
