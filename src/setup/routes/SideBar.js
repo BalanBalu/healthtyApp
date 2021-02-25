@@ -8,8 +8,7 @@ import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE,
 import { translate } from "../../setup/translator.helper"
 import { corporateUserSideBarMenuList } from "./appRouterHome";
 import {primaryColor, secondaryColor, secondaryColorTouch} from '../../setup/config';
-
-
+import {getFullName} from '../../modules/common';
 class SideBar extends React.Component {
   activeUserData = {};
   constructor(props) {
@@ -87,7 +86,7 @@ class SideBar extends React.Component {
               <Col style={{ width: '70%' }}>
                 {hasLoggedIn ?
                   <View style={{ marginLeft: 10 }}>
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{this.activeUserData && (this.activeUserData.first_name + " "+this.activeUserData.middle_name + this.activeUserData.last_name)}</Text>
+                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{getFullName(this.activeUserData)}</Text>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')} style={{ paddingRight: 10, paddingTop: 2, width: '100%' }}>
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#fff' }}>{translate("View Profile")}</Text>
                     </TouchableOpacity>
@@ -148,7 +147,7 @@ class SideBar extends React.Component {
                           
                        
                         <Image square source={item.icon}
-                          style={ item.contactIcon === 'Contact Us' ? {height: 14, width: 20,}:{height: 20, width: 20}}
+                          style={item.largeIcon}
                         />
                         <Body style={{ borderBottomWidth: 0, }}>
                           <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{translate(item.name)}</Text>

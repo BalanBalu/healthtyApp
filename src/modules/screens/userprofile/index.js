@@ -412,7 +412,7 @@ class Profile extends Component {
 
                         <MaterialIcons
                           name="create"
-                          style={{ fontSize: 20, marginTop: 10, marginLeft: 25 }}
+                          style={{ fontSize: 20, marginTop: 10, marginLeft: 25,color:'#000' }}
                           onPress={() => this.editProfile('UpdateUserDetails')}
                         />
                       </View>
@@ -663,7 +663,7 @@ class Profile extends Component {
                                 </Col>
                                 <Col size={7.5}>
                                   <Text note style={styles.customText1}>
-                                    {item.age + ' - ' + getGender(item)}
+                                    {dateDiff(item.dob, new Date(), 'years') + ' - ' + getGender(item)}
                                   </Text>
                                 </Col>
                               </Row>

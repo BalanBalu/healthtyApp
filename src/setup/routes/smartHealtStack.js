@@ -102,7 +102,6 @@ import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 // import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
-import PreAuth from '../../modules/screens/Home/corporateHome/preAuth'
 import TextTicker from 'react-native-text-ticker';
 import { IS_ANDROID } from '../config';
 import ZoomImageViewer from '../../modules/elements/ImageViewer/ZoomImageViewer';
@@ -117,12 +116,12 @@ import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/Network
 import ClaimIntimationSubmission from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSubmission';
 import FamilyInfoList from '../../modules/screens/ClaimIntimation/familyInfoList';
 import ClaimIntimationSuccess from '../../modules/screens/ClaimIntimation/claimIntimationSubmission/claimIntimationSuccess';
-
-import preAuthList from '../../modules/screens/Home/corporateHome/preAuthList'
 import ClaimIntimationList from '../../modules/screens/ClaimIntimation/claimintimationList'
 import DocumentList from '../../modules/screens/ClaimIntimation/documentList'
 import ContactUs from '../../modules/screens/contactUs'
 import AddInsurance from '../../modules/screens/Insurance/addInsurance'
+import PreAuthSubmission from '../../modules/screens/PreAuth/PreAuthSubmission/preAuthSubmission';
+import PreAuthList from '../../modules/screens/PreAuth/PreAuthList/preAuthList';
 
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
@@ -277,10 +276,10 @@ export const smartHealthStack=createStackNavigator({
       title: 'Report details'
     }
   },
-  PreAuth: {
-    screen: PreAuth,
+  PreAuthSubmission: {
+    screen: PreAuthSubmission,
     navigationOptions: {
-      title: 'Pre Authorisation'
+      title: 'Pre Authorization'
     }
   },
   "CancelAppointment": {
@@ -534,7 +533,7 @@ export const smartHealthStack=createStackNavigator({
   ClaimIntimationSuccess: {
     screen: ClaimIntimationSuccess,
     navigationOptions: {
-      title: 'Claim Success'
+      title: 'Success page'
     }
   },
   ClaimIntimationList: {
@@ -646,8 +645,8 @@ export const smartHealthStack=createStackNavigator({
     }
   },
   
-  preAuthList: {
-    screen: preAuthList,
+  PreAuthList: {
+    screen: PreAuthList,
     navigationOptions: {
       title: 'Pre Auth List'
     }

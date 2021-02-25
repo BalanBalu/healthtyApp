@@ -57,7 +57,7 @@ export const ContactUsCard = props => {
                   fontSize: 15,
                   lineHeight: 24,
                   marginLeft:5
-                }}>+918921267876</Text>
+                }}>+917823908908</Text>
             </View>
           </View>
           <Row style={{ marginTop: 10, marginLeft: 20 }}>
@@ -83,7 +83,7 @@ export const ContactUsCard = props => {
               />
             </Svg>
           </View>
-          <View style={{ marginTop: -57.5, marginLeft: 200, marginBottom: 10 }}>
+          <View style={{position:'absolute',right:15,top:35 }}>
             <ContactUsImage />
           </View>
         </View>

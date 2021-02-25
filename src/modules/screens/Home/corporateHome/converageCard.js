@@ -11,9 +11,14 @@ import {
   InsuranceRenewalDrawing
 } from './svgDrawings';
 import {primaryColor, secondaryColorTouch} from '../../../../setup/config';
+import CurrentLocation from '../CurrentLocation';
 
 export const CoverageCard = props => {
   const {navigation} = props;
+  const navigationTo =  () => {
+   CurrentLocation.getCurrentPosition();
+    navigation('NetworkHospitals')
+  }
   return (
     <View
       style={{
@@ -28,7 +33,7 @@ export const CoverageCard = props => {
           style={styles.rectBox}
           activeOpacity={0.6}
           underlayColor={secondaryColorTouch}
-          onPress={() => navigation('preAuthList')}>
+          onPress={() => navigation('PreAuthList')}>
           <View>
             <View
               style={{
@@ -103,7 +108,7 @@ export const CoverageCard = props => {
             activeOpacity={0.6}
             underlayColor={secondaryColorTouch}
             style={styles.rectBox}
-            onPress={() => navigation('NetworkHospitals')}>
+            onPress={() => navigationTo()}>
         <View>
           
             <View

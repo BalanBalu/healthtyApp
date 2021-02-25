@@ -10,6 +10,7 @@ import { Loader } from '../../../../components/ContentLoader';
 import Styles from '../styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { NavigationEvents } from 'react-navigation';
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
@@ -25,6 +26,9 @@ class NetworkHospitals extends Component {
             enableSearchIcon: false,
             isLoadingOnChangeHospitalList: false,
             showFullInfoCard: -1,
+            isFromMapBox:false,
+            selectedLocCoOrdinates:null,
+            selectedCityName:''
         }
         this.isEnabledLoadMoreData = true;
         this.incrementPaginationCount = 0;
@@ -52,10 +56,12 @@ class NetworkHospitals extends Component {
 
     searchByNetworkHospitalDetails = async () => {
         try {
+            const {isFromMapBox,selectedLocCoOrdinates} = this.state
             const { bookappointment: { locationCordinates } } = this.props;
+            const coordinates = isFromMapBox  ? selectedLocCoOrdinates : locationCordinates;
             let reqData4ServiceCall = {
                 locationData: {
-                    coordinates: locationCordinates,
+                    coordinates,
                     maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
                 }
             }
@@ -96,7 +102,7 @@ class NetworkHospitals extends Component {
             [
                 { text: "Cancel" },
                 {
-                    text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
+                    text: "OK", onPress: () => this.props.navigation.navigate('MapBox',{isFromNetworkHospital:true}),
                 }
             ],
         );
@@ -106,7 +112,7 @@ class NetworkHospitals extends Component {
             hospitalInfo: this.state.selectedHospitalData,
             tpaInfo: this.selectedTpaInfoObj
         }
-        this.props.navigation.navigate("FamilyInfoList", { preAuthReqData, navigationPage: "PREAUTH" })     // shouldUpdate={``}
+        this.props.navigation.navigate("FamilyInfoList", { preAuthReqData, navigationPage: "PreAuthSubmission" })     // shouldUpdate={``}
     }
     onPressGoPreConsultation = () => {
     }
@@ -165,14 +171,37 @@ class NetworkHospitals extends Component {
             this.setState({ showFullInfoCard: -1, selectedHospitalData: null })
         }
     }
+    backNavigation = async (navigationData) => {
+        try {
+            const { navigation } = this.props;
+            const isFromMapBox =navigation&& navigation.getParam('isFromMapBox') || false;
+          if (navigationData.action &&isFromMapBox) {
+                const selectedCityName = navigation.getParam('selectedCityName') || '';
+                const selectedLocCoOrdinates = navigation.getParam('coordinates') || null;
+                this.isEnabledLoadMoreData = true;
+                this.incrementPaginationCount = 0;
+                this.hospitalInfoListArray = [];
+                await  this.setState({isFromMapBox,selectedLocCoOrdinates,selectedCityName, isLoadingOnChangeHospitalList: true, hospitalInfoList: [] })
+                await  this.searchByNetworkHospitalDetails();
+          } 
+        }
+          catch (Ex) {
+            console.log('Ex is getting on Get Network Hospital list by Selected Location in Map Page')
+        }
+        finally {
+            this.setState({ isLoadingOnChangeHospitalList: false })
+        }
+      }
     render() {
-        const { hospitalInfoList, isLoadingMoreHospitalList, enableSearchIcon, isLoading, isLoadingOnChangeHospitalList } = this.state;
+        const { hospitalInfoList, isLoadingMoreHospitalList, enableSearchIcon, isLoading, isLoadingOnChangeHospitalList,selectedCityName,isFromMapBox} = this.state;
         const { bookappointment: { isLocationSelected, patientSearchLocationName, isSearchByCurrentLocation } } = this.props;
         const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'Showing Hospitals in Near Current Location' : 'Showing Hospitals in ' + patientSearchLocationName + ' City' : 'Please Choose your Location in Map';
         if (isLoading) return <Loader style='list' />;
         return (
             <Container>
                 <View style={{ paddingBottom: 5,  height: 45,marginHorizontal:15,}}>
+                <NavigationEvents
+                  onWillFocus={payload => { this.backNavigation(payload) }} />
                     <Row style={{
                         backgroundColor: 'white',
                         borderColor: '#000',
@@ -217,7 +246,7 @@ class NetworkHospitals extends Component {
                                 color: '#000',
                                 fontSize: 13,
                             }}>
-                                {locationText}
+                                {isFromMapBox ? 'Showing Hospitals in ' + selectedCityName + ' City' :locationText}
                               
                             </Text>
                         </Col>

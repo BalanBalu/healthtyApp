@@ -52,12 +52,12 @@ class ContactUs extends Component {
                                     <MaterialIcons name="close" style={{fontSize:30,color:'red'}}/>
                                 </Row>
                                 <Row style={{justifyContent:'center',alignItems:'center'}}>
-                                    <Text style={styles.modalHeading}>Thanks for Contact {'\n'} with Us !</Text>
+                                    <Text style={styles.modalHeading}>Thank you for updating your {'\n'} contact details</Text>
                                 </Row>
                                 <Row style={{justifyContent:'center',alignItems:'center',marginTop:20}}>
                                   <Col>
                                     <Text style={styles.modalSubText}>We will be back soon to your email :</Text>
-                                    <Text style={styles.emailSubText}>Manasmenon@gmail.com</Text>
+                                    <Text style={styles.emailSubText}>@mysmarthealth.info@gmail.com</Text>
                                     </Col>
                                 </Row>
                                 
