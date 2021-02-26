@@ -8,10 +8,12 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 import { toastMeassage } from '../../common';
 import { primaryColor } from '../../../setup/config'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 class Insurance extends Component {
   constructor(props) {
@@ -19,6 +21,7 @@ class Insurance extends Component {
     this.state = {
       dataSource: [],
       isLoading: false,
+      descriptionVisible: false,
     };
   }
 
@@ -108,7 +111,10 @@ class Insurance extends Component {
       dataSource: this.state.dataSource
     });
   };
+  popUpClose() {
+    this.setState({ descriptionVisible: false })
 
+  }
   render() {
     if (this.state.isLoading) {
       return (
@@ -173,13 +179,52 @@ class Insurance extends Component {
                     </View>
                   </View>
                   <View style={{ justifyContent: 'flex-start', alignItems: 'flex-end', marginTop: 8 }}>
-                    <TouchableOpacity style={styles.renewalButton}>
+                    <TouchableOpacity style={styles.renewalButton} onPress={() => this.setState({ descriptionVisible: true })}>
                       <Text style={styles.renewalButtonText}>Insurance Renewal</Text>
                     </TouchableOpacity>
                   </View>
                 </Card>
               } />
           </View>
+          <Modal
+            visible={this.state.descriptionVisible}
+            transparent={true}
+            animationType={'fade'}
+          >
+            <View style={styles.modalFirstView}>
+              <View style={styles.modalSecondView}>
+                <Row style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: -30 }}>
+                  <TouchableOpacity onPress={() => this.popUpClose()}>
+                    <MaterialIcons name="close" style={{ fontSize: 30, color: 'red' }} />
+
+                  </TouchableOpacity>
+                </Row>
+                <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={styles.modalHeading}>You can Renew your Insurance Policy by </Text>
+                </Row>
+
+
+                <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 5 }}>
+
+                  <Col size={5}>
+                    <TouchableOpacity danger style={styles.backToHomeButton1} onPress={() => this.popUpClose()} testID='cancelButton'>
+                      <Text style={styles.backToHomeButtonText1}> {'Arrange Callback.'}</Text>
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={5} style={{ marginLeft: 10 }}>
+                    <TouchableOpacity danger style={styles.backToHomeButton} onPress={() => this.popUpClose()} testID='cancelButton'>
+                      <Text style={styles.backToHomeButtonText}> {'Renew Online'}</Text>
+                    </TouchableOpacity>
+                  </Col>
+
+
+
+
+                </Row>
+              </View>
+
+            </View>
+          </Modal>
         </Content>
         {/* <View style={{flex:1}}>
         <Grid >
@@ -400,7 +445,61 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#fff',
     fontWeight: 'bold'
-  }
+  },
+  modalFirstView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalSecondView: {
+    width: '95%',
+    height: 200,
+    backgroundColor: '#fff',
+    borderColor: '#909090',
+    borderWidth: 3,
+    padding: 10,
+    borderRadius: 10,
+  },
+  modalHeading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#000'
+  },
+  backToHomeButton: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 5,
+    backgroundColor: '#128283',
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  backToHomeButtonText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold'
+  },
+  backToHomeButton1: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 5,
+    backgroundColor: '#59a7a8',
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  backToHomeButtonText1: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold'
+  },
 });
 
 function homeState(state) {

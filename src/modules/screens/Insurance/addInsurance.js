@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, Content, Picker, Form, Icon, Col, Row, Radio, } from 'native-base';
-import { View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, ScrollView,Image } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { primaryColor } from '../../../setup/config'
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -45,7 +45,7 @@ class AddInsurance extends PureComponent {
             console.error('Error on Date Picker: ', error);
         }
     }
-
+    
 
     render() {
         const { ProductTypeList } = this.state
@@ -162,13 +162,12 @@ class AddInsurance extends PureComponent {
                                     </View> : null}
                                 <Text style={styles.subHeadingText}>Enter Policy Number</Text>
                                 <TextInput placeholder="Enter Policy Number" placeholderTextColor={"#909090"} style={styles.textInputStyle} placeholderStyle={{ marginTop: 2 }} />
-                                <Row>
-                                    <Col size={5} >
-                                        <Text style={styles.subHeadingText}>Select Start Date</Text>
+                                <View>
+                                <Text style={styles.subHeadingText}>Select Start Date</Text>
                                         <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} >
 
                                             <View style={styles.searchSection}>
-                                                <AntDesign name="calendar" style={{ fontSize: 20, padding: 2 }} />
+                                                <AntDesign name="calendar" style={{ fontSize: 20, padding: 10 }} />
                                                 <DateTimePicker
                                                     mode={'date'}
                                                     minimumDate={new Date(1940, 0, 1)}
@@ -185,13 +184,14 @@ class AddInsurance extends PureComponent {
                                                 />
                                             </View>
                                         </TouchableOpacity>
-                                    </Col>
-                                    <Col size={5} style={{ marginLeft: 10 }}>
+
+                                        </View>
+                                        <View>
                                         <Text style={styles.subHeadingText}>Select End Date</Text>
                                         <TouchableOpacity onPress={() => { this.setState({ dateTimePickerForEnddate: !this.state.dateTimePickerForEnddate }) }} >
 
                                             <View style={styles.searchSection}>
-                                                <AntDesign name="calendar" style={{ fontSize: 20, padding: 2 }} />
+                                                <AntDesign name="calendar" style={{ fontSize: 20, padding: 10 }} />
                                                 <DateTimePicker
                                                     mode={'date'}
                                                     minimumDate={new Date(1940, 0, 1)}
@@ -208,8 +208,7 @@ class AddInsurance extends PureComponent {
                                                 />
                                             </View>
                                         </TouchableOpacity>
-                                    </Col>
-                                </Row>
+                                        </View>
                                 <Text style={styles.subHeadingText}>Would you like to set insurance renewal reminder?</Text>
                                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <View style={{ flexDirection: 'row' }}>
@@ -246,7 +245,8 @@ class AddInsurance extends PureComponent {
                                     </View>
 
                                 </View>
-
+                                <Text style={styles.subHeadingText}>Upload Your Adhar Card Copy</Text>
+                                <Image source={require("../../../../assets/images/documentuploadgreen.png")}  style={{width:100,height:55,marginTop:10}}/>
                             </Form>
                         </ScrollView>
                     </View>
