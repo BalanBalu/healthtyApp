@@ -8,7 +8,15 @@ import { setI18nConfig } from '../setup/translator.helper';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
+export function truncateByString(source,size){
+    return source.length > size ? source.slice(0, size - 1) + " ...." : source;
+}
 
+export function getNetworkHospitalAddress(address) {
+    if (!address) return ''
+    if (address)
+        return (address.address_line_1 ? address.address_line_1 + ', ' : " ") + (address.post_office_name ? address.post_office_name + ', ' : " ") + (address.city ? address.city + ', ' : " ") + (address.state ? address.state + ', ' : " ") + (address.pin_code ? address.pin_code : " ");
+}
 
 export function getFullName(data) {
     let name = 'unKnown'

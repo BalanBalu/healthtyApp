@@ -66,7 +66,7 @@ item.full_name=this.getCorporateLoginName(item)
                     <Row>
                         <Col style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3,}} size={6}>
                             <TouchableOpacity style={styles.benefeciaryButton} onPress={() => onPressIsShowBeneficiaryInfo(index, isShowBeneficiaryInfoCard === index?'UP':'DOWN')}>
-                                <Text style={{ color: "#0054A5", fontSize: 14, fontFamily: 'OpenSans', }}>Show Beneficiary Details</Text>
+                                <Text style={{ color: "#0054A5", fontSize: 14, fontFamily: 'OpenSans', }}>{isShowBeneficiaryInfoCard === index ?'Hide Beneficiary Details ':'Show Beneficiary Details '}</Text>
                                 <MaterialIcons name={isShowBeneficiaryInfoCard === index ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 20, color: "#0054A5" }} />
                             </TouchableOpacity>
                         </Col>
