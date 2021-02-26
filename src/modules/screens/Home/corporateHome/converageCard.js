@@ -122,24 +122,7 @@ export const CoverageCard = props => {
          
         </View>
         </TouchableHighlight>
-        <TouchableHighlight
-          style={styles.rectBox}
-          activeOpacity={0.6}
-          underlayColor={secondaryColorTouch}
-          onPress={() => navigation('PolicyCoverage')}>
-          <View>
-            <View
-              style={{
-                alignItems: 'center',
-                marginTop: 10,
-              }}>
-              <InsuranceRenewalDrawing />
-              <Text style={[styles.inititationText1,{marginTop:-3}]}>Insurance Renewal</Text>
-            </View>
-          </View>
-        </TouchableHighlight>
-
-        {/* <View style={[styles.rectBoxNone]} /> */}
+        <View style={[styles.rectBoxNone]} />
       </View>
     </View>
   );
