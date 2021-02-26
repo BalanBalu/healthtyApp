@@ -31,12 +31,10 @@ class DocumentList extends PureComponent {
 
   componentDidMount() {
     let docsUpload = this.props.navigation.getParam('docsUpload') || false;
+    let familyDocs = this.props.navigation.getParam('familyDocs') || false;
     let data = this.props.navigation.getParam('data') || null;
     let uploadData = this.props.navigation.getParam('uploadData') || [];
-    this.setState({ docsUpload, data, uploadData })
-
-
-
+    this.setState({ docsUpload, data, uploadData,familyDocs })
   }
 
   imageUpload = async (data) => {
@@ -199,11 +197,12 @@ class DocumentList extends PureComponent {
     }
   }
   renderDocumentList(item, index) {
-    const { docsUpload } = this.state;
+    const { docsUpload,familyDocs } = this.state;
     return (
       <RenderDocumentList
         item={item}
         docsUpload={docsUpload}
+        familyDocs={familyDocs}
         deleteSelectedDocs={(index) => this.deleteSelectedDocs(index)}
         downloadFile={(imageUrl, fileName) => this.downloadFile(imageUrl, fileName)}
       >
