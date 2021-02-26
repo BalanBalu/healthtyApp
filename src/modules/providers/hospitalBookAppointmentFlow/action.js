@@ -34,6 +34,21 @@ export async function serviceOfSearchByNetworkHospitalDetails(reqData, skipCount
 }
 
 
+/*  Search by Network hospitals without location for Corporate User */
+export async function serviceOfSearchByNetworkHospitalDetailsWithoutLoc(reqData, skipCount, limit) {
+  try {
+    const endPoint = `hospital/Network_hospital/without_location`;
+    let response = await postService(endPoint, reqData);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 export async function validateAppointment(reqData) {
   try {
