@@ -214,3 +214,20 @@ export async function getTpaInfoByTpaCode(tpaCode) {
     }
   }
 }
+
+export async function getCorporateHelpLineNumber() {
+  try {
+    let endPoint = 'setting/key?key=' + "HELP_LINE_NUMBER"
+    let response = await smartHealthGetService(endPoint);
+    console.log(`response`, response);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+

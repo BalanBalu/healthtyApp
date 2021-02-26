@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Content, Form,Text,View ,} from 'native-base'
+import { Container, Content, Form,Text,View ,Picker,} from 'native-base'
 import { TextInput, TouchableOpacity,Modal } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from './styles'
+import Icon from 'react-native-vector-icons/MaterialIcons';
+const insuranceCompany = ["Choose Issue type","payment", "consultation", "insurance", "others"]
+
 class ContactUs extends Component {
     constructor(props) {
         super(props)
@@ -32,6 +35,33 @@ class ContactUs extends Component {
                             <TextInput placeholder="Enter Name" placeholderTextColor={"#909090"} style={styles.textInputStyle} />
                             <Text style={styles.subHeadingText}>Email</Text>
                             <TextInput placeholder="Enter Email" placeholderTextColor={"#909090"} style={styles.textInputStyle} />
+                            <Text style={styles.subHeadingText}>Selct Issue Type</Text>
+
+                            <View style={styles.formStyle6}>
+                                    <Picker style={styles.userDetailLabel}
+                                        mode="dropdown"
+
+                                        placeholderStyle={{ fontSize: 16, marginLeft: -5 }}
+                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20, marginLeft: 170 }} />}
+                                        textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
+                                        note={false}
+                                        itemStyle={{
+                                            paddingLeft: 10,
+                                            fontSize: 16,
+                                        }}
+                                        itemTextStyle={{ color: '#5cb85c', }}
+                                        style={{ width: undefined, color: '#000' }}
+                                        onValueChange={(sample) => { this.setState({ insuranceCompanyList: sample }) }}
+                                        selectedValue={this.state.insuranceCompanyList}
+                                        testID="editBloodGroup"
+                                    >
+                                        {insuranceCompany.map((value, key) => {
+                                            return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                            />
+                                        })
+                                        }
+                                    </Picker>
+                                </View>
                             <Text style={styles.subHeadingText}>Message</Text>
                             <TextInput placeholder="Enter Message" textAlignVertical={'top'} placeholderTextColor={"#909090"} style={styles.messageTextInputStyle} />
 

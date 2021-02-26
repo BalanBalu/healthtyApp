@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, Image } from 'react-native';
+import { View, TouchableOpacity, Text, Image,Linking } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Svg, { Path } from 'react-native-svg';
 import { primaryColor, secondaryColor } from '../../../../setup/config'
@@ -7,9 +7,23 @@ import { ContactUsImage } from './svgDrawings';
 import styles from './styles'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-
 export const ContactUsCard = props => {
-  const { navigation } = props;
+  const { navigation,data } = props;
+  const  dialCall = (number) => {
+    let phoneNumber = '';
+    if (Platform.OS === 'android') { phoneNumber = `tel:${number}`; }
+    else { phoneNumber = `telprompt:${number}`; }
+    Linking.canOpenURL(phoneNumber)
+      .then(supported => {
+        if (!supported) {
+          Alert.alert('Phone number is not available');
+        } else {
+          return Linking.openURL(phoneNumber);
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
   return (
     <TouchableHighlight activeOpacity={0.6}
       underlayColor="#fff" onPress={() => navigation('ContactUs')}>
@@ -48,7 +62,8 @@ export const ContactUsCard = props => {
               }}>
               Help line
           </Text>
-            <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity onPress={() =>{dialCall(data.value) }} style={{paddingRight:20}}>
+            <View  style={{ flexDirection: 'row' }}>
               <MaterialIcons name="phone" style={{ fontSize: 15, color: '#fff',marginTop:5 }} />
               <Text
                 style={{
@@ -57,9 +72,12 @@ export const ContactUsCard = props => {
                   fontSize: 15,
                   lineHeight: 24,
                   marginLeft:5
-                }}>+917823908908</Text>
+                }}>{data.value}</Text>
+               
             </View>
+            </TouchableOpacity>
           </View>
+          
           <Row style={{ marginTop: 10, marginLeft: 20 }}>
             <TouchableOpacity style={{ borderRadius: 15, borderColor: '#fff', borderWidth: 1, paddingHorizontal: 5, height: 25, justifyContent: 'center', flexDirection: 'row' }} onPress={() => navigation('ContactUs')}>
               <Text style={{ color: '#fff', textAlign: 'center' }}>Contact Us</Text>

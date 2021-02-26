@@ -7,7 +7,7 @@ import { TransactionHistoryCard } from './transactionHistoryCard'
 import { CoverageCard } from './converageCard'
 import { connect } from 'react-redux'
 import { Container, Content, Button, Card, Input, Left, Right, Icon, Toast } from 'native-base';
-import { getCorporateEmployeeDetailsById, getTpaInfoByTpaCode } from '../../../providers/corporate/corporate.actions'
+import { getCorporateEmployeeDetailsById, getTpaInfoByTpaCode,getCorporateHelpLineNumber } from '../../../providers/corporate/corporate.actions'
 import { fetchUserProfile, SET_CORPORATE_DATA, SET_MEMBER_POLICY_INFO,SET_MEMBER_TPA_DATA } from '../../../providers/profile/profile.action';
 import { store } from '../../../../setup/store';
 import { fetchUserMarkedAsReadedNotification } from '../../../providers/notification/notification.actions';
@@ -28,7 +28,8 @@ class CorporateHome extends PureComponent {
             relationship:null,
             memberDetails: {},
             policyDetails: {},
-            relationship: null
+            relationship: null,
+            helpLineNumberData:[]
         }
     }
     async componentDidMount() {
@@ -42,6 +43,7 @@ class CorporateHome extends PureComponent {
         }
         this.initialFunction();
         this.getMemberDetailsByEmail()
+        this.getCorporatePhoneNumber()
     }
     getMemberDetailsByEmail = async () => {
         try {
@@ -56,7 +58,15 @@ class CorporateHome extends PureComponent {
         }
     
       }
-
+      getCorporatePhoneNumber= async ()=>{
+          try{
+              let result = await getCorporateHelpLineNumber();
+            await this.setState({helpLineNumberData:result[0]})
+          }
+          catch (ex) {
+            console.log(ex)
+          }
+      }
     doLogout() {
         logout();
         this.props.navigation.navigate('login');
@@ -159,7 +169,7 @@ class CorporateHome extends PureComponent {
         let corporateData = this.props.profile.corporateData;
         const { navigate } = this.props.navigation;
 
-        const { isCorporateUser,relationship,memberDetails } = this.state;
+        const { isCorporateUser,relationship,memberDetails,helpLineNumberData } = this.state;
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount },
             navigation } = this.props;
         if (locationUpdatedCount !== this.locationUpdatedCount) {
@@ -198,7 +208,8 @@ class CorporateHome extends PureComponent {
                         <TransactionHistoryCard
                             navigation={navigate} />
                             <ContactUsCard
-                            navigation={navigate} />
+                            navigation={navigate}
+                            data = {helpLineNumberData} />
 
                     </View>
                 </Content>
