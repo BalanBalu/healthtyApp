@@ -230,4 +230,19 @@ export async function getCorporateHelpLineNumber() {
     }
   }
 }
+export async function getCorporateHelpLineEmail() {
+  try {
+    let endPoint = 'setting/key?key=' + "HELP_LINE_EMAIL"
+    let response = await smartHealthGetService(endPoint);
+    console.log(`response`, response);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
 

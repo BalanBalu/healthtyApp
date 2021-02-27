@@ -1,19 +1,54 @@
 import React, { Component } from 'react';
 import { Container, Content, Form,Text,View ,Picker,} from 'native-base'
-import { TextInput, TouchableOpacity,Modal } from 'react-native';
+import { TextInput, TouchableOpacity,Modal,AsyncStorage } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from './styles'
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { getCorporateHelpLineEmail } from '../../providers/corporate/corporate.actions'
+
 const insuranceCompany = ["Choose Issue type","payment", "consultation", "insurance", "others"]
 
 class ContactUs extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            
             descriptionVisible: false,
+            helpLineEmailData:[],
+            userName:'',
+            email:'',
+            initialName:null,
+            initialMail:null,
+            messageText:''
+         
           
+        }
+    }
+
+    async componentDidMount() {
+        await this.getBasicData()
+        this.getCorporatePhoneNumber()
+       
+    }
+
+    async getBasicData() {
+        const basicProfileData = await AsyncStorage.getItem('basicProfileData');
+        const basicData = JSON.parse(basicProfileData);
+        const data = {basicData}
+       await this.setState({
+        initialName: `${data.basicData.first_name + " "+ data.basicData.last_name}`,
+        initialMail:data.basicData.email      
+        })
+      }
+
+    getCorporatePhoneNumber= async ()=>{
+        try{
+            let result = await getCorporateHelpLineEmail();
+          await this.setState({helpLineEmailData:result[0]})
+        //   console.log(this.state.helpLineEmailData)
+        }
+        catch (ex) {
+          console.log(ex)
         }
     }
     popUpClose(){
@@ -22,6 +57,7 @@ class ContactUs extends Component {
        
     }
     render() {
+        const {helpLineEmailData}= this.state
         return (
 
             <Container >
@@ -32,9 +68,16 @@ class ContactUs extends Component {
                     <View>
                         <Form>
                             <Text style={styles.subHeadingText}>Name</Text>
-                            <TextInput placeholder="Enter Name" placeholderTextColor={"#909090"} style={styles.textInputStyle} />
+                            <TextInput placeholder="Enter Name" 
+                            placeholderTextColor={"#909090"}
+                            onChangeText={text => this.setState({userName:text})} 
+                            value={this.state.initialName}
+                            style={styles.textInputStyle} />
                             <Text style={styles.subHeadingText}>Email</Text>
-                            <TextInput placeholder="Enter Email" placeholderTextColor={"#909090"} style={styles.textInputStyle} />
+                            <TextInput placeholder="Enter Email" placeholderTextColor={"#909090"}
+                                 onChangeText={text => this.setState({email:text})} 
+                                 value={this.state.initialMail} 
+                            style={styles.textInputStyle} />
                             <Text style={styles.subHeadingText}>Selct Issue Type</Text>
 
                             <View style={styles.formStyle6}>
@@ -63,7 +106,11 @@ class ContactUs extends Component {
                                     </Picker>
                                 </View>
                             <Text style={styles.subHeadingText}>Message</Text>
-                            <TextInput placeholder="Enter Message" textAlignVertical={'top'} placeholderTextColor={"#909090"} style={styles.messageTextInputStyle} />
+                            <TextInput placeholder="Enter Message" 
+                            textAlignVertical={'top'} placeholderTextColor={"#909090"} 
+                            onChangeText={text => this.setState({messageText:text})} 
+                            value={this.state.messageText}
+                            style={styles.messageTextInputStyle} />
 
                             <TouchableOpacity style={styles.submitButton} onPress={()=> this.setState({ descriptionVisible: true})}>
                                 <Text style={{ fontSize: 15, fontWeight: 'OpenSans',fontWeight:'bold',color:'#fff'}}>Submit</Text>
@@ -79,7 +126,10 @@ class ContactUs extends Component {
                         <View style={styles.modalFirstView}>
                             <View style={styles.modalSecondView}>
                                 <Row style={{justifyContent:'flex-end',alignItems:'flex-end',marginTop:-30}}>
+                                    <TouchableOpacity  onPress={()=> this.setState({ descriptionVisible: false})}>
                                     <MaterialIcons name="close" style={{fontSize:30,color:'red'}}/>
+
+                                    </TouchableOpacity>
                                 </Row>
                                 <Row style={{justifyContent:'center',alignItems:'center'}}>
                                     <Text style={styles.modalHeading}>Thank you for updating your {'\n'} contact details</Text>
@@ -87,7 +137,7 @@ class ContactUs extends Component {
                                 <Row style={{justifyContent:'center',alignItems:'center',marginTop:20}}>
                                   <Col>
                                     <Text style={styles.modalSubText}>We will be back soon to your email :</Text>
-                                    <Text style={styles.emailSubText}>@mysmarthealth.info@gmail.com</Text>
+                                    <Text style={styles.emailSubText}>{helpLineEmailData.value?helpLineEmailData.value : ' '}</Text>
                                     </Col>
                                 </Row>
                                 
@@ -99,10 +149,6 @@ class ContactUs extends Component {
                                                     <Text style={styles.backToHomeButtonText}> {'Back to Home'}</Text>
                                                 </TouchableOpacity>
                                             </Col>
-                                           
-                                     
-
-                    
                                 </Row>
                             </View>
 
