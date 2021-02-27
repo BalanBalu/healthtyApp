@@ -169,6 +169,7 @@ class Login extends Component {
                         <Col size={3}>
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
+                             selectedColor={primaryColor}
                               standardStyle={true}
                               selected={ isSelected === 'user'}
                               onPress={() => this.setState({  isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
