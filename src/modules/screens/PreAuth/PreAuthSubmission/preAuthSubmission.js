@@ -4,14 +4,18 @@ import {
   View,
   Radio,
   Icon,
-
+  Row,
+  Col
 } from 'native-base';
 import { TextInput, StyleSheet, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { formatDate } from '../../../../setup/helpers';
-import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber } from '../../../common'
+import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber,getNetworkHospitalAddress,truncateByString } from '../../../common'
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { serviceOfSearchByNetworkHospitalDetailsWithoutLoc } from '../../../providers/hospitalBookAppointmentFlow/action';
 
 class PreAuth extends React.PureComponent {
   constructor(props) {
@@ -19,6 +23,7 @@ class PreAuth extends React.PureComponent {
 
     this.state = {
       currentForm: 1,
+      networkHospList: [],
       hospitalInfo: {
         hospitalName: '',
         hospitalLocation: '',
@@ -46,6 +51,7 @@ class PreAuth extends React.PureComponent {
         selectedGender: 'Male',
         dob: new Date(),
       },
+      selectedHospitalName: '',
       insurerName: '',
       physicianName: '',
       physicianContactNumber: '',
@@ -92,12 +98,25 @@ class PreAuth extends React.PureComponent {
       rohiniIdTextErrorMsg: null,
       hospitalEmailTextErrorMsg: null
     };
+
+    this.preAuthInfoObj = props.navigation.getParam('preAuthInfo') || null
     this.onDOBChange = this.onDOBChange.bind(this);
   }
   async componentDidMount() {
     let preAuthInfo = this.props.navigation.getParam('preAuthInfo')
     let currentForm = this.props.navigation.getParam('currentForm') || 1
-    let uploadDocs = this.props.navigation.getParam('uploadDocs') || 1
+    let uploadDocs = this.props.navigation.getParam('uploadDocs') || 1;
+
+
+    /* Get Network Hospital list by Member TPA Code   */
+    const tpaCode = preAuthInfo && preAuthInfo.tpaInfo && preAuthInfo.tpaInfo.tpaCode;
+    if (tpaCode) {
+      const reqData4GetNetworkWithoutLoc = { tpaCode };
+      const networkHospRepsWithoutLoc = await serviceOfSearchByNetworkHospitalDetailsWithoutLoc(reqData4GetNetworkWithoutLoc);
+      if (networkHospRepsWithoutLoc.success) {
+        var networkHospList = networkHospRepsWithoutLoc.data;
+      }
+    }
 
     let hospitalInfo = preAuthInfo.hospitalInfo || {};
     let tpaInfo = preAuthInfo.tpaInfo || {}
@@ -107,10 +126,10 @@ class PreAuth extends React.PureComponent {
       tpaTollFreeFaxNo: ''
     }
     let hospitalInfomation = {
-      hospitalName: hospitalInfo.name || '',
-      hospitalLocation: hospitalInfo && hospitalInfo.location && hospitalInfo.location.address && hospitalInfo.location.address.city || '',
+      hospitalName: hospitalInfo.name || '', 
+      hospitalLocation:  getNetworkHospitalAddress(hospitalInfo&&hospitalInfo.location&&hospitalInfo.location.address)||'',
       hospitalId: '',
-      hospitalEmail: hospitalInfo.email,
+      hospitalEmail: hospitalInfo.email || '',
       rohiniId: ''
     }
     let memberInformation = this.props.navigation.getParam('memberInfo')
@@ -126,7 +145,7 @@ class PreAuth extends React.PureComponent {
       selectedGender: memberInformation.gender || '',
       dob: memberInformation.dob || new Date()
     }
-    await this.setState({ hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
+    await this.setState({ networkHospList: networkHospList || [], hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
   }
   getMemberName(item) {
     let name = ''
@@ -165,9 +184,8 @@ class PreAuth extends React.PureComponent {
     this.setState({ chosenDate: dob });
   }
   submitFirstPage() {
-
     const { hospitalInfo } = this.state
-    let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalInfo.hospitalId) ? 'Kindly fill hospital id' : !onlySpaceNotAllowed(hospitalInfo.rohiniId) ? 'Kindly fill rohini Id' : !validateEmailAddress(hospitalInfo.hospitalEmail) ? 'Kindly enter valid mail id' : null
+    let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalInfo.hospitalId) ? 'Kindly fill hospital id'  : !validateEmailAddress(hospitalInfo.hospitalEmail) ? 'Kindly enter valid mail id' : null
 
     if (!onlySpaceNotAllowed(hospitalInfo.hospitalName)) {
       this.setState({ hospitalNameTextErrorMsg: 'Kindly fill hospital name' });
@@ -193,14 +211,14 @@ class PreAuth extends React.PureComponent {
       });
       return false;
     }
-    if (!onlySpaceNotAllowed(hospitalInfo.rohiniId)) {
-      this.setState({ rohiniIdTextErrorMsg: 'Kindly fill rohini Id' });
-      this.scrollViewRef.scrollTo({
-        y: this.rohiniIdText.y,
-        animated: true
-      });
-      return false;
-    }
+    // if (!onlySpaceNotAllowed(hospitalInfo.rohiniId)) {
+    //   this.setState({ rohiniIdTextErrorMsg: 'Kindly fill rohini Id' });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.rohiniIdText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
     if (!validateEmailAddress(hospitalInfo.hospitalEmail)) {
       this.setState({ hospitalEmailTextErrorMsg: 'Kindly enter valid mail id' });
       this.scrollViewRef.scrollTo({
@@ -356,7 +374,8 @@ class PreAuth extends React.PureComponent {
         hospitalLocation: hospitalInfo.hospitalLocation,
         hospitalId: hospitalInfo.hospitalId,
         hospitalEmail: hospitalInfo.hospitalEmail,
-        rohiniId: hospitalInfo.rohiniId,
+        rohiniId: hospitalInfo.rohiniId ||null,
+        status: 'REQUEST-SENT',
         tpaCompany: tpaInfo.tpaCompany,
         tpaCompanyPhoneNumber: tpaInfo.tpaCompanyPhoneNumber,
         tpaTollFreeFaxNo: tpaInfo.tpaTollFreeFaxNo,
@@ -985,10 +1004,22 @@ class PreAuth extends React.PureComponent {
       </SafeAreaView>
     );
   };
-
+  onChangeSelectedHospitalItem = (hospitalItem) => {
+    hospitalItem = hospitalItem && hospitalItem[0];
+    if (hospitalItem) {
+      const hospitalInfomation = {
+        hospitalName: hospitalItem.name || '',
+        hospitalLocation:  getNetworkHospitalAddress(hospitalItem&&hospitalItem.location&&hospitalItem.location.address)||'',
+        hospitalId: '',
+        hospitalEmail: hospitalItem.email || '',
+        rohiniId: ''
+      }
+      this.setState({ hospitalInfo: hospitalInfomation, hospitalInfomation })
+    }
+  }
 
   HospitalDetails = () => {
-    const { hospitalInfo, hospitalInfomation } = this.state
+    const { hospitalInfo, hospitalInfomation, networkHospList, selectedHospitalName } = this.state
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
@@ -1001,27 +1032,141 @@ class PreAuth extends React.PureComponent {
               onLayout={event =>
                 (this.hospitalNameText = event.nativeEvent.layout)
               }>Name of the hospital</Text>
-            <TextInput
-              value={hospitalInfo.hospitalName}
-              editable={hospitalInfomation.hospitalName === ''}
-              placeholder={'Enter name of the hospital'}
-              style={[styles.inputText,
-              this.state.hospitalNameTextErrorMsg != null ?
-                {
-                  borderColor: 'red',
-                } :
-                styles.inputText
-                ,
-              ]}
-              onChangeText={(text) => this.setState({
-                hospitalInfo: {
-                  ...hospitalInfo,
-                  hospitalName: text,
+            {this.preAuthInfoObj && this.preAuthInfoObj.hospitalInfo && Object.keys(this.preAuthInfoObj.hospitalInfo).length ?
 
-                },
-                hospitalNameTextErrorMsg: null
-              })}
-            />
+              <TextInput
+                value={hospitalInfo.hospitalName}
+                editable={hospitalInfomation.hospitalName === ''}
+                placeholder={'Enter name of the hospital'}
+                style={[styles.inputText,
+                this.state.hospitalNameTextErrorMsg != null ?
+                  {
+                    borderColor: 'red',
+                  } :
+                  styles.inputText
+                  ,
+                ]}
+                onChangeText={(text) => this.setState({
+                  hospitalInfo: {
+                    ...hospitalInfo,
+                    hospitalName: text,
+
+                  },
+                  hospitalNameTextErrorMsg: null
+                })}
+              />
+              :
+              <TouchableOpacity >
+                <Row style={{ marginLeft: 20, marginRight: 20 }}>
+                  <Col size={10} style={{
+                    borderRadius: 6,
+                    borderColor: '#E0E1E4',
+                    borderWidth: 2,
+                    justifyContent: 'center',
+                    height: 50,
+                    paddingTop: 10,
+                    fontFamily: 'Helvetica-Light'
+                  }}>
+                    <SectionedMultiSelect
+                      styles={{
+                        selectToggleText: Platform.OS === "ios" ? {
+                          color: '#000',
+                          fontSize: 16,
+                          height: 20,
+                          fontFamily: 'Helvetica-Light',
+
+
+                        } : {
+                            color: '#000',
+                            fontSize: 16,
+                            fontFamily: 'Helvetica-Light'
+                          },
+                        chipIcon: {
+                          color: '#000',
+                        },
+                        itemText: {
+                          fontSize: 16,
+                          marginLeft: 5,
+                          marginTop: 5,
+                          marginBottom: 5,
+                          fontFamily: 'Helvetica-Light'
+                        },
+                        button: { backgroundColor: '#128283', fontFamily: 'Helvetica-Light' },
+                        cancelButton: { backgroundColor: '#000', fontFamily: 'Helvetica-Light' },
+
+                      }}
+                      selectedIconComponent={
+                        <View style={{
+                          height: 24,
+                          width: 24,
+                          borderWidth: 1,
+                          borderColor: 'gray',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 5
+                        }}>
+                          <MaterialIcons name="check"
+                            style={{
+                              fontSize: 20,
+                              marginHorizontal: 3,
+                              color: 'green',
+                              textAlign: 'center',
+                            }}
+                          />
+                        </View>
+                      }
+                      unselectedIconComponent={
+                        <View style={{
+                          height: 24,
+                          width: 24,
+                          borderWidth: 1,
+                          borderColor: 'gray',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 5
+                        }}>
+                        </View>
+                      }
+                      items={networkHospList}
+                      uniqueKey='_id'
+                      displayKey='name'
+                      selectText={selectedHospitalName ? '' : 'Choose your Hospital'}
+                      modalWithTouchable={true}
+                      showDropDowns={true}
+                      hideSearch={false}
+                      showChips={false}
+                      single={true}
+                      readOnlyHeadings={false}
+                      onSelectedItemsChange={(hospitalName) => this.setState({ selectedHospitalName: hospitalName })}
+                      onSelectedItemObjectsChange={this.onChangeSelectedHospitalItem}
+                      selectedItems={selectedHospitalName}
+                      // onCancel={() => this.removeAllSelectedItems()}
+                      colors={{ primary: '#18c971' }}
+                      showCancelButton={true}
+                      animateDropDowns={true}
+                      selectToggleIconComponent={
+                        <MaterialIcons name="keyboard-arrow-down"
+                          style={Platform.OS === "ios" ? {
+                            fontSize: 20,
+                            marginHorizontal: 6,
+                            color: '#909090',
+                            textAlign: 'center',
+                            marginTop: 5,
+                          } : {
+                              fontSize: 25,
+                              marginHorizontal: 6,
+                              color: '#909090',
+                              textAlign: 'center',
+                              marginTop: 10,
+                            }}
+                        />
+                      }
+                      confirmText={selectedHospitalName ? 'Confirm' : 'Please Select'}
+                    />
+                  </Col>
+                </Row>
+              </TouchableOpacity>
+            }
             {this.state.hospitalNameTextErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.hospitalNameTextErrorMsg}</Text>
               : null}
@@ -1030,8 +1175,8 @@ class PreAuth extends React.PureComponent {
                 (this.hospitalLocationText = event.nativeEvent.layout)
               }>Hospital Location</Text>
             <TextInput
-              value={hospitalInfo.hospitalLocation}
-              editable={hospitalInfomation.hospitalLocation === '' ? true : false}
+              value={truncateByString(hospitalInfo.hospitalLocation,45)||''}
+              editable={hospitalInfomation.hospitalLocation === ''}
               placeholder={'Enter hospital location'}
               style={[styles.inputText,
               this.state.hospitalLocationTextErrorMsg != null ?

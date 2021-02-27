@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Container,
   Content,
@@ -23,17 +23,17 @@ import {
   Radio,
   Switch,
 } from 'native-base';
-import {primaryColor} from '../../../setup/config'
+import {primaryColor} from '../../../setup/config';
 
 import {
   fetchUserProfile,
   storeBasicProfile,
 } from '../../providers/profile/profile.action';
-import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
-import { hasLoggedIn, userFiledsUpdate } from '../../providers/auth/auth.actions';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux';
-import { dateDiff } from '../../../setup/helpers';
+import {getPatientWishList} from '../../providers/bookappointment/bookappointment.action';
+import {hasLoggedIn, userFiledsUpdate} from '../../providers/auth/auth.actions';
+import {Col, Row, Grid} from 'react-native-easy-grid';
+import {connect} from 'react-redux';
+import {dateDiff} from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   StyleSheet,
@@ -43,12 +43,12 @@ import {
   Modal,
 } from 'react-native';
 // import Modal from "react-native-modal";
-import { NavigationEvents } from 'react-navigation';
-import { Loader } from '../../../components/ContentLoader';
+import {NavigationEvents} from 'react-navigation';
+import {Loader} from '../../../components/ContentLoader';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
-import { uploadMultiPart } from '../../../setup/services/httpservices';
-import { renderDoctorImage, renderProfileImage, getGender } from '../../common';
+import {uploadMultiPart} from '../../../setup/services/httpservices';
+import {renderDoctorImage, renderProfileImage, getGender} from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -68,7 +68,7 @@ class Profile extends Component {
       selectOptionPoopup: false,
       is_blood_donor: false,
       family_members: [],
-      isCorporateUser: false
+      isCorporateUser: false,
     };
   }
   async componentDidMount() {
@@ -77,13 +77,14 @@ class Profile extends Component {
       this.props.navigation.navigate('login');
       return;
     }
-    const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
-    this.setState({ isCorporateUser })
+    const isCorporateUser =
+      (await AsyncStorage.getItem('is_corporate_user')) === 'true';
+    this.setState({isCorporateUser});
     this.getUserProfile();
     this.getfavouritesList();
   }
   componentWillUnmount() {
-    this.setState({ selectOptionPoopup: false });
+    this.setState({selectOptionPoopup: false});
   }
 
   onStarRatingPress(rating) {
@@ -95,7 +96,7 @@ class Profile extends Component {
   /*Get userProfile*/
   getUserProfile = async () => {
     try {
-      this.setState({ isLoading: true });
+      this.setState({isLoading: true});
       let fields =
         'first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified,height,weight,family_members';
 
@@ -111,13 +112,13 @@ class Profile extends Component {
         storeBasicProfile(result);
 
         if (result.profile_image) {
-          this.setState({ imageSource: result.profile_image.imageURL });
+          this.setState({imageSource: result.profile_image.imageURL});
         }
       }
     } catch (e) {
       console.log(e);
     } finally {
-      this.setState({ isLoading: false });
+      this.setState({isLoading: false});
     }
   };
 
@@ -126,7 +127,7 @@ class Profile extends Component {
       let userId = await AsyncStorage.getItem('userId');
       let result = await getPatientWishList(userId);
       if (result.success) {
-        this.setState({ favouriteList: result.data });
+        this.setState({favouriteList: result.data});
       }
     } catch (e) {
       console.log(e);
@@ -153,13 +154,13 @@ class Profile extends Component {
             type: 'danger',
             duration: 3000,
           });
-          this.setState({ isLoading: false });
+          this.setState({isLoading: false});
         }
       }
     } catch (e) {
       console.log(e);
     } finally {
-      this.setState({ isLoading: false });
+      this.setState({isLoading: false});
     }
   };
 
@@ -192,8 +193,6 @@ class Profile extends Component {
         });
 
         function location(locationObj) {
-
-
           let placeName = '';
           let contextData = [];
           Object.keys(locationObj).forEach(keyEle => {
@@ -239,7 +238,7 @@ class Profile extends Component {
     } catch (e) {
       console.log(e);
     } finally {
-      this.setState({ isLoading: false });
+      this.setState({isLoading: false});
     }
   }
   /*Upload profile pic*/
@@ -255,13 +254,12 @@ class Profile extends Component {
         freeStyleCropEnabled: true,
       })
         .then(image => {
-          this.setState({ selectOptionPoopup: false });
+          this.setState({selectOptionPoopup: false});
 
           this.uploadImageToServer(image);
         })
         .catch(ex => {
-          this.setState({ selectOptionPoopup: false });
-
+          this.setState({selectOptionPoopup: false});
         });
     } else {
       ImagePicker.openPicker({
@@ -273,14 +271,11 @@ class Profile extends Component {
         avoidEmptySpaceAroundImage: true,
       })
         .then(image => {
-
-
-          this.setState({ selectOptionPoopup: false });
+          this.setState({selectOptionPoopup: false});
           this.uploadImageToServer(image);
         })
         .catch(ex => {
-          this.setState({ selectOptionPoopup: false });
-
+          this.setState({selectOptionPoopup: false});
         });
     }
   }
@@ -326,16 +321,14 @@ class Profile extends Component {
   removeSelected = async index => {
     let temp = this.state.family_members;
     temp.splice(index, 1);
-    this.setState({ family_members: temp, updateButton: false });
+    this.setState({family_members: temp, updateButton: false});
   };
-
-
 
   render() {
     const {
-      profile: { isLoading },
+      profile: {isLoading},
     } = this.props;
-    const { data, imageSource, family_members } = this.state;
+    const {data, imageSource, family_members} = this.state;
 
     return (
       <Container style={styles.container}>
@@ -348,682 +341,731 @@ class Profile extends Component {
         {this.state.isLoading ? (
           <Loader style={'profile'} />
         ) : (
-            <Content style={styles.bodyContent}>
-              <LinearGradient
-                colors={[primaryColor, '#C86DD7']}
-                style={{ height: 180 }}>
-                <Grid>
-                  <Row>
-                    <Col style={{ width: '10%' }} />
-                    <Col style={styles.customCol}>
-                      <Icon name="heart" style={styles.profileIcon} />
-                    </Col>
-                    <Col style={{ width: '55%' }}>
-                      <TouchableOpacity
+          <Content style={styles.bodyContent}>
+            <LinearGradient
+              colors={[primaryColor, '#C86DD7']}
+              style={{height: 180}}>
+              <Grid>
+                <Row>
+                  <Col style={{width: '10%'}} />
+                  <Col style={styles.customCol}>
+                    <Icon name="heart" style={styles.profileIcon} />
+                  </Col>
+                  <Col style={{width: '55%'}}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('ImageView', {
+                          passImage: renderProfileImage(data),
+                          title: 'Profile photo',
+                        })
+                      }>
+                      {imageSource != undefined ? (
+                        <Thumbnail
+                          style={styles.profileImage}
+                          source={{uri: imageSource}}
+                        />
+                      ) : (
+                        <Thumbnail
+                          style={styles.profileImage}
+                          square
+                          source={renderProfileImage(data)}
+                        />
+                      )}
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        marginLeft: 80,
+                        marginTop: -20,
+                        justifyContent: 'center',
+                      }}>
+                      <Icon
+                        name="camera"
+                        style={{fontSize: 20}}
                         onPress={() =>
-                          this.props.navigation.navigate('ImageView', {
-                            passImage: renderProfileImage(data),
-                            title: 'Profile photo',
-                          })
-                        }>
-                        {imageSource != undefined ? (
-                          <Thumbnail
-                            style={styles.profileImage}
-                            source={{ uri: imageSource }}
-                          />
-                        ) : (
-                            <Thumbnail
-                              style={styles.profileImage}
-                              square
-                              source={renderProfileImage(data)}
-                            />
-                          )}
-                      </TouchableOpacity>
-                      <View
-                        style={{
-                          marginLeft: 80,
-                          marginTop: -20,
-                          justifyContent: 'center',
-                        }}>
-                        <Icon
-                          name="camera"
-                          style={{ fontSize: 20 }}
-                          onPress={() =>
-                            this.setState({ selectOptionPoopup: true })
-                          }
-                          testID="cameraIconTapped"
-                        />
-                      </View>
+                          this.setState({selectOptionPoopup: true})
+                        }
+                        testID="cameraIconTapped"
+                      />
+                    </View>
 
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          marginTop: 10,
-                          marginLeft: 30,
-                        }}>
-                        <Text
-                          style={styles.nameStyle}
-                          onPress={() => this.editProfile('UpdateUserDetails')}>
-                          {data.first_name ? data.first_name + ' ' : ''}
-                          <Text style={styles.nameStyle}>
-                            {data.last_name ? data.last_name : ''}
-                          </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginTop: 10,
+                        marginLeft: 30,
+                      }}>
+                      <Text
+                        style={styles.nameStyle}
+                        onPress={() => this.editProfile('UpdateUserDetails')}>
+                        {data.first_name ? data.first_name + ' ' : ''}
+                        <Text style={styles.nameStyle}>
+                          {data.last_name ? data.last_name : ''}
                         </Text>
+                      </Text>
 
-                        <MaterialIcons
-                          name="create"
-                          style={{ fontSize: 20, marginTop: 10, marginLeft: 25,color:'#000' }}
-                          onPress={() => this.editProfile('UpdateUserDetails')}
-                        />
-                      </View>
-                    </Col>
-                    <Col style={styles.customCol}>
-                      <Icon name="heart" style={styles.profileIcon} />
-                    </Col>
-                    <Col style={{ width: '10%' }} />
-                  </Row>
-                </Grid>
-              </LinearGradient>
-              <Modal
-                visible={this.state.selectOptionPoopup}
-                transparent={true}
-                animationType={'fade'}>
+                      <MaterialIcons
+                        name="create"
+                        style={{
+                          fontSize: 20,
+                          marginTop: 10,
+                          marginLeft: 25,
+                          color: '#000',
+                        }}
+                        onPress={() => this.editProfile('UpdateUserDetails')}
+                      />
+                    </View>
+                  </Col>
+                  <Col style={styles.customCol}>
+                    <Icon name="heart" style={styles.profileIcon} />
+                  </Col>
+                  <Col style={{width: '10%'}} />
+                </Row>
+              </Grid>
+            </LinearGradient>
+            <Modal
+              visible={this.state.selectOptionPoopup}
+              transparent={true}
+              animationType={'fade'}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                }}>
                 <View
                   style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    width: '80%',
+                    height: '35%',
+                    backgroundColor: '#fff',
+                    borderColor: 'gray',
+                    borderWidth: 3,
+                    padding: 30,
+                    borderRadius: 5,
                   }}>
-                  <View
+                  <Text
                     style={{
-                      width: '80%',
-                      height: '35%',
-                      backgroundColor: '#fff',
-                      borderColor: 'gray',
-                      borderWidth: 3,
-                      padding: 30,
-                      borderRadius: 5,
+                      fontSize: 26,
+                      fontFamily: 'OpenSans',
+                      fontWeight: 'bold',
+                      textAlign: 'center',
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 26,
-                        fontFamily: 'OpenSans',
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                      }}>
-                      {' '}
+                    {' '}
                     Select a Photo{' '}
-                    </Text>
-                    {/* </Item> */}
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <TouchableOpacity
-                          onPress={() => this.uploadProfilePicture('Camera')}
-                          testID="chooseCemara">
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              fontFamily: 'OpenSans',
-                              marginLeft: 10,
-                              marginTop: 10,
-                            }}>
-                            Take Photo
+                  </Text>
+                  {/* </Item> */}
+                  <Row style={{marginTop: 10}}>
+                    <Col>
+                      <TouchableOpacity
+                        onPress={() => this.uploadProfilePicture('Camera')}
+                        testID="chooseCemara">
+                        <Text
+                          style={{
+                            fontSize: 20,
+                            fontFamily: 'OpenSans',
+                            marginLeft: 10,
+                            marginTop: 10,
+                          }}>
+                          Take Photo
                         </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => this.uploadProfilePicture('Library')}
-                          testID="chooselibrary">
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              fontFamily: 'OpenSans',
-                              marginLeft: 10,
-                              marginTop: 10,
-                            }}>
-                            Choose from Library
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => this.uploadProfilePicture('Library')}
+                        testID="chooselibrary">
+                        <Text
+                          style={{
+                            fontSize: 20,
+                            fontFamily: 'OpenSans',
+                            marginLeft: 10,
+                            marginTop: 10,
+                          }}>
+                          Choose from Library
                         </Text>
-                        </TouchableOpacity>
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: 50 }}>
-                      <Right style={{ marginTop: 15, marginLeft: 15 }}>
-                        <Button
-                          transparent
-                          style={{ marginTop: 15 }}
-                          onPress={() =>
-                            this.setState({ selectOptionPoopup: false })
-                          }
-                          testID="cancleButton">
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 20 }}>
-                            {' '}
+                      </TouchableOpacity>
+                    </Col>
+                  </Row>
+                  <Row style={{marginTop: 50}}>
+                    <Right style={{marginTop: 15, marginLeft: 15}}>
+                      <Button
+                        transparent
+                        style={{marginTop: 15}}
+                        onPress={() =>
+                          this.setState({selectOptionPoopup: false})
+                        }
+                        testID="cancleButton">
+                        <Text style={{fontFamily: 'OpenSans', fontSize: 20}}>
+                          {' '}
                           Cancel
                         </Text>
-                        </Button>
-                      </Right>
-                    </Row>
-                  </View>
+                      </Button>
+                    </Right>
+                  </Row>
                 </View>
-              </Modal>
+              </View>
+            </Modal>
 
-              <Card>
-                <Grid style={{ padding: 10 }}>
-                  <Col
-                    style={{
-                      backgroundColor: 'transparent',
-                      borderRightWidth: 0.5,
-                      borderRightColor: 'gray',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                    }}>
-                    <Text style={styles.topValue}> Age </Text>
-                    <Text note style={styles.bottomValue}>
-                      {' '}
-                      {dateDiff(data.dob, new Date(), 'years')}{' '}
-                    </Text>
-                  </Col>
+            <Card>
+              <Grid style={{padding: 10}}>
+                <Col
+                  style={{
+                    backgroundColor: 'transparent',
+                    borderRightWidth: 0.5,
+                    borderRightColor: 'gray',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}>
+                  <Text style={styles.topValue}> Age </Text>
+                  <Text note style={styles.bottomValue}>
+                    {' '}
+                    {dateDiff(data.dob, new Date(), 'years')}{' '}
+                  </Text>
+                </Col>
 
-                  <Col
-                    style={{
-                      backgroundColor: 'transparent',
-                      borderRightWidth: 0.5,
-                      borderRightColor: 'gray',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                      justifyContent: 'center',
-                    }}>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Text style={styles.topValue}>Gender </Text>
-                    </View>
-                    <Text note style={styles.bottomValue}>
-                      {getGender(data)}{' '}
-                    </Text>
-                  </Col>
+                <Col
+                  style={{
+                    backgroundColor: 'transparent',
+                    borderRightWidth: 0.5,
+                    borderRightColor: 'gray',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    justifyContent: 'center',
+                  }}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.topValue}>Gender </Text>
+                  </View>
+                  <Text note style={styles.bottomValue}>
+                    {getGender(data)}{' '}
+                  </Text>
+                </Col>
 
-                  <Col
-                    style={{
-                      backgroundColor: 'transparent',
-                      justifyContent: 'center',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                    }}>
-                    <Text style={styles.topValue}>Blood</Text>
-                    <Text note style={styles.bottomValue}>
-                      {' '}
-                      {data.blood_group}{' '}
-                    </Text>
-                  </Col>
-                </Grid>
-              </Card>
-              <List>
-                <Text style={styles.titleText}>Personal details..</Text>
+                <Col
+                  style={{
+                    backgroundColor: 'transparent',
+                    justifyContent: 'center',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}>
+                  <Text style={styles.topValue}>Blood</Text>
+                  <Text note style={styles.bottomValue}>
+                    {' '}
+                    {data.blood_group}{' '}
+                  </Text>
+                </Col>
+              </Grid>
+            </Card>
+            <List>
+              <Text style={styles.titleText}>Personal details..</Text>
 
-                <ListItem avatar>
-                  <Left>
-                    <Icon name="ios-body" style={{ color: primaryColor }} />
-                  </Left>
-                  <Body>
-                    <Row>
-                      <Col>
-                        <Text style={styles.customText}>Weight</Text>
-                        <Text note style={styles.customText1}>{data.weight} kg</Text>
-                      </Col>
-                      <Col>
-                        <Text style={styles.customText}>Height</Text>
-                        <Text note style={styles.customText1}>{data.height} cm</Text>
-                      </Col>
-                    </Row>
-                  </Body>
-
-                  <Right>
-                    <MaterialIcons
-                      name="create"
-                      style={{ color: 'black',fontSize:20 }}
-                      onPress={() =>
-                        this.props.navigation.navigate('Updateheightweight', {
-                          weight: data.weight,
-                          height: data.height,
-                        })
-                      }
-                    />
-                  </Right>
-                </ListItem>
-                <ListItem avatar>
-                  <Left>
-                    <Icon name="ios-home" style={{ color: primaryColor }} />
-                  </Left>
-                  <Body>
-                    <Text style={styles.customText}>Family details</Text>
-
-                    <FlatList
-                      data={family_members}
-                      renderItem={({ item, index }) => (
-                        <View>
-                          <Row style={{ marginTop: 10 }}>
-                            <Col size={8}>
-                              <Row>
-                                <Col size={2}>
-                                  <Text note style={styles.customText1}>
-                                    Name
-                                </Text>
-                                </Col>
-                                <Col size={0.5}>
-                                  <Text note style={styles.customText1}>
-                                    -
-                                </Text>
-                                </Col>
-                                <Col size={6}>
-                                  <Text note style={styles.customText1}>
-                                    {item.name}
-                                  </Text>
-                                </Col>
-                              </Row>
-                            </Col>
-                            <Col size={1}>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  this.editProfile('UpdateFamilyMembers')
-                                }>
-                                <MaterialIcons
-                                  active
-                                  name="create"
-                                  style={{
-                                    color: 'black',
-                                    fontSize: 20,
-                                    marginRight: 5,
-                                  }}
-                                />
-                              </TouchableOpacity>
-                            </Col>
-                            <Col size={0.5}>
-                              <TouchableOpacity
-                                onPress={() => this.removeSelected(index)}>
-                                <Icon
-                                  active
-                                  name="ios-close"
-                                  style={{ color: '#d00729', fontSize: 18 }}
-                                />
-                              </TouchableOpacity>
-                            </Col>
-                          </Row>
-
-                          <Row>
-                            <Col size={10}>
-                              <Row>
-                                <Col size={2}>
-                                  <Text note style={styles.customText1}>
-                                    Age
-                                </Text>
-                                </Col>
-                                <Col size={0.5}>
-                                  <Text note style={styles.customText1}>
-                                    -
-                                </Text>
-                                </Col>
-                                <Col size={7.5}>
-                                  <Text note style={styles.customText1}>
-                                    {dateDiff(item.dob, new Date(), 'years') + ' - ' + getGender(item)}
-                                  </Text>
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col size={10}>
-                              <Row>
-                                <Col size={2}>
-                                  <Text note style={styles.customText1}>
-                                    Relation
-                                </Text>
-                                </Col>
-                                <Col size={0.5}>
-                                  <Text note style={styles.customText1}>
-                                    -
-                                </Text>
-                                </Col>
-                                <Col size={7.5}>
-                                  <Text note style={styles.customText1}>
-                                    {item.relationship}
-                                  </Text>
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                        </View>
-                      )}
-                    />
-                    <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
-                      <Icon name="add" style={{ color: 'gray' }} />
-                      <Text
-                        uppercase={false}
-                        style={styles.customText2}
-                        onPress={() => this.editProfile('UpdateFamilyMembers')}
-                        testID="onPressAddFamilyMembers">
-                        Add your family details
-                    </Text>
-                    </Button>
-                  </Body>
-                </ListItem>
-                {this.state.isCorporateUser === false ?
-                  <ListItem avatar>
-                    <Left>
-                      <Icon
-                        name="ios-flame"
-                        style={{ color: primaryColor, marginTop: 5 }}
-                      />
-                    </Left>
-
-                    <Body>
-                      <Text style={styles.customText}>Blood Donor</Text>
-                    </Body>
-
-                    <Right
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginTop: -15,
-                      }}>
-                      <Switch
-                        value={this.state.is_blood_donor}
-                        style={{ marginTop: 15 }}
-                        onValueChange={value => {
-                          this.setState({
-                            is_blood_donor: !this.state.is_blood_donor,
-                          });
-                          if (value === true) {
-                            if (data.address === undefined) {
-                              this.editProfile('MapBox');
-                            }
-                          }
-                          this.updateBloodDonor();
-                        }}
-                      />
-                    </Right>
-                  </ListItem>
-                  : null}
-                <ListItem avatar>
-                  <Left>
-                    <Icon name="mail" style={{ color: primaryColor }} />
-                  </Left>
-
-                  <Body>
-                    <TouchableOpacity
-                      onPress={() => this.editProfile('UpdateEmail')}
-                      testID="onPressEmail">
-                      <Text style={styles.customText}>Email</Text>
-                      {data.email != undefined ? (
-                        <Text note style={styles.customText1}>
-                          {data.email}
-                        </Text>
-                      ) : (
-                          <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
-                            <Icon name="add" style={{ color: 'gray' }} />
-                            <Text
-                              uppercase={false}
-                              style={styles.customText}
-                              onPress={() => this.editProfile('UpdateEmail')}
-                              testID="onPressAddSecondaryEmail">
-                              Add your email
-                        </Text>
-                          </Button>
-                        )}
-                    </TouchableOpacity>
-                  </Body>
-
-                  {data.email != undefined ? (
-                    <Right>
-                      <MaterialIcons
-                        name="create"
-                        style={{ color: 'black',fontSize:20 }}
-                        onPress={() => this.editProfile('UpdateEmail')}
-                        testID="iconToUpdateEmail"
-                      />
-                    </Right>
-                  ) : null}
-                </ListItem>
-
-                <ListItem avatar>
-                  <Left>
-                    <Icon name="locate" style={{ color: primaryColor }} />
-                  </Left>
-
-                  <Body>
-                    <TouchableOpacity
-                      onPress={() => this.editAddress(data.address)}
-                      testID="onPressAddress">
-                      <Text style={styles.customText}>Address</Text>
-                      {data.address ? (
-                        <View>
-                          <Text note style={styles.customText1}>
-                            {data.address.address.no_and_street + ','}
-                            <Text note style={styles.customText1}>
-                              {data.address.address.address_line_1
-                                ? data.address.address.address_line_1
-                                : ' '}
-                            </Text>
-                          </Text>
-                          <Text note style={styles.customText1}>
-                            {data.address.address.district +
-                              ', ' +
-                              data.address.address.city}
-                          </Text>
-                          <Text note style={styles.customText1}>
-                            {data.address.address.state +
-                              ', ' +
-                              data.address.address.country}
-                          </Text>
-                          <Text note style={styles.customText1}>
-                            {data.address.address.pin_code}
-                          </Text>
-                        </View>
-                      ) : (
-                          <Button
-                            transparent style={{justifyContent:'flex-start',marginLeft:-15}}
-                            onPress={() => this.editProfile('MapBox')}>
-                            <Icon name="add" style={{ color: 'gray' }} />
-                            <Text uppercase={false} style={styles.customText}>
-                              Add Address
-                        </Text>
-                          </Button>
-                        )}
-                    </TouchableOpacity>
-                  </Body>
-                  {data.address ? (
-                    <Right>
-                      <MaterialIcons
-                        name="create"
-                        style={{ color: 'black',fontSize:20 }}
-                        onPress={() => this.editAddress(data.address)}
-                        testID="iconToUpdateAddress"
-                      />
-                    </Right>
-                  ) : null}
-                </ListItem>
-
-                <ListItem avatar>
-                  <Left>
-                    <Icon name="call" style={{ color: primaryColor }} />
-                  </Left>
-
-                  <Body>
-                    <View testID="onPressUpdateContact">
-                      <Text style={styles.customText}>Contact</Text>
+              <ListItem avatar>
+                <Left>
+                  <Icon name="ios-body" style={{color: primaryColor}} />
+                </Left>
+                <Body>
+                  <Row>
+                    <Col>
+                      <Text style={styles.customText}>Weight</Text>
                       <Text note style={styles.customText1}>
-                        {data.mobile_no}
+                        {data.weight} kg
                       </Text>
-                    </View>
-                  </Body>
-                  {data.mobile_no === undefined ? (
-                    <Right>
-                      <MaterialIcons
-                        name="create"
-                        style={{ color: 'black',fontSize:20 }}
-                        onPress={() => this.editProfile('UpdateContact')}
-                        testID="iconToUpdateContact"
-                      />
-                    </Right>
-                  ) : null}
-                </ListItem>
+                    </Col>
+                    <Col>
+                      <Text style={styles.customText}>Height</Text>
+                      <Text note style={styles.customText1}>
+                        {data.height} cm
+                      </Text>
+                    </Col>
+                  </Row>
+                </Body>
 
+                <Right>
+                  <MaterialIcons
+                    name="create"
+                    style={{color: 'black', fontSize: 20}}
+                    onPress={() =>
+                      this.props.navigation.navigate('Updateheightweight', {
+                        weight: data.weight,
+                        height: data.height,
+                      })
+                    }
+                  />
+                </Right>
+              </ListItem>
+              <ListItem avatar>
+                <Left>
+                  <Icon name="ios-home" style={{color: primaryColor}} />
+                </Left>
+                <Body>
+                  <Text style={styles.customText}>Family details</Text>
+
+                  <FlatList
+                    data={family_members}
+                    renderItem={({item, index}) => (
+                      <View>
+                        <Row style={{marginTop: 10}}>
+                          <Col size={8}>
+                            <Row>
+                              <Col size={2}>
+                                <Text note style={styles.customText1}>
+                                  Name
+                                </Text>
+                              </Col>
+                              <Col size={0.5}>
+                                <Text note style={styles.customText1}>
+                                  -
+                                </Text>
+                              </Col>
+                              <Col size={6}>
+                                <Text note style={styles.customText1}>
+                                  {item.name}
+                                </Text>
+                              </Col>
+                            </Row>
+                          </Col>
+                          <Col size={1}>
+                            <TouchableOpacity
+                              onPress={() =>
+                                this.editProfile('UpdateFamilyMembers')
+                              }>
+                              <MaterialIcons
+                                active
+                                name="create"
+                                style={{
+                                  color: 'black',
+                                  fontSize: 20,
+                                  marginRight: 5,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          </Col>
+                          <Col size={0.5}>
+                            <TouchableOpacity
+                              onPress={() => this.removeSelected(index)}>
+                              <Icon
+                                active
+                                name="ios-close"
+                                style={{color: '#d00729', fontSize: 18}}
+                              />
+                            </TouchableOpacity>
+                          </Col>
+                        </Row>
+
+                        <Row>
+                          <Col size={10}>
+                            <Row>
+                              <Col size={2}>
+                                <Text note style={styles.customText1}>
+                                  Age
+                                </Text>
+                              </Col>
+                              <Col size={0.5}>
+                                <Text note style={styles.customText1}>
+                                  -
+                                </Text>
+                              </Col>
+                              <Col size={7.5}>
+                                <Text note style={styles.customText1}>
+                                  {dateDiff(item.dob, new Date(), 'years') +
+                                    ' - ' +
+                                    getGender(item)}
+                                </Text>
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col size={10}>
+                            <Row>
+                              <Col size={2}>
+                                <Text note style={styles.customText1}>
+                                  Relation
+                                </Text>
+                              </Col>
+                              <Col size={0.5}>
+                                <Text note style={styles.customText1}>
+                                  -
+                                </Text>
+                              </Col>
+                              <Col size={7.5}>
+                                <Text note style={styles.customText1}>
+                                  {item.relationship}
+                                </Text>
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
+
+                        <View style={styles.subView}>
+                          <Row
+                            style={{
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}>
+                            <Left>
+                              <TouchableOpacity
+                                style={styles.ecardButton}
+                                onPress={() =>
+                                  this.props.navigation.navigate(
+                                    'DocumentList',
+                                    {
+                                      uploadData: item.idProof,
+                                      data: item,
+                                      familyDocs:true
+                                    },
+                                  )
+                                }>
+                                <Text style={styles.linkHeader}>
+                                  View Document
+                                </Text>
+                              </TouchableOpacity>
+                            </Left>
+                            {/* <Right>
+                            <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { docsUpload: true,data: item })}>
+                              <Text style={styles.linkHeader}>Upload Document</Text>
+                            </TouchableOpacity>
+                          </Right> */}
+                          </Row>
+                        </View>
+                      </View>
+                    )}
+                  />
+                  <Button
+                    transparent
+                    style={{justifyContent: 'flex-start', marginLeft: -15}}>
+                    <Icon name="add" style={{color: 'gray'}} />
+                    <Text
+                      uppercase={false}
+                      style={styles.customText2}
+                      onPress={() => this.editProfile('UpdateFamilyMembers')}
+                      testID="onPressAddFamilyMembers">
+                      Add your family details
+                    </Text>
+                  </Button>
+                </Body>
+              </ListItem>
+              {this.state.isCorporateUser === false ? (
                 <ListItem avatar>
                   <Left>
                     <Icon
-                      name="heartbeat"
-                      type="FontAwesome"
-                      style={{ color: primaryColor }}
+                      name="ios-flame"
+                      style={{color: primaryColor, marginTop: 5}}
                     />
                   </Left>
+
                   <Body>
-                    <TouchableOpacity
-                      onPress={() => this.editProfile('UpdateInsurance')}
-                      testID="onPressUpdateInsurance">
-                      <Text style={styles.customText}>Insurance</Text>
-                      {data.insurance != undefined ? (
-                        <FlatList
-                          data={this.state.data.insurance}
-                          renderItem={({ item }) => (
-                            <List>
-                              <Text note style={styles.customText1}>
-                                {item.insurance_no}
-                              </Text>
-                              <Text note style={styles.customText1}>
-                                {item.insurance_provider}
-                              </Text>
-                            </List>
-                          )}
-                          keyExtractor={(item, index) => index.toString()}
-                        />
-                      ) : (
-                          <Button transparent style={{justifyContent:'flex-start',marginLeft:-15}}>
-                            <Icon name="add" style={{ color: 'gray' }} />
-                            <Text
-                              uppercase={false}
-                              style={styles.customText}
-                              onPress={() => this.editProfile('UpdateInsurance')}
-                              testID="clickAddInsuranceText">
-                              Add Insurance
-                        </Text>
-                          </Button>
-                        )}
-                    </TouchableOpacity>
+                    <Text style={styles.customText}>Blood Donor</Text>
                   </Body>
 
-                  {data.insurance != undefined ? (
-                    <Right>
-                      <MaterialIcons
-                        name="create"
-                        style={{ color: 'black',fontSize:20 }}
-                        onPress={() => this.editProfile('UpdateInsurance')}
-                        testID="iconToEditUpdateInsurance"
-                      />
-                    </Right>
-                  ) : null}
-                </ListItem>
-
-
-                <ListItem avatar>
-                  <Left>
-                    <Icon name="briefcase" style={{ color: primaryColor }} />
-                  </Left>
-                  <Body>
-                    <TouchableOpacity
-                      onPress={() => this.editProfile('UpdatePassword')}
-                      testID="onPressUpdatePassword">
-                      <Text style={styles.customText}>Change Password</Text>
-                      <Text note style={styles.customText1}>
-                        *********
-                    </Text>
-                    </TouchableOpacity>
-                  </Body>
-                  <Right>
-                    <MaterialIcons
-                      name="create"
-                      style={{ color: 'black',fontSize:20 }}
-                      onPress={() => this.editProfile('UpdatePassword')}
-                      testID="iconToUpdatePassword"
+                  <Right
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: -15,
+                    }}>
+                    <Switch
+                      value={this.state.is_blood_donor}
+                      style={{marginTop: 15}}
+                      onValueChange={value => {
+                        this.setState({
+                          is_blood_donor: !this.state.is_blood_donor,
+                        });
+                        if (value === true) {
+                          if (data.address === undefined) {
+                            this.editProfile('MapBox');
+                          }
+                        }
+                        this.updateBloodDonor();
+                      }}
                     />
                   </Right>
                 </ListItem>
-              </List>
-              {/* <EcardDetails /> */}
-              {this.state.favouriteList.length === 0 ? null : (
-                <Card style={{ padding: 10 }}>
-                  <List>
-                    <Text style={styles.titleText}>Your Doctors</Text>
+              ) : null}
+              <ListItem avatar>
+                <Left>
+                  <Icon name="mail" style={{color: primaryColor}} />
+                </Left>
 
-                    <FlatList
-                      data={this.state.favouriteList}
-                      renderItem={({ item }) => (
-                        <ListItem avatar noBorder>
-                          <Left>
-                            <TouchableOpacity
-                              style={{
-                                paddingRight: 5,
-                                paddingBottom: 5,
-                                paddingTop: 5,
-                              }}
-                              onPress={() =>
-                                this.props.navigation.navigate('ImageView', {
-                                  passImage: renderDoctorImage(item.doctorInfo),
-                                  title: 'Profile photo',
-                                })
-                              }>
-                              <Thumbnail
-                                square
-                                source={renderDoctorImage(item.doctorInfo)}
-                                style={{ height: 60, width: 60, borderRadius: 60 }}
-                              />
-                            </TouchableOpacity>
-                          </Left>
-                          <Body>
+                <Body>
+                  <TouchableOpacity
+                    onPress={() => this.editProfile('UpdateEmail')}
+                    testID="onPressEmail">
+                    <Text style={styles.customText}>Email</Text>
+                    {data.email != undefined ? (
+                      <Text note style={styles.customText1}>
+                        {data.email}
+                      </Text>
+                    ) : (
+                      <Button
+                        transparent
+                        style={{justifyContent: 'flex-start', marginLeft: -15}}>
+                        <Icon name="add" style={{color: 'gray'}} />
+                        <Text
+                          uppercase={false}
+                          style={styles.customText}
+                          onPress={() => this.editProfile('UpdateEmail')}
+                          testID="onPressAddSecondaryEmail">
+                          Add your email
+                        </Text>
+                      </Button>
+                    )}
+                  </TouchableOpacity>
+                </Body>
+
+                {data.email != undefined ? (
+                  <Right>
+                    <MaterialIcons
+                      name="create"
+                      style={{color: 'black', fontSize: 20}}
+                      onPress={() => this.editProfile('UpdateEmail')}
+                      testID="iconToUpdateEmail"
+                    />
+                  </Right>
+                ) : null}
+              </ListItem>
+
+              <ListItem avatar>
+                <Left>
+                  <Icon name="locate" style={{color: primaryColor}} />
+                </Left>
+
+                <Body>
+                  <TouchableOpacity
+                    onPress={() => this.editAddress(data.address)}
+                    testID="onPressAddress">
+                    <Text style={styles.customText}>Address</Text>
+                    {data.address ? (
+                      <View>
+                        <Text note style={styles.customText1}>
+                          {data.address.address.no_and_street + ','}
+                          <Text note style={styles.customText1}>
+                            {data.address.address.address_line_1
+                              ? data.address.address.address_line_1
+                              : ' '}
+                          </Text>
+                        </Text>
+                        <Text note style={styles.customText1}>
+                          {data.address.address.district +
+                            ', ' +
+                            data.address.address.city}
+                        </Text>
+                        <Text note style={styles.customText1}>
+                          {data.address.address.state +
+                            ', ' +
+                            data.address.address.country}
+                        </Text>
+                        <Text note style={styles.customText1}>
+                          {data.address.address.pin_code}
+                        </Text>
+                      </View>
+                    ) : (
+                      <Button
+                        transparent
+                        style={{justifyContent: 'flex-start', marginLeft: -15}}
+                        onPress={() => this.editProfile('MapBox')}>
+                        <Icon name="add" style={{color: 'gray'}} />
+                        <Text uppercase={false} style={styles.customText}>
+                          Add Address
+                        </Text>
+                      </Button>
+                    )}
+                  </TouchableOpacity>
+                </Body>
+                {data.address ? (
+                  <Right>
+                    <MaterialIcons
+                      name="create"
+                      style={{color: 'black', fontSize: 20}}
+                      onPress={() => this.editAddress(data.address)}
+                      testID="iconToUpdateAddress"
+                    />
+                  </Right>
+                ) : null}
+              </ListItem>
+
+              <ListItem avatar>
+                <Left>
+                  <Icon name="call" style={{color: primaryColor}} />
+                </Left>
+
+                <Body>
+                  <View testID="onPressUpdateContact">
+                    <Text style={styles.customText}>Contact</Text>
+                    <Text note style={styles.customText1}>
+                      {data.mobile_no}
+                    </Text>
+                  </View>
+                </Body>
+                {data.mobile_no === undefined ? (
+                  <Right>
+                    <MaterialIcons
+                      name="create"
+                      style={{color: 'black', fontSize: 20}}
+                      onPress={() => this.editProfile('UpdateContact')}
+                      testID="iconToUpdateContact"
+                    />
+                  </Right>
+                ) : null}
+              </ListItem>
+
+              <ListItem avatar>
+                <Left>
+                  <Icon
+                    name="heartbeat"
+                    type="FontAwesome"
+                    style={{color: primaryColor}}
+                  />
+                </Left>
+                <Body>
+                  <TouchableOpacity
+                    onPress={() => this.editProfile('UpdateInsurance')}
+                    testID="onPressUpdateInsurance">
+                    <Text style={styles.customText}>Insurance</Text>
+                    {data.insurance != undefined ? (
+                      <FlatList
+                        data={this.state.data.insurance}
+                        renderItem={({item}) => (
+                          <List>
+                            <Text note style={styles.customText1}>
+                              {item.insurance_no}
+                            </Text>
+                            <Text note style={styles.customText1}>
+                              {item.insurance_provider}
+                            </Text>
+                          </List>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                      />
+                    ) : (
+                      <Button
+                        transparent
+                        style={{justifyContent: 'flex-start', marginLeft: -15}}>
+                        <Icon name="add" style={{color: 'gray'}} />
+                        <Text
+                          uppercase={false}
+                          style={styles.customText}
+                          onPress={() => this.editProfile('UpdateInsurance')}
+                          testID="clickAddInsuranceText">
+                          Add Insurance
+                        </Text>
+                      </Button>
+                    )}
+                  </TouchableOpacity>
+                </Body>
+
+                {data.insurance != undefined ? (
+                  <Right>
+                    <MaterialIcons
+                      name="create"
+                      style={{color: 'black', fontSize: 20}}
+                      onPress={() => this.editProfile('UpdateInsurance')}
+                      testID="iconToEditUpdateInsurance"
+                    />
+                  </Right>
+                ) : null}
+              </ListItem>
+
+              <ListItem avatar>
+                <Left>
+                  <Icon name="briefcase" style={{color: primaryColor}} />
+                </Left>
+                <Body>
+                  <TouchableOpacity
+                    onPress={() => this.editProfile('UpdatePassword')}
+                    testID="onPressUpdatePassword">
+                    <Text style={styles.customText}>Change Password</Text>
+                    <Text note style={styles.customText1}>
+                      *********
+                    </Text>
+                  </TouchableOpacity>
+                </Body>
+                <Right>
+                  <MaterialIcons
+                    name="create"
+                    style={{color: 'black', fontSize: 20}}
+                    onPress={() => this.editProfile('UpdatePassword')}
+                    testID="iconToUpdatePassword"
+                  />
+                </Right>
+              </ListItem>
+            </List>
+            {/* <EcardDetails /> */}
+            {this.state.favouriteList.length === 0 ? null : (
+              <Card style={{padding: 10}}>
+                <List>
+                  <Text style={styles.titleText}>Your Doctors</Text>
+
+                  <FlatList
+                    data={this.state.favouriteList}
+                    renderItem={({item}) => (
+                      <ListItem avatar noBorder>
+                        <Left>
+                          <TouchableOpacity
+                            style={{
+                              paddingRight: 5,
+                              paddingBottom: 5,
+                              paddingTop: 5,
+                            }}
+                            onPress={() =>
+                              this.props.navigation.navigate('ImageView', {
+                                passImage: renderDoctorImage(item.doctorInfo),
+                                title: 'Profile photo',
+                              })
+                            }>
+                            <Thumbnail
+                              square
+                              source={renderDoctorImage(item.doctorInfo)}
+                              style={{height: 60, width: 60, borderRadius: 60}}
+                            />
+                          </TouchableOpacity>
+                        </Left>
+                        <Body>
+                          <Text
+                            style={{
+                              fontFamily: 'OpenSans',
+                              fontSize: 12,
+                              width: '100%',
+                            }}>
+                            {item.doctorInfo.prefix
+                              ? item.doctorInfo.prefix + '.'
+                              : 'Dr.'}{' '}
+                            {item.doctorInfo.first_name +
+                              ' ' +
+                              item.doctorInfo.last_name}{' '}
+                          </Text>
+                        </Body>
+                        <Right>
+                          <TouchableOpacity style={styles.docbutton}>
                             <Text
                               style={{
                                 fontFamily: 'OpenSans',
                                 fontSize: 12,
-                                width: '100%',
-                              }}>
-                              {item.doctorInfo.prefix
-                                ? item.doctorInfo.prefix + '.'
-                                : 'Dr.'}{' '}
-                              {item.doctorInfo.first_name +
-                                ' ' +
-                                item.doctorInfo.last_name}{' '}
-                            </Text>
-                          </Body>
-                          <Right>
-                            <TouchableOpacity style={styles.docbutton}>
-                              <Text
-                                style={{
-                                  fontFamily: 'OpenSans',
-                                  fontSize: 12,
-                                  color: '#fff',
-                                  textAlign: 'center',
-                                }}
-                                onPress={() =>
-                                  this.props.navigation.navigate(
-                                    'Doctor Details Preview',
-                                    {
-                                      doctorId: item.doctorInfo.doctor_id,
-                                      fetchAvailabiltySlots: true,
-                                    },
-                                  )
-                                }
-                                testID="navigateBookAppointment">
-                                {' '}
+                                color: '#fff',
+                                textAlign: 'center',
+                              }}
+                              onPress={() =>
+                                this.props.navigation.navigate(
+                                  'Doctor Details Preview',
+                                  {
+                                    doctorId: item.doctorInfo.doctor_id,
+                                    fetchAvailabiltySlots: true,
+                                  },
+                                )
+                              }
+                              testID="navigateBookAppointment">
+                              {' '}
                               Book Again
                             </Text>
-                            </TouchableOpacity>
-                          </Right>
-                        </ListItem>
-                      )}
-                      keyExtractor={(item, index) => index.toString()}
-                    />
-                  </List>
-                </Card>
-              )}
-            </Content>
-          )}
+                          </TouchableOpacity>
+                        </Right>
+                      </ListItem>
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                  />
+                </List>
+              </Card>
+            )}
+          </Content>
+        )}
       </Container>
     );
   }
@@ -1174,5 +1216,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
   },
-
+  linkHeader: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    textDecorationColor: '#7F49C3',
+    textDecorationLine: 'underline',
+    color: '#7F49C3'
+  },
+  ecardButton: {
+    marginTop: 15,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 });

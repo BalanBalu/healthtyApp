@@ -119,7 +119,7 @@ import ClaimIntimationSuccess from '../../modules/screens/ClaimIntimation/claimI
 import ClaimIntimationList from '../../modules/screens/ClaimIntimation/claimintimationList'
 import DocumentList from '../../modules/screens/ClaimIntimation/documentList'
 import ContactUs from '../../modules/screens/contactUs'
-
+import AddInsurance from '../../modules/screens/Insurance/addInsurance'
 import PreAuthSubmission from '../../modules/screens/PreAuth/PreAuthSubmission/preAuthSubmission';
 import PreAuthList from '../../modules/screens/PreAuth/PreAuthList/preAuthList';
 
@@ -849,7 +849,13 @@ export const smartHealthStack=createStackNavigator({
   Insurance: {
     screen: Insurance,
     navigationOptions: {
-      title: 'Insurance'
+      title: 'My Insurance Policies'
+    }
+  },
+  AddInsurance: {
+    screen: AddInsurance,
+    navigationOptions: {
+      title: 'Add Insurance'
     }
   },
 },

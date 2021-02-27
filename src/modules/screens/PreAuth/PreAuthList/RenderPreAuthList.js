@@ -16,11 +16,11 @@ export default class RenderNetworkHospitalInfo extends Component {
                 <Card style={{ padding: 10, borderRadius: 5, marginTop: 10 }}>
                     <Row>
                         <Col size={8}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, lineHeight: 25, fontWeight: '700', color: '#7F49C3' }}>{item.InsuranceCompanyName ? item.InsuranceCompanyName : 'UnKnown'}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, lineHeight: 25, fontWeight: '700', color: '#7F49C3' }}>{item.tpaCompany ? item.tpaCompany : 'UnKnown'}</Text>
                         </Col>
                         <Col size={2} >
-                            <TouchableOpacity style={item.policyStatus === 'Paid' ? { backgroundColor: 'green', borderRadius: 5, padding: 2, marginTop: 2 } : { backgroundColor: '#FECE83', borderRadius: 5, padding: 2, marginTop: 2 }}>
-                                <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: '600', textAlign: 'center', fontSize: 14 }}>{item.policyStatus || null}</Text>
+                            <TouchableOpacity style={{ backgroundColor: '#FECE83', borderRadius: 5, padding: 2, marginTop: 2 }}>
+                                <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: '600', textAlign: 'center', fontSize: 10 }}>{item.status || null}</Text>
                             </TouchableOpacity>
                         </Col>
                     </Row>

@@ -26,7 +26,12 @@ class FamilyInfoList extends PureComponent {
             this.props.navigation.navigate(this.navigationPage, { memberInfo: selectedMemObj })
         }
         else if (this.navigationPage === 'PreAuthSubmission') {
-            this.props.navigation.navigate('PreAuthSubmission', { memberInfo: selectedMemObj,preAuthInfo: this.preAuthReqData  })
+            if (!this.preAuthReqData) {
+                this.preAuthReqData = { 
+                    tpaInfo: this.props.profile && this.props.profile.memberTpaInfo 
+                };
+            }
+            this.props.navigation.navigate('PreAuthSubmission', { memberInfo: selectedMemObj, preAuthInfo: this.preAuthReqData })
         }
     }
 
@@ -34,12 +39,12 @@ class FamilyInfoList extends PureComponent {
         const { familyList } = this.state;
         return (
             <Container>
-                        {familyList && familyList.length ?
-                         <Content style={{ padding: 10 }}>
-                            <View style={{ marginTop: 10 }}>
-                            <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10,fontWeight:'bold' }}> {familyList && familyList.length ?'Family Information':null}</Text>
-                                {familyList.map((item, index) =>
-                                 <RenderFamilyList
+                {familyList && familyList.length ?
+                    <Content style={{ padding: 10 }}>
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10, fontWeight: 'bold' }}> {familyList && familyList.length ? 'Family Information' : null}</Text>
+                            {familyList.map((item, index) =>
+                                <RenderFamilyList
                                     item={item}
                                     index={index}
                                     isShowBeneficiaryInfoCard={this.state.isShowBeneficiaryInfoCard}
@@ -50,16 +55,16 @@ class FamilyInfoList extends PureComponent {
                                 // shouldUpdate={``}
                                 >
                                 </RenderFamilyList>)
-                                }
-                            </View>
-                             </Content>
-                            :
-                            <Content contentContainerStyle={{ justifyContent: 'center', alignItems: 'center',flex:1 }}>
-                            <View style={{ borderBottomWidth: 0,  justifyContent: 'center', alignItems: 'center',flex:1 }}>
-                                <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > Family List Not Found!</Text>
-                            </View>
-                            </Content>
-                        }
+                            }
+                        </View>
+                    </Content>
+                    :
+                    <Content contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                        <View style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > Family List Not Found!</Text>
+                        </View>
+                    </Content>
+                }
             </Container>
         )
     }

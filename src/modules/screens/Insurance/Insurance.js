@@ -1,17 +1,19 @@
-import React, {Component} from 'react';
-import {Row, Grid, Col} from 'react-native-easy-grid';
-import {Container, View, Text, Button, Icon, Input,Card, Content,CheckBox} from 'native-base';
-import { getInsuranceData, sendInsuranceInterests  } from '../../providers/insurance/insurance.action';
+import React, { Component } from 'react';
+import { Row, Col } from 'react-native-easy-grid';
+import { Container, View, Text, Icon, Card, Content, CheckBox } from 'native-base';
+import { getInsuranceData, sendInsuranceInterests } from '../../providers/insurance/insurance.action';
 import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
   Image,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 import { toastMeassage } from '../../common';
-import {primaryColor} from '../../../setup/config'
+import { primaryColor } from '../../../setup/config'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 class Insurance extends Component {
   constructor(props) {
@@ -19,6 +21,7 @@ class Insurance extends Component {
     this.state = {
       dataSource: [],
       isLoading: false,
+      descriptionVisible: false,
     };
   }
 
@@ -34,9 +37,9 @@ class Insurance extends Component {
       })
       let result = await getInsuranceData();
       if (result) {
-      
+
         this.setState({
-          isLoading:false,
+          isLoading: false,
           dataSource: result
         });
       }
@@ -48,47 +51,47 @@ class Insurance extends Component {
   }
 
   insuranceDetailsUpdated = async () => {
-    const { dataSource } = this.state; 
+    const { dataSource } = this.state;
     let corporateData = this.props.profile.corporateData;
     const loggedInEmployeeData = corporateData.find(ele => ele.relationship === 'EMPLOYEE')
     let atLeastSelectedOne = false;
     dataSource.forEach(async (insuranceData) => {
-        if (insuranceData.isSelect) {
-            atLeastSelectedOne = true;
-            const data = {
-              "contactNo": loggedInEmployeeData.mobile,
-              "firstName": loggedInEmployeeData.firstName,
-              "lastName": loggedInEmployeeData.lastName,
-              "email": loggedInEmployeeData.emailId,
-              "status": insuranceData.status,
-              "createdBy": loggedInEmployeeData.firstName,
-              "updatedBy": loggedInEmployeeData.firstName,
-              "detail": insuranceData.title
-            }
-           const result = await sendInsuranceInterests(data);
+      if (insuranceData.isSelect) {
+        atLeastSelectedOne = true;
+        const data = {
+          "contactNo": loggedInEmployeeData.mobile,
+          "firstName": loggedInEmployeeData.firstName,
+          "lastName": loggedInEmployeeData.lastName,
+          "email": loggedInEmployeeData.emailId,
+          "status": insuranceData.status,
+          "createdBy": loggedInEmployeeData.firstName,
+          "updatedBy": loggedInEmployeeData.firstName,
+          "detail": insuranceData.title
         }
+        const result = await sendInsuranceInterests(data);
+      }
     });
-    toastMeassage(atLeastSelectedOne ? 'Your Request has sent Successfully, our Support team would touch with you shortly' : 'Please select at least one to continue',atLeastSelectedOne ? 'success' : 'warning', 3000)
+    toastMeassage(atLeastSelectedOne ? 'Your Request has sent Successfully, our Support team would touch with you shortly' : 'Please select at least one to continue', atLeastSelectedOne ? 'success' : 'warning', 3000)
   }
   FlatListItemSeparator = () => <View style={styles.line} />;
-  
+
   renderItem = data => (
     <TouchableOpacity
       onPress={() => this.selectItem(data)}>
-        <Card style={[styles.list, data.item.selectedClass]}>
-          <Row>
-            <Col size={9}>
+      <Card style={[styles.list, data.item.selectedClass]}>
+        <Row>
+          <Col size={9}>
             <Text style={styles.cardText1}>{data.item.title}</Text>
             <Text style={styles.cardText2}>{data.item.description}</Text>
-            </Col>
-            <Col size={1}>
+          </Col>
+          <Col size={1}>
             <CheckBox style={{ borderRadius: 5 }}
-                checked={data.item.isSelect}
-                onPress={() => this.selectItem(data)}
-              />
-            </Col>
-          </Row>
-          {/* <Text style={styles.cardText3}>KNOW MORE</Text> */}
+              checked={data.item.isSelect}
+              onPress={() => this.selectItem(data)}
+            />
+          </Col>
+        </Row>
+        {/* <Text style={styles.cardText3}>KNOW MORE</Text> */}
       </Card>
     </TouchableOpacity>
   );
@@ -97,18 +100,21 @@ class Insurance extends Component {
 
     data.item.isSelect = !data.item.isSelect;
     data.item.selectedClass = data.item.isSelect
-      ? styles.selected 
+      ? styles.selected
       : styles.list;
-      
-      const index = this.state.dataSource.findIndex(
-        item => data.item._id === item._id,
-      );
-      this.state.dataSource[index] = data.item;
-      this.setState({
-        dataSource: this.state.dataSource
-      });
-  };
 
+    const index = this.state.dataSource.findIndex(
+      item => data.item._id === item._id,
+    );
+    this.state.dataSource[index] = data.item;
+    this.setState({
+      dataSource: this.state.dataSource
+    });
+  };
+  popUpClose() {
+    this.setState({ descriptionVisible: false })
+
+  }
   render() {
     if (this.state.isLoading) {
       return (
@@ -116,14 +122,111 @@ class Insurance extends Component {
           <ActivityIndicator
             size="large"
             color="#7E49C3"
-            style={{marginTop: 100}}
+            style={{ marginTop: 100 }}
           />
         </View>
       );
     }
+    const data = [{ corporateName: 'New India Assurance Company Limited', Totalamount: '1,20000', policyPeriod: '5 years', policyStartdate: '18-02-2019', policyEndDate: '18-02-2024' },
+    { corporateName: 'Oriental Insurance Company Limited', Totalamount: '2,20000', policyPeriod: '2 years', policyStartdate: '8-02-2017', policyEndDate: '8-02-2019' },
+    { corporateName: 'National Insurance Company Limited', Totalamount: '3,20000', policyPeriod: '3 years', policyStartdate: '10-02-2019', policyEndDate: '18-02-2022' }]
     return (
       <Container >
-        <View style={{flex:1}}>
+        <Content style={{ padding: 10 }}>
+          <View style={styles.mainView}>
+            <TouchableOpacity style={styles.addInsuranceButton} onPress={() => this.props.navigation.navigate('AddInsurance')}>
+              <Icon name="add-circle-outline" style={{ fontSize: 20, color: '#128283' }} />
+              <Text style={styles.addInsuranceText}>Add Insurance</Text>
+            </TouchableOpacity>
+            <FlatList
+              data={data}
+              renderItem={({ item, index }) =>
+                <Card style={styles.CardStyle}>
+                  <View style={styles.mainVieww}>
+                    <View style={styles.commonStyleView}>
+                      <View style={styles.HeadingTextView}>
+                        <Text style={styles.HeadingText}>{item.corporateName}</Text>
+                      </View>
+                      <View style={styles.rightTextView}>
+                        <Text style={styles.rightText}>{item.Totalamount}</Text>
+                      </View>
+                    </View>
+                    <View style={[styles.commonStyleView, { marginTop: 8 }]}>
+                      <View style={styles.leftView}>
+                        <Text style={styles.leftText}>Policy period</Text>
+                      </View>
+                      <View style={styles.dividingView}>
+                        <Text style={styles.smallrightText}>{item.policyPeriod}</Text>
+                      </View>
+                    </View>
+                    <View style={[styles.commonStyleView, { marginTop: 8 }]}>
+                      <View style={styles.leftView}>
+                        <Text style={styles.leftText}>Policy start date</Text>
+                      </View>
+                      <View style={styles.dividingView}>
+                        <Text style={styles.smallrightText}>{item.policyStartdate}</Text>
+                      </View>
+
+                    </View>
+                    <View style={[styles.commonStyleView, { marginTop: 8 }]}>
+                      <View style={styles.leftView}>
+                        <Text style={styles.leftText}>Policy end date</Text>
+                      </View>
+                      <View style={styles.dividingView}>
+                        <Text style={styles.smallrightText}>{item.policyEndDate}</Text>
+                      </View>
+
+                    </View>
+                  </View>
+                  <View style={{ justifyContent: 'flex-start', alignItems: 'flex-end', marginTop: 8 }}>
+                    <TouchableOpacity style={styles.renewalButton} onPress={() => this.setState({ descriptionVisible: true })}>
+                      <Text style={styles.renewalButtonText}>Insurance Renewal</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Card>
+              } />
+          </View>
+          <Modal
+            visible={this.state.descriptionVisible}
+            transparent={true}
+            animationType={'fade'}
+          >
+            <View style={styles.modalFirstView}>
+              <View style={styles.modalSecondView}>
+                <Row style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: -30 }}>
+                  <TouchableOpacity onPress={() => this.popUpClose()}>
+                    <MaterialIcons name="close" style={{ fontSize: 30, color: 'red' }} />
+
+                  </TouchableOpacity>
+                </Row>
+                <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={styles.modalHeading}>You can Renew your Insurance Policy by </Text>
+                </Row>
+
+
+                <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 5 }}>
+
+                  <Col size={5}>
+                    <TouchableOpacity danger style={styles.backToHomeButton1} onPress={() => this.popUpClose()} testID='cancelButton'>
+                      <Text style={styles.backToHomeButtonText1}> {'Arrange Callback.'}</Text>
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={5} style={{ marginLeft: 10 }}>
+                    <TouchableOpacity danger style={styles.backToHomeButton} onPress={() => this.popUpClose()} testID='cancelButton'>
+                      <Text style={styles.backToHomeButtonText}> {'Renew Online'}</Text>
+                    </TouchableOpacity>
+                  </Col>
+
+
+
+
+                </Row>
+              </View>
+
+            </View>
+          </Modal>
+        </Content>
+        {/* <View style={{flex:1}}>
         <Grid >
           <Row style={styles.SearchRow}>
             <Col size={0.5} style={styles.SearchStyle}>
@@ -163,7 +266,7 @@ class Insurance extends Component {
                 <Text style={styles.buttonText}>Send Interests</Text>
               </Button>
               </View>
-        </View>
+        </View> */}
       </Container>
     );
   }
@@ -178,8 +281,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
-    marginLeft:5,
-    marginRight:5
+    marginLeft: 5,
+    marginRight: 5
   },
   selected: {
     elevation: 8,
@@ -201,7 +304,7 @@ const styles = StyleSheet.create({
   cardText2: {
     color: 'grey',
     fontSize: 14,
-    marginTop:5
+    marginTop: 8
   },
   cardText3: {
     color: primaryColor,
@@ -218,8 +321,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: 'center',
-    fontWeight:'bold',
-    fontSize:14
+    fontWeight: 'bold',
+    fontSize: 15
   },
   line: {
     marginTop: 8,
@@ -254,11 +357,154 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
   },
+  mainView: {
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  addInsuranceButton: {
+    borderColor: '#128283',
+    borderWidth: 1,
+    flexDirection: 'row',
+    borderRadius: 5,
+    padding: 5
+  },
+  addInsuranceText: {
+    fontFamily: 'OpenSans',
+    fontSize: 13,
+    color: '#128283',
+    marginTop: 2,
+    fontWeight: 'bold'
+  },
+  CardStyle: {
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 5
+  },
+  mainVieww: {
+    paddingBottom: 10,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5
+  },
+  commonStyleView: {
+    flexDirection: 'row',
+    width: '100%'
+  },
+  HeadingTextView: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: '70%'
+  },
+  HeadingText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    color: '#128283',
+    lineHeight: 20
+  },
+  rightTextView: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    width: '30%'
+  },
+  rightText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    color: '#000',
+    lineHeight: 20
+  },
+  dividingView: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    width: '50%'
+  },
+  smallrightText: {
+    fontFamily: 'OpenSans',
+    fontSize: 13,
+    color: '#000'
+  },
+  leftView: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: '50%'
+  },
+  leftText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    color: '#000'
+  },
+  renewalButton: {
+    flexDirection: 'row',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#128283',
+    paddingVertical: 5
+  },
+  renewalButtonText: {
+    fontFamily: 'OpenSans',
+    fontSize: 13,
+    color: '#fff',
+    fontWeight: 'bold'
+  },
+  modalFirstView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalSecondView: {
+    width: '95%',
+    height: 200,
+    backgroundColor: '#fff',
+    borderColor: '#909090',
+    borderWidth: 3,
+    padding: 10,
+    borderRadius: 10,
+  },
+  modalHeading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#000'
+  },
+  backToHomeButton: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 5,
+    backgroundColor: '#128283',
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  backToHomeButtonText: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold'
+  },
+  backToHomeButton1: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 5,
+    backgroundColor: '#59a7a8',
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  backToHomeButtonText1: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold'
+  },
 });
 
 function homeState(state) {
   return {
-      profile: state.profile,
+    profile: state.profile,
   }
 }
 export default connect(homeState)(Insurance)

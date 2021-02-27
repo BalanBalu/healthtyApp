@@ -305,7 +305,7 @@ const RenderBeneficiaryInfo = (props) => {
             <Text style={styles.beneficiaryFontStyle}>Policy End Date</Text>
             <Text style={styles.beneficiaryFontStyle}>Sum Insured</Text>
             <Text style={styles.beneficiaryFontStyle}>BSI</Text>
-            <Text style={styles.beneficiaryFontStyle}>Eligible Amount</Text>
+            {/* <Text style={styles.beneficiaryFontStyle}>Eligible Amount</Text> */}
         </Col>
         <Col size={0.5}>
             <Text style={styles.beneficiaryFontStyle}>:</Text>
@@ -314,7 +314,7 @@ const RenderBeneficiaryInfo = (props) => {
             <Text style={styles.beneficiaryFontStyle}>:</Text>
             <Text style={styles.beneficiaryFontStyle}>:</Text>
             <Text style={styles.beneficiaryFontStyle}>:</Text>
-            <Text style={styles.beneficiaryFontStyle}>:</Text>
+            {/* <Text style={styles.beneficiaryFontStyle}>:</Text> */}
         </Col>
         <Col size={5.5}>
             <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.full_name?data.full_name:null}</Text>
@@ -323,7 +323,7 @@ const RenderBeneficiaryInfo = (props) => {
             <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.policyEffectiveTo?formatDate(data.policyEffectiveTo, 'DD/MM/YYYY'):null}</Text>
             <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.sumInsured?data.sumInsured:0}</Text>
             <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.balSumInsured?data.balSumInsured:0}</Text>
-            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}> ₹ 0.00</Text>
+            {/* <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}> ₹ 0.00</Text> */}
         </Col>
     </Row>
 </View>
