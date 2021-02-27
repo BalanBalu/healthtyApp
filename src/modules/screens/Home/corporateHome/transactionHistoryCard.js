@@ -92,7 +92,7 @@ export const TransactionHistoryCard = (props) => {
 
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{height:23,width:23,position:'absolute',top:35.5,right:11}} />
 
-              <Text style={[styles.boxText,{marginTop:-3}]}>Home Test</Text>
+              <Text style={[styles.boxText,{marginTop:-3}]}>Home Care</Text>
             </View>
           </View>
         </TouchableHighlight>

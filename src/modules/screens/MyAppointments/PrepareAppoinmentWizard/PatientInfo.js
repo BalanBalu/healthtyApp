@@ -13,6 +13,8 @@ import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bo
 import styles from '../styles';
 import { formatDate } from "../../../../setup/helpers";
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import {primaryColor} from '../../../../setup/config';
+
 
 
 class PatientInfo extends PureComponent {
@@ -154,7 +156,7 @@ class PatientInfo extends PureComponent {
                             <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Date of birth</Text>
                             <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={[styles.formStyle2,{flexDirection:'row'}]}>
                                 {/* <Item > */}
-                            <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+                            <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: primaryColor }} />
                             <Text style={this.state.date_of_birth != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.date_of_birth != null ?formatDate(this.state.date_of_birth, 'DD/MM/YYYY'):'Date of Birth'}</Text>
                             <DateTimePicker
                               mode={'date'}

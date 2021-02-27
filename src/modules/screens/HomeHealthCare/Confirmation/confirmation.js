@@ -302,7 +302,7 @@ class HomeTestConfirmation extends Component {
 
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                             <Row>
-                                <Icon name="ios-cash" style={{ fontSize: 15, color: '#784EBC' }} />
+                                <Icon name="ios-cash" style={{ fontSize: 15, color: primaryColor }} />
                                 <Text style={styles.subTextBilling}> Billing Details</Text>
                             </Row>
                             <Row style={{ marginTop: 10 }}>
