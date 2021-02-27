@@ -112,7 +112,7 @@ export const TransactionHistoryCard = (props) => {
         </View>
         </TouchableHighlight>
         <TouchableHighlight  activeOpacity={0.6}
-            underlayColor={secondaryColorTouch} style={styles.rectBox} onPress={() => navigation('Video and Chat Service')}>
+            underlayColor={secondaryColorTouch} style={styles.rectBox} onPress={() => navigation('My Video Consultations')}>
           <View >
             <View
               style={{

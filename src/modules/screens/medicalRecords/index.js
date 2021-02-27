@@ -247,6 +247,8 @@ class MedicineRecords extends PureComponent {
 
 
                         } />
+                
+                    <RenderFooterLoader footerLoading={this.state.footerLoading} />
                     {fromNavigation === 'APPOINTMENT_PREPARE'||fromNavigation === 'VIDEO_CONSULTATION' ? <Footer style={
                         Platform.OS === "ios" ?
                             { height: 40 } : { height: 45 }}>
@@ -255,14 +257,14 @@ class MedicineRecords extends PureComponent {
                                 <Col size={5} style={{ backgroundColor: '#4E85E9' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity style={styles.buttonTouch} onPress={() => this.proceed()} >
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>back</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '700' }}>Back</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
                                 <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity style={styles.buttonTouch} onPress={() => this.proceed()} >
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}> continue</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '700' }}>Continue</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
@@ -271,8 +273,6 @@ class MedicineRecords extends PureComponent {
 
                     </Footer>
                         : null}
-                    <RenderFooterLoader footerLoading={this.state.footerLoading} />
-
                 </View>
            
                 {/* </Content> */}
