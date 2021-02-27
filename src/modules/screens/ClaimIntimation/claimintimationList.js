@@ -161,7 +161,7 @@ class ClaimIntimationList extends PureComponent {
                           <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '700' }}
                             numberOfLines={1}
                             ellipsizeMode="tail">{item.employeeName}</Text>
-                          {/* <Row>
+                          <Row>
                             <Col size={3}>
                               <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#909090', marginTop: 5 }}
                                 numberOfLines={1}
@@ -175,7 +175,7 @@ class ClaimIntimationList extends PureComponent {
                                 numberOfLines={1}
                                 ellipsizeMode="tail">{item.policyNo}</Text>
                             </Col>
-                          </Row> */}
+                          </Row>
                           {/* <Text style={styles.subHeadingData}
                               numberOfLines={1}
                               ellipsizeMode="tail">{item.address}</Text> */}
