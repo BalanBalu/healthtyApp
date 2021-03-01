@@ -1,5 +1,7 @@
 
 import {  StyleSheet } from 'react-native';
+import {primaryColor} from '../../../setup/config';
+
 
 export default  styles = StyleSheet.create({
     inputMainView: {
@@ -37,7 +39,7 @@ export default  styles = StyleSheet.create({
     continueButton: {
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#7F49C3',
+      backgroundColor: primaryColor,
       padding: 9,
       borderRadius: 20,
       marginTop: 20,

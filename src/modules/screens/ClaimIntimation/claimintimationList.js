@@ -6,6 +6,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getClaimIntimationWithPagination } from '../../providers/corporate/corporate.actions';
 import { log } from 'react-native-reanimated';
+import {primaryColor} from '../../../setup/config'
 
 const LIMIT = 10;
 
@@ -56,9 +57,9 @@ class ClaimIntimationList extends PureComponent {
         <Content>
           <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
             <Card style={{ borderRadius: 20 }}>
-              <TouchableOpacity style={{ flexDirection: 'row', paddingHorizontal: 10, borderRadius: 20, borderColor: '#7F49C3', borderWidth: 1, paddingVertical: 3 }} onPress={() => { this.props.navigation.navigate('FamilyInfoList', { navigationPage: "ClaimIntimationSubmission" }) }}>
-                <MaterialIcons name="add" style={{ fontSize: 20, color: '#7F49C3' }} />
-                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '600' }}>Add New</Text>
+              <TouchableOpacity style={{ flexDirection: 'row', paddingHorizontal: 10, borderRadius: 20, borderColor: primaryColor, borderWidth: 1, paddingVertical: 3 }} onPress={() => { this.props.navigation.navigate('FamilyInfoList', { navigationPage: "ClaimIntimationSubmission" }) }}>
+                <MaterialIcons name="add" style={{ fontSize: 20, color: primaryColor }} />
+                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: primaryColor, fontWeight: '600' }}>Add New</Text>
               </TouchableOpacity>
             </Card>
 
@@ -158,7 +159,7 @@ class ClaimIntimationList extends PureComponent {
                     <Card style={styles.cardStyle}>
                       <Row>
                         <Col size={9}>
-                          <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '700' }}
+                          <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: primaryColor, fontWeight: '700' }}
                             numberOfLines={1}
                             ellipsizeMode="tail">{item.employeeName}</Text>
                           {/* <Row>
@@ -206,7 +207,7 @@ export default ClaimIntimationList
 const styles = StyleSheet.create({
   gradientStyle: {
     justifyContent: 'center',
-    backgroundColor: '#7F49C3',
+    backgroundColor: primaryColor,
     padding: 8
   },
   cardStyle: {
@@ -241,9 +242,9 @@ const styles = StyleSheet.create({
   linkHeader: {
     fontFamily: 'OpenSans',
     fontSize: 15,
-    textDecorationColor: '#7F49C3',
+    textDecorationColor: primaryColor,
     textDecorationLine: 'underline',
-    color: '#7F49C3'
+    color: primaryColor
   },
   mainView: {
     marginLeft: 10,

@@ -1,5 +1,7 @@
 
 import {  StyleSheet } from 'react-native';
+import {primaryColor} from '../../../setup/config';
+
 
 export default  styles = StyleSheet.create(
   {
@@ -15,9 +17,9 @@ export default  styles = StyleSheet.create(
     linkHeader: {
       fontFamily: 'OpenSans',
       fontSize: 15,
-      textDecorationColor: '#7F49C3',
+      textDecorationColor: primaryColor,
       textDecorationLine: 'underline',
-      color: '#7F49C3'
+      color: primaryColor
     },
     ecardButton: {
       marginTop: 15,
@@ -35,7 +37,7 @@ export default  styles = StyleSheet.create(
       textAlign: 'center',
       fontSize: 16,
       fontWeight: '700',
-      color: '#7F49C3'
+      color: primaryColor
     },
     policyText: {
       fontFamily: 'OpenSans',
@@ -57,7 +59,7 @@ export default  styles = StyleSheet.create(
     boldText: {
       fontFamily: 'OpenSans',
       fontSize: 16,
-      color: '#7F49C3',
+      color: primaryColor,
       marginTop: 2,
       fontWeight: 'bold'
     }

@@ -83,7 +83,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               {/* <HomeTestDrawing /> */}
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{height:63,width:45,marginTop:-3}}/>
-              <Text style={[styles.boxText,{marginTop:-3}]}>Home Test</Text>
+              <Text style={[styles.boxText,{marginTop:-3}]}>Home Care</Text>
             </View>
           </View>
         </TouchableHighlight>

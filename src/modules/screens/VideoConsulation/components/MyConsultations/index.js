@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
 	},
 	segButtonActive: {
 		justifyContent: 'center',
-		borderBottomColor: '#784EBC',
+		borderBottomColor: primaryColor,
 		borderBottomWidth: 1,
 		paddingBottom: -10,
 		paddingTop: -10,
@@ -343,12 +343,12 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		fontFamily: 'OpenSans',
 		fontSize: 20,
-		color: '#784EBC',
+		color: primaryColor,
 
 	},
 	toucableOpacity: {
 		flexDirection: 'row',
-		backgroundColor: '#784EBC',
+		backgroundColor: primaryColor,
 		paddingLeft: 15,
 		paddingRight: 15,
 		justifyContent: 'center',

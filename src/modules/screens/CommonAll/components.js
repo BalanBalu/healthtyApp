@@ -51,7 +51,7 @@ const RenderProposeNewPopPage = (props) => {
                 borderRadius: 10
             }}>
                 <CardItem header style={{
-                    backgroundColor: '#784EBC',
+                    backgroundColor: primaryColor,
                     marginBottom: -10,
                     borderTopLeftRadius: 0,
                     borderTopRightRadius: 0,
@@ -212,7 +212,7 @@ const RenderFavoritesComponent = (props) => {
 const RenderNoSlotsAvailable = (props) => {
     return (
         <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-            <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+            <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: primaryColor }}>
                 <Text>{props.text}</Text>
             </Button>
         </Row>

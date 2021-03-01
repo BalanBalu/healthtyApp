@@ -4,6 +4,7 @@ import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { setI18nConfig } from '../translator.helper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import {primaryColor} from '../../setup/config';
 
 class LanguagePopUp extends React.PureComponent {
   constructor(props) {
@@ -66,7 +67,7 @@ class LanguagePopUp extends React.PureComponent {
                   selected
                   // backgroundColor='#F00'
                   style={
-                    selectedIndex === index ? { backgroundColor: "#7F49C3", color: '#fff', } : {}
+                    selectedIndex === index ? { backgroundColor: primaryColor, color: '#fff', } : {}
                   }
                   onPress={() => this.hideMenu(index,item.listName)}>
                   {item.listName}

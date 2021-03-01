@@ -8,6 +8,8 @@ import ProgressBar from 'react-native-horizontal-progress-bar'
 import { getMemberDetailsByEmail } from '../../providers/corporate/corporate.actions'; ''
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
+import {primaryColor} from '../../../setup/config';
+
 
 class PolicyCoverage extends React.Component {
   constructor(props) {
@@ -567,9 +569,9 @@ const styles = StyleSheet.create({
   linkHeader: {
     fontFamily: 'OpenSans',
     fontSize: 12,
-    textDecorationColor: '#7F49C3',
+    textDecorationColor: primaryColor,
     textDecorationLine: 'underline',
-    color: '#7F49C3'
+    color: primaryColor
   },
   subHeadingStyle: {
     fontFamily: 'OpenSans',

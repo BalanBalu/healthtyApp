@@ -277,7 +277,7 @@ class BookAppoinment extends Component {
   noAvailableSlots() {
     return (
       <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-        <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+        <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: primaryColor }}>
           <Text>No Slots Available</Text>
           {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
         </Button>
