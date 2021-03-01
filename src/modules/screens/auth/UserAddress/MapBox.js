@@ -408,7 +408,8 @@ export default class MapBox extends Component {
 
     confirmLocation() {
         if (this.isFromNetworkHospital === true) {
-            const { coordinates, address } = this.state
+            const {  address,center } = this.state
+            const coordinates = [ center[1],center[0]]
             const reqData4NetworkHosp = {
                 coordinates,
                 selectedCityName: address.address_line_1

@@ -67,11 +67,13 @@ class NetworkHospitals extends Component {
                     maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
                 }
             }
+            
             if (this.selectedTpaCode) {
                 reqData4ServiceCall.tpaCode = this.selectedTpaCode
-            }
+             }
             if (this.state.hospitalName) reqData4ServiceCall.hospitalName = this.state.hospitalName;
             const hospitalResp = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
+
             if (hospitalResp.success) {
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...hospitalResp.data];
