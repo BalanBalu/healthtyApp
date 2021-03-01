@@ -199,14 +199,14 @@ class VideoConsultaions extends Component {
 					 <View> 
 				
 
-					<Row style={{ alignItems: 'center', marginBottom: 5, justifyContent: 'center' }}>
+					<Row style={{ alignItems: 'center', marginBottom: 5,marginTop:5 }}>
 				
 								<Text style={{
 								color: STATUS_VALUE_DATA[item.status].color, fontFamily: 'OpenSans',
 								fontSize: 14
-							}}>{"consultation discription :"}</Text>
+							}}>{"consultation description :"}</Text>
 					</Row>
-					<Row style={{ alignItems: 'center', marginBottom: 5, justifyContent: 'center' }}>
+					<Row style={{ alignItems: 'center', marginBottom: 5,}}>
 						<Text style={{
 							color: 'grey', fontFamily: 'OpenSans',
 				fontSize: 14
