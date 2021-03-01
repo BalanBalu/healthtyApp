@@ -240,7 +240,7 @@ console.log("data",this.state.data)
 
     render() {
         const { data, isLoading } = this.state
-
+console.log("data",data)
         return (
             <Container>
                 <Content style={{ padding: 15 }}>
@@ -254,7 +254,8 @@ console.log("data",this.state.data)
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
-                                <Text style={styles.familyHeader}>Employee Detail</Text>
+                                { data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
+                                <Text style={styles.familyHeader}>Employee Detail</Text>:null}
                                 { data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
                                     this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null}
                                 <View style={styles.borderStyle} />

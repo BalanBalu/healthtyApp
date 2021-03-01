@@ -508,7 +508,7 @@ class PolicyCoverage extends React.Component {
                   </Col>
                   <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                     <Text style={styles.subHeadingStyle}>Validity period</Text>
-                    <Text style={[styles.subHeadingData,{textAlign:'right'}]}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-YYYY") +" "+"to"+" " + formatDate(policyDetails.policyEffectiveTo, "DD-YYYY")):'N/A'}</Text>
+                    <Text style={[styles.subHeadingData,{textAlign:'right'}]}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YY") +" "+"to"+" " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YY")):'N/A'}</Text>
                   </Col>
                 </Row>
                 <Row style={{ paddingBottom: 10, marginTop: 10 }}>

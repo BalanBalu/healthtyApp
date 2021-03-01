@@ -128,7 +128,7 @@ class PolicyStatus extends Component {
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.nameText}>{memberDetails.firstName ? (memberDetails.firstName + ' ' + memberDetails.lastName) : '-'}</Text>
                 <Text style={styles.policyText}>Policy No : <Text style={styles.commonText}>{memberDetails.policyNo ? memberDetails.policyNo : '-'}</Text></Text>
-                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD/YYYY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD/YYYY")):'N/A'}</Text></Text>
+                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YY")):'N/A'}</Text></Text>
               </View>
 
             </View>
