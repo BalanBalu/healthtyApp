@@ -11,6 +11,8 @@ import { POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../const
 import { getVideoConsuting, updateVideoConsuting,createEmrByVideoConsultation } from '../../services/video-consulting-service';
 import { formatDate } from '../../../../../setup/helpers';
 import { connect } from 'react-redux';
+import {primaryColor} from '../../../../../setup/config';
+
 export const IS_ANDROID = Platform.OS === 'android';
 class VideoConsultaions extends Component {
 	constructor(props) {
