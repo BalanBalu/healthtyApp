@@ -78,6 +78,13 @@ class MedicineRecords extends PureComponent {
         const { data } = this.state
         return (
             <View style={{ padding: 10 }}>
+                 <View style={{ marginTop: 15,justifyContent:'center',alignItems:'center'  }}>
+                        <TouchableOpacity style={{ backgroundColor: '#128283', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5,justifyContent:'center',alignItems:'center',flexDirection:'row' }} onPress={() => {
+                            this.props.navigation.navigate('UploadEmr', { prevState: this.props.navigation.state })
+                        }}>
+                            <Text style={{ color: '#fff', fontSize: 15 }} >Add New Record</Text>
+                        </TouchableOpacity>
+                </View>
                 <Row style={styles.SearchRow}>
 
                     <Col size={9.1} style={{ justifyContent: 'center', }}>
@@ -100,15 +107,7 @@ class MedicineRecords extends PureComponent {
 
                 </Row>
              
-                <Row style={{ marginTop: 15 }}>
-                    <Right>
-                        <TouchableOpacity style={{ backgroundColor: '#128283', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }} onPress={() => {
-                            this.props.navigation.navigate('UploadEmr', { prevState: this.props.navigation.state })
-                        }}>
-                            <Text style={{ color: '#fff', fontSize: 15 }} >Upload</Text>
-                        </TouchableOpacity>
-                    </Right>
-                </Row>
+               
                 {data.length === 0 ?
                 <View style={{marginTop:200}}>
 
