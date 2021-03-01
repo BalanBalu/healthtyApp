@@ -64,17 +64,17 @@ export const PolicyCoverageCard = props => {
                                     color: '#fff',
                                     fontFamily: 'openSans, sans-serif',
                                     fontSize: 12,
-                                    lineHeight: 24,
+                                     lineHeight: 20,
                                     fontWeight: 'bold'
                                 }}>{data.policyNo ? data.policyNo : '-'}</Text>
                         </View>
                         <View style={{ flexDirection: 'row' }}>
-                            <Text
+                            <Text 
                                 style={{
                                     color: '#fff',
                                     fontFamily: 'openSans, sans-serif',
                                     fontSize: 12,
-                                    lineHeight: 24,
+                                     lineHeight: 20,
 
                                 }}>Valid Upto</Text>
                             <Text
@@ -82,11 +82,41 @@ export const PolicyCoverageCard = props => {
                                     color: '#fff',
                                     fontFamily: 'openSans, sans-serif',
                                     fontSize: 12,
-                                    lineHeight: 24,
+                                     lineHeight: 20,
                                     marginLeft: 5,
-                                    fontWeight: 'bold'
+                                    fontWeight: 'bold',
+                                 
                                 }}>{formatDate(data.policyEffectiveTo, "DD/YYYY")}</Text>
                         </View>
+                        <View style={{ flexDirection: 'row' }}>
+                          
+                          <Text numberOfLines={1}
+                              style={{
+                                  color: 'rgba(255,255,255, 0.9)',
+                                  fontFamily: 'openSans, sans-serif',
+                                  fontSize: 12,
+                                  lineHeight: 24,
+                                  fontWeight: 'bold',
+                                  width:'45%',
+                                  fontStyle:'italic'
+                              }}>{data.insuranceCompany ? data.insuranceCompany : '-'}</Text>
+                      </View>
+                        <View style={{ flexDirection: 'row' }}>
+                          
+                            <Text numberOfLines={1}
+                                style={{
+                                    color: 'rgba(255,255,255, 0.9)',
+                                    fontFamily: 'openSans, sans-serif',
+                                    fontSize: 12,
+                                    lineHeight: 20,
+                                    fontWeight: 'bold',
+                                    width:'45%',
+                                    fontStyle:'italic'
+                                }}>{data.corporateName ? data.corporateName : '-'}</Text>
+                        </View>
+                       
+                        
+                       
                     </View>
 
                     <View style={{ position: 'absolute', top: 0, right: -11.5 }}>
@@ -122,7 +152,7 @@ export const PolicyCoverageCard = props => {
                                     lineHeight: 24,
                                     textAlign: 'center',
                                     marginTop: 15
-                                }}>Rs. {data.sumInsured ? data.sumInsured : 0}</Text>
+                                }}>{data.sumInsured ? data.sumInsured : 0}</Text>
                             <Text
                                 style={{
                                     color: '#000',
@@ -132,7 +162,7 @@ export const PolicyCoverageCard = props => {
                                     textAlign: 'center',
                                     marginTop: -5
 
-                                }}>Total</Text>
+                                }}>SI</Text>
                   </View>
                 )}
               </AnimatedCircularProgress>
@@ -159,7 +189,7 @@ export const PolicyCoverageCard = props => {
                                     marginTop: -5,
                                     fontWeight: '700',
 
-                                }}>Balance sum</Text>
+                                }}>Balance SI</Text>
                         </Col>
                     </Row>
                     </View>
