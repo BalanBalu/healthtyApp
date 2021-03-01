@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, Platform, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, Platform, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Icon, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';

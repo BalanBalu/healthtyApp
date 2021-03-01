@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, ListItem, List, Content, Row, Col, Card, CardItem, Body, Grid, Right, Icon, Left } from 'native-base';
-import { View, FlatList, TouchableOpacity, Image, StyleSheet, Linking, AsyncStorage } from 'react-native';
+import { View, FlatList, TouchableOpacity, Image, StyleSheet, Linking } from 'react-native';
 import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById, getEcardLink,getPolicyDetailsByPolicyNo } from '../../providers/corporate/corporate.actions';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import Spinner from '../../../components/Spinner'

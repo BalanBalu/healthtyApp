@@ -1,8 +1,10 @@
 
 import React, { Component } from 'react';
 import { View, Text, Button, List, Icon, ListItem, DatePicker, Left, Segment, Content, CardItem, Right, Thumbnail, Item, Card, Body, Container, Toast } from "native-base";
-import { StyleSheet, Platform, Image, AsyncStorage, FlatList, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Platform, Image, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import Spinner from '../../../../../components/Spinner';
 import { NavigationEvents } from 'react-navigation';
 import { renderDoctorImage, getName,toastMeassage } from '../../../../common'

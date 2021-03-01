@@ -3,10 +3,12 @@ import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form,
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, searchRecentItemsByPharmacy, getAvailableStockForListOfProducts, getCartListByUserId } from '../../../providers/pharmacy/pharmacy.action'
-import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Image, FlatList, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, getIsAvailable, getselectedCartData } from '../CommomPharmacy';
 import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
 import {primaryColor} from '../../../../setup/config'

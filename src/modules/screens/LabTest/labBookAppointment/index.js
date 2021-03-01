@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Segment, Button, Card, Right, Thumbnail, Icon, Toast, Item, Footer, Spinner, List, ListItem, Left, Body } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import RenderReviews from './RenderReviews'
 // import RenderDescription from './RenderDescription';
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';

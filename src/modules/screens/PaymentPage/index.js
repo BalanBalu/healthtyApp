@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, FooterTab, Card, Footer, Item, Icon, Input, Toast, Form, Right, Left, Radio, CheckBox } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, View, AsyncStorage, TextInput } from 'react-native';
+import { StyleSheet, Image, View,  TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { putService, getService } from '../../../setup/services/httpservices';
-import Razorpay from 'react-native-customui';
+// import Razorpay from 'react-native-customui';
 import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_POINTS,CURRENT_APP_NAME,MY_SMART_HEALTH_CARE } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { getReferalPoints } from '../../providers/profile/profile.action';

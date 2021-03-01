@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Right, Item, Input, Card, Grid, Left, Icon, Thumbnail, Spinner, Footer, Radio, Row, Col, Form, Button, } from 'native-base';
-import { StyleSheet, TextInput, ImageBackground, FlatList, ScrollView, AsyncStorage, TouchableOpacity, YellowBox, Keyboard } from 'react-native'
+import { StyleSheet, TextInput, ImageBackground, FlatList, ScrollView, TouchableOpacity, YellowBox, Keyboard } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     renderDoctorImage, renderProfileImage,getName
 } from '../../common';

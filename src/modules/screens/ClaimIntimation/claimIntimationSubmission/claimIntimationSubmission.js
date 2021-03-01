@@ -4,8 +4,8 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
-  AsyncStorage
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Container,
   Input,

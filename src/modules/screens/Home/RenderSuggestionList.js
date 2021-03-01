@@ -1,6 +1,7 @@
 
 import React, { PureComponent } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, ActivityIndicator, BackHandler, Alert } from 'react-native';
+
+import { View, StyleSheet, Image, TouchableOpacity, FlatList, ActivityIndicator, BackHandler, Alert } from 'react-native';
 import { Item, Text, Icon, Header, Left, Input, Container, Content, Right, Card, Button } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'

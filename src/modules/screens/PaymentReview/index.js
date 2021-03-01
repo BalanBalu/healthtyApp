@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail, Icon, CheckBox, Input, Radio, Footer, FooterTab, } from 'native-base';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, Image, View, TextInput, TouchableOpacity, FlatList, Platform } from 'react-native';
+import { StyleSheet, Image, View, TextInput, TouchableOpacity, FlatList, Platform } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { renderDoctorImage, getDoctorEducation, getAllSpecialist, getUserGenderAndAge, toastMeassage } from '../../common';
 import { SERVICE_TYPES } from '../../../setup/config';
 import {primaryColor} from '../../../setup/config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { fetchUserProfile } from '../../providers/profile/profile.action';

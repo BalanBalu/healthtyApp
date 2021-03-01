@@ -3,7 +3,8 @@ import {
   Container, Content, View, Text, Title, Header, H3, Button, Item, CardItem, Row, Col,
   List, ListItem, Left, Right, Card, Thumbnail, Body, Icon, ScrollView, Grid,Toast
 } from 'native-base';
-import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList, Image, ImageBackground, Share } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, TouchableOpacity, FlatList, Image, ImageBackground, Share } from 'react-native';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import Spinner from "../../../components/Spinner";

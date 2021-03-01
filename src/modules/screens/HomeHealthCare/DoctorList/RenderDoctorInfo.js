@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, Dimensions, ScrollView, Image } from 'react-native';
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount } from '../../../screens/CommonAll/components';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../../common';
 

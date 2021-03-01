@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon, Input } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
+import { TouchableOpacity, View, FlatList, Dimensions, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
 import styles from '../../CommonAll/styles'
 import {primaryColor} from '../../../../setup/config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import {
     SET_DOC_REVIEW_COUNTS_OF_DOCTOR_IDS,

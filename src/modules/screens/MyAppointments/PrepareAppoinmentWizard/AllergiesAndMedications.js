@@ -3,8 +3,10 @@ import {
     Container, Content, Text, View, Badge, Toast, Radio, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
+import { StyleSheet, Image, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
 import Spinner from '../../../../components/Spinner';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
 import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bookappointment.action'

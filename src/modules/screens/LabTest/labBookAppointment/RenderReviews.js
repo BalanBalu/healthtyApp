@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Container, Content, Text, Segment, Button, Card, Right, Thumbnail, Icon, Toast, Item, Footer, Spinner, List, ListItem, Left, Body } from 'native-base'; import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, Image } from 'react-native';
 import styles from '../../CommonAll/styles';
 import StarRating from 'react-native-star-rating';
 

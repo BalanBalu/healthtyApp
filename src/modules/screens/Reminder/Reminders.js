@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, Item, Radio, Icon, Row, Col, Form, Button, Left, Toast } from 'native-base';
-import { StyleSheet, TextInput, AsyncStorage, Image, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, TextInput, Image, Dimensions, TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import CalendarStrip from 'react-native-calendar-strip';
 import { getReminderData, addReminderdata } from '../../providers/reminder/reminder.action.js';
 import { formatDate } from "../../../setup/helpers";

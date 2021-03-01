@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, AsyncStorage, FlatList, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { setI18nConfig } from '../translator.helper';

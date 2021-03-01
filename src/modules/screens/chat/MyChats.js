@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Thumbnail, Row, Col, Toast } from 'native-base';
-import { StyleSheet, FlatList, AsyncStorage, TouchableOpacity, BackHandler } from 'react-native'
+import { StyleSheet, FlatList, TouchableOpacity, BackHandler } from 'react-native'
 import { NavigationEvents } from "react-navigation";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     getAllChats, SET_LAST_MESSAGES_DATA
 } from '../../providers/chat/chat.action';

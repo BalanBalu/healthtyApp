@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, View, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, Row } from 'native-base';
-import { AsyncStorage, ScrollView } from 'react-native';
+import {  ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import styles from './style.js'

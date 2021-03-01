@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { View, Text, Button, List, ListItem, Left, Right, Thumbnail, Item, Card, Body } from "native-base";
-import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView, ActivityIndicator, Modal, TouchableOpacity, TouchableHighlight } from "react-native";
+import { StyleSheet, Image, FlatList, ScrollView, ActivityIndicator, Modal, TouchableOpacity, TouchableHighlight } from "react-native";
 import StarRating from "react-native-star-rating";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import { NavigationEvents } from 'react-navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";

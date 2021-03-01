@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Card, Picker, Radio, Row, Col, Form, Button, Icon, Input, Footer } from 'native-base';
-import { StyleSheet, TextInput, TouchableOpacity, Image, Linking, Platform,AsyncStorage } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, Image, Linking, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import { bloodDonationList,fetchUserProfile } from '../../providers/profile/profile.action';

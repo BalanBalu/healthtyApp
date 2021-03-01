@@ -4,7 +4,9 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { NavigationEvents } from 'react-navigation';
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler, Dimensions, AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, Dimensions } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ZoomImageViewer from '../../elements/ImageViewer/ZoomImageViewer';

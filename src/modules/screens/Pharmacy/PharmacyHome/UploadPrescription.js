@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TextInput, Modal, FlatList, Image, Dimensions, Platform } from 'react-native';
+import { StyleSheet, TextInput, Modal, FlatList, Image, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../../setup/services/httpservices'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import Autocomplete from '../../../../components/Autocomplete'
 import { Loader } from '../../../../components/ContentLoader'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { getUploadPrescription, removePrescriptionImage } from '../../../providers/pharmacy/pharmacy.action'
 const device_width = Dimensions.get("window").width
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { View, Button, Text, Toast, Content, Container, Row, Left, Right, Card, Item } from 'native-base';
 import { connect } from 'react-redux';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';

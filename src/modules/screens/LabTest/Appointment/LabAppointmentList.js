@@ -4,7 +4,9 @@ import {
     Thumbnail, Body, Icon, Toast, View, CardItem
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
 import SegmentedControlTab from "react-native-segmented-control-tab";

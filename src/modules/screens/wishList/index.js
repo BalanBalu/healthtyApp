@@ -3,7 +3,9 @@ import {
     Container, Content, View, Text, Title, Header, H3, Button, Item, Card,
     CardItem, List, ListItem, Left, Right, Thumbnail,
     Body, Icon, ScrollView, Spinner } from 'native-base';
-import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
+import { StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
 import { Loader } from '../../../components/ContentLoader';
 

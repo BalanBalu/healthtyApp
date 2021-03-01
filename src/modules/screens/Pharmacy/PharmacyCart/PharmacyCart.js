@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Loader } from '../../../../components/ContentLoader';
 import { ProductIncrementDecreMent, getMedicineNameByProductName, getMedicineWeightUnit, setCartItemCountOnNavigation, renderMedicineImageByimageUrl, medicineRateAfterOffer ,ProductIncrementDecreMents} from '../CommomPharmacy';
 import { getproductDetailsByPharmacyId } from '../../../providers/pharmacy/pharmacy.action';
