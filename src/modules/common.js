@@ -4,12 +4,27 @@ import { Icon, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
 import { setI18nConfig } from '../setup/translator.helper';
-
+import moment from 'moment';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
-export function truncateByString(source,size){
+
+
+export function truncateByString(source, size) {
     return source.length > size ? source.slice(0, size - 1) + " ...." : source;
+}
+
+
+export function calculateAge(date) {
+    const selectedDate = new Date(date);
+    const currentDate = moment();
+    const dateWithFormate = moment(selectedDate, 'MM-YYYY');
+    const age = moment.duration(currentDate.diff(dateWithFormate));
+    const yearAndMonth = {
+        years: age.years(),
+        months: age.months(),
+    }
+    return yearAndMonth || null
 }
 
 export function getNetworkHospitalAddress(address) {
@@ -20,10 +35,10 @@ export function getNetworkHospitalAddress(address) {
 
 export function getFullName(data) {
     let name = 'unKnown'
-    if (data &&Object.keys(data).length) {
-name=`${data.first_name?data.first_name+' ':''}${data.middle_name?data.middle_name+' ':''}${data.last_name?data.last_name:''}`;
-name=name?name:'unKnown';
-}
+    if (data && Object.keys(data).length) {
+        name = `${data.first_name ? data.first_name + ' ' : ''}${data.middle_name ? data.middle_name + ' ' : ''}${data.last_name ? data.last_name : ''}`;
+        name = name ? name : 'unKnown';
+    }
     return name
 }
 
@@ -213,7 +228,7 @@ export class Badge extends Component {
 }
 
 export function getGender(data) {
-   
+
     let genderAndAge = '';
     if (data) {
         if (data.gender) {
@@ -568,7 +583,7 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
-   
+
     if (!!gpsLocation && !!pharmacyLocation) {
         let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 
@@ -603,7 +618,7 @@ export function getDoctorNameOrHospitalName(data) {
 }
 
 export function RenderDocumentUpload(data) {
-   
+
     let source = null;
     if (data.type === 'image / jpg') {
         source = require('../../assets/images/Image.png')

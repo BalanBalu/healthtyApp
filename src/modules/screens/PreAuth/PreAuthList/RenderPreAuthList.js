@@ -16,7 +16,7 @@ export default class RenderNetworkHospitalInfo extends Component {
       <View>
         <Card style={{padding: 10, borderRadius: 5, marginTop: 10}}>
           <Row>
-            <Col size={8}>
+            <Col size={7}>
               <Text
                 style={{
                   fontFamily: 'OpenSans',
@@ -28,7 +28,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                 {item.tpaCompany ? item.tpaCompany : 'UnKnown'}
               </Text>
             </Col>
-            <Col size={2}>
+            <Col size={3}>
               <TouchableOpacity
                 style={{
                   backgroundColor: '#FECE83',

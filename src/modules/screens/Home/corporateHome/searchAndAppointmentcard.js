@@ -88,8 +88,8 @@ export const SearchAndAppointmentCard = props => {
           </View>
         </TouchableHighlight>
       </View>
-      <View style={[styles.flexRow, {marginTop: 15}]}>
-      
+      <View style={{  marginLeft:8, justifyContent: 'space-around', marginVertical: 1,marginTop: 15}}>
+{/*       
         <TouchableHighlight
           style={styles.rectBox}
           activeOpacity={0.6}
@@ -108,7 +108,7 @@ export const SearchAndAppointmentCard = props => {
               <Text style={styles.boxText}>Chat Consult</Text>
             </View>
           </View>
-        </TouchableHighlight>
+        </TouchableHighlight> */}
         <TouchableHighlight
           style={styles.rectBox}
           activeOpacity={0.6}
@@ -122,7 +122,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               <VideoConsultDrawing />
 
-              <Text style={styles.boxText}>Video Consult</Text>
+              <Text style={styles.boxText}>Tele Consult</Text>
             </View>
           </View>
         </TouchableHighlight>

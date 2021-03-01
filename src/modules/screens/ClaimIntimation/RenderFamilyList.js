@@ -32,7 +32,7 @@ item.full_name=this.getCorporateLoginName(item)
                 </Row>
                 <Row style={{ marginTop: 10 }}>
                     <Col size={0.5}></Col>
-                    <Col size={5}>
+                    <Col size={4}>
                         <Row>
                             <Col size={4}>
                                 <Text style={styles.commonText}>Gender</Text>
@@ -45,16 +45,16 @@ item.full_name=this.getCorporateLoginName(item)
                             </Col>
                         </Row>
                     </Col>
-                    <Col size={5}>
+                    <Col size={5.5}>
                         {item.mobile ?
                             <Row>
-                                <Col size={4}>
+                                <Col size={3}>
                                     <Text style={styles.commonText}>Mobile</Text>
                                 </Col>
                                 <Col size={1}>
                                 <Text style={[styles.commonText,{marginLeft:5}]}>-</Text>
                                 </Col>
-                                <Col size={5} style={{ alignItems: 'flex-end' }}>
+                                <Col size={6} style={{ alignItems: 'flex-end' }}>
                                     <Text style={[styles.commonText, { color: '#909498' }]}>{item.mobile}</Text>
                                 </Col>
                             </Row>
