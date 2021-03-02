@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Container, Content, Text, Toast, Button, ListItem, Card, Thumbnail, List, Item, Input, Left, Right, Icon, CardItem } from 'native-base';
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Modal } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, FlatList, ImageBackground, Alert, Modal } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import StarRating from 'react-native-star-rating';
 import styles from '../Styles'
 import { NavigationEvents } from 'react-navigation';

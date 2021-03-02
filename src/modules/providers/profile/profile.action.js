@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export const PROFILE_REQUEST = 'PROFILE/PROFILE_REQUEST'
 export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'

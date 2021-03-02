@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Text, Item, Card, Left, Right, Content, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, ActivityIndicator } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { getMemberDetailsByEmail, getClaimsDataByPayerCode } from '../../providers/corporate/corporate.actions'; ''
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';

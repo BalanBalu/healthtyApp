@@ -4,7 +4,9 @@ import {
   Thumbnail, Body, Icon, Toast, View, CardItem
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TouchableOpacity, Modal, FlatList } from 'react-native';
+import { StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import {primaryColor} from '../../../setup/config'

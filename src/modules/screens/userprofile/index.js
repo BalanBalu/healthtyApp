@@ -38,11 +38,13 @@ import {dateDiff} from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   StyleSheet,
-  AsyncStorage,
+
   TouchableOpacity,
   FlatList,
   Modal,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // import Modal from "react-native-modal";
 import {NavigationEvents} from 'react-navigation';
 import {Loader} from '../../../components/ContentLoader';

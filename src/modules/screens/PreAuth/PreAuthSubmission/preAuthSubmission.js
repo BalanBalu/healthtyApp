@@ -1337,7 +1337,7 @@ class PreAuth extends React.PureComponent {
 const styles = StyleSheet.create({
   body: {
     backgroundColor: '#fff',
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
     display: 'flex',
   },
   buttonStyle: {
@@ -1363,7 +1363,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     color: '#3E4459',
     lineHeight: 26,
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
     marginRight: 20,
     marginTop: 20,
   },
@@ -1372,7 +1372,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     lineHeight: 30,
     fontSize: 17,
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
     paddingLeft: 20,
     paddingRight: 20,
     marginTop: 20,
@@ -1395,7 +1395,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'rgba(0,0,0,0.65)',
     marginTop: 18,
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
   },
   /* Hospital Details End */
 });

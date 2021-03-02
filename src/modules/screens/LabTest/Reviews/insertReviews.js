@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Image, Dimensions, Modal, TouchableOpacity, TextInput } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,

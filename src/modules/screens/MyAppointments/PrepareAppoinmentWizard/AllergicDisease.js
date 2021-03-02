@@ -2,8 +2,10 @@ import React, { PureComponent } from 'react';
 import {
     Container, Content, Text, View, Badge, Toast, Radio, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
+import { StyleSheet, Image, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
 import Spinner from '../../../../components/Spinner';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 import { allergic, } from './constants';
 import { connect } from 'react-redux';

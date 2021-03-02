@@ -16,10 +16,10 @@ import {
 import {userFiledsUpdate} from '../../providers/auth/auth.actions';
 import {connect} from 'react-redux';
 import {Row, Col} from 'react-native-easy-grid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   Image,
-  AsyncStorage,
   ScrollView,
   FlatList,
   TouchableOpacity,

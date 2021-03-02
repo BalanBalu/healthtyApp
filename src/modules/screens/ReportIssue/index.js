@@ -1,8 +1,10 @@
 
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Radio, Row, Col, Form, Button, Toast, Footer } from 'native-base';
-import { StyleSheet, TextInput, AsyncStorage } from 'react-native'
+import { StyleSheet, TextInput } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import Spinner from "../../../components/Spinner";
 import { getCurrentVersion } from '../../providers/profile/profile.action';
 import { onlySpaceNotAllowed, chatIssue, pharmacyIssue } from '../../common';

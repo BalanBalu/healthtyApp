@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, Toast, Form, Right, Left, Grid, Row, Col } from 'native-base';
-import { StyleSheet, Image, View, AsyncStorage, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, View, TextInput, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { getPromodataList,getPromodataListByFilter } from '../../providers/PromoCode/promo.action'
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate } from "../../../setup/helpers";

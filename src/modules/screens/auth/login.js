@@ -4,7 +4,8 @@ import {
   Grid, Toast, KeyboardAvoidingView, Icon, Row, Card, Label, Left, Col, Radio
 } from 'native-base';
 import { connect } from 'react-redux'
-import { Image, TouchableOpacity, View, ScrollView, AsyncStorage, ImageBackground } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Image, TouchableOpacity, View, ScrollView, ImageBackground } from 'react-native';
 import { login, RESET_REDIRECT_NOTICE,SmartHealthlogin } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
@@ -12,7 +13,6 @@ import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/pro
 import { acceptNumbersOnly } from '../../screens/../common';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
 import Spinner from '../../../components/Spinner';
-import Razorpay from 'react-native-customui';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from "../../../setup/config";
 import {primaryColor} from '../../../setup/config'

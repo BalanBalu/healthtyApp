@@ -1,7 +1,8 @@
 
 import React, { Component } from 'react';
-import { View, StyleSheet, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, PermissionsAndroid, TouchableOpacity } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Row } from 'react-native-easy-grid';
 import { IS_ANDROID, validateFirstNameLastName, acceptNumbersOnly } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';

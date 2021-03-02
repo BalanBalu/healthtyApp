@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, CardItem, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import StarRating from 'react-native-star-rating';
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image, TextInput, Platform } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, Dimensions, ScrollView, Image, TextInput, Platform } from 'react-native';
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import styles from './styles';
 import { formatDate } from "../../../setup/helpers";

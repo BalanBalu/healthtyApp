@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { FlatList, StyleSheet,AsyncStorage } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Container, Content, Text, Left, Right, View, Card, } from 'native-base';
 import { Col, Row, } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

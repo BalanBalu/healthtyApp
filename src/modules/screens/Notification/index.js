@@ -1,12 +1,14 @@
 import React, {Component, PureComponent} from 'react';
 import {
   StyleSheet,
-  AsyncStorage,
+
   FlatList,
   TouchableOpacity,
   ScrollView,
   YellowBox,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // import { ScrollView } from 'react-native-gesture-handler';
 import {NavigationEvents} from 'react-navigation';
 import {

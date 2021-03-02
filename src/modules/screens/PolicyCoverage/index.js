@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Container, Content,Text, View, Card, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

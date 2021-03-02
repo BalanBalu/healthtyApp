@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Toast, Text, Item } from 'native-base';
-import { TouchableOpacity, View, FlatList, AsyncStorage, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfGetPreAuthList } from '../../../providers/corporate/corporate.actions'
 import RenderPreAuthList from './RenderPreAuthList';

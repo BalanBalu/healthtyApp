@@ -17,7 +17,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import {primaryColor} from '../../../setup/config'
 
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, TouchableOpacity, View, FlatList, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../setup/helpers';
 import {

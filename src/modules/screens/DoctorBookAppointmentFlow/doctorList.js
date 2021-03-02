@@ -19,13 +19,13 @@ import {
   TouchableOpacity,
   View,
   FlatList,
-  AsyncStorage,
   Dimensions,
   ScrollView,
   Image,
   ActivityIndicator,
   Platform,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../CommonAll/styles';
 import {
