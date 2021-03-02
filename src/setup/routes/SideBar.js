@@ -1,21 +1,26 @@
 import React from "react";
 import { AppRegistry, Image, StatusBar, TouchableOpacity, FlatList, AsyncStorage } from "react-native";
-import { Container, Content, Text, List, ListItem, View, Row, Col, Footer, FooterTab, Icon, Button, Body } from "native-base";
+import { Container, Content, Text, List, ListItem, View, Row, Col, Right, Footer, FooterTab, Icon, Button, Body } from "native-base";
 import { DragwerLogos } from './appRouterHome';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import FastImage from 'react-native-fast-image'
-import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE, IS_ANDROID, CURRENT_APP_NAME,MY_SMART_HEALTH_CARE } from '../config'
+import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE, IS_ANDROID, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../config'
 import { translate } from "../../setup/translator.helper"
 import { corporateUserSideBarMenuList } from "./appRouterHome";
-import {primaryColor, secondaryColor, secondaryColorTouch} from '../../setup/config';
-import {getFullName} from '../../modules/common';
+import { primaryColor, secondaryColor, secondaryColorTouch } from '../../setup/config';
+import { getFullName } from '../../modules/common';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 class SideBar extends React.Component {
   activeUserData = {};
   constructor(props) {
     super(props)
     this.state = {
       hasLoggedIn: false,
-      is_corporate_user: false
+      is_corporate_user: false,
+      showAppointments: null,
+      colorChange: false,
+      colorChanges: false,
+      selectedIndex: -1,
     };
     this.arrayData = []
 
@@ -63,6 +68,35 @@ class SideBar extends React.Component {
     const basicData = JSON.parse(basicProfileData);
     this.activeUserData = basicData;
   }
+  openAppointmentData(value) {
+    if (value === true) {
+      this.setState({
+        showAppointments: false,
+        colorChange: true
+      });
+    }
+    else {
+      this.setState({
+        showAppointments: true,
+        colorChange: true
+      });
+    }
+  }
+  subItemPress(item, index) {
+    if (this.state.selectedIndex === index) {
+      this.setState({ selectedIndex: -1 })
+    } else {
+      this.setState({ selectedIndex: index })
+    }
+    if (item.routeName.length === 0) {
+      this.openAppointmentData(this.state.showAppointments)
+    }
+    if (item.params) {
+      this.props.navigation.navigate(item.routeName, { ...item.params })
+    } else {
+      this.props.navigation.navigate(item.routeName)
+    }
+  }
 
   render() {
 
@@ -72,7 +106,7 @@ class SideBar extends React.Component {
     return (
       <Container>
 
-        <Content>
+        <Content style={{ backgroundColor: '#DCEAE9' }}>
           <View style={{ height: 120, backgroundColor: '#128283', }}>
 
             <FastImage square source={require('../../../assets/images/Logo.png')} style={{ flex: 1, width: undefined, height: undefined, opacity: 0.1, transform: [{ rotate: '-2deg' }] }} />
@@ -90,9 +124,7 @@ class SideBar extends React.Component {
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')} style={{ paddingRight: 10, paddingTop: 2, width: '100%' }}>
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#fff' }}>{translate("View Profile")}</Text>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={()=> this.props.navigation.navigate('Ecard')} style={{paddingRight:10,paddingTop:2,paddingBottom:5 ,width:'100%'}}>
-                    <Text style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>{translate("View E-Card")}</Text>
-                    </TouchableOpacity> */}
+
 
 
                   </View>
@@ -110,55 +142,84 @@ class SideBar extends React.Component {
           </View>
 
           <FlatList
-            data={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE  ? corporateUserSideBarMenuList:menuSubMenus }
+            data={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? corporateUserSideBarMenuList : menuSubMenus}
             keyExtractor={(item, index) => index.toString()}
             ItemSeparatorComponent={() =>
               <View
                 style={{
-                  borderBottomColor: 'transparent',
-                  borderWidth: 0.5,
+
+                  backgroundColor: '#DCEAE9'
                 }}
               />
             }
-            renderItem={({ item }) =>
+            renderItem={({ item, index }) =>
               item.menuForCorporateUser === true && is_corporate_user === false ? null :
                 <View>
 
-                  <ListItem
-                    onPress={() => item.routeName ? this.props.navigation.navigate(item.routeName) : null}
-                    itemDivider style={{ backgroundColor: '#e6e1ed' }}>
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, justifyContent: 'center', fontWeight: '600' }}>{translate(item.menuName)}</Text>
-                  </ListItem>
+
 
                   <FlatList
                     data={item.subMenus}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) =>
-                      <ListItem style={{ borderBottomWidth: 0, backgroundColor: '#FFF' }}
-                        small
-                        onPress={() => {
-                          if (item.params) {
-                            this.props.navigation.navigate(item.routeName, { ...item.params })
-                          } else {
-                            this.props.navigation.navigate(item.routeName)
+                    renderItem={({ item, index }) =>
+                      <View>
+                        <Row style={this.state.selectedIndex === index && item.routeName.length === 0 ? { borderBottomWidth: 0, backgroundColor: '#fff', borderBottomWidth: 0, paddingHorizontal: 10, paddingVertical: 6, } : { borderBottomWidth: 0, backgroundColor: '#DCEAE9', borderBottomWidth: 0, paddingHorizontal: 10, paddingVertical: 6, }}
+                          small
+                          onPress={() => {
+                            this.subItemPress(item, index)
                           }
+                          }>
+
+
+                          <Image square source={item.icon}
+                            style={item.largeIcon}
+                          />
+                          {item.name === "Appointments" && item.routeName.length === 0 ?
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 16 }}>{translate(item.name)}</Text> :
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{translate(item.name)}</Text>}
+
+                          {item.name === "Appointments" && item.routeName.length === 0 ?
+                            <Right>
+                              <TouchableOpacity onPress={() => this.setState({ showAppointments: !this.state.showAppointments })}>
+                                <MaterialIcons name={this.state.selectedIndex === index ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 20 }} />
+                              </TouchableOpacity>
+                            </Right> : null}
+                        </Row>
+                        {item.name === "Appointments" ?
+                          <View>
+
+                            {this.state.showAppointments && item.routeName.length === 0 &&
+                              <FlatList
+                                data={item.appoinmentSubMenus}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item }) =>
+                                  <ListItem style={{ borderBottomWidth: 0, backgroundColor: '#DCEAE9', paddingLeft: 25 }}
+                                    small
+                                    onPress={() => {
+                                      if (item.params) {
+                                        this.props.navigation.navigate(item.routeName, { ...item.params })
+                                      } else {
+                                        this.props.navigation.navigate(item.routeName)
+                                      }
+                                    }
+                                    }>
+                                    <Image square source={item.icon}
+                                      style={item.largeIcon}
+                                    />
+                                    <Body style={{ borderBottomWidth: 0, }}>
+                                      <Text style={{ fontFamily: 'OpenSans', fontSize: 13 }}>{translate(item.name)}</Text>
+                                    </Body>
+                                  </ListItem>
+                                } />
+                            }
+                          </View>
+                          :
+                          null
                         }
-                        }>
-                          
-                       
-                        <Image square source={item.icon}
-                          style={item.largeIcon}
-                        />
-                        <Body style={{ borderBottomWidth: 0, }}>
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{translate(item.name)}</Text>
-                        </Body>
-                      </ListItem>
+                      </View>
                     } />
                 </View>
             } />
-
-
-
 
           <View style={{ marginTop: 10, marginLeft: 2 }}>
             <ListItem avatar style={{ marginTop: -15 }}>
