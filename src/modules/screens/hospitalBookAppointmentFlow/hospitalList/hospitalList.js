@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content, Card, Item, Input, Thumbnail, Toast } from 'native-base';
 import { Row, Col, Grid } from 'react-native-easy-grid';
-import { StyleSheet, View, TouchableOpacity, FlatList, ActivityIndicator, Image, AsyncStorage, TextInput, Alert } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, FlatList, ActivityIndicator, Image, TextInput, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { connect } from 'react-redux'
 import { serviceOfSearchByHospitalDetails, serviceOfGetFavoriteListCount4PatientService, addFavoritesToHospitalByUserService, serviceOfGetHospitalFavoriteListCount4Pat, SET_HOSPITAL_FAVORITE_COUNTS_OF_HOSPITAL_ADMIN_IDS, validateAppointment } from '../../../providers/hospitalBookAppointmentFlow/action'
 import { MAX_DISTANCE_TO_COVER_HOSPITALS } from '../../../../setup/config'

@@ -32,7 +32,7 @@ export async function getCorporateEmployeeDetailsById(empCode) {
     console.log(`empCode`, empCode);
     let endPoint = 'member-detail/member-family-member?emp_code=' + empCode
     let response = await smartHealthGetService(endPoint);
-    console.log(`response`, response);
+    // console.log(`response`, response);
 
     return response.data;
   } catch (e) {
@@ -142,7 +142,7 @@ export async function serviceOfGetPreAuthList(policyNo,empCode,page,limit) {
 export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit) {
   try {
     let endPoint = 'claim-data?payerCode=' + payer_code + '&policyno=' + policy_no + '&p=' + page + '&l=' + limit;
-    console.log(`endPoint`, endPoint);
+    // console.log(`endPoint`, endPoint);
     
     let response = await smartHealthGetService(endPoint);
     return response.data;

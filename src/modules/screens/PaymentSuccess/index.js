@@ -4,8 +4,10 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
 import { formatDate } from '../../../setup/helpers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { ScrollView } from 'react-native-gesture-handler';
 import { RenderHospitalAddress, renderDoctorImage, getDoctorSpecialist, getDoctorEducation } from '../../common'
 

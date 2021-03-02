@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Form, CheckBox, Picker, Item, List, ListItem, Left, Thumbnail, Icon, Right } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, ScrollView, Image, Modal, Dimensions } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, TouchableOpacity, View, FlatList, ScrollView, Image, Modal, Dimensions } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabProfileImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
 import { enumerateStartToEndDates } from '../../CommonAll/functions'

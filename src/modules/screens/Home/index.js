@@ -3,7 +3,8 @@ import { Container, Content, Text, Toast, Button, Card, Input, Left, Right, Icon
 import { logout } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, Image, View, TouchableOpacity, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 import { getReferalPoints, getCurrentVersion, fetchUserProfile, SET_CORPORATE_DATA } from '../../providers/profile/profile.action';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE, CURRENT_APP_NAME, ANDROID_BUNDLE_IDENTIFIER } from '../../../setup/config';

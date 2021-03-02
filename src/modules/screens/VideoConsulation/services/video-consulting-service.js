@@ -4,7 +4,8 @@ import { SET_USER_LOOGED_IN_CONNECTYCUBE } from '../../../providers/chat/chat.ac
 import { store } from '../../../../setup/store';
 import { AuthService } from './index';
 export const SET_LAST_MESSAGES_DATA = 'CHAT/LAST_MESSAGES_DATA';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export const fetchAvailableDoctors4Video = async (docIds) => {
     try {
         

@@ -1,5 +1,7 @@
 
 import {  StyleSheet } from 'react-native';
+import {primaryColor} from '../../../setup/config'
+
 
 export default  styles = StyleSheet.create({
   
@@ -16,7 +18,7 @@ export default  styles = StyleSheet.create({
 
     },
     touchStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
         borderRadius: 3,
         paddingLeft: 30,
         paddingRight: 30,
@@ -56,7 +58,7 @@ export default  styles = StyleSheet.create({
     relationShipText: {
         fontSize: 12,
         fontFamily: 'OpenSans',
-        color: '#7F49C3'
+        color: primaryColor
     },
     ageText: {
         fontSize: 14,
@@ -73,7 +75,7 @@ export default  styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 5,
         borderRadius:5,
-        backgroundColor:'#7F49C3',
+        backgroundColor:primaryColor,
         paddingHorizontal:10,
         paddingVertical:5
     },
@@ -97,7 +99,7 @@ export default  styles = StyleSheet.create({
       appButtonContainer: {
         elevation: 8,
         width: 150,
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
         borderRadius: 30,
         paddingVertical: 10,
         paddingHorizontal: 12,
@@ -145,7 +147,7 @@ export default  styles = StyleSheet.create({
     marginLeft: 40,
     color: '#3E4459',
     lineHeight: 26,
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
     marginRight: 40,
     marginTop: 20,
   },

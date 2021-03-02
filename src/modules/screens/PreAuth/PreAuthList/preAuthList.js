@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Toast, Text, Item } from 'native-base';
-import { TouchableOpacity, View, FlatList, AsyncStorage, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfGetPreAuthList } from '../../../providers/corporate/corporate.actions'
 import RenderPreAuthList from './RenderPreAuthList';
 import { Loader } from '../../../../components/ContentLoader';
+import {primaryColor} from '../../../../setup/config'
+
 
 const PAGINATION_COUNT_FOR_GET_PRE_AUTH_LIST = 10;
 
@@ -97,10 +101,10 @@ export default class preAuthList extends Component {
     const { preAuthInfoList, isLoading, isLoadingMoreHospitalList } = this.state
     return (
       <Container>
-        <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 15 }}>
-          <TouchableOpacity style={{ flexDirection: 'row', borderColor: '#7F49C3', borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('FamilyInfoList', { navigationPage: 'PreAuthSubmission' })}>
-            <MaterialIcons name="add" style={{ color: '#7F49C3', fontSize: 20 }} />
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#7F49C3' }}>Add Pre Auth</Text>
+        <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 15, marginRight: '3%' }}>
+          <TouchableOpacity style={{ flexDirection: 'row', borderColor: primaryColor, borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('FamilyInfoList', { navigationPage: 'PreAuthSubmission' })}>
+            <MaterialIcons name="add" style={{ color: primaryColor, fontSize: 20 }} />
+            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: primaryColor }}>Add Pre Auth</Text>
           </TouchableOpacity>
         </View>
         {isLoading ?

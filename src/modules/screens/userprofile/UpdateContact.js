@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, CheckBox, Row, Col, Left, Right, Picker, Body, Icon, Card, Input, Toast, View } from 'native-base';
 import { updatePrimaryContact } from '../../providers/auth/auth.actions';
-import { AsyncStorage, ScrollView } from 'react-native';
+import {  ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';

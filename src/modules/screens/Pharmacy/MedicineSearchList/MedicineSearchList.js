@@ -4,13 +4,15 @@ import {
     Input, Left, Right, Icon, Footer, Badge, Form, CardItem, Toast
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, FlatList, TouchableHighlight, Modal } from 'react-native';
 import Spinner from "../../../../components/Spinner";
 import { NavigationEvents } from 'react-navigation';
 import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage, getIsAvailable, getselectedCartData } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 class MedicineSearchList extends Component {
     constructor(props) {

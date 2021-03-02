@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab, Form } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, FlatList, Image, Dimensions, Platform, TextInput } from 'react-native';
+import { StyleSheet, FlatList, Image, Dimensions, Platform, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Loader } from '../../../components/ContentLoader'
 import { ImageUpload } from '../../screens/commonScreen/imageUpload'

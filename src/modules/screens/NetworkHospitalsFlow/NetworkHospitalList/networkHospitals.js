@@ -11,6 +11,8 @@ import Styles from '../styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { NavigationEvents } from 'react-navigation';
+import {primaryColor} from '../../../../setup/config'
+
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
@@ -65,11 +67,13 @@ class NetworkHospitals extends Component {
                     maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
                 }
             }
+            
             if (this.selectedTpaCode) {
                 reqData4ServiceCall.tpaCode = this.selectedTpaCode
-            }
+             }
             if (this.state.hospitalName) reqData4ServiceCall.hospitalName = this.state.hospitalName;
             const hospitalResp = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
+
             if (hospitalResp.success) {
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...hospitalResp.data];
@@ -236,7 +240,7 @@ class NetworkHospitals extends Component {
                     <Row style={{ padding: 5, height: 40,marginHorizontal:15,marginVertical:5,backgroundColor:'#EFEFF0',borderRadius:5 }}>
                         <Col size={1} style={{justifyContent:'center'}}>
                           
-                                    <MaterialIcons color={'#7F49C3'} name="my-location" style={{ fontSize: 20 }}></MaterialIcons>
+                                    <MaterialIcons color={primaryColor} name="my-location" style={{ fontSize: 20 }}></MaterialIcons>
                          
                       
                         </Col>

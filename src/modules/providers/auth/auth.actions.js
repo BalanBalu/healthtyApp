@@ -1,5 +1,5 @@
 import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService } from '../../../setup/services/httpservices';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
 export const LOGIN_RESPONSE = 'AUTH/LOGIN_RESPONSE'

@@ -1,5 +1,5 @@
 import { postService, getService } from '../../../setup/services/httpservices';
-import { AsyncStorage } from 'react-native';
+
 import { store } from '../../../setup/store';
 import axios from 'axios';
 export const CATAGRIES_REQUEST = 'CATAGRIES/CATAGRIES_REQUEST'

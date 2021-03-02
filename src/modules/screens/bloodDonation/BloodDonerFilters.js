@@ -433,7 +433,7 @@ class BloodDonerFilters extends Component {
               <Text style={styles.textHead}>{translate("Categories")}</Text>
             </ListItem>
 
-            <ListItem style={selectedOne === 'BLOODGROUP' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
+            <ListItem style={selectedOne === 'BLOODGROUP' ? { backgroundColor: primaryColor, paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('BLOODGROUP')} style={{ flexDirection: 'row' }}>
                 <Left>
                   <Text style={selectedOne === 'BLOODGROUP' ? { fontFamily: 'OpenSans', fontSize: 12, color:'#fff'}:{fontFamily: 'OpenSans', fontSize: 12,}}>{translate("Blood Group")} </Text>
@@ -444,7 +444,7 @@ class BloodDonerFilters extends Component {
                 </Right>
               </TouchableOpacity>
             </ListItem>
-            <ListItem style={selectedOne === 'COUNTRY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
+            <ListItem style={selectedOne === 'COUNTRY' ? { backgroundColor: primaryColor, paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('COUNTRY')} style={{ flexDirection: 'row' }}>
                 <Left>
                   <Text style={selectedOne === 'COUNTRY' ? { fontFamily: 'OpenSans', fontSize: 12,color:'#fff' }: { fontFamily: 'OpenSans', fontSize: 12 }}>{translate("Country")}</Text>
@@ -454,7 +454,7 @@ class BloodDonerFilters extends Component {
                 </Right>
               </TouchableOpacity>
             </ListItem>
-            <ListItem style={selectedOne === 'STATE' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
+            <ListItem style={selectedOne === 'STATE' ? { backgroundColor: primaryColor, paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('STATE')} style={{ flexDirection: 'row' }}>
                 <Left>
                   <Text style={selectedOne === 'STATE' ?{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff'}:{fontFamily: 'OpenSans', fontSize: 12}}>{translate("State")}</Text>
@@ -464,7 +464,7 @@ class BloodDonerFilters extends Component {
                 </Right>
               </TouchableOpacity>
             </ListItem>
-            <ListItem style={selectedOne === 'DISTRICT' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
+            <ListItem style={selectedOne === 'DISTRICT' ? { backgroundColor: primaryColor, paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('DISTRICT')} style={{ flexDirection: 'row' }}>
                 <Left>
                   <Text style={selectedOne === 'DISTRICT' ?{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff' }:{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("District")}</Text>
@@ -474,7 +474,7 @@ class BloodDonerFilters extends Component {
                 </Right>
               </TouchableOpacity>
             </ListItem>
-            <ListItem style={selectedOne === 'CITY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
+            <ListItem style={selectedOne === 'CITY' ? { backgroundColor: primaryColor, paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('CITY')} style={{ flexDirection: 'row' }}>
                 <Left>
                   <Text style={selectedOne === 'CITY' ?{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff' }:{ fontFamily: 'OpenSans', fontSize: 12, }}>{translate("City")}</Text>

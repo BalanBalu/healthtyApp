@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Input, Thumbnail, Icon, Radio, Row, Col, Form, Button, Toast, CardItem } from 'native-base';
-import { StyleSheet, TextInput, AsyncStorage, TouchableOpacity, Modal } from 'react-native'
+import { StyleSheet, TextInput, TouchableOpacity, Modal } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
 import {
     renderDoctorImage,
@@ -532,7 +534,7 @@ class AvailableDoctors4Video extends Component {
                     </Row>
                     {item.availableForVideo === true && item.hasCurrentlyAvailable === false ?
                         <Row style={{ marginTop: 5, width: '100%' }}>
-                            <Button disabled style={{ height: 30, borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+                            <Button disabled style={{ height: 30, borderRadius: 10, backgroundColor: primaryColor }}>
                                 <Icon name="ios-videocam" style={{ color: '#FFFFFF', fontSize: 15 }} />
                                 <Text style={{ marginLeft: -20, fontSize: 10 }}>next Available on {this.getNextAvailabiltyData(item)}</Text>
                                 {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}

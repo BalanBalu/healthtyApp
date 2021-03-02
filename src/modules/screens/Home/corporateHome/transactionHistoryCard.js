@@ -78,7 +78,7 @@ export const TransactionHistoryCard = (props) => {
           </View>
         </TouchableHighlight>
       </View>
-      <View style={[styles.flexRow, {marginVertical: 15}]}>
+      <View style={[styles.flexRow, {marginVertical: 15,marginRight: 110}]}>
         <TouchableHighlight  activeOpacity={0.6}
             underlayColor={secondaryColorTouch} style={styles.rectBox} onPress={() => navigation('My Home Healthcare Appointments')}>
           <View >
@@ -92,11 +92,11 @@ export const TransactionHistoryCard = (props) => {
 
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{height:23,width:23,position:'absolute',top:35.5,right:11}} />
 
-              <Text style={[styles.boxText,{marginTop:-3}]}>Home Test</Text>
+              <Text style={[styles.boxText,{marginTop:-3}]}>Home Care</Text>
             </View>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight  activeOpacity={0.6}
+        {/* <TouchableHighlight  activeOpacity={0.6}
             underlayColor={secondaryColorTouch} style={styles.rectBox} onPress={() => navigation('My Chats')}>
         <View >
           <View
@@ -110,9 +110,9 @@ export const TransactionHistoryCard = (props) => {
             <Text style={styles.boxText}>Chat Consult</Text>
           </View>
         </View>
-        </TouchableHighlight>
+        </TouchableHighlight> */}
         <TouchableHighlight  activeOpacity={0.6}
-            underlayColor={secondaryColorTouch} style={styles.rectBox} onPress={() => navigation('Video and Chat Service')}>
+            underlayColor={secondaryColorTouch} style={styles.rectBox} onPress={() => navigation('My Video Consultations')}>
           <View >
             <View
               style={{
@@ -122,7 +122,7 @@ export const TransactionHistoryCard = (props) => {
               <VideoConsultDrawing />
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{height:23,width:23,position:'absolute',top:31,right:15}} />
 
-              <Text style={styles.boxText}>Video Consult</Text>
+              <Text style={styles.boxText}>Tele Consult</Text>
             </View>
           </View>
         </TouchableHighlight>

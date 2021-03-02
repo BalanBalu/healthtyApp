@@ -6,7 +6,9 @@ import { store } from './store'
 import { StyleProvider, Root, Toast } from 'native-base';
 import getTheme from '../theme/components';
 import material from '../theme/variables/material';
-import { AsyncStorage, Alert, YellowBox, I18nManager, Text } from 'react-native';
+import {  Alert, YellowBox, I18nManager, Text } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { FIREBASE_SENDER_ID, CHAT_API_URL } from './config'
 import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notification/notification.actions';
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';

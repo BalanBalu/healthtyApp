@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Image, FlatList, AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { View, TouchableOpacity, Text, StyleSheet, Image, FlatList } from 'react-native';
 import { CorporateProfileCard } from './profileCard'
 import { ProfileFamilyCard } from './profilefamilyCard'
 import { SearchAndAppointmentCard } from './searchAndAppointmentcard'

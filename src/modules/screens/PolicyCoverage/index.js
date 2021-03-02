@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Container, Content,Text, View, Card, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -8,6 +10,8 @@ import ProgressBar from 'react-native-horizontal-progress-bar'
 import { getMemberDetailsByEmail } from '../../providers/corporate/corporate.actions'; ''
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
+import {primaryColor} from '../../../setup/config';
+
 
 class PolicyCoverage extends React.Component {
   constructor(props) {
@@ -506,7 +510,7 @@ class PolicyCoverage extends React.Component {
                   </Col>
                   <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                     <Text style={styles.subHeadingStyle}>Validity period</Text>
-                    <Text style={[styles.subHeadingData,{textAlign:'right'}]}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-YYYY") +" "+"to"+" " + formatDate(policyDetails.policyEffectiveTo, "DD-YYYY")):'N/A'}</Text>
+                    <Text style={[styles.subHeadingData,{textAlign:'right'}]}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YY") +" "+"to"+" " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YY")):'N/A'}</Text>
                   </Col>
                 </Row>
                 <Row style={{ paddingBottom: 10, marginTop: 10 }}>
@@ -567,9 +571,9 @@ const styles = StyleSheet.create({
   linkHeader: {
     fontFamily: 'OpenSans',
     fontSize: 12,
-    textDecorationColor: '#7F49C3',
+    textDecorationColor: primaryColor,
     textDecorationLine: 'underline',
-    color: '#7F49C3'
+    color: primaryColor
   },
   subHeadingStyle: {
     fontFamily: 'OpenSans',

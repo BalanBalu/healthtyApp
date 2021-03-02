@@ -34,7 +34,8 @@ export const CURRENT_PRODUCT_IOS_VERSION_CODE = '16.0.0';
 export const ANDROID_VIDEO_CALL_ACTIVITY_NAME = 'ExampleActivity'
 export const BASIC_DEFAULT = {
   email: 'sathishkrish20@gmail.com',
-  mobile_no: '9164932823'
+  mobile_no: '9164932823',
+  name: 'My Smarthealth User'
 }
 
 export const SERVICE_TYPES = {
