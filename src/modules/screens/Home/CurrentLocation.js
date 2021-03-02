@@ -10,12 +10,7 @@ import { store } from '../../../setup/store';
 import Axios from 'axios';
 import { CallKeepService } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
-if (!IS_ANDROID) {
-  Geolocation.setRNConfiguration({
-    skipPermissionRequests: false,
-    authorizationLevel: 'always'
-  });
-}
+
 
 
 export default class CurrentLocation {
@@ -51,7 +46,7 @@ export default class CurrentLocation {
         });
       } else {
         setTimeout(async () => {
-          Geolocation.requestAuthorization();
+          Geolocation.requestAuthorization('whenInUse');
           CallKeepService.setupCallkeep();
           // const permissionResult = await requestCalendarPermissions()
           // if (permissionResult === 'authorized') {

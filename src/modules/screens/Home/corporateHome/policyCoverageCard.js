@@ -51,7 +51,7 @@ export const PolicyCoverageCard = props => {
                         <Text
                             style={{
                                 color: '#fff',
-                                fontFamily: 'openSans, sans-serif',
+                                fontFamily: 'OpenSans',
                                 fontSize: 18,
                                 fontWeight: '700',
                             }}>
@@ -62,7 +62,7 @@ export const PolicyCoverageCard = props => {
                             <Text
                                 style={{
                                     color: '#fff',
-                                    fontFamily: 'openSans, sans-serif',
+                                    fontFamily: 'OpenSans',
                                     fontSize: 12,
                                      lineHeight: 20,
                                     fontWeight: 'bold'
@@ -72,7 +72,7 @@ export const PolicyCoverageCard = props => {
                             <Text 
                                 style={{
                                     color: '#fff',
-                                    fontFamily: 'openSans, sans-serif',
+                                    fontFamily: 'OpenSans',
                                     fontSize: 12,
                                      lineHeight: 20,
 
@@ -80,7 +80,7 @@ export const PolicyCoverageCard = props => {
                             <Text
                                 style={{
                                     color: '#fff',
-                                    fontFamily: 'openSans, sans-serif',
+                                    fontFamily: 'OpenSans',
                                     fontSize: 12,
                                      lineHeight: 20,
                                     marginLeft: 5,
@@ -93,7 +93,7 @@ export const PolicyCoverageCard = props => {
                           <Text numberOfLines={1}
                               style={{
                                   color: 'rgba(255,255,255, 0.9)',
-                                  fontFamily: 'openSans, sans-serif',
+                                  fontFamily: 'OpenSans',
                                   fontSize: 12,
                                   lineHeight: 24,
                                   fontWeight: 'bold',
@@ -106,7 +106,7 @@ export const PolicyCoverageCard = props => {
                             <Text numberOfLines={1}
                                 style={{
                                     color: 'rgba(255,255,255, 0.9)',
-                                    fontFamily: 'openSans, sans-serif',
+                                    fontFamily: 'OpenSans',
                                     fontSize: 12,
                                     lineHeight: 20,
                                     fontWeight: 'bold',
@@ -147,7 +147,7 @@ export const PolicyCoverageCard = props => {
                      <Text
                                 style={{
                                     color: '#000',
-                                    fontFamily: 'openSans, sans-serif',
+                                    fontFamily: 'OpenSans',
                                     fontSize: 11,
                                     lineHeight: 24,
                                     textAlign: 'center',
@@ -156,7 +156,7 @@ export const PolicyCoverageCard = props => {
                             <Text
                                 style={{
                                     color: '#000',
-                                    fontFamily: 'openSans, sans-serif',
+                                    fontFamily: 'OpenSans',
                                     fontSize: 10,
                                     lineHeight: 24,
                                     textAlign: 'center',
@@ -171,7 +171,7 @@ export const PolicyCoverageCard = props => {
                             <Text
                                 style={{
                                     color: '#000',
-                                    fontFamily: 'openSans, sans-serif',
+                                    fontFamily: 'OpenSans',
                                     fontSize: 11,
                                     lineHeight: 24,
                                     marginLeft: 5,
@@ -182,7 +182,7 @@ export const PolicyCoverageCard = props => {
                             <Text
                                 style={{
                                     color: '#128283',
-                                    fontFamily: 'openSans, sans-serif',
+                                    fontFamily: 'OpenSans',
                                     fontSize: 10,
                                     lineHeight: 24,
                                     textAlign: 'center',

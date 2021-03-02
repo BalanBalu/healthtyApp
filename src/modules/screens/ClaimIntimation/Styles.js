@@ -147,7 +147,7 @@ export default  styles = StyleSheet.create({
     marginLeft: 40,
     color: '#3E4459',
     lineHeight: 26,
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
     marginRight: 40,
     marginTop: 20,
   },

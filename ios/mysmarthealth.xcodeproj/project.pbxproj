@@ -24,6 +24,7 @@
 		A0947C5725ED2359002FF5EA /* opensans-bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0947C5425ED2359002FF5EA /* opensans-bold.ttf */; };
 		A0947C5825ED2359002FF5EA /* opensans-regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0947C5525ED2359002FF5EA /* opensans-regular.ttf */; };
 		A0947C5925ED2359002FF5EA /* opensans-semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0947C5625ED2359002FF5EA /* opensans-semibold.ttf */; };
+		A0EDF1EF25EDE8E80088A5F9 /* Roboto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0EDF1EE25EDE8E80088A5F9 /* Roboto.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		A0947C5425ED2359002FF5EA /* opensans-bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "opensans-bold.ttf"; path = "../assets/fonts/opensans-bold.ttf"; sourceTree = "<group>"; };
 		A0947C5525ED2359002FF5EA /* opensans-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "opensans-regular.ttf"; path = "../assets/fonts/opensans-regular.ttf"; sourceTree = "<group>"; };
 		A0947C5625ED2359002FF5EA /* opensans-semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "opensans-semibold.ttf"; path = "../assets/fonts/opensans-semibold.ttf"; sourceTree = "<group>"; };
+		A0EDF1EE25EDE8E80088A5F9 /* Roboto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Roboto.ttf; path = ../assets/fonts/Roboto.ttf; sourceTree = "<group>"; };
 		BB18287B64B8CD0D300418FA /* Pods-mysmarthealth-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mysmarthealth-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-mysmarthealth-tvOSTests/Pods-mysmarthealth-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		D2EE270A942DD36B61D1F1CD /* Pods-mysmarthealth-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mysmarthealth-tvOS.release.xcconfig"; path = "Target Support Files/Pods-mysmarthealth-tvOS/Pods-mysmarthealth-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		D8B391BA01E1DA6A870E00FF /* Pods-mysmarthealth-mysmarthealthTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mysmarthealth-mysmarthealthTests.release.xcconfig"; path = "Target Support Files/Pods-mysmarthealth-mysmarthealthTests/Pods-mysmarthealth-mysmarthealthTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				A0EDF1EE25EDE8E80088A5F9 /* Roboto.ttf */,
 				A0947C5425ED2359002FF5EA /* opensans-bold.ttf */,
 				A0947C5525ED2359002FF5EA /* opensans-regular.ttf */,
 				A0947C5625ED2359002FF5EA /* opensans-semibold.ttf */,
@@ -359,6 +362,7 @@
 			files = (
 				A0947C5825ED2359002FF5EA /* opensans-regular.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				A0EDF1EF25EDE8E80088A5F9 /* Roboto.ttf in Resources */,
 				A0947C5925ED2359002FF5EA /* opensans-semibold.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				A0947C5725ED2359002FF5EA /* opensans-bold.ttf in Resources */,
@@ -510,6 +514,7 @@
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/AF8AFA46-95A0-3C36-89B4-0A23D7D0A613.bcsymbolmap",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/224E36C4-6533-3853-8416-A668FDC17C35.bcsymbolmap",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/E1D60A9C-E180-3412-BFDB-809E8A1C178E.bcsymbolmap",
+				"${PODS_ROOT}/razorpay-pod/Pod/Razorpay.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -521,6 +526,7 @@
 				"${BUILT_PRODUCTS_DIR}/E1D60A9C-E180-3412-BFDB-809E8A1C178E.bcsymbolmap",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Razorpay.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -547,6 +553,7 @@
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/AF8AFA46-95A0-3C36-89B4-0A23D7D0A613.bcsymbolmap",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/224E36C4-6533-3853-8416-A668FDC17C35.bcsymbolmap",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/E1D60A9C-E180-3412-BFDB-809E8A1C178E.bcsymbolmap",
+				"${PODS_ROOT}/razorpay-pod/Pod/Razorpay.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -558,6 +565,7 @@
 				"${BUILT_PRODUCTS_DIR}/E1D60A9C-E180-3412-BFDB-809E8A1C178E.bcsymbolmap",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Razorpay.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

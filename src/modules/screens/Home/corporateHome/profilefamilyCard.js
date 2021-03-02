@@ -34,7 +34,7 @@ export const ProfileFamilyCard = props => {
           <Text
             style={{
               color: '#fff',
-              fontFamily: 'openSans, sans-serif',
+              fontFamily: 'OpenSans',
               fontSize: 18,
               fontWeight: '700',
             }}>
@@ -43,7 +43,7 @@ export const ProfileFamilyCard = props => {
           <Text
             style={{
               color: '#fff',
-              fontFamily: 'openSans, sans-serif',
+              fontFamily: 'OpenSans',
               fontSize: 15,
               lineHeight: 24,
             }}>
