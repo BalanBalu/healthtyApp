@@ -3,8 +3,10 @@ import {
     Container, Content, View, Text, Title, Header, H3, Button, Item, CardItem, Row, Col,
     List, ListItem, Left, Right, Card, Thumbnail, Body, Icon, ScrollView, Spinner,Grid
 } from 'native-base';
-import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
+import { StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import StarRating from 'react-native-star-rating';
 
 import { userReviews, insertLikesDataForReviews } from '../../providers/profile/profile.action';

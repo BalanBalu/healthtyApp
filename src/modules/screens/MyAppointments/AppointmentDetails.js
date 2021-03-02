@@ -4,7 +4,9 @@ import {
   Thumbnail, Body, Icon, Toast, View, CardItem
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TouchableOpacity, Modal, FlatList } from 'react-native';
+import { StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import {primaryColor} from '../../../setup/config'
@@ -1178,7 +1180,7 @@ const styles = StyleSheet.create({
     marginTop: 5
   },
   cardItem2: {
-    backgroundColor: '#784EBC',
+    backgroundColor: primaryColor,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     justifyContent: 'center',
@@ -1186,7 +1188,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   cardItem3: {
-    backgroundColor: '#784EBC',
+    backgroundColor: primaryColor,
     marginBottom: -10,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
@@ -1360,7 +1362,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'OpenSans',
     fontWeight: 'bold',
-    color: '#7558e5',
+    color: primaryColor,
     // marginBottom: 5
   },
   commonText: {

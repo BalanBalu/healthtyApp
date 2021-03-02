@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, ListItem, List, Content, Row, Col, Card, CardItem, Body, Grid, Right, Icon, Left } from 'native-base';
-import { View, FlatList, TouchableOpacity, Image, StyleSheet, Linking, AsyncStorage } from 'react-native';
+import { View, FlatList, TouchableOpacity, Image, StyleSheet, Linking } from 'react-native';
 import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById, getEcardLink,getPolicyDetailsByPolicyNo } from '../../providers/corporate/corporate.actions';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import Spinner from '../../../components/Spinner'
@@ -105,7 +105,7 @@ console.log("data",this.state.data)
                             <Body>
                                 <Grid>
                                     <Col size={0.5}>
-                                        <Text style={styles.mainText}>{index}.</Text>
+                                        <Text style={styles.mainText}>{index+1}.</Text>
                                     </Col>
                                     <Col size={4}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>Member Name</Text>
@@ -154,6 +154,19 @@ console.log("data",this.state.data)
                                     </Col>
                                     <Col size={5}>
                                         <Text style={styles.mainText}>{data.age} Years</Text>
+                                    </Col>
+                                </Grid>
+                                <Grid style={{ marginTop: 8 }}>
+                                    <Col size={0.5}>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>Relationship</Text>
+                                    </Col>
+                                    <Col size={0.5}>
+                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>{data.relationship}</Text>
                                     </Col>
                                 </Grid>
                             </Body>
@@ -240,7 +253,7 @@ console.log("data",this.state.data)
 
     render() {
         const { data, isLoading } = this.state
-
+console.log("data",data)
         return (
             <Container>
                 <Content style={{ padding: 15 }}>
@@ -254,12 +267,12 @@ console.log("data",this.state.data)
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
-                                <Text style={styles.familyHeader}>Employee Detail</Text>
+                                {/* { data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
+                                <Text style={styles.familyHeader}>Employee Detail</Text>:null}
                                 { data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
-                                    this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null}
-                                <View style={styles.borderStyle} />
+                                    this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null} */}
                                 <View>
-                                    <Text style={styles.familyHeader}>Family Members</Text>
+                                    <Text style={styles.familyHeader}>Members details</Text>
                                     <FlatList
                                         data={this.state.data}
                                         extraData={this.state}
@@ -333,12 +346,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingTop: 5
     },
-    borderStyle: {
-        borderBottomColor: 'gray',
-        borderBottomWidth: 0.5,
-        paddingTop: 5,
-        paddingBottom: 10
-    },
+   
     familyHeader: {
         fontFamily: 'OpenSans',
         fontSize: 18,

@@ -3,7 +3,9 @@ import {
     Container, Content, Text, View, Badge, Toast, Radio, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, Image, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
 import { fetchUserProfile, setUserDataForPreparation } from '../../../providers/profile/profile.action';
 import styles from '../styles';
 import { CURRENT_APP_NAME } from "../../../../setup/config";

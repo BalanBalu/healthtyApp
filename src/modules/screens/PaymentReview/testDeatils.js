@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Text, Radio, Icon, Input, CheckBox, Right } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, TouchableOpacity, View, AsyncStorage } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import BenefeciaryDetails from './benefeciaryDetails'
 import { fetchUserProfile, getCorporateUserFamilyDetails, getPolicYDetailsByid } from '../../providers/profile/profile.action';

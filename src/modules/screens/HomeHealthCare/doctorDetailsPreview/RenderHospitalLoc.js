@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import Mapbox from '../../bookappoinment/Mapbox';
 import {primaryColor, secondaryColor} from '../../../../setup/config'
 import { Text, Card, List, ListItem, Left, Body, Icon } from 'native-base';

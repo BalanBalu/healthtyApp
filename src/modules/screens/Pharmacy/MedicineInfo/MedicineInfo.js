@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, Image, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount, getAvailableStockForListOfProducts, updateTopSearchedItems } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable, getselectedCartData, renderMedicineImage } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
@@ -12,6 +12,8 @@ import SwiperFlatList from 'react-native-swiper-flatlist';
 import ImageZoom from 'react-native-image-pan-zoom';
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 import { CURRENT_APP_NAME } from "../../../../setup/config";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 let medicineId, userId;
 class MedicineInfo extends Component {
     constructor(props) {

@@ -1,7 +1,9 @@
 import React from 'react';
 import {
-  AsyncStorage, Text, View
+  Text, View
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { setUserLocally, APP_LOADED } from '../../modules/providers/auth/auth.actions';
 import { store } from '../store';
 import {primaryColor} from '../../setup/config'

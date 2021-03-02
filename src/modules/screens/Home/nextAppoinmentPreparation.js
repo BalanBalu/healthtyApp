@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Input, Left, Right, Icon } from 'native-base';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, Image, View, TouchableOpacity, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { getUserAppointments, getMultipleDoctorDetails, getappointmentDetails } from "../../providers/bookappointment/bookappointment.action";
 import { getName, getAllEducation, getAllSpecialist } from '../../common'

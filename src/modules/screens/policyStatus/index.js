@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Container, Text, Item, Card, Left, Right, Content, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, ActivityIndicator } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { getMemberDetailsByEmail, getClaimsDataByPayerCode } from '../../providers/corporate/corporate.actions'; ''
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
 import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
+
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 const LIMIT = 5;
@@ -127,7 +130,7 @@ class PolicyStatus extends Component {
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.nameText}>{memberDetails.firstName ? (memberDetails.firstName + ' ' + memberDetails.lastName) : '-'}</Text>
                 <Text style={styles.policyText}>Policy No : <Text style={styles.commonText}>{memberDetails.policyNo ? memberDetails.policyNo : '-'}</Text></Text>
-                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD/YYYY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD/YYYY")):'N/A'}</Text></Text>
+                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YY")):'N/A'}</Text></Text>
               </View>
 
             </View>
@@ -232,7 +235,7 @@ class PolicyStatus extends Component {
                   <Card style={styles.cardStyle}>
                     <Row>
                       <Col size={9}>
-                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '700' }}
+                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: primaryColor, fontWeight: '700' }}
                           numberOfLines={1}
                           ellipsizeMode="tail">{item.EMPLOYEE_NAME}</Text>
                         <Row>
@@ -336,13 +339,13 @@ const styles = StyleSheet.create({
   boldText: {
     fontFamily: 'OpenSans',
     fontSize: 16,
-    color: '#7F49C3',
+    color: primaryColor,
     marginTop: 2,
     fontWeight: 'bold'
   },
   gradientStyle: {
     justifyContent: 'center',
-    backgroundColor: '#7F49C3',
+    backgroundColor: primaryColor,
     padding: 8
   },
   cardStyle: {
@@ -374,9 +377,9 @@ const styles = StyleSheet.create({
   linkHeader: {
     fontFamily: 'OpenSans',
     fontSize: 15,
-    textDecorationColor: '#7F49C3',
+    textDecorationColor: primaryColor,
     textDecorationLine: 'underline',
-    color: '#7F49C3'
+    color: primaryColor
   },
   mainView: {
     marginLeft: 10,

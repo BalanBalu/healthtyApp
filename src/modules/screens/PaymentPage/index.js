@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, FooterTab, Card, Footer, Item, Icon, Input, Toast, Form, Right, Left, Radio, CheckBox } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, View, AsyncStorage, TextInput } from 'react-native';
+import { StyleSheet, Image, View,  TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { putService, getService } from '../../../setup/services/httpservices';
-import Razorpay from 'react-native-customui';
+// import Razorpay from 'react-native-customui';
+import Razorpay from 'react-native-razorpay';
 import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_POINTS,CURRENT_APP_NAME,MY_SMART_HEALTH_CARE } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { getReferalPoints } from '../../providers/profile/profile.action';
@@ -52,7 +55,7 @@ class PaymentPage extends Component {
             isLoading: false,
             isHidden: false,
             coupenCodeText: null,
-            paymentMethodTitleCase: null,
+            paymentMethodTitleCase: 'RazorDirect',
             isPaymentSuccess: false,
             creditPointsApplied: false,
             creditPointDiscountAmount: 0,
@@ -84,6 +87,9 @@ class PaymentPage extends Component {
             }
             if (!this.userBasicData.mobile_no) {
                 this.userBasicData.mobile_no = BASIC_DEFAULT.mobile_no
+            }
+            if (!this.userBasicData.first_name) {
+                this.userBasicData.first_name = BASIC_DEFAULT.first_name || 'My SmartHealth User'
             }
         } else {
             this.userBasicData = BASIC_DEFAULT
@@ -231,10 +237,10 @@ class PaymentPage extends Component {
         }
     }
 
-    razorpayChekout(paymentMethodData) {
+    razorpayChekout(paymentMethodData = {}) {
         const { amount, creditPointDiscountAmount, couponCodeDiscountAmount } = this.state;
         let finalAmountToPayByOnline = amount - (creditPointDiscountAmount + couponCodeDiscountAmount);
-        const options = {
+       /* const options = {
             description: this.state.bookSlotDetails.diseaseDescription || 'Pay for your Health',
             currency: 'INR',
             key_id: RAZOR_KEY,
@@ -243,6 +249,18 @@ class PaymentPage extends Component {
             contact: this.userBasicData.mobile_no,
             ...paymentMethodData,
             'notes[message]': 'New Appointment Booking: ' + this.userId
+        } */
+        const options = {
+            description: this.state.bookSlotDetails.diseaseDescription || 'Pay for your Health',
+            currency: 'INR',
+            key: RAZOR_KEY,
+            amount: finalAmountToPayByOnline * 100, // here the value is consider as paise so, we have to multiply to 100 
+            name: this.userBasicData.firstName,
+            prefill: {
+                email: this.userBasicData.email,
+                name: this.userBasicData.first_name,
+                contact: this.userBasicData.mobile_no,
+            }
         }
        
         Razorpay.open(options).then((data) => {
@@ -529,6 +547,11 @@ class PaymentPage extends Component {
         }
         return Math.round(maxDicountAmountByCreditPoints);
     }
+
+    async makeDirectRazorPayMentMethod() {
+        this.razorpayChekout()
+    }
+
     async backNavigation(payload) {
         let hasReload = this.props.navigation.getParam('hasReload') || false
         if (hasReload) {
@@ -651,68 +674,26 @@ class PaymentPage extends Component {
                             </Row>
                         </Grid> : null}
 
-                    {/* <Grid style={{ backgroundColor: '#fff'}}>       
-                        <Row style={{ padding: 1, marginLeft: 10, marginRight: 10 }}>
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 10, }}>COUPONS</Text>
-                        </Row>
-                        
-                        <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.3 }}>
-                            <View style={{ borderColor: '#000', borderWidth: 1, backgroundColor: '#f2f2f2', borderRadius: 5, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 10 }}>
-                                <View style={{ marginTop: 10, marginBottom: 10 }}>
-                                    <Grid style={{ marginRight: 10, marginLeft: 10 }}>
-                                    <Col>
-                                    <Form>
-
-                                    <Input underlineColorAndroid='gray' placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
-                                        getRef={(input) => { this.enterCouponCode = input; }}
-                                        keyboardType={'default'}
-                                        returnKeyType={'go'}
-                                        multiline={false}
-                                        value={this.state.coupenCodeText}
-                                        onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
-                                    />
-                                      
-                                    </Form>
-                                    <Row>
-                                        <Right>
-                                            <Button style={{marginTop:10,backgroundColor:'#2ecc71',color:'#fff',borderRadius:10}}><Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:'bold'}}>submit</Text></Button>
-                                        </Right>
-                                    </Row>
-                                </Col>
-                            </Grid>
-                            </View>
-                            </View>
-                            </View>
-                        </Grid> */}
 
 
-
-                    {savedCards.length !== 0 ? <Row>
+                    {/* {savedCards.length !== 0 ? <Row>
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 40, marginLeft: 15 }}>SAVED CARDS</Text>
-                    </Row> : null}
+                    </Row> : null} 
 
-                    <Grid>
+                     <Grid>
                         <View style={{ marginTop: 10, justifyContent: 'center' }}>
                             {savedCards.map(element => {
                                 return this.renderSavedCards(element)
                             })}
                         </View>
-                    </Grid>
+                    </Grid> 
+                  
+
                     <Row style={{ marginBottom: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }}>
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Payment Options</Text>
                     </Row>
 
-                    {/* <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', paddingLeft: 15, paddingBottom: 15, paddingRight: 15, marginLeft: 10, marginRight: 10 }}>
-                            <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'CREDIT_CARD' })} style={{ flexDirection: 'row' }}>
-                                    <RadioButton value="CREDIT_CARD" />
-                                    <Text //onPress={()=> this.setState({ paymentOption : 'CREDIT_CARD' })}
-                                        style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 14 }}>Credit Card</Text>
-                                </TouchableOpacity>
-                            </Col>
-                        </Row>
-                        {this.state.paymentOption === "CREDIT_CARD" ? this.renderCreditDebitCard('Credit') : null} */}
-
+                    
                     <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                         <Col style={{ width: '90%', }}>
                             <TouchableOpacity onPress={() => this.setState({ paymentOption: 'DEBIT_CARD', selectedSavedCardId: null })} style={{ flexDirection: 'row', alignItems: 'center', }}>
@@ -726,7 +707,7 @@ class PaymentPage extends Component {
                     </Row>
 
                     {this.state.paymentOption === "DEBIT_CARD" ? this.renderCreditDebitCard('Debit') : null}
-
+ 
                     <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                         <Col style={{ width: '90%', }}>
                             <TouchableOpacity onPress={() => this.setState({ paymentOption: 'NET_BANKING', selectedSavedCardId: null })} style={{ flexDirection: 'row', alignItems: 'center', }}>
@@ -769,24 +750,16 @@ class PaymentPage extends Component {
                                     standardStyle={true}
                                     selected={this.state.paymentOption === "WALLET" ? true : false}
                                     onPress={() => this.setState({ paymentOption: "WALLET", selectedSavedCardId: null })} />
-                                <Text
-                                    //onPress={()=> this.setState({ paymentOption : 'WALLET' })}
-                                    style={{ fontFamily: 'OpenSans', fontSize: 13, marginLeft: 10 }}>Wallet</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, marginLeft: 10 }}>Wallet</Text>
                             </TouchableOpacity>
                         </Col>
-
-                        {/* <Col style={{ width: '20%' }}>
-                                <Text style={{ marginTop: 8, fontSize: 16, fontFamily: 'OpenSans', fontWeight: 'bold', color: 'red', marginLeft: 10 }}>{'\u20B9'}1000</Text>
-                            </Col> */}
-
-
                     </Row>
                     {this.state.paymentOption === "WALLET" ? this.renderWallet() : null}
-
+                */}
 
 
                 </Content>
-                <TouchableOpacity  onPress={() => this.makePaymentMethod()} block style={styles.paymentButton}><Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'#fff' }}>Pay</Text></TouchableOpacity> 
+                <TouchableOpacity  onPress={() => this.makeDirectRazorPayMentMethod() /*this.makePaymentMethod() */} block style={styles.paymentButton}><Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'#fff' }}>Pay</Text></TouchableOpacity> 
             </Container >
         )
     }

@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Segment, Button, Card, Right, Thumbnail, Icon, Toast, Item, Footer, Spinner } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image, Share } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, Image, Share } from 'react-native';
 import { formatDate, addMoment, getMoment, getUnixTimeStamp, setCurrentISOTime4GivenDate } from '../../../../setup/helpers';
 import { store } from '../../../../setup/store';
 import {primaryColor} from '../../../../setup/config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
     addFavoritesToDocByUserService,

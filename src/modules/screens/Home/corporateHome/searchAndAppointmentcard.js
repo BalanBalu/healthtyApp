@@ -83,13 +83,13 @@ export const SearchAndAppointmentCard = props => {
               }}>
               {/* <HomeTestDrawing /> */}
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{height:63,width:45,marginTop:-3}}/>
-              <Text style={[styles.boxText,{marginTop:-3}]}>Home Test</Text>
+              <Text style={[styles.boxText,{marginTop:-3}]}>Home Care</Text>
             </View>
           </View>
         </TouchableHighlight>
       </View>
-      <View style={[styles.flexRow, {marginTop: 15}]}>
-      
+      <View style={{  marginLeft:8, justifyContent: 'space-around', marginVertical: 1,marginTop: 15}}>
+{/*       
         <TouchableHighlight
           style={styles.rectBox}
           activeOpacity={0.6}
@@ -108,7 +108,7 @@ export const SearchAndAppointmentCard = props => {
               <Text style={styles.boxText}>Chat Consult</Text>
             </View>
           </View>
-        </TouchableHighlight>
+        </TouchableHighlight> */}
         <TouchableHighlight
           style={styles.rectBox}
           activeOpacity={0.6}
@@ -122,7 +122,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               <VideoConsultDrawing />
 
-              <Text style={styles.boxText}>Video Consult</Text>
+              <Text style={styles.boxText}>Tele Consult</Text>
             </View>
           </View>
         </TouchableHighlight>

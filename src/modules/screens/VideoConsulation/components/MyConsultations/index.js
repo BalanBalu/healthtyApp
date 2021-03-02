@@ -1,8 +1,10 @@
 
 import React, { Component } from 'react';
 import { View, Text, Button, List, Icon, ListItem, DatePicker, Left, Segment, Content, CardItem, Right, Thumbnail, Item, Card, Body, Container, Toast } from "native-base";
-import { StyleSheet, Platform, Image, AsyncStorage, FlatList, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Platform, Image, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import Spinner from '../../../../../components/Spinner';
 import { NavigationEvents } from 'react-navigation';
 import { renderDoctorImage, getName,toastMeassage } from '../../../../common'
@@ -11,6 +13,8 @@ import { POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../const
 import { getVideoConsuting, updateVideoConsuting,createEmrByVideoConsultation } from '../../services/video-consulting-service';
 import { formatDate } from '../../../../../setup/helpers';
 import { connect } from 'react-redux';
+import {primaryColor} from '../../../../../setup/config';
+
 export const IS_ANDROID = Platform.OS === 'android';
 class VideoConsultaions extends Component {
 	constructor(props) {
@@ -199,14 +203,14 @@ class VideoConsultaions extends Component {
 					 <View> 
 				
 
-					<Row style={{ alignItems: 'center', marginBottom: 5, justifyContent: 'center' }}>
+					<Row style={{ alignItems: 'center', marginBottom: 5,marginTop:5 }}>
 				
 								<Text style={{
 								color: STATUS_VALUE_DATA[item.status].color, fontFamily: 'OpenSans',
 								fontSize: 14
-							}}>{"consultation discription :"}</Text>
+							}}>{"consultation description :"}</Text>
 					</Row>
-					<Row style={{ alignItems: 'center', marginBottom: 5, justifyContent: 'center' }}>
+					<Row style={{ alignItems: 'center', marginBottom: 5,}}>
 						<Text style={{
 							color: 'grey', fontFamily: 'OpenSans',
 				fontSize: 14
@@ -332,7 +336,7 @@ const styles = StyleSheet.create({
 	},
 	segButtonActive: {
 		justifyContent: 'center',
-		borderBottomColor: '#784EBC',
+		borderBottomColor: primaryColor,
 		borderBottomWidth: 1,
 		paddingBottom: -10,
 		paddingTop: -10,
@@ -343,12 +347,12 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		fontFamily: 'OpenSans',
 		fontSize: 20,
-		color: '#784EBC',
+		color: primaryColor,
 
 	},
 	toucableOpacity: {
 		flexDirection: 'row',
-		backgroundColor: '#784EBC',
+		backgroundColor: primaryColor,
 		paddingLeft: 15,
 		paddingRight: 15,
 		justifyContent: 'center',

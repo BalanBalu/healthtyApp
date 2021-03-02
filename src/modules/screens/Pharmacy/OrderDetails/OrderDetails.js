@@ -5,8 +5,9 @@ import {
 import StarRating from 'react-native-star-rating';
 import { Col, Row } from 'react-native-easy-grid';
 import {primaryColor} from '../../../../setup/config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, BackHandler } from 'react-native';
+import { StyleSheet, Image, FlatList, TouchableOpacity, BackHandler } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
 import { getMedicineOrderDetails, upDateOrderData, getOrderTracking, getMedicineOrderDetailsByOrderId } from '../../../providers/pharmacy/pharmacy.action';
 import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName, renderMedicineImageByimageUrl } from '../CommomPharmacy';

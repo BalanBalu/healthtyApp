@@ -4,13 +4,16 @@ import {
     FooterTab, H3, Toast
 } from 'native-base';
 import { connect } from 'react-redux'
-import { Image, BackHandler, AsyncStorage, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Image, BackHandler, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
 import { subTimeUnit, formatDate } from "../../../setup/helpers";
 import { bloodGroupList } from "../../common";
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import {primaryColor} from '../../../setup/config';
+
 
 class UserDetails extends Component {
     constructor(props) {
@@ -173,7 +176,7 @@ class UserDetails extends Component {
 
                                             <Row style={styles.authTransparentLabel}>
                                                 <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={{flexDirection:'row'}}>
-                                                <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+                                                <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: primaryColor }} />
                             <Text style={this.state.dob != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.dob != null ?formatDate(this.state.dob, 'DD/MM/YYYY'):'Date of Birth'}</Text>
                             <DateTimePicker
                               mode={'date'}

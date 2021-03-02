@@ -1,10 +1,10 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { StyleSheet, Text, View, ScrollView, FlatList, AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, Text, View, ScrollView, FlatList } from 'react-native';
 import { ListItem, Left, Body } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { toastMeassage } from '../../common';
 import { getCorporateUserEcardDetails, getCorporateEmployeeDetailsById } from '../../providers/corporate/corporate.actions';
 import { fetchUserProfile } from '../../providers/profile/profile.action';

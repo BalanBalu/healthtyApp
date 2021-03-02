@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, Platform } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { dateDiff, getMoment, formatDate } from '../../../setup/helpers'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export function medicineRateAfterOffer(item) {

@@ -1,6 +1,7 @@
 import RNCalendarEvents from "react-native-calendar-events";
 
-import { Text, View, Button, Alert, BackHandler, AsyncStorage } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import AntDesign from 'react-native-vector-icons/AntDesign'
 const CALENDERID = 'calenderId';
 import { CURRENT_APP_NAME } from "../setup/config";

@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Styles from '../styles';
-import { getDistance } from '../../CommonAll/functions'
+import { getDistanceByKiloMeters } from '../../CommonAll/functions'
 
 export default class RenderNetworkHospitalInfo extends Component {
   constructor(props) {
@@ -72,7 +72,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                 <Col size={2}><Text style={Styles.subHeadingStyle}>Distance</Text></Col>
                 <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                 <Col size={7}>
-                  <Text style={Styles.subHeadingData}>{getDistance(item.distInKiloMeter)}</Text>
+                  <Text style={Styles.subHeadingData}>{getDistanceByKiloMeters(item.distInKiloMeter)}</Text>
                 </Col>
                 <Col size={0.8}></Col>
               </Row>

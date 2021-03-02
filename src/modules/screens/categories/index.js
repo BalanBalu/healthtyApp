@@ -5,7 +5,7 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
 import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';

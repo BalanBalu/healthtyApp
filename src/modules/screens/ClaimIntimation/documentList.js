@@ -237,7 +237,7 @@ class DocumentList extends PureComponent {
               }}>
               <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
                 <Image
-                  source={require('../../../../assets/images/documentCloud.png')}
+                  source={require('../../../../assets/images/documentuploadgreen.png')}
                   style={{ height: 60, width: 110 }}
                 />
               </TouchableOpacity>

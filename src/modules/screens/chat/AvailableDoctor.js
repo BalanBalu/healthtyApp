@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Input, Spinner, Thumbnail, Icon, Radio, Row, Col, Form, Button, Toast } from 'native-base';
-import { StyleSheet, TextInput, AsyncStorage, TouchableOpacity } from 'react-native'
+import { StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import {

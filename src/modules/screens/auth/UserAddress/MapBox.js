@@ -1,7 +1,8 @@
 
 import React, { Component } from 'react';
-import { View, StyleSheet, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, PermissionsAndroid, TouchableOpacity } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Row } from 'react-native-easy-grid';
 import { IS_ANDROID, validateFirstNameLastName, acceptNumbersOnly } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
@@ -408,7 +409,8 @@ export default class MapBox extends Component {
 
     confirmLocation() {
         if (this.isFromNetworkHospital === true) {
-            const { coordinates, address } = this.state
+            const {  address,center } = this.state
+            const coordinates = [ center[1],center[0]]
             const reqData4NetworkHosp = {
                 coordinates,
                 selectedCityName: address.address_line_1

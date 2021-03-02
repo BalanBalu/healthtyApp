@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, ListItem, Card, Thumbnail, List, Item, Input, Left, Right, Icon } from 'native-base';
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking, ActivityIndicator, Dimensions } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, FlatList, ImageBackground, Alert, Linking, ActivityIndicator, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import styles from '../Styles'
 import { serviceOfGetHealthcareAppointmentList } from '../../../providers/homeHelthCare/action'

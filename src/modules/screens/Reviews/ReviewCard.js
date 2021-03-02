@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import {
     Text, Row, Col, Thumbnail, Icon, Grid
 } from 'native-base';
-import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { renderProfileImage } from '../../common';
 import { formatDate, dateDiff, getMoment, subString } from '../../../setup/helpers';

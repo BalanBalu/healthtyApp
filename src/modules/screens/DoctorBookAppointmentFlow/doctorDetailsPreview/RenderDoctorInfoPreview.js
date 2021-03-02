@@ -4,7 +4,7 @@ import {
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../../common';
 import {primaryColor} from '../../../../setup/config'

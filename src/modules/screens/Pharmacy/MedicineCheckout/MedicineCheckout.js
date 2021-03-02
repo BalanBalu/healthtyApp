@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon, Right } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform, Modal } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, Platform, Modal } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { NavigationEvents } from 'react-navigation';
 import ImagePicker from 'react-native-image-crop-picker';
 import {primaryColor} from '../../../../setup/config'

@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, View, TouchableOpacity, FlatList, AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
 import {primaryColor} from '../../../setup/config'
 
 import { store } from '../../../setup/store';

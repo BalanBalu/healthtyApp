@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Card, Grid, Text, Switch, Row, Col, Toast, Item } from 'native-base';
-import { StyleSheet, AsyncStorage, Image, Dimensions } from 'react-native'
+import { StyleSheet, Image, Dimensions } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 
 import { fetchEmrData } from '../../providers/bookappointment/bookappointment.action';

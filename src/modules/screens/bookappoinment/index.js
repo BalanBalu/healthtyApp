@@ -17,7 +17,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import {primaryColor} from '../../../setup/config'
 
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, TouchableOpacity, View, FlatList, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../setup/helpers';
 import {
@@ -277,7 +278,7 @@ class BookAppoinment extends Component {
   noAvailableSlots() {
     return (
       <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-        <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+        <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: primaryColor }}>
           <Text>No Slots Available</Text>
           {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
         </Button>

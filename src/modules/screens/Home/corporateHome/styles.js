@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 0,
     color: primaryColor,
-    fontFamily: 'openSans, sans-serif',
+    fontFamily: 'OpenSans',
     fontWeight: '700',
     textAlign: 'center',
   },
