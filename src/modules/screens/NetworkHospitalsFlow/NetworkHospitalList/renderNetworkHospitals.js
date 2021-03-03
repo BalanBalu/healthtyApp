@@ -5,8 +5,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Styles from '../styles';
-import { getDistanceByKiloMeters } from '../../CommonAll/functions'
-
+import { getDistanceByKiloMeters } from '../../CommonAll/functions';
+import {getNetworkHospitalAddress} from '../../../common';
 export default class RenderNetworkHospitalInfo extends Component {
   constructor(props) {
     super(props)
@@ -37,9 +37,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                 <Col size={2}><Text style={Styles.subHeadingStyle}>Address</Text></Col>
                 <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                 <Col size={7}>
-                  <Text style={Styles.subHeadingData}>{address && Object.keys(address).length ?
-                    `${address.no_and_street}, ${address.district}, ${address.city}, ${address.state}`
-                    : null}</Text>
+                  <Text style={Styles.subHeadingData}>{address && Object.keys(address).length ?getNetworkHospitalAddress(address): null}</Text>
                 </Col>
                 <Col size={0.8}></Col>
               </Row>

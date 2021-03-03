@@ -66,12 +66,8 @@ const getDistance = (distanceValue) => {
 
 const getDistanceByKiloMeters = (distanceValue) => {
     if (!isNaN(distanceValue)) {
-        if (distanceValue > 0) {
-            return '0 KM'
-        } else {
             const distanceInKm = Number(distanceValue).toFixed(1) + 'Km';
             return distanceInKm;
-        }
     }
 }
 

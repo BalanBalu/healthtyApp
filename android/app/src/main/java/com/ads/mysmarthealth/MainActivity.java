@@ -19,7 +19,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "medflic";
+    return "mysmarthealth";
   }
   @Override
    protected void onCreate(Bundle savedInstanceState) {
