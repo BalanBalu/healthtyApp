@@ -1,6 +1,7 @@
 import PushNotification from 'react-native-push-notification';
 import { FIREBASE_SENDER_ID, IS_IOS, CURRENT_APP_NAME } from './config'
-import { AsyncStorage, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
 import messaging from '@react-native-firebase/messaging';
 import rootNavigation from './rootNavigation';

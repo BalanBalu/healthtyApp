@@ -1,9 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Form, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler, TextInput, AsyncStorage, ActivityIndicator } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, TextInput, ActivityIndicator } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import styles from './styles'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { forumInsertAnswer, getForumQuestionAndAnswerDetails } from '../../providers/forum/forum.action'
 import { formatDate } from "../../../setup/helpers";
 import { Loader } from '../../../components/ContentLoader';

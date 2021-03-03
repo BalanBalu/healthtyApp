@@ -52,7 +52,7 @@ const enumerateStartToEndDates = (startDateByMoment, endDateByMoment, datesArry)
 const sortByPrimeDoctors = (firstObj, secObj) => firstObj.is_doctor_sponsor === secObj.is_doctor_sponsor ? 0 : firstObj.is_doctor_sponsor ? -1 : 1;
 
 const getDistance = (distanceValue) => {
-    if (!isNaN(distanceValue)) {
+   if (!isNaN(distanceValue)) {
         if (distanceValue > 0) {
             const distanceInMeter = Number(distanceValue).toFixed(3);
             const distanceInNumber = Number(distanceInMeter.split('.')[1]);
@@ -64,6 +64,13 @@ const getDistance = (distanceValue) => {
     }
 }
 
+const getDistanceByKiloMeters = (distanceValue) => {
+    if (!isNaN(distanceValue)) {
+            const distanceInKm = Number(distanceValue).toFixed(1) + 'Km';
+            return distanceInKm;
+    }
+}
+
 export {
     getUserGenderAndAge,
     enumerateStartToEndDates,
@@ -71,4 +78,5 @@ export {
     reducer,
     sortByPrimeDoctors,
     getDistance,
+    getDistanceByKiloMeters
 }

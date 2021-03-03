@@ -6,7 +6,9 @@ import {
     Toast
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, Image, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { getMedicinesSearchList, getNearOrOrderPharmacy, getproductDetailsByPharmacyIds } from '../../../providers/pharmacy/pharmacy.action';
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getAddress, getKiloMeterCalculation, renderPharmacyImage, medicineRateAfterOffer, medicineDiscountedAmount, getMedicineName, CartMedicineImage, ProductIncrementDecreMents, getMedicineNameByProductName } from '../CommomPharmacy'

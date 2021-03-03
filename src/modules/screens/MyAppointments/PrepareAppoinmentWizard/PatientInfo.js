@@ -3,7 +3,9 @@ import {
     Container, Content, Text, View, Badge, Toast, Radio, DatePicker, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, Image, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
 import Spinner from '../../../../components/Spinner';
 import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 import { acceptNumbersOnly } from '../../../common';
@@ -13,6 +15,8 @@ import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bo
 import styles from '../styles';
 import { formatDate } from "../../../../setup/helpers";
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import {primaryColor} from '../../../../setup/config';
+
 
 
 class PatientInfo extends PureComponent {
@@ -154,7 +158,7 @@ class PatientInfo extends PureComponent {
                             <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Date of birth</Text>
                             <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={[styles.formStyle2,{flexDirection:'row'}]}>
                                 {/* <Item > */}
-                            <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: '#7F49C3' }} />
+                            <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: primaryColor }} />
                             <Text style={this.state.date_of_birth != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.date_of_birth != null ?formatDate(this.state.date_of_birth, 'DD/MM/YYYY'):'Date of Birth'}</Text>
                             <DateTimePicker
                               mode={'date'}

@@ -6,7 +6,7 @@ import {
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import {primaryColor} from '../../../setup/config'
 
-import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, FlatList, TouchableHighlight, Modal } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 class ReminderPopup extends Component {
   constructor(props) {

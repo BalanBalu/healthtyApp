@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid, Toast, Switch } from 'native-base';
-import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, Right, Dimensions } from 'react-native'
+import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Right, Dimensions } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { connect } from 'react-redux'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";

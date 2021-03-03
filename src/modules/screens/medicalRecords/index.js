@@ -4,7 +4,9 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { NavigationEvents } from 'react-navigation';
-import { StyleSheet, Image, TouchableOpacity, View, BackHandler, Dimensions, AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, Image, TouchableOpacity, View, BackHandler, Dimensions } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ZoomImageViewer from '../../elements/ImageViewer/ZoomImageViewer';
@@ -78,6 +80,13 @@ class MedicineRecords extends PureComponent {
         const { data } = this.state
         return (
             <View style={{ padding: 10 }}>
+                 <View style={{ marginTop: 15,justifyContent:'center',alignItems:'center'  }}>
+                        <TouchableOpacity style={{ backgroundColor: '#128283', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5,justifyContent:'center',alignItems:'center',flexDirection:'row' }} onPress={() => {
+                            this.props.navigation.navigate('UploadEmr', { prevState: this.props.navigation.state })
+                        }}>
+                            <Text style={{ color: '#fff', fontSize: 15 }} >Add New Record</Text>
+                        </TouchableOpacity>
+                </View>
                 <Row style={styles.SearchRow}>
 
                     <Col size={9.1} style={{ justifyContent: 'center', }}>
@@ -100,15 +109,7 @@ class MedicineRecords extends PureComponent {
 
                 </Row>
              
-                <Row style={{ marginTop: 15 }}>
-                    <Right>
-                        <TouchableOpacity style={{ backgroundColor: '#128283', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }} onPress={() => {
-                            this.props.navigation.navigate('UploadEmr', { prevState: this.props.navigation.state })
-                        }}>
-                            <Text style={{ color: '#fff', fontSize: 15 }} >Upload</Text>
-                        </TouchableOpacity>
-                    </Right>
-                </Row>
+               
                 {data.length === 0 ?
                 <View style={{marginTop:200}}>
 
@@ -247,6 +248,8 @@ class MedicineRecords extends PureComponent {
 
 
                         } />
+                
+                    <RenderFooterLoader footerLoading={this.state.footerLoading} />
                     {fromNavigation === 'APPOINTMENT_PREPARE'||fromNavigation === 'VIDEO_CONSULTATION' ? <Footer style={
                         Platform.OS === "ios" ?
                             { height: 40 } : { height: 45 }}>
@@ -255,14 +258,14 @@ class MedicineRecords extends PureComponent {
                                 <Col size={5} style={{ backgroundColor: '#4E85E9' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity style={styles.buttonTouch} onPress={() => this.proceed()} >
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>back</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '700' }}>Back</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
                                 <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity style={styles.buttonTouch} onPress={() => this.proceed()} >
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}> continue</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '700' }}>Continue</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
@@ -271,8 +274,6 @@ class MedicineRecords extends PureComponent {
 
                     </Footer>
                         : null}
-                    <RenderFooterLoader footerLoading={this.state.footerLoading} />
-
                 </View>
            
                 {/* </Content> */}

@@ -7,7 +7,9 @@ import {
 import {primaryColor} from '../../../setup/config'
 
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal, TextInput, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { StyleSheet, Image, TouchableOpacity,  FlatList, TouchableHighlight, Modal, TextInput, Platform } from 'react-native';
 
 class ConfirmationPopup extends PureComponent {
     constructor(props) {

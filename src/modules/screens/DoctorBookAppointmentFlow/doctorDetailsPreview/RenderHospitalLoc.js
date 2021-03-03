@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, } from 'react-native';
 import Mapbox from '../../bookappoinment/Mapbox';
 
 import { Text, Card, List, ListItem, Left, Body, Icon } from 'native-base';

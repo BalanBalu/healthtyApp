@@ -16,10 +16,10 @@ import {
 import {userFiledsUpdate} from '../../providers/auth/auth.actions';
 import {connect} from 'react-redux';
 import {Row, Col} from 'react-native-easy-grid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   Image,
-  AsyncStorage,
   ScrollView,
   FlatList,
   TouchableOpacity,
@@ -37,6 +37,8 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {ImageUpload} from '../../screens/commonScreen/imageUpload';
 import {uploadImage} from '../../providers/common/common.action';
+import {primaryColor} from '../../../setup/config';
+
 
 class UpdateFamilyMembers extends Component {
   constructor(props) {
@@ -263,7 +265,7 @@ class UpdateFamilyMembers extends Component {
                         padding: 5,
                         fontSize: 13,
                         marginTop: 1,
-                        color: '#7F49C3',
+                        color: primaryColor,
                       }}
                     />
                     <Text
@@ -312,6 +314,7 @@ class UpdateFamilyMembers extends Component {
                         marginLeft: 15,
                       }}>
                       <Radio
+                      selectedColor={primaryColor}
                         standardStyle={true}
                         selected={gender === 'M' ? true : false}
                         onPress={() =>
@@ -464,7 +467,7 @@ class UpdateFamilyMembers extends Component {
                     <TouchableOpacity
                       onPress={() => this.setState({selectOptionPopup: true})}>
                       <Image
-                        source={require('../../../../assets/images/documentCloud.png')}
+                        source={require('../../../../assets/images/documentuploadgreen.png')}
                         style={{height: 40, width: 70}}
                       />
                     </TouchableOpacity>

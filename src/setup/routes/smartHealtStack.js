@@ -489,7 +489,7 @@ export const smartHealthStack=createStackNavigator({
   "Health Records": {
     screen: MedicineRecords,
     navigationOptions: {
-      title: 'Medicine Records'
+      title: 'Health Records'
     }
   },
    ///  =============Contact Us ==================

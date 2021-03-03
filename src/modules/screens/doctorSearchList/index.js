@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, Dimensions, ScrollView, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {primaryColor} from '../../../setup/config'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     searchDoctorList, fetchAvailabilitySlots,
     getMultipleDoctorDetailsV2,
@@ -625,7 +625,7 @@ class doctorSearchList extends Component {
         
         return (
             <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: primaryColor }}>
                     <Text>No Slots Available</Text>
                     {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                 </Button>

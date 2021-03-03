@@ -23,7 +23,8 @@ import {
   Radio,
   Switch,
 } from 'native-base';
-import {primaryColor} from '../../../setup/config';
+import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
+
 
 import {
   fetchUserProfile,
@@ -37,11 +38,13 @@ import {dateDiff} from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   StyleSheet,
-  AsyncStorage,
+
   TouchableOpacity,
   FlatList,
   Modal,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // import Modal from "react-native-modal";
 import {NavigationEvents} from 'react-navigation';
 import {Loader} from '../../../components/ContentLoader';
@@ -343,7 +346,7 @@ class Profile extends Component {
         ) : (
           <Content style={styles.bodyContent}>
             <LinearGradient
-              colors={[primaryColor, '#C86DD7']}
+              colors={[primaryColor, secondaryColor]}
               style={{height: 180}}>
               <Grid>
                 <Row>
@@ -710,7 +713,7 @@ class Profile extends Component {
                                     {
                                       uploadData: item.idProof,
                                       data: item,
-                                      familyDocs:true
+                                      familyDocs: true,
                                     },
                                   )
                                 }>
@@ -1145,7 +1148,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     padding: 5,
     margin: 10,
-    backgroundColor: '#FF9500',
+    backgroundColor: primaryColor,
     borderRadius: 20,
     color: 'white',
     width: 150,
@@ -1189,7 +1192,7 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     height: 50,
     width: 50,
-    backgroundColor: '#C86DD7',
+    backgroundColor: primaryColor,
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 'auto',
@@ -1219,13 +1222,13 @@ const styles = StyleSheet.create({
   linkHeader: {
     fontFamily: 'OpenSans',
     fontSize: 15,
-    textDecorationColor: '#7F49C3',
+    textDecorationColor: primaryColor,
     textDecorationLine: 'underline',
-    color: '#7F49C3'
+    color: primaryColor,
   },
   ecardButton: {
     marginTop: 15,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 });

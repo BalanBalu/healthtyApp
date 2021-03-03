@@ -2,19 +2,15 @@
 import { SET_PATIENT_LOCATION_DATA } from '../../providers/bookappointment/bookappointment.action';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAP_BOX_TOKEN, CURRENT_APP_NAME } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import { BackHandler, Alert, AsyncStorage } from 'react-native';
+import { BackHandler, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from 'react-native-geolocation-service';
 import { requestCalendarPermissions, createCalendar } from '../../../setup/calendarEvent';
 import { store } from '../../../setup/store';
 import Axios from 'axios';
 import { CallKeepService } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
-if (!IS_ANDROID) {
-  Geolocation.setRNConfiguration({
-    skipPermissionRequests: false,
-    authorizationLevel: 'always'
-  });
-}
+
 
 
 export default class CurrentLocation {
@@ -50,7 +46,7 @@ export default class CurrentLocation {
         });
       } else {
         setTimeout(async () => {
-          Geolocation.requestAuthorization();
+          Geolocation.requestAuthorization('whenInUse');
           CallKeepService.setupCallkeep();
           // const permissionResult = await requestCalendarPermissions()
           // if (permissionResult === 'authorized') {

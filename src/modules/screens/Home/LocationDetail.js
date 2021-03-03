@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Text, Container, ListItem, List } from 'native-base';
 import { connect } from 'react-redux'
-import { View, FlatList, AsyncStorage } from 'react-native';
+import { View, FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
 

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Form, Content, Text, Toast, Button, ListItem, CheckBox, Radio, Card, Thumbnail, List, Item, Input, Left, Right, Icon, Footer, FooterTab } from 'native-base';
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, Platform, FlatList, ImageBackground, Alert, Linking, TextInput } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, Platform, FlatList, ImageBackground, Alert, Linking, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import styles from '../Styles'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
@@ -302,7 +304,7 @@ class HomeTestConfirmation extends Component {
 
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                             <Row>
-                                <Icon name="ios-cash" style={{ fontSize: 15, color: '#784EBC' }} />
+                                <Icon name="ios-cash" style={{ fontSize: 15, color: primaryColor }} />
                                 <Text style={styles.subTextBilling}> Billing Details</Text>
                             </Row>
                             <Row style={{ marginTop: 10 }}>

@@ -1,4 +1,5 @@
-import { AsyncStorage } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import ConnectyCube from 'react-native-connectycube';
 import {store} from '../../../../setup/store';
 import { setUserLoggedIn, authorizeConnectyCube } from './video-consulting-service';

@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { formatDate } from '../../../../setup/helpers';
-import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber,getNetworkHospitalAddress,truncateByString } from '../../../common'
+import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber,getNetworkHospitalAddress,truncateByString,calculateAge } from '../../../common'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfSearchByNetworkHospitalDetailsWithoutLoc } from '../../../providers/hospitalBookAppointmentFlow/action';
@@ -132,7 +132,8 @@ class PreAuth extends React.PureComponent {
       hospitalEmail: hospitalInfo.email || '',
       rohiniId: ''
     }
-    let memberInformation = this.props.navigation.getParam('memberInfo')
+    let memberInformation = this.props.navigation.getParam('memberInfo');
+
     let memberInfo = {
       patientName: this.getMemberName(memberInformation),
       contactNo: memberInformation.mobile || '',
@@ -146,6 +147,7 @@ class PreAuth extends React.PureComponent {
       dob: memberInformation.dob || new Date()
     }
     await this.setState({ networkHospList: networkHospList || [], hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
+
   }
   getMemberName(item) {
     let name = ''
@@ -170,7 +172,12 @@ class PreAuth extends React.PureComponent {
   handleOnlyDateTimePicker = (date) => {
     try {
       let temp = this.state.memberInfo
-      temp.dob = date
+      temp.dob = date;
+     const getAge= calculateAge(date);
+     if(getAge){
+      temp.patientAgeInYr=getAge.years;
+      temp.patientAgeMonth=getAge.months;
+     }
       this.setState({
         isOnlyDateTimePickerVisible: false,
         memberInfo: temp
@@ -573,7 +580,7 @@ class PreAuth extends React.PureComponent {
             <View style={{ flexDirection: 'row' }}>
               <TextInput
                 placeholder={'YY'}
-                value={memberInfo.patientAgeInYr}
+                value={String(memberInfo.patientAgeInYr)}
                 editable={memberInformation.patientAgeInYr === '' ? true : false}
                 onChangeText={text =>
                   this.setState({
@@ -590,7 +597,7 @@ class PreAuth extends React.PureComponent {
               />
               <TextInput
                 placeholder={'MM'}
-                value={memberInfo.patientAgeMonth}
+                value={String(memberInfo.patientAgeMonth)}
                 editable={memberInformation.patientAgeMonth === '' ? true : false}
                 onChangeText={text =>
                   this.setState({
@@ -1330,7 +1337,7 @@ class PreAuth extends React.PureComponent {
 const styles = StyleSheet.create({
   body: {
     backgroundColor: '#fff',
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
     display: 'flex',
   },
   buttonStyle: {
@@ -1356,7 +1363,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     color: '#3E4459',
     lineHeight: 26,
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
     marginRight: 20,
     marginTop: 20,
   },
@@ -1365,7 +1372,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     lineHeight: 30,
     fontSize: 17,
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
     paddingLeft: 20,
     paddingRight: 20,
     marginTop: 20,
@@ -1388,7 +1395,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'rgba(0,0,0,0.65)',
     marginTop: 18,
-    fontFamily: 'OpenSans, sans-serif',
+    fontFamily: 'OpenSans',
   },
   /* Hospital Details End */
 });

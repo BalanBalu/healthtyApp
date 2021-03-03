@@ -4,13 +4,14 @@ import {
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { NavigationEvents } from 'react-navigation';
-import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, Platform, ScrollView,ActivityIndicator } from 'react-native';
+import { StyleSheet, FlatList, TouchableOpacity, Platform, ScrollView,ActivityIndicator } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
 import { statusBar } from '../CommomPharmacy'
 import Spinner from '../../../../components/Spinner';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 import {primaryColor} from '../../../../setup/config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class MyOrdersList extends Component {
     constructor(props) {

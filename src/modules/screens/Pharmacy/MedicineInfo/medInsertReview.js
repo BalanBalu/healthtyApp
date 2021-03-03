@@ -4,13 +4,14 @@ import {
   Input, Left, Right, Icon, Footer, Badge, Form, CardItem, Toast, CheckBox
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, FlatList, TouchableHighlight, Modal } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { formatDate } from '../../../../setup/helpers';
 import StarRating from 'react-native-star-rating';
 import { InsertMedicineReviews, InsertOrderReviews } from '../../../providers/pharmacy/pharmacy.action'
 import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 import {primaryColor} from '../../../../setup/config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export class MedInsertReview extends Component {

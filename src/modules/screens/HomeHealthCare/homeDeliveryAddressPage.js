@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, Toast, View, Footer, Icon } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, } from 'react-native';
+import { StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../providers/profile/profile.action';

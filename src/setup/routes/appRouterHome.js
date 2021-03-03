@@ -91,6 +91,9 @@ import CancelService from '../../modules/screens/commonScreen/cancelService'
 import LabSearchList from '../../modules/screens/LabTest/labSearchList';
 import LabCategory from '../../modules/screens/LabTest/categories'
 
+import {primaryColor} from '../../setup/config';
+
+
 import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index'
 import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
@@ -190,7 +193,7 @@ const HomeStack = createStackNavigator({
         <View
           style={{
             height: IS_ANDROID ? 60 : 90,
-            backgroundColor: '#7F49C3',
+            backgroundColor: primaryColor,
             justifyContent: 'center',
           }}>
           <View
@@ -309,7 +312,7 @@ const HomeStack = createStackNavigator({
   
         ), */
       headerStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
       },
     })
   },
@@ -323,7 +326,7 @@ const HomeStack = createStackNavigator({
         <View
           style={{
             height: IS_ANDROID ? 60 : 90,
-            backgroundColor: '#7F49C3',
+            backgroundColor: primaryColor,
             justifyContent: 'center',
           }}>
           <View
@@ -387,7 +390,7 @@ const HomeStack = createStackNavigator({
 
 
       headerStyle: {
-        backgroundColor: '#7F49C3',
+        backgroundColor: primaryColor,
       },
     })
    },*/

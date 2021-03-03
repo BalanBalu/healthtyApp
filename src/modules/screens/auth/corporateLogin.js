@@ -6,7 +6,7 @@ import {
 import styles from '../../screens/auth/styles'
 import { getAllCompanyList, verifyEmployeeDetails } from '../../providers/auth/auth.actions'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { AsyncStorage, ScrollView, TouchableOpacity, ImageBackground, FlatList } from 'react-native';
+import { ScrollView, TouchableOpacity, ImageBackground, FlatList } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import OTPTextInput from 'react-native-otp-textinput';
 import Spinner from '../../../components/Spinner';

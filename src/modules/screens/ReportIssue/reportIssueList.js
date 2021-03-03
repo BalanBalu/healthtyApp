@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Radio, Row, Col, Form, Button, Toast, Footer, Left, Right, } from 'native-base';
-import { StyleSheet, TextInput, AsyncStorage, TouchableOpacity,ScrollView } from 'react-native'
+import { StyleSheet, TextInput, TouchableOpacity,ScrollView } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
