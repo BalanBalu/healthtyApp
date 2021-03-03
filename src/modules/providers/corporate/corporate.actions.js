@@ -55,7 +55,6 @@ export async function getEcardLink(bodyData) {
 
     return resp.data
   } catch (Ex) {
-
     return {
       success: false,
       statusCode: 500,
@@ -246,3 +245,21 @@ export async function getCorporateHelpLineEmail() {
   }
 }
 
+
+export async function postContactDetails(bodyData) {
+  try {
+    let endpoint = 'contact-us-request/create-request'
+
+
+    let resp = await smartHealthPostService(endpoint, bodyData)
+
+    return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}
