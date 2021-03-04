@@ -7,7 +7,7 @@ import {
   Icon,
   Card,
   Content,
-  CheckBox,
+  Item,
 } from 'native-base';
 import {
   FlatList,
@@ -25,7 +25,7 @@ import {getInsuranceByMemberId} from '../../providers/insurance/insurance.action
 import {dateDiff, formatDate} from '../../../setup/helpers';
 import moment from 'moment';
 
-const LIMIT = 3;
+const LIMIT = 5;
 
 class Insurance extends Component {
   constructor(props) {
@@ -104,7 +104,7 @@ class Insurance extends Component {
         </View>
       );
     }
-    const {data, isLoadingMoreData} = this.state;
+    const {data, isLoadingMoreData,isLoading} = this.state;
     return (
       <Container>
         <Content style={{padding: 10}}>
@@ -118,6 +118,10 @@ class Insurance extends Component {
               />
               <Text style={styles.addInsuranceText}>Add Insurance</Text>
             </TouchableOpacity>
+            {isLoading ?
+          <Loader style='list' />
+          :
+          data.length ?
             <FlatList
               data={data}
               keyExtractor={(item, index) => index.toString()}
@@ -191,6 +195,10 @@ class Insurance extends Component {
                 </Card>
               )}
             />
+            : <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No insurance policy list found!</Text>
+          </Item>
+      }
           </View>
           <Modal
             visible={this.state.descriptionVisible}

@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Container, Content, Text, Left, Right, View, Card} from 'native-base';
+import {Container, Content, Text, Left, Item, View, Card} from 'native-base';
 import {Col, Row} from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -325,7 +325,7 @@ class ClaimIntimationList extends PureComponent {
                   alignItems: 'center',
                 }}>
                 {' '}
-                No Pre Auth list found!
+                No claim intimation list found!
               </Text>
             </Item>
           )}
