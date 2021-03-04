@@ -9,8 +9,10 @@ import {
   Col,
   Row,
   Radio,
+  Card,
 } from 'native-base';
 import {
+  FlatList,
   View,
   StyleSheet,
   TextInput,
@@ -19,13 +21,22 @@ import {
   Image,
 } from 'react-native';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {primaryColor} from '../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {formatDate, subTimeUnit,addTimeUnit} from '../../../setup/helpers';
+import {formatDate, subTimeUnit, addTimeUnit} from '../../../setup/helpers';
 import {smartHealthGetService} from '../../../setup/services/httpservices';
+import {createMemberInsurance} from '../../providers/insurance/insurance.action';
+import {ImageUpload} from '../../screens/commonScreen/imageUpload';
+import {toastMeassage, RenderDocumentUpload} from '../../common';
+import {uploadImage} from '../../providers/common/common.action';
+import styles from './styles';
+import IconName from 'react-native-vector-icons/MaterialIcons';
+import ModalPopup from '../../../components/Shared/ModalPopup';
 
 const ProductTypeList = [
   'Choose Product Type',
@@ -34,12 +45,12 @@ const ProductTypeList = [
   'Personal accident',
   'Term life',
 ];
-const TPAorPayerList = [
-  'Choose TPA/Payer',
-  'New India Assurance Company Limited',
-  'Oriental Insurance Company Limited',
-  'National Insurance Company Limited',
-];
+// const TPAorPayerList = [
+//   'Choose TPA/Payer',
+//   'New India Assurance Company Limited',
+//   'Oriental Insurance Company Limited',
+//   'National Insurance Company Limited',
+// ];
 
 class AddInsurance extends PureComponent {
   constructor(props) {
@@ -47,13 +58,18 @@ class AddInsurance extends PureComponent {
     this.state = {
       insuranceCompany: '',
       productName: null,
-      productType: null,
+      productType: '',
       policyNo: null,
-      motorType: 'Two Wheeler',
+      tpaName: '',
+      motorType: '',
       policyAmount: 0,
       renewal: true,
       isStartDateTimePickerVisible: false,
       isEndDateTimePickerVisible: false,
+      selectOptionPoopup: false,
+      uploadData: [],
+      isModalVisible: false,
+      errorMsg: '',
     };
     this.initialTpaList = [];
   }
@@ -66,15 +82,123 @@ class AddInsurance extends PureComponent {
       const endPoint = 'tpa-master';
       const tpaListResp = await smartHealthGetService(endPoint);
       if (tpaListResp && tpaListResp.data && tpaListResp.data.length) {
-        // tpaListResp.data.map(ele=>{
-        //     this.initialTpaList.push(ele.tpaName)
-        // })
-        // console.log("this.initialTpaList",this.initialTpaList)
         this.setState({tpaList: tpaListResp.data});
         this.initialTpaList = tpaListResp.data;
       }
     } catch (error) {
       console.log('Ex is getting on get All TPA list', error.message);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+
+  createMemberInsurance = async () => {
+    const {
+      insuranceCompany,
+      productName,
+      productType,
+      tpaName,
+      motorType,
+      policyNo,
+      startDate,
+      endDate,
+      policyAmount,
+      uploadData,
+    } = this.state;
+    try {
+      if (!insuranceCompany) {
+        this.setState({
+          errorMsg: 'Please select insurance company name',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (!productType || productType == 'Choose Product Type') {
+        this.setState({
+          errorMsg: 'Please select product type',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (productType == 'Health' && !tpaName) {
+        this.setState({
+          errorMsg: 'Please select TPA name',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (productType == 'Motor' && !motorType) {
+        this.setState({
+          errorMsg: 'Please select motor type',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (!productName) {
+        this.setState({
+          errorMsg: 'Please Enter product name',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (!policyNo) {
+        this.setState({
+          errorMsg: 'Please Enter Policy number',
+          isModalVisible: true,
+        });
+        return false;
+      }
+
+      if (!startDate) {
+        this.setState({
+          errorMsg: 'Please Choose policy start date',
+          isModalVisible: true,
+        });
+        return false;
+      }
+
+      if (!policyAmount) {
+        this.setState({
+          errorMsg: 'Please Enter policy amount',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (uploadData && uploadData.length == 0) {
+        this.setState({
+          errorMsg: 'Please upload your policy copy',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      this.setState({isLoading: true});
+      let memberId = await AsyncStorage.getItem('memberId');
+      const insuranceData = {
+        memberId: memberId,
+        insuranceName: String(insuranceCompany),
+        productName: productName,
+        productType: productType,
+        tpaName: String(tpaName) || null,
+        motorType: motorType || null,
+        policyNo: policyNo,
+        policyStartDate: startDate,
+        policyEndDate: endDate,
+        Amount: Number(policyAmount),
+        isRenewal: true,
+        policyCopy: uploadData,
+      };
+
+      let result = await createMemberInsurance(insuranceData);
+      if (result) {
+        toastMeassage(
+          'Your insurance details is submited successfully',
+          'success',
+          1000,
+        );
+        this.props.navigation.navigate('CorporateHome');
+      }
+    } catch (error) {
+      console.log('Ex is getting on', error.message);
     } finally {
       this.setState({isLoading: false});
     }
@@ -86,12 +210,14 @@ class AddInsurance extends PureComponent {
   hideStartDateTimePicker = () => {
     this.setState({isStartDateTimePickerVisible: false});
   };
-  handleStartDateTimePicker = date => {
+  handleStartDateTimePicker = (date) => {
     try {
       this.endDateCal = moment(date).add(365, 'd');
-    //   console.log(' date', date);
-    //   console.log(' this.endDateCal', );
-      this.setState({startDate: date,endDate:this.endDateCal.format(), isStartDateTimePickerVisible: false});
+      this.setState({
+        startDate: date,
+        endDate: this.endDateCal.format(),
+        isStartDateTimePickerVisible: false,
+      });
     } catch (error) {
       console.error('Error on Date Picker: ', error);
     }
@@ -102,11 +228,41 @@ class AddInsurance extends PureComponent {
   hideStartDateTimePicker = () => {
     this.setState({isEndDateTimePickerVisible: false});
   };
-  handleEndDateTimePicker = date => {
+  handleEndDateTimePicker = (date) => {
     try {
-      this.setState({endDate: date,isEndDateTimePickerVisible: false});
+      this.setState({endDate: date, isEndDateTimePickerVisible: false});
     } catch (error) {
       console.error('Error on Date Picker: ', error);
+    }
+  };
+  imageUpload = async (data) => {
+    this.setState({selectOptionPoopup: false});
+    if (data.image !== null) {
+      await this.uploadImageToServer(data.image);
+    }
+  };
+
+  uploadImageToServer = async (imagePath) => {
+    try {
+      this.setState({isLoadingUploadDocs: true});
+      let appendForm = 'policyCopy';
+      let endPoint = 'images/upload?path=policyCopy';
+      const response = await uploadImage(imagePath, endPoint, appendForm);
+      if (response.success) {
+        this.uploadedData = [...this.state.uploadData, ...response.data];
+        await this.setState({uploadData: this.uploadedData});
+        toastMeassage('Image upload successfully', 'success', 1000);
+      } else {
+        toastMeassage(
+          'Problem Uploading Picture' + response.error,
+          'danger',
+          3000,
+        );
+      }
+    } catch (e) {
+      toastMeassage('Problem Uploading Picture' + e, 'danger', 3000);
+    } finally {
+      this.setState({isLoadingUploadDocs: false});
     }
   };
 
@@ -115,7 +271,7 @@ class AddInsurance extends PureComponent {
       insuranceCompany,
       productName,
       productType,
-      TPAorPayer,
+      tpaName,
       motorType,
       policyNo,
       startDate,
@@ -123,6 +279,10 @@ class AddInsurance extends PureComponent {
       policyAmount,
       isStartDateTimePickerVisible,
       isEndDateTimePickerVisible,
+      selectOptionPoopup,
+      uploadData,
+      isModalVisible,
+      errorMsg,
     } = this.state;
     return (
       <Container>
@@ -189,6 +349,7 @@ class AddInsurance extends PureComponent {
                       marginTop: 5,
                     }}>
                     <SectionedMultiSelect
+                      IconRenderer={IconName}
                       styles={{
                         selectToggleText:
                           Platform.OS === 'ios'
@@ -272,7 +433,7 @@ class AddInsurance extends PureComponent {
                       showChips={false}
                       single={true}
                       readOnlyHeadings={false}
-                      onSelectedItemsChange={name =>
+                      onSelectedItemsChange={(name) =>
                         this.setState({insuranceCompany: name})
                       }
                       selectedItems={insuranceCompany}
@@ -308,20 +469,6 @@ class AddInsurance extends PureComponent {
                   </Col>
                 </TouchableOpacity>
 
-                <Text style={styles.subHeadingText}>Product Name</Text>
-                <TextInput
-                  placeholder="Enter Product Name"
-                  placeholderTextColor={'#909090'}
-                  style={styles.textInputStyle}
-                  placeholderStyle={{marginTop: 2}}
-                  value={productName}
-                  onChangeText={text =>
-                    this.setState({
-                      productName: text,
-                    })
-                  }
-                />
-
                 <Text style={styles.subHeadingText}>Select Product Type</Text>
 
                 <View style={styles.formStyle6}>
@@ -343,7 +490,7 @@ class AddInsurance extends PureComponent {
                     }}
                     itemTextStyle={{color: '#5cb85c'}}
                     style={{width: undefined, color: '#000'}}
-                    onValueChange={sample => {
+                    onValueChange={(sample) => {
                       this.setState({productType: sample});
                     }}
                     selectedValue={productType}
@@ -363,45 +510,135 @@ class AddInsurance extends PureComponent {
                   <View>
                     <Text style={styles.subHeadingText}>Select TPA/Payer </Text>
 
-                    <View style={styles.formStyle6}>
-                      <Picker
-                        style={styles.userDetailLabel}
-                        mode="dropdown"
-                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
-                        iosIcon={
-                          <Icon
-                            name="ios-arrow-down"
-                            style={{
-                              color: 'gray',
-                              fontSize: 20,
-                              marginLeft: 170,
-                            }}
-                          />
-                        }
-                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
-                        note={false}
-                        itemStyle={{
-                          paddingLeft: 10,
-                          fontSize: 16,
-                        }}
-                        itemTextStyle={{color: '#5cb85c'}}
-                        style={{width: undefined, color: '#000'}}
-                        onValueChange={sample => {
-                          this.setState({TPAorPayer: sample});
-                        }}
-                        selectedValue={TPAorPayer}
-                        testID="editBloodGroup">
-                        {TPAorPayerList.map((value, key) => {
-                          return (
-                            <Picker.Item
-                              label={String(value)}
-                              value={String(value)}
-                              key={key}
+                    <TouchableOpacity>
+                      <Col
+                        size={10}
+                        style={{
+                          borderRadius: 6,
+                          borderColor: '#E0E1E4',
+                          borderWidth: 2,
+                          justifyContent: 'center',
+                          height: 40,
+                          paddingTop: 10,
+                          fontFamily: 'Helvetica-Light',
+                          marginTop: 5,
+                        }}>
+                        <SectionedMultiSelect
+                          IconRenderer={IconName}
+                          styles={{
+                            selectToggleText:
+                              Platform.OS === 'ios'
+                                ? {
+                                    color: '#000',
+                                    fontSize: 16,
+                                    height: 20,
+                                    fontFamily: 'Helvetica-Light',
+                                  }
+                                : {
+                                    color: '#909090',
+                                    fontSize: 16,
+                                    fontFamily: 'Helvetica-Light',
+                                  },
+                            chipIcon: {
+                              color: '#000',
+                            },
+                            itemText: {
+                              fontSize: 16,
+                              marginLeft: 5,
+                              marginBottom: 5,
+                              height: 35,
+                              marginTop: 8,
+                              borderRadius: 5,
+                              fontFamily: 'Helvetica-Light',
+                              borderWidth: 1,
+                            },
+                            button: {
+                              backgroundColor: '#128283',
+                              fontFamily: 'Helvetica-Light',
+                            },
+                            cancelButton: {
+                              backgroundColor: '#000',
+                              fontFamily: 'Helvetica-Light',
+                            },
+                          }}
+                          selectedIconComponent={
+                            <View
+                              style={{
+                                height: 24,
+                                width: 24,
+                                borderWidth: 1,
+                                borderColor: 'gray',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: 5,
+                              }}>
+                              <MaterialIcons
+                                name="check"
+                                style={{
+                                  fontSize: 20,
+                                  marginHorizontal: 3,
+                                  color: 'green',
+                                  textAlign: 'center',
+                                }}
+                              />
+                            </View>
+                          }
+                          unselectedIconComponent={
+                            <View
+                              style={{
+                                height: 24,
+                                width: 24,
+                                borderWidth: 1,
+                                borderColor: 'gray',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: 5,
+                              }}
                             />
-                          );
-                        })}
-                      </Picker>
-                    </View>
+                          }
+                          items={this.initialTpaList}
+                          uniqueKey="tpaName"
+                          displayKey="tpaName"
+                          selectText={tpaName ? '' : 'Choose your TPA or Payer'}
+                          modalWithTouchable={true}
+                          showDropDowns={true}
+                          hideSearch={false}
+                          showChips={false}
+                          single={true}
+                          readOnlyHeadings={false}
+                          onSelectedItemsChange={(name) =>
+                            this.setState({tpaName: name})
+                          }
+                          selectedItems={tpaName}
+                          colors={{primary: '#18c971'}}
+                          showCancelButton={true}
+                          animateDropDowns={true}
+                          selectToggleIconComponent={
+                            <MaterialIcons
+                              name="keyboard-arrow-down"
+                              style={
+                                Platform.OS === 'ios'
+                                  ? {
+                                      fontSize: 20,
+                                      marginHorizontal: 6,
+                                      color: '#909090',
+                                      textAlign: 'center',
+                                      marginTop: 5,
+                                    }
+                                  : {
+                                      fontSize: 25,
+                                      marginHorizontal: 6,
+                                      color: '#909090',
+                                      textAlign: 'center',
+                                      marginTop: 10,
+                                    }
+                              }
+                            />
+                          }
+                          confirmText={tpaName ? 'Confirm' : 'Please Select'}
+                        />
+                      </Col>
+                    </TouchableOpacity>
                   </View>
                 ) : null}
                 {productType === 'Motor' ? (
@@ -433,6 +670,19 @@ class AddInsurance extends PureComponent {
                     </View>
                   </View>
                 ) : null}
+                <Text style={styles.subHeadingText}>Product Name</Text>
+                <TextInput
+                  placeholder="Enter Product Name"
+                  placeholderTextColor={'#909090'}
+                  style={styles.textInputStyle}
+                  placeholderStyle={{marginTop: 2}}
+                  value={productName}
+                  onChangeText={(text) =>
+                    this.setState({
+                      productName: text,
+                    })
+                  }
+                />
                 <Text style={styles.subHeadingText}>Policy Number</Text>
                 <TextInput
                   placeholder="Enter Policy Number"
@@ -441,7 +691,7 @@ class AddInsurance extends PureComponent {
                   placeholderStyle={{marginTop: 2}}
                   //   keyboardType={'number-pad'}
                   value={policyNo}
-                  onChangeText={policyNo => this.setState({policyNo})}
+                  onChangeText={(policyNo) => this.setState({policyNo})}
                 />
                 <View>
                   <Text style={styles.subHeadingText}>Select Start Date</Text>
@@ -493,7 +743,11 @@ class AddInsurance extends PureComponent {
                       />
                       <DateTimePicker
                         mode={'date'}
-                        minimumDate={addTimeUnit(new Date(this.state.startDate), 1, 'days')}
+                        minimumDate={addTimeUnit(
+                          new Date(this.state.startDate),
+                          1,
+                          'days',
+                        )}
                         value={endDate}
                         isVisible={isEndDateTimePickerVisible}
                         onConfirm={this.handleEndDateTimePicker}
@@ -522,7 +776,7 @@ class AddInsurance extends PureComponent {
                   placeholderStyle={{marginTop: 2}}
                   keyboardType={'number-pad'}
                   value={policyAmount}
-                  onChangeText={number =>
+                  onChangeText={(number) =>
                     this.setState({
                       policyAmount: number,
                     })
@@ -562,14 +816,55 @@ class AddInsurance extends PureComponent {
                   </View>
                 </View> */}
                 <Text style={styles.subHeadingText}>
-                  Upload Your Adhar Card Copy
+                  Upload Your Policy Copy
                 </Text>
-                <Image
-                  source={require('../../../../assets/images/documentuploadgreen.png')}
-                  style={{width: 100, height: 55, marginTop: 10}}
+                <TouchableOpacity
+                  onPress={() => this.setState({selectOptionPoopup: true})}>
+                  <Image
+                    source={require('../../../../assets/images/documentuploadgreen.png')}
+                    style={{width: 100, height: 55, marginTop: 10}}
+                  />
+                </TouchableOpacity>
+                {selectOptionPoopup ? (
+                  <ImageUpload
+                    popupVisible={(data) => this.imageUpload(data)}
+                  />
+                ) : null}
+                <FlatList
+                  data={uploadData}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item, index}) => (
+                    <View>
+                      <Card style={styles.cardStyles}>
+                        <Row>
+                          <Col style={{width: '10%'}}>
+                            <Image
+                              source={RenderDocumentUpload(item)}
+                              style={{width: 25, height: 25}}
+                            />
+                          </Col>
+                          <Col style={{width: '70%'}}>
+                            <Text style={styles.innerCardText}>
+                              {item.original_file_name}
+                            </Text>
+                          </Col>
+                        </Row>
+                      </Card>
+                    </View>
+                  )}
                 />
               </Form>
             </ScrollView>
+          </View>
+          <View style={{flex: 1}}>
+            <ModalPopup
+              errorMessageText={errorMsg}
+              closeButtonText={'CLOSE'}
+              closeButtonAction={() =>
+                this.setState({isModalVisible: !isModalVisible})
+              }
+              visible={isModalVisible}
+            />
           </View>
         </Content>
         <TouchableOpacity
@@ -579,7 +874,8 @@ class AddInsurance extends PureComponent {
             height: 45,
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+          onPress={() => this.createMemberInsurance()}>
           <Text
             style={{
               fontSize: 16,
@@ -596,55 +892,3 @@ class AddInsurance extends PureComponent {
 }
 
 export default AddInsurance;
-
-const styles = StyleSheet.create({
-  formStyle6: {
-    borderColor: '#909090',
-    borderWidth: 0.5,
-    height: 35,
-    marginTop: 10,
-    justifyContent: 'center',
-    borderRadius: 5,
-  },
-  subHeadingText: {
-    fontSize: 16,
-    fontFamily: 'OpenSans',
-    marginTop: 25,
-    fontWeight: '700',
-  },
-  textInputStyle: {
-    borderColor: '#909090',
-    borderWidth: 1,
-    height: 35,
-    marginTop: 8,
-    borderRadius: 5,
-  },
-  searchSection: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderColor: '#909090',
-    borderWidth: 1,
-    height: 30,
-    borderRadius: 5,
-    marginTop: 8,
-  },
-  searchIcon: {
-    // padding: 1,
-  },
-  input: {
-    flex: 1,
-    paddingTop: 2,
-    paddingRight: 2,
-    paddingBottom: 2,
-    paddingLeft: 0,
-    backgroundColor: '#fff',
-    color: '#909090',
-  },
-  radioButtonStyle: {
-    fontSize: 14,
-    fontFamily: 'OpenSans',
-  },
-});

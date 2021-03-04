@@ -42,3 +42,32 @@ export async function getInsuranceById(id) {
         }
     }
 }
+
+export async function createMemberInsurance(reqBodyData) {
+    try {
+        const endpoint = 'member-wallet';
+        const resp = await smartHealthPostService(endpoint, reqBodyData)
+        return resp.data
+      } catch (Ex) {
+        return {
+          success: false,
+          statusCode: 500,
+          error: Ex.message,
+        }
+      }
+}
+
+export async function getInsuranceByMemberId(memberId,page,limit) {
+    try {
+        let endPoint = 'member-wallet/page?memberId='+memberId+'&p='+page+'&l='+limit;
+        let response = await smartHealthGetService(endPoint);
+        let respData = response.data;
+        return respData;
+
+    } catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
