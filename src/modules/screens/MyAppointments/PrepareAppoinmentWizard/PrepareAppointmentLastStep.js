@@ -38,7 +38,7 @@ class PrepareAppointmentLastStep extends PureComponent {
                         type: "success",
                         duration: 3000,
                     })
-                    this.props.navigation.navigate('Home');
+                    this.props.navigation.navigate('CorporateHome');
                 }
             }
             catch (e) {

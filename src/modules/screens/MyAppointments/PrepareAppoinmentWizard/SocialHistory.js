@@ -83,7 +83,7 @@ class SocialHistory extends PureComponent {
                     duration: 3000,
                 })
                 this.skippingButton(false);
-                this.props.navigation.navigate('EmrInfo', { AppointmentId: appointmentId });
+                this.props.navigation.navigate('PrepareAppointmentLastStep', { AppointmentId: appointmentId });
             }
         }else{
             Toast.show({
@@ -298,7 +298,7 @@ class SocialHistory extends PureComponent {
                                 <TouchableOpacity style={styles.skipButton}
                                     onPress={() => {
                                         prepareAppointmentUpdate(this.state.appointmentId, { has_skip_social_history: true });
-                                        this.props.navigation.navigate('EmrInfo', { AppointmentId: this.state.appointmentId });
+                                        this.props.navigation.navigate('PrepareAppointmentLastStep', { AppointmentId: this.state.appointmentId });
                                     }}>
                                     <Text style={styles.touchText}>Skip</Text>
                                 </TouchableOpacity>
