@@ -17,6 +17,7 @@ import { validatePromoCode, applyPromoCode } from '../../providers/PromoCode/pro
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
 import {primaryColor} from '../../../setup/config'
+import IconName from 'react-native-vector-icons/MaterialIcons'
 
 import { NavigationEvents } from 'react-navigation';
 
@@ -933,6 +934,7 @@ class PaymentPage extends Component {
                                             color={{ primary: '#3f51b5' }}
                                             showDropDowns={true}
                                             single={true}
+                                            IconRenderer={IconName}
                                             onSelectedItemsChange={this.onSelectedItemsChange}
                                             selectedItems={this.state.selectedItems}
                                             hideConfirm={true}

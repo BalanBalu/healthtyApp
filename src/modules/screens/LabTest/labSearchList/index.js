@@ -22,6 +22,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { color } from 'react-native-reanimated';
 import moment from 'moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import IconName from 'react-native-vector-icons/MaterialIcons'
 
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 let labListOrder = 'ASC';
@@ -779,6 +780,7 @@ class labSearchList extends Component {
                                                                     color: '#909090',
                                                                 },
                                                             }}
+                                                            IconRenderer={IconName}
                                                             items={this.state.subCategoryInfoList}
                                                             uniqueKey='category_name'
                                                             displayKey='category_name'

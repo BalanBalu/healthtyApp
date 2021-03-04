@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Radio, Title, ListItem } from 'native-base';
+import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col,Icon, Content, Header, Left, Radio, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER } from '../../providers/BookAppointmentFlow/action'
 import { connect } from 'react-redux'
 import { store } from '../../../setup/store';
 import {primaryColor} from '../../../setup/config'
+import IconName from 'react-native-vector-icons/MaterialIcons'
 
 let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
 let selectedCount = 0
@@ -366,6 +367,7 @@ class FilterDocInfo extends Component {
                                     },
 
                                 }}
+                                IconRenderer={IconName}
                                 items={languageList}
                                 uniqueKey='value'
                                 displayKey='value'
@@ -398,6 +400,7 @@ class FilterDocInfo extends Component {
                                     },
 
                                 }}
+                                IconRenderer={IconName}
                                 items={specialistInfoList}
                                 uniqueKey='value'
                                 displayKey='value'
@@ -430,6 +433,7 @@ class FilterDocInfo extends Component {
                                     },
 
                                 }}
+                                IconRenderer={IconName}
                                 items={hospitalInfoList}
                                 uniqueKey='value'
                                 displayKey='value'

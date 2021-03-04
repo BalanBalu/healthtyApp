@@ -178,7 +178,7 @@ export const PolicyCoverageCard = props => {
 
                                     textAlign: 'center',
                                     marginTop: 8
-                                }}>Rs. {data.balSumInsured ? data.balSumInsured : 0}</Text>
+                                }}>{data.balSumInsured ? data.balSumInsured : 0}</Text>
                             <Text
                                 style={{
                                     color: '#128283',

@@ -6,6 +6,7 @@ import { SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER } from '../../providers/BookApp
 import { connect } from 'react-redux';
 import { store } from '../../../setup/store';
 import {primaryColor} from '../../../setup/config'
+import IconName from 'react-native-vector-icons/MaterialIcons'
 
 let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
 let selectedCount = 0
@@ -332,6 +333,7 @@ class FilterDocInfo extends Component {
                                     },
 
                                 }}
+                                IconRenderer={IconName}
                                 items={languageList}
                                 uniqueKey='value'
                                 displayKey='value'
@@ -364,6 +366,7 @@ class FilterDocInfo extends Component {
                                     },
 
                                 }}
+                                IconRenderer={IconName}
                                 items={specialistInfoList}
                                 uniqueKey='value'
                                 displayKey='value'
