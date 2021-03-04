@@ -567,7 +567,7 @@ class PreAuth extends React.PureComponent {
             {this.state.contactNoErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.contactNoErrorMsg}</Text>
               : null}
-            <Text style={styles.inputLabel}>D. Alternate Concat No</Text>
+            <Text style={styles.inputLabel}>D. Alternate Contact No</Text>
             <TextInput
               placeholder={'Enter alternate contact no'}
 
