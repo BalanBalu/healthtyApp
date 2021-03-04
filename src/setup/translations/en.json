@@ -115,7 +115,13 @@
     "Contact Us":"Contact Us",
     "Doctor Consultation":"Doctor Consultation",
     "Lab Test" :"Lab Test",
-    "Network Hospital":"Network Hospital"
+    "Network Hospital":"Network Hospital",
+    "Appointments":"Appointments",
+    "Doctor Appointments":"Doctor Appointments",
+    "Home Appointments":"Home Appointments",
+    "Lab Appointments":"Lab Appointments",
+    "Tele Consultation":"Tele Consultation",
+    "Claim Status": "Claim Status"
 
 
     

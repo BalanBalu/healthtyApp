@@ -142,6 +142,8 @@ import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
 import { smartHealthStack } from './smartHealtStack'
 import ContactUs from '../../modules/screens/contactUs'
+import PolicyStatus from '../../modules/screens/policyStatus'
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -235,7 +237,7 @@ const HomeStack = createStackNavigator({
               <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
                   <View>
-                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold',fontSize:25 }}></Icon>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
                       <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
                   </View>
@@ -464,7 +466,7 @@ const HomeStack = createStackNavigator({
       ),
     })
   },
- 
+
   ///  =============Appointments Stack ==================
   "My Appointments": {
     screen: MyAppoinmentList,
@@ -588,8 +590,8 @@ const HomeStack = createStackNavigator({
       title: navigation.getParam("tittle"),
     }),
   },
-   ///  =============Contact Us ==================
-   ContactUs: {
+  ///  =============Contact Us ==================
+  ContactUs: {
     screen: ContactUs,
     navigationOptions: {
       title: 'ContactUs',
@@ -709,6 +711,12 @@ const HomeStack = createStackNavigator({
     screen: Ecard,
     navigationOptions: {
       title: 'Ecard Details'
+    }
+  },
+  PolicyStatus: {
+    screen: PolicyStatus,
+    navigationOptions: {
+      title: 'Claim Status'
     }
   },
   //================  MedicineRecords ===============
@@ -1255,8 +1263,13 @@ const drawerNavigatorRoutes = {
   },
   "My Chats": {
     screen: MyChats,
-    routeName: 'My Chats'
+    routeName: 'My Chats',
 
+
+  },
+  PolicyStatus: {
+    screen: PolicyStatus,
+    routeName: 'PolicyStatus'
   },
   'My Video Consultations': {
     screen: VideoConsultaions,
@@ -1306,7 +1319,7 @@ const drawerNavigatorRoutes = {
     screen: ContactUs,
     routeName: "ContactUs"
   },
-  
+
 
 }
 export const corporateUserSideBarMenuList = [
@@ -1324,103 +1337,121 @@ export const corporateUserSideBarMenuList = [
         name: 'E Card',
         routeName: drawerNavigatorRoutes['E Card'].routeName,
         icon: require('../../../assets/images/drawerIcons/EcardDesign.png'),
-        largeIcon:{height: 15, width: 28}
+        largeIcon: { height: 15, width: 28, marginRight: 10 },
+        appoinmentSubMenus: []
       },
       {
         name: 'Insurance',
         routeName: drawerNavigatorRoutes['Insurance'].routeName,
         icon: require('../../../assets/images/drawerIcons/Insurance.png'),
-        largeIcon:{height: 25, width: 28}
-      }]
-  },
-  {
-    menuName: 'Services',
-    subMenus: [
+        largeIcon: { height: 25, width: 28, marginRight: 10 },
+        appoinmentSubMenus: []
+      },
       {
-        name: 'Home Health Care',
-        routeName: 'Home Healthcare Address List', // drawerNavigatorRoutes["Home Health Care"].routeName,
-        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
-        params: {
-          fromNavigation: "HOME_HEALTH_CARE"
-        },
-        largeIcon:{height: 20, width: 20,}
+        name: 'Claim Status',
+        routeName: drawerNavigatorRoutes['PolicyStatus'].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon: { height: 20, width: 20, marginRight: 16 },
+        appoinmentSubMenus: []
+      },
+      {
+        name: 'Appointments',
+        routeName: [],
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon: { height: 20, width: 20, },
+        appoinmentSubMenus: [
+          {
+            name: 'Doctor Appointments',
+            routeName: drawerNavigatorRoutes["My Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            largeIcon: { height: 20, width: 20, }
+          },
+          {
+            name: 'Home Appointments',
+            routeName: drawerNavigatorRoutes["My Home Healthcare Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            largeIcon: { height: 20, width: 20, }
+          },
 
-      },
-      {
-        name: 'Doctor Consultation',
-        routeName: 'Categories', 
-        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
-        largeIcon:{height: 20, width: 20,}
-      },
-      {
-        name: 'Lab Test',
-        routeName: 'Lab Test', 
-        icon: require('../../../assets/images/drawerIcons/labTest.png'),
-        largeIcon:{height: 21, width: 19,}
-      },
-      {
-        name: 'Network Hospital',
-        routeName: 'TpaList', 
-        icon: require('../../../assets/images/drawerIcons/homeTest.png'),
-        largeIcon:{height: 20, width: 20,}
-      },
-      {
-        name: 'Video and Chat',
-        routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
-        icon: require('../../../assets/images/drawerIcons/ChatVideo.png'),
-        largeIcon:{height: 22, width: 20,}
 
-      }
-    ]
-  },
-  {
-    menuName: 'Orders and Consultations',
-    subMenus: [
-      {
-        name: 'My Appointments',
-        routeName: drawerNavigatorRoutes["My Appointments"].routeName,
-        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-        largeIcon:{height: 20, width: 20,}
-      },
-      {
-        name: 'My Home Healthcare Appointments',
-        routeName: drawerNavigatorRoutes["My Home Healthcare Appointments"].routeName,
-        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-        largeIcon:{height: 20, width: 20,}
-      },
-      {
-        name: 'My Chat Consultations',
-        routeName: drawerNavigatorRoutes["My Chats"].routeName,
-        icon: require('../../../assets/images/drawerIcons/Chat.png'),
-        largeIcon:{height: 20, width: 20,}
-      },
-      {
-        name: 'My Video Consultations',
-        routeName: drawerNavigatorRoutes["My Video Consultations"].routeName,
-        icon: require('../../../assets/images/drawerIcons/Chat.png'),
-        largeIcon:{height: 20, width: 20,}
-      },
-      {
-        name: 'My Lab Test Appointments',
-        routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
-        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-        largeIcon:{height: 20, width: 20,}
+          {
+            name: 'Lab Appointments',
+            routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            largeIcon: { height: 20, width: 20, }
+          },
+          {
+            name: 'Tele Consultation',
+            routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Chat.png'),
+            largeIcon: { height: 20, width: 20, }
+          },
+        ]
       },
       {
         name: 'Health Records',
         routeName: drawerNavigatorRoutes["Health Records"].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-        largeIcon:{height: 20, width: 20,}
+        largeIcon: { height: 20, width: 20, marginRight: 16 },
+        appoinmentSubMenus: []
       },
       {
         name: 'Contact Us',
         routeName: drawerNavigatorRoutes["ContactUs"].routeName,
         icon: require('../../../assets/images/drawerIcons/ContactUsIcon.png'),
         largeIcon: 'Contact Us',
-        largeIcon:{height: 14, width: 20,}
-      },
+        largeIcon: { height: 14, width: 20, marginRight: 16 },
+        appoinmentSubMenus: []
+      },]
+  },
+
+  // {
+  //   menuName: 'Services',
+  //   subMenus: [
+  //     {
+  //       name: 'Home Health Care',
+  //       routeName: 'Home Healthcare Address List', // drawerNavigatorRoutes["Home Health Care"].routeName,
+  //       icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+  //       params: {
+  //         fromNavigation: "HOME_HEALTH_CARE"
+  //       },
+  //       largeIcon:{height: 20, width: 20,}
+
+  //     },
+  //     {
+  //       name: 'Doctor Consultation',
+  //       routeName: 'Categories', 
+  //       icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+  //       largeIcon:{height: 20, width: 20,}
+  //     },
+  //     {
+  //       name: 'Lab Test',
+  //       routeName: 'Lab Test', 
+  //       icon: require('../../../assets/images/drawerIcons/labTest.png'),
+  //       largeIcon:{height: 21, width: 19,}
+  //     },
+  //     {
+  //       name: 'Network Hospital',
+  //       routeName: 'TpaList', 
+  //       icon: require('../../../assets/images/drawerIcons/homeTest.png'),
+  //       largeIcon:{height: 20, width: 20,}
+  //     },
+  //     {
+  //       name: 'Video and Chat',
+  //       routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+  //       icon: require('../../../assets/images/drawerIcons/ChatVideo.png'),
+  //       largeIcon:{height: 22, width: 20,}
+
+  //     }
+  //   ]
+  // },
+
+  {
+    menuName: 'Insurance Services',
+    menuForCorporateUser: true,
+    subMenus: [
     ]
-  }
+  },
 ]
 
 const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
@@ -1441,7 +1472,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             name: 'E Card',
             routeName: drawerNavigatorRoutes['E Card'].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
-           
+
           },
           {
             name: 'Insurance',
@@ -1582,7 +1613,7 @@ const SmDrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
         subMenus: [
           {
             name: 'Home Health Care',
-            routeName: 'Home Healthcare Address List', 
+            routeName: 'Home Healthcare Address List',
             icon: require('../../../assets/images/drawerIcons/homeTest.png'),
             params: {
               fromNavigation: "HOME_HEALTH_CARE"
@@ -1591,17 +1622,17 @@ const SmDrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
           },
           {
             name: 'Consultation',
-            routeName: 'Categories', 
+            routeName: 'Categories',
             icon: require('../../../assets/images/drawerIcons/homeTest.png'),
           },
           {
             name: 'Lab Test',
-            routeName: 'Lab Test', 
+            routeName: 'Lab Test',
             icon: require('../../../assets/images/drawerIcons/homeTest.png'),
           },
           {
             name: 'Network Hospital',
-            routeName: 'TpaList', 
+            routeName: 'TpaList',
             icon: require('../../../assets/images/drawerIcons/homeTest.png'),
           },
           {
