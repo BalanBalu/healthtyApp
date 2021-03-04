@@ -38,6 +38,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import {ImageUpload} from '../../screens/commonScreen/imageUpload';
 import {uploadImage} from '../../providers/common/common.action';
 import {primaryColor} from '../../../setup/config';
+import IconName from 'react-native-vector-icons/MaterialIcons'
 
 
 class UpdateFamilyMembers extends Component {
@@ -378,6 +379,7 @@ class UpdateFamilyMembers extends Component {
                   <View style={styles.transparentLabel2}>
                     <SectionedMultiSelect
                       items={relationship}
+                      IconRenderer={IconName}
                       uniqueKey="value"
                       displayKey="value"
                       selectText="Select relation"

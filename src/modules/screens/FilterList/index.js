@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Radio, Title, ListItem } from 'native-base';
+import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Header,Icon, Left, Radio, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { connect } from 'react-redux'
 import { translate } from "../../../setup/translator.helper"
 import {primaryColor} from '../../../setup/config'
-
+import IconName from 'react-native-vector-icons/MaterialIcons'
 let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
 let globalOffilterBySelectedAvailabilityDateCount = 0;
 let selectedCount = 0
@@ -341,6 +341,7 @@ class Filters extends Component {
                                     },
 
                                 }}
+                                IconRenderer={IconName}
                                 items={languageData}
                                 uniqueKey='value'
                                 displayKey='value'
@@ -373,6 +374,7 @@ class Filters extends Component {
                                     },
 
                                 }}
+                                IconRenderer={IconName}
                                 items={categoryList}
                                 uniqueKey='value'
                                 displayKey='value'
@@ -405,6 +407,7 @@ class Filters extends Component {
                                     },
 
                                 }}
+                                IconRenderer={IconName}
                                 items={serviceList}
                                 uniqueKey='value'
                                 displayKey='value'

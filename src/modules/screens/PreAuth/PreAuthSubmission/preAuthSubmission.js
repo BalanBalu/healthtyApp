@@ -16,6 +16,7 @@ import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber,getNetw
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfSearchByNetworkHospitalDetailsWithoutLoc } from '../../../providers/hospitalBookAppointmentFlow/action';
+import IconName from 'react-native-vector-icons/MaterialIcons'
 
 class PreAuth extends React.PureComponent {
   constructor(props) {
@@ -1102,6 +1103,7 @@ class PreAuth extends React.PureComponent {
                         cancelButton: { backgroundColor: '#000', fontFamily: 'Helvetica-Light' },
 
                       }}
+                      IconRenderer={IconName}
                       selectedIconComponent={
                         <View style={{
                           height: 24,
