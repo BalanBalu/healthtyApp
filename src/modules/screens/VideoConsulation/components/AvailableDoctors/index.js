@@ -57,25 +57,25 @@ class AvailableDoctors4Video extends Component {
         this.setState({ isLoading: true })
         let availablityMap = new Map()
         let [availableDocsVideo, availableDocsChat] = await Promise.all([
-            this.getDoctorAvailableDoctorData(doctorIds).catch(ex => { console.log(ex); return [] }),
-            this.getDoctorAvailableDoctorDataChat(doctorIds).catch(ex => { console.log(ex); return [] }),
+            this.getDoctorAvailableDoctorData(doctorIds).catch(ex => { console.log(ex); return [] })
+            // this.getDoctorAvailableDoctorDataChat(doctorIds).catch(ex => { console.log(ex); return [] }),
         ])
 
         availableDocsVideo.forEach(doc => {
             doc.availableForVideo = true;
             availablityMap.set(doc.doctor_id, doc);
         });
-        availableDocsChat.forEach(docChat => {
-            docChat.availableForChat = true;
-            if (availablityMap.has(docChat.doctor_id)) {
-                let docData = availablityMap.get(docChat.doctor_id);
-                docData.availableForChat = true;
-                docData.chat_service_config = docChat.chat_service_config;
-                availablityMap.set(docChat.doctor_id, docData);
-            } else {
-                availablityMap.set(docChat.doctor_id, docChat);
-            }
-        })
+        // availableDocsChat.forEach(docChat => {
+        //     docChat.availableForChat = true;
+        //     if (availablityMap.has(docChat.doctor_id)) {
+        //         let docData = availablityMap.get(docChat.doctor_id);
+        //         docData.availableForChat = true;
+        //         docData.chat_service_config = docChat.chat_service_config;
+        //         availablityMap.set(docChat.doctor_id, docData);
+        //     } else {
+        //         availablityMap.set(docChat.doctor_id, docChat);
+        //     }
+        // })
         const sorted = Array.from(availablityMap.values()).sort((eleA, eleB) => {
             const eleAVa = this.getMinVideoChatConsultFee(eleA);
             const eleBVa = this.getMinVideoChatConsultFee(eleB);
@@ -396,19 +396,19 @@ class AvailableDoctors4Video extends Component {
 
     descritionSubmission = async (serviceType) => {
         const { description, doctorId, fees } = this.state
-        if (serviceType === "CHAT") {
-            if (description === '') {
-                Toast.show({
-                    text: 'Kindly fill  the fields',
-                    type: 'danger',
-                    duration: 3000
-                });
-            }
-            else {
-                await this.onBookButtonPress4PaymentChat(doctorId, fees)
-                await this.setState({ descriptionVisible: false, description: '' })
-            }
-        }
+        // if (serviceType === "CHAT") {
+        //     if (description === '') {
+        //         Toast.show({
+        //             text: 'Kindly fill  the fields',
+        //             type: 'danger',
+        //             duration: 3000
+        //         });
+        //     }
+        //     else {
+        //         await this.onBookButtonPress4PaymentChat(doctorId, fees)
+        //         await this.setState({ descriptionVisible: false, description: '' })
+        //     }
+        // }
 
         if (serviceType === "VIDEO_CONSULTING") {
             if (description === '') {
@@ -506,7 +506,7 @@ class AvailableDoctors4Video extends Component {
                                 </Row>
                             </Col>
                             : null}
-                        {item.availableForChat === true ?
+                        {/* {item.availableForChat === true ?
                             <Col style={[isBothPremium ? { width: '25%' } : { width: '35%' }, { marginRight: 5 }]}>
                                 <TouchableOpacity onPress={() => this.descriptionModalOpen(item.doctor_id, item.chat_service_config.chat_fee, SERVICE_TYPES.CHAT)}
                                     style={isBothPremium ? styles.ButtonStyle : isChatFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
@@ -515,7 +515,7 @@ class AvailableDoctors4Video extends Component {
                                         {isBothPremium ? 'Chat' : isChatFree ? 'Free Consult' : `Chat - ₹ ${item.chat_service_config.chat_fee}`}</Text>
                                 </TouchableOpacity>
                             </Col>
-                            : null}
+                            : null} */}
 
                         {item.availableForVideo === true && item.hasCurrentlyAvailable === true ?
                             <Col style={isBothPremium ? { width: '25%' } : { width: '35%' }}>

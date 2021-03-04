@@ -809,7 +809,7 @@ export const smartHealthStack=createStackNavigator({
   'Video and Chat Service': {
     screen: AvailableDoctors4Video,
     navigationOptions: {
-      title: 'Video & Chat Consulting Service'
+      title: 'Tele consult services '
     }
   },
   'My Video Consultations': {
