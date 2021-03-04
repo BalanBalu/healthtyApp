@@ -358,7 +358,7 @@ class PreAuth extends React.PureComponent {
       }
     }
     if (!onlySpaceNotAllowed(insurerPatientOccupation)) {
-      this.setState({ insurerPatientOccupationsErrorMsg: 'Kindly fill insurer patient occupation' });
+      this.setState({ insurerPatientOccupationsErrorMsg: "Patient occupation field can't be empty"});
       this.scrollViewRef.scrollTo({
         y: this.insurerPatientOccupations.y,
         animated: true
@@ -366,7 +366,7 @@ class PreAuth extends React.PureComponent {
       return false;
     }
     if (!onlySpaceNotAllowed(insurerPatientAddress)) {
-      this.setState({ insurerPatientAddressTextErrorMsg: 'Kindly fill insurer patient address' });
+      this.setState({ insurerPatientAddressTextErrorMsg: "Patient address field can't be empty" });
       this.scrollViewRef.scrollTo({
         y: this.insurerPatientAddressText.y,
         animated: true
@@ -567,7 +567,7 @@ class PreAuth extends React.PureComponent {
             {this.state.contactNoErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.contactNoErrorMsg}</Text>
               : null}
-            <Text style={styles.inputLabel}>D. Alternate Concat No</Text>
+            <Text style={styles.inputLabel}>D. Alternate Contact No</Text>
             <TextInput
               placeholder={'Enter alternate contact no'}
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity,Image} from 'react-native';
+import {  TouchableOpacity, StyleSheet, Image, FlatList,Linking,Alert } from 'react-native';
 import {View, Text} from 'native-base';
 import {
   PreAuthDrawing,
@@ -18,10 +18,46 @@ import {
 import styles from './styles';
 import {TouchableHighlight} from 'react-native-gesture-handler';
 import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../../setup/config';
-
+import { requestCalendarPermissions, createCalendar } from '../../../../setup/calendarEvent';
+import RNCalendarEvents from "react-native-calendar-events";
 export const SearchAndAppointmentCard = props => {
   const {navigation} = props;
-
+  const navigateToSettings =  () => {
+    Linking.openSettings();
+}
+  const navigateBycalenderPermission=async()=>{
+    console.log("haii")
+    const permissionResult = await requestCalendarPermissions()
+    console.log("permissionResult",permissionResult)
+    if (permissionResult === 'authorized') {
+      createCalendar();
+      const { navigation } = props;
+      navigation("Categories")
+    }
+    else{
+        let status = await RNCalendarEvents.checkPermissions((readOnly = false));
+        // console.log("status",status)
+    if(status === 'restricted'){
+        Alert.alert(
+           'Alert',
+            "Calendar permission is necessary to proceed, You want to give permission now in settings page",
+            [
+           {text: 'ALLOW',
+           onPress: () => navigateToSettings(),}
+            ],
+            
+      
+      
+           { cancelable: false }
+      
+      
+           );
+        // alert("Calendar permission")
+        // Linking.openSettings();
+      }
+    }
+   
+}
   return (
     <View
       style={{
@@ -56,7 +92,7 @@ export const SearchAndAppointmentCard = props => {
          underlayColor={secondaryColorTouch}
           style={styles.rectBox}
           
-          onPress={() => navigation('Categories')}>
+          onPress={() => navigateBycalenderPermission()}>
           <View>
             <View
               style={{

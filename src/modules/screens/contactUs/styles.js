@@ -86,5 +86,13 @@ backToHomeButtonText:{
     textAlign: 'center', 
     color: '#128283', 
     fontWeight: 'bold'
-}
+},
+formStyle6: {
+    borderColor: '#909090',
+    borderWidth: 0.5,
+    height: 35,
+    marginTop: 10,
+    justifyContent: 'center',
+    borderRadius: 5
+},
 })

@@ -55,7 +55,6 @@ export async function getEcardLink(bodyData) {
 
     return resp.data
   } catch (Ex) {
-
     return {
       success: false,
       statusCode: 500,
@@ -211,6 +210,56 @@ export async function getTpaInfoByTpaCode(tpaCode) {
     return {
       message: 'exceptio1n' + e,
       success: false
+    }
+  }
+}
+
+export async function getCorporateHelpLineNumber() {
+  try {
+    let endPoint = 'setting/key?key=' + "HELP_LINE_NUMBER"
+    let response = await smartHealthGetService(endPoint);
+    console.log(`response`, response);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+export async function getCorporateHelpLineEmail() {
+  try {
+    let endPoint = 'setting/key?key=' + "HELP_LINE_EMAIL"
+    let response = await smartHealthGetService(endPoint);
+    console.log(`response`, response);
+
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function postContactDetails(bodyData) {
+  try {
+    let endpoint = 'contact-us-request/create-request'
+
+
+    let resp = await smartHealthPostService(endpoint, bodyData)
+
+    return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
     }
   }
 }
