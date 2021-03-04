@@ -358,7 +358,7 @@ class PreAuth extends React.PureComponent {
       }
     }
     if (!onlySpaceNotAllowed(insurerPatientOccupation)) {
-      this.setState({ insurerPatientOccupationsErrorMsg: 'Kindly fill insurer patient occupation' });
+      this.setState({ insurerPatientOccupationsErrorMsg: "Patient occupation field can't be empty"});
       this.scrollViewRef.scrollTo({
         y: this.insurerPatientOccupations.y,
         animated: true
@@ -366,7 +366,7 @@ class PreAuth extends React.PureComponent {
       return false;
     }
     if (!onlySpaceNotAllowed(insurerPatientAddress)) {
-      this.setState({ insurerPatientAddressTextErrorMsg: 'Kindly fill insurer patient address' });
+      this.setState({ insurerPatientAddressTextErrorMsg: "Patient address field can't be empty" });
       this.scrollViewRef.scrollTo({
         y: this.insurerPatientAddressText.y,
         animated: true
