@@ -23,8 +23,11 @@ import {
   Radio,
   Switch,
 } from 'native-base';
-import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
-
+import {
+  primaryColor,
+  secondaryColor,
+  secondaryColorTouch,
+} from '../../../setup/config';
 
 import {
   fetchUserProfile,
@@ -36,13 +39,7 @@ import {Col, Row, Grid} from 'react-native-easy-grid';
 import {connect} from 'react-redux';
 import {dateDiff} from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  StyleSheet,
-
-  TouchableOpacity,
-  FlatList,
-  Modal,
-} from 'react-native';
+import {StyleSheet, TouchableOpacity, FlatList, Modal} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import Modal from "react-native-modal";
@@ -51,7 +48,12 @@ import {Loader} from '../../../components/ContentLoader';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadMultiPart} from '../../../setup/services/httpservices';
-import {renderDoctorImage, renderProfileImage, getGender} from '../../common';
+import {
+  renderDoctorImage,
+  renderProfileImage,
+  getGender,
+  calculateAge,
+} from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -198,7 +200,7 @@ class Profile extends Component {
         function location(locationObj) {
           let placeName = '';
           let contextData = [];
-          Object.keys(locationObj).forEach(keyEle => {
+          Object.keys(locationObj).forEach((keyEle) => {
             let obj = {
               text: locationObj[keyEle],
             };
@@ -256,12 +258,12 @@ class Profile extends Component {
         compressImageMaxHeight: 480,
         freeStyleCropEnabled: true,
       })
-        .then(image => {
+        .then((image) => {
           this.setState({selectOptionPoopup: false});
 
           this.uploadImageToServer(image);
         })
-        .catch(ex => {
+        .catch((ex) => {
           this.setState({selectOptionPoopup: false});
         });
     } else {
@@ -273,18 +275,18 @@ class Profile extends Component {
         freeStyleCropEnabled: true,
         avoidEmptySpaceAroundImage: true,
       })
-        .then(image => {
+        .then((image) => {
           this.setState({selectOptionPoopup: false});
           this.uploadImageToServer(image);
         })
-        .catch(ex => {
+        .catch((ex) => {
           this.setState({selectOptionPoopup: false});
         });
     }
   }
 
   /*Store image into api folder*/
-  uploadImageToServer = async image => {
+  uploadImageToServer = async (image) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
       var formData = new FormData();
@@ -321,12 +323,24 @@ class Profile extends Component {
     }
   };
 
-  removeSelected = async index => {
+  removeSelected = async (index) => {
     let temp = this.state.family_members;
     temp.splice(index, 1);
     this.setState({family_members: temp, updateButton: false});
   };
-
+  familyMemAgeCal = (date) => {
+    try {
+      const getAge = calculateAge(date);
+      console.log('getAge', getAge);
+      if (getAge.years == 0 && getAge.months <= 1)
+        return getAge.months + ' Month';
+      else if (getAge.months > 1) return getAge.months + ' Months';
+      else if (getAge.years > 1) return getAge.years + ` Years `;
+      else return getAge.years + ` Year`;
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
+  };
   render() {
     const {
       profile: {isLoading},
@@ -336,7 +350,7 @@ class Profile extends Component {
     return (
       <Container style={styles.container}>
         <NavigationEvents
-          onWillFocus={payload => {
+          onWillFocus={(payload) => {
             this.getUserProfile(payload);
           }}
         />
@@ -668,7 +682,7 @@ class Profile extends Component {
                               </Col>
                               <Col size={7.5}>
                                 <Text note style={styles.customText1}>
-                                  {dateDiff(item.dob, new Date(), 'years') +
+                                  {this.familyMemAgeCal(item.dob) +
                                     ' - ' +
                                     getGender(item)}
                                 </Text>
@@ -768,7 +782,7 @@ class Profile extends Component {
                     <Switch
                       value={this.state.is_blood_donor}
                       style={{marginTop: 15}}
-                      onValueChange={value => {
+                      onValueChange={(value) => {
                         this.setState({
                           is_blood_donor: !this.state.is_blood_donor,
                         });

@@ -1,27 +1,22 @@
 import React, {Component} from 'react';
 import {Row, Col} from 'react-native-easy-grid';
-import {
-  Container,
-  View,
-  Text,
-  Icon,
-  Card,
-  Content,
-  Item,
-} from 'native-base';
+import {Container, View, Text, Icon, Card, Content, Item} from 'native-base';
 import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
   Modal,
-  Linking,
+  Linking,Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
-import {toastMeassage} from '../../common';
+import {toastMeassage, getFullName} from '../../common';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from './styles';
-import {getInsuranceByMemberId} from '../../providers/insurance/insurance.action';
+import {
+  getInsuranceByMemberId,
+  arrangeCallbackAction,
+} from '../../providers/insurance/insurance.action';
 import {dateDiff, formatDate} from '../../../setup/helpers';
 import moment from 'moment';
 
@@ -35,6 +30,7 @@ class Insurance extends Component {
       isLoading: false,
       descriptionVisible: false,
       isLoadingMoreData: false,
+      selectedInsurance:''
     };
     this.isEnabledLoadMoreData = true;
     this.pagination = 1;
@@ -73,6 +69,24 @@ class Insurance extends Component {
   popUpClose() {
     this.setState({descriptionVisible: false});
   }
+
+  arrangeCallback = async () => {
+    const basicProfileData = await AsyncStorage.getItem('basicProfileData');
+    const basicData = JSON.parse(basicProfileData);
+    let fullName = getFullName(basicData);
+    let result = await arrangeCallbackAction(fullName, this.state.selectedInsurance);
+    Alert.alert(
+      "Thanks",
+      "Mail send successfully",
+      [
+          
+          {
+              text: "OK"
+          }
+      ],
+  );
+  };
+
   loadMoreData = async () => {
     try {
       this.setState({isLoadingMoreData: true});
@@ -104,7 +118,7 @@ class Insurance extends Component {
         </View>
       );
     }
-    const {data, isLoadingMoreData,isLoading} = this.state;
+    const {data, isLoadingMoreData, isLoading} = this.state;
     return (
       <Container>
         <Content style={{padding: 10}}>
@@ -118,87 +132,103 @@ class Insurance extends Component {
               />
               <Text style={styles.addInsuranceText}>Add Insurance</Text>
             </TouchableOpacity>
-            {isLoading ?
-          <Loader style='list' />
-          :
-          data.length ?
-            <FlatList
-              data={data}
-              keyExtractor={(item, index) => index.toString()}
-              onEndReachedThreshold={0.5}
-              onEndReached={() => {
-                if (this.isEnabledLoadMoreData) {
-                  this.loadMoreData();
-                }
-              }}
-              renderItem={({item, index}) => (
-                <Card style={styles.CardStyle}>
-                  <View style={styles.mainVieww}>
-                    <View style={styles.commonStyleView}>
-                      <View style={styles.HeadingTextView}>
-                        <Text style={styles.HeadingText}>
-                          {item.insuranceName}
-                        </Text>
+            {isLoading ? (
+              <Loader style="list" />
+            ) : data.length ? (
+              <FlatList
+                data={data}
+                keyExtractor={(item, index) => index.toString()}
+                onEndReachedThreshold={0.5}
+                onEndReached={() => {
+                  if (this.isEnabledLoadMoreData) {
+                    this.loadMoreData();
+                  }
+                }}
+                renderItem={({item, index}) => (
+                  <Card style={styles.CardStyle}>
+                    <View style={styles.mainVieww}>
+                      <View style={styles.commonStyleView}>
+                        <View style={styles.HeadingTextView}>
+                          <Text style={styles.HeadingText}>
+                            {item.insuranceName}
+                          </Text>
+                        </View>
+                        <View style={styles.rightTextView}>
+                          <Text style={styles.rightText}>{item.Amount}</Text>
+                        </View>
                       </View>
-                      <View style={styles.rightTextView}>
-                        <Text style={styles.rightText}>{item.Amount}</Text>
+                      <View style={[styles.commonStyleView, {marginTop: 8}]}>
+                        <View style={styles.leftView}>
+                          <Text style={styles.leftText}>Policy period</Text>
+                        </View>
+                        <View style={styles.dividingView}>
+                          <Text style={styles.smallrightText}>
+                            {this.policyPeriod(
+                              item.policyStartDate,
+                              item.policyEndDate,
+                            )}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={[styles.commonStyleView, {marginTop: 8}]}>
+                        <View style={styles.leftView}>
+                          <Text style={styles.leftText}>Policy start date</Text>
+                        </View>
+                        <View style={styles.dividingView}>
+                          <Text style={styles.smallrightText}>
+                            {formatDate(item.policyStartDate, 'DD/MM/YYYY')}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={[styles.commonStyleView, {marginTop: 8}]}>
+                        <View style={styles.leftView}>
+                          <Text style={styles.leftText}>Policy end date</Text>
+                        </View>
+                        <View style={styles.dividingView}>
+                          <Text style={styles.smallrightText}>
+                            {formatDate(item.policyEndDate, 'DD/MM/YYYY')}
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                    <View style={[styles.commonStyleView, {marginTop: 8}]}>
-                      <View style={styles.leftView}>
-                        <Text style={styles.leftText}>Policy period</Text>
-                      </View>
-                      <View style={styles.dividingView}>
-                        <Text style={styles.smallrightText}>
-                          {this.policyPeriod(
-                            item.policyStartDate,
-                            item.policyEndDate,
-                          )}
+                    <View
+                      style={{
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-end',
+                        marginTop: 8,
+                      }}>
+                      <TouchableOpacity
+                        style={styles.renewalButton}
+                        onPress={() =>
+                          this.setState({descriptionVisible: true,selectedInsurance:item.insuranceName})
+                        }>
+                        <Text style={styles.renewalButtonText}>
+                          Insurance Renewal
                         </Text>
-                      </View>
+                      </TouchableOpacity>
                     </View>
-                    <View style={[styles.commonStyleView, {marginTop: 8}]}>
-                      <View style={styles.leftView}>
-                        <Text style={styles.leftText}>Policy start date</Text>
-                      </View>
-                      <View style={styles.dividingView}>
-                        <Text style={styles.smallrightText}>
-                          {formatDate(item.policyStartDate, 'DD/MM/YYYY')}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={[styles.commonStyleView, {marginTop: 8}]}>
-                      <View style={styles.leftView}>
-                        <Text style={styles.leftText}>Policy end date</Text>
-                      </View>
-                      <View style={styles.dividingView}>
-                        <Text style={styles.smallrightText}>
-                          {formatDate(item.policyEndDate, 'DD/MM/YYYY')}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      justifyContent: 'flex-start',
-                      alignItems: 'flex-end',
-                      marginTop: 8,
-                    }}>
-                    <TouchableOpacity
-                      style={styles.renewalButton}
-                      onPress={() => this.setState({descriptionVisible: true})}>
-                      <Text style={styles.renewalButtonText}>
-                        Insurance Renewal
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </Card>
-              )}
-            />
-            : <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No insurance policy list found!</Text>
-          </Item>
-      }
+                  </Card>
+                )}
+              />
+            ) : (
+              <Item
+                style={{
+                  borderBottomWidth: 0,
+                  marginTop: 100,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  {' '}
+                  No insurance policy list found!
+                </Text>
+              </Item>
+            )}
           </View>
           <Modal
             visible={this.state.descriptionVisible}
@@ -235,7 +265,10 @@ class Insurance extends Component {
                     <TouchableOpacity
                       danger
                       style={styles.backToHomeButton1}
-                      onPress={() => this.popUpClose()}
+                      onPress={() => {
+                        this.arrangeCallback();
+                        this.popUpClose();
+                      }}
                       testID="cancelButton">
                       <Text style={styles.backToHomeButtonText1}>
                         {' '}
@@ -248,7 +281,7 @@ class Insurance extends Component {
                       danger
                       style={styles.backToHomeButton}
                       onPress={() => {
-                        Linking.openURL('https://www.readypolicy.com/');
+                        Linking.openURL('http://www.readypolicy.com/');
                         this.popUpClose();
                       }}
                       testID="cancelButton">
