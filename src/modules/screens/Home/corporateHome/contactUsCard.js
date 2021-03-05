@@ -62,7 +62,7 @@ export const ContactUsCard = props => {
               }}>
               Help line
           </Text>
-          <TouchableOpacity onPress={() =>{dialCall(data.value ? data.value : '') }} style={{paddingRight:20}}>
+          <TouchableOpacity onPress={() =>{dialCall(data&&data.value ? data.value : '') }} style={{paddingRight:20}}>
             <View  style={{ flexDirection: 'row' }}>
               <MaterialIcons name="phone" style={{ fontSize: 15, color: '#fff',marginTop:5 }} />
               <Text
@@ -72,7 +72,7 @@ export const ContactUsCard = props => {
                   fontSize: 15,
                   lineHeight: 24,
                   marginLeft:5
-                }}>{ data.value ? data.value : ''}</Text>
+                }}>{ data&&data.value ? data.value : ''}</Text>
                
             </View>
             </TouchableOpacity>
