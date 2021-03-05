@@ -11,7 +11,7 @@ import { onlySpaceNotAllowed, chatIssue, pharmacyIssue } from '../../common';
 // import { statusValue } from '../../../setup/helpers';
 
 import { insertReportIssue } from '../../providers/reportIssue/reportIssue.action';
-
+import {primaryColor} from '../../../setup/config'
 
 class ReportIssue extends Component {
   constructor(props) {
@@ -154,7 +154,7 @@ class ReportIssue extends Component {
                   renderItem={({ item }) =>
                     <View>
                       <Row style={{ marginTop: 10,alignItems:'center' }}>
-                        <Radio standardStyle={true}
+                        <Radio   color={primaryColor} standardStyle={true}
                                selected={this.state.issueType === item ? true : false} 
                                onPress={()=>   this.setState({ issueType: item })}  />
 

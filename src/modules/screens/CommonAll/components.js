@@ -238,7 +238,8 @@ const renderLabProfileImage = (data) => {
     if (data.profile_image) {
         source = { uri: data.profile_image.imageURL }
     } else {
-        source = require('../../../../assets/icon.png')
+        console.log("data>>>>>>>>>>>>>>....",data)
+        source = require('../../../../assets/images/Lab-tests.png')
     }
 
     return (source)

@@ -1027,6 +1027,7 @@ class PaymentPage extends Component {
                 <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                     <Col style={{ width: '10%', marginTop: 5 }}>
                         <Radio
+                            color={primaryColor}
                             standardStyle={true}
                             status={valueOfCreditCard.card_id === this.state.selectedSavedCardId && this.state.paymentOption === null ? true : false}
                             selected={this.state.selectedSavedCardId === valueOfCreditCard.card_id ? true : false}

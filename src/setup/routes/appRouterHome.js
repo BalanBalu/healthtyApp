@@ -1319,6 +1319,18 @@ const drawerNavigatorRoutes = {
     screen: ContactUs,
     routeName: "ContactUs"
   },
+  "Categories": {
+    screen: Categories,
+    routeName: "Categories"
+  },
+  'Lab Test': {
+    screen: LabCategory,
+    routeName: "Lab Test"
+  },
+  "Home Healthcare Address List": {
+    screen: HomeHealthcareAddressList,
+    routeName: "Home Healthcare Address List"
+  },
 
 
 }
@@ -1362,13 +1374,13 @@ export const corporateUserSideBarMenuList = [
         appoinmentSubMenus: [
           {
             name: 'Doctor Appointments',
-            routeName: drawerNavigatorRoutes["My Appointments"].routeName,
+            routeName: drawerNavigatorRoutes["Categories"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
             largeIcon: { height: 20, width: 20, }
           },
           {
             name: 'Home Appointments',
-            routeName: drawerNavigatorRoutes["My Home Healthcare Appointments"].routeName,
+            routeName: drawerNavigatorRoutes["Home Healthcare Address List"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
             largeIcon: { height: 20, width: 20, }
           },
@@ -1376,7 +1388,7 @@ export const corporateUserSideBarMenuList = [
 
           {
             name: 'Lab Appointments',
-            routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
+            routeName: drawerNavigatorRoutes["Lab Test"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
             largeIcon: { height: 20, width: 20, }
           },

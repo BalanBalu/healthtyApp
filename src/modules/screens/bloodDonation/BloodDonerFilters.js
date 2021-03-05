@@ -294,6 +294,7 @@ class BloodDonerFilters extends Component {
                             </Left>
                             <Right>
                               <Radio
+                                color={primaryColor}
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
                                 selected={this.state.bloodSelect === item ? true : false}
@@ -324,6 +325,7 @@ class BloodDonerFilters extends Component {
                             </Left>
                             <Right>
                               <Radio
+                                color={primaryColor}
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.country')}
                                 selected={this.state.countrySelect === item ? true : false}
@@ -352,6 +354,7 @@ class BloodDonerFilters extends Component {
                             <Right>
 
                               <Radio
+                                color={primaryColor}
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.state')}
                                 selected={this.state.stateSelect === item ? true : false}
@@ -380,6 +383,7 @@ class BloodDonerFilters extends Component {
                             </Left>
                             <Right>
                               <Radio
+                                color={primaryColor}
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.district')}
                                 selected={this.state.districtSelect === item ? true : false}
@@ -411,6 +415,7 @@ class BloodDonerFilters extends Component {
                             </Left>
                             <Right>
                               <Radio
+                                color={primaryColor}
                                 standardStyle={true}
                                 onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.city')}
                                 selected={this.state.citySelect === item ? true : false}

@@ -118,7 +118,7 @@ export default {
   CheckboxIconSize: 16,
   CheckboxIconMarginTop: 0,
   CheckboxFontSize: 17,
-  checkboxBgColor: '#775DA3',
+  checkboxBgColor: '#128283',
   checkboxSize: 20,
   checkboxTickColor: '#fff',
   checkboxDefaultColor: 'transparent',
@@ -232,10 +232,10 @@ export default {
 
   // Radio Button
   radioBtnSize: 23,
-  radioSelectedColorAndroid: '#3F51B5',
+  radioSelectedColorAndroid: '#128283',
   radioBtnLineHeight: 24,
   get radioColor() {
-    return '#775DA3' //this.brandPrimary;
+    return '#128283' //this.brandPrimary;
   },
 
   // Segment
@@ -247,7 +247,7 @@ export default {
   segmentBorderColorMain: '#3F51B5',
 
   // Spinner
-  defaultSpinnerColor: '#45D56E',
+  defaultSpinnerColor: '#128283',
   inverseSpinnerColor: '#1A191B',
 
   // Tab

@@ -14,6 +14,7 @@ import { getMedicalRecords } from '../../providers/profile/profile.action';
 import { RenderListNotFound } from '../CommonAll/components'
 import Spinner from "../../../components/Spinner";
 import { RenderFooterLoader } from '../../common';
+import {primaryColor} from '../../../setup/config'
 class MedicineRecords extends PureComponent {
     constructor(props) {
         super(props)
@@ -79,9 +80,9 @@ class MedicineRecords extends PureComponent {
     headerComponent() {
         const { data } = this.state
         return (
-            <View style={{ padding: 10 }}>
+            <View >
                  <View style={{ marginTop: 15,justifyContent:'center',alignItems:'center'  }}>
-                        <TouchableOpacity style={{ backgroundColor: '#128283', paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5,justifyContent:'center',alignItems:'center',flexDirection:'row' }} onPress={() => {
+                        <TouchableOpacity style={{ backgroundColor: primaryColor, paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 5, borderRadius: 5,justifyContent:'center',alignItems:'center',flexDirection:'row' }} onPress={() => {
                             this.props.navigation.navigate('UploadEmr', { prevState: this.props.navigation.state })
                         }}>
                             <Text style={{ color: '#fff', fontSize: 15 }} >Add New Record</Text>
@@ -200,7 +201,7 @@ class MedicineRecords extends PureComponent {
                     cancelable={false}
                 />
  
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1,marginHorizontal:10 ,}}>
 
                     <FlatList horizontal={false} 
                         data={data}
@@ -215,7 +216,7 @@ class MedicineRecords extends PureComponent {
 
 
                             item.emr_prescription_image ?
-                                <Card style={{ borderRadius: 5, overflow: 'hidden' }}>
+                                <Card style={{ borderRadius: 5, overflow: 'hidden',marginVertical:10 }}>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.emr_prescription_image.imageURL }, title: item.emr_discription||'EMR' })}>
                                         <Row style={styles.rowStyle}>
                                             <Image
@@ -295,7 +296,7 @@ const styles = StyleSheet.create({
 
     container:
     {
-        backgroundColor: '#D6C9EA'
+        backgroundColor: '#DCEAE9'
     },
 
     bodyContent: {

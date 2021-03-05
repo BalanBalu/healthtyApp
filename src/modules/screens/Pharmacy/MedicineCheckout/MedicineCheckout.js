@@ -495,6 +495,7 @@ class MedicineCheckout extends Component {
                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
                                             <Radio
+                                              color={primaryColor}
                                                 standardStyle={true}
                                                 selected={itemSelected === 0 ? true : false}
                                                 onPress={() => this.selectedItem(0)} />
@@ -525,6 +526,7 @@ class MedicineCheckout extends Component {
                                                             <Row style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 5, marginLeft: 5, justifyContent: 'center', borderBottomColor: 'gray' }}>
                                                                 <Col size={1} style={{ justifyContent: 'center' }}>
                                                                     <Radio
+                                                                      color={primaryColor}
                                                                         standardStyle={true}
                                                                         selected={this.state.selectedAddress === item ? true : false}
                                                                         onPress={() => this.setState({ selectedAddress: item })} />
@@ -557,6 +559,7 @@ class MedicineCheckout extends Component {
                                         </Col>
                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                             <Radio
+                                              color={primaryColor}
                                                 standardStyle={true}
                                                 selected={itemSelected === 1 ? true : false}
                                                 onPress={() => this.selectedItem(1)} />

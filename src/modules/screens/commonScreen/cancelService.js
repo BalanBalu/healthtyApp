@@ -123,7 +123,7 @@ class CancelService extends Component {
                     <View>
                       <Row onPress={() => this.toggleRadio(item, index)} style={{ marginTop: 10 }}>
                         <Radio borderColor='black' selected={selectedIndex === index ? true : false} onPress={() => this.toggleRadio(item, index)}
-                          selectedColor={primaryColor} testID='checkOption_1Selected' />
+                            color={primaryColor} selectedColor={primaryColor} testID='checkOption_1Selected' />
                         <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15, marginTop: 3 }}>{item.value}</Text>
                       </Row>
                       {selectedIndex === index ?

@@ -26,7 +26,6 @@ export const SearchAndAppointmentCard = props => {
     Linking.openSettings();
 }
   const navigateBycalenderPermission=async()=>{
-    console.log("haii")
     const permissionResult = await requestCalendarPermissions()
     console.log("permissionResult",permissionResult)
     if (permissionResult === 'authorized') {
@@ -69,24 +68,7 @@ export const SearchAndAppointmentCard = props => {
       <Text style={styles.headingText}>Search & Book Appointment</Text>
 
       <View style={styles.flexRow}>
-      <TouchableHighlight
-      style={styles.rectBox}
-            activeOpacity={0.6}
-            underlayColor={secondaryColorTouch}
-            onPress={() => navigation('Lab Test')}>
-        <View >
-          
-            <View
-              style={{
-                alignItems: 'center',
-                marginTop: 10,
-              }}>
-              <LabTestDrawing />
-              <Text style={styles.boxText}>Lab Test</Text>
-            </View>
-         
-        </View>
-        </TouchableHighlight>
+    
         <TouchableHighlight
          activeOpacity={0.6}
          underlayColor={secondaryColorTouch}
@@ -104,6 +86,24 @@ export const SearchAndAppointmentCard = props => {
               <Text style={styles.boxText}>Consultation</Text>
             </View>
           </View>
+        </TouchableHighlight>  
+        <TouchableHighlight
+      style={styles.rectBox}
+            activeOpacity={0.6}
+            underlayColor={secondaryColorTouch}
+            onPress={() => navigation('Lab Test')}>
+        <View >
+          
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <LabTestDrawing />
+              <Text style={styles.boxText}>Lab Test</Text>
+            </View>
+         
+        </View>
         </TouchableHighlight>
         <TouchableHighlight
          activeOpacity={0.6}

@@ -4,6 +4,7 @@ import { Col, Row } from 'react-native-easy-grid';
 import { TouchableOpacity } from 'react-native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { getHomeHealthCareUserAddress } from '../../common';
+import {primaryColor} from '../../../setup/config'
 export default class RenderUserAddressList extends PureComponent {
     constructor(props) {
         super(props)
@@ -16,6 +17,7 @@ export default class RenderUserAddressList extends PureComponent {
                     <Row style={{ paddingBottom: 10, marginTop: 5, marginLeft: 5, justifyContent: 'center',  }}>
                         <Col size={1} style={{ justifyContent: 'center' }}>
                             <Radio
+                              color={primaryColor}
                                 standardStyle={true}
                                 selected={selectedAddressIndex === index}
                                 onPress={() => onPressRadioBtnToSelectAddressItem(item, index)} />

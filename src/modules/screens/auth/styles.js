@@ -132,7 +132,7 @@ export default StyleSheet.create({
     },
     forgotButtonDisable: {
         marginTop: 20,
-        backgroundColor: '#9777c7',
+        backgroundColor: primaryColor,
         borderRadius: 5,
     },
     forgotButton: {
