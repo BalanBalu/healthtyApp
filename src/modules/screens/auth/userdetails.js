@@ -240,7 +240,7 @@ class UserDetails extends Component {
                                                     onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'
                                                 />
 
-                                                <Text style={{ marginLeft: 20, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
+                                                <Text style={{ marginLeft: 20, color: primaryColor, fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
                                             </Row>
 
                                             <View>
@@ -258,7 +258,7 @@ class UserDetails extends Component {
                                         </Form>
                                     </View>
                                     <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10, marginTop: 10 }}>
-                                        <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: '#775DA3' }}>Already Have An Account ?</Text>
+                                        <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: primaryColor }}>Already Have An Account ?</Text>
                                         <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
                                             <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign In</Text>
                                         </TouchableOpacity>

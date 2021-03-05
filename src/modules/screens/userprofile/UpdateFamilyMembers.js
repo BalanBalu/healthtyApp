@@ -315,6 +315,7 @@ class UpdateFamilyMembers extends Component {
                         marginLeft: 15,
                       }}>
                       <Radio
+                        color={primaryColor}
                       selectedColor={primaryColor}
                         standardStyle={true}
                         selected={gender === 'M' ? true : false}
@@ -338,6 +339,7 @@ class UpdateFamilyMembers extends Component {
                         alignItems: 'center',
                       }}>
                       <Radio
+                        color={primaryColor}
                         standardStyle={true}
                         selected={gender === 'F' ? true : false}
                         onPress={() =>
@@ -360,6 +362,7 @@ class UpdateFamilyMembers extends Component {
                         alignItems: 'center',
                       }}>
                       <Radio
+                        color={primaryColor}
                         standardStyle={true}
                         selected={gender === 'O' ? true : false}
                         onPress={() =>

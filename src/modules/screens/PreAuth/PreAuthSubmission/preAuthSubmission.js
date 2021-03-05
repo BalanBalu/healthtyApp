@@ -17,6 +17,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfSearchByNetworkHospitalDetailsWithoutLoc } from '../../../providers/hospitalBookAppointmentFlow/action';
 import IconName from 'react-native-vector-icons/MaterialIcons'
+import { primaryColor } from '../../../../setup/config';
 
 class PreAuth extends React.PureComponent {
   constructor(props) {
@@ -505,7 +506,7 @@ class PreAuth extends React.PureComponent {
             <Text style={styles.inputLabel}>B. Gender</Text>
             <View style={{ flexDirection: 'row', marginTop: 2 }}>
               <Radio
-                color={'#128283'}
+                color={primaryColor}
                 selectedColor={'#128283'}
                 style={{ marginLeft: 20 }}
                 standardStyle={true}
@@ -522,7 +523,7 @@ class PreAuth extends React.PureComponent {
               />
               <Text style={{ marginLeft: 10 }}>Male</Text>
               <Radio
-                color={'#128283'}
+                color={primaryColor}
                 selectedColor={'#128283'}
                 style={{ marginLeft: 20 }}
                 standardStyle={true}
@@ -768,7 +769,7 @@ class PreAuth extends React.PureComponent {
           </Text>
             <View style={{ flexDirection: 'row', marginBottom: 1, marginTop: 2 }}>
               <Radio
-                color={'#128283'}
+                  color={primaryColor}
                 selectedColor={'#128283'}
                 onPress={() => {
                   this.setState({ alreadyHaveInsurance: 'yes' });
@@ -781,7 +782,7 @@ class PreAuth extends React.PureComponent {
               />
               <Text style={{ marginLeft: 10 }}>Yes</Text>
               <Radio
-                color={'#128283'}
+                color={primaryColor}
                 selectedColor={'#128283'}
                 onPress={() => {
                   this.setState({ alreadyHaveInsurance: 'no' });
@@ -833,7 +834,7 @@ class PreAuth extends React.PureComponent {
           </Text>
             <View style={{ flexDirection: 'row', marginBottom: '0.5%', marginTop: 2 }}>
               <Radio
-                color={'#128283'}
+                color={primaryColor}
                 selectedColor={'#128283'}
                 onPress={() => {
                   this.setState({ haveFamilyPhysician: 'yes' });
@@ -844,7 +845,7 @@ class PreAuth extends React.PureComponent {
               />
               <Text style={{ marginLeft: 10 }}>Yes</Text>
               <Radio
-                color={'#128283'}
+              color={primaryColor}
                 selectedColor={'#128283'}
                 onPress={() => {
                   this.setState({ haveFamilyPhysician: 'no' });

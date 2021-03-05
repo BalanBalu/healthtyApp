@@ -11,7 +11,7 @@ import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bookappointment.action'
 import { connect } from 'react-redux';
 import styles from '../styles'
-
+import {primaryColor} from '../../../../setup/config'
 class MedicalHistory extends PureComponent {
     constructor(props) {
         super(props)
@@ -158,6 +158,7 @@ class MedicalHistory extends PureComponent {
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col size={5} style={{ flexDirection: 'row' }}>
                                     <Radio
+                                      color={primaryColor}
                                         standardStyle={true}
                                         selected={this.state.radioButton === "EXCELLENT" ? true : false}
                                         onPress={() => this.setState({ radioButton: "EXCELLENT" })} />
@@ -165,6 +166,7 @@ class MedicalHistory extends PureComponent {
                                 </Col>
                                 <Col size={5} style={{ flexDirection: 'row' }}>
                                     <Radio
+                                      color={primaryColor}
                                         standardStyle={true}
                                         selected={this.state.radioButton === "GOOD" ? true : false}
                                         onPress={() => this.setState({ radioButton: "GOOD" })} />
@@ -174,6 +176,7 @@ class MedicalHistory extends PureComponent {
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col size={5} style={{ flexDirection: 'row' }}>
                                     <Radio
+                                      color={primaryColor}
                                         standardStyle={true}
                                         selected={this.state.radioButton === "FAIR" ? true : false}
                                         onPress={() => this.setState({ radioButton: "FAIR" })} />
@@ -181,6 +184,8 @@ class MedicalHistory extends PureComponent {
                                 </Col>
                                 <Col size={5} style={{ flexDirection: 'row' }}>
                                     <Radio
+                                    
+                                      color={primaryColor}
                                         standardStyle={true}
                                         selected={this.state.radioButton === "POOR" ? true : false}
                                         onPress={() => this.setState({ radioButton: "POOR" })} />

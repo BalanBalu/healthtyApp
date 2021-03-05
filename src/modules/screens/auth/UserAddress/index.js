@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Item, Text, Icon, Header, Left, Row, } from 'native-base';
 import MapboxAutocomplete from './AutoComplete';
 let token = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjZ0ZXMwdWozNDRteTB4bG14Y2o1In0.A34n-MA-vy3hsydgt_8pRQ';
-
+import {primaryColor} from '../../../../setup/config'
 export default class UserAddress extends Component {
     constructor(props) {
         super(props);
@@ -24,10 +24,10 @@ export default class UserAddress extends Component {
         return (
             <View style={{ flex: 1, backgroundColor: '#ecf0f1' }}>
                 {!this.fromProfile && !this.navigationOption ?
-                    <Header style={{ backgroundColor: '#7E49C3' }}>
+                    <Header style={{ backgroundColor: primaryColor }}>
                         <Row>
                             <Left>
-                                <TouchableOpacity onPress={() => this.props.navigation.pop()} style={Platform.OS === "ios" ? { paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: '#775DA3', marginTop: -10, marginLeft: -10 } : { paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: '#775DA3', marginLeft: 10 }} >
+                                <TouchableOpacity onPress={() => this.props.navigation.pop()} style={Platform.OS === "ios" ? { paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: primaryColor, marginTop: -10, marginLeft: -10 } : { paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: primaryColor, marginLeft: 10 }} >
                                     <Icon name="arrow-back" style={{ color: '#fff', fontSize: 30, marginLeft: 10, marginTop: 10 }} />
                                     <Text style={{ color: '#fff', fontSize: 20, marginLeft: 20, marginTop: 10 }}>Back</Text>
                                 </TouchableOpacity>
@@ -39,11 +39,11 @@ export default class UserAddress extends Component {
                 {Platform.OS === "ios" ?
                     <View style={style.iosSlide}>
                         <Text style={[style.welcome, { marginTop: 20 }]}>Hi, Add Your Location</Text>
-                        <Icon name="location-sharp" style={{ fontSize: 30, color: '#775DA3', marginLeft: 10, marginTop: 20 }} />
+                        <Icon name="location-sharp" style={{ fontSize: 30, color: primaryColor, marginLeft: 10, marginTop: 20 }} />
                     </View> :
                     <Item style={style.slide}>
                         <Text style={style.welcome}>Hi, Add Your Location </Text>
-                        <Icon name="location-sharp" style={{ fontSize: 50, color: '#775DA3', marginLeft: 10 }} />
+                        <Icon name="location-sharp" style={{ fontSize: 50, color: primaryColor, marginLeft: 10 }} />
                     </Item>
                 }
                 <MapboxAutocomplete

@@ -9,7 +9,7 @@ import { prepareAppointmentUpdate } from '../../../providers/bookappointment/boo
 import { connect } from 'react-redux';
 import styles from '../styles'
 import {  getName, } from '../../../common'
-
+import {primaryColor} from '../../../../setup/config'
 
 
 class BasicInfo extends PureComponent {
@@ -73,6 +73,7 @@ class BasicInfo extends PureComponent {
                         <View style={{ alignItems: 'center', flexDirection: 'row', marginTop: 20 }}>
 
                             <Radio
+                              color={primaryColor}
                                 standardStyle={true}
                                 selected={this.state.itemSelected}
                                 onPress={() => this.setState({
@@ -84,6 +85,7 @@ class BasicInfo extends PureComponent {
 
                         <View style={{ alignItems: 'center', flexDirection: 'row', marginTop: 15 }}>
                             <Radio
+                              color={primaryColor}
                                 standardStyle={true}
                                 selected={!this.state.itemSelected}
                                 onPress={() => this.setState({ itemSelected: !this.state.itemSelected })} />

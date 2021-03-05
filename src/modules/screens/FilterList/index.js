@@ -227,6 +227,7 @@ class Filters extends Component {
                                     onPress={() => this.clickGenderInButton(1, "M", true)}
                                     style={styles.genderTouchableStyles}>
                                     <Radio 
+                                      color={primaryColor}
                                      standardStyle={true}
                                     selected={genderIndex === 1 ? true : false} 
                                    onPress={()=>  this.clickGenderInButton(1, "M", true)}  />
@@ -240,6 +241,7 @@ class Filters extends Component {
                                     onPress={() => this.clickGenderInButton(2, "F", true)}
                                     style={styles.genderTouchableStyles}>
                                     <Radio 
+                                      color={primaryColor}
                                     standardStyle={true}
                                     selected={genderIndex === 2 ? true : false} 
                                     onPress={()=>  this.clickGenderInButton(2, "F", true)}  />
@@ -252,6 +254,7 @@ class Filters extends Component {
                                     onPress={() => this.clickGenderInButton(3, "O", true)}
                                     style={styles.genderTouchableStyles}>
                                     <Radio 
+                                      color={primaryColor}
                                     standardStyle={true}
                                     selected={genderIndex === 3 ? true : false} 
                               onPress={()=>  this.clickGenderInButton(3, "O", true)}  />                                  

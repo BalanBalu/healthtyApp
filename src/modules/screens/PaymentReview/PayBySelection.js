@@ -5,6 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
+import {primaryColor} from '../../../setup/config'
 const POSSIBLE_PAY_METHODS = {
     SELF: 'SELF',
     CORPORATE: 'CORPORATE',
@@ -27,6 +28,7 @@ const PayBySelection = (props) => {
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
                           <Radio
+                            color={primaryColor}
                             standardStyle={true}
                             selected={selectedPayBy === POSSIBLE_PAY_METHODS.SELF }
                             onPress={() => onSelectionChange(POSSIBLE_PAY_METHODS.SELF)}
@@ -37,6 +39,7 @@ const PayBySelection = (props) => {
                       <Col size={3}>
                         <Row style={{ alignItems: 'center' }}>
                           <Radio
+                            color={primaryColor}
                             standardStyle={true}
                             selected={selectedPayBy === POSSIBLE_PAY_METHODS.CORPORATE }
                             onPress={() =>  onSelectionChange(POSSIBLE_PAY_METHODS.CORPORATE) }
@@ -47,6 +50,7 @@ const PayBySelection = (props) => {
                       <Col size={4}>
                          <Row style={{ alignItems: 'center' }}>
                             <Radio
+                              color={primaryColor}
                                 standardStyle={true}
                                 selected={selectedPayBy ===  POSSIBLE_PAY_METHODS.INSURANCE }
                                 onPress={() => onSelectionChange(POSSIBLE_PAY_METHODS.INSURANCE) }

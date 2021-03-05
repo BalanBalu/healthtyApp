@@ -178,6 +178,7 @@ class PatientInfo extends PureComponent {
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }}>
                                     <Radio
+                                      color={primaryColor}
                                         standardStyle={true}
                                         onPress={() => this.setState({ gender: "M" })}
                                         selected={gender === "M" ? true : false}
@@ -186,6 +187,7 @@ class PatientInfo extends PureComponent {
                                 </Col>
                                 <Col style={{ flexDirection: 'row' }}>
                                     <Radio
+                                      color={primaryColor}
                                         standardStyle={true}
                                         onPress={() => this.setState({ gender: "F" })}
                                         selected={gender === "F" ? true : false}
@@ -194,6 +196,7 @@ class PatientInfo extends PureComponent {
                                 </Col>
                                 <Col style={{ flexDirection: 'row' }}>
                                     <Radio
+                                        color={primaryColor}
                                         standardStyle={true}
                                         onPress={() => this.setState({ gender: "O" })}
                                         selected={gender === "O" ? true : false}
@@ -210,6 +213,7 @@ class PatientInfo extends PureComponent {
                                 <Col style={{ flexDirection: 'row' }} size={6}>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             onPress={() => this.setState({ marital_status: "MARRIED" })}
                                             selected={marital_status === "MARRIED" ? true : false}
@@ -218,6 +222,7 @@ class PatientInfo extends PureComponent {
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                            color={primaryColor}
                                             standardStyle={true}
                                             onPress={() => this.setState({ marital_status: "UNMARRIED" })}
                                             selected={marital_status === "UNMARRIED" ? true : false}

@@ -8,6 +8,7 @@ import {primaryColor, secondaryColor} from '../../../../setup/config'
 
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { renderLabProfileImage } from '../../CommonAll/components';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 const LabHeader = (props) => {
     const {packageDetails,  onDatePickerPressed, minimumDate, maximumDate, dateTime, isVisible, onTimeConfirm, onTimePickerCancel } = props;
     return (
@@ -15,7 +16,7 @@ const LabHeader = (props) => {
       <Row>
         <Col size={1.6}>
             { <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderLabProfileImage(packageDetails), title: 'Lab photo' })}>
-                <Image source={renderLabProfileImage(packageDetails)} style={{ height: 50, width: 50 }} />
+                <Image source={renderLabProfileImage(packageDetails)} style={{ height: 50, width: 50,borderRadius:50/2 }} />
             </TouchableOpacity> }
         </Col>
         <Col size={8.4}>
@@ -44,12 +45,12 @@ const LabHeader = (props) => {
                     
                     {props.hideStartDatePlaceholder ?
                         <>
-                          <Icon name="md-clock" style={{ fontSize: 15, color: '#8EC63F' }} />
+                        <AntDesign name="clockcircleo" style={{ fontSize: 15, color: '#8EC63F' }} />
                           <Text style={styles.clockTime}>{formatDate(dateTime, 'hh:mm a')}</Text>
                         </>
                       :
                         <>
-                            <Icon name="md-clock" style={{ fontSize: 15, color: '#8EC63F' }} />
+                            <AntDesign name="clockcircleo" style={{ fontSize: 15, color: '#8EC63F' }} />
                             <Text style={styles.clockTime}>Select time </Text>
                         </> } 
                             <Text style={styles.calDate}>({props.packageDetails && props.packageDetails.selectedSlotItem && formatDate(props.packageDetails.selectedSlotItem.slotStartDateAndTime, 'hh:mm a')+' -'}</Text>
