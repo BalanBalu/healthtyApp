@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, Image,Linking } from 'react-native';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { View, TouchableOpacity,TouchableHighlight,Text, Image,Linking } from 'react-native';
+import {Card} from 'native-base';
+
 import Svg, { Path } from 'react-native-svg';
 import { primaryColor, secondaryColor } from '../../../../setup/config'
 import { ContactUsImage } from './svgDrawings';
