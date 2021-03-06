@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     },
     loginButtonDisable: {
         marginTop: 20,
-        backgroundColor: '#9777c7',
+        backgroundColor: primaryColor,
         marginLeft: 15,
         borderRadius: 5,
     },

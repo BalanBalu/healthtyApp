@@ -51,6 +51,7 @@ const PatientAddress = (props) => {
                             </Col>
                             <Col size={1} style={{ justifyContent: 'center' }}>
                                 <Radio
+                                  color={primaryColor}
                                     standardStyle={true}
                                     selected={selectedAddress === item ? true : false}
                                     onPress={() => onChangeAddress(item)} />

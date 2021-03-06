@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { Content, Item, Input } from 'native-base';
 import { Grid, Col } from 'react-native-easy-grid';
+import {primaryColor} from '../../setup/config'
 
 class OtpInput extends Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class OtpInput extends Component {
                 <Col key={j}
                     style={styles.txtMargin}
                 >
-                    <Item style={{ borderBottomWidth: 2, borderBottomColor: '#9777c7', marginTop: 10, }}>
+                    <Item style={{ borderBottomWidth: 2, borderBottomColor: primaryColor, marginTop: 10, }}>
                         <Input
                             style={[styles.inputRadius, { borderRadius: 10 }]}
                             maxLength={1}

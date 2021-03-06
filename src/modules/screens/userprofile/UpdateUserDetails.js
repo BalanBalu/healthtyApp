@@ -391,6 +391,7 @@ class UpdateUserDetails extends Component {
                       size={3}
                       style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Radio
+                        color={primaryColor}
                         standardStyle={true}
                         onPress={() =>
                           this.setState({gender: 'M', updateButton: false})
@@ -418,6 +419,7 @@ class UpdateUserDetails extends Component {
                       size={3}
                       style={{alignItems: 'center', flexDirection: 'row'}}>
                       <Radio
+                      color={primaryColor}
                         standardStyle={true}
                         onPress={() =>
                           this.setState({gender: 'F', updateButton: false})
@@ -445,6 +447,7 @@ class UpdateUserDetails extends Component {
                       size={3}
                       style={{alignItems: 'center', flexDirection: 'row'}}>
                       <Radio
+                        color={primaryColor}
                         standardStyle={true}
                         selectedColor={primaryColor}
                         onPress={() =>

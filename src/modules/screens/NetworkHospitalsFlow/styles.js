@@ -91,7 +91,7 @@ export default  styles = StyleSheet.create({
       borderRadius: 5
     },
     enableSearchIcon4Hospital: {
-      backgroundColor: '#7E49C3',
+      backgroundColor: primaryColor,
       width: '100%',
       alignItems: 'center',
       justifyContent: 'center',

@@ -15,7 +15,7 @@ class ContactUs extends Component {
         super(props)
         this.state = {
             descriptionVisible: false,
-            helpLineEmailData: [],
+            helpLineEmailData: {},
             userName: '',
             email: '',
             messageText: '',
@@ -77,7 +77,9 @@ class ContactUs extends Component {
     getCorporatePhoneNumber = async () => {
         try {
             let result = await getCorporateHelpLineEmail();
+            if(result&&result.length){
             await this.setState({ helpLineEmailData: result[0] })
+            }
         }
         catch (ex) {
             console.log(ex)
@@ -170,7 +172,7 @@ class ContactUs extends Component {
                                     <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                                         <Col>
                                             <Text style={styles.modalSubText}>We will be back soon to your email :</Text>
-                                            <Text style={styles.emailSubText}>{helpLineEmailData.value ? helpLineEmailData.value : ' '}</Text>
+                                            <Text style={styles.emailSubText}>{helpLineEmailData&&helpLineEmailData.value ? helpLineEmailData.value : ' '}</Text>
                                         </Col>
                                     </Row>
 

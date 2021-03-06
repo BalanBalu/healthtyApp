@@ -291,6 +291,7 @@ class Signup extends Component {
 
                                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                 <Radio
+                                                  color={primaryColor}
                                                     standardStyle={true}
                                                     onPress={() => this.setState({ gender: "M" })}
                                                     selected={gender === "M" ? true : false}
@@ -302,6 +303,7 @@ class Signup extends Component {
                                             <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
 
                                                 <Radio
+                                                  color={primaryColor}
                                                     standardStyle={true}
                                                     onPress={() => this.setState({ gender: "F" })}
                                                     selected={gender === "F" ? true : false}
@@ -313,6 +315,7 @@ class Signup extends Component {
                                             <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
 
                                                 <Radio
+                                                  color={primaryColor}
                                                     standardStyle={true}
                                                     onPress={() => this.setState({ gender: "O" })}
                                                     selected={gender === "O" ? true : false}

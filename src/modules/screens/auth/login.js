@@ -158,6 +158,7 @@ class Login extends Component {
                          <Col size={4}>
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
+                              color={primaryColor}
                             selectedColor={primaryColor}
                               standardStyle={true}
                               selected={ isSelected === 'corporate_user'}
@@ -169,6 +170,7 @@ class Login extends Component {
                         <Col size={3}>
                           <Row style={{ alignItems: 'center' }}>
                             <Radio
+                              color={primaryColor}
                              selectedColor={primaryColor}
                               standardStyle={true}
                               selected={ isSelected === 'user'}

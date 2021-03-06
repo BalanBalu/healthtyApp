@@ -14,7 +14,7 @@ import { SERVICE_TYPES } from '../../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
 import { PayBySelection, POSSIBLE_PAY_METHODS } from '../../PaymentReview/PayBySelection';
 import { POSSIBLE_FAMILY_MEMBERS, TestDetails } from '../../PaymentReview/testDeatils';
-
+import {primaryColor} from '../../../../setup/config'
 class HomeTestConfirmation extends Component {
     constructor(props) {
         super(props)

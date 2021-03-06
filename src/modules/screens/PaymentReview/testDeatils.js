@@ -305,7 +305,7 @@ class TestDetails extends PureComponent {
                     {enableSelectionBox === true ?
                         <Col size={2}>
                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
+                                <CheckBox style={{ borderRadius: 5, marginRight: 10,color:primaryColor  }}
                                     checked={this.props.familyMembersSelections.includes(payBy + '-' + index)}
                                     onPress={() => this.addFamilyMembersForBooking(data, index, payBy)}
                                 />
@@ -393,6 +393,7 @@ class TestDetails extends PureComponent {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             {singlePatientSelect ?
                                 <Radio
+                                color={primaryColor}
                                     standardStyle={true}
                                     selected={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ? true : false}
                                     onPress={() => {
@@ -400,7 +401,7 @@ class TestDetails extends PureComponent {
                                         this.onSelfPatientClicked()
                                     }} />
                                 :
-                                <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
+                                <CheckBox style={{ borderRadius: 5, marginRight: 10,color:primaryColor }}
                                     checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ? true : false}
                                     onPress={() => this.onSelfPatientClicked(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF))}
                                 />
@@ -418,11 +419,12 @@ class TestDetails extends PureComponent {
                                     {singlePatientSelect ?
 
                                         <Radio
+                                        color={primaryColor}
                                             standardStyle={true}
                                             selected={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ? true : false}
                                             onPress={() => onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)} />
                                         :
-                                        <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
+                                        <CheckBox style={{ borderRadius: 5, marginRight: 10,color:primaryColor  }}
                                             checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ? true : false}
                                             onPress={() => {
                                                 if (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)) {
@@ -443,13 +445,14 @@ class TestDetails extends PureComponent {
                         <View style={{ flexDirection: 'row', marginLeft: 40, alignItems: 'center' }}>
                             {singlePatientSelect ?
                                 <Radio
+                                color={primaryColor}
                                     standardStyle={true}
                                     selected={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ? true : false}
                                     onPress={() => {
                                         onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY);
                                         this.setState({ patientDetailsObj: {} });
                                     }} />
-                                : <CheckBox style={{ borderRadius: 5, marginRight: 10 }}
+                                : <CheckBox style={{ borderRadius: 5, marginRight: 10,color:primaryColor  }}
                                     checked={selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ? true : false}
                                     onPress={() => {
                                         if (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY)) {
@@ -534,6 +537,7 @@ class TestDetails extends PureComponent {
                                         }}>Gender</Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                                             <Radio
+                                              color={primaryColor}
                                                 standardStyle={true}
                                                 selected={gender === "M" ? true : false}
                                                 onPress={() => this.setState({ gender: "M" })} />
@@ -541,6 +545,7 @@ class TestDetails extends PureComponent {
                                         </View>
                                         <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
                                             <Radio
+                                              color={primaryColor}
                                                 standardStyle={true}
                                                 selected={gender === "F" ? true : false}
                                                 onPress={() => this.setState({ gender: "F" })} />
@@ -548,6 +553,7 @@ class TestDetails extends PureComponent {
                                         </View>
                                         <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
                                             <Radio
+                                              color={primaryColor}
                                                 standardStyle={true}
                                                 selected={gender === "O" ? true : false}
                                                 onPress={() => this.setState({ gender: "O" })} />

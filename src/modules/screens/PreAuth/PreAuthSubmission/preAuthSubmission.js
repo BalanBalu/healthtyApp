@@ -17,6 +17,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfSearchByNetworkHospitalDetailsWithoutLoc } from '../../../providers/hospitalBookAppointmentFlow/action';
 import IconName from 'react-native-vector-icons/MaterialIcons'
+import { primaryColor } from '../../../../setup/config';
 
 class PreAuth extends React.PureComponent {
   constructor(props) {
@@ -139,8 +140,8 @@ class PreAuth extends React.PureComponent {
       patientName: this.getMemberName(memberInformation),
       contactNo: memberInformation.mobile || '',
       alterNateContactNumber: memberInformation.phone || '',
-      patientAgeInYr: memberInformation.age || '',
-      patientAgeMonth: memberInformation.month || '',
+      patientAgeInYr:memberInformation.age?String(memberInformation.age) :'',
+      patientAgeMonth:memberInformation.month?String(memberInformation.month ): '0',
       insurerId: memberInformation.memberId || '',
       policyNo: memberInformation.policyNo || '',
       employeeId: memberInformation.employeeId || '',
@@ -148,7 +149,6 @@ class PreAuth extends React.PureComponent {
       dob: memberInformation.dob || new Date()
     }
     await this.setState({ networkHospList: networkHospList || [], hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
-
   }
   getMemberName(item) {
     let name = ''
@@ -176,8 +176,8 @@ class PreAuth extends React.PureComponent {
       temp.dob = date;
      const getAge= calculateAge(date);
      if(getAge){
-      temp.patientAgeInYr=getAge.years;
-      temp.patientAgeMonth=getAge.months;
+      temp.patientAgeInYr=String(getAge.years);
+      temp.patientAgeMonth=String(getAge.months);
      }
       this.setState({
         isOnlyDateTimePickerVisible: false,
@@ -285,8 +285,8 @@ class PreAuth extends React.PureComponent {
       });
       return false;
     }
-    if (!onlySpaceNotAllowed(memberInfo.patientAgeMonth)) {
-      this.setState({ patientAgeErrorMsg: 'Kindly fill age month' });
+    if (!onlySpaceNotAllowed(memberInfo.patientAgeInYr)) {
+      this.setState({ patientAgeErrorMsg: 'Kindly fill age Year' });
       this.scrollViewRef.scrollTo({
         y: this.patientAgeText.y,
         animated: true
@@ -390,8 +390,8 @@ class PreAuth extends React.PureComponent {
         patientName: memberInfo.patientName,
         patientDob: memberInfo.dob,
         patientGender: memberInfo.selectedGender,
-        patientAgeInYr: memberInfo.patientAgeInYr,
-        patientAgeMonth: memberInfo.patientAgeMonth,
+        patientAgeInYr:parseInt(memberInfo.patientAgeInYr),
+        patientAgeMonth: parseInt(memberInfo.patientAgeMonth),
         insurerId: memberInfo.insurerId,
         policyNo: memberInfo.policyNo,
         employeeId: memberInfo.employeeId,
@@ -505,7 +505,7 @@ class PreAuth extends React.PureComponent {
             <Text style={styles.inputLabel}>B. Gender</Text>
             <View style={{ flexDirection: 'row', marginTop: 2 }}>
               <Radio
-                color={'#128283'}
+                color={primaryColor}
                 selectedColor={'#128283'}
                 style={{ marginLeft: 20 }}
                 standardStyle={true}
@@ -522,7 +522,7 @@ class PreAuth extends React.PureComponent {
               />
               <Text style={{ marginLeft: 10 }}>Male</Text>
               <Radio
-                color={'#128283'}
+                color={primaryColor}
                 selectedColor={'#128283'}
                 style={{ marginLeft: 20 }}
                 standardStyle={true}
@@ -768,7 +768,7 @@ class PreAuth extends React.PureComponent {
           </Text>
             <View style={{ flexDirection: 'row', marginBottom: 1, marginTop: 2 }}>
               <Radio
-                color={'#128283'}
+                  color={primaryColor}
                 selectedColor={'#128283'}
                 onPress={() => {
                   this.setState({ alreadyHaveInsurance: 'yes' });
@@ -781,7 +781,7 @@ class PreAuth extends React.PureComponent {
               />
               <Text style={{ marginLeft: 10 }}>Yes</Text>
               <Radio
-                color={'#128283'}
+                color={primaryColor}
                 selectedColor={'#128283'}
                 onPress={() => {
                   this.setState({ alreadyHaveInsurance: 'no' });
@@ -833,7 +833,7 @@ class PreAuth extends React.PureComponent {
           </Text>
             <View style={{ flexDirection: 'row', marginBottom: '0.5%', marginTop: 2 }}>
               <Radio
-                color={'#128283'}
+                color={primaryColor}
                 selectedColor={'#128283'}
                 onPress={() => {
                   this.setState({ haveFamilyPhysician: 'yes' });
@@ -844,7 +844,7 @@ class PreAuth extends React.PureComponent {
               />
               <Text style={{ marginLeft: 10 }}>Yes</Text>
               <Radio
-                color={'#128283'}
+              color={primaryColor}
                 selectedColor={'#128283'}
                 onPress={() => {
                   this.setState({ haveFamilyPhysician: 'no' });

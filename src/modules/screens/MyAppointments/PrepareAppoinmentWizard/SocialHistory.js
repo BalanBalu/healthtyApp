@@ -12,7 +12,7 @@ import { numberList } from './constants';
 import { connect } from 'react-redux';
 import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bookappointment.action'
 import styles from '../styles'
-
+import {primaryColor} from '../../../../setup/config'
 
 class SocialHistory extends PureComponent {
     constructor(props) {
@@ -119,6 +119,7 @@ class SocialHistory extends PureComponent {
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.sexuallyActive === true }
                                             onPress={() => this.setState({ sexuallyActive: true })} />
@@ -126,6 +127,7 @@ class SocialHistory extends PureComponent {
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.sexuallyActive === false }
                                             onPress={() => this.setState({ sexuallyActive: false })} />
@@ -144,6 +146,7 @@ class SocialHistory extends PureComponent {
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.drinkAlcohol === true }
                                             onPress={() => this.setState({ drinkAlcohol: true })} />
@@ -151,6 +154,7 @@ class SocialHistory extends PureComponent {
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.drinkAlcohol === false }
                                             onPress={() => this.setState({ drinkAlcohol: false })} />
@@ -169,6 +173,7 @@ class SocialHistory extends PureComponent {
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.smoke === true }
                                             onPress={() => this.setState({ smoke: true })} />
@@ -176,6 +181,7 @@ class SocialHistory extends PureComponent {
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.smoke === false }
                                             onPress={() => this.setState({ smoke: false })} />
@@ -194,6 +200,7 @@ class SocialHistory extends PureComponent {
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.recreational_drugs === true }
                                             onPress={() => this.setState({ recreational_drugs: true })} />
@@ -201,6 +208,7 @@ class SocialHistory extends PureComponent {
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.recreational_drugs === false }
                                             onPress={() => this.setState({ recreational_drugs: false })} />
@@ -250,6 +258,7 @@ class SocialHistory extends PureComponent {
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.physically_or_verbally === true}
                                             onPress={() => this.setState({ physically_or_verbally: true})} />
@@ -257,6 +266,7 @@ class SocialHistory extends PureComponent {
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.physically_or_verbally === false }
                                             onPress={() => this.setState({ physically_or_verbally: false  })} />
@@ -275,6 +285,7 @@ class SocialHistory extends PureComponent {
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.exercise === true }
                                             onPress={() => this.setState({ exercise: true })} />
@@ -282,6 +293,7 @@ class SocialHistory extends PureComponent {
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
+                                          color={primaryColor}
                                             standardStyle={true}
                                             selected={this.state.exercise === false }
                                             onPress={() => this.setState({ exercise: false })} />

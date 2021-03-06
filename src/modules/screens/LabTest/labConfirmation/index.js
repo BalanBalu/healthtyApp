@@ -442,6 +442,7 @@ class LabConfirmation extends Component {
 
                             <Col size={5} style={{ flexDirection: 'row' }}>
                                 <Radio
+                                  color={primaryColor}
                                     standardStyle={true}
                                     selected={itemSelected === 'TEST_AT_LAP' ? true : false}
                                     onPress={() => this.setState({ itemSelected: 'TEST_AT_LAP' })} />
@@ -452,6 +453,7 @@ class LabConfirmation extends Component {
 
                             <Col size={5} style={{ flexDirection: 'row' }}>
                                 <Radio
+                                    color={primaryColor}
                                     standardStyle={true}
                                     selected={itemSelected === 'TEST_AT_HOME' ? true : false}
                                     onPress={() => this.setState({ itemSelected: 'TEST_AT_HOME' })} />

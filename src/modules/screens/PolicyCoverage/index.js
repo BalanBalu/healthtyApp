@@ -468,7 +468,7 @@ class PolicyCoverage extends React.Component {
             }
 
 
-            text = text.trim();
+            text = text&&text.trim();
             if (text) {
               this.termsAndConditionList.push(text);
             }

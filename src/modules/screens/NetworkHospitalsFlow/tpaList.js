@@ -8,7 +8,7 @@ import RenderTpaList from './renderTpaListView';
 import { Loader } from '../../../components/ContentLoader';
 import CheckLocationWarning from '../Home/LocationWarning';
 import { debounce } from '../../common';
-
+import {primaryColor} from '../../../setup/config'
 
 export default class TpaList extends Component {
   constructor(props) {
@@ -114,7 +114,7 @@ export default class TpaList extends Component {
                         <Icon name="ios-close" style={{ fontSize: 25, color: 'gray' }} />
                       </Button>
                       :
-                      <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 22 }} />
+                      <Icon name='ios-search' style={{ color: primaryColor, fontSize: 22 }} />
                     }
                   </TouchableOpacity>
                 </Item>

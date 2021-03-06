@@ -352,7 +352,7 @@ export default styles = StyleSheet.create({
     },
     slotSelectedBgColorForLab: {
 
-        backgroundColor: '#775DA3',
+        backgroundColor: primaryColor,
         borderColor: '#000',
         marginTop: 10,
         height: 60,

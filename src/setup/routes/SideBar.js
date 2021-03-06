@@ -226,8 +226,10 @@ class SideBar extends React.Component {
 
                           {item.name === "Appointments" && item.routeName.length === 0 ?
                             <Right>
-                              <TouchableOpacity onPress={() => this.setState({ showAppointments: !this.state.showAppointments })}>
-                                <MaterialIcons name={this.state.selectedIndex === index ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 20 }} />
+                              <TouchableOpacity    onPress={() => {
+                            this.subItemPress(item, index)
+                          }}>
+                                <MaterialIcons name={this.state.selectedIndex === index  ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 20 }} />
                               </TouchableOpacity>
                             </Right> : null}
                         </Row>

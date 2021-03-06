@@ -145,13 +145,13 @@ class CancelAppointment extends Component {
 
                     <Row onPress={() => this.toggleRadio(0, "I am feeling better")} style={{marginTop:10}}>
                       <Radio borderColor='black' selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio(0, "I am feeling better")}
-                        selectedColor={primaryColor} testID='checkOption_1Selected' />
+                          color={primaryColor} selectedColor={primaryColor} testID='checkOption_1Selected' />
                       <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,marginTop:3}}>I am feeling better</Text>
                     </Row>
 
                     <Row onPress={() => this.toggleRadio(1, " am looking for an earlier slot/appointment")} style={{marginTop:10}}>
                       <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio(1, "Iam looking for an earlier slot/appointment")} color={primaryColor}
-                        selectedColor={primaryColor} testID='checkOption_2Selected' />
+                         color={primaryColor} selectedColor={primaryColor} testID='checkOption_2Selected' />
                       <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I am looking for an earlier slot/appointment</Text>
 
                     </Row>
@@ -160,7 +160,7 @@ class CancelAppointment extends Component {
                     <Row onPress={() => this.toggleRadio(2, "I won't be able to make it today")} style={{marginTop:10}}>
                      
                       <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio(2, "I won't be able to make it today")} color={primaryColor}
-                        selectedColor={primaryColor} testID='checkOption_3Selected' />
+                          color={primaryColor} selectedColor={primaryColor} testID='checkOption_3Selected' />
                      
                       <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I won't be able to make it today</Text>
 
@@ -171,13 +171,13 @@ class CancelAppointment extends Component {
 
                     <Row onPress={() => this.toggleRadio(3, "I want to reschedule with different type")} style={{marginTop:10}}>
                       <Radio selected={this.state.radioStatus[3]} color="red" selectedColor="green" onPress={() => this.toggleRadio(3, "I want to reschedule with different type")} color={primaryColor}
-                        selectedColor={primaryColor} testID='checkOption_4Selected' />
+                         color={primaryColor} selectedColor={primaryColor} testID='checkOption_4Selected' />
                       <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I want to reschedule with different type</Text>
                     </Row>
 
                     <Row onPress={() => this.toggleRadio(4, null)} style={{marginTop:10}}>
                       <Radio selected={this.state.radioStatus[4]} onPress={() => this.toggleRadio(4, null)} color={primaryColor}
-                        selectedColor={primaryColor} testID='checkOption_5Selected' />
+                         color={primaryColor}  selectedColor={primaryColor} testID='checkOption_5Selected' />
                       <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,marginTop:3 }}>Others</Text>
                     </Row>
 
