@@ -95,4 +95,26 @@ formStyle6: {
     justifyContent: 'center',
     borderRadius: 5
 },
+textInputWithBorderStyle:{
+    borderColor: 'red', 
+    borderWidth: 1, 
+    height: 35, 
+    marginTop: 5,
+    borderRadius:5
+},
+messageTextErrorInputStyle:{
+    borderColor: 'red', 
+    borderWidth: 1, 
+    height: 200, 
+    marginTop: 5,
+    borderRadius:5  
+},
+formStyle6ErrorMsg: {
+    borderColor: 'red',
+    borderWidth: 0.5,
+    height: 35,
+    marginTop: 10,
+    justifyContent: 'center',
+    borderRadius: 5
+},
 })
