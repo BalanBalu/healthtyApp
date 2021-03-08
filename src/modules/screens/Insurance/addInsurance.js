@@ -30,7 +30,10 @@ import {primaryColor} from '../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {formatDate, subTimeUnit, addTimeUnit} from '../../../setup/helpers';
 import {smartHealthGetService} from '../../../setup/services/httpservices';
-import {createMemberInsurance} from '../../providers/insurance/insurance.action';
+import {
+  createMemberInsurance,
+  getInsuranceCompanyNameList,
+} from '../../providers/insurance/insurance.action';
 import {ImageUpload} from '../../screens/commonScreen/imageUpload';
 import {toastMeassage, RenderDocumentUpload} from '../../common';
 import {uploadImage} from '../../providers/common/common.action';
@@ -45,12 +48,6 @@ const ProductTypeList = [
   'Personal accident',
   'Term life',
 ];
-// const TPAorPayerList = [
-//   'Choose TPA/Payer',
-//   'New India Assurance Company Limited',
-//   'Oriental Insurance Company Limited',
-//   'National Insurance Company Limited',
-// ];
 
 class AddInsurance extends PureComponent {
   constructor(props) {
@@ -72,10 +69,12 @@ class AddInsurance extends PureComponent {
       errorMsg: '',
     };
     this.initialTpaList = [];
+    this.insuranceCompanyList = [];
   }
 
   componentDidMount() {
     this.getTpaList();
+    this.getInsuranceCompanyNAmeList();
   }
   getTpaList = async () => {
     try {
@@ -84,6 +83,23 @@ class AddInsurance extends PureComponent {
       if (tpaListResp && tpaListResp.data && tpaListResp.data.length) {
         this.setState({tpaList: tpaListResp.data});
         this.initialTpaList = tpaListResp.data;
+      }
+    } catch (error) {
+      console.log('Ex is getting on get All TPA list', error.message);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+  getInsuranceCompanyNAmeList = async () => {
+    try {
+      const insuranceListResp = await getInsuranceCompanyNameList();
+      if (
+        insuranceListResp &&
+        insuranceListResp.data &&
+        insuranceListResp.data.length
+      ) {
+        this.setState({insuranceCompanyList: insuranceListResp.data});
+        this.insuranceCompanyList = insuranceListResp.data;
       }
     } catch (error) {
       console.log('Ex is getting on get All TPA list', error.message);
@@ -421,9 +437,9 @@ class AddInsurance extends PureComponent {
                           }}
                         />
                       }
-                      items={this.initialTpaList}
-                      uniqueKey="tpaName"
-                      displayKey="tpaName"
+                      items={this.insuranceCompanyList}
+                      uniqueKey="insuranceName"
+                      displayKey="insuranceName"
                       selectText={
                         insuranceCompany ? '' : 'Choose your insurance company'
                       }

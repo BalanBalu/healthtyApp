@@ -71,3 +71,31 @@ export async function getInsuranceByMemberId(memberId,page,limit) {
         }
     }
 }
+
+export async function getInsuranceCompanyNameList(memberId,page,limit) {
+    try {
+        const endPoint = 'insurance';
+        let response = await smartHealthGetService(endPoint);
+        return response;
+    } catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
+
+export async function arrangeCallbackAction(name,insuranceName) {
+    try {
+      let endPoint = 'member-wallet/renewal-insurance?name=' + name+'&insuranceName='+insuranceName;
+      let response = await smartHealthPostService(endPoint);
+      return response.data;
+    } catch (e) {
+  
+      return {
+        message: 'exceptio1n' + e,
+        success: false
+      }
+    }
+  }
+  
