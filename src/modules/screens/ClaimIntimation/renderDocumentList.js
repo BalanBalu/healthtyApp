@@ -17,7 +17,7 @@ export default class RenderDocumentList extends Component {
       super(props)
     }
     render() {
-      const {item,showCard, show, selectOptionPoopup, docsUpload, uploadData, isLoading ,deleteSelectedDocs,downloadFile,familyDocs} = this.props;
+      const {item,showCard, show, selectOptionPoopup, docsUpload, uploadData, isLoading ,deleteSelectedDocs,downloadFile,familyDocs,viewDocs} = this.props;
   
     return (
         
@@ -37,7 +37,7 @@ export default class RenderDocumentList extends Component {
                             <MaterialIcons name="file-download" style={{ fontSize: 20, color: 'red' }} />
                           </TouchableOpacity>
                         </Col> : null}
-                      {!docsUpload&&!familyDocs ?
+                      {!docsUpload&&!familyDocs&&!viewDocs ?
                         <Col style={{ width: '10%' }}>
                           <TouchableOpacity onPress={(index) => deleteSelectedDocs(index)} style={{ alignItems: 'center', marginTop: 5 }}>
                             <EvilIcons name="trash" style={{ fontSize: 20, color: 'red' }} />

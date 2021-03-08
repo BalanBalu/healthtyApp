@@ -184,7 +184,7 @@ class PolicyStatus extends Component {
 
                         </Row> */}
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim By</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Relationship</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.PATIENT_REALTION}</Text>
@@ -205,12 +205,21 @@ class PolicyStatus extends Component {
                           </Col>
                         </Row>
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Claimed Date</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim Date</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.CLAIM_REGISTERED_DATE}</Text>
                           </Col>
                         </Row>
+
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Ailment</Text></Col>
+                          <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                          <Col size={6.5}>
+                            <Text style={styles.subHeadingData}>{item.AILMENT}</Text>
+                          </Col>
+                        </Row>
+
                         <Row style={{ marginTop: 5 }}>
                           <Col size={4}><Text style={styles.subHeadingStyle}>Hospital</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
@@ -218,13 +227,13 @@ class PolicyStatus extends Component {
                             <Text style={styles.subHeadingData}>{item.HOSPITAL_NAME}</Text>
                           </Col>
                         </Row>
-                        <Row style={{ marginTop: 5 }}>
+                        {/* <Row style={{ marginTop: 5 }}>
                           <Col size={4}><Text style={styles.subHeadingStyle}>Hospital Address</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{(item.HOSPITAL_CITY + " " + item.HOSPITAL_STATE + " " + item.PIN_CODE)}</Text>
                           </Col>
-                        </Row>
+                        </Row> */}
                       </View>
                       
                     </Card>
