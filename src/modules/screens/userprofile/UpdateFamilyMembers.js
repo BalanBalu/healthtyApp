@@ -18,12 +18,7 @@ import {connect} from 'react-redux';
 import {Row, Col} from 'react-native-easy-grid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {
-  Image,
-  ScrollView,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import {Image, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 import styles from './style.js';
 import {formatDate, subTimeUnit} from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
@@ -38,8 +33,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import {ImageUpload} from '../../screens/commonScreen/imageUpload';
 import {uploadImage} from '../../providers/common/common.action';
 import {primaryColor} from '../../../setup/config';
-import IconName from 'react-native-vector-icons/MaterialIcons'
-
+import IconName from 'react-native-vector-icons/MaterialIcons';
 
 class UpdateFamilyMembers extends Component {
   constructor(props) {
@@ -80,7 +74,7 @@ class UpdateFamilyMembers extends Component {
   hideOnlyDateTimePicker = () => {
     this.setState({isOnlyDateTimePickerVisible: false});
   };
-  handleOnlyDateTimePicker = date => {
+  handleOnlyDateTimePicker = (date) => {
     try {
       this.setState({
         dob: date,
@@ -155,38 +149,34 @@ class UpdateFamilyMembers extends Component {
       this.setState({isLoading: false});
     }
   };
-  onSelectedItemsChange = async selectedItems => {
-    this.state.family_members.map(async ele => {
-
-      if ( selectedItems == 'DAUGHTER' || selectedItems === 'SON' ) {
+  onSelectedItemsChange = async (selectedItems) => {
+    this.state.family_members.map(async (ele) => {
+      if (selectedItems == 'DAUGHTER' || selectedItems === 'SON') {
         this.setState({relationship: selectedItems});
-      }
-      else if ( ele.relationship == selectedItems[0]) {
-        await this.setState({relationship:''});
-        console.log(' relationship',this.state.relationship);
-           Toast.show({
-            text: 'Selected relationship is already exist',
-            duration: 3000,
-          })
-        }
-        else
-        this.setState({relationship: selectedItems});
+      } else if (ele.relationship == selectedItems[0]) {
+        await this.setState({relationship: ''});
+        console.log(' relationship', this.state.relationship);
+        Toast.show({
+          text: 'Selected relationship is already exist',
+          duration: 3000,
+        });
+      } else this.setState({relationship: selectedItems});
     });
   };
 
-  removeSelected = async index => {
+  removeSelected = async (index) => {
     let temp = this.state.family_members;
     temp.splice(index, 1);
     this.setState({family_members: temp, updateButton: false});
   };
-  imageUpload = async data => {
+  imageUpload = async (data) => {
     this.setState({selectOptionPopup: false});
     if (data.image !== null) {
       await this.uploadImageToServer(data.image);
     }
   };
 
-  uploadImageToServer = async imagePath => {
+  uploadImageToServer = async (imagePath) => {
     try {
       this.setState({isLoading: true});
       let appendForm, endPoint;
@@ -214,6 +204,7 @@ class UpdateFamilyMembers extends Component {
 
   render() {
     const {dob, gender, selectOptionPopup} = this.state;
+    console.log('dob', dob);
 
     return (
       <Container>
@@ -234,7 +225,7 @@ class UpdateFamilyMembers extends Component {
                       returnKeyType={'next'}
                       keyboardType={'default'}
                       value={this.state.name}
-                      onChangeText={name =>
+                      onChangeText={(name) =>
                         this.setState({name, updateButton: false})
                       }
                       blurOnSubmit={false}
@@ -282,9 +273,10 @@ class UpdateFamilyMembers extends Component {
                             }
                           : {color: '#909090', fontSize: 13}
                       }>
-                      {dob != null
-                        ? formatDate(dob, 'DD/MM/YYYY')
-                        : 'Date of Birth'}
+                      {dob === '' || dob == null
+                        ? 'Date of Birth'
+                        :dob != null
+                        ? formatDate(dob, 'DD/MM/YYYY'): ''}
                     </Text>
 
                     <DateTimePicker
@@ -316,7 +308,7 @@ class UpdateFamilyMembers extends Component {
                       }}>
                       <Radio
                         color={primaryColor}
-                      selectedColor={primaryColor}
+                        selectedColor={primaryColor}
                         standardStyle={true}
                         selected={gender === 'M' ? true : false}
                         onPress={() =>
@@ -479,7 +471,7 @@ class UpdateFamilyMembers extends Component {
                   </View>
                   {selectOptionPopup ? (
                     <ImageUpload
-                      popupVisible={data => this.imageUpload(data)}
+                      popupVisible={(data) => this.imageUpload(data)}
                     />
                   ) : null}
                   <View>
