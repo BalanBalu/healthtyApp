@@ -40,7 +40,6 @@ class PolicyStatus extends Component {
 
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        console.log(memberPolicyNo)
         let policyData = await getPolicyByPolicyNo(memberPolicyNo);
         await this.setState({ memberDetails: result[0], policyDetails: policyData });
         await this.getClaimDetails()
@@ -54,7 +53,6 @@ class PolicyStatus extends Component {
   getClaimDetails = async () => {
     try {
       const { memberDetails, policyDetails } = this.state
-      console.log("policyDetails",policyDetails)
       let result = await getClaimsDataByPayerCode(policyDetails.TPA, memberDetails.policyNo, this.pagination, LIMIT);
 
       if (result && result.docs && result.docs.length) {
@@ -79,10 +77,7 @@ class PolicyStatus extends Component {
 
   }
   toggleData(data) {
-    console.log(data)
-
     const { showCard, show } = this.state
-    console.log(showCard)
     if(data===showCard){
          this.setState({ showCard: data, show: !this.state.show, })
     }
@@ -129,7 +124,7 @@ class PolicyStatus extends Component {
 
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.nameText}>{memberDetails.firstName ? (memberDetails.firstName + ' ' + memberDetails.lastName) : '-'}</Text>
-                <Text style={styles.policyText}>Policy No : <Text style={styles.commonText}>{memberDetails.policyNo ? memberDetails.policyNo : '-'}</Text></Text>
+                <Text style={styles.policyText}>Member Code : <Text style={styles.commonText}>{memberDetails.memberId ? memberDetails.memberId : '-'}</Text></Text>
                 <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YY")):'N/A'}</Text></Text>
               </View>
 
@@ -168,10 +163,10 @@ class PolicyStatus extends Component {
                       </Row>
                       <View style={styles.mainView}>
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Policy No</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>Member Code</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
-                            <Text style={styles.subHeadingData}>{item.POLICY_NUMBER}</Text>
+                            <Text style={styles.subHeadingData}>{memberDetails.memberId}</Text>
                           </Col>
 
                         </Row>
@@ -251,7 +246,7 @@ class PolicyStatus extends Component {
                           <Col size={3}>
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#909090', marginTop: 5 }}
                               numberOfLines={1}
-                              ellipsizeMode="tail">Policy No</Text>
+                              ellipsizeMode="tail">Member Code</Text>
                           </Col>
                           <Col size={0.5}>
                             <Text style={{ marginTop: 5 }}>:</Text>
@@ -259,7 +254,7 @@ class PolicyStatus extends Component {
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}
                               numberOfLines={1}
-                              ellipsizeMode="tail">{item.POLICY_NUMBER}</Text>
+                              ellipsizeMode="tail">{memberDetails.memberId}</Text>
                           </Col>
                         </Row>
                         {/* <Text style={styles.subHeadingData}
