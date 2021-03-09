@@ -4,6 +4,33 @@ import { AuthId } from '../../../setup/config'
 
 
 
+/*  Search by Network hospitals for Corporate User */
+export async function serviceOfSearchByNetworkHospitalDetails(tpaCode, searchByHospitalName, location, skipCount, limit) {
+  try {
+    let endPoint = 'master-hospitals/search/page?';
+    if (tpaCode) {
+      endPoint = `${endPoint}pc=${tpaCode}&`;
+    }
+    if (skipCount) {
+      endPoint = `${endPoint}p=${skipCount}&`;
+    }
+    if (limit) {
+      endPoint = `${endPoint}l=${limit}&`;
+    }
+    if (searchByHospitalName) {
+      endPoint = `${endPoint}searchText=${searchByHospitalName}&`;
+    }
+    const response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
 export async function getCorporateUserEcardDetails(bodyData) {
   try {
     let endpoint = getCorporateUserEcardDetailsEndpoint;
@@ -124,9 +151,9 @@ export async function getPolicyDetailsByPolicyNo(policyNo) {
   }
 }
 
-export async function serviceOfGetPreAuthList(policyNo,empCode,page,limit) {
+export async function serviceOfGetPreAuthList(policyNo, empCode, page, limit) {
   try {
-    const endPoint = 'pre-auth/policy/employeeId?policyNo='+policyNo+'&empId='+empCode+'&p='+page+'&l='+limit;
+    const endPoint = 'pre-auth/policy/employeeId?policyNo=' + policyNo + '&empId=' + empCode + '&p=' + page + '&l=' + limit;
     const response = await smartHealthGetService(endPoint);
     return response.data;
   } catch (e) {
@@ -138,11 +165,11 @@ export async function serviceOfGetPreAuthList(policyNo,empCode,page,limit) {
 }
 
 
-export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit) {
+export async function getClaimsDataByPayerCode(payer_code, policy_no, page, limit) {
   try {
     let endPoint = 'claim-data?payerCode=' + payer_code + '&policyno=' + policy_no + '&p=' + page + '&l=' + limit;
     // console.log(`endPoint`, endPoint);
-    
+
     let response = await smartHealthGetService(endPoint);
     return response.data;
   } catch (e) {
@@ -153,13 +180,13 @@ export async function getClaimsDataByPayerCode(payer_code, policy_no,page, limit
     }
   }
 }
-export async function getClaimIntimationWithPagination(searchText,employeeId,policyNo,page,limit) {
+export async function getClaimIntimationWithPagination(searchText, employeeId, policyNo, page, limit) {
   try {
     let endPoint;
-    if (searchText){
-      endPoint = 'claim-intimation/page?searchText=' + searchText +'&empId='+employeeId+ '&policyNo='+policyNo+'&p=' + page + '&l=' + limit;
-    }else{
-      endPoint = 'claim-intimation/page?empId='+employeeId+ '&policyNo='+policyNo+'&p=' + page + '&l=' + limit;
+    if (searchText) {
+      endPoint = 'claim-intimation/page?searchText=' + searchText + '&empId=' + employeeId + '&policyNo=' + policyNo + '&p=' + page + '&l=' + limit;
+    } else {
+      endPoint = 'claim-intimation/page?empId=' + employeeId + '&policyNo=' + policyNo + '&p=' + page + '&l=' + limit;
     }
     let response = await smartHealthGetService(endPoint);
     return response.data;
@@ -203,7 +230,7 @@ export async function serviceOfUpdatePreAuthDocs(reqBodyData) {
 
 export async function getTpaInfoByTpaCode(tpaCode) {
   try {
-    let endPoint ='tpa-master/tpaCode?tpaCode=' + tpaCode
+    let endPoint = 'tpa-master/tpaCode?tpaCode=' + tpaCode
     let response = await smartHealthGetService(endPoint);
     return response.data;
   } catch (e) {

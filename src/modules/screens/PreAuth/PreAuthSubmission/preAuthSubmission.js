@@ -15,7 +15,7 @@ import { formatDate } from '../../../../setup/helpers';
 import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber,getNetworkHospitalAddress,truncateByString,calculateAge } from '../../../common'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { serviceOfSearchByNetworkHospitalDetailsWithoutLoc } from '../../../providers/hospitalBookAppointmentFlow/action';
+import { serviceOfSearchByNetworkHospitalDetails } from '../../../providers/corporate/corporate.actions';
 import IconName from 'react-native-vector-icons/MaterialIcons'
 import { primaryColor } from '../../../../setup/config';
 
@@ -113,13 +113,13 @@ class PreAuth extends React.PureComponent {
     /* Get Network Hospital list by Member TPA Code   */
     const tpaCode = preAuthInfo && preAuthInfo.tpaInfo && preAuthInfo.tpaInfo.tpaCode;
     if (tpaCode) {
-      const reqData4GetNetworkWithoutLoc = { tpaCode };
-      const networkHospRepsWithoutLoc = await serviceOfSearchByNetworkHospitalDetailsWithoutLoc(reqData4GetNetworkWithoutLoc);
-      if (networkHospRepsWithoutLoc.success) {
-        var networkHospList = networkHospRepsWithoutLoc.data;
-      }
+      // const reqData4GetNetworkWithoutLoc = { tpaCode };
+      const networkHospRepsWithoutLoc = await serviceOfSearchByNetworkHospitalDetails(tpaCode);
+         const getHospitalList = networkHospRepsWithoutLoc && networkHospRepsWithoutLoc.docs;
+            if (getHospitalList && getHospitalList.length) {
+              var networkHospList = getHospitalList;
+            }
     }
-
     let hospitalInfo = preAuthInfo.hospitalInfo || {};
     let tpaInfo = preAuthInfo.tpaInfo || {}
     let tpaInformation = {
@@ -127,12 +127,18 @@ class PreAuth extends React.PureComponent {
       tpaCompanyPhoneNumber: tpaInfo.tpaPhoneNumber || '',
       tpaTollFreeFaxNo: ''
     }
+    const selectedHospitalAddress= {
+      address:hospitalInfo.address,
+      city:hospitalInfo.city,
+      state:hospitalInfo.state,
+      pinCode:hospitalInfo.pinCode
+     }
     let hospitalInfomation = {
-      hospitalName: hospitalInfo.name || '', 
-      hospitalLocation:  getNetworkHospitalAddress(hospitalInfo&&hospitalInfo.location&&hospitalInfo.location.address)||'',
+      hospitalName: hospitalInfo.hospitalName || '', 
+      hospitalLocation:  getNetworkHospitalAddress(selectedHospitalAddress)||'',
       hospitalId: '',
       hospitalEmail: hospitalInfo.email || '',
-      rohiniId: ''
+      rohiniId: hospitalInfo.rohiniId||''
     }
     let memberInformation = this.props.navigation.getParam('memberInfo');
 
@@ -1014,13 +1020,19 @@ class PreAuth extends React.PureComponent {
   };
   onChangeSelectedHospitalItem = (hospitalItem) => {
     hospitalItem = hospitalItem && hospitalItem[0];
+    const selectedHospitalAddress= {
+      address:hospitalItem.address,
+      city:hospitalItem.city,
+      state:hospitalItem.state,
+      pinCode:hospitalItem.pinCode
+     }
     if (hospitalItem) {
       const hospitalInfomation = {
-        hospitalName: hospitalItem.name || '',
-        hospitalLocation:  getNetworkHospitalAddress(hospitalItem&&hospitalItem.location&&hospitalItem.location.address)||'',
-        hospitalId: '',
+        hospitalName: hospitalItem.hospitalName || '',
+        hospitalLocation:  getNetworkHospitalAddress(selectedHospitalAddress)||'',
+        hospitalId:'',
         hospitalEmail: hospitalItem.email || '',
-        rohiniId: ''
+        rohiniId:  hospitalItem.rohiniId||''
       }
       this.setState({ hospitalInfo: hospitalInfomation, hospitalInfomation })
     }
@@ -1138,7 +1150,7 @@ class PreAuth extends React.PureComponent {
                       }
                       items={networkHospList}
                       uniqueKey='_id'
-                      displayKey='name'
+                      displayKey='hospitalName'
                       selectText={selectedHospitalName ? '' : 'Choose your Hospital'}
                       modalWithTouchable={true}
                       showDropDowns={true}
