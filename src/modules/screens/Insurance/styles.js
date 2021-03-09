@@ -285,5 +285,18 @@ export default  styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: 'OpenSans',
       },
+      ecardButton: {
+        marginTop: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      linkHeader: {
+        fontFamily: 'OpenSans',
+        fontSize: 15,
+        textDecorationColor: primaryColor,
+        textDecorationLine: 'underline',
+        color: primaryColor,
+      },
+    
     });
     

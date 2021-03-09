@@ -1,12 +1,22 @@
 import React, {Component} from 'react';
 import {Row, Col} from 'react-native-easy-grid';
-import {Container, View, Text, Icon, Card, Content, Item} from 'native-base';
+import {
+  Container,
+  View,
+  Text,
+  Icon,
+  Card,
+  Content,
+  Item,
+  Left,
+} from 'native-base';
 import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
   Modal,
-  Linking,Alert
+  Linking,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
@@ -30,7 +40,7 @@ class Insurance extends Component {
       isLoading: false,
       descriptionVisible: false,
       isLoadingMoreData: false,
-      selectedInsurance:''
+      selectedInsurance: '',
     };
     this.isEnabledLoadMoreData = true;
     this.pagination = 1;
@@ -74,17 +84,15 @@ class Insurance extends Component {
     const basicProfileData = await AsyncStorage.getItem('basicProfileData');
     const basicData = JSON.parse(basicProfileData);
     let fullName = getFullName(basicData);
-    let result = await arrangeCallbackAction(fullName, this.state.selectedInsurance);
-    Alert.alert(
-      "Thanks",
-      "Mail send successfully",
-      [
-          
-          {
-              text: "OK"
-          }
-      ],
-  );
+    let result = await arrangeCallbackAction(
+      fullName,
+      this.state.selectedInsurance,
+    );
+    Alert.alert('Thanks', 'Mail send successfully', [
+      {
+        text: 'OK',
+      },
+    ]);
   };
 
   loadMoreData = async () => {
@@ -159,6 +167,16 @@ class Insurance extends Component {
                       </View>
                       <View style={[styles.commonStyleView, {marginTop: 8}]}>
                         <View style={styles.leftView}>
+                          <Text style={styles.leftText}>Product Name</Text>
+                        </View>
+                        <View style={styles.dividingView}>
+                          <Text style={styles.smallrightText}>
+                            {item.productName}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={[styles.commonStyleView, {marginTop: 8}]}>
+                        <View style={styles.leftView}>
                           <Text style={styles.leftText}>Policy period</Text>
                         </View>
                         <View style={styles.dividingView}>
@@ -170,6 +188,7 @@ class Insurance extends Component {
                           </Text>
                         </View>
                       </View>
+
                       <View style={[styles.commonStyleView, {marginTop: 8}]}>
                         <View style={styles.leftView}>
                           <Text style={styles.leftText}>Policy start date</Text>
@@ -191,22 +210,46 @@ class Insurance extends Component {
                         </View>
                       </View>
                     </View>
-                    <View
+
+                    <Row
                       style={{
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-end',
-                        marginTop: 8,
+                        justifyContent: 'center',
+                        alignItems: 'center',
                       }}>
-                      <TouchableOpacity
-                        style={styles.renewalButton}
-                        onPress={() =>
-                          this.setState({descriptionVisible: true,selectedInsurance:item.insuranceName})
-                        }>
-                        <Text style={styles.renewalButtonText}>
-                          Insurance Renewal
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                      <Left>
+                        <TouchableOpacity
+                          style={styles.ecardButton}
+                          onPress={
+                            () => 
+                            this.props.navigation.navigate('DocumentList', {
+                              uploadData: item.policyCopy,
+                              data: item,
+                              viewDocs: true,
+                            })
+                          }>
+                          <Text style={styles.linkHeader}>View Document</Text>
+                        </TouchableOpacity>
+                      </Left>
+                      <View
+                        style={{
+                          justifyContent: 'flex-start',
+                          alignItems: 'flex-end',
+                          marginTop: 8,
+                        }}>
+                        <TouchableOpacity
+                          style={styles.renewalButton}
+                          onPress={() =>
+                            this.setState({
+                              descriptionVisible: true,
+                              selectedInsurance: item.insuranceName,
+                            })
+                          }>
+                          <Text style={styles.renewalButtonText}>
+                            Insurance Renewal
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </Row>
                   </Card>
                 )}
               />
