@@ -168,7 +168,7 @@ formStyle2: {
 },
 flatlistText: {
     fontFamily: "OpenSans",
-    fontSize: 12,
+    fontSize: 14,
     marginLeft: 20
 },
 formStyle3: {

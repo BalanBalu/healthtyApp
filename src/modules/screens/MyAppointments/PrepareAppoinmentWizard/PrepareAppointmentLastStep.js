@@ -71,8 +71,7 @@ class PrepareAppointmentLastStep extends PureComponent {
                                 checked={this.state.agreed_for_send_forms}
                                 onPress={() => this.setState({ agreed_for_send_forms: !this.state.agreed_for_send_forms })}
                             />
-                            <Text style={[styles.flatlistText, { color: '#4c4c4c', lineHeight: 20 }]}>{`I verify that the information presented here is accurate,and i authorize ${CURRENT_APP_NAME} to send this
-                                            information to my healthcare provider.`}</Text>
+                            <Text style={[styles.flatlistText, { color: '#4c4c4c', lineHeight: 22 }]}>{`I verify that the information presented here is accurate,and i authorize ${CURRENT_APP_NAME} to send this information to my healthcare provider.`}</Text>
                         </View>
 
                         <View style={[styles.centerContent, { marginTop: 50 }]}>

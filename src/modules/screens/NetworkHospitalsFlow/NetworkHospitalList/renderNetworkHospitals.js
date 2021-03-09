@@ -19,7 +19,7 @@ export default class RenderNetworkHospitalInfo extends Component {
         {showFullInfoCard === onPressArrowIconSelectedIndex ?
           <View>
             <LinearGradient
-              colors={['#F6F4FC', '#F1ECFB']}
+              colors={['rgba(220,234,233,0.6)', 'rgba(220,234,233,0.6)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={Styles.gradientStyle}>
@@ -90,12 +90,12 @@ export default class RenderNetworkHospitalInfo extends Component {
               </Row>:
                   <Row style={{ marginTop: 15 }}>
                     <Col size={4}>
-                      <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
+                      <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5,  backgroundColor: 'rgba(18,130,131,0.9)', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
                         <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Pre Auth</Text>
                       </TouchableOpacity>
                     </Col>
                     <Col size={4} style={{ marginLeft: 20 }}>
-                      <TouchableOpacity onPress={() => onPressGoPreConsultation()} style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }}>
+                      <TouchableOpacity onPress={() => onPressGoPreConsultation()} style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: 'rgba(18,130,131,0.9)', borderRadius: 5, alignItems: 'center', }}>
                         <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Consultation</Text>
                       </TouchableOpacity>
                     </Col>
