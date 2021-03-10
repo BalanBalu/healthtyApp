@@ -53,7 +53,7 @@ class CorporateHome extends PureComponent {
           let result = await getMemberDetailsByEmail(memberEmailId);
           if (result) {
             let policyData = await getPolicyByPolicyNo(result[0].policyNo);
-            await this.setState({ memberDetails: result[0]});
+            await this.setState({ memberDetails: result[0],policyDetails:policyData});
           }
         } catch (ex) {
           console.log(ex)
@@ -169,9 +169,10 @@ class CorporateHome extends PureComponent {
 
     render() {
         let corporateData = this.props.profile.corporateData;
+        let TPAData = this.props.profile.memberTpaInfo;
         const { navigate } = this.props.navigation;
 
-        const { isCorporateUser,relationship,memberDetails,helpLineNumberData } = this.state;
+        const { isCorporateUser,relationship,memberDetails,helpLineNumberData,policyDetails } = this.state;
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount },
             navigation } = this.props;
         if (locationUpdatedCount !== this.locationUpdatedCount) {
@@ -194,6 +195,8 @@ class CorporateHome extends PureComponent {
                             <PolicyCoverageCard
                                 //  data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
                                 data={memberDetails}
+                                policyData={policyDetails}
+                                 TPAdata={TPAData}
 
                             />
                             : null}
@@ -224,6 +227,7 @@ function CorporateHomeState(state) {
     return {
         profile: state.profile,
         bookappointment: state.bookappointment,
+       
     }
 }
 export default connect(CorporateHomeState)(CorporateHome)
