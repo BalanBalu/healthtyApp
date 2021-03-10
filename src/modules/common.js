@@ -28,11 +28,17 @@ export function calculateAge(date) {
     return yearAndMonth || null
 }
 
+// export function getNetworkHospitalAddress(address) {
+//     if (!address) return ''
+//     if (address)
+//         return (address.address_line_1 ? address.address_line_1 + ', ' : " ") + (address.post_office_name ? address.post_office_name + ', ' : " ") + (address.city ? address.city + ', ' : " ") + (address.state ? address.state + ', ' : " ") + (address.pin_code ? address.pin_code : " ");
+// }
 export function getNetworkHospitalAddress(address) {
     if (!address) return ''
     if (address)
-        return (address.address_line_1 ? address.address_line_1 + ', ' : " ") + (address.post_office_name ? address.post_office_name + ', ' : " ") + (address.city ? address.city + ', ' : " ") + (address.state ? address.state + ', ' : " ") + (address.pin_code ? address.pin_code : " ");
+        return (address.address ? address.address + ', ' : " ") + (address.post_office_name ? address.post_office_name + ', ' : " ") + (address.city ? address.city + ', ' : " ") + (address.state ? address.state + ', ' : " ") + (address.pinCode ? address.pinCode : " ");
 }
+
 
 export function getFullName(data) {
     let name = 'unKnown'
