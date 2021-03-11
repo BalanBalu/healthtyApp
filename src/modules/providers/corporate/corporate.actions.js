@@ -1,4 +1,4 @@
-import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService, postServiceExternal } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService, postServiceExternal, smartHealthDeleteService } from '../../../setup/services/httpservices';
 import { getCorporateUserEcardDetailsEndpoint, getECardLinkEndpoint } from '../../../setup/services/corporateEndpoint';
 import { AuthId } from '../../../setup/config'
 
@@ -263,3 +263,76 @@ export async function postContactDetails(bodyData) {
     }
   }
 }
+
+export async function getFamilyMemDetails(memberPolicyNo, employeeId) {
+  try {
+    let endpoint = 'member-family-details/byPolicyNoByEmpId?policyNo='+memberPolicyNo+'&empId='+employeeId
+    let resp = await smartHealthGetService(endpoint)
+
+    return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}
+
+export async function addFamilyMembersDetails(data) {
+  try {
+    let endPoint = 'member-family-details';
+    let response = await smartHealthPostService(endPoint,data);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+export async function familyMemberIdExist(memberId,policyNo) {
+  try {
+    let endPoint = 'member-family-details/familyMemberId/exist?memberId='+memberId+'&policyNo='+policyNo;
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+
+export async function updateFamilyMembersDetails(data) {
+  try {
+    let endPoint = 'member-family-details';
+    let response = await smartHealthPutService(endPoint,data);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+export async function deleteFamilyMembersDetails(id) {
+  try {
+    let endPoint = 'member-family-details?id='+id;
+    let response = await smartHealthDeleteService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+

@@ -17,8 +17,15 @@ import {userFiledsUpdate} from '../../providers/auth/auth.actions';
 import {connect} from 'react-redux';
 import {Row, Col} from 'react-native-easy-grid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import {Image, ScrollView, FlatList, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  FlatList,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import styles from './style.js';
 import {formatDate, subTimeUnit} from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
@@ -26,6 +33,7 @@ import {
   relationship,
   getGender,
   toastMeassage,
+  calculateAge,
   RenderDocumentUpload,
 } from '../../common';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -34,6 +42,13 @@ import {ImageUpload} from '../../screens/commonScreen/imageUpload';
 import {uploadImage} from '../../providers/common/common.action';
 import {primaryColor} from '../../../setup/config';
 import IconName from 'react-native-vector-icons/MaterialIcons';
+import {
+  addFamilyMembersDetails,
+  getMemberDetailsByEmail,
+  familyMemberIdExist,
+  updateFamilyMembersDetails,
+} from '../../providers/corporate/corporate.actions';
+import ModalPopup from '../../../components/Shared/ModalPopup';
 
 class UpdateFamilyMembers extends Component {
   constructor(props) {
@@ -50,21 +65,45 @@ class UpdateFamilyMembers extends Component {
       dob: null,
       isOnlyDateTimePickerVisible: false,
       selectOptionPopup: false,
+      memberDetails: {},
+      isModalVisible: false,
+      uploadData: [],
     };
+    this.relationship = [];
   }
-  componentDidMount() {
+  async componentDidMount() {
+    this.getMemberDetailsByEmail();
     this.getFamilyDetails();
   }
-
+  getMemberDetailsByEmail = async () => {
+    try {
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let result = await getMemberDetailsByEmail(memberEmailId);
+      if (result) {
+        await this.setState({memberDetails: result[0]});
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
   async getFamilyDetails() {
     const {navigation} = this.props;
     let userData = navigation.getParam('updatedata');
+    let data = navigation.getParam('data');
+
     const fromProfile = navigation.getParam('fromProfile') || false;
     if (fromProfile) {
       await this.setState({
         updateButton: true,
+        id: userData._id,
+        name: userData.familyMemberName,
+        dob: userData.familyMemberDob,
+        gender: userData.familyMemberGender,
+        relationship: [userData.relationship],
+        memberId: userData.memberId,
         fromProfile: true,
-        family_members: userData.family_members,
+        uploadData: userData.familyMemberDocument,
+        data,
       });
     }
   }
@@ -85,52 +124,100 @@ class UpdateFamilyMembers extends Component {
       console.error('Error on Date Picker: ', error);
     }
   };
-  addedFamilyMembers = async () => {
-    const {name, age, dob, gender, relationship} = this.state;
-
-    if (
-      name == '' ||
-      dob == '' ||
-      gender == '' ||
-      relationship == '' ||
-      relationship == 'Select Relationship'
-    ) {
-      this.setState({errorMsg: 'Kindly fill all the fields...'});
-      return false;
-    } else {
-      this.setState({errMsg: ''});
-      let temp = [];
-      temp = this.state.family_members || [];
-      temp.push({
-        name: name,
-        dob: dob,
-        gender: gender,
-        relationship: String(relationship),
-        idProof: this.state.uploadData,
-      });
-
-      await this.setState({family_members: temp, updateButton: false});
-      await this.setState({name: '', dob: '', gender: '', relationship: ''});
-    }
-  };
 
   updateFamilyMembers = async () => {
     try {
+      const {
+        name,
+        fromProfile,
+        dob,
+        gender,
+        relationship,
+        uploadData,
+        memberDetails,
+        memberId,
+      } = this.state;
+      console.log('memberId', memberId);
+
+      if (!name) {
+        this.setState({
+          errorMsg: 'Please enter name',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (!dob) {
+        this.setState({
+          errorMsg: 'Please select date of birth',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (!gender) {
+        this.setState({
+          errorMsg: 'Please select gender',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (!relationship) {
+        this.setState({
+          errorMsg: 'Please select relationship',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (!memberId) {
+        this.setState({
+          errorMsg: 'Please enter member code',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      const getAge = calculateAge(dob);
+
       this.setState({errorMsg: '', isLoading: true, updateButton: false});
       let requestData = {
-        family_members: this.state.family_members,
+        familyMemberDocument: uploadData || [],
+        corporateId: memberDetails.corporateId,
+        clientId: memberDetails.clientId,
+        employeeId: memberDetails.employeeId,
+        memberId: memberId,
+        policyNo: memberDetails.policyNo,
+        familyMemberName: name,
+        familyMemberGender: gender,
+        familyMemberMonth: String(getAge.months),
+        familyMemberAge: String(getAge.years),
+        familyMemberDob: dob,
+        relationship: String(relationship),
       };
-      const userId = await AsyncStorage.getItem('userId');
-      let response = await userFiledsUpdate(userId, requestData);
+      let response;
 
-      if (response.success) {
+      if (fromProfile) {
+        requestData._id = this.state.id;
+        response = await updateFamilyMembersDetails(requestData);
+      } else {
+        response = await addFamilyMembersDetails(requestData);
+      }
+
+      if (response) {
         Toast.show({
           text: 'Your family member details are updated',
           type: 'success',
           duration: 3000,
         });
-
-        this.props.navigation.navigate('Profile');
+        if (fromProfile) {
+          this.props.navigation.navigate('Profile');
+        } else {
+          await this.setState({
+            name: '',
+            dob: '',
+            gender: '',
+            relationship: '',
+            memberId: '',
+            uploadData: [],
+          });
+        }
       } else {
         Toast.show({
           text: response.message,
@@ -149,26 +236,22 @@ class UpdateFamilyMembers extends Component {
       this.setState({isLoading: false});
     }
   };
+
   onSelectedItemsChange = async (selectedItems) => {
-    this.state.family_members.map(async (ele) => {
-      if (selectedItems == 'DAUGHTER' || selectedItems === 'SON') {
-        this.setState({relationship: selectedItems});
-      } else if (ele.relationship == selectedItems[0]) {
-        await this.setState({relationship: ''});
+    this.state.data.map(async (ele, index) => {
+      if (ele.relationship == selectedItems[0]) {
         console.log(' relationship', this.state.relationship);
-        Toast.show({
-          text: 'Selected relationship is already exist',
-          duration: 3000,
+       await this.setState({
+          relationship: '',
+          errorMsg: 'Selected relationship is already exist',
+          isModalVisible: true,
+          updateButton: true,
         });
-      } else this.setState({relationship: selectedItems});
+        return false;
+      } else this.setState({relationship: selectedItems, updateButton: false});
     });
   };
 
-  removeSelected = async (index) => {
-    let temp = this.state.family_members;
-    temp.splice(index, 1);
-    this.setState({family_members: temp, updateButton: false});
-  };
   imageUpload = async (data) => {
     this.setState({selectOptionPopup: false});
     if (data.image !== null) {
@@ -176,6 +259,22 @@ class UpdateFamilyMembers extends Component {
     }
   };
 
+  memberValidation = async (value) => {
+    let memberPolicyNo = (await AsyncStorage.getItem('memberPolicyNo')) || null;
+    let response = await familyMemberIdExist(value, memberPolicyNo);
+    console.log('response', response);
+
+    if (response) {
+      this.setState({
+        errorMsg: 'Member code already exist',
+        isModalVisible: true,
+        updateButton: true,
+      });
+      return false;
+    } else {
+      this.setState({memberId: value, updateButton: false});
+    }
+  };
   uploadImageToServer = async (imagePath) => {
     try {
       this.setState({isLoading: true});
@@ -185,8 +284,8 @@ class UpdateFamilyMembers extends Component {
       const response = await uploadImage(imagePath, endPoint, appendForm);
 
       if (response.success) {
-        // this.uploadedData = [...this.state.uploadData, ...response.data];
-        await this.setState({uploadData: response.data});
+        this.uploadedData = [...this.state.uploadData, ...response.data];
+        await this.setState({uploadData: this.uploadedData});
         toastMeassage('Image upload successfully', 'success', 3000);
       } else {
         toastMeassage(
@@ -203,97 +302,80 @@ class UpdateFamilyMembers extends Component {
   };
 
   render() {
-    const {dob, gender, selectOptionPopup} = this.state;
-    console.log('dob', dob);
-
+    const {
+      name,
+      dob,
+      gender,
+      selectOptionPopup,
+      uploadData,
+      isModalVisible,
+      errorMsg,
+      memberId,
+      fromProfile,
+    } = this.state;
+    console.log('updateButton', this.state.updateButton);
     return (
       <Container>
-        <Content contentContainerStyle={styles.bodyContent}>
-          <ScrollView>
-            {this.state.isLoading ? (
-              <Spinner color="blue" visible={this.state.isLoading} />
-            ) : null}
+        <Content>
+          <View>
+            <ScrollView style={{padding: 20, marginBottom: 20}}>
+              <Form>
+                <Text style={styles.subHeadingText}>Name</Text>
+                <TextInput
+                  placeholder="Enter Name"
+                  placeholderTextColor={'#909090'}
+                  style={styles.textInputStyle}
+                  placeholderStyle={{marginTop: 2}}
+                  value={name}
+                  onChangeText={(value) =>
+                    this.setState({name: value, updateButton: false})
+                  }
+                  blurOnSubmit={false}
+                  testID="editName"
+                />
 
-            <Text style={styles.headerText}>Update Your Family Details</Text>
-            <Card style={styles.cardStyle}>
-              <View style={{marginLeft: -10}}>
-                <Form style={{marginTop: 10}}>
-                  <Item style={{borderBottomWidth: 0}}>
-                    <Input
-                      placeholder="Enter name"
-                      style={styles.transparentLabel2}
-                      returnKeyType={'next'}
-                      keyboardType={'default'}
-                      value={this.state.name}
-                      onChangeText={(name) =>
-                        this.setState({name, updateButton: false})
-                      }
-                      blurOnSubmit={false}
-                      testID="editName"
-                    />
-                  </Item>
+                <View style={{marginTop: 10}}>
+                  <Text style={styles.subHeadingText}>Date of birth</Text>
                   <TouchableOpacity
                     onPress={() => {
                       this.setState({
                         isOnlyDateTimePickerVisible: !this.state
                           .isOnlyDateTimePickerVisible,
                       });
-                    }}
-                    style={{
-                      borderBottomWidth: 0,
-                      backgroundColor: '#F1F1F1',
-                      height: 45,
-                      marginRight: 15,
-                      marginTop: 10,
-                      borderRadius: 5,
-                      flexDirection: 'row',
-                      marginLeft: 15,
-                      alignItems: 'center',
                     }}>
-                    {/* <Item > */}
-                    <Icon
-                      name="md-calendar"
-                      style={{
-                        padding: 5,
-                        fontSize: 13,
-                        marginTop: 1,
-                        color: primaryColor,
-                      }}
-                    />
-                    <Text
-                      style={
-                        dob != null
-                          ? {
-                              marginTop: 7,
-                              marginBottom: 7,
-                              marginLeft: 5,
-                              fontFamily: 'OpenSans',
-                              fontSize: 13,
-                              textAlign: 'center',
-                            }
-                          : {color: '#909090', fontSize: 13}
-                      }>
-                      {dob === '' || dob == null
-                        ? 'Date of Birth'
-                        :dob != null
-                        ? formatDate(dob, 'DD/MM/YYYY'): ''}
-                    </Text>
-
-                    <DateTimePicker
-                      mode={'date'}
-                      minimumDate={new Date(1940, 0, 1)}
-                      maximumDate={subTimeUnit(new Date())}
-                      value={this.state.dob}
-                      isVisible={this.state.isOnlyDateTimePickerVisible}
-                      onConfirm={this.handleOnlyDateTimePicker}
-                      onCancel={() =>
-                        this.setState({
-                          isOnlyDateTimePickerVisible: !this.state
-                            .isOnlyDateTimePickerVisible,
-                        })
-                      }
-                    />
+                    <View style={styles.searchSection}>
+                      <AntDesign
+                        name="calendar"
+                        style={{fontSize: 20, padding: 10}}
+                      />
+                      <DateTimePicker
+                        mode={'date'}
+                        minimumDate={new Date(1940, 0, 1)}
+                        maximumDate={subTimeUnit(new Date())}
+                        value={this.state.dob}
+                        isVisible={this.state.isOnlyDateTimePickerVisible}
+                        onConfirm={this.handleOnlyDateTimePicker}
+                        onCancel={() =>
+                          this.setState({
+                            isOnlyDateTimePickerVisible: !this.state
+                              .isOnlyDateTimePickerVisible,
+                          })
+                        }
+                      />
+                      <Text
+                        style={styles.input}
+                        underlineColorAndroid="transparent">
+                        {dob === '' || dob == null
+                          ? 'Date of Birth'
+                          : dob != null
+                          ? formatDate(dob, 'DD/MM/YYYY')
+                          : ''}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
+                </View>
+                <View style={{marginTop: 10}}>
+                  <Text style={styles.subHeadingText}>Gender</Text>
                   <View
                     style={{
                       marginTop: 5,
@@ -371,313 +453,137 @@ class UpdateFamilyMembers extends Component {
                       </Text>
                     </View>
                   </View>
-                  <View style={styles.transparentLabel2}>
-                    <SectionedMultiSelect
-                      items={relationship}
-                      IconRenderer={IconName}
-                      uniqueKey="value"
-                      displayKey="value"
-                      selectText="Select relation"
-                      selectToggleText={{fontSize: 10}}
-                      searchPlaceholderText="Select relation"
-                      modalWithTouchable={true}
-                      showDropDowns={true}
-                      hideSearch={false}
-                      showRemoveAll={true}
-                      showChips={false}
-                      single={true}
-                      readOnlyHeadings={false}
-                      onSelectedItemsChange={this.onSelectedItemsChange}
-                      selectedItems={this.state.relationship}
-                      colors={{primary: '#18c971'}}
-                      showCancelButton={true}
-                      animateDropDowns={true}
-                      //   selectToggleIconComponent={
-                      //     <Icon
-                      //       name="ios-arrow-down"
-                      //       style={{color: 'gray', fontSize: 20, marginLeft: 5}}
-                      //     />
-                      //   }
-                      testID="relationSelected"
-                    />
-                  </View>
-                  {/* <Item
-                    last
-                    style={{
-                      borderBottomWidth: 0,
-                      marginRight: 10,
-                      height: 45,
-                      backgroundColor: '#F1F1F1',
-                      marginTop: 10,
-                      borderRadius: 5,
-                      marginLeft: 10,
-                    }}>
-                    <Picker
-                      style={styles.transparentLabel2}
-                      mode="dropdown"
-                      placeholderStyle={{fontSize: 13, marginLeft: -5}}
-                      iosIcon={
-                        <Icon
-                          name="ios-arrow-down"
-                          style={{color: 'gray', fontSize: 20, marginLeft: 5}}
-                        />
-                      }
-                      textStyle={{color: 'gray', left: 0, marginLeft: -5}}
-                      note={false}
-                      itemStyle={{
-                        paddingLeft: 10,
-
-                        fontSize: 16,
-                      }}
-                      itemTextStyle={{color: '#5cb85c'}}
-                      style={{width: 320}}
-                      onValueChange={value => {
-                        this.setState({
-                          relationship: value,
-                          updateButton: false,
-                        });
-                      }}
-                      selectedValue={this.state.relationship}
-                      testID="editIdType">
-                      <Picker.Item label="Select" value="" />
-                      <Picker.Item label="Adhar ID" value="Adhar ID" />
-                      <Picker.Item label="PAN ID" value="PAN ID" />
-                      <Picker.Item label="Passport ID" value="Passport ID" />
-                    </Picker>
-                  </Item> */}
-                  <Text
-                    style={{
-                      fontFamily: 'OpenSans',
-                      marginLeft: 7,
-                      fontWeight: 'bold',
-                      fontSize: 15,
-                      marginTop: 10,
-                    }}>
-                    Upload Id Proof
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      marginTop: 10,
-                    }}>
-                    <TouchableOpacity
-                      onPress={() => this.setState({selectOptionPopup: true})}>
-                      <Image
-                        source={require('../../../../assets/images/documentuploadgreen.png')}
-                        style={{height: 40, width: 70}}
+                </View>
+                <View style={{marginTop: 10}}>
+                  <Text style={styles.subHeadingText}>Relationship </Text>
+                  <TouchableOpacity>
+                    <Col
+                      size={10}
+                      style={{
+                        borderRadius: 6,
+                        borderColor: '#E0E1E4',
+                        borderWidth: 2,
+                        justifyContent: 'center',
+                        height: 40,
+                        paddingTop: 10,
+                        fontFamily: 'Helvetica-Light',
+                        marginTop: 5,
+                      }}>
+                      <SectionedMultiSelect
+                        items={relationship}
+                        IconRenderer={IconName}
+                        uniqueKey="value"
+                        displayKey="value"
+                        selectText="Select relation"
+                        selectToggleText={{fontSize: 10}}
+                        searchPlaceholderText="Select relation"
+                        modalWithTouchable={true}
+                        showDropDowns={true}
+                        hideSearch={false}
+                        showRemoveAll={true}
+                        showChips={false}
+                        single={true}
+                        readOnlyHeadings={false}
+                        onSelectedItemsChange={this.onSelectedItemsChange}
+                        selectedItems={this.state.relationship}
+                        colors={{primary: '#18c971'}}
+                        showCancelButton={true}
+                        animateDropDowns={true}
+                        testID="relationSelected"
                       />
-                    </TouchableOpacity>
-                  </View>
-                  {selectOptionPopup ? (
-                    <ImageUpload
-                      popupVisible={(data) => this.imageUpload(data)}
-                    />
-                  ) : null}
-                  <View>
-                    <Button
-                      primary
-                      disabled={this.state.updateButton}
-                      style={
-                        this.state.updateButton
-                          ? styles.addressButtonDisable
-                          : styles.addressButton
-                      }
-                      block
-                      onPress={() => this.addedFamilyMembers()}
-                      testID="addDetails">
-                      <Text style={styles.buttonText}>ADD</Text>
-                    </Button>
-                  </View>
-                  {this.state.errorMsg ? (
-                    <Text style={{color: 'red', marginLeft: 15, marginTop: 5}}>
-                      {this.state.errorMsg}
-                    </Text>
-                  ) : null}
-                </Form>
-              </View>
-            </Card>
-            {this.state.family_members &&
-            this.state.family_members.length != 0 ? (
-              <Card style={styles.cardStyle}>
-                <View>
-                  <Text style={styles.headText}>Added Details</Text>
-                  <View style={{marginTop: 10}}>
-                    <FlatList
-                      data={this.state.family_members}
-                      extraData={this.state}
-                      keyExtractor={(item, index) => index.toString()}
-                      renderItem={({item, index}) => (
-                        <View>
-                          <Row style={{marginTop: 10}}>
-                            <Col size={8}>
-                              <Row>
-                                <Col size={2}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                      fontWeight: '500',
-                                    }}>
-                                    Name
-                                  </Text>
-                                </Col>
-                                <Col size={0.5}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                      fontWeight: '500',
-                                    }}>
-                                    -
-                                  </Text>
-                                </Col>
-                                <Col size={7}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                    }}>
-                                    {item.name}
-                                  </Text>
-                                </Col>
-                              </Row>
-                            </Col>
-                            <Col size={0.5}>
-                              <TouchableOpacity
-                                onPress={() => this.removeSelected(index)}>
-                                <Icon
-                                  active
-                                  name="ios-close"
-                                  style={{color: '#d00729', fontSize: 18}}
-                                />
-                              </TouchableOpacity>
-                            </Col>
-                          </Row>
-
-                          <Row>
-                            <Col size={10}>
-                              <Row>
-                                <Col size={2}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                      fontWeight: '500',
-                                    }}>
-                                    Dob
-                                  </Text>
-                                </Col>
-                                <Col size={0.5}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                      fontWeight: '500',
-                                    }}>
-                                    -
-                                  </Text>
-                                </Col>
-                                <Col size={7.5}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                    }}>
-                                    {formatDate(item.dob, 'DD/MM/YYYY') +
-                                      ' - ' +
-                                      getGender(item)}
-                                  </Text>
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col size={10}>
-                              <Row>
-                                <Col size={2}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                      fontWeight: '500',
-                                    }}>
-                                    Relation
-                                  </Text>
-                                </Col>
-                                <Col size={0.5}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                      fontWeight: '500',
-                                    }}>
-                                    -
-                                  </Text>
-                                </Col>
-                                <Col size={7.5}>
-                                  <Text
-                                    style={{
-                                      fontFamily: 'OpenSans',
-                                      fontSize: 12,
-                                      color: '#000',
-                                    }}>
-                                    {item.relationship}
-                                  </Text>
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                          {/* <View>
-                            <Card style={styles.cardStyles}>
-                              <Row>
-                                <Col style={{width: '10%'}}>
-                                  <Image
-                                    source={RenderDocumentUpload(item)}
-                                    style={{width: 25, height: 25}}
-                                  />
-                                </Col>
-                                <Col style={{width: '70%'}}>
-                                  <Text style={styles.innerCardText}>
-                                    {item.original_file_name}
-                                  </Text>
-                                </Col>
-                              </Row>
-                            </Card>
-                          </View> */}
-                        </View>
-                      )}
-                    />
-                  </View>
+                    </Col>
+                  </TouchableOpacity>
                 </View>
 
-                <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <Button
-                    primary
-                    disabled={this.state.updateButton}
-                    style={
-                      this.state.updateButton
-                        ? styles.addressButtonDisable
-                        : styles.addressButton
-                    }
-                    block
-                    onPress={() => this.updateFamilyMembers()}
-                    testID="updateBasicDetails">
-                    <Text style={styles.buttonText}>UPDATE</Text>
-                  </Button>
+                <View style={{marginTop: 10}}>
+                  <Text style={styles.subHeadingText}>Member Code</Text>
+                  <TextInput
+                    placeholder="Enter member code"
+                    placeholderTextColor={'#909090'}
+                    style={styles.textInputStyle}
+                    placeholderStyle={{marginTop: 2}}
+                    value={memberId}
+                    onChangeText={(code) => this.memberValidation(code)}
+                    blurOnSubmit={false}
+                    editable={memberId && fromProfile ? false : true}
+                    testID="editMemberCode"
+                  />
                 </View>
-              </Card>
-            ) : null}
-          </ScrollView>
+
+                <View style={{marginTop: 10}}>
+                  <Text style={styles.subHeadingText}>Upload Document</Text>
+                  <TouchableOpacity
+                    onPress={() => this.setState({selectOptionPopup: true})}>
+                    <Image
+                      source={require('../../../../assets/images/documentuploadgreen.png')}
+                      style={{width: 100, height: 55, marginTop: 10}}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                {selectOptionPopup ? (
+                  <ImageUpload
+                    popupVisible={(data) => this.imageUpload(data)}
+                  />
+                ) : null}
+                <FlatList
+                  data={uploadData}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item, index}) => (
+                    <View>
+                      <Card style={styles.cardStyles}>
+                        <Row>
+                          <Col style={{width: '10%'}}>
+                            <Image
+                              source={RenderDocumentUpload(item)}
+                              style={{width: 25, height: 25}}
+                            />
+                          </Col>
+                          <Col style={{width: '70%'}}>
+                            <Text style={styles.innerCardText}>
+                              {item.original_file_name}
+                            </Text>
+                          </Col>
+                        </Row>
+                      </Card>
+                    </View>
+                  )}
+                />
+              </Form>
+            </ScrollView>
+          </View>
+          <View style={{flex: 1}}>
+            <ModalPopup
+              errorMessageText={errorMsg}
+              closeButtonText={'CLOSE'}
+              closeButtonAction={() =>
+                this.setState({isModalVisible: !isModalVisible})
+              }
+              visible={isModalVisible}
+            />
+          </View>
         </Content>
+        <TouchableOpacity
+          disabled={this.state.updateButton}
+          style={{
+            alignSelf: 'stretch',
+            backgroundColor: primaryColor,
+            height: 45,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onPress={() => this.updateFamilyMembers()}
+          testID="updateBasicDetails">
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 'OpenSans',
+              fontWeight: 'bold',
+              color: '#fff',
+            }}>
+            {fromProfile ? 'UPDATE' : 'Save'}
+          </Text>
+        </TouchableOpacity>
       </Container>
     );
   }
