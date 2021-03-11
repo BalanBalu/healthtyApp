@@ -12,7 +12,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 
 export const PolicyCoverageCard = props => {
-    const { navigation, data } = props;
+    const { navigation, data,policyData,TPAdata } = props;
     const percentageCalculation =(total,balance)=>{
         if(total !=0){
             let percentage = (balance/total) * (100);
@@ -21,6 +21,13 @@ export const PolicyCoverageCard = props => {
             return 0;
         }
 
+    }
+    const tpaName = (data)=>{
+        let tpaName= ""
+        if (data) {
+            tpaName= data.tpaName; 
+        }
+        return tpaName
     }
     return (
         <TouchableHighlight activeOpacity={0.6}
@@ -66,7 +73,7 @@ export const PolicyCoverageCard = props => {
                                     fontSize: 12,
                                      lineHeight: 20,
                                     fontWeight: 'bold'
-                                }}>{data.policyNo ? data.policyNo : '-'}</Text>
+                                }}>{data.memberId ? data.memberId : '-'}</Text>
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                             <Text 
@@ -86,7 +93,7 @@ export const PolicyCoverageCard = props => {
                                     marginLeft: 5,
                                     fontWeight: 'bold',
                                  
-                                }}>{formatDate(data.policyEffectiveTo, "DD/YYYY")}</Text>
+                                }}>{formatDate(policyData.policyEffectiveTo, "DD/MM/YY")}</Text>
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                           
@@ -99,7 +106,9 @@ export const PolicyCoverageCard = props => {
                                   fontWeight: 'bold',
                                   width:'45%',
                                   fontStyle:'italic'
-                              }}>{data.insuranceCompany ? data.insuranceCompany : '-'}</Text>
+                              }}>
+                                  {/* {TPAdata.tpaName ? TPAdata.tpaName : '-'} */}
+                                 {tpaName(TPAdata)}</Text>
                       </View>
                         <View style={{ flexDirection: 'row' }}>
                           
