@@ -12,7 +12,6 @@ export default class RenderNetworkHospitalInfo extends Component {
   }
   render() {
     const {item, navigation} = this.props;
-    console.log("fdjfhsfkjshgjkhk",item)
     return (
       <View>
         <Card style={{padding: 10, borderRadius: 5, marginTop: 10}}>
