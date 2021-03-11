@@ -38,6 +38,7 @@ export default class ClaimInitiationSubmission extends Component {
       isVisibleDatePicker: false,
       isModalVisible: false,
       isLoading: false,
+      amount:''
     };
     this.memberInfo = props.navigation.getParam('memberInfo');
   }
@@ -54,7 +55,7 @@ export default class ClaimInitiationSubmission extends Component {
     }
   }
   onPressSubmitClaimData = async () => {
-    const { policyNo, memberId, hospitalName, selectedAdmissionDate, ailment, contactNum } = this.state;
+    const { policyNo, memberId, hospitalName, selectedAdmissionDate, ailment, contactNum,amount } = this.state;
     try {
       let employeeId = await AsyncStorage.getItem("employeeCode");
       if (!policyNo) {
@@ -75,6 +76,10 @@ export default class ClaimInitiationSubmission extends Component {
       }
       if (!ailment) {
         this.setState({ errorMsg: "Please Enter Ailment", isModalVisible: true });
+        return false;
+      }
+      if (!amount) {
+        this.setState({ errorMsg: "Please Enter amount", isModalVisible: true });
         return false;
       }
       if (!contactNum) {
@@ -99,6 +104,7 @@ export default class ClaimInitiationSubmission extends Component {
         hospitalName,
         dateOfAdmission: selectedAdmissionDate,
         ailment,
+        amount,
         contactNumber: contactNum,
         status: 'REQUEST-SENT'
       }
@@ -116,7 +122,7 @@ export default class ClaimInitiationSubmission extends Component {
     }
   }
   render() {
-    const { policyNo,name, email, memberId, hospitalName, ailment, contactNum, selectedAdmissionDate, isVisibleDatePicker, isModalVisible, errorMsg, isLoading } = this.state;
+    const { policyNo,name, email, memberId, hospitalName, ailment, contactNum, selectedAdmissionDate, isVisibleDatePicker, isModalVisible, errorMsg, isLoading,amount } = this.state;
    
     return (
       <Container>
@@ -265,6 +271,24 @@ export default class ClaimInitiationSubmission extends Component {
                   onChangeText={ailment => this.setState({ ailment })}
                   blurOnSubmit={false}
                   onSubmitEditing={() => { this.ailment._root.focus(); }}
+                />
+              </Item>
+            </Col>
+          </Row>
+          <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+            <Col size={1}>
+              <Text
+                style={styles.text}>
+                Amount
+            </Text>
+              <Item regular style={{ borderRadius: 6 }}>
+                <Input
+                  placeholder="Enter Amount"
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={amount}
+                  keyboardType={"number-pad"}
+                  onChangeText={amount => this.setState({ amount })}
                 />
               </Item>
             </Col>
