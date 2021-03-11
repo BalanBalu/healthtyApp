@@ -58,7 +58,7 @@ export default class RenderNetworkHospitalInfo extends Component {
             <Col size={9}>
               <Row style={{marginTop: 5}}>
                 <Col size={4}>
-                  <Text style={Styles.commonBoldText}>insurer name</Text>
+                  <Text style={Styles.commonBoldText}>Patient name</Text>
                 </Col>
                 <Col size={0.5}>
                   <Text>:</Text>
@@ -69,7 +69,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                   </Text>
                 </Col>
               </Row>
-              <Row style={{marginTop: 5}}>
+              {/* <Row style={{marginTop: 5}}>
                 <Col size={4}>
                   <Text style={Styles.commonBoldText}>reference Number</Text>
                 </Col>
@@ -81,7 +81,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                     {item.referenceNumber || 'N/A'}
                   </Text>
                 </Col>
-              </Row>
+              </Row> */}
               <Row style={{marginTop: 5}}>
                 <Col size={4}>
                   <Text style={Styles.commonBoldText}>Hospital</Text>
@@ -113,7 +113,7 @@ export default class RenderNetworkHospitalInfo extends Component {
           </Row>
           <Row style={{marginTop: 5}}>
             <Left>
-              <Text style={Styles.commonBoldText}>Date</Text>
+              <Text style={Styles.commonBoldText}>Request sent date</Text>
               <Text style={Styles.boldText}>
                 {item.createdDate
                   ? formatDate(item.createdDate, 'DD/MM/YYYY')
