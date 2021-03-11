@@ -109,7 +109,6 @@ import HospitalList from '../../modules/screens/hospitalBookAppointmentFlow/hosp
 import CorporateHome from '../../modules/screens/Home/corporateHome'
 import LanguagePopUp from './languagePopUp'
 import PolicyCoverage from '../../modules/screens/PolicyCoverage'
-import {PolicyConditions} from '../../modules/screens/PolicyCoverage/policyConditions'
 import PolicyStatus from '../../modules/screens/policyStatus'
 import TpaList from '../../modules/screens/NetworkHospitalsFlow/tpaList';
 import NetworkHospitals from '../../modules/screens/NetworkHospitalsFlow/NetworkHospitalList/networkHospitals';
@@ -638,12 +637,7 @@ export const smartHealthStack=createStackNavigator({
       title: 'Policy Coverage'
     }
   },
-  PolicyConditions: {
-    screen: PolicyConditions,
-    navigationOptions: {
-      title: 'Policy Conditions'
-    }
-  },
+  
   
   PreAuthList: {
     screen: PreAuthList,
