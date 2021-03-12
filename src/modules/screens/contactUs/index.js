@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Content, Form, Text, View, Picker, Toast } from 'native-base'
+import { Container, Content, Form, Text, View, Picker, Toast,Input} from 'native-base'
 import { TextInput, TouchableOpacity, Modal, AsyncStorage, ScrollView } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from './styles'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getCorporateHelpLineEmail, postContactDetails } from '../../providers/corporate/corporate.actions'
-import { toastMeassage } from '../../common'
+import { toastMeassage,validateEmailAddress } from '../../common'
 
 const issueTypeList = ["Choose Issue type", "payment", "consultation", "insurance", "others"]
 
@@ -40,6 +40,7 @@ class ContactUs extends Component {
         const basicProfileData = await AsyncStorage.getItem('basicProfileData');
         const basicData = JSON.parse(basicProfileData);
         const data = { basicData }
+        console.log("sfgsfgfgfgfgdfg",data)
         await this.setState({
             userName: `${data.basicData.first_name + " " + data.basicData.last_name}`,
             email: data.basicData.email,
@@ -68,7 +69,7 @@ class ContactUs extends Component {
                 });
                 return false;
             }
-            if (this.state.email === '') {
+            if (this.state.email==='') {   
                 this.setState({ emailErrorMsg: 'Kindly enter your email' });
                 this.scrollViewRef.scrollTo({
                     y: this.emailText.y,
@@ -76,6 +77,15 @@ class ContactUs extends Component {
                 });
                 return false;
             }
+            if (validateEmailAddress(this.state.email)===false) {   
+                this.setState({ emailErrorMsg: 'Please enter a valid email address' });
+                this.scrollViewRef.scrollTo({
+                    y: this.emailText.y,
+                    animated: true
+                });
+                return false;
+            }
+
             if (this.state.issueType === '' || this.state.issueType === 'Choose Issue type') {
                 this.setState({ issueTypeErrorMsg: 'Kindly select issue type' });
                 this.scrollViewRef.scrollTo({
@@ -155,9 +165,15 @@ class ContactUs extends Component {
                                             onLayout={event =>
                                                 (this.emailText = event.nativeEvent.layout)
                                             }>Email</Text>
-                                        <TextInput placeholder="Enter Email" placeholderTextColor={"#909090"}
+                                                    
+                                       
+                                        <TextInput placeholder="Enter Email" 
+                                       
+                                            placeholderTextColor={"#909090"}
                                             onChangeText={text => this.setState({ email: text, emailErrorMsg: null })}
+                                            editable = {true}
                                             value={this.state.email}
+                                            keyboardType={'email-address'}
                                             style={this.state.emailErrorMsg !== null ? styles.textInputWithBorderStyle : styles.textInputStyle} />
                                         {this.state.emailErrorMsg !== null ?
                                             <Text style={{ color: 'red', marginRight: 0, marginTop: 10, textAlign: 'right', position: 'absolute', right: 0, top: 150 }}>{this.state.emailErrorMsg}</Text>
@@ -172,7 +188,7 @@ class ContactUs extends Component {
                                                 mode="dropdown"
 
                                                 placeholderStyle={{ fontSize: 16, marginLeft: -5 }}
-                                                iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20, marginLeft: 170 }} />}
+                                                // iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20, marginLeft: 170 }} />}
                                                 textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
                                                 note={false}
                                                 itemStyle={{
@@ -221,14 +237,9 @@ class ContactUs extends Component {
                             >
                                 <View style={styles.modalFirstView}>
                                     <View style={styles.modalSecondView}>
-                                        <Row style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: -30 }}>
-                                            <TouchableOpacity onPress={() => this.setState({ descriptionVisible: false })}>
-                                                <MaterialIcons name="close" style={{ fontSize: 30, color: 'red' }} />
 
-                                            </TouchableOpacity>
-                                        </Row>
                                         <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                            <Text style={styles.modalHeading}>Thank you for updating your {'\n'} contact details</Text>
+                                            <Text style={styles.modalHeading}>Thank for contacting {'\n'} with us!</Text>
                                         </Row>
                                         <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                                             <Col>
