@@ -73,8 +73,8 @@ class AddInsurance extends PureComponent {
   }
 
   componentDidMount() {
-    this.getTpaList();
     this.getInsuranceCompanyNAmeList();
+    this.getTpaList();
   }
   getTpaList = async () => {
     try {
@@ -211,7 +211,7 @@ class AddInsurance extends PureComponent {
           'success',
           1000,
         );
-        this.props.navigation.navigate('CorporateHome');
+        this.props.navigation.navigate('Insurance');
       }
     } catch (error) {
       console.log('Ex is getting on', error.message);
