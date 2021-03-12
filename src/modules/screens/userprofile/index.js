@@ -658,11 +658,12 @@ class Profile extends Component {
                     data={family_members}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({item, index}) => (
-                      <View>
+                      <View style={{borderWidth:0.3,borderColor:'#101010',marginBottom:10,borderRadius:5,padding:5,marginRight:20 ,marginTop:10}}>
+
                         <Row style={{marginTop: 10}}>
                           <Col size={8}>
                             <Row>
-                              <Col size={2}>
+                              <Col size={4}>
                                 <Text note style={styles.customText1}>
                                   Name
                                 </Text>
@@ -692,7 +693,7 @@ class Profile extends Component {
                                 name="create"
                                 style={{
                                   color: 'black',
-                                  fontSize: 20,
+                                  fontSize: 15,
                                   marginRight: 5,
                                 }}
                               />
@@ -705,8 +706,8 @@ class Profile extends Component {
                               }>
                               <Icon
                                 active
-                                name="ios-close"
-                                style={{color: '#d00729', fontSize: 18}}
+                                name="ios-trash"
+                                style={{color: '#d00729', fontSize: 15}}
                               />
                             </TouchableOpacity>
                           </Col>
@@ -714,7 +715,7 @@ class Profile extends Component {
                         <Row>
                           <Col size={10}>
                             <Row>
-                              <Col size={2}>
+                              <Col size={3}>
                                 <Text note style={styles.customText1}>
                                   Member Code
                                 </Text>
@@ -724,7 +725,7 @@ class Profile extends Component {
                                   -
                                 </Text>
                               </Col>
-                              <Col size={7.5}>
+                              <Col size={6}>
                                 <Text note style={styles.customText1}>
                                   {item.memberId ? item.memberId : 'N/A'}
                                 </Text>
@@ -735,7 +736,7 @@ class Profile extends Component {
                         <Row>
                           <Col size={10}>
                             <Row>
-                              <Col size={2}>
+                              <Col size={3}>
                                 <Text note style={styles.customText1}>
                                   Age
                                 </Text>
@@ -745,7 +746,7 @@ class Profile extends Component {
                                   -
                                 </Text>
                               </Col>
-                              <Col size={7.5}>
+                              <Col size={6}>
                                 <Text note style={styles.customText1}>
                                   {this.familyMemAgeCal(item)}
                                 </Text>
@@ -756,7 +757,7 @@ class Profile extends Component {
                         <Row>
                           <Col size={10}>
                             <Row>
-                              <Col size={2}>
+                              <Col size={3}>
                                 <Text note style={styles.customText1}>
                                   Gender
                                 </Text>
@@ -766,7 +767,7 @@ class Profile extends Component {
                                   -
                                 </Text>
                               </Col>
-                              <Col size={7.5}>
+                              <Col size={6}>
                                 <Text note style={styles.customText1}>
                                   {item.familyMemberGender
                                     ? item.familyMemberGender == 'M'
@@ -783,7 +784,7 @@ class Profile extends Component {
                         <Row>
                           <Col size={10}>
                             <Row>
-                              <Col size={2}>
+                              <Col size={3}>
                                 <Text note style={styles.customText1}>
                                   Relation
                                 </Text>
@@ -793,7 +794,7 @@ class Profile extends Component {
                                   -
                                 </Text>
                               </Col>
-                              <Col size={7.5}>
+                              <Col size={6}>
                                 <Text note style={styles.customText1}>
                                   {item.relationship}
                                 </Text>
@@ -801,7 +802,7 @@ class Profile extends Component {
                             </Row>
                           </Col>
                         </Row>
-                        {item.familyMemberDocument.length != 0 ? (
+                        {item.familyMemberDocument&&item.familyMemberDocument.length != 0 ? (
                           <View style={styles.subView}>
                             <Row
                               style={{
@@ -1342,7 +1343,7 @@ const styles = StyleSheet.create({
   },
   linkHeader: {
     fontFamily: 'OpenSans',
-    fontSize: 15,
+    fontSize: 13,
     textDecorationColor: primaryColor,
     textDecorationLine: 'underline',
     color: primaryColor,
