@@ -29,6 +29,7 @@ import {
 } from '../../providers/insurance/insurance.action';
 import {dateDiff, formatDate} from '../../../setup/helpers';
 import moment from 'moment';
+import {NavigationEvents} from 'react-navigation';
 
 const LIMIT = 5;
 
@@ -129,6 +130,11 @@ class Insurance extends Component {
     const {data, isLoadingMoreData, isLoading} = this.state;
     return (
       <Container>
+          <NavigationEvents
+          onWillFocus={(payload) => {
+            this.getInsuranceList(payload);
+          }}
+        />
         <Content style={{padding: 10}}>
           <View style={styles.mainView}>
             <TouchableOpacity
