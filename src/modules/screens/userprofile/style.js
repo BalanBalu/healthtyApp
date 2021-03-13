@@ -86,6 +86,34 @@ export default StyleSheet.create({
         fontSize: 13
 
     },
+    searchSection: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderColor: '#909090',
+        borderWidth: 1,
+        height: 30,
+        borderRadius: 5,
+        marginTop: 8,
+      },
+      input: {
+        flex: 1,
+        paddingTop: 2,
+        paddingRight: 2,
+        paddingBottom: 2,
+        paddingLeft: 0,
+        backgroundColor: '#fff',
+        color: '#909090',
+      },
+    textInputStyle: {
+        borderColor: '#909090',
+        borderWidth: 1,
+        height: 35,
+        marginTop: 8,
+        borderRadius: 5,
+      },
     transparentLabel2:
     {
         borderBottomColor: 'transparent',
