@@ -11,6 +11,7 @@ import { getMemberDetailsByEmail } from '../../providers/corporate/corporate.act
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
 import {primaryColor} from '../../../setup/config';
+import { Loader } from '../../../components/ContentLoader';
 
 
 class PolicyCoverage extends React.Component {
@@ -18,7 +19,8 @@ class PolicyCoverage extends React.Component {
     super(props);
     this.state = {
       memberDetails: {},
-      policyDetails: {}
+      policyDetails: {},
+      isLoading:false,
     }
   }
 
@@ -27,8 +29,10 @@ class PolicyCoverage extends React.Component {
   }
   getMemberDetailsByEmail = async () => {
     try {
+      this.setState({isLoading:true})
       let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
+      this.setState({isLoading:false})
       if (result) {
         let policyData = await getPolicyByPolicyNo(result[0].policyNo);
         await this.setState({ memberDetails: result[0], policyDetails: policyData });
@@ -482,10 +486,13 @@ class PolicyCoverage extends React.Component {
   }
 
   render() {
-    const { memberDetails, policyDetails } = this.state
+    const { memberDetails, policyDetails,isLoading} = this.state
     return (
       <Container>
         <Content style={{ backgroundColor: '#F3F3F4' }}>
+         {isLoading == true  ?
+          <Loader style='list' />
+          : 
           <View style={{ marginTop: 20, marginRight: 10, marginLeft: 10 }}>
             <Text style={styles.myInsuranceText}>My Insurance</Text>
             <Card style={styles.cardStyle}>
@@ -557,7 +564,7 @@ class PolicyCoverage extends React.Component {
                 </Row>
               </Card>
             </TouchableOpacity>
-          </View>
+          </View>}
 
         </Content>
       </Container>
