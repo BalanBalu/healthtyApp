@@ -491,7 +491,7 @@ class PolicyCoverage extends React.Component {
       <Container>
         <Content style={{ backgroundColor: '#F3F3F4' }}>
          {isLoading == true  ?
-          <Loader style='list' />
+          <Loader style='smallList' />
           : 
           <View style={{ marginTop: 20, marginRight: 10, marginLeft: 10 }}>
             <Text style={styles.myInsuranceText}>My Insurance</Text>

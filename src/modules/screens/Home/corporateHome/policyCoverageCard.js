@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, Image } from 'react-native';
+import { View, TouchableOpacity, Text, Image,ActivityIndicator } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Svg, { Path } from 'react-native-svg';
 import { primaryColor, secondaryColor } from '../../../../setup/config'
@@ -9,7 +9,6 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { formatDate } from '../../../../setup/helpers';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-
 
 export const PolicyCoverageCard = props => {
     const { navigation, data,policyData,TPAdata } = props;
@@ -48,6 +47,12 @@ export const PolicyCoverageCard = props => {
                         position: 'relative',
                         flex: 1,
                     }}>
+                        { Object.keys(data).length === 0 ? <ActivityIndicator
+              style={{ marginBottom: 0,marginRight:100,marginTop:50 }}
+              animating={true}
+              size="large"
+              color='white'
+            />:
                     <View
                         style={{
                             flexDirection: 'column',
@@ -62,7 +67,7 @@ export const PolicyCoverageCard = props => {
                                 fontSize: 18,
                                 fontWeight: '700',
                             }}>
-                            {data.firstName ? (data.firstName + ' ' + data.lastName) : '-'}
+                            {data.firstName ? (data.firstName + ' ' + data.lastName) :  ''}
                         </Text>
                         <View style={{ flexDirection: 'row' }}>
                             
@@ -73,7 +78,7 @@ export const PolicyCoverageCard = props => {
                                     fontSize: 12,
                                      lineHeight: 20,
                                     fontWeight: 'bold'
-                                }}>{data.memberId ? data.memberId : '-'}</Text>
+                                }}>{data.memberId ? data.memberId : ''}</Text>
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                             <Text 
@@ -121,12 +126,12 @@ export const PolicyCoverageCard = props => {
                                     fontWeight: 'bold',
                                     width:'45%',
                                     fontStyle:'italic'
-                                }}>{data.corporateName ? data.corporateName : '-'}</Text>
+                                }}>{data.corporateName ? data.corporateName : ''}</Text>
                         </View>
                        
                         
                        
-                    </View>
+                    </View>}
 
                     <View style={{ position: 'absolute', top: 0, right: -11.5 }}>
                         <Svg

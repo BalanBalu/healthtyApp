@@ -8,6 +8,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {getClaimIntimationWithPagination} from '../../providers/corporate/corporate.actions';
 import {log} from 'react-native-reanimated';
 import {primaryColor} from '../../../setup/config';
+import { Loader } from '../../../components/ContentLoader';
 
 const LIMIT = 10;
 
@@ -18,6 +19,7 @@ class ClaimIntimationList extends PureComponent {
       showCard: -1,
       show: true,
       claimList: [],
+      isLoading:false
     };
     this.pagination = 1;
   }
@@ -26,6 +28,7 @@ class ClaimIntimationList extends PureComponent {
   }
   getClaimIntimationDetails = async () => {
     try {
+      this.setState({isLoading:true});
       let searchText = null;
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeId = await AsyncStorage.getItem('employeeCode');
@@ -36,6 +39,8 @@ class ClaimIntimationList extends PureComponent {
         this.pagination,
         LIMIT,
       );
+      this.setState({isLoading:false});
+
       if (result) {
         await this.setState({claimList: result.docs});
       }
