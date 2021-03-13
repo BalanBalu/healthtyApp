@@ -56,6 +56,11 @@ import {
 } from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {
+  getFamilyMemDetails,
+  deleteFamilyMembersDetails,
+} from '../../providers/corporate/corporate.actions';
+import ConfirmPopup from '../../shared/confirmPopup';
 
 class Profile extends Component {
   navigation = this.props.navigation;
@@ -68,10 +73,11 @@ class Profile extends Component {
       favouriteList: [],
       imageSource: null,
       file_name: '',
-      isLoading: false,
+      isLoading: true,
       selectOptionPoopup: false,
       is_blood_donor: false,
       family_members: [],
+      deletePopupVisible: false,
     };
   }
   async componentDidMount() {
@@ -80,7 +86,8 @@ class Profile extends Component {
       this.props.navigation.navigate('login');
       return;
     }
-    this.getUserProfile();
+    await this.getFamilyDetails();
+    await this.getUserProfile();
     this.getfavouritesList();
   }
   componentWillUnmount() {
@@ -93,22 +100,34 @@ class Profile extends Component {
     try {
       this.setState({isLoading: true});
       let fields =
-        'first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified,height,weight,family_members';
-
+        'first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified,height,weight';
       let userId = await AsyncStorage.getItem('userId');
       let result = await fetchUserProfile(userId, fields);
-
       if (result) {
         this.setState({
           data: result,
           is_blood_donor: result.is_blood_donor,
-          family_members: result.family_members,
         });
         storeBasicProfile(result);
-
         if (result.profile_image) {
           this.setState({imageSource: result.profile_image.imageURL});
         }
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+  getFamilyDetails = async () => {
+    try {
+      this.setState({isLoading: true});
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let employeeCode = await AsyncStorage.getItem('employeeCode');
+      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
+      if (result) {
+        this.setState({family_members: result});
+        console.log('family_members', this.state.family_members);
       }
     } catch (e) {
       console.log(e);
@@ -138,7 +157,6 @@ class Profile extends Component {
   }
 
   editAddress = async (address) => {
-    console.log('address', address);
     try {
       let addrressData;
       if (address === null) {
@@ -296,21 +314,38 @@ class Profile extends Component {
       });
     }
   };
+  async deleteSelectedDocs(id, index) {
+    await this.setState({
+      selectedFamilyIndex4Delete: index,
+      selectedFamilyid4Delete: id,
+      deletePopupVisible: true,
+    });
+  }
 
-  removeSelected = async (index) => {
+  removeSelected = async () => {
     let temp = this.state.family_members;
-    temp.splice(index, 1);
+    temp.splice(this.state.selectedFamilyIndex4Delete, 1);
     this.setState({family_members: temp, updateButton: false});
+    let deleteFamilyMembers = await deleteFamilyMembersDetails(
+      this.state.selectedFamilyid4Delete,
+    );
+    if (deleteFamilyMembers) {
+      Toast.show({
+        text: 'Deleted your family member details',
+        type: 'success',
+        duration: 3000,
+      });
+    }
   };
-  familyMemAgeCal = (date) => {
+  familyMemAgeCal = (value) => {
     try {
-      const getAge = calculateAge(date);
-      console.log('getAge', getAge);
-      if (getAge.years == 0 && getAge.months <= 1)
-        return getAge.months + ' Month';
-      else if (getAge.months > 1) return getAge.months + ' Months';
-      else if (getAge.years > 1) return getAge.years + ` Years `;
-      else return getAge.years + ` Year`;
+      if (value.familyMemberAge == 0 && value.familyMemberMonth <= 1)
+        return value.familyMemberMonth + ' Month';
+      else if (value.familyMemberMonth > 1)
+        return value.familyMemberMonth + ' Months';
+      else if (value.familyMemberAge > 1)
+        return value.familyMemberAge + ` Years `;
+      else return value.familyMemberAge + ` Year`;
     } catch (error) {
       console.error('Error on Date Picker: ', error);
     }
@@ -325,7 +360,7 @@ class Profile extends Component {
       <Container style={styles.container}>
         <NavigationEvents
           onWillFocus={(payload) => {
-            this.getUserProfile(payload);
+            this.getUserProfile(payload),this.getFamilyDetails();
           }}
         />
 
@@ -591,12 +626,14 @@ class Profile extends Component {
 
                   <FlatList
                     data={family_members}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({item, index}) => (
-                      <View>
+                      <View style={{borderWidth:0.3,borderColor:'#101010',marginBottom:10,borderRadius:5,padding:5,marginRight:20 ,marginTop:10}}>
+
                         <Row style={{marginTop: 10}}>
                           <Col size={8}>
                             <Row>
-                              <Col size={2}>
+                              <Col size={4}>
                                 <Text note style={styles.customText1}>
                                   Name
                                 </Text>
@@ -608,7 +645,7 @@ class Profile extends Component {
                               </Col>
                               <Col size={6}>
                                 <Text note style={styles.customText1}>
-                                  {item.name}
+                                  {item.familyMemberName}
                                 </Text>
                               </Col>
                             </Row>
@@ -616,14 +653,17 @@ class Profile extends Component {
                           <Col size={1}>
                             <TouchableOpacity
                               onPress={() =>
-                                this.editProfile('UpdateFamilyMembers')
+                                this.props.navigation.navigate(
+                                  'UpdateFamilyMembers',
+                                  {updatedata: item, fromProfile: true,data:family_members},
+                                )
                               }>
                               <MaterialIcons
                                 active
                                 name="create"
                                 style={{
                                   color: 'black',
-                                  fontSize: 20,
+                                  fontSize: 15,
                                   marginRight: 5,
                                 }}
                               />
@@ -631,20 +671,42 @@ class Profile extends Component {
                           </Col>
                           <Col size={0.5}>
                             <TouchableOpacity
-                              onPress={() => this.removeSelected(index)}>
+                              onPress={() =>
+                                this.deleteSelectedDocs(item._id, index)
+                              }>
                               <Icon
                                 active
-                                name="ios-close"
-                                style={{color: '#d00729', fontSize: 18}}
+                                name="ios-trash"
+                                style={{color: '#d00729', fontSize: 15}}
                               />
                             </TouchableOpacity>
                           </Col>
                         </Row>
-
                         <Row>
                           <Col size={10}>
                             <Row>
-                              <Col size={2}>
+                              <Col size={3}>
+                                <Text note style={styles.customText1}>
+                                  Member Code
+                                </Text>
+                              </Col>
+                              <Col size={0.5}>
+                                <Text note style={styles.customText1}>
+                                  -
+                                </Text>
+                              </Col>
+                              <Col size={6}>
+                                <Text note style={styles.customText1}>
+                                  {item.memberId ? item.memberId : 'N/A'}
+                                </Text>
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col size={10}>
+                            <Row>
+                              <Col size={3}>
                                 <Text note style={styles.customText1}>
                                   Age
                                 </Text>
@@ -654,11 +716,9 @@ class Profile extends Component {
                                   -
                                 </Text>
                               </Col>
-                              <Col size={7.5}>
+                              <Col size={6}>
                                 <Text note style={styles.customText1}>
-                                  {this.familyMemAgeCal(item.dob) +
-                                    ' - ' +
-                                    getGender(item)}
+                                  {this.familyMemAgeCal(item)}
                                 </Text>
                               </Col>
                             </Row>
@@ -667,7 +727,34 @@ class Profile extends Component {
                         <Row>
                           <Col size={10}>
                             <Row>
-                              <Col size={2}>
+                              <Col size={3}>
+                                <Text note style={styles.customText1}>
+                                  Gender
+                                </Text>
+                              </Col>
+                              <Col size={0.5}>
+                                <Text note style={styles.customText1}>
+                                  -
+                                </Text>
+                              </Col>
+                              <Col size={6}>
+                                <Text note style={styles.customText1}>
+                                  {item.familyMemberGender
+                                    ? item.familyMemberGender == 'M'
+                                      ? 'Male'
+                                      : item.familyMemberGender == 'F'
+                                      ? "Female'"
+                                      : 'Others'
+                                    : 'N/A'}
+                                </Text>
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col size={10}>
+                            <Row>
+                              <Col size={3}>
                                 <Text note style={styles.customText1}>
                                   Relation
                                 </Text>
@@ -677,7 +764,7 @@ class Profile extends Component {
                                   -
                                 </Text>
                               </Col>
-                              <Col size={7.5}>
+                              <Col size={6}>
                                 <Text note style={styles.customText1}>
                                   {item.relationship}
                                 </Text>
@@ -685,38 +772,34 @@ class Profile extends Component {
                             </Row>
                           </Col>
                         </Row>
-
-                        <View style={styles.subView}>
-                          <Row
-                            style={{
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Left>
-                              <TouchableOpacity
-                                style={styles.ecardButton}
-                                onPress={() =>
-                                  this.props.navigation.navigate(
-                                    'DocumentList',
-                                    {
-                                      uploadData: item.idProof,
-                                      data: item,
-                                      familyDocs: true,
-                                    },
-                                  )
-                                }>
-                                <Text style={styles.linkHeader}>
-                                  View Document
-                                </Text>
-                              </TouchableOpacity>
-                            </Left>
-                            {/* <Right>
-                            <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { docsUpload: true,data: item })}>
-                              <Text style={styles.linkHeader}>Upload Document</Text>
-                            </TouchableOpacity>
-                          </Right> */}
-                          </Row>
-                        </View>
+                        {item.familyMemberDocument&&item.familyMemberDocument.length != 0 ? (
+                          <View style={styles.subView}>
+                            <Row
+                              style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}>
+                              <Left>
+                                <TouchableOpacity
+                                  style={styles.ecardButton}
+                                  onPress={() =>
+                                    this.props.navigation.navigate(
+                                      'DocumentList',
+                                      {
+                                        uploadData: item.familyMemberDocument,
+                                        data: item,
+                                        familyDocs: true,
+                                      },
+                                    )
+                                  }>
+                                  <Text style={styles.linkHeader}>
+                                    View Document
+                                  </Text>
+                                </TouchableOpacity>
+                              </Left>
+                            </Row>
+                          </View>
+                        ) : null}
                       </View>
                     )}
                   />
@@ -727,14 +810,34 @@ class Profile extends Component {
                     <Text
                       uppercase={false}
                       style={styles.customText2}
-                      onPress={() => this.editProfile('UpdateFamilyMembers')}
+                      onPress={() =>
+                        this.props.navigation.navigate('UpdateFamilyMembers')
+                      }
                       testID="onPressAddFamilyMembers">
                       Add your family details
                     </Text>
                   </Button>
                 </Body>
               </ListItem>
-             
+
+              <ConfirmPopup
+                warningMessageText={'Are you sure you want to delete !'}
+                confirmButtonText={'Confirm'}
+                confirmButtonStyle={styles.confirmButton}
+                cancelButtonStyle={styles.cancelButton}
+                cancelButtonText={'Cancel'}
+                confirmButtonAction={() => {
+                  this.removeSelected();
+                  this.setState({deletePopupVisible: false});
+                }}
+                cancelButtonAction={() =>
+                  this.setState({
+                    deletePopupVisible: !this.state.deletePopupVisible,
+                  })
+                }
+                visible={this.state.deletePopupVisible}
+              />
+
               <ListItem avatar>
                 <Left>
                   <Icon name="mail" style={{color: primaryColor}} />
@@ -1173,7 +1276,7 @@ const styles = StyleSheet.create({
   },
   linkHeader: {
     fontFamily: 'OpenSans',
-    fontSize: 15,
+    fontSize: 13,
     textDecorationColor: primaryColor,
     textDecorationLine: 'underline',
     color: primaryColor,
