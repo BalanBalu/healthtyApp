@@ -63,7 +63,6 @@ class Profile extends Component {
     super(props);
     this.state = {
       data: {},
-      starCount: 3.5,
       userId: '',
       modalVisible: false,
       favouriteList: [],
@@ -73,7 +72,6 @@ class Profile extends Component {
       selectOptionPoopup: false,
       is_blood_donor: false,
       family_members: [],
-      isCorporateUser: false,
     };
   }
   async componentDidMount() {
@@ -82,9 +80,6 @@ class Profile extends Component {
       this.props.navigation.navigate('login');
       return;
     }
-    const isCorporateUser =
-      (await AsyncStorage.getItem('is_corporate_user')) === 'true';
-    this.setState({isCorporateUser});
     this.getUserProfile();
     this.getfavouritesList();
   }
@@ -92,11 +87,6 @@ class Profile extends Component {
     this.setState({selectOptionPoopup: false});
   }
 
-  onStarRatingPress(rating) {
-    this.setState({
-      starCount: rating,
-    });
-  }
 
   /*Get userProfile*/
   getUserProfile = async () => {
@@ -138,36 +128,6 @@ class Profile extends Component {
       console.log(e);
     }
   };
-  updateBloodDonor = async () => {
-    const userId = await AsyncStorage.getItem('userId');
-    try {
-      let requestData = {
-        is_blood_donor: this.state.is_blood_donor,
-        family_members: this.state.family_members,
-      };
-      let response = await userFiledsUpdate(userId, requestData);
-      if (this.state.data.address !== undefined) {
-        if (response.success) {
-          Toast.show({
-            text: response.message,
-            type: 'success',
-            duration: 3000,
-          });
-        } else {
-          Toast.show({
-            text: response.message,
-            type: 'danger',
-            duration: 3000,
-          });
-          this.setState({isLoading: false});
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      this.setState({isLoading: false});
-    }
-  };
 
   editProfile(screen) {
     this.props.navigation.navigate(screen, {
@@ -177,20 +137,34 @@ class Profile extends Component {
     });
   }
 
-  editAddress(address) {
+  editAddress = async (address) => {
+    console.log('address', address);
     try {
-      debugger;
+      let addrressData;
       if (address === null) {
         this.editProfile('MapBox');
       } else {
         let locationAndContext = location(address.address);
         let latLng = address.coordinates;
-        let addrressData = {
+        console.log('latLng', latLng);
+        if (latLng == undefined) {
+        const coordinates = await getPostOffNameAndDetails(address.address.pin_code);
+        console.log('coordinates', coordinates);
+
+        addrressData = {
           no_and_street: address.address.no_and_street,
-          center: [latLng[1], latLng[0]],
+          center: latLng ? [latLng[1], latLng[0]] : null,
           place_name: locationAndContext.placeName,
           context: locationAndContext.context,
         };
+        } else {
+           addrressData = {
+            no_and_street: address.address.no_and_street,
+            center: latLng ? [latLng[1], latLng[0]] : null,
+            place_name: locationAndContext.placeName,
+            context: locationAndContext.context,
+          };
+        }
         this.props.navigation.navigate('MapBox', {
           locationData: addrressData,
           fromProfile: true,
@@ -245,7 +219,7 @@ class Profile extends Component {
     } finally {
       this.setState({isLoading: false});
     }
-  }
+  };
   /*Upload profile pic*/
   uploadProfilePicture(type) {
     if (type == 'Camera') {
@@ -760,43 +734,7 @@ class Profile extends Component {
                   </Button>
                 </Body>
               </ListItem>
-              {this.state.isCorporateUser === false ? (
-                <ListItem avatar>
-                  <Left>
-                    <Icon
-                      name="ios-flame"
-                      style={{color: primaryColor, marginTop: 5}}
-                    />
-                  </Left>
-
-                  <Body>
-                    <Text style={styles.customText}>Blood Donor</Text>
-                  </Body>
-
-                  <Right
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: -15,
-                    }}>
-                    <Switch
-                      value={this.state.is_blood_donor}
-                      style={{marginTop: 15}}
-                      onValueChange={(value) => {
-                        this.setState({
-                          is_blood_donor: !this.state.is_blood_donor,
-                        });
-                        if (value === true) {
-                          if (data.address === undefined) {
-                            this.editProfile('MapBox');
-                          }
-                        }
-                        this.updateBloodDonor();
-                      }}
-                    />
-                  </Right>
-                </ListItem>
-              ) : null}
+             
               <ListItem avatar>
                 <Left>
                   <Icon name="mail" style={{color: primaryColor}} />
