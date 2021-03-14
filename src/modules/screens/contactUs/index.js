@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Form, Text, View, Picker, Toast } from 'native-base'
+import { Container, Content, Form, Text, View, Picker, Toast,Input } from 'native-base'
 import { TextInput, TouchableOpacity, Modal, AsyncStorage, ScrollView } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -155,10 +155,17 @@ class ContactUs extends Component {
                                             onLayout={event =>
                                                 (this.emailText = event.nativeEvent.layout)
                                             }>Email</Text>
-                                        <TextInput placeholder="Enter Email" placeholderTextColor={"#909090"}
-                                            onChangeText={text => this.setState({ email: text, emailErrorMsg: null })}
-                                            value={this.state.email}
-                                            style={this.state.emailErrorMsg !== null ? styles.textInputWithBorderStyle : styles.textInputStyle} />
+        
+                                             <Input
+                                                  placeholder="Enter Email"
+                                                  style={this.state.emailErrorMsg !== null ? styles.textInputWithBorderStyle : styles.textInputStyle} 
+                                                  placeholderTextColor={"#909090"}
+                                                  keyboardType={'email-address'}
+                                                  onChangeText={text => this.setState({ email: text, emailErrorMsg: null })}
+                                                  underlineColorAndroid="transparent"
+                                                  blurOnSubmit={false}
+                                                  value={this.state.email}
+                                              />
                                         {this.state.emailErrorMsg !== null ?
                                             <Text style={{ color: 'red', marginRight: 0, marginTop: 10, textAlign: 'right', position: 'absolute', right: 0, top: 150 }}>{this.state.emailErrorMsg}</Text>
                                             : null}
