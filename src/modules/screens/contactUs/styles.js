@@ -17,7 +17,8 @@ textInputStyle:{
     borderWidth: 1, 
     height: 35, 
     marginTop: 5,
-    borderRadius:5
+    borderRadius:5,
+    fontSize:14
 },
 messageTextInputStyle:{
     borderColor: '#909090', 
@@ -100,7 +101,8 @@ textInputWithBorderStyle:{
     borderWidth: 1, 
     height: 35, 
     marginTop: 5,
-    borderRadius:5
+    borderRadius:5,
+    fontSize:14
 },
 messageTextErrorInputStyle:{
     borderColor: 'red', 
