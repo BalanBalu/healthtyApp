@@ -32,7 +32,6 @@ class PolicyCoverage extends React.Component {
       this.setState({isLoading:true})
       let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
-      this.setState({isLoading:false})
       if (result) {
         let policyData = await getPolicyByPolicyNo(result[0].policyNo);
         await this.setState({ memberDetails: result[0], policyDetails: policyData });
@@ -40,6 +39,9 @@ class PolicyCoverage extends React.Component {
       }
     } catch (ex) {
       console.log(ex)
+    }
+    finally{
+      this.setState({isLoading:false})
     }
 
   }

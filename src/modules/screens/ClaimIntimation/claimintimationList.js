@@ -39,14 +39,15 @@ class ClaimIntimationList extends PureComponent {
         this.pagination,
         LIMIT,
       );
-      this.setState({isLoading:false});
-
       if (result) {
         await this.setState({claimList: result.docs});
       }
     } catch (ex) {
       console.log(ex);
     }
+    finally {
+      this.setState({ isLoading: false });
+  }
   };
 
   toggleData(index, typeOfArrowIcon) {
