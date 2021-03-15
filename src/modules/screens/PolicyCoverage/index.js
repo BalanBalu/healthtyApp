@@ -36,7 +36,6 @@ class PolicyCoverage extends React.Component {
           memberDetails: result[0],
           policyDetails: policyData,
         });
-        console.log('policyData++++++++', policyData);
         await this.termsAndConditionListDetails();
       }
     } catch (ex) {
@@ -44,11 +43,7 @@ class PolicyCoverage extends React.Component {
     }
   };
   tpaName = (data) => {
-    let tpaName = '';
-    if (data) {
-      tpaName = data.tpaName;
-    }
-    return tpaName;
+    return data.tpaName ? data.tpaName :'';
   };
   termsAndConditionListDetails = async () => {
     try {
