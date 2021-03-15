@@ -30,8 +30,8 @@ class ContactUs extends Component {
         }
     }
 
-    async componentDidMount() {
-        await this.getBasicData()
+     componentDidMount() {
+        this.getBasicData()
         this.getCorporatePhoneNumber()
 
     }

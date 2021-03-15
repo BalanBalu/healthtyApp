@@ -9,6 +9,7 @@ import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getLabTestCateries } from '../../../providers/lab/lab.action';
 import FastImage from 'react-native-fast-image'
 import {primaryColor, secondaryColor} from '../../../../setup/config'
+import { Loader } from '../../../../components/ContentLoader';
 
 
 class LabCategories extends PureComponent {
@@ -16,7 +17,8 @@ class LabCategories extends PureComponent {
     super(props)
     this.state = {
       labData: [],
-      categoriesMain: []
+      categoriesMain: [],
+      isLoading: false,
     }
   }
   async componentDidMount() {
@@ -24,6 +26,7 @@ class LabCategories extends PureComponent {
   }
   getLabCategories = async () => {
     try {
+      this.setState({ isLoading: true })
       const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
       if (!isLocationSelected) {
         Alert.alert(
@@ -51,6 +54,9 @@ class LabCategories extends PureComponent {
     }
     catch (e) {
       console.log(e)
+    }
+    finally {
+      this.setState({ isLoading: false });
     }
   }
   onPressCatItem = async (type, value) => {	
@@ -137,10 +143,13 @@ class LabCategories extends PureComponent {
     )
   }
   render() {
+    const { labData ,isLoading} = this.state;
+
        return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
-
+        {isLoading ?
+        <Loader style="list" /> : labData.length ?
           <View style={{ marginBottom: 10 }}>
             <FlatList horizontal={false} numColumns={3}
               data={this.state.labData}
@@ -170,7 +179,7 @@ class LabCategories extends PureComponent {
               }
               keyExtractor={(item, index) => index.toString()}
             />
-          </View>
+          </View>:null}
         </Content>
       </Container>
 
