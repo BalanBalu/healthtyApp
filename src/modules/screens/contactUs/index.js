@@ -40,7 +40,6 @@ class ContactUs extends Component {
         const basicProfileData = await AsyncStorage.getItem('basicProfileData');
         const basicData = JSON.parse(basicProfileData);
         const data = { basicData }
-        console.log("sfgsfgfgfgfgdfg",data)
         await this.setState({
             userName: `${data.basicData.first_name + " " + data.basicData.last_name}`,
             email: data.basicData.email,
