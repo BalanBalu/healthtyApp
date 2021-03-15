@@ -8,10 +8,11 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import ProgressBar from 'react-native-horizontal-progress-bar';
 import {getMemberDetailsByEmail} from '../../providers/corporate/corporate.actions';
-('');
+
 import {getPolicyByPolicyNo} from '../../providers/policy/policy.action';
 import {formatDate} from '../../../setup/helpers';
 import {primaryColor} from '../../../setup/config';
+import { Loader } from '../../../components/ContentLoader';
 
 class PolicyCoverage extends React.Component {
   constructor(props) {
@@ -19,8 +20,11 @@ class PolicyCoverage extends React.Component {
     this.state = {
       memberDetails: {},
       policyDetails: {},
-      policyAccordianOpen: false,
-    };
+      isLoading:false,
+     policyAccordianOpen: false,
+
+    }
+
   }
 
   componentDidMount() {
@@ -28,7 +32,8 @@ class PolicyCoverage extends React.Component {
   }
   getMemberDetailsByEmail = async () => {
     try {
-      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      this.setState({isLoading:true})
+      let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
         let policyData = await getPolicyByPolicyNo(result[0].policyNo);
@@ -41,10 +46,15 @@ class PolicyCoverage extends React.Component {
     } catch (ex) {
       console.log(ex);
     }
-  };
+    finally{
+      this.setState({isLoading:false})
+    }
+
+  }
   tpaName = (data) => {
     return data.tpaName ? data.tpaName :'';
   };
+
   termsAndConditionListDetails = async () => {
     try {
       const {policyDetails} = this.state;
@@ -714,12 +724,15 @@ class PolicyCoverage extends React.Component {
   };
 
   render() {
-    const {memberDetails, policyDetails} = this.state;
+    const { memberDetails, policyDetails,isLoading} = this.state
     let tpaName = this.props.profile.memberTpaInfo;
     return (
       <Container>
-        <Content style={{backgroundColor: '#F3F3F4'}}>
-          <View style={{marginTop: 20, marginRight: 10, marginLeft: 10}}>
+        <Content style={{ backgroundColor: '#F3F3F4' }}>
+         {isLoading == true  ?
+          <Loader style='smallList' />
+          : 
+          <View style={{ marginTop: 20, marginRight: 10, marginLeft: 10 }}>
             <Text style={styles.myInsuranceText}>My Insurance</Text>
             <Card style={styles.cardStyle}>
               <Row
@@ -914,7 +927,8 @@ class PolicyCoverage extends React.Component {
                 )}
               </Card>
             </TouchableOpacity>
-          </View>
+          </View>}
+
         </Content>
       </Container>
     );

@@ -102,5 +102,49 @@ export const Loader = (props) => {
             <Rect x="40" y="900" rx="5" ry="5" width="300" height="20" />
         </ContentLoader>
       }
+      else if(props.style === 'smallList') {
+      
+        let height = Dimensions.get('window').height;
+        let width = Dimensions.get('window').width;
+        noOfList = height / 100; 
+       
+        let array = [];
+        for(let i = 0; i < noOfList; i++) {
+          array.push( ( i * 100) + 35 )
+        }
+       
+        return <ContentLoader height={Dimensions.get('window').height} 
+                              width={Dimensions.get('window').width}>
+                 <Rect x="0" y="0" rx="5" ry="5" width="70" height="70" />
+          <Rect x="80" y="17" rx="4" ry="4" width="300" height="13" />
+          <Rect x="80" y="40" rx="3" ry="3" width="250" height="10" />
+          <Rect x="0" y="80" rx="3" ry="3" width="350" height="10" />
+          <Rect x="0" y="100" rx="3" ry="3" width="200" height="10" />
+          <Rect x="0" y="100" rx="3" ry="3" width="350" height="10" />
+          <Rect x="0" y="120" rx="3" ry="3" width="200" height="10" />
+          <Rect x="0" y="120" rx="3" ry="3" width="350" height="10" />
+          <Rect x="0" y="140" rx="3" ry="3" width="200" height="10" />
+          <Rect x="0" y="140" rx="3" ry="3" width="350" height="10" />
+          <Rect x="0" y="160" rx="3" ry="3" width="200" height="10" />
+          <Rect x="0" y="160" rx="3" ry="3" width="350" height="10" />
+          <Rect x="0" y="180" rx="3" ry="3" width="200" height="10" />
+          <Rect x="0" y="180" rx="3" ry="3" width="350" height="10" />
+          <Rect x="0" y="200" rx="3" ry="3" width="200" height="10" />
+          <Rect x="0" y="200" rx="3" ry="3" width="350" height="10" />
+          <Rect x="0" y="220" rx="3" ry="3" width="200" height="10" />
+          <Rect x="0" y="220" rx="3" ry="3" width="350" height="10" />
+          <Rect x="0" y="240" rx="3" ry="3" width="200" height="10" />
+          </ContentLoader>
+        }
+        else if(props.style ==='smallLine') {
+          return <ContentLoader height={10} 
+          width={50}>
+                <Rect x="48" y="8" rx="3" ry="3" width="88" height="6" /> 
+                <Rect x="0" y="0" rx="0" ry="0" width="300" height="20" />
+
+             </ContentLoader>
+         
+        }   
       
 }
+      
