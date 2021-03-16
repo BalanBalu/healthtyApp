@@ -387,11 +387,10 @@ class AddInsurance extends PureComponent {
                           fontSize: 16,
                           marginLeft: 5,
                           marginBottom: 5,
-                          height: 35,
                           marginTop: 8,
                           borderRadius: 5,
                           fontFamily: 'Helvetica-Light',
-                          borderWidth: 1,
+
                         },
                         button: {
                           backgroundColor: '#128283',
@@ -562,11 +561,10 @@ class AddInsurance extends PureComponent {
                               fontSize: 16,
                               marginLeft: 5,
                               marginBottom: 5,
-                              height: 35,
                               marginTop: 8,
                               borderRadius: 5,
                               fontFamily: 'Helvetica-Light',
-                              borderWidth: 1,
+                            
                             },
                             button: {
                               backgroundColor: '#128283',
