@@ -97,7 +97,14 @@ class PolicyStatus extends Component {
       this.setState({ isLoadingMoreData: false })
     }
   }
-
+  percentageCalculation = (total, balance) => {
+    if (total != 0 ) {
+      let percentage = (balance / total) * 100;
+      return percentage;
+    } else {
+      return 0;
+    }
+  };
 
   render() {
     const { memberDetails, policyDetails, claimsData, isLoadingMoreData } = this.state
@@ -111,7 +118,8 @@ class PolicyStatus extends Component {
               <AnimatedCircularProgress
                 size={140}
                 width={10}
-                fill={50}
+                ref='circularProgress'
+                fill={this.percentageCalculation(memberDetails.sumInsured ? memberDetails.sumInsured : 0, memberDetails.balSumInsured ? memberDetails.balSumInsured : 0)}
                 tintColor={primaryColor}
                 backgroundColor='rgba(18, 130, 131, 0.3)'>
                 {() => (
