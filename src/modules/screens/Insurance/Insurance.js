@@ -31,7 +31,7 @@ import {dateDiff, formatDate} from '../../../setup/helpers';
 import moment from 'moment';
 import {NavigationEvents} from 'react-navigation';
 
-const LIMIT = 5;
+const LIMIT = 10;
 
 class Insurance extends Component {
   constructor(props) {
@@ -61,8 +61,10 @@ class Insurance extends Component {
         LIMIT,
       );
       if (result && result.docs && result.docs.length) {
+    
         this.pagination = this.pagination + 1;
         this.insuranceData = [...this.insuranceData, ...result.docs];
+
         this.setState({isLoading: false, data: this.insuranceData});
       } else {
         if (this.insuranceData.length > 2) {
@@ -115,6 +117,20 @@ class Insurance extends Component {
     if (policyPrriod > 1) return policyPrriod + ` Years`;
     else return policyPrriod + ` Year`;
   }
+
+  onWillFocusUpdate = async (navigationData) => {
+    if (
+      navigationData.lastState &&
+      navigationData.lastState.params &&
+      navigationData.lastState.params.isNewInsurance
+    ) {
+      this.isEnabledLoadMoreData = true;
+      this.pagination = 1;
+      this.insuranceData=[]
+      console.log('Will');
+      await this.getInsuranceList();
+    }
+  };
   render() {
     if (this.state.isLoading) {
       return (
@@ -130,9 +146,9 @@ class Insurance extends Component {
     const {data, isLoadingMoreData, isLoading} = this.state;
     return (
       <Container>
-          <NavigationEvents
+        <NavigationEvents
           onWillFocus={(payload) => {
-            this.getInsuranceList(payload);
+            this.onWillFocusUpdate(payload);
           }}
         />
         <Content style={{padding: 10}}>
@@ -225,8 +241,7 @@ class Insurance extends Component {
                       <Left>
                         <TouchableOpacity
                           style={styles.ecardButton}
-                          onPress={
-                            () => 
+                          onPress={() =>
                             this.props.navigation.navigate('DocumentList', {
                               uploadData: item.policyCopy,
                               data: item,

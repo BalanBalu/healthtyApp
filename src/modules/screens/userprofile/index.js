@@ -34,7 +34,11 @@ import {
   storeBasicProfile,
 } from '../../providers/profile/profile.action';
 import {getPatientWishList} from '../../providers/bookappointment/bookappointment.action';
-import {hasLoggedIn, userFiledsUpdate} from '../../providers/auth/auth.actions';
+import {
+  hasLoggedIn,
+  userFiledsUpdate,
+  getPostOffNameAndDetails,
+} from '../../providers/auth/auth.actions';
 import {Col, Row, Grid} from 'react-native-easy-grid';
 import {connect} from 'react-redux';
 import {dateDiff} from '../../../setup/helpers';
@@ -57,6 +61,7 @@ import {
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
+  getMemberDetailsByEmail,
   getFamilyMemDetails,
   deleteFamilyMembersDetails,
 } from '../../providers/corporate/corporate.actions';
@@ -87,36 +92,23 @@ class Profile extends Component {
       return;
     }
     await this.getFamilyDetails();
-    await this.getUserProfile();
+    await this.getMemberDetailsByEmail();
     this.getfavouritesList();
   }
   componentWillUnmount() {
     this.setState({selectOptionPoopup: false});
   }
 
-
   /*Get userProfile*/
-  getUserProfile = async () => {
+  getMemberDetailsByEmail = async () => {
     try {
-      this.setState({isLoading: true});
-      let fields =
-        'first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified,height,weight';
-      let userId = await AsyncStorage.getItem('userId');
-      let result = await fetchUserProfile(userId, fields);
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        this.setState({
-          data: result,
-          is_blood_donor: result.is_blood_donor,
-        });
-        storeBasicProfile(result);
-        if (result.profile_image) {
-          this.setState({imageSource: result.profile_image.imageURL});
-        }
+        await this.setState({data: result[0]});
       }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      this.setState({isLoading: false});
+    } catch (ex) {
+      console.log(ex);
     }
   };
   getFamilyDetails = async () => {
@@ -127,7 +119,6 @@ class Profile extends Component {
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
       if (result) {
         this.setState({family_members: result});
-        console.log('family_members', this.state.family_members);
       }
     } catch (e) {
       console.log(e);
@@ -156,29 +147,43 @@ class Profile extends Component {
     });
   }
 
-  editAddress = async (address) => {
+  editAddress = async (item) => {
     try {
       let addrressData;
-      if (address === null) {
+      if (item === null) {
         this.editProfile('MapBox');
       } else {
-        let locationAndContext = location(address.address);
-        let latLng = address.coordinates;
-        console.log('latLng', latLng);
-        if (latLng == undefined) {
-        const coordinates = await getPostOffNameAndDetails(address.address.pin_code);
-        console.log('coordinates', coordinates);
-
-        addrressData = {
-          no_and_street: address.address.no_and_street,
-          center: latLng ? [latLng[1], latLng[0]] : null,
-          place_name: locationAndContext.placeName,
-          context: locationAndContext.context,
+        let address = {
+          address1: item.address1,
+          address2: item.address2,
+          city: item.city,
+          state: item.state,
+          country: item.country,
+          pinCode: item.pinCode,
         };
-        } else {
-           addrressData = {
-            no_and_street: address.address.no_and_street,
+
+        let locationAndContext = location(address);
+        let latLng = item.coordinates;
+        if (latLng.length != 0) {
+          addrressData = {
+            address1: item.address1,
             center: latLng ? [latLng[1], latLng[0]] : null,
+            place_name: locationAndContext.placeName,
+            context: locationAndContext.context,
+          };
+        } else {
+          let coordinates = [];
+          const postOffResp = await getPostOffNameAndDetails(item.pinCode);
+          if (postOffResp.Status == 'Success') {
+            const postOfficeData = postOffResp.PostOffice;
+            coordinates.push(
+              postOfficeData[0].Longitude,
+              postOfficeData[0].Latitude,
+            );
+          }
+          addrressData = {
+            address1: item.address1,
+            center: coordinates ? coordinates : null,
             place_name: locationAndContext.placeName,
             context: locationAndContext.context,
           };
@@ -186,6 +191,7 @@ class Profile extends Component {
         this.props.navigation.navigate('MapBox', {
           locationData: addrressData,
           fromProfile: true,
+          id: this.state.data._id,
           mapEdit: true,
         });
 
@@ -197,17 +203,17 @@ class Profile extends Component {
               text: locationObj[keyEle],
             };
             switch (keyEle) {
-              case 'no_and_street':
-                obj.id = 'no_and_street.123';
+              case 'address1':
+                obj.id = 'address1.123';
                 break;
-              case 'address_line_1':
-                obj.id = 'locality.123';
+              case 'address2':
+                obj.id = 'address2.123';
                 break;
               case 'city':
                 obj.id = 'place.123';
                 break;
-              case 'post_office_name':
-                obj.id = 'post_office_name.123';
+              case 'postOfficeName':
+                obj.id = 'postOfficeName.123';
                 break;
               case 'district':
                 obj.id = 'district.123';
@@ -218,8 +224,8 @@ class Profile extends Component {
               case 'country':
                 obj.id = 'country.123';
                 break;
-              case 'pin_code':
-                obj.id = 'pin_code.123';
+              case 'pinCode':
+                obj.id = 'pinCode.123';
                 break;
             }
             contextData.push(obj);
@@ -355,12 +361,11 @@ class Profile extends Component {
       profile: {isLoading},
     } = this.props;
     const {data, imageSource, family_members} = this.state;
-
     return (
       <Container style={styles.container}>
         <NavigationEvents
           onWillFocus={(payload) => {
-            this.getUserProfile(payload),this.getFamilyDetails();
+            this.getMemberDetailsByEmail(payload), this.getFamilyDetails();
           }}
         />
 
@@ -423,9 +428,9 @@ class Profile extends Component {
                       <Text
                         style={styles.nameStyle}
                         onPress={() => this.editProfile('UpdateUserDetails')}>
-                        {data.first_name ? data.first_name + ' ' : ''}
+                        {data.firstName ? data.firstName + ' ' : ''}
                         <Text style={styles.nameStyle}>
-                          {data.last_name ? data.last_name : ''}
+                          {data.lastName ? data.lastName : ''}
                         </Text>
                       </Text>
 
@@ -561,7 +566,7 @@ class Profile extends Component {
                     <Text style={styles.topValue}>Gender </Text>
                   </View>
                   <Text note style={styles.bottomValue}>
-                    {getGender(data)}{' '}
+                    {data.gender}{' '}
                   </Text>
                 </Col>
 
@@ -575,7 +580,7 @@ class Profile extends Component {
                   <Text style={styles.topValue}>Blood</Text>
                   <Text note style={styles.bottomValue}>
                     {' '}
-                    {data.blood_group}{' '}
+                    {data.blood_group ? data.blood_group : '-'}{' '}
                   </Text>
                 </Col>
               </Grid>
@@ -583,40 +588,6 @@ class Profile extends Component {
             <List>
               <Text style={styles.titleText}>Personal details..</Text>
 
-              <ListItem avatar>
-                <Left>
-                  <Icon name="ios-body" style={{color: primaryColor}} />
-                </Left>
-                <Body>
-                  <Row>
-                    <Col>
-                      <Text style={styles.customText}>Weight</Text>
-                      <Text note style={styles.customText1}>
-                        {data.weight} kg
-                      </Text>
-                    </Col>
-                    <Col>
-                      <Text style={styles.customText}>Height</Text>
-                      <Text note style={styles.customText1}>
-                        {data.height} cm
-                      </Text>
-                    </Col>
-                  </Row>
-                </Body>
-
-                <Right>
-                  <MaterialIcons
-                    name="create"
-                    style={{color: 'black', fontSize: 20}}
-                    onPress={() =>
-                      this.props.navigation.navigate('Updateheightweight', {
-                        weight: data.weight,
-                        height: data.height,
-                      })
-                    }
-                  />
-                </Right>
-              </ListItem>
               <ListItem avatar>
                 <Left>
                   <Icon name="ios-home" style={{color: primaryColor}} />
@@ -628,8 +599,16 @@ class Profile extends Component {
                     data={family_members}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({item, index}) => (
-                      <View style={{borderWidth:0.3,borderColor:'#101010',marginBottom:10,borderRadius:5,padding:5,marginRight:20 ,marginTop:10}}>
-
+                      <View
+                        style={{
+                          borderWidth: 0.3,
+                          borderColor: '#101010',
+                          marginBottom: 10,
+                          borderRadius: 5,
+                          padding: 5,
+                          marginRight: 20,
+                          marginTop: 10,
+                        }}>
                         <Row style={{marginTop: 10}}>
                           <Col size={8}>
                             <Row>
@@ -655,7 +634,11 @@ class Profile extends Component {
                               onPress={() =>
                                 this.props.navigation.navigate(
                                   'UpdateFamilyMembers',
-                                  {updatedata: item, fromProfile: true,data:family_members},
+                                  {
+                                    updatedata: item,
+                                    fromProfile: true,
+                                    data: family_members,
+                                  },
                                 )
                               }>
                               <MaterialIcons
@@ -772,7 +755,8 @@ class Profile extends Component {
                             </Row>
                           </Col>
                         </Row>
-                        {item.familyMemberDocument&&item.familyMemberDocument.length != 0 ? (
+                        {item.familyMemberDocument &&
+                        item.familyMemberDocument.length != 0 ? (
                           <View style={styles.subView}>
                             <Row
                               style={{
@@ -811,7 +795,9 @@ class Profile extends Component {
                       uppercase={false}
                       style={styles.customText2}
                       onPress={() =>
-                        this.props.navigation.navigate('UpdateFamilyMembers')
+                        this.props.navigation.navigate('UpdateFamilyMembers', {
+                          data: family_members,
+                        })
                       }
                       testID="onPressAddFamilyMembers">
                       Add your family details
@@ -844,32 +830,15 @@ class Profile extends Component {
                 </Left>
 
                 <Body>
-                  <TouchableOpacity
-                    onPress={() => this.editProfile('UpdateEmail')}
-                    testID="onPressEmail">
-                    <Text style={styles.customText}>Email</Text>
-                    {data.email != undefined ? (
-                      <Text note style={styles.customText1}>
-                        {data.email}
-                      </Text>
-                    ) : (
-                      <Button
-                        transparent
-                        style={{justifyContent: 'flex-start', marginLeft: -15}}>
-                        <Icon name="add" style={{color: 'gray'}} />
-                        <Text
-                          uppercase={false}
-                          style={styles.customText}
-                          onPress={() => this.editProfile('UpdateEmail')}
-                          testID="onPressAddSecondaryEmail">
-                          Add your email
-                        </Text>
-                      </Button>
-                    )}
-                  </TouchableOpacity>
+                  <Text style={styles.customText}>Email</Text>
+                  {data.emailId != undefined ? (
+                    <Text note style={styles.customText1}>
+                      {data.emailId}
+                    </Text>
+                  ) : null}
                 </Body>
 
-                {data.email != undefined ? (
+                {/* {data.emailId != undefined ? (
                   <Right>
                     <MaterialIcons
                       name="create"
@@ -878,7 +847,7 @@ class Profile extends Component {
                       testID="iconToUpdateEmail"
                     />
                   </Right>
-                ) : null}
+                ) : null} */}
               </ListItem>
 
               <ListItem avatar>
@@ -888,31 +857,31 @@ class Profile extends Component {
 
                 <Body>
                   <TouchableOpacity
-                    onPress={() => this.editAddress(data.address)}
+                    onPress={() => this.editAddress(data)}
                     testID="onPressAddress">
                     <Text style={styles.customText}>Address</Text>
-                    {data.address ? (
+                    {data.address1 ? (
                       <View>
                         <Text note style={styles.customText1}>
-                          {data.address.address.no_and_street + ','}
+                          {data.address1 + ','}
                           <Text note style={styles.customText1}>
-                            {data.address.address.address_line_1
-                              ? data.address.address.address_line_1
-                              : ' '}
+                            {data.address2 ? data.address2 : ' '}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.address.address.district +
-                            ', ' +
-                            data.address.address.city}
+                          {data.address3 ? data.address3 + ',' : ' '}
+                          <Text note style={styles.customText1}>
+                            {data.city ? data.city : ' '}
+                          </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.address.address.state +
-                            ', ' +
-                            data.address.address.country}
+                          {data.state ? data.state + ',' : ' '}
+                          <Text note style={styles.customText1}>
+                            {data.country ? data.country : ' '}
+                          </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.address.address.pin_code}
+                          {data.pinCode}
                         </Text>
                       </View>
                     ) : (
@@ -928,12 +897,12 @@ class Profile extends Component {
                     )}
                   </TouchableOpacity>
                 </Body>
-                {data.address ? (
+                {data.address1 ? (
                   <Right>
                     <MaterialIcons
                       name="create"
                       style={{color: 'black', fontSize: 20}}
-                      onPress={() => this.editAddress(data.address)}
+                      onPress={() => this.editAddress(data)}
                       testID="iconToUpdateAddress"
                     />
                   </Right>
@@ -949,11 +918,11 @@ class Profile extends Component {
                   <View testID="onPressUpdateContact">
                     <Text style={styles.customText}>Contact</Text>
                     <Text note style={styles.customText1}>
-                      {data.mobile_no}
+                      {data.mobile}
                     </Text>
                   </View>
                 </Body>
-                {data.mobile_no === undefined ? (
+                {data.mobile === undefined ? (
                   <Right>
                     <MaterialIcons
                       name="create"
@@ -965,7 +934,7 @@ class Profile extends Component {
                 ) : null}
               </ListItem>
 
-              <ListItem avatar>
+              {/* <ListItem avatar>
                 <Left>
                   <Icon
                     name="heartbeat"
@@ -1020,7 +989,7 @@ class Profile extends Component {
                     />
                   </Right>
                 ) : null}
-              </ListItem>
+              </ListItem> */}
 
               <ListItem avatar>
                 <Left>

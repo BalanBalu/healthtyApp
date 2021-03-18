@@ -401,6 +401,20 @@ export async function getPostOffNameAndDetails(pincode) {
   }
 }
 
+export async function updateMemberDetails(reqData) {
+  try {
+    let endPoint = 'member-detail';
+    let response = await smartHealthPutService(endPoint,reqData);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
 
 
 export async function updatePrimaryContact(userId, data) {

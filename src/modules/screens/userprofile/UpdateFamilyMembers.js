@@ -54,6 +54,7 @@ class UpdateFamilyMembers extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      data:props.navigation.getParam('data')||[],
       family_members: [],
       relationship: '',
       name: '',
@@ -89,8 +90,6 @@ class UpdateFamilyMembers extends Component {
   async getFamilyDetails() {
     const {navigation} = this.props;
     let userData = navigation.getParam('updatedata');
-    let data = navigation.getParam('data');
-
     const fromProfile = navigation.getParam('fromProfile') || false;
     if (fromProfile) {
       await this.setState({
@@ -103,7 +102,6 @@ class UpdateFamilyMembers extends Component {
         memberId: userData.memberId,
         fromProfile: true,
         uploadData: userData.familyMemberDocument,
-        data,
       });
     }
   }
@@ -137,7 +135,6 @@ class UpdateFamilyMembers extends Component {
         memberDetails,
         memberId,
       } = this.state;
-      console.log('memberId', memberId);
 
       if (!name) {
         this.setState({
@@ -238,18 +235,20 @@ class UpdateFamilyMembers extends Component {
   };
 
   onSelectedItemsChange = async (selectedItems) => {
-    this.state.data.map(async (ele, index) => {
-      if (ele.relationship == selectedItems[0]) {
-        console.log(' relationship', this.state.relationship);
-       await this.setState({
-          relationship: '',
-          errorMsg: 'Selected relationship is already exist',
-          isModalVisible: true,
-          updateButton: true,
-        });
-        return false;
-      } else this.setState({relationship: selectedItems, updateButton: false});
-    });
+    if(this.state.data.length!=0){
+      this.state.data.map(async (ele, index) => {
+        if (ele.relationship == selectedItems[0]) {
+         await this.setState({
+            relationship: '',
+            errorMsg: 'Selected relationship is already exist',
+            isModalVisible: true,
+            updateButton: true,
+          });
+          return false;
+        } else this.setState({relationship: selectedItems, updateButton: false});
+      });
+    }else this.setState({relationship: selectedItems, updateButton: false});
+ 
   };
 
   imageUpload = async (data) => {
@@ -259,20 +258,20 @@ class UpdateFamilyMembers extends Component {
     }
   };
 
-  memberValidation = async (value) => {
+  memberValidation = async () => {
     let memberPolicyNo = (await AsyncStorage.getItem('memberPolicyNo')) || null;
-    let response = await familyMemberIdExist(value, memberPolicyNo);
-    console.log('response', response);
-
+    let response = await familyMemberIdExist(this.state.memberId, memberPolicyNo);
     if (response) {
       this.setState({
+        memberId:'',
         errorMsg: 'Member code already exist',
         isModalVisible: true,
         updateButton: true,
       });
       return false;
-    } else {
-      this.setState({memberId: value, updateButton: false});
+    }
+     else {
+      this.setState({memberId:this.state.memberId, updateButton: false});
     }
   };
   uploadImageToServer = async (imagePath) => {
@@ -313,7 +312,6 @@ class UpdateFamilyMembers extends Component {
       memberId,
       fromProfile,
     } = this.state;
-    console.log('updateButton', this.state.updateButton);
     return (
       <Container>
         <Content>
@@ -503,10 +501,13 @@ class UpdateFamilyMembers extends Component {
                     style={styles.textInputStyle}
                     placeholderStyle={{marginTop: 2}}
                     value={memberId}
-                    onChangeText={(code) => this.memberValidation(code)}
+                    onChangeText={(code) => this.setState({memberId:code})}
                     blurOnSubmit={false}
                     editable={memberId && fromProfile ? false : true}
                     testID="editMemberCode"
+                    onSubmitEditing={() => {
+                      this.memberValidation()
+                    }}
                   />
                 </View>
 
