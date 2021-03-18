@@ -67,7 +67,7 @@ class Insurance extends Component {
 
         this.setState({isLoading: false, data: this.insuranceData});
       } else {
-        if (this.insuranceData.length > 2) {
+        if (this.insuranceData.length >8) {
           toastMeassage('No more data Available!', 'success', 4000);
         }
         this.isEnabledLoadMoreData = false;
