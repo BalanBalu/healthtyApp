@@ -55,8 +55,7 @@ import {uploadMultiPart} from '../../../setup/services/httpservices';
 import {
   renderDoctorImage,
   renderProfileImage,
-  getGender,
-  calculateAge,
+  
 } from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -103,9 +102,12 @@ class Profile extends Component {
   getMemberDetailsByEmail = async () => {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      console.log("memberEmailId",memberEmailId)
+
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
         await this.setState({data: result[0]});
+        console.log("index",this.state.data)
       }
     } catch (ex) {
       console.log(ex);
@@ -144,6 +146,7 @@ class Profile extends Component {
       screen: screen,
       fromProfile: true,
       updatedata: this.state.data || '',
+      id:this.state.data._id
     });
   }
 
@@ -383,13 +386,13 @@ class Profile extends Component {
                     <Icon name="heart" style={styles.profileIcon} />
                   </Col>
                   <Col style={{width: '55%'}}>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity>
                       onPress={() =>
                         this.props.navigation.navigate('ImageView', {
                           passImage: renderProfileImage(data),
                           title: 'Profile photo',
                         })
-                      }>
+                      }> */}
                       {imageSource != undefined ? (
                         <Thumbnail
                           style={styles.profileImage}
@@ -402,7 +405,7 @@ class Profile extends Component {
                           source={renderProfileImage(data)}
                         />
                       )}
-                    </TouchableOpacity>
+                    {/* </TouchableOpacity> */}
                     <View
                       style={{
                         marginLeft: 80,
@@ -565,9 +568,9 @@ class Profile extends Component {
                   <View style={{flexDirection: 'row'}}>
                     <Text style={styles.topValue}>Gender </Text>
                   </View>
-                  <Text note style={styles.bottomValue}>
-                    {data.gender}{' '}
-                  </Text>
+                  {/* <Text note style={styles.bottomValue}>
+                    {data && data.gender?data.gender:'-'}{' '}
+                  </Text> */}
                 </Col>
 
                 <Col
@@ -830,15 +833,32 @@ class Profile extends Component {
                 </Left>
 
                 <Body>
-                  <Text style={styles.customText}>Email</Text>
-                  {data.emailId != undefined ? (
-                    <Text note style={styles.customText1}>
-                      {data.emailId}
-                    </Text>
-                  ) : null}
+                  <TouchableOpacity
+                    onPress={() => this.editProfile('UpdateEmail')}
+                    testID="onPressEmail">
+                    <Text style={styles.customText}>Email</Text>
+                    {data.emailId != undefined ? (
+                      <Text note style={styles.customText1}>
+                        {data.emailId}
+                      </Text>
+                    ) : (
+                      <Button
+                        transparent
+                        style={{justifyContent: 'flex-start', marginLeft: -15}}>
+                        <Icon name="add" style={{color: 'gray'}} />
+                        <Text
+                          uppercase={false}
+                          style={styles.customText}
+                          onPress={() => this.editProfile('UpdateEmail')}
+                          testID="onPressAddSecondaryEmail">
+                          Add your email
+                        </Text>
+                      </Button>
+                    )}
+                  </TouchableOpacity>
                 </Body>
 
-                {/* {data.emailId != undefined ? (
+                {data.emailId != undefined ? (
                   <Right>
                     <MaterialIcons
                       name="create"
@@ -847,7 +867,7 @@ class Profile extends Component {
                       testID="iconToUpdateEmail"
                     />
                   </Right>
-                ) : null} */}
+                ) : null}
               </ListItem>
 
               <ListItem avatar>
@@ -913,16 +933,33 @@ class Profile extends Component {
                 <Left>
                   <Icon name="call" style={{color: primaryColor}} />
                 </Left>
-
                 <Body>
-                  <View testID="onPressUpdateContact">
+                  <TouchableOpacity
+                    onPress={() => this.editProfile('UpdateContact')}
+                    testID="onPressUpdateContact">
                     <Text style={styles.customText}>Contact</Text>
-                    <Text note style={styles.customText1}>
+                    {data.mobile != undefined ? (
+                      <Text note style={styles.customText1}>
                       {data.mobile}
                     </Text>
-                  </View>
+                    ) : (
+                      <Button
+                        transparent
+                        style={{justifyContent: 'flex-start', marginLeft: -15}}>
+                        <Icon name="add" style={{color: 'gray'}} />
+                        <Text
+                          uppercase={false}
+                          style={styles.customText}
+                          onPress={() => this.props.navigation.navigate('UpdateContact',{id: this.state.data._id ||null})}
+                          testID="clickAddContactNo">
+                          Add Contact Number
+                        </Text>
+                      </Button>
+                    )}
+                  </TouchableOpacity>
                 </Body>
-                {data.mobile === undefined ? (
+
+                {data.mobile ? (
                   <Right>
                     <MaterialIcons
                       name="create"
@@ -933,63 +970,6 @@ class Profile extends Component {
                   </Right>
                 ) : null}
               </ListItem>
-
-              {/* <ListItem avatar>
-                <Left>
-                  <Icon
-                    name="heartbeat"
-                    type="FontAwesome"
-                    style={{color: primaryColor}}
-                  />
-                </Left>
-                <Body>
-                  <TouchableOpacity
-                    onPress={() => this.editProfile('UpdateInsurance')}
-                    testID="onPressUpdateInsurance">
-                    <Text style={styles.customText}>Insurance</Text>
-                    {data.insurance != undefined ? (
-                      <FlatList
-                        data={this.state.data.insurance}
-                        renderItem={({item}) => (
-                          <List>
-                            <Text note style={styles.customText1}>
-                              {item.insurance_no}
-                            </Text>
-                            <Text note style={styles.customText1}>
-                              {item.insurance_provider}
-                            </Text>
-                          </List>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                      />
-                    ) : (
-                      <Button
-                        transparent
-                        style={{justifyContent: 'flex-start', marginLeft: -15}}>
-                        <Icon name="add" style={{color: 'gray'}} />
-                        <Text
-                          uppercase={false}
-                          style={styles.customText}
-                          onPress={() => this.editProfile('UpdateInsurance')}
-                          testID="clickAddInsuranceText">
-                          Add Insurance
-                        </Text>
-                      </Button>
-                    )}
-                  </TouchableOpacity>
-                </Body>
-
-                {data.insurance != undefined ? (
-                  <Right>
-                    <MaterialIcons
-                      name="create"
-                      style={{color: 'black', fontSize: 20}}
-                      onPress={() => this.editProfile('UpdateInsurance')}
-                      testID="iconToEditUpdateInsurance"
-                    />
-                  </Right>
-                ) : null}
-              </ListItem> */}
 
               <ListItem avatar>
                 <Left>

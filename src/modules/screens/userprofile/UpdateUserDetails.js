@@ -52,10 +52,9 @@ class UpdateUserDetails extends Component {
       selectedBloodGroup: null,
       userData: '',
       errorMsg: '',
-updateButton: true,
+      updateButton: true,
       isOnlyDateTimePickerVisible: false,
       isModalVisible: false,
-
     };
   }
   componentDidMount() {
@@ -82,10 +81,9 @@ updateButton: true,
       await this.setState({
         dob: userData.dob || null,
         firstName: userData.firstName,
-        middleName: userData.middleName||null,
+        middleName: userData.middleName || null,
         lastName: userData.lastName,
         gender: userData.gender,
-        // selectedBloodGroup: userData.blood_group || null,
         updateButton: true,
         userData,
       });
@@ -94,18 +92,19 @@ updateButton: true,
 
   onChangeFirstnameAndLastname = async (text, type) => {
     if (type === 'Firstname') {
-      await this.setState({firstName: text});
+      await this.setState({firstName: text, updateButton: false});
     }
     if (type === 'MiddleName') {
-      await this.setState({middleName: text});
+      await this.setState({middleName: text, updateButton: false});
     }
     if (type === 'LastName') {
-      await this.setState({lastName: text});
+      await this.setState({lastName: text, updateButton: false});
     }
     if (this.state.firstName && validateName(this.state.firstName) == false) {
       this.setState({
         errorMsg: 'Firstname must be a Characters',
         isModalVisible: true,
+        updateButton: true,
       });
       return false;
     }
@@ -113,16 +112,18 @@ updateButton: true,
       this.setState({
         errorMsg: 'Middlename must be a Characters',
         isModalVisible: true,
-      });
-      return false;
-    } if (this.state.lastName && validateName(this.state.lastName) == false) {
-      this.setState({
-        errorMsg: 'Lastname must be a Characters',
-        isModalVisible: true,
+        updateButton: true,
       });
       return false;
     }
-   
+    if (this.state.lastName && validateName(this.state.lastName) == false) {
+      this.setState({
+        errorMsg: 'Lastname must be a Characters',
+        isModalVisible: true,
+        updateButton: true,
+      });
+      return false;
+    }
   };
 
   userUpdate = async () => {
@@ -136,7 +137,6 @@ updateButton: true,
       selectedBloodGroup,
     } = this.state;
     try {
-     
       if (!firstName) {
         this.setState({
           errorMsg: 'Please enter first name',
@@ -166,14 +166,14 @@ updateButton: true,
         updateButton: false,
       });
       let requestData = {
-        first_name: firstName,
-        middle_name: middleName,
-        last_name: lastName,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
         dob: dob,
         gender: gender,
-        _id:this.state.userData._id
+        _id: this.state.userData._id,
       };
-     
+
       let response = await updateMemberDetails(requestData);
       if (response) {
         Toast.show({
@@ -181,7 +181,7 @@ updateButton: true,
           type: 'success',
           duration: 3000,
         });
-          this.props.navigation.navigate('Profile');
+        this.props.navigation.navigate('Profile');
       } else {
         Toast.show({
           text: response.message,
@@ -206,7 +206,7 @@ updateButton: true,
   hideOnlyDateTimePicker = () => {
     this.setState({isOnlyDateTimePickerVisible: false});
   };
-  handleOnlyDateTimePicker = date => {
+  handleOnlyDateTimePicker = (date) => {
     try {
       this.setState({
         isOnlyDateTimePickerVisible: false,
@@ -237,7 +237,7 @@ updateButton: true,
                     value={this.state.firstName}
                     keyboardType={'default'}
                     returnKeyType={'next'}
-                    onChangeText={text =>
+                    onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'Firstname')
                     }
                     autoCapitalize="none"
@@ -248,34 +248,25 @@ updateButton: true,
                     testID="editFirstName"
                   />
                 </Item>
-                {this.state.firstNameMsg ? (
-                  <Text
-                    style={{
-                      paddingLeft: 20,
-                      fontSize: 15,
-                      fontFamily: 'OpenSans',
-                      color: 'red',
-                    }}>
-                    {this.state.firstNameMsg}
-                  </Text>
-                ) : null}
 
-<Item style={{borderBottomWidth: 0}}>
+                <Item style={{borderBottomWidth: 0}}>
                   <Input
                     placeholder="Middle Name"
                     style={styles.transparentLabel2}
-                    ref={input => {
+                    ref={(input) => {
                       this.firstName = input;
                     }}
                     value={this.state.middleName}
                     keyboardType={'default'}
                     returnKeyType={'done'}
-                    onChangeText={text =>
+                    onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'MiddleName')
                     }
                     autoCapitalize="none"
                     blurOnSubmit={false}
-                    // onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
+                    onSubmitEditing={() => {
+                      this.middleName._root.focus(this.setState({focus: true}));
+                    }}
                     testID="editMiddleName"
                   />
                 </Item>
@@ -283,13 +274,13 @@ updateButton: true,
                   <Input
                     placeholder="Last Name"
                     style={styles.transparentLabel2}
-                    ref={input => {
-                      this.firstName = input;
+                    ref={(input) => {
+                      this.middleName = input;
                     }}
                     value={this.state.lastName}
                     keyboardType={'default'}
                     returnKeyType={'done'}
-                    onChangeText={text =>
+                    onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'LastName')
                     }
                     autoCapitalize="none"
@@ -298,17 +289,7 @@ updateButton: true,
                     testID="editLastName"
                   />
                 </Item>
-                {this.state.lastNameMsg ? (
-                  <Text
-                    style={{
-                      paddingLeft: 20,
-                      fontSize: 15,
-                      fontFamily: 'OpenSans',
-                      color: 'red',
-                    }}>
-                    {this.state.lastNameMsg}
-                  </Text>
-                ) : null}
+
                 <TouchableOpacity
                   onPress={() => {
                     this.setState({
@@ -459,7 +440,7 @@ updateButton: true,
                       size={3}
                       style={{alignItems: 'center', flexDirection: 'row'}}>
                       <Radio
-                      color={primaryColor}
+                        color={primaryColor}
                         standardStyle={true}
                         onPress={() =>
                           this.setState({gender: 'Female', updateButton: false})
@@ -514,7 +495,7 @@ updateButton: true,
                     </Col>
                   </Row>
                 </View>
-              
+
                 <View>
                   <Button
                     primary
