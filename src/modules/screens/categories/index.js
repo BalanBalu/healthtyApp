@@ -11,6 +11,7 @@ import { toDataUrl } from '../../../setup/helpers';
 import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
+import { Loader } from '../../../components/ContentLoader';
 
 
 class Categories extends Component {
@@ -18,7 +19,8 @@ class Categories extends Component {
     super(props)
     this.state = {
       data: [],
-      categoriesMain: []
+      categoriesMain: [],
+      isLoading: false,
     }
   }
 
@@ -27,6 +29,7 @@ class Categories extends Component {
   }
   getCatagries = async () => {
     try {
+      this.setState({ isLoading: true })
       let result = await catagries('services=0');
       if (result.success) {
         this.setState({ data: result.data, categoriesMain: result.data })
@@ -141,13 +144,13 @@ class Categories extends Component {
     )
   }
   render() {
-    const { user: { isLoading } } = this.props;
-    const { data } = this.state;
-
-
+    // const { user: { isLoading } } = this.props;
+    const { data ,isLoading} = this.state;
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
+        {isLoading ?
+        <Loader style="list" />: data.length ?
           <View style={{ marginBottom: 10 }}>
             <FlatList horizontal={false} numColumns={3}
               data={this.state.data}
@@ -179,7 +182,7 @@ class Categories extends Component {
               }
               keyExtractor={(item, index) => index.toString()}
             />
-          </View>
+          </View>:null}
         </Content>
       </Container>
 
