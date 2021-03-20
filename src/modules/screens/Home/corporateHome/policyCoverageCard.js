@@ -163,7 +163,7 @@ export const PolicyCoverageCard = (props) => {
               size={80}
               width={7}
               // fill={10}
-              fill={percentageCalculation(data.sumInsured, data.balSumInsured)}
+              fill={percentageCalculation(data.sumInsured ? data.sumInsured : 0,data.balSumInsured ? data.balSumInsured : 0)}
               tintColor={primaryColor}
               backgroundColor="rgba(18, 130, 131, 0.3)">
               {() => (
