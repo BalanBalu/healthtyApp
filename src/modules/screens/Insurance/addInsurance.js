@@ -72,8 +72,8 @@ class AddInsurance extends PureComponent {
     this.insuranceCompanyList = [];
   }
 
-  componentDidMount() {
-    this.getInsuranceCompanyNAmeList();
+  async componentDidMount() {
+    await this.getInsuranceCompanyNAmeList();
     this.getTpaList();
   }
   getTpaList = async () => {
@@ -93,6 +93,7 @@ class AddInsurance extends PureComponent {
   getInsuranceCompanyNAmeList = async () => {
     try {
       const insuranceListResp = await getInsuranceCompanyNameList();
+      console.log(insuranceListResp);
       if (
         insuranceListResp &&
         insuranceListResp.data &&
@@ -211,6 +212,8 @@ class AddInsurance extends PureComponent {
           'success',
           1000,
         );
+        this.props.navigation.setParams({isNewInsurance: true});
+
         this.props.navigation.navigate('Insurance');
       }
     } catch (error) {
@@ -390,7 +393,6 @@ class AddInsurance extends PureComponent {
                           marginTop: 8,
                           borderRadius: 5,
                           fontFamily: 'Helvetica-Light',
-
                         },
                         button: {
                           backgroundColor: '#128283',
@@ -564,7 +566,6 @@ class AddInsurance extends PureComponent {
                               marginTop: 8,
                               borderRadius: 5,
                               fontFamily: 'Helvetica-Light',
-                            
                             },
                             button: {
                               backgroundColor: '#128283',

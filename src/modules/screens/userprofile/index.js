@@ -34,7 +34,11 @@ import {
   storeBasicProfile,
 } from '../../providers/profile/profile.action';
 import {getPatientWishList} from '../../providers/bookappointment/bookappointment.action';
-import {hasLoggedIn, userFiledsUpdate} from '../../providers/auth/auth.actions';
+import {
+  hasLoggedIn,
+  userFiledsUpdate,
+  getPostOffNameAndDetails,
+} from '../../providers/auth/auth.actions';
 import {Col, Row, Grid} from 'react-native-easy-grid';
 import {connect} from 'react-redux';
 import {dateDiff} from '../../../setup/helpers';
@@ -51,12 +55,12 @@ import {uploadMultiPart} from '../../../setup/services/httpservices';
 import {
   renderDoctorImage,
   renderProfileImage,
-  getGender,
-  calculateAge,
+  
 } from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
+  getMemberDetailsByEmail,
   getFamilyMemDetails,
   deleteFamilyMembersDetails,
 } from '../../providers/corporate/corporate.actions';
@@ -68,7 +72,6 @@ class Profile extends Component {
     super(props);
     this.state = {
       data: {},
-      starCount: 3.5,
       userId: '',
       modalVisible: false,
       favouriteList: [],
@@ -78,58 +81,36 @@ class Profile extends Component {
       selectOptionPoopup: false,
       is_blood_donor: false,
       family_members: [],
-      isCorporateUser: false,
       deletePopupVisible: false,
     };
   }
   async componentDidMount() {
-    console.log("componentDidMount")
     const isLoggedIn = await hasLoggedIn(this.props);
     if (!isLoggedIn) {
       this.props.navigation.navigate('login');
       return;
     }
-    const isCorporateUser =
-      (await AsyncStorage.getItem('is_corporate_user')) === 'true';
-    this.setState({isCorporateUser});
     await this.getFamilyDetails();
-    await this.getUserProfile();
+    await this.getMemberDetailsByEmail();
     this.getfavouritesList();
   }
   componentWillUnmount() {
     this.setState({selectOptionPoopup: false});
   }
 
-  onStarRatingPress(rating) {
-    this.setState({
-      starCount: rating,
-    });
-  }
-
   /*Get userProfile*/
-  getUserProfile = async () => {
+  getMemberDetailsByEmail = async () => {
     try {
-      this.setState({isLoading: true});
-      let fields =
-        'first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified,height,weight';
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      console.log("memberEmailId",memberEmailId)
 
-      let userId = await AsyncStorage.getItem('userId');
-      let result = await fetchUserProfile(userId, fields);
+      let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        this.setState({
-          data: result,
-          is_blood_donor: result.is_blood_donor,
-        });
-        storeBasicProfile(result);
-
-        if (result.profile_image) {
-          this.setState({imageSource: result.profile_image.imageURL});
-        }
+        await this.setState({data: result[0]});
+        console.log("index",this.state.data)
       }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      this.setState({isLoading: false});
+    } catch (ex) {
+      console.log(ex);
     }
   };
   getFamilyDetails = async () => {
@@ -140,7 +121,6 @@ class Profile extends Component {
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
       if (result) {
         this.setState({family_members: result});
-        console.log('family_members', this.state.family_members);
       }
     } catch (e) {
       console.log(e);
@@ -160,62 +140,61 @@ class Profile extends Component {
       console.log(e);
     }
   };
-  updateBloodDonor = async () => {
-    const userId = await AsyncStorage.getItem('userId');
-    try {
-      let requestData = {
-        is_blood_donor: this.state.is_blood_donor,
-        family_members: this.state.family_members,
-      };
-      let response = await userFiledsUpdate(userId, requestData);
-      if (this.state.data.address !== undefined) {
-        if (response.success) {
-          Toast.show({
-            text: response.message,
-            type: 'success',
-            duration: 3000,
-          });
-        } else {
-          Toast.show({
-            text: response.message,
-            type: 'danger',
-            duration: 3000,
-          });
-          this.setState({isLoading: false});
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      this.setState({isLoading: false});
-    }
-  };
 
   editProfile(screen) {
     this.props.navigation.navigate(screen, {
       screen: screen,
       fromProfile: true,
       updatedata: this.state.data || '',
+      id:this.state.data._id
     });
   }
 
-  editAddress(address) {
+  editAddress = async (item) => {
     try {
-      debugger;
-      if (address === null) {
+      let addrressData;
+      if (item === null) {
         this.editProfile('MapBox');
       } else {
-        let locationAndContext = location(address.address);
-        let latLng = address.coordinates;
-        let addrressData = {
-          no_and_street: address.address.no_and_street,
-          center: [latLng[1], latLng[0]],
-          place_name: locationAndContext.placeName,
-          context: locationAndContext.context,
+        let address = {
+          address1: item.address1,
+          address2: item.address2,
+          city: item.city,
+          state: item.state,
+          country: item.country,
+          pinCode: item.pinCode,
         };
+
+        let locationAndContext = location(address);
+        let latLng = item.coordinates;
+        if (latLng.length != 0) {
+          addrressData = {
+            address1: item.address1,
+            center: latLng ? [latLng[1], latLng[0]] : null,
+            place_name: locationAndContext.placeName,
+            context: locationAndContext.context,
+          };
+        } else {
+          let coordinates = [];
+          const postOffResp = await getPostOffNameAndDetails(item.pinCode);
+          if (postOffResp.Status == 'Success') {
+            const postOfficeData = postOffResp.PostOffice;
+            coordinates.push(
+              postOfficeData[0].Longitude,
+              postOfficeData[0].Latitude,
+            );
+          }
+          addrressData = {
+            address1: item.address1,
+            center: coordinates ? coordinates : null,
+            place_name: locationAndContext.placeName,
+            context: locationAndContext.context,
+          };
+        }
         this.props.navigation.navigate('MapBox', {
           locationData: addrressData,
           fromProfile: true,
+          id: this.state.data._id,
           mapEdit: true,
         });
 
@@ -227,17 +206,17 @@ class Profile extends Component {
               text: locationObj[keyEle],
             };
             switch (keyEle) {
-              case 'no_and_street':
-                obj.id = 'no_and_street.123';
+              case 'address1':
+                obj.id = 'address1.123';
                 break;
-              case 'address_line_1':
-                obj.id = 'locality.123';
+              case 'address2':
+                obj.id = 'address2.123';
                 break;
               case 'city':
                 obj.id = 'place.123';
                 break;
-              case 'post_office_name':
-                obj.id = 'post_office_name.123';
+              case 'postOfficeName':
+                obj.id = 'postOfficeName.123';
                 break;
               case 'district':
                 obj.id = 'district.123';
@@ -248,8 +227,8 @@ class Profile extends Component {
               case 'country':
                 obj.id = 'country.123';
                 break;
-              case 'pin_code':
-                obj.id = 'pin_code.123';
+              case 'pinCode':
+                obj.id = 'pinCode.123';
                 break;
             }
             contextData.push(obj);
@@ -267,7 +246,7 @@ class Profile extends Component {
     } finally {
       this.setState({isLoading: false});
     }
-  }
+  };
   /*Upload profile pic*/
   uploadProfilePicture(type) {
     if (type == 'Camera') {
@@ -385,12 +364,11 @@ class Profile extends Component {
       profile: {isLoading},
     } = this.props;
     const {data, imageSource, family_members} = this.state;
-
     return (
       <Container style={styles.container}>
         <NavigationEvents
           onWillFocus={(payload) => {
-            this.getUserProfile(payload),this.getFamilyDetails();
+            this.getMemberDetailsByEmail(payload), this.getFamilyDetails();
           }}
         />
 
@@ -408,13 +386,13 @@ class Profile extends Component {
                     <Icon name="heart" style={styles.profileIcon} />
                   </Col>
                   <Col style={{width: '55%'}}>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity>
                       onPress={() =>
                         this.props.navigation.navigate('ImageView', {
                           passImage: renderProfileImage(data),
                           title: 'Profile photo',
                         })
-                      }>
+                      }> */}
                       {imageSource != undefined ? (
                         <Thumbnail
                           style={styles.profileImage}
@@ -427,7 +405,7 @@ class Profile extends Component {
                           source={renderProfileImage(data)}
                         />
                       )}
-                    </TouchableOpacity>
+                    {/* </TouchableOpacity> */}
                     <View
                       style={{
                         marginLeft: 80,
@@ -453,9 +431,9 @@ class Profile extends Component {
                       <Text
                         style={styles.nameStyle}
                         onPress={() => this.editProfile('UpdateUserDetails')}>
-                        {data.first_name ? data.first_name + ' ' : ''}
+                        {data.firstName ? data.firstName + ' ' : ''}
                         <Text style={styles.nameStyle}>
-                          {data.last_name ? data.last_name : ''}
+                          {data.lastName ? data.lastName : ''}
                         </Text>
                       </Text>
 
@@ -590,9 +568,9 @@ class Profile extends Component {
                   <View style={{flexDirection: 'row'}}>
                     <Text style={styles.topValue}>Gender </Text>
                   </View>
-                  <Text note style={styles.bottomValue}>
-                    {getGender(data)}{' '}
-                  </Text>
+                  {/* <Text note style={styles.bottomValue}>
+                    {data && data.gender?data.gender:'-'}{' '}
+                  </Text> */}
                 </Col>
 
                 <Col
@@ -605,7 +583,7 @@ class Profile extends Component {
                   <Text style={styles.topValue}>Blood</Text>
                   <Text note style={styles.bottomValue}>
                     {' '}
-                    {data.blood_group}{' '}
+                    {data.blood_group ? data.blood_group : '-'}{' '}
                   </Text>
                 </Col>
               </Grid>
@@ -613,40 +591,6 @@ class Profile extends Component {
             <List>
               <Text style={styles.titleText}>Personal details..</Text>
 
-              <ListItem avatar>
-                <Left>
-                  <Icon name="ios-body" style={{color: primaryColor}} />
-                </Left>
-                <Body>
-                  <Row>
-                    <Col>
-                      <Text style={styles.customText}>Weight</Text>
-                      <Text note style={styles.customText1}>
-                        {data.weight} kg
-                      </Text>
-                    </Col>
-                    <Col>
-                      <Text style={styles.customText}>Height</Text>
-                      <Text note style={styles.customText1}>
-                        {data.height} cm
-                      </Text>
-                    </Col>
-                  </Row>
-                </Body>
-
-                <Right>
-                  <MaterialIcons
-                    name="create"
-                    style={{color: 'black', fontSize: 20}}
-                    onPress={() =>
-                      this.props.navigation.navigate('Updateheightweight', {
-                        weight: data.weight,
-                        height: data.height,
-                      })
-                    }
-                  />
-                </Right>
-              </ListItem>
               <ListItem avatar>
                 <Left>
                   <Icon name="ios-home" style={{color: primaryColor}} />
@@ -658,8 +602,16 @@ class Profile extends Component {
                     data={family_members}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({item, index}) => (
-                      <View style={{borderWidth:0.3,borderColor:'#101010',marginBottom:10,borderRadius:5,padding:5,marginRight:20 ,marginTop:10}}>
-
+                      <View
+                        style={{
+                          borderWidth: 0.3,
+                          borderColor: '#101010',
+                          marginBottom: 10,
+                          borderRadius: 5,
+                          padding: 5,
+                          marginRight: 20,
+                          marginTop: 10,
+                        }}>
                         <Row style={{marginTop: 10}}>
                           <Col size={8}>
                             <Row>
@@ -685,7 +637,11 @@ class Profile extends Component {
                               onPress={() =>
                                 this.props.navigation.navigate(
                                   'UpdateFamilyMembers',
-                                  {updatedata: item, fromProfile: true,data:family_members},
+                                  {
+                                    updatedata: item,
+                                    fromProfile: true,
+                                    data: family_members,
+                                  },
                                 )
                               }>
                               <MaterialIcons
@@ -802,7 +758,8 @@ class Profile extends Component {
                             </Row>
                           </Col>
                         </Row>
-                        {item.familyMemberDocument&&item.familyMemberDocument.length != 0 ? (
+                        {item.familyMemberDocument &&
+                        item.familyMemberDocument.length != 0 ? (
                           <View style={styles.subView}>
                             <Row
                               style={{
@@ -841,7 +798,9 @@ class Profile extends Component {
                       uppercase={false}
                       style={styles.customText2}
                       onPress={() =>
-                        this.props.navigation.navigate('UpdateFamilyMembers')
+                        this.props.navigation.navigate('UpdateFamilyMembers', {
+                          data: family_members,
+                        })
                       }
                       testID="onPressAddFamilyMembers">
                       Add your family details
@@ -868,43 +827,6 @@ class Profile extends Component {
                 visible={this.state.deletePopupVisible}
               />
 
-              {this.state.isCorporateUser === false ? (
-                <ListItem avatar>
-                  <Left>
-                    <Icon
-                      name="ios-flame"
-                      style={{color: primaryColor, marginTop: 5}}
-                    />
-                  </Left>
-
-                  <Body>
-                    <Text style={styles.customText}>Blood Donor</Text>
-                  </Body>
-
-                  <Right
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: -15,
-                    }}>
-                    <Switch
-                      value={this.state.is_blood_donor}
-                      style={{marginTop: 15}}
-                      onValueChange={(value) => {
-                        this.setState({
-                          is_blood_donor: !this.state.is_blood_donor,
-                        });
-                        if (value === true) {
-                          if (data.address === undefined) {
-                            this.editProfile('MapBox');
-                          }
-                        }
-                        this.updateBloodDonor();
-                      }}
-                    />
-                  </Right>
-                </ListItem>
-              ) : null}
               <ListItem avatar>
                 <Left>
                   <Icon name="mail" style={{color: primaryColor}} />
@@ -915,9 +837,9 @@ class Profile extends Component {
                     onPress={() => this.editProfile('UpdateEmail')}
                     testID="onPressEmail">
                     <Text style={styles.customText}>Email</Text>
-                    {data.email != undefined ? (
+                    {data.emailId != undefined ? (
                       <Text note style={styles.customText1}>
-                        {data.email}
+                        {data.emailId}
                       </Text>
                     ) : (
                       <Button
@@ -936,7 +858,7 @@ class Profile extends Component {
                   </TouchableOpacity>
                 </Body>
 
-                {data.email != undefined ? (
+                {data.emailId != undefined ? (
                   <Right>
                     <MaterialIcons
                       name="create"
@@ -955,31 +877,31 @@ class Profile extends Component {
 
                 <Body>
                   <TouchableOpacity
-                    onPress={() => this.editAddress(data.address)}
+                    onPress={() => this.editAddress(data)}
                     testID="onPressAddress">
                     <Text style={styles.customText}>Address</Text>
-                    {data.address ? (
+                    {data.address1 ? (
                       <View>
                         <Text note style={styles.customText1}>
-                          {data.address.address.no_and_street + ','}
+                          {data.address1 + ','}
                           <Text note style={styles.customText1}>
-                            {data.address.address.address_line_1
-                              ? data.address.address.address_line_1
-                              : ' '}
+                            {data.address2 ? data.address2 : ' '}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.address.address.district +
-                            ', ' +
-                            data.address.address.city}
+                          {data.address3 ? data.address3 + ',' : ' '}
+                          <Text note style={styles.customText1}>
+                            {data.city ? data.city : ' '}
+                          </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.address.address.state +
-                            ', ' +
-                            data.address.address.country}
+                          {data.state ? data.state + ',' : ' '}
+                          <Text note style={styles.customText1}>
+                            {data.country ? data.country : ' '}
+                          </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.address.address.pin_code}
+                          {data.pinCode}
                         </Text>
                       </View>
                     ) : (
@@ -995,12 +917,12 @@ class Profile extends Component {
                     )}
                   </TouchableOpacity>
                 </Body>
-                {data.address ? (
+                {data.address1 ? (
                   <Right>
                     <MaterialIcons
                       name="create"
                       style={{color: 'black', fontSize: 20}}
-                      onPress={() => this.editAddress(data.address)}
+                      onPress={() => this.editAddress(data)}
                       testID="iconToUpdateAddress"
                     />
                   </Right>
@@ -1011,55 +933,15 @@ class Profile extends Component {
                 <Left>
                   <Icon name="call" style={{color: primaryColor}} />
                 </Left>
-
-                <Body>
-                  <View testID="onPressUpdateContact">
-                    <Text style={styles.customText}>Contact</Text>
-                    <Text note style={styles.customText1}>
-                      {data.mobile_no}
-                    </Text>
-                  </View>
-                </Body>
-                {data.mobile_no === undefined ? (
-                  <Right>
-                    <MaterialIcons
-                      name="create"
-                      style={{color: 'black', fontSize: 20}}
-                      onPress={() => this.editProfile('UpdateContact')}
-                      testID="iconToUpdateContact"
-                    />
-                  </Right>
-                ) : null}
-              </ListItem>
-
-              <ListItem avatar>
-                <Left>
-                  <Icon
-                    name="heartbeat"
-                    type="FontAwesome"
-                    style={{color: primaryColor}}
-                  />
-                </Left>
                 <Body>
                   <TouchableOpacity
-                    onPress={() => this.editProfile('UpdateInsurance')}
-                    testID="onPressUpdateInsurance">
-                    <Text style={styles.customText}>Insurance</Text>
-                    {data.insurance != undefined ? (
-                      <FlatList
-                        data={this.state.data.insurance}
-                        renderItem={({item}) => (
-                          <List>
-                            <Text note style={styles.customText1}>
-                              {item.insurance_no}
-                            </Text>
-                            <Text note style={styles.customText1}>
-                              {item.insurance_provider}
-                            </Text>
-                          </List>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                      />
+                    onPress={() => this.editProfile('UpdateContact')}
+                    testID="onPressUpdateContact">
+                    <Text style={styles.customText}>Contact</Text>
+                    {data.mobile != undefined ? (
+                      <Text note style={styles.customText1}>
+                      {data.mobile}
+                    </Text>
                     ) : (
                       <Button
                         transparent
@@ -1068,22 +950,22 @@ class Profile extends Component {
                         <Text
                           uppercase={false}
                           style={styles.customText}
-                          onPress={() => this.editProfile('UpdateInsurance')}
-                          testID="clickAddInsuranceText">
-                          Add Insurance
+                          onPress={() => this.props.navigation.navigate('UpdateContact',{id: this.state.data._id ||null})}
+                          testID="clickAddContactNo">
+                          Add Contact Number
                         </Text>
                       </Button>
                     )}
                   </TouchableOpacity>
                 </Body>
 
-                {data.insurance != undefined ? (
+                {data.mobile ? (
                   <Right>
                     <MaterialIcons
                       name="create"
                       style={{color: 'black', fontSize: 20}}
-                      onPress={() => this.editProfile('UpdateInsurance')}
-                      testID="iconToEditUpdateInsurance"
+                      onPress={() => this.editProfile('UpdateContact')}
+                      testID="iconToUpdateContact"
                     />
                   </Right>
                 ) : null}

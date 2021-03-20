@@ -18,7 +18,7 @@ import {
   Picker,
   View,
 } from 'native-base';
-import {userFiledsUpdate, logout} from '../../providers/auth/auth.actions';
+import {updateMemberDetails, logout} from '../../providers/auth/auth.actions';
 import {connect} from 'react-redux';
 import {Row, Col} from 'react-native-easy-grid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -36,6 +36,7 @@ import Spinner from '../../../components/Spinner';
 import {bloodGroupList, validateName} from '../../common';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {primaryColor} from '../../../setup/config';
+import ModalPopup from '../../../components/Shared/ModalPopup';
 
 class UpdateUserDetails extends Component {
   constructor(props) {
@@ -50,11 +51,10 @@ class UpdateUserDetails extends Component {
       isLoading: false,
       selectedBloodGroup: null,
       userData: '',
-      updateButton: true,
       errorMsg: '',
-      firstNameMsg: '',
-      lastNameMsg: '',
+      updateButton: true,
       isOnlyDateTimePickerVisible: false,
+      isModalVisible: false,
     };
   }
   componentDidMount() {
@@ -76,13 +76,14 @@ class UpdateUserDetails extends Component {
     const {navigation} = this.props;
     const userData = navigation.getParam('updatedata');
     const fromProfile = navigation.getParam('fromProfile') || false;
+
     if (fromProfile) {
       await this.setState({
         dob: userData.dob || null,
-        firstName: userData.first_name,
-        lastName: userData.last_name,
+        firstName: userData.firstName,
+        middleName: userData.middleName || null,
+        lastName: userData.lastName,
         gender: userData.gender,
-        selectedBloodGroup: userData.blood_group || null,
         updateButton: true,
         userData,
       });
@@ -91,21 +92,37 @@ class UpdateUserDetails extends Component {
 
   onChangeFirstnameAndLastname = async (text, type) => {
     if (type === 'Firstname') {
-      await this.setState({firstName: text});
+      await this.setState({firstName: text, updateButton: false});
+    }
+    if (type === 'MiddleName') {
+      await this.setState({middleName: text, updateButton: false});
     }
     if (type === 'LastName') {
-      await this.setState({lastName: text});
+      await this.setState({lastName: text, updateButton: false});
     }
-
     if (this.state.firstName && validateName(this.state.firstName) == false) {
-      this.setState({firstNameMsg: 'Firstname must be a Characters'});
+      this.setState({
+        errorMsg: 'Firstname must be a Characters',
+        isModalVisible: true,
+        updateButton: true,
+      });
+      return false;
+    }
+    if (this.state.middleName && validateName(this.state.middleName) == false) {
+      this.setState({
+        errorMsg: 'Middlename must be a Characters',
+        isModalVisible: true,
+        updateButton: true,
+      });
       return false;
     }
     if (this.state.lastName && validateName(this.state.lastName) == false) {
-      this.setState({lastNameMsg: 'Lastname must be a Characters'});
+      this.setState({
+        errorMsg: 'Lastname must be a Characters',
+        isModalVisible: true,
+        updateButton: true,
+      });
       return false;
-    } else {
-      this.setState({firstNameMsg: '', lastNameMsg: '', updateButton: false});
     }
   };
 
@@ -113,24 +130,34 @@ class UpdateUserDetails extends Component {
     const {
       userData,
       firstName,
+      middleName,
       lastName,
       dob,
       gender,
       selectedBloodGroup,
     } = this.state;
     try {
-      if (
-        firstName == undefined ||
-        lastName == undefined ||
-        dob == undefined ||
-        gender == undefined ||
-        selectedBloodGroup == undefined ||
-        selectedBloodGroup == 'Select Blood Group'
-      ) {
-        this.setState({errorMsg: 'Kindly fill all the fields...'});
+      if (!firstName) {
+        this.setState({
+          errorMsg: 'Please enter first name',
+          isModalVisible: true,
+        });
         return false;
       }
-
+      if (!dob) {
+        this.setState({
+          errorMsg: 'Please select date of birth',
+          isModalVisible: true,
+        });
+        return false;
+      }
+      if (!gender) {
+        this.setState({
+          errorMsg: 'Please select gender',
+          isModalVisible: true,
+        });
+        return false;
+      }
       this.setState({
         errorMsg: '',
         firstNameMsg: '',
@@ -139,29 +166,22 @@ class UpdateUserDetails extends Component {
         updateButton: false,
       });
       let requestData = {
-        first_name: firstName,
-        last_name: lastName,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
         dob: dob,
         gender: gender,
-        blood_group: selectedBloodGroup,
+        _id: this.state.userData._id,
       };
-      const userId = await AsyncStorage.getItem('userId');
-      let isProfileCompleted = await AsyncStorage.getItem(
-        'ProfileCompletionViaHome',
-      );
-      let response = await userFiledsUpdate(userId, requestData);
-      if (response.success) {
+
+      let response = await updateMemberDetails(requestData);
+      if (response) {
         Toast.show({
           text: 'Your Profile has been Updated',
           type: 'success',
           duration: 3000,
         });
-        if (isProfileCompleted == '1') {
-          this.props.navigation.navigate('Home');
-          await AsyncStorage.removeItem('ProfileCompletionViaHome');
-        } else {
-          this.props.navigation.navigate('Profile');
-        }
+        this.props.navigation.navigate('Profile');
       } else {
         Toast.show({
           text: response.message,
@@ -186,7 +206,7 @@ class UpdateUserDetails extends Component {
   hideOnlyDateTimePicker = () => {
     this.setState({isOnlyDateTimePickerVisible: false});
   };
-  handleOnlyDateTimePicker = date => {
+  handleOnlyDateTimePicker = (date) => {
     try {
       this.setState({
         isOnlyDateTimePickerVisible: false,
@@ -217,7 +237,7 @@ class UpdateUserDetails extends Component {
                     value={this.state.firstName}
                     keyboardType={'default'}
                     returnKeyType={'next'}
-                    onChangeText={text =>
+                    onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'Firstname')
                     }
                     autoCapitalize="none"
@@ -228,28 +248,39 @@ class UpdateUserDetails extends Component {
                     testID="editFirstName"
                   />
                 </Item>
-                {this.state.firstNameMsg ? (
-                  <Text
-                    style={{
-                      paddingLeft: 20,
-                      fontSize: 15,
-                      fontFamily: 'OpenSans',
-                      color: 'red',
-                    }}>
-                    {this.state.firstNameMsg}
-                  </Text>
-                ) : null}
+
+                <Item style={{borderBottomWidth: 0}}>
+                  <Input
+                    placeholder="Middle Name"
+                    style={styles.transparentLabel2}
+                    ref={(input) => {
+                      this.firstName = input;
+                    }}
+                    value={this.state.middleName}
+                    keyboardType={'default'}
+                    returnKeyType={'done'}
+                    onChangeText={(text) =>
+                      this.onChangeFirstnameAndLastname(text, 'MiddleName')
+                    }
+                    autoCapitalize="none"
+                    blurOnSubmit={false}
+                    onSubmitEditing={() => {
+                      this.middleName._root.focus(this.setState({focus: true}));
+                    }}
+                    testID="editMiddleName"
+                  />
+                </Item>
                 <Item style={{borderBottomWidth: 0}}>
                   <Input
                     placeholder="Last Name"
                     style={styles.transparentLabel2}
-                    ref={input => {
-                      this.firstName = input;
+                    ref={(input) => {
+                      this.middleName = input;
                     }}
                     value={this.state.lastName}
                     keyboardType={'default'}
                     returnKeyType={'done'}
-                    onChangeText={text =>
+                    onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'LastName')
                     }
                     autoCapitalize="none"
@@ -258,17 +289,7 @@ class UpdateUserDetails extends Component {
                     testID="editLastName"
                   />
                 </Item>
-                {this.state.lastNameMsg ? (
-                  <Text
-                    style={{
-                      paddingLeft: 20,
-                      fontSize: 15,
-                      fontFamily: 'OpenSans',
-                      color: 'red',
-                    }}>
-                    {this.state.lastNameMsg}
-                  </Text>
-                ) : null}
+
                 <TouchableOpacity
                   onPress={() => {
                     this.setState({
@@ -331,7 +352,7 @@ class UpdateUserDetails extends Component {
                   {/* </Item> */}
                 </TouchableOpacity>
 
-                <Item
+                {/* <Item
                   style={{
                     borderBottomWidth: 0,
                     backgroundColor: '#F1F1F1',
@@ -377,7 +398,7 @@ class UpdateUserDetails extends Component {
                       );
                     })}
                   </Picker>
-                </Item>
+                </Item> */}
 
                 <View
                   style={{marginTop: 20, borderBottomWidth: 0, marginLeft: 20}}>
@@ -394,9 +415,9 @@ class UpdateUserDetails extends Component {
                         color={primaryColor}
                         standardStyle={true}
                         onPress={() =>
-                          this.setState({gender: 'M', updateButton: false})
+                          this.setState({gender: 'Male', updateButton: false})
                         }
-                        selected={this.state.gender === 'M'}
+                        selected={this.state.gender === 'Male'}
                       />
                       <Text
                         style={
@@ -419,12 +440,12 @@ class UpdateUserDetails extends Component {
                       size={3}
                       style={{alignItems: 'center', flexDirection: 'row'}}>
                       <Radio
-                      color={primaryColor}
+                        color={primaryColor}
                         standardStyle={true}
                         onPress={() =>
-                          this.setState({gender: 'F', updateButton: false})
+                          this.setState({gender: 'Female', updateButton: false})
                         }
-                        selected={this.state.gender === 'F'}
+                        selected={this.state.gender === 'Female'}
                       />
                       <Text
                         style={
@@ -451,9 +472,9 @@ class UpdateUserDetails extends Component {
                         standardStyle={true}
                         selectedColor={primaryColor}
                         onPress={() =>
-                          this.setState({gender: 'O', updateButton: false})
+                          this.setState({gender: 'others', updateButton: false})
                         }
-                        selected={this.state.gender === 'O'}
+                        selected={this.state.gender === 'others'}
                       />
                       <Text
                         style={
@@ -474,9 +495,6 @@ class UpdateUserDetails extends Component {
                     </Col>
                   </Row>
                 </View>
-                <Text style={{color: 'red', marginLeft: 15, marginTop: 5}}>
-                  {this.state.errorMsg}
-                </Text>
 
                 <View>
                   <Button
@@ -496,6 +514,16 @@ class UpdateUserDetails extends Component {
               </Form>
             </View>
           </ScrollView>
+          <View style={{flex: 1}}>
+            <ModalPopup
+              errorMessageText={this.state.errorMsg}
+              closeButtonText={'CLOSE'}
+              closeButtonAction={() =>
+                this.setState({isModalVisible: !this.state.isModalVisible})
+              }
+              visible={this.state.isModalVisible}
+            />
+          </View>
         </Content>
       </Container>
     );
