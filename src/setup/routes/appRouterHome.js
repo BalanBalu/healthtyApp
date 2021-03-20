@@ -244,7 +244,7 @@ const HomeStack = createStackNavigator({
                 </TouchableOpacity>
               </Col>
               <TouchableOpacity style={{ marginRight: 5, paddingLeft: 5, paddingRight: 5 }}>
-                <LanguagePopUp />
+                {/* <LanguagePopUp /> */}
 
               </TouchableOpacity>
             </Row>
@@ -1367,19 +1367,19 @@ export const corporateUserSideBarMenuList = [
         appoinmentSubMenus: []
       },
       {
-        name: 'Appointments',
+        name: 'Consultation',
         routeName: [],
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
         largeIcon: { height: 20, width: 20, },
         appoinmentSubMenus: [
           {
-            name: 'Doctor Appointments',
+            name: 'Doctor Consultation',
             routeName: drawerNavigatorRoutes["Categories"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
             largeIcon: { height: 20, width: 20, }
           },
           {
-            name: 'Home Appointments',
+            name: 'Home Consultation',
             routeName: drawerNavigatorRoutes["Home Healthcare Address List"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
             largeIcon: { height: 20, width: 20, }
@@ -1387,7 +1387,7 @@ export const corporateUserSideBarMenuList = [
 
 
           {
-            name: 'Lab Appointments',
+            name: 'Lab Consultation',
             routeName: drawerNavigatorRoutes["Lab Test"].routeName,
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
             largeIcon: { height: 20, width: 20, }

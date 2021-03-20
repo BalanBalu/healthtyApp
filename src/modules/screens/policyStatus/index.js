@@ -9,6 +9,7 @@ import { getMemberDetailsByEmail, getClaimsDataByPayerCode } from '../../provide
 import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
 import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
+import {translate} from '../../../setup/translator.helper'
 
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -124,8 +125,8 @@ class PolicyStatus extends Component {
 
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.nameText}>{memberDetails.firstName ? (memberDetails.firstName + ' ' + memberDetails.lastName) : '-'}</Text>
-                <Text style={styles.policyText}>Member Code : <Text style={styles.commonText}>{memberDetails.memberId ? memberDetails.memberId : '-'}</Text></Text>
-                <Text style={styles.policyText}>Validity period : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YY")):'N/A'}</Text></Text>
+                <Text style={styles.policyText}>{translate("Member Code")} : <Text style={styles.commonText}>{memberDetails.memberId ? memberDetails.memberId : '-'}</Text></Text>
+                <Text style={styles.policyText}>{translate("Validity period")} : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YY")):'N/A'}</Text></Text>
               </View>
 
             </View>
@@ -163,7 +164,7 @@ class PolicyStatus extends Component {
                       </Row>
                       <View style={styles.mainView}>
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Member Code</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Member Code")} </Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{memberDetails.memberId}</Text>
@@ -179,28 +180,28 @@ class PolicyStatus extends Component {
 
                         </Row> */}
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Relationship</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Relationship")}</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.PATIENT_REALTION}</Text>
                           </Col>
                         </Row>
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim Status</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Claim Status")}</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.CLAIM_STATUS}</Text>
                           </Col>
                         </Row>
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim Amount</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Claim Amount")}</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.AMOUNT}</Text>
                           </Col>
                         </Row>
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Claim Date</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Claim Date")}</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.CLAIM_REGISTERED_DATE}</Text>
@@ -208,7 +209,7 @@ class PolicyStatus extends Component {
                         </Row>
 
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Ailment</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Ailment")}</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.AILMENT}</Text>
@@ -216,7 +217,7 @@ class PolicyStatus extends Component {
                         </Row>
 
                         <Row style={{ marginTop: 5 }}>
-                          <Col size={4}><Text style={styles.subHeadingStyle}>Hospital</Text></Col>
+                          <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Hospital")}</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
                           <Col size={6.5}>
                             <Text style={styles.subHeadingData}>{item.HOSPITAL_NAME}</Text>
@@ -278,7 +279,7 @@ class PolicyStatus extends Component {
                 </View>
               } />
             : <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No Claim list found!</Text>
+              <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center',textAlign:'center' }} >{translate("No claim list found!")}</Text>
             </Item>
           }
           {isLoadingMoreData ?

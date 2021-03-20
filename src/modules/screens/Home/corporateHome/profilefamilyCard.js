@@ -3,12 +3,11 @@ import {View, TouchableOpacity, Text, Image } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Svg, {Path} from 'react-native-svg';
 import {primaryColor, secondaryColor} from '../../../../setup/config'
-
 import ProfileFamilyCardDrawing from './svgDrawings';
-
+// import { translate } from "../../../../setup/translator.helper"
 
 export const ProfileFamilyCard = props => {
-  const {navigation} = props;
+  const {navigation,translate} = props;
   return (
     <TouchableHighlight activeOpacity={0.6}
     underlayColor="#fff" onPress={() => navigation('E Card')}>
@@ -47,7 +46,7 @@ export const ProfileFamilyCard = props => {
               fontSize: 15,
               lineHeight: 24,
             }}>
-            View E card and family {'\n'}profile from here{' '}
+            {translate('View E card and family')} {'\n'}{translate('profile from here')}{' '}
           </Text>
         </View>
         <View style={{position: 'absolute', top: 0, right: -11.5}}>
