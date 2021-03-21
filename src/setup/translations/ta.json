@@ -162,8 +162,23 @@
     "Home Care":"வீட்டு பராமரிப்பு",
     "Tele Consult":"தொலைபேசி ஆலோசனை",
     "Lab Test" :"ஆய்வக சோதனை",
-    "Help line":"உதவி வரி"
-
+    "Help line":"உதவி வரி",
+    "Members details":"உறுப்பினர்கள் விவரங்கள்",
+    "Member Name":  "உறுப்பினர்களின் பெயர்",
+    "Member Code":  "உறுப்பினர் குறியீடு",
+    "Gender":"பாலினம்",
+    "Age":"வயது",
+    "Relationship":"உறவு",
+    "No E-Card details found !":"மின் அட்டை விவரங்கள் எதுவும் கிடைக்கவில்லை!",
+    "Name":"பெயர்",
+    "Select Issue Type":"வெளியீட்டு வகையைத் தேர்ந்தெடுக்கவும்",
+    "Message":"செய்தி",
+    "Submit":"சமர்ப்பிக்கவும்",
+    "Thanks for cotacting":"கோட்டாக்டிங் செய்ததற்கு நன்றி",
+    "with us!":"எங்களுடன்!",
+    "we will be back soon to your email":"நாங்கள் விரைவில் உங்கள் மின்னஞ்சலுக்கு வருவோம்",
+    "Back to Home":"முகப்பு பக்கத்திற்குத் திரும்பு",
+    "Feel free to contact us if you need help.":"உங்களுக்கு உதவி தேவைப்பட்டால் எங்களை தொடர்பு கொள்ளலாம்."
 
 
 
