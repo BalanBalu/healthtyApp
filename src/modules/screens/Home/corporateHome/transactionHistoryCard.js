@@ -18,6 +18,7 @@ import {
 } from './svgDrawings';
 
 import styles from './styles'
+import { translate } from "../../../../setup/translator.helper"
 
 
 
@@ -44,7 +45,7 @@ export const TransactionHistoryCard = (props) => {
               }}>
               <LabTestDrawing />
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{height:23,width:23,position:'absolute',top:30,right:20}} />
-              <Text style={styles.boxText}>Lab Test</Text>
+              <Text style={styles.boxText}>{translate("Lab Test")}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -59,7 +60,7 @@ export const TransactionHistoryCard = (props) => {
             <HospitalDrawing />
             <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{height:23,width:23,position:'absolute',top:31,right:10}} />
 
-            <Text style={styles.boxText}>Hospital</Text>
+            <Text style={styles.boxText}>{translate("Hospital")}</Text>
           </View>
         </View>
         </TouchableHighlight>
@@ -73,7 +74,7 @@ export const TransactionHistoryCard = (props) => {
               }}>
               <ConsultationDrawing />
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{height:23,width:23,position:'absolute',top:32,right:30}} />
-              <Text style={styles.boxText}>Consultation</Text>
+              <Text style={styles.boxText}>{translate("Consultation")}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -92,7 +93,7 @@ export const TransactionHistoryCard = (props) => {
 
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{height:23,width:23,position:'absolute',top:35.5,right:11}} />
 
-              <Text style={[styles.boxText,{marginTop:-3}]}>Home Care</Text>
+              <Text style={[styles.boxText,{marginTop:-3}]}>{translate("Home Care")}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -121,8 +122,7 @@ export const TransactionHistoryCard = (props) => {
               }}>
               <VideoConsultDrawing />
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{height:23,width:23,position:'absolute',top:31,right:15}} />
-
-              <Text style={styles.boxText}>Tele Consult</Text>
+              <Text style={styles.boxText}>{translate("Tele Consult")}</Text>
             </View>
           </View>
         </TouchableHighlight>

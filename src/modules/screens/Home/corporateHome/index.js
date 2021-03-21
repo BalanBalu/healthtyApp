@@ -20,6 +20,7 @@ import {ContactUsCard} from './contactUsCard'
 import {PolicyCoverageCard} from './policyCoverageCard'
 import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions'; 
 import { formatDate } from '../../../../setup/helpers';
+import { translate } from "../../../../setup/translator.helper"
 
 class CorporateHome extends PureComponent {
     locationUpdatedCount = 0;
@@ -31,7 +32,8 @@ class CorporateHome extends PureComponent {
             memberDetails: {},
             policyDetails: {},
             relationship: null,
-            helpLineNumberData:[]
+            helpLineNumberData:[],
+           
         }
     }
     async componentDidMount() {
@@ -47,6 +49,7 @@ class CorporateHome extends PureComponent {
         this.getMemberDetailsByEmail()
         this.getCorporatePhoneNumber()
     }
+    
     getMemberDetailsByEmail = async () => {
         try {
           let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
@@ -204,6 +207,7 @@ class CorporateHome extends PureComponent {
                         {isCorporateUser ?
                             <ProfileFamilyCard
                                 navigation={navigate}
+                                translate={translate}
                             /> : null}
                         {isCorporateUser ?
                             <CoverageCard navigation={navigate} /> : null}
