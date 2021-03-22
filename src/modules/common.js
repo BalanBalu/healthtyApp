@@ -121,8 +121,8 @@ export const RenderPatientAddress = (props) => {
 
 export function renderProfileImage(data) {
     let source = null;
-    if (data.profile_image) {
-        source = { uri: data.profile_image.imageURL }
+    if (data&&data.profileImage) {
+        source = { uri: data.profileImage[0].original_imageURL }
     } else if (data.gender == 'M') {
         source = require('../../assets/images/male_user.png')
     } else if (data.gender == 'F') {
