@@ -8,6 +8,8 @@ import { ContactUsImage } from './svgDrawings';
 import styles from './styles'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { translate } from "../../../../setup/translator.helper"
+
 export const ContactUsCard = props => {
   const { navigation,data } = props;
   const  dialCall = (number) => {
@@ -61,7 +63,7 @@ export const ContactUsCard = props => {
                 fontSize: 18,
                 fontWeight: '700',
               }}>
-              Help line
+              {translate("Help line")}
           </Text>
           <TouchableOpacity onPress={() =>{dialCall(data&&data.value ? data.value : '') }} style={{paddingRight:20}}>
             <View  style={{ flexDirection: 'row' }}>
@@ -81,7 +83,7 @@ export const ContactUsCard = props => {
           
           <Row style={{ marginTop: 10, marginLeft: 20 }}>
             <TouchableOpacity style={{ borderRadius: 15, borderColor: '#fff', borderWidth: 1, paddingHorizontal: 5, height: 25, justifyContent: 'center', flexDirection: 'row' }} onPress={() => navigation('ContactUs')}>
-              <Text style={{ color: '#fff', textAlign: 'center' }}>Contact Us</Text>
+              <Text style={{ color: '#fff', textAlign: 'center' }}>{translate("Contact Us")}</Text>
               <MaterialIcons name="keyboard-arrow-right" style={{ color: '#fff', fontSize: 20, }} />
 
             </TouchableOpacity>

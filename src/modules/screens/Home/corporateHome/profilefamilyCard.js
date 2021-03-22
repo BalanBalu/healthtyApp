@@ -37,7 +37,7 @@ export const ProfileFamilyCard = props => {
               fontSize: 18,
               fontWeight: '700',
             }}>
-            Family
+             {translate('Family')}
           </Text>
           <Text
             style={{

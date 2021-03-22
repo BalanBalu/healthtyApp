@@ -32,7 +32,7 @@ export const TransactionHistoryCard = (props) => {
         // height: 300,
         flex: 1,
       }}>
-      <Text style={styles.headingText}>Transaction History</Text>
+      <Text style={styles.headingText}>{translate("Transaction History")}</Text>
 
       <View style={styles.flexRow}>
         <TouchableHighlight  activeOpacity={0.6}

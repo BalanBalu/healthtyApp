@@ -20,7 +20,6 @@ export const CoverageCard = props => {
    CurrentLocation.getCurrentPosition();
     navigation('NetworkHospitals')
   }
-  console.log(translate())
   return (
     <View
       style={{
