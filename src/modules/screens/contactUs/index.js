@@ -7,7 +7,7 @@ import styles from './styles'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getCorporateHelpLineEmail, postContactDetails } from '../../providers/corporate/corporate.actions'
 import { toastMeassage,validateEmailAddress } from '../../common'
-
+import {translate} from '../../../setup/translator.helper'
 const issueTypeList = ["Choose Issue type", "payment", "consultation", "insurance", "others"]
 
 class ContactUs extends Component {
@@ -145,7 +145,7 @@ class ContactUs extends Component {
                     <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
                         <View>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.HeadingText}>{translate("Feel free to contact us if you need help.")}</Text>
+                                <Text style={styles.HeadingText}>{translate("Feel free to contact us if you need help")}</Text>
                                 <View>
                                     <Form>
                                         <Text style={styles.subHeadingText}
@@ -225,7 +225,7 @@ class ContactUs extends Component {
                                             <Text style={{ color: 'red', marginRight: 0, marginTop: 10, textAlign: 'right', position: 'absolute', right: 0, top: 485 }}>{this.state.messageErrorMsg}</Text>
                                             : null}
                                         <TouchableOpacity style={styles.submitButton} onPress={this.insertContactInformation}>
-                                            <Text style={{ fontSize: 15, fontWeight: 'OpenSans', fontWeight: 'bold', color: '#fff' }}>Submit</Text>
+                                            <Text style={{ fontSize: 15, fontWeight: 'OpenSans', fontWeight: 'bold', color: '#fff' }}>{translate("Submit")}</Text>
                                         </TouchableOpacity>
                                     </Form>
                                 </View>
