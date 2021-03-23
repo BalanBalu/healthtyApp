@@ -390,9 +390,9 @@ class UpdateFamilyMembers extends Component {
                         color={primaryColor}
                         selectedColor={primaryColor}
                         standardStyle={true}
-                        selected={gender === 'M' ? true : false}
+                        selected={gender === 'Male' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'M', updateButton: false})
+                          this.setState({gender: 'Male', updateButton: false})
                         }
                       />
                       <Text
@@ -413,9 +413,9 @@ class UpdateFamilyMembers extends Component {
                       <Radio
                         color={primaryColor}
                         standardStyle={true}
-                        selected={gender === 'F' ? true : false}
+                        selected={gender === 'Female' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'F', updateButton: false})
+                          this.setState({gender: 'Female', updateButton: false})
                         }
                       />
                       <Text
@@ -436,9 +436,9 @@ class UpdateFamilyMembers extends Component {
                       <Radio
                         color={primaryColor}
                         standardStyle={true}
-                        selected={gender === 'O' ? true : false}
+                        selected={gender === 'Others' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'O', updateButton: false})
+                          this.setState({gender: 'Others', updateButton: false})
                         }
                       />
                       <Text

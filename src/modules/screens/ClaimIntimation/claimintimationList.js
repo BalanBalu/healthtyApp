@@ -136,7 +136,7 @@ class ClaimIntimationList extends PureComponent {
                           <Row style={{marginTop: 5}}>
                             <Col size={4}>
                               <Text style={styles.subHeadingStyle}>
-                                Policy No
+                                Member Code
                               </Text>
                             </Col>
                             <Col size={0.5}>
@@ -144,7 +144,7 @@ class ClaimIntimationList extends PureComponent {
                             </Col>
                             <Col size={6.5}>
                               <Text style={styles.subHeadingData}>
-                                {item.policyNo}
+                                {item.memberId}
                               </Text>
                             </Col>
                           </Row>
@@ -275,7 +275,7 @@ class ClaimIntimationList extends PureComponent {
                                     }}
                                     numberOfLines={1}
                                     ellipsizeMode="tail">
-                                    Policy No
+                                    Member Code
                                   </Text>
                                 </Col>
                                 <Col size={0.5}>
@@ -286,7 +286,7 @@ class ClaimIntimationList extends PureComponent {
                                     style={styles.subHeadingData}
                                     numberOfLines={1}
                                     ellipsizeMode="tail">
-                                    {item.policyNo}
+                                    {item.memberId}
                                   </Text>
                                 </Col>
                               </Row>

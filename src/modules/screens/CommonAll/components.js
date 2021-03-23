@@ -238,7 +238,6 @@ const renderLabProfileImage = (data) => {
     if (data.profile_image) {
         source = { uri: data.profile_image.imageURL }
     } else {
-        console.log("data>>>>>>>>>>>>>>....",data)
         source = require('../../../../assets/images/Lab-tests.png')
     }
 
@@ -301,9 +300,9 @@ const RenderBeneficiaryInfo = (props) => {
     <Row>
         <Col size={4}>
             <Text style={styles.beneficiaryFontStyle}>Beneficiary</Text>
-            <Text style={styles.beneficiaryFontStyle}>Policy Number</Text>
-            <Text style={styles.beneficiaryFontStyle}>Policy Effective From</Text>
-            <Text style={styles.beneficiaryFontStyle}>Policy End Date</Text>
+            <Text style={styles.beneficiaryFontStyle}>Member code</Text>
+            <Text style={styles.beneficiaryFontStyle}>Enrollment Start Date</Text>
+            <Text style={styles.beneficiaryFontStyle}>Enrollment End Date</Text>
             <Text style={styles.beneficiaryFontStyle}>Sum Insured</Text>
             <Text style={styles.beneficiaryFontStyle}>BSI</Text>
             {/* <Text style={styles.beneficiaryFontStyle}>Eligible Amount</Text> */}
@@ -318,10 +317,10 @@ const RenderBeneficiaryInfo = (props) => {
             {/* <Text style={styles.beneficiaryFontStyle}>:</Text> */}
         </Col>
         <Col size={5.5}>
-            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.full_name?data.full_name:null}</Text>
-                <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.policyNo||null}</Text>
-            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.policyEffectiveFrom?formatDate(data.policyEffectiveFrom, 'DD/MM/YYYY'):null}</Text>
-            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.policyEffectiveTo?formatDate(data.policyEffectiveTo, 'DD/MM/YYYY'):null}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.familyMemberName?data.familyMemberNam:null}</Text>
+                <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.memberId?data.memberId:null}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.enrollmentStartDate?formatDate(data.enrollmentStartDate, 'DD/MM/YYYY'):null}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.enrollmentEndDate?formatDate(data.enrollmentEndDate, 'DD/MM/YYYY'):null}</Text>
             <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.sumInsured?data.sumInsured:0}</Text>
             <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.balSumInsured?data.balSumInsured:0}</Text>
             {/* <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}> ₹ 0.00</Text> */}

@@ -11,7 +11,7 @@ export default class RenderFamilyList extends PureComponent {
         super(props)
     }
 // Get Full Name
-    getCorporateLoginName=(item)=> (item.firstName ? item.firstName + ' ' : '') + (item.middleName ? item.middleName + ' ' : '') + (item.lastName ? item.lastName + ' ' : '')
+    getCorporateLoginName=(item)=> (item.familyMemberName ? item.familyMemberName + ' ' : '') + (item.familyMemberLastName ? item.familyMemberLastName + ' ' : '')
        render() {
         const { item, index, isShowBeneficiaryInfoCard,  navigation, onPressIsShowBeneficiaryInfo, onPressSelectBtnToGoNextProcess } = this.props;
 item.full_name=this.getCorporateLoginName(item)
@@ -27,7 +27,7 @@ item.full_name=this.getCorporateLoginName(item)
                         </Text>
                     </Col>
                     <Col size={3}>
-                        <Text style={styles.ageText}>{item.age||0} years</Text>
+                        <Text style={styles.ageText}>{item.familyMemberAge||0} years</Text>
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 10 }}>
@@ -41,7 +41,7 @@ item.full_name=this.getCorporateLoginName(item)
                                 <Text style={[styles.commonText,{marginLeft:5}]}>-</Text>
                             </Col>
                             <Col size={5} >
-                                <Text style={[styles.commonText, { color: '#909498' }]}>{item.gender?item.gender: 'N/A'}</Text>
+                                <Text style={[styles.commonText, { color: '#909498' }]}>{item.familyMemberGender?item.familyMemberGender: 'N/A'}</Text>
                             </Col>
                         </Row>
                     </Col>

@@ -56,11 +56,8 @@ export async function getCorporateUserEcardDetails(bodyData) {
 
 export async function getCorporateEmployeeDetailsById(empCode) {
   try {
-    console.log(`empCode`, empCode);
     let endPoint = 'member-detail/member-family-member?emp_code=' + empCode
     let response = await smartHealthGetService(endPoint);
-    // console.log(`response`, response);
-
     return response.data;
   } catch (e) {
 
@@ -168,8 +165,6 @@ export async function serviceOfGetPreAuthList(policyNo, empCode, page, limit) {
 export async function getClaimsDataByPayerCode(payer_code, policy_no, page, limit) {
   try {
     let endPoint = 'claim-data?payerCode=' + payer_code + '&policyno=' + policy_no + '&p=' + page + '&l=' + limit;
-    // console.log(`endPoint`, endPoint);
-
     let response = await smartHealthGetService(endPoint);
     return response.data;
   } catch (e) {
@@ -180,6 +175,40 @@ export async function getClaimsDataByPayerCode(payer_code, policy_no, page, limi
     }
   }
 }
+
+export async function getMemberDetailsByPolicyNo(policyNo) {
+  try {
+    let endPoint= 'member-detail/by-policyNo-and-relationship/?policyNo=' + policyNo;
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
+export async function getFamilyMembersByPolicyNoeWithPagination(searchText, policyNo, page, limit) {
+  try {
+    let endPoint;
+    if (searchText) {
+      endPoint = 'member-family-details/family-member-by-policyNo/page?searchText=' + searchText + '&policyNo=' + policyNo + '&p=' + page + '&l=' + limit;
+    } else {
+      endPoint = 'member-family-details/family-member-by-policyNo/page?policyNo=' + policyNo + '&p=' + page + '&l=' + limit;
+    }
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
+
 export async function getClaimIntimationWithPagination(searchText, employeeId, policyNo, page, limit) {
   try {
     let endPoint;
@@ -245,8 +274,6 @@ export async function getCorporateHelpLineNumber() {
   try {
     let endPoint = 'setting/key?key=' + "HELP_LINE_NUMBER"
     let response = await smartHealthGetService(endPoint);
-    console.log(`response`, response);
-
     return response.data;
   } catch (e) {
 
@@ -260,8 +287,6 @@ export async function getCorporateHelpLineEmail() {
   try {
     let endPoint = 'setting/key?key=' + "HELP_LINE_EMAIL"
     let response = await smartHealthGetService(endPoint);
-    console.log(`response`, response);
-
     return response.data;
   } catch (e) {
 
