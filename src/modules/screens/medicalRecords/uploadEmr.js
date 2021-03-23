@@ -146,7 +146,7 @@ class UploadEmr extends Component {
                             {imageData.length === 0 ?
                                 <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
 
-                                    <Thumbnail square style={styles.profileImage} source={require('../../../../assets/images/prescription_upload.png')} />
+                                    <Thumbnail square style={styles.profileImage} source={require('../../../../assets/images/UploadRecord.png')} />
                                 </TouchableOpacity>
                                 :
 
@@ -160,8 +160,8 @@ class UploadEmr extends Component {
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
                                             <View>
-                                                <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', marginTop: 10, height: "60%" }}>
-                                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: 'EMR' })}>
+                                                <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', marginTop: 10, }}>
+                                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: 'EMR' })} >
                                                         <Image
                                                             source={{ uri: item.imageURL }}
                                                             style={styles.profileImage}
@@ -281,8 +281,8 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 10,
-        width: Dimensions.get('window').width - 10,
-        height: Dimensions.get('window').height - 200,
+        width: 313,
+        height: 350,
         justifyContent: 'center',
         borderColor: '#f5f5f5',
         alignItems: 'center',
