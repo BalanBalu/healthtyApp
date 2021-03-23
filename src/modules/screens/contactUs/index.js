@@ -7,7 +7,7 @@ import styles from './styles'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getCorporateHelpLineEmail, postContactDetails } from '../../providers/corporate/corporate.actions'
 import { toastMeassage,validateEmailAddress } from '../../common'
-
+import {translate} from '../../../setup/translator.helper'
 const issueTypeList = ["Choose Issue type", "payment", "consultation", "insurance", "others"]
 
 class ContactUs extends Component {
@@ -145,13 +145,13 @@ class ContactUs extends Component {
                     <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
                         <View>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.HeadingText}>Feel free to contact us if you need help. </Text>
+                                <Text style={styles.HeadingText}>{translate("Feel free to contact us if you need help")}</Text>
                                 <View>
                                     <Form>
                                         <Text style={styles.subHeadingText}
                                             onLayout={event =>
                                                 (this.userNameText = event.nativeEvent.layout)
-                                            }>Name</Text>
+                                            }>{translate("Name")}</Text>
                                         <TextInput placeholder="Enter Name"
                                             placeholderTextColor={"#909090"}
                                             onChangeText={text => this.setState({ userName: text, userNameError: null })}
@@ -163,7 +163,7 @@ class ContactUs extends Component {
                                         <Text style={styles.subHeadingText}
                                             onLayout={event =>
                                                 (this.emailText = event.nativeEvent.layout)
-                                            }>Email</Text>
+                                            }>{translate("Email")}</Text>
         
                                              <Input
                                                   placeholder="Enter Email"
@@ -181,7 +181,7 @@ class ContactUs extends Component {
                                         <Text style={styles.subHeadingText}
                                             onLayout={event =>
                                                 (this.IssueTypeText = event.nativeEvent.layout)
-                                            }>Select Issue Type</Text>
+                                            }>{translate("Select Issue Type")}</Text>
 
                                         <View style={this.state.issueTypeErrorMsg !== null ? styles.formStyle6ErrorMsg : styles.formStyle6}>
                                             <Picker style={styles.userDetailLabel}
@@ -214,7 +214,7 @@ class ContactUs extends Component {
                                         <Text style={styles.subHeadingText}
                                             onLayout={event =>
                                                 (this.messageText = event.nativeEvent.layout)
-                                            }>Message</Text>
+                                            }>{translate("Message")}</Text>
                                         <TextInput placeholder="Enter Message"
                                             textAlignVertical={'top'} placeholderTextColor={"#909090"}
                                             onChangeText={text => this.setState({ messageText: text, messageErrorMsg: null })}
@@ -225,7 +225,7 @@ class ContactUs extends Component {
                                             <Text style={{ color: 'red', marginRight: 0, marginTop: 10, textAlign: 'right', position: 'absolute', right: 0, top: 485 }}>{this.state.messageErrorMsg}</Text>
                                             : null}
                                         <TouchableOpacity style={styles.submitButton} onPress={this.insertContactInformation}>
-                                            <Text style={{ fontSize: 15, fontWeight: 'OpenSans', fontWeight: 'bold', color: '#fff' }}>Submit</Text>
+                                            <Text style={{ fontSize: 15, fontWeight: 'OpenSans', fontWeight: 'bold', color: '#fff' }}>{translate("Submit")}</Text>
                                         </TouchableOpacity>
                                     </Form>
                                 </View>
@@ -239,11 +239,11 @@ class ContactUs extends Component {
                                     <View style={styles.modalSecondView}>
 
                                         <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                            <Text style={styles.modalHeading}>Thank for contacting {'\n'} with us!</Text>
+                                            <Text style={styles.modalHeading}>{translate("Thank for contacting")} {'\n'}{translate("with us!")} </Text>
                                         </Row>
                                         <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                                             <Col>
-                                                <Text style={styles.modalSubText}>We will be back soon to your email :</Text>
+                                                <Text style={styles.modalSubText}>{translate("We will be back soon to your email")} :</Text>
                                                 <Text style={styles.emailSubText}>{helpLineEmailData.value ? helpLineEmailData.value : ' '}</Text>
                                             </Col>
                                         </Row>
@@ -253,7 +253,7 @@ class ContactUs extends Component {
 
                                             <Col size={10}>
                                                 <TouchableOpacity danger style={styles.backToHomeButton} onPress={() => this.popUpClose()} testID='cancelButton'>
-                                                    <Text style={styles.backToHomeButtonText}> {'Back to Home'}</Text>
+                                                    <Text style={styles.backToHomeButtonText}> {translate('Back to Home')}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                         </Row>

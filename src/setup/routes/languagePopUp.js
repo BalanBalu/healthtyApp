@@ -7,6 +7,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { setI18nConfig } from '../translator.helper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import {primaryColor} from '../../setup/config';
+import { store } from '../../setup/store';
+import {SET_TRANSLATOR} from '../../modules/providers/profile/profile.action';
 
 class LanguagePopUp extends React.PureComponent {
   constructor(props) {
@@ -23,6 +25,10 @@ class LanguagePopUp extends React.PureComponent {
   };
 
   hideMenu = (index, language) => {
+    store.dispatch({
+      type: SET_TRANSLATOR,
+      data: true,
+    });
     this._menu.hide();
     this.setState({
       selectedIndex: index

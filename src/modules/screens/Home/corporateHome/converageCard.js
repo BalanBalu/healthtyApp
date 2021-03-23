@@ -12,6 +12,7 @@ import {
 } from './svgDrawings';
 import {primaryColor, secondaryColorTouch} from '../../../../setup/config';
 import CurrentLocation from '../CurrentLocation';
+import { translate } from "../../../../setup/translator.helper"
 
 export const CoverageCard = props => {
   const {navigation} = props;
@@ -26,7 +27,7 @@ export const CoverageCard = props => {
         flex: 1,
         marginTop: 6,
       }}>
-      <Text style={styles.headingText}>Coverage</Text>
+      <Text style={styles.headingText}>{translate("Coverage")}</Text>
 
       <View style={styles.flexRow}>
         <TouchableHighlight
@@ -41,7 +42,7 @@ export const CoverageCard = props => {
                 marginTop: 10,
               }}>
               <PreAuthDrawing />
-              <Text style={styles.boxText}>Pre Auth</Text>
+              <Text style={styles.boxText}>{translate("Pre Auth")}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -58,7 +59,7 @@ export const CoverageCard = props => {
               }}>
               <ClaimStatusDrawing />
 
-              <Text style={styles.boxText}>Claim Status</Text>
+              <Text style={styles.boxText}>{translate("Claim Status")}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -75,7 +76,7 @@ export const CoverageCard = props => {
               }}>
               <PolicyCoverageDrawing />
 
-              <Text style={styles.boxText}>Policy Cover</Text>
+              <Text style={styles.boxText}>{translate("Policy Cover")}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -98,9 +99,7 @@ export const CoverageCard = props => {
                 marginTop: 3,
               }}>
               <ClaimInitiationDrawing />
-
-              <Text style={styles.inititationText1}>Claim</Text>
-              <Text style={styles.initiationText2}>Intimation</Text>
+              <Text style={styles.boxText}>{translate("Claim Intimation")}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -117,7 +116,7 @@ export const CoverageCard = props => {
                 marginTop: 13.5,
               }}>
               <HospitalDrawing />
-              <Text style={styles.inititationText1}>Network Hospital</Text>
+              <Text style={styles.inititationText1}>{translate("Network Hospital")}</Text>
             </View>
          
         </View>

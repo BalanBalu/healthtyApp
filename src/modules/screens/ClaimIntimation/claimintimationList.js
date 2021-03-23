@@ -9,6 +9,7 @@ import {getClaimIntimationWithPagination} from '../../providers/corporate/corpor
 import {log} from 'react-native-reanimated';
 import {primaryColor} from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
+import {translate} from '../../../setup/translator.helper'
 
 const LIMIT = 10;
 
@@ -96,7 +97,7 @@ class ClaimIntimationList extends PureComponent {
                     color: primaryColor,
                     fontWeight: '600',
                   }}>
-                  Add New
+                  {translate("Add New")}
                 </Text>
               </TouchableOpacity>
             </Card>
@@ -136,7 +137,7 @@ class ClaimIntimationList extends PureComponent {
                           <Row style={{marginTop: 5}}>
                             <Col size={4}>
                               <Text style={styles.subHeadingStyle}>
-                                Member Code
+                               {translate("Member Code")} 
                               </Text>
                             </Col>
                             <Col size={0.5}>
@@ -159,7 +160,7 @@ class ClaimIntimationList extends PureComponent {
                           <Row style={{marginTop: 5}}>
                             <Col size={4}>
                               <Text style={styles.subHeadingStyle}>
-                                Claim By
+                             { translate("Claim By") } 
                               </Text>
                             </Col>
                             <Col size={0.5}>
@@ -173,7 +174,7 @@ class ClaimIntimationList extends PureComponent {
                           </Row>
                           <Row style={{marginTop: 5}}>
                             <Col size={4}>
-                              <Text style={styles.subHeadingStyle}>Status</Text>
+                              <Text style={styles.subHeadingStyle}>{translate("Status")}</Text>
                             </Col>
                             <Col size={0.5}>
                               <Text style={{marginTop: 2}}>:</Text>
@@ -194,7 +195,7 @@ class ClaimIntimationList extends PureComponent {
                           <Row style={{marginTop: 5}}>
                             <Col size={4}>
                               <Text style={styles.subHeadingStyle}>
-                                Hospital
+                              {translate("Hospital")}
                               </Text>
                             </Col>
                             <Col size={0.5}>
@@ -233,7 +234,7 @@ class ClaimIntimationList extends PureComponent {
                                   )
                                 }>
                                 <Text style={styles.linkHeader}>
-                                  View Document
+                                  {translate("View Document")}
                                 </Text>
                               </TouchableOpacity>
                             </Left>
@@ -275,7 +276,7 @@ class ClaimIntimationList extends PureComponent {
                                     }}
                                     numberOfLines={1}
                                     ellipsizeMode="tail">
-                                    Member Code
+                                   {translate(" Member Code")} 
                                   </Text>
                                 </Col>
                                 <Col size={0.5}>
