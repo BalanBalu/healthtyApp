@@ -13,7 +13,7 @@ import {getPolicyByPolicyNo} from '../../providers/policy/policy.action';
 import {formatDate} from '../../../setup/helpers';
 import {primaryColor} from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
-
+import {translate} from '../../../setup/translator.helper'
 class PolicyCoverage extends React.Component {
   constructor(props) {
     super(props);
@@ -733,7 +733,7 @@ class PolicyCoverage extends React.Component {
           <Loader style='smallList' />
           : 
           <View style={{ marginTop: 20, marginRight: 10, marginLeft: 10 }}>
-            <Text style={styles.myInsuranceText}>My Insurance</Text>
+            <Text style={styles.myInsuranceText}>{translate('My Insurance')}</Text>
             <Card style={styles.cardStyle}>
               <Row
                 style={{
@@ -747,7 +747,7 @@ class PolicyCoverage extends React.Component {
                     style={{height: 45, width: 45}}
                   />
                 </Col>
-                <Col size={6}>
+                <Col size={5.5}>
                   <Text
                     style={{
                       fontFamily: 'OpenSans',
@@ -759,18 +759,18 @@ class PolicyCoverage extends React.Component {
                       : '-'}
                   </Text>
                 </Col>
-                <Col size={2}>
+                <Col size={2.5}>
                   <TouchableOpacity
                     style={styles.ecardButton}
                     onPress={() => this.props.navigation.navigate('E Card')}>
-                    <Text style={styles.linkHeader}>View Ecard</Text>
+                    <Text style={styles.linkHeader}>{translate("View E-card")}</Text>
                   </TouchableOpacity>
                 </Col>
               </Row>
               <View style={{marginBottom: 10}}>
                 <Row style={{paddingBottom: 10, marginTop: 10}}>
                   <Col size={5}>
-                    <Text style={styles.subHeadingStyle}>Card Number</Text>
+                    <Text style={styles.subHeadingStyle}>{translate("Card Number")}</Text>
                     <Text style={styles.subHeadingData}>
                       {memberDetails.memberId ? memberDetails.memberId : '-'}
                     </Text>
@@ -781,7 +781,7 @@ class PolicyCoverage extends React.Component {
                       alignItems: 'flex-end',
                       justifyContent: 'flex-end',
                     }}>
-                    <Text style={styles.subHeadingStyle}>Validity period</Text>
+                    <Text style={styles.subHeadingStyle}>{translate("Validity period")}</Text>
                     <Text style={[styles.subHeadingData, {textAlign: 'right'}]}>
                       {policyDetails.policyEffectiveFrom
                         ? formatDate(
@@ -801,13 +801,13 @@ class PolicyCoverage extends React.Component {
                 </Row>
                 <Row style={{paddingBottom: 10, marginTop: 10}}>
                   <Col size={5}>
-                    <Text style={styles.subHeadingStyle}>Payer Name</Text>
+                    <Text style={styles.subHeadingStyle}>{translate("Payer Name")}</Text>
                     <Text style={styles.subHeadingData}>
                       {this.tpaName(tpaName)}
                     </Text>
                   </Col>
                 </Row>
-                <Text style={styles.subHeadingStyle}>Balance Sum Insured</Text>
+                <Text style={styles.subHeadingStyle}>{translate("Balance Sum Insured")}</Text>
                 <View style={{marginTop: 2}}>
                   <Text style={{fontFamily: 'OpenSans', fontSize: 18}}>
                     {memberDetails.balSumInsured
@@ -869,7 +869,7 @@ class PolicyCoverage extends React.Component {
                               fontWeight: '700',
                             },
                           ]}>
-                          Policy Conditions
+                          {translate("Policy Conditions")}
                         </Text>
                       </Col>
                       <Col size={1} style={{justifyContent: 'center'}}>
@@ -909,10 +909,10 @@ class PolicyCoverage extends React.Component {
                   <Row>
                     <Col size={9} style={{justifyContent: 'center'}}>
                       <Text style={styles.policyConitionText}>
-                        Policy Conditions
+                      {translate("Policy Conditions")}
                       </Text>
                       <Text style={styles.policyConditionSubText}>
-                        View all the policy and conditions given to you{' '}
+                        {translate("View all the policy and conditions given to you")}{' '}
                       </Text>
                     </Col>
                     <Col size={1} style={{justifyContent: 'center'}}>

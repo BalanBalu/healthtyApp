@@ -5,6 +5,7 @@ import {Col, Row} from 'react-native-easy-grid';
 import Styles from '../styles';
 import {formatDate} from '../../../../setup/helpers';
 import {primaryColor} from '../../../../setup/config';
+import {translate} from '../../../../setup/translator.helper'
 
 export default class RenderNetworkHospitalInfo extends Component {
   constructor(props) {
@@ -58,7 +59,7 @@ export default class RenderNetworkHospitalInfo extends Component {
             <Col size={9}>
               <Row style={{marginTop: 5}}>
                 <Col size={4}>
-                  <Text style={Styles.commonBoldText}>Patient name</Text>
+                  <Text style={Styles.commonBoldText}>{translate("Patient name")}</Text>
                 </Col>
                 <Col size={0.5}>
                   <Text>:</Text>
@@ -84,7 +85,7 @@ export default class RenderNetworkHospitalInfo extends Component {
               </Row> */}
               <Row style={{marginTop: 5}}>
                 <Col size={4}>
-                  <Text style={Styles.commonBoldText}>Hospital</Text>
+                  <Text style={Styles.commonBoldText}>{translate("Hospital")}</Text>
                 </Col>
                 <Col size={0.5}>
                   <Text>:</Text>
@@ -97,7 +98,7 @@ export default class RenderNetworkHospitalInfo extends Component {
               </Row>
               <Row style={{marginTop: 5}}>
                 <Col size={4}>
-                  <Text style={Styles.commonBoldText}>Address</Text>
+                  <Text style={Styles.commonBoldText}>{translate("Address")}</Text>
                 </Col>
                 <Col size={0.5}>
                   <Text>:</Text>
@@ -113,7 +114,7 @@ export default class RenderNetworkHospitalInfo extends Component {
           </Row>
           <Row style={{marginTop: 5}}>
             <Left>
-              <Text style={Styles.commonBoldText}>Request sent date</Text>
+              <Text style={Styles.commonBoldText}>{translate("Request sent date")}</Text>
               <Text style={Styles.boldText}>
                 {item.createdDate
                   ? formatDate(item.createdDate, 'DD/MM/YYYY')
@@ -130,7 +131,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                     preAuthData: true,
                   })
                 }>
-                <Text style={Styles.linkHeader}>View Document</Text>
+                <Text style={Styles.linkHeader}>{translate("View Document")}</Text>
               </TouchableOpacity>
             </Right>
           </Row>

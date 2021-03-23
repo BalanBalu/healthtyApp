@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     color: primaryColor,
     fontWeight: '700',
+    textAlign:'center'
   },
 
   inititationText1: {

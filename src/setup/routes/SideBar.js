@@ -220,11 +220,11 @@ class SideBar extends React.Component {
                           <Image square source={item.icon}
                             style={item.largeIcon}
                           />
-                          {item.name === "Appointments" && item.routeName.length === 0 ?
+                          {item.name === "Consultation" && item.routeName.length === 0 ?
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 16 }}>{translate(item.name)}</Text> :
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{translate(item.name)}</Text>}
 
-                          {item.name === "Appointments" && item.routeName.length === 0 ?
+                          {item.name === "Consultation" && item.routeName.length === 0 ?
                             <Right>
                               <TouchableOpacity    onPress={() => {
                             this.subItemPress(item, index)
@@ -233,7 +233,7 @@ class SideBar extends React.Component {
                               </TouchableOpacity>
                             </Right> : null}
                         </Row>
-                        {item.name === "Appointments" ?
+                        {item.name === "Consultation" ?
                           <View>
 
                             {this.state.showAppointments && item.routeName.length === 0 &&

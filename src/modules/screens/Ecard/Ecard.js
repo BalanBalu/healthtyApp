@@ -8,6 +8,7 @@ import { toastMeassage } from '../../common'
 import { connect } from 'react-redux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {primaryColor} from '../../../setup/config'
+import { translate } from "../../../setup/translator.helper"
 
 import { CURRENT_APP_NAME } from "../../../setup/config";
 class Ecard extends PureComponent {
@@ -108,7 +109,7 @@ console.log("data",this.state.data)
                                         <Text style={styles.mainText}>{index+1}.</Text>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>Member Name</Text>
+                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Member Name")}</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
@@ -121,7 +122,7 @@ console.log("data",this.state.data)
                                     <Col size={0.5}>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>Member Code</Text>
+                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Member Code")}</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
@@ -134,7 +135,7 @@ console.log("data",this.state.data)
                                     <Col size={0.5}>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>Gender</Text>
+                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Gender")}</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
@@ -147,7 +148,7 @@ console.log("data",this.state.data)
                                     <Col size={0.5}>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>Age</Text>
+                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Age")}</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
@@ -160,7 +161,7 @@ console.log("data",this.state.data)
                                     <Col size={0.5}>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>Relationship</Text>
+                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Relationship")}</Text>
                                     </Col>
                                     <Col size={0.5}>
                                         <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
@@ -263,7 +264,7 @@ console.log("data",data)
                             overlayColor="none"
                         /> :  !Array.isArray(data) || data.length === 0 ?
                             <View style={{ alignItems: 'center', justifyContent: 'center', height: 550 }}>
-                                <Text>No E-Card details found !</Text>
+                                <Text>{translate("No E-Card details found !")}</Text>
                             </View>
                             :
                             <View style={{ marginBottom: 20 }}>
@@ -272,7 +273,7 @@ console.log("data",data)
                                 { data && Array.isArray(data) && data.find(ele => ele.relationship === 'EMPLOYEE') !== undefined ?
                                     this.employeeAndFamilyDetails(data.find(ele => ele.relationship === 'EMPLOYEE')) : null} */}
                                 <View>
-                                    <Text style={styles.familyHeader}>Members details</Text>
+                                    <Text style={styles.familyHeader}>{translate("Members details")}</Text>
                                     <FlatList
                                         data={this.state.data}
                                         extraData={this.state}

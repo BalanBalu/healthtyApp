@@ -20,6 +20,8 @@ import {TouchableHighlight} from 'react-native-gesture-handler';
 import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../../setup/config';
 import { requestCalendarPermissions, createCalendar } from '../../../../setup/calendarEvent';
 import RNCalendarEvents from "react-native-calendar-events";
+import { translate } from "../../../../setup/translator.helper"
+
 export const SearchAndAppointmentCard = props => {
   const {navigation} = props;
   const navigateToSettings =  () => {
@@ -65,7 +67,7 @@ export const SearchAndAppointmentCard = props => {
         marginTop: 6,
         // marginTop: -15
       }}>
-      <Text style={styles.headingText}>Search & Book Appointment</Text>
+      <Text style={styles.headingText}>{translate("Search & Book Appointment")}</Text>
 
       <View style={styles.flexRow}>
     
@@ -83,7 +85,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               <ConsultationDrawing />
 
-              <Text style={styles.boxText}>Consultation</Text>
+              <Text style={styles.boxText}>{translate("Consultation")}</Text>
             </View>
           </View>
         </TouchableHighlight>  
@@ -100,7 +102,7 @@ export const SearchAndAppointmentCard = props => {
                 marginTop: 10,
               }}>
               <LabTestDrawing />
-              <Text style={styles.boxText}>Lab Test</Text>
+              <Text style={styles.boxText}>{translate("Lab Test")}</Text>
             </View>
          
         </View>
@@ -119,7 +121,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               {/* <HomeTestDrawing /> */}
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{height:63,width:45,marginTop:-3}}/>
-              <Text style={[styles.boxText,{marginTop:-3}]}>Home Care</Text>
+              <Text style={[styles.boxText,{marginTop:-3}]}>{translate("Home Care")}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -158,7 +160,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               <VideoConsultDrawing />
 
-              <Text style={styles.boxText}>Tele Consult</Text>
+              <Text style={styles.boxText}>{translate("Tele Consult")}</Text>
             </View>
           </View>
         </TouchableHighlight>

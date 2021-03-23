@@ -8,6 +8,7 @@ import { serviceOfGetPreAuthList } from '../../../providers/corporate/corporate.
 import RenderPreAuthList from './RenderPreAuthList';
 import { Loader } from '../../../../components/ContentLoader';
 import {primaryColor} from '../../../../setup/config'
+import {translate} from '../../../../setup/translator.helper'
 
 
 const PAGINATION_COUNT_FOR_GET_PRE_AUTH_LIST = 10;
@@ -104,7 +105,7 @@ export default class preAuthList extends Component {
         <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 15, marginRight: '3%' }}>
           <TouchableOpacity style={{ flexDirection: 'row', borderColor: primaryColor, borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('FamilyInfoList', { navigationPage: 'PreAuthSubmission' })}>
             <MaterialIcons name="add" style={{ color: primaryColor, fontSize: 20 }} />
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: primaryColor }}>Add Pre Auth</Text>
+            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: primaryColor }}>{translate("Add Pre Auth")}</Text>
           </TouchableOpacity>
         </View>
         {isLoading ?
@@ -123,7 +124,7 @@ export default class preAuthList extends Component {
               renderItem={({ item, index }) => this.renderPreAuthInformationCard(item, index)
               } />
             : <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No Pre Auth list found!</Text>
+              <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} >{translate("No Pre Auth list found!")}</Text>
             </Item>
         }
         {isLoadingMoreHospitalList ?
