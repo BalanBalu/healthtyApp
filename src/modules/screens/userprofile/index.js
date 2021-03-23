@@ -36,7 +36,7 @@ import {
 import {getPatientWishList} from '../../providers/bookappointment/bookappointment.action';
 import {
   hasLoggedIn,
-  userFiledsUpdate,
+  updateMemberDetails,
   getPostOffNameAndDetails,
 } from '../../providers/auth/auth.actions';
 import {Col, Row, Grid} from 'react-native-easy-grid';
@@ -51,12 +51,8 @@ import {NavigationEvents} from 'react-navigation';
 import {Loader} from '../../../components/ContentLoader';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
-import {uploadMultiPart} from '../../../setup/services/httpservices';
-import {
-  renderDoctorImage,
-  renderProfileImage,
-  
-} from '../../common';
+import {uploadImage} from '../../providers/common/common.action';
+import {renderDoctorImage, renderProfileImage} from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -102,12 +98,12 @@ class Profile extends Component {
   getMemberDetailsByEmail = async () => {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      console.log("memberEmailId",memberEmailId)
-
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
+        // if (result[0].profileImage) {
+        //   this.setState({imageSource: result[0].profileImage[0].imageURL});
+        // }
         await this.setState({data: result[0]});
-        console.log("index",this.state.data)
       }
     } catch (ex) {
       console.log(ex);
@@ -146,7 +142,7 @@ class Profile extends Component {
       screen: screen,
       fromProfile: true,
       updatedata: this.state.data || '',
-      id:this.state.data._id
+      id: this.state.data._id,
     });
   }
 
@@ -269,9 +265,10 @@ class Profile extends Component {
         });
     } else {
       ImagePicker.openPicker({
+        multiple:false,
         width: 300,
         height: 400,
-        cropping: true,
+        // cropping: true,
         cropperCircleOverlay: true,
         freeStyleCropEnabled: true,
         avoidEmptySpaceAroundImage: true,
@@ -288,26 +285,31 @@ class Profile extends Component {
 
   /*Store image into api folder*/
   uploadImageToServer = async (image) => {
+    console.log("image",image)
+
     try {
-      const userId = await AsyncStorage.getItem('userId');
-      var formData = new FormData();
-      formData.append('profile', {
-        uri: image.path,
-        type: image.mime,
-        name: 'photo.jpg',
-      });
-      let endPoint = `user/${userId}/upload/profile`;
-      var res = await uploadMultiPart(endPoint, formData);
-      const response = res.data;
+      let appendForm = 'profileImage';
+      let endPoint = 'images/upload?path=profileImage';
+      const response = await uploadImage(image, endPoint, appendForm);
+      console.log("response",response)
+
       if (response.success) {
-        this.setState({
-          imageSource: image.path,
-        });
-        Toast.show({
-          text: 'Profile picture uploaded successfully',
-          type: 'success',
-          duration: 3000,
-        });
+        let requestData = {
+          profileImage: response.data,
+          _id: this.state.data._id,
+        };
+        let result = await updateMemberDetails(requestData);
+        console.log("result",result)
+        if (result) {
+          this.setState({
+            imageSource: image.path,
+          });
+          Toast.show({
+            text: 'Profile picture uploaded successfully',
+            type: 'success',
+            duration: 3000,
+          });
+        }
       } else {
         Toast.show({
           text: 'Problem Uploading Profile Picture',
@@ -364,6 +366,7 @@ class Profile extends Component {
       profile: {isLoading},
     } = this.props;
     const {data, imageSource, family_members} = this.state;
+    // console.log("data",data)
     return (
       <Container style={styles.container}>
         <NavigationEvents
@@ -386,13 +389,13 @@ class Profile extends Component {
                     <Icon name="heart" style={styles.profileIcon} />
                   </Col>
                   <Col style={{width: '55%'}}>
-                    {/* <TouchableOpacity>
+                    <TouchableOpacity
                       onPress={() =>
                         this.props.navigation.navigate('ImageView', {
                           passImage: renderProfileImage(data),
                           title: 'Profile photo',
                         })
-                      }> */}
+                      }>
                       {imageSource != undefined ? (
                         <Thumbnail
                           style={styles.profileImage}
@@ -405,7 +408,7 @@ class Profile extends Component {
                           source={renderProfileImage(data)}
                         />
                       )}
-                    {/* </TouchableOpacity> */}
+                    </TouchableOpacity>
                     <View
                       style={{
                         marginLeft: 80,
@@ -568,9 +571,9 @@ class Profile extends Component {
                   <View style={{flexDirection: 'row'}}>
                     <Text style={styles.topValue}>Gender </Text>
                   </View>
-                  {/* <Text note style={styles.bottomValue}>
-                    {data && data.gender?data.gender:'-'}{' '}
-                  </Text> */}
+                  <Text note style={styles.bottomValue}>
+                    {data.gender ? data.gender : '-'}{' '}
+                  </Text>
                 </Col>
 
                 <Col
@@ -940,8 +943,8 @@ class Profile extends Component {
                     <Text style={styles.customText}>Contact</Text>
                     {data.mobile != undefined ? (
                       <Text note style={styles.customText1}>
-                      {data.mobile}
-                    </Text>
+                        {data.mobile}
+                      </Text>
                     ) : (
                       <Button
                         transparent
@@ -950,7 +953,11 @@ class Profile extends Component {
                         <Text
                           uppercase={false}
                           style={styles.customText}
-                          onPress={() => this.props.navigation.navigate('UpdateContact',{id: this.state.data._id ||null})}
+                          onPress={() =>
+                            this.props.navigation.navigate('UpdateContact', {
+                              id: this.state.data._id || null,
+                            })
+                          }
                           testID="clickAddContactNo">
                           Add Contact Number
                         </Text>
