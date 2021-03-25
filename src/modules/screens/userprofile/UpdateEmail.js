@@ -127,7 +127,7 @@ class UpdateEmail extends Component {
                     placeholder="Edit Your Email"
                     style={styles.transparentLabel}
                     keyboardType="email-address"
-                    onChangeText={(emailId) => this.setState({emailId})}
+                    onChangeText={(emailId)=> this.setState({emailId})}
                     value={this.state.emailId}
                     testID="updateEmail"
                   />

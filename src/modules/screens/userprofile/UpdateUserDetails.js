@@ -22,6 +22,7 @@ import {updateMemberDetails, logout} from '../../providers/auth/auth.actions';
 import {connect} from 'react-redux';
 import {Row, Col} from 'react-native-easy-grid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {updateFamilyMembersDetails} from '../../providers/corporate/corporate.actions';
 
 import {
   Image,
@@ -33,7 +34,7 @@ import {
 import styles from './style.js';
 import {formatDate, subTimeUnit} from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import {bloodGroupList, validateName} from '../../common';
+import {bloodGroupList, validateName,calculateAge} from '../../common';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {primaryColor} from '../../../setup/config';
 import ModalPopup from '../../../components/Shared/ModalPopup';
@@ -76,6 +77,7 @@ class UpdateUserDetails extends Component {
     const {navigation} = this.props;
     const userData = navigation.getParam('updatedata');
     const fromProfile = navigation.getParam('fromProfile') || false;
+    const id = navigation.getParam('updateEmpDetails') || null;
 
     if (fromProfile) {
       await this.setState({
@@ -85,6 +87,8 @@ class UpdateUserDetails extends Component {
         lastName: userData.lastName,
         gender: userData.gender,
         updateButton: true,
+        selectedBloodGroup: userData.bloodGroup || null,
+        id,
         userData,
       });
     }
@@ -135,6 +139,7 @@ class UpdateUserDetails extends Component {
       dob,
       gender,
       selectedBloodGroup,
+      id
     } = this.state;
     try {
       if (!firstName) {
@@ -171,11 +176,31 @@ class UpdateUserDetails extends Component {
         lastName: lastName,
         dob: dob,
         gender: gender,
+        bloodGroup: selectedBloodGroup,
         _id: this.state.userData._id,
       };
 
       let response = await updateMemberDetails(requestData);
       if (response) {
+        let fullName =
+          (firstName ? firstName + ' ' : '') +
+          (middleName ? middleName + ' ' : '') +
+          (lastName ? lastName + ' ' : '');
+        console.log(fullName);
+        const getAge = calculateAge(dob);
+
+        let data = {
+          familyMemberName: fullName,
+          familyMemberGender: gender,
+          familyMemberMonth: String(getAge.months),
+          familyMemberAge: String(getAge.years),
+          familyMemberDob: dob,
+          _id:id
+        };
+        requestData._id = this.state.id;
+        console.log("data",data)
+        let updateRes = await updateFamilyMembersDetails(data);
+        console.log("updateRes",updateRes)
         Toast.show({
           text: 'Your Profile has been Updated',
           type: 'success',
@@ -352,7 +377,7 @@ class UpdateUserDetails extends Component {
                   {/* </Item> */}
                 </TouchableOpacity>
 
-                {/* <Item
+                <Item
                   style={{
                     borderBottomWidth: 0,
                     backgroundColor: '#F1F1F1',
@@ -380,7 +405,7 @@ class UpdateUserDetails extends Component {
                     }}
                     itemTextStyle={{color: primaryColor}}
                     style={{width: '100%', color: primaryColor}}
-                    onValueChange={sample => {
+                    onValueChange={(sample) => {
                       this.setState({
                         selectedBloodGroup: sample,
                         updateButton: false,
@@ -398,7 +423,7 @@ class UpdateUserDetails extends Component {
                       );
                     })}
                   </Picker>
-                </Item> */}
+                </Item>
 
                 <View
                   style={{marginTop: 20, borderBottomWidth: 0, marginLeft: 20}}>
