@@ -98,7 +98,7 @@ class AllergicDisease extends PureComponent {
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Allergies and Medications</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Are you allergic to any of the following?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Are you allergic to any of the following?</Text>
                             <FlatList
                                 data={allergic}
                                 keyExtractor={(item, index) => index.toString()}

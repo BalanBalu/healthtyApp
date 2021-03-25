@@ -398,7 +398,7 @@ class FilterDocInfo extends Component {
                                     onPress={this.clearSelectedData}
                                     style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: primaryColor, borderWidth: 0.5 }}>
 
-                                    <Text style={{ color: primaryColor, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
+                                    <Text style={{ color: primaryColor, fontFamily: 'Roboto', fontSize: 13, textAlign: 'center',  }}>Clear Filters</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 20 }}>
@@ -412,7 +412,7 @@ class FilterDocInfo extends Component {
                                 </TouchableOpacity>
                             </Col>
                         </Row>
-                        {languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#ffffff', fontFamily: 'OpenSans', fontSize: 12, fontWeight: '600', position: "absolute", backgroundColor: primaryColor, height: 25, width: 25, borderRadius: 25 / 2, textAlign: 'center', marginLeft: 25, marginTop: 35, paddingTop: 2 }}>{selectedCount}</Text> : null}
+                        {languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#ffffff', fontFamily: 'opensans-bold', fontSize: 12, position: "absolute", backgroundColor: primaryColor, height: 25, width: 25, borderRadius: 25 / 2, textAlign: 'center', marginLeft: 25, marginTop: 35, paddingTop: 2 }}>{selectedCount}</Text> : null}
                     </View>
                 </Content>
             </Container >
@@ -492,50 +492,47 @@ const styles = StyleSheet.create({
     },
     defaultDaysTextColor: {
         color: '#333333',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         textAlign: 'center'
     },
     selectedDaysTextColor: {
         color: '#FFFFFF',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         textAlign: 'center'
 
     },
     defaultExpTextColor: {
         color: '#333333',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 10,
         textAlign: 'center'
     },
     selectedExpTextColor: {
         color: '#FFFFFF',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 10,
         textAlign: 'center'
     },
     defaultApplyTextColor: {
         color: primaryColor,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         textAlign: 'center',
-        fontWeight: '500'
     },
     enabledApplyTextColor: {
         color: '#FFFFFF',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         textAlign: 'center',
-        fontWeight: '500'
     },
     headingLabelStyle: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 13,
-        fontWeight: 'bold'
     },
     genderTextStyles: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         marginLeft: 15,
         color: '#333333'

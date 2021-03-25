@@ -93,9 +93,8 @@ class ClaimIntimationList extends PureComponent {
                 <Text
                   style={{
                     fontSize: 15,
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'opensans-bold',
                     color: primaryColor,
-                    fontWeight: '600',
                   }}>
                   {translate("Add New")}
                 </Text>
@@ -257,9 +256,8 @@ class ClaimIntimationList extends PureComponent {
                               <Text
                                 style={{
                                   fontSize: 16,
-                                  fontFamily: 'OpenSans',
+                                  fontFamily: 'opensans-bold',
                                   color: primaryColor,
-                                  fontWeight: '700',
                                 }}
                                 numberOfLines={1}
                                 ellipsizeMode="tail">
@@ -269,7 +267,7 @@ class ClaimIntimationList extends PureComponent {
                                 <Col size={3}>
                                   <Text
                                     style={{
-                                      fontFamily: 'OpenSans',
+                                      fontFamily: 'Roboto',
                                       fontSize: 16,
                                       color: '#909090',
                                       marginTop: 5,
@@ -359,14 +357,14 @@ const styles = StyleSheet.create({
   subHeadingStyle: {
     fontSize: 14,
     marginTop: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: '#909090',
   },
   subHeadingData: {
     fontSize: 15,
     color: '#000',
     marginTop: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   cardStyles: {
     marginTop: 15,
@@ -380,7 +378,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   linkHeader: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 15,
     textDecorationColor: primaryColor,
     textDecorationLine: 'underline',

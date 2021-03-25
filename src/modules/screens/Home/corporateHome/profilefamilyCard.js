@@ -33,16 +33,15 @@ export const ProfileFamilyCard = props => {
           <Text
             style={{
               color: '#fff',
-              fontFamily: 'OpenSans',
+             fontFamily: 'opensans-bold',
               fontSize: 18,
-              fontWeight: '700',
             }}>
              {translate('Family')}
           </Text>
           <Text
             style={{
               color: '#fff',
-              fontFamily: 'OpenSans',
+              fontFamily: 'Roboto',
               fontSize: 15,
               lineHeight: 24,
             }}>

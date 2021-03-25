@@ -24,9 +24,9 @@ export default class RenderReviews extends PureComponent {
                             <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
                         </Left>
                         <Body>
-                            <Text numberOfLines={1} style={{ fontFamily: 'OpenSans', fontSize: 12 }}>John Britto </Text>
+                            <Text numberOfLines={1} style={{ fontFamily: 'Roboto', fontSize: 12 }}>John Britto </Text>
 
-                            <Text style={{ fontSize: 12, marginLeft: -5, marginTop: 5, fontFamily: 'OpenSans', fontSize: 12 }}>  4-11-19 </Text>
+                            <Text style={{ fontSize: 12, marginLeft: -5, marginTop: 5, fontFamily: 'Roboto', fontSize: 12 }}>  4-11-19 </Text>
                             <View style={{ marginTop: 5 }}>
                                 <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                     disabled={false}
@@ -41,9 +41,9 @@ export default class RenderReviews extends PureComponent {
                             <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
                         </Left>
                         <Body>
-                            <Text numberOfLines={1} style={{ fontFamily: 'OpenSans', fontSize: 12 }}>John Williams </Text>
+                            <Text numberOfLines={1} style={{ fontFamily: 'Roboto', fontSize: 12 }}>John Williams </Text>
 
-                            <Text style={{ fontSize: 12, marginLeft: -5, marginTop: 5, fontFamily: 'OpenSans', fontSize: 12 }}>  8-10-19 </Text>
+                            <Text style={{ fontSize: 12, marginLeft: -5, marginTop: 5, fontFamily: 'Roboto', fontSize: 12 }}>  8-10-19 </Text>
                             <View style={{ marginTop: 5 }}>
                                 <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                     disabled={false}
@@ -53,7 +53,7 @@ export default class RenderReviews extends PureComponent {
                             <Text note style={styles.commentText}>Good</Text>
                         </Body>
                     </ListItem>
-                    {/* <Text style={{ alignItems: 'center' ,fontFamily:'OpenSans',fontSize:12,marginLeft:60,fontWeight:'bold',borderTopColor:'gray',borderTopWidth:0.6}} >No Reviews Were found</Text> */}
+                    {/* <Text style={{ alignItems: 'center' ,fontFamily:'Roboto',fontSize:12,marginLeft:60,fontWeight:'bold',borderTopColor:'gray',borderTopWidth:0.6}} >No Reviews Were found</Text> */}
                 </List>
                 <Grid>
                     <Col style={{ width: '50%' }}></Col>

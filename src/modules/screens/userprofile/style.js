@@ -26,7 +26,7 @@ export default StyleSheet.create({
     },
     textStyle:
     {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000'
     },
     centeredIcons:
@@ -60,7 +60,7 @@ export default StyleSheet.create({
         marginTop: 12,
         backgroundColor: primaryColor,
         borderRadius: 5,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginLeft: 15,
         marginRight: 15
 
@@ -69,7 +69,7 @@ export default StyleSheet.create({
         marginTop: 12,
         backgroundColor: primaryColor,
         borderRadius: 5,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginLeft: 15,
         marginRight: 15
 
@@ -82,7 +82,7 @@ export default StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
 
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13
 
     },
@@ -122,7 +122,7 @@ export default StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
 
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginRight: 15,
         fontSize: 13
 
@@ -136,7 +136,7 @@ export default StyleSheet.create({
         borderRadius: 5,
         fontSize: 13,
         paddingLeft: 20,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginRight: 15,
         fontSize: 13,
         borderBottomLeftRadius: 0,
@@ -147,43 +147,42 @@ export default StyleSheet.create({
     {
         fontSize: 22,
         textAlign: 'center',
-        fontFamily: 'opensans-semibold',
+        fontFamily: 'Roboto-semibold',
 
     },
     updateProfile: {
         fontSize: 22,
         textAlign: 'center',
         marginTop: -10,
-        fontFamily: 'opensans-semibold',
+        fontFamily: 'Roboto-semibold',
     },
     slide: {
         flex: 1,
         justifyContent: 'center',
         paddingLeft: 30,
         paddingRight: 40,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     customText: {
         fontSize: 15,
         marginLeft: 20,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     customNote: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     customHead: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     header: {
         backgroundColor: '#f6f8fa',
         textAlign: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     text: {
         color: '#fff',
         fontSize: 30,
-        fontWeight: 'bold',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
     },
     customPicker:
     {
@@ -191,7 +190,7 @@ export default StyleSheet.create({
         height: 55,
         marginTop: 10,
         borderRadius: 5,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         width: 300,
         borderBottomWidth: 0
     },
@@ -208,7 +207,7 @@ export default StyleSheet.create({
         marginTop: 12,
         backgroundColor: primaryColor,
         borderRadius: 5,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     button1: {
         backgroundColor: "#c9cdcf",
@@ -242,16 +241,14 @@ export default StyleSheet.create({
     },
     headerText: {
 
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         marginLeft: 7,
-        fontWeight: 'bold',
         fontSize: 20
     },
     addressHeaderText: {
 
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         marginLeft: 15,
-        fontWeight: 'bold',
         fontSize: 20
     },
     cardEmail: {
@@ -263,24 +260,21 @@ export default StyleSheet.create({
         borderWidth: 2
     },
     buttonText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 15,
-        fontWeight: 'bold',
         color: '#fff',
 
     },
     subText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 15,
-        fontWeight: 'bold',
         marginTop: 5
     },
     headText: {
         marginTop: 10,
         textAlign: 'center',
         fontSize: 20,
-        fontWeight: '500',
-        fontFamily: 'OpenSans'
+        fontFamily: 'Roboto'
     },
     cardStyle: {
         borderRadius: 10,

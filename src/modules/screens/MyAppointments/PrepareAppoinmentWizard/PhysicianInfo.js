@@ -110,7 +110,7 @@ class PhysicianInfo extends PureComponent {
 
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Name</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Name</Text>
                             <Form style={styles.formStyle2}>
                                 <TextInput
                                     placeholder="Enter physician name"
@@ -126,7 +126,7 @@ class PhysicianInfo extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Hospital name</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Hospital name</Text>
                             <Form style={styles.formStyle2}>
                                 <TextInput
                                     placeholder="Enter hospital name"
@@ -142,7 +142,7 @@ class PhysicianInfo extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Contact number</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Contact number</Text>
                             <Form style={styles.formStyle2}>
                                 <TextInput
                                     placeholder="Enter contact number"

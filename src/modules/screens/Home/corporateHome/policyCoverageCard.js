@@ -69,9 +69,8 @@ export const PolicyCoverageCard = (props) => {
               <Text
                 style={{
                   color: '#fff',
-                  fontFamily: 'OpenSans',
+                  fontFamily: 'opensans-bold',
                   fontSize: 18,
-                  fontWeight: '700',
                 }}>
                 {data.firstName ? data.firstName + ' ' + data.lastName : ''}
               </Text>
@@ -79,10 +78,9 @@ export const PolicyCoverageCard = (props) => {
                 <Text
                   style={{
                     color: '#fff',
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'opensans-bold',
                     fontSize: 12,
                     lineHeight: 20,
-                    fontWeight: 'bold',
                   }}>
                   {data.memberId ? data.memberId : ''}
                 </Text>
@@ -91,7 +89,7 @@ export const PolicyCoverageCard = (props) => {
                 <Text
                   style={{
                     color: '#fff',
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     fontSize: 12,
                     lineHeight: 20,
                   }}>
@@ -100,11 +98,10 @@ export const PolicyCoverageCard = (props) => {
                 <Text
                   style={{
                     color: '#fff',
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'opensans-bold',
                     fontSize: 12,
                     lineHeight: 20,
                     marginLeft: 5,
-                    fontWeight: 'bold',
                   }}>
                   {formatDate(policyData.policyEffectiveTo, 'DD/MM/YY')}
                 </Text>
@@ -114,12 +111,11 @@ export const PolicyCoverageCard = (props) => {
                   numberOfLines={1}
                   style={{
                     color: 'rgba(255,255,255, 0.9)',
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     fontSize: 12,
                     lineHeight: 24,
-                    fontWeight: 'bold',
-                    width: '45%',
-                    fontStyle: 'italic',
+                    width: '40%',
+                    // fontStyle: 'italic',
                   }}>
                   {/* {TPAdata.tpaName ? TPAdata.tpaName : '-'} */}
                   {tpaName(TPAdata)}
@@ -130,12 +126,11 @@ export const PolicyCoverageCard = (props) => {
                   numberOfLines={1}
                   style={{
                     color: 'rgba(255,255,255, 0.9)',
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     fontSize: 12,
                     lineHeight: 20,
-                    fontWeight: 'bold',
-                    width: '45%',
-                    fontStyle: 'italic',
+                    width: '40%',
+                    // fontStyle: 'italic',
                   }}>
                   {data.corporateName ? data.corporateName : ''}
                 </Text>
@@ -171,7 +166,7 @@ export const PolicyCoverageCard = (props) => {
                   <Text
                     style={{
                       color: '#000',
-                      fontFamily: 'OpenSans',
+                      fontFamily: 'Roboto',
                       fontSize: 11,
                       lineHeight: 24,
                       textAlign: 'center',
@@ -182,7 +177,7 @@ export const PolicyCoverageCard = (props) => {
                   <Text
                     style={{
                       color: '#000',
-                      fontFamily: 'OpenSans',
+                      fontFamily: 'Roboto',
                       fontSize: 10,
                       lineHeight: 24,
                       textAlign: 'center',
@@ -198,7 +193,7 @@ export const PolicyCoverageCard = (props) => {
                 <Text
                   style={{
                     color: '#000',
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     fontSize: 11,
                     lineHeight: 24,
                     marginLeft: 5,
@@ -211,12 +206,11 @@ export const PolicyCoverageCard = (props) => {
                 <Text
                   style={{
                     color: '#128283',
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'opensans-bold',
                     fontSize: 10,
                     lineHeight: 24,
                     textAlign: 'center',
                     marginTop: -5,
-                    fontWeight: '700',
                   }}>
                   Balance SI
                 </Text>
