@@ -200,7 +200,7 @@ class Signup extends Component {
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
                             {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate('SmartHealthLogin')} testID='switchToCorporate' style={styles.switchToCorporate}>
-                                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
+                                    <Text style={{ color: '#fff', fontFamily:'opensans-bold', fontSize: 15, textAlign: 'right' }}>Switch To Corporate</Text>
                                     <AntDesign name='doubleright' style={{ color: '#fff', fontSize: 15, marginTop: 3, marginLeft: 3 }} />
                                 </TouchableOpacity>
                                 : null}
@@ -218,7 +218,7 @@ class Signup extends Component {
                                     <Form>
                                         {this.isShowMobileEntryView === false ? null :
                                             <View>
-                                                <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>Mobile Number</Label>
+                                                <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontFamily:'opensans-bold' }}>Mobile Number</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                                     <Input placeholder="Mobile Number" style={styles.authTransparentLabel}
                                                         returnKeyType={'next'}
@@ -237,7 +237,7 @@ class Signup extends Component {
 
 
                                             <View>
-                                                <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>Email</Label>
+                                                <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontFamily:'opensans-bold' }}>Email</Label>
                                                 <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
 
                                                     <Input placeholder="email" style={styles.authTransparentLabel}
@@ -254,7 +254,7 @@ class Signup extends Component {
 
                                             </View>
                                         }
-                                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Password</Label>
+                                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Password</Label>
 
                                         <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
                                             <Input placeholder="Password" style={{ fontSize: 15, paddingLeft: 15, }}
@@ -273,7 +273,7 @@ class Signup extends Component {
                                             }
                                         </Item>
 
-                                        <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>Referral Code</Label>
+                                        <Label style={{ marginTop: 10, fontSize: 15, color: primaryColor, fontFamily:'opensans-bold' }}>Referral Code</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Input placeholder="Referral Code (Optional)" style={styles.authTransparentLabel}
                                                 ref={(input) => { this.userPassword = input; }}
@@ -297,7 +297,7 @@ class Signup extends Component {
                                                     selected={gender === "M" ? true : false}
                                                 />
                                                 <Text style={{
-                                                    fontFamily: 'OpenSans', fontSize: 15, marginLeft: 5
+                                                    fontFamily: 'Roboto', fontSize: 15, marginLeft: 5
                                                 }}>Male</Text>
                                             </View>
                                             <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
@@ -309,7 +309,7 @@ class Signup extends Component {
                                                     selected={gender === "F" ? true : false}
                                                 />
                                                 <Text style={{
-                                                    fontFamily: 'OpenSans', fontSize: 15, marginLeft: 5
+                                                    fontFamily: 'Roboto', fontSize: 15, marginLeft: 5
                                                 }}>Female</Text>
                                             </View>
                                             <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
@@ -321,7 +321,7 @@ class Signup extends Component {
                                                     selected={gender === "O" ? true : false}
                                                 />
                                                 <Text style={{
-                                                    fontFamily: 'OpenSans', fontSize: 15, marginLeft: 5
+                                                    fontFamily: 'Roboto', fontSize: 15, marginLeft: 5
                                                 }}>Others</Text>
                                             </View>
 
@@ -331,9 +331,9 @@ class Signup extends Component {
                                                 checked={this.state.checked}
                                                 onPress={() => { this.setState({ checked: !checked }); }}
                                             />
-                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, marginLeft: 20 }}>{`I Accept the ${CURRENT_APP_NAME} `}</Text>
+                                            <Text style={{ color: 'gray', fontFamily: 'Roboto', fontSize: 12, marginLeft: 20 }}>{`I Accept the ${CURRENT_APP_NAME} `}</Text>
                                             <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
-                                                <Text style={{ color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13, }}>Terms And Conditions</Text>
+                                                <Text style={{ color: '#5055d7', fontFamily: 'Roboto', fontSize: 13, }}>Terms And Conditions</Text>
                                             </TouchableOpacity>
                                         </Item>
                                         <Spinner color='blue'
@@ -346,14 +346,14 @@ class Signup extends Component {
                                                 block success disabled={(email || mobile_no) == '' || password == ''} onPress={() => this.doSignUp()}>
                                                 <Text uppercase={true} style={styles.ButtonText}>Sign Up</Text>
                                             </TouchableOpacity>
-                                            {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans' }}>{errorMsg} </Text> */}
+                                            {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'Roboto' }}>{errorMsg} </Text> */}
                                         </View>
                                     </Form>
                                 </View>
                                 <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
-                                    <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', color: primaryColor }}>Already Have An Account ?</Text>
+                                    <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'Roboto', color: primaryColor }}>Already Have An Account ?</Text>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
-                                        <Text uppercase={true} style={{ color: '#fff', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Sign In</Text>
+                                        <Text uppercase={true} style={{ color: '#fff', fontSize: 10, fontFamily: 'opensans-bold', }}>Sign In</Text>
                                     </TouchableOpacity>
                                 </Item>
                             </Card>

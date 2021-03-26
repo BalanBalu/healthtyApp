@@ -190,7 +190,7 @@ class RenderOtpInput extends Component {
                     <View style={styles.container}>
                         <Row>
                             <Left>
-                                <Text style={{ color: 'black', fontFamily: 'OpenSans', fontSize: 20 }}>VERIFY DETAILS</Text>
+                                <Text style={{ color: 'black', fontFamily: 'Roboto', fontSize: 20 }}>VERIFY DETAILS</Text>
                             </Left>
                         </Row>
                         {isGeneratedOtp == true ? <Text style={{ color: 'gray', fontSize: 15 }}>{reqOtpResponseObject.message}</Text> : <Text style={{ color: 'gray', fontSize: 15 }}>OTP couldn't sent to {requestData.email} Please Contact Our @Support_Team!</Text>}
@@ -207,9 +207,9 @@ class RenderOtpInput extends Component {
                         <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{errorMsg}</Text>
                     </View>
                     {/* <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10, marginTop: 10 }}>
-                        <Text uppercase={false} style={{ color: '#000', fontSize: 16, fontFamily: 'OpenSans', color: primaryColor }}>Go Back To</Text>
+                        <Text uppercase={false} style={{ color: '#000', fontSize: 16, fontFamily: 'Roboto', color: primaryColor }}>Go Back To</Text>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignInButton}>
-                            <Text uppercase={true} style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign In</Text>
+                            <Text uppercase={true} style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', fontWeight: 'bold', color: '#fff' }}> Sign In</Text>
                         </TouchableOpacity>
                     </Item> */}
                 </Content>

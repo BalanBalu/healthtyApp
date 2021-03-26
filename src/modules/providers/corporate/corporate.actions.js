@@ -5,22 +5,17 @@ import { AuthId } from '../../../setup/config'
 
 
 /*  Search by Network hospitals for Corporate User */
-export async function serviceOfSearchByNetworkHospitalDetails(tpaCode, searchByHospitalName, location, skipCount, limit) {
+export async function serviceOfSearchByNetworkHospitalDetails(reqData, skipCount, limit) {
   try {
     let endPoint = 'master-hospitals/search/page?';
-    if (tpaCode) {
-      endPoint = `${endPoint}pc=${tpaCode}&`;
-    }
+ 
     if (skipCount) {
       endPoint = `${endPoint}p=${skipCount}&`;
     }
     if (limit) {
       endPoint = `${endPoint}l=${limit}&`;
     }
-    if (searchByHospitalName) {
-      endPoint = `${endPoint}searchText=${searchByHospitalName}&`;
-    }
-    const response = await smartHealthGetService(endPoint);
+    const response = await smartHealthPostService(endPoint,reqData);
     return response.data;
   } catch (e) {
     return {

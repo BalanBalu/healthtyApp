@@ -114,7 +114,7 @@ class CancelService extends Component {
             cancelable={false}
           /> : null}
           <View style={{ marginBottom: 40, }}>
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 18, textAlign: 'center', fontWeight: 'bold' }}>{type}</Text>
+            <Text style={{ fontFamily: 'opensans-bold', fontSize: 18, textAlign: 'center', }}>{type}</Text>
             <Form>
               <View >
                 <FlatList data={cancelReasonList}
@@ -124,7 +124,7 @@ class CancelService extends Component {
                       <Row onPress={() => this.toggleRadio(item, index)} style={{ marginTop: 10 }}>
                         <Radio borderColor='black' selected={selectedIndex === index ? true : false} onPress={() => this.toggleRadio(item, index)}
                             color={primaryColor} selectedColor={primaryColor} testID='checkOption_1Selected' />
-                        <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15, marginTop: 3 }}>{item.value}</Text>
+                        <Text style={{ marginLeft: 10, fontFamily: 'Roboto', fontSize: 15, marginTop: 3 }}>{item.value}</Text>
                       </Row>
                       {selectedIndex === index ?
 
@@ -204,11 +204,10 @@ const styles = StyleSheet.create({
 
   },
   ReportButtonText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 18,
     color: '#fff',
     textAlign: 'center',
-    fontWeight: 'bold'
   },
   ReportButton: {
     borderRadius: 10,

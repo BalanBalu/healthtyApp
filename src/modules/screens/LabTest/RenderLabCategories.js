@@ -20,7 +20,7 @@ export default class RenderLabCategories extends PureComponent {
             <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
                 <Row style={{ marginTop: 10 }}>
                     <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Related Categories</Text>
+                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13,marginLeft: 10, marginTop: 1 }}>Related Categories</Text>
                 </Row>
                 <View style={{ marginBottom: 10, marginTop: 10 }}>
                     <FlatList

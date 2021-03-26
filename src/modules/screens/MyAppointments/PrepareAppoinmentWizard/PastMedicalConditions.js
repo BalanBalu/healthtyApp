@@ -97,7 +97,7 @@ class PastMedicalConditions extends PureComponent {
                     />
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Past Conditions</Text>
-                        <Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: 10 }}>Have you ever had any of these conditions?</Text>
+                        <Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: 10 }}>Have you ever had any of these conditions?</Text>
                         <FlatList
                             data={disease}
                             keyExtractor={(item, index) => index.toString()}

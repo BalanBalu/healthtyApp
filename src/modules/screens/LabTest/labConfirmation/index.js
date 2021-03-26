@@ -447,7 +447,7 @@ class LabConfirmation extends Component {
                                     selected={itemSelected === 'TEST_AT_LAP' ? true : false}
                                     onPress={() => this.setState({ itemSelected: 'TEST_AT_LAP' })} />
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500', paddingTop: 2, paddingLeft: 5 }}>Test at Lab</Text>
+                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 14,  paddingTop: 2, paddingLeft: 5 }}>Test at Lab</Text>
 
                             </Col>
 
@@ -457,7 +457,7 @@ class LabConfirmation extends Component {
                                     standardStyle={true}
                                     selected={itemSelected === 'TEST_AT_HOME' ? true : false}
                                     onPress={() => this.setState({ itemSelected: 'TEST_AT_HOME' })} />
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500', paddingTop: 2, paddingLeft: 5 }}>Test at home </Text>
+                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, paddingTop: 2, paddingLeft: 5 }}>Test at home </Text>
                             </Col>
 
                             <Col size={2} />
@@ -480,29 +480,29 @@ class LabConfirmation extends Component {
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                             <Row>
                                 <Col size={5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Lab Address</Text>
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>Lab Address</Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 </Col>
                             </Row>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{packageDetails.lab_name}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(packageDetails.location)}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (packageDetails.mobile_no || 'Nil')}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 12,  marginTop: 5 }}>{packageDetails.lab_name}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(packageDetails.location)}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (packageDetails.mobile_no || 'Nil')}</Text>
                         </View> :
                         null}
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5,marginBottom:20 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Package Details</Text>
+                        <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>Package Details</Text>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{packageDetails.category_name}
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(' + (patientDetails.length) + " person)"}</Text>
+                                <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#6a6a6a' }}>{packageDetails.category_name}
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#8dc63f' }}>{'(' + (patientDetails.length) + " person)"}</Text>
                                 </Text>
 
                             </Col>
                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {packageDetails.fee ? (packageDetails.fee * patientDetails.length) : 0}</Text>
+                                <Text style={{ fontFamily: 'Roboto', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {packageDetails.fee ? (packageDetails.fee * patientDetails.length) : 0}</Text>
 
 
                             </Col>
@@ -511,20 +511,20 @@ class LabConfirmation extends Component {
                         {itemSelected === 'TEST_AT_HOME' ?
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={8}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Charges for Home Test</Text>
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#6a6a6a' }}>Charges for Home Test</Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹{packageDetails.extra_charges ? packageDetails.extra_charges : 0}</Text>
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹{packageDetails.extra_charges ? packageDetails.extra_charges : 0}</Text>
                                 </Col>
                             </Row>
                             : null}
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '500' }}>Amount to be Paid</Text>
+                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>Amount to be Paid</Text>
                             </Col>
                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹{this.amountPaid()}</Text>
+                                <Text style={{ fontFamily: 'Roboto', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹{this.amountPaid()}</Text>
 
                             </Col>
                         </Row>
@@ -541,20 +541,20 @@ class LabConfirmation extends Component {
                                     <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
                                         <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
                                             this.validateAppointment('cash') : this.proceedToLabTestAppointment('cash')}>
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'opensans-bold', color: '#000',  }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
                                         </TouchableOpacity>
                                     </Col>
                                     <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
                                         <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
                                             this.validateAppointment('online') : this.proceedToLabTestAppointment('online')}>
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'opensans-bold', color: '#fff', }}>Proceed</Text>
                                         </TouchableOpacity>
                                     </Col>
                                 </> :
                                 <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
                                     <TouchableOpacity disabled={buttonEnable} onPress={() => packageDetails.appointment_status == undefined ?
                                         this.validateAppointment('cash') : this.proceedToLabTestAppointment('cash')}>
-                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>{'Book Appointment'} </Text>
+                                        <Text style={{ fontSize: 16, fontFamily: 'opensans-bold', color: '#fff',  }}>{'Book Appointment'} </Text>
                                     </TouchableOpacity>
                                 </Col>
                             }
@@ -587,10 +587,10 @@ const styles = StyleSheet.create({
         marginBottom: 'auto'
     },
     timeText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 10,
         marginTop: 3,
-        fontWeight: 'bold'
+       
     },
     TouchStyle1: {
         borderRadius: 5,
@@ -601,7 +601,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     timeDetail: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         marginLeft: 5
     },
@@ -634,15 +634,15 @@ const styles = StyleSheet.create({
     },
     normalText:
     {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 14,
         color: '#fff',
-        fontWeight: 'bold'
+        
     },
     startenddatetext: {
         marginTop: 5,
         marginBottom: 5,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         textAlign: 'center',
         marginLeft: 5
@@ -650,7 +650,7 @@ const styles = StyleSheet.create({
 
     labelTop:
     {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: '#000',
 
@@ -659,7 +659,7 @@ const styles = StyleSheet.create({
     customText:
     {
         marginLeft: 10,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         marginTop: 3,
         color: 'gray'
@@ -667,7 +667,7 @@ const styles = StyleSheet.create({
     customSubText:
     {
         marginLeft: 2,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         marginTop: 3,
         color: 'gray'
@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         margin: 2,
         fontSize: 13
     },
@@ -695,7 +695,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         margin: 2,
         fontSize: 13
     },
@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
         paddingTop: 5
     },
     touchText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#fff',
         textAlign: 'center'

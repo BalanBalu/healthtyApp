@@ -121,14 +121,14 @@ class FamilyMedicalConditions extends PureComponent {
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Family conditions</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Please list any medical conditions in your family</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Please list any medical conditions in your family</Text>
                             <Row style={{ marginTop: 15 }}>
                                 <Col size={5}>
-                                    <Text style={{ fontFamily: "OpenSans", fontSize: 12, }}>Name</Text>
+                                    <Text style={{ fontFamily: "Roboto", fontSize: 12, }}>Name</Text>
 
                                 </Col>
                                 <Col size={5}>
-                                    <Text style={{ fontFamily: "OpenSans", fontSize: 12, }}>Who?</Text>
+                                    <Text style={{ fontFamily: "Roboto", fontSize: 12, }}>Who?</Text>
 
                                 </Col>
                             </Row>
@@ -196,7 +196,7 @@ class FamilyMedicalConditions extends PureComponent {
                                 <TouchableOpacity onPress={() => this.onAddNewfamilyCondition()}
                                     style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#128283', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
                                     <Icon name="md-add" style={{ fontSize: 15, color: '#fff' }} />
-                                    <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: 'bold' }}>Add</Text>
+                                    <Text style={{ fontSize: 10, fontFamily: 'opensans-bold', color: '#fff', }}>Add</Text>
                                 </TouchableOpacity>
                             </View>
 

@@ -123,189 +123,142 @@ class Ecard extends PureComponent {
       this.setState({selectedIndex: index});
     }
   }
+    employeeAndFamilyDetails(data, index) {
+        
+    
+        const arrowIcon = this.state.selectedIndex === index ? "keyboard-arrow-up" : "keyboard-arrow-down"
 
-  employeeAndFamilyDetails(data, index) {
-    const arrowIcon =
-      this.state.selectedIndex === index
-        ? 'keyboard-arrow-up'
-        : 'keyboard-arrow-down';
-    return (
-      <View>
-        <View>
-          <Card style={{marginTop: 15}}>
-            <CardItem>
-              <Body>
-                <Grid>
-                  <Col size={0.5}>
-                    <Text style={styles.mainText}>{index + 1}.</Text>
-                  </Col>
-                  <Col size={4}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      {translate('Member Name')}
-                    </Text>
-                  </Col>
-                  <Col size={0.5}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      -
-                    </Text>
-                  </Col>
-                  <Col size={5}>
-                    <Text style={styles.mainText}>
-                      {this.getMemberName(data)}
-                    </Text>
-                  </Col>
-                </Grid>
-                <Grid style={{marginTop: 8}}>
-                  <Col size={0.5}></Col>
-                  <Col size={4}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      {translate('Member Code')}
-                    </Text>
-                  </Col>
-                  <Col size={0.5}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      -
-                    </Text>
-                  </Col>
-                  <Col size={5}>
-                    <Text style={styles.mainText}>{data.memberId}</Text>
-                  </Col>
-                </Grid>
-                <Grid style={{marginTop: 8}}>
-                  <Col size={0.5}></Col>
-                  <Col size={4}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      {translate('Gender')}
-                    </Text>
-                  </Col>
-                  <Col size={0.5}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      -
-                    </Text>
-                  </Col>
-                  <Col size={5}>
-                    <Text style={styles.mainText}>{data.familyMemberGender?data.familyMemberGender:'-'}</Text>
-                  </Col>
-                </Grid>
-                <Grid style={{marginTop: 8}}>
-                  <Col size={0.5}></Col>
-                  <Col size={4}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      {translate('Age')}
-                    </Text>
-                  </Col>
-                  <Col size={0.5}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      -
-                    </Text>
-                  </Col>
-                  <Col size={5}>
-                    <Text style={styles.mainText}>{this.familyMemAgeCal(data)}</Text>
-                  </Col>
-                </Grid>
-                <Grid style={{marginTop: 8}}>
-                  <Col size={0.5}></Col>
-                  <Col size={4}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      {translate('Relationship')}
-                    </Text>
-                  </Col>
-                  <Col size={0.5}>
-                    <Text style={[styles.mainText, {fontWeight: '700'}]}>
-                      -
-                    </Text>
-                  </Col>
-                  <Col size={5}>
-                    <Text style={styles.mainText}>{data.relationship?data.relationship:'-'}</Text>
-                  </Col>
-                </Grid>
-              </Body>
-            </CardItem>
-            <CardItem
-              footer
-              button
-              onPress={() => this.toggleData(index)}
-              style={{backgroundColor: primaryColor, height: 40}}>
-              <Left style={{marginLeft: 5}}>
-                <Text
-                  style={[styles.mainText, {fontWeight: '700', color: '#fff'}]}>
-                  {this.state.selectedIndex === index
-                    ? 'Hide Ecard'
-                    : 'Show Ecard'}
-                </Text>
-              </Left>
-              <Right>
-                <MaterialIcons
-                  name={arrowIcon}
-                  style={{fontSize: 25, color: '#fff'}}
-                />
-              </Right>
-            </CardItem>
-          </Card>
-        </View>
-        {this.state.selectedIndex === index ? (
-          <View>
-            <View
-              style={{
-                backgroundColor: '#f2f5f4',
-                paddingTop: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingBottom: 8,
-                marginTop: 5,
-              }}>
-              <Text style={styles.headerText}>
-                {data.insuranceCompany
-                  ? data.insuranceCompany.toUpperCase()
-                  : CURRENT_APP_NAME + ' INSURANCE'}
-              </Text>
-              {/* <Text style={styles.headerText}>COMPANY LIMITED</Text> */}
-              <Text style={styles.compName}>{data.address1 || ' '}</Text>
-            </View>
-            <Row
-              style={{
-                backgroundColor: '#1C5BA8',
-                padding: 5,
-                paddingBottom: 25,
-              }}>
-              <Col size={3.5}>
-                <Text style={styles.innerText}>Policy No</Text>
-                {/* <Text style={styles.innerText}>Health India ID</Text> */}
-                <Text style={styles.innerText}>Member code</Text>
-                <Text style={styles.innerText}>Member Name</Text>
-                <Text style={styles.innerText}>Gender</Text>
-                <Text style={styles.innerText}>Age</Text>
-                <Text style={styles.innerText}>Relationship</Text>
-                <Text style={styles.innerText}>Employee code</Text>
-                <Text style={styles.innerText}>Valid Upto</Text>
-              </Col>
-              <Col size={0.5}>
-                <Text style={styles.innerText}>:</Text>
-                {/* <Text style={styles.innerText}>:</Text> */}
-                <Text style={styles.innerText}>:</Text>
-                <Text style={styles.innerText}>:</Text>
-                <Text style={styles.innerText}>:</Text>
-                <Text style={styles.innerText}>:</Text>
-                <Text style={styles.innerText}>:</Text>
-                <Text style={styles.innerText}>:</Text>
-                <Text style={styles.innerText}>:</Text>
-              </Col>
-              <Col size={6}>
-                <Text style={styles.innerText}>{data.policyNo}</Text>
-                {/* <Text style={styles.innerText}>
-                  {data.health_india_Id || ' '}
-                </Text> */}
-                <Text style={styles.innerText}>{data.memberId}</Text>
-                <Text style={styles.innerText}>{this.getMemberName(data)}</Text>
-                <Text style={styles.innerText}>{data.familyMemberGender}</Text>
-                <Text style={styles.innerText}>{this.familyMemAgeCal(data)} Years</Text>
-                <Text style={styles.innerText}>{data.relationship}</Text>
-                <Text style={styles.innerText}>{data.employeeId}</Text>
-                <Text style={styles.innerText}>
-                {formatDate(data.enrollmentEndDate, "DD-MMM-YY")||''}
-                                 </Text>
-              </Col>
-              {/* <Col size={1.8} style={{ alignItems: 'center' }}>
+        return (
+            <View>
+                <View>
+                    <Card style={{ marginTop: 15 }}>
+
+                        <CardItem >
+                            <Body>
+                                <Grid>
+                                    <Col size={0.5}>
+                                        <Text style={styles.mainText}>{index+1}.</Text>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={styles.leftHeadingText}>{translate("Member Name")}</Text>
+                                    </Col>
+                                    <Col size={0.5}>
+                                        <Text style={styles.leftHeadingText}>-</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>{this.getMemberName(data)}</Text>
+                                    </Col>
+                                </Grid>
+                                <Grid style={{ marginTop: 8 }}>
+                                    <Col size={0.5}>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={styles.leftHeadingText}>{translate("Member Code")}</Text>
+                                    </Col>
+                                    <Col size={0.5}>
+                                        <Text style={styles.leftHeadingText}>-</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>{data.memberId}</Text>
+                                    </Col>
+                                </Grid>
+                                <Grid style={{ marginTop: 8 }}>
+                                    <Col size={0.5}>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={styles.leftHeadingText}>{translate("Gender")}</Text>
+                                    </Col>
+                                    <Col size={0.5}>
+                                        <Text style={styles.leftHeadingText}>-</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>{data.familyMemberGender?data.familyMemberGender:'-'}</Text>
+                                    </Col>
+                                </Grid>
+                                <Grid style={{ marginTop: 8 }}>
+                                    <Col size={0.5}>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={styles.leftHeadingText}>{translate("Age")}</Text>
+                                    </Col>
+                                    <Col size={0.5}>
+                                        <Text style={styles.leftHeadingText}>-</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>{this.familyMemAgeCal(data)}</Text>
+                                    </Col>
+                                </Grid>
+                                <Grid style={{ marginTop: 8 }}>
+                                    <Col size={0.5}>
+                                    </Col>
+                                    <Col size={4}>
+                                        <Text style={styles.leftHeadingText}>{translate("Relationship")}</Text>
+                                    </Col>
+                                    <Col size={0.5}>
+                                        <Text style={styles.leftHeadingText}>-</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>{data.relationship?data.relationship:'-'}</Text>
+                                    </Col>
+                                </Grid>
+                            </Body>
+                        </CardItem>
+                        <CardItem footer button onPress={() => this.toggleData(index)} style={{ backgroundColor: primaryColor, height: 40 }}>
+                            <Left style={{ marginLeft: 5 }}>
+                                <Text style={[styles.leftHeadingText, { color: '#fff' }]}>{this.state.selectedIndex === index  ?"Hide Ecard" : "Show Ecard"}</Text>
+                            </Left>
+                            <Right>
+                                <MaterialIcons name={arrowIcon} style={{ fontSize: 25, color: '#fff' }} />
+                            </Right>
+                        </CardItem>
+                    </Card>
+                </View>
+                {this.state.selectedIndex === index  ?(
+                    <View>
+                        <View style={{ backgroundColor: '#f2f5f4', paddingTop: 10, justifyContent: 'center', alignItems: 'center', paddingBottom: 8, marginTop: 5 }}>
+
+                            <Text style={styles.headerText}>{data.insuranceCompany ? data.insuranceCompany.toUpperCase() : CURRENT_APP_NAME + ' INSURANCE'}</Text>
+                            {/* <Text style={styles.headerText}>COMPANY LIMITED</Text> */}
+                            <Text style={styles.compName}>{data.address1 || ' '}</Text>
+
+                        </View>
+                        <Row style={{ backgroundColor: '#1C5BA8', padding: 5, paddingBottom: 25 }}>
+                            <Col size={3.5}>
+                                <Text style={styles.innerText}>Policy No.</Text>
+                                {/* <Text style={styles.innerText}>Health India ID</Text> */}
+                                <Text style={styles.innerText}>Member code</Text>
+                                <Text style={styles.innerText}>Member Name</Text>
+                                <Text style={styles.innerText}>Gender</Text>
+                                <Text style={styles.innerText}>Age</Text>
+                                <Text style={styles.innerText}>Relationship</Text>
+                                <Text style={styles.innerText}>Employee code</Text>
+                                <Text style={styles.innerText}>Valid Upto</Text>
+                            </Col>
+                            <Col size={0.5}>
+                                <Text style={styles.innerText}>:</Text>
+                                {/* <Text style={styles.innerText}>:</Text> */}
+                                <Text style={styles.innerText}>:</Text>
+                                <Text style={styles.innerText}>:</Text>
+                                <Text style={styles.innerText}>:</Text>
+                                <Text style={styles.innerText}>:</Text>
+                                <Text style={styles.innerText}>:</Text>
+                                <Text style={styles.innerText}>:</Text>
+                                <Text style={styles.innerText}>:</Text>
+
+
+                            </Col>
+                            <Col size={6}>
+                                <Text style={styles.innerText}>{data.policyNo}</Text>
+                                {/* <Text style={styles.innerText}>{data.health_india_Id || ' '}</Text> */}
+                                <Text style={styles.innerText}>{data.memberId}</Text>
+                                <Text style={styles.innerText}>{this.getMemberName(data)}</Text>
+                                <Text style={styles.innerText}>{data.familyMemberGender}</Text>
+                                <Text style={styles.innerText}>{this.familyMemAgeCal(data)}</Text>
+                                <Text style={styles.innerText}>{data.relationship}</Text>
+                                <Text style={styles.innerText}>{data.employeeId}</Text>
+                                <Text style={styles.innerText}> {formatDate(data.enrollmentEndDate, "DD-MMM-YY")||''}</Text>
+                            </Col>
+                            {/* <Col size={1.8} style={{ alignItems: 'center' }}>
 
                             </Col> */}
             </Row>
@@ -396,66 +349,67 @@ function ecardState(state) {
 export default connect(ecardState)(Ecard);
 
 const styles = StyleSheet.create({
-  colStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  linkHeader: {
-    fontFamily: 'OpenSans',
-    fontSize: 16,
-    textDecorationColor: '#2159d9',
-    textDecorationLine: 'underline',
-    color: '#2159D9',
-  },
-  headerText: {
-    fontFamily: 'OpenSans',
-    fontSize: 11,
-    color: '#0C0A96',
-    fontWeight: '700',
-  },
-  compName: {
-    fontFamily: 'OpenSans',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  innerText: {
-    fontFamily: 'OpenSans',
-    fontSize: 10,
-    color: '#fff',
-  },
-  footerText: {
-    fontFamily: 'OpenSans',
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  footerDeatils: {
-    fontFamily: 'OpenSans',
-    fontSize: 10,
-  },
-  compDetails: {
-    marginTop: 10,
-    backgroundColor: '#f2f5f4',
-    paddingBottom: 5,
-    paddingTop: 5,
-  },
-
-  familyHeader: {
-    fontFamily: 'OpenSans',
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 10,
-    textAlign: 'center',
-    paddingBottom: 10,
-  },
-  addressText: {
-    fontFamily: 'OpenSans',
-    fontSize: 10,
-    textAlign: 'center',
-    fontWeight: '700',
-  },
-  mainText: {
-    fontFamily: 'OpenSans',
-    fontSize: 14,
-    color: '#000',
-  },
-});
+    colStyle: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    linkHeader: {
+        fontFamily: 'Roboto',
+        fontSize: 16,
+        textDecorationColor: '#2159d9',
+        textDecorationLine: 'underline',
+        color: '#2159D9'
+    },
+    headerText: {
+        fontFamily: 'opensans-bold',
+        fontSize: 11,
+        color: '#0C0A96',
+    },
+    compName: {
+        fontFamily: 'opensans-bold',
+        fontSize: 11,
+       
+    },
+    innerText: {
+        fontFamily: 'Roboto',
+        fontSize: 10,
+        color: '#fff'
+    },
+    footerText: {
+        fontFamily: 'opensans-bold',
+        fontSize: 10,
+    },
+    footerDeatils: {
+        fontFamily: 'Roboto',
+        fontSize: 10
+    },
+    compDetails: {
+        marginTop: 10,
+        backgroundColor: '#f2f5f4',
+        paddingBottom: 5,
+        paddingTop: 5
+    },
+   
+    familyHeader: {
+        fontFamily: 'opensans-bold',
+        fontSize: 18,
+        marginTop: 10,
+        textAlign: 'center',
+        paddingBottom: 10
+    },
+    addressText: {
+        fontFamily: 'opensans-bold',
+        fontSize: 10,
+        textAlign: 'center',
+    },
+    mainText: {
+        fontFamily: 'Roboto',
+        fontSize: 14,
+        color: '#000'
+    },
+    leftHeadingText:{
+        fontFamily:'opensans-bold',
+        fontSize:14,
+        color:'#000'
+    }
+})

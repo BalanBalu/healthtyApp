@@ -411,7 +411,7 @@ class UpdateFamilyMembers extends Component {
                       />
                       <Text
                         style={{
-                          fontFamily: 'OpenSans',
+                          fontFamily: 'Roboto',
                           fontSize: 12,
                           marginLeft: 10,
                         }}>
@@ -434,7 +434,7 @@ class UpdateFamilyMembers extends Component {
                       />
                       <Text
                         style={{
-                          fontFamily: 'OpenSans',
+                          fontFamily: 'Roboto',
                           fontSize: 12,
                           marginLeft: 10,
                         }}>
@@ -457,7 +457,7 @@ class UpdateFamilyMembers extends Component {
                       />
                       <Text
                         style={{
-                          fontFamily: 'OpenSans',
+                          fontFamily: 'Roboto',
                           fontSize: 12,
                           marginLeft: 10,
                         }}>
@@ -592,8 +592,7 @@ class UpdateFamilyMembers extends Component {
           <Text
             style={{
               fontSize: 16,
-              fontWeight: 'OpenSans',
-              fontWeight: 'bold',
+              fontFamily: 'opensans-bold',
               color: '#fff',
             }}>
             {fromProfile ? 'UPDATE' : 'Save'}

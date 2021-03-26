@@ -33,8 +33,7 @@ export default StyleSheet.create({
         fontSize: 25,
         textAlign: 'center',
         marginTop: 30,
-        fontWeight: 'bold',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
 
     },
     signUpHead:
@@ -42,8 +41,7 @@ export default StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         marginTop: 30,
-        fontWeight: 'bold',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
 
     },
 
@@ -52,8 +50,7 @@ export default StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         marginTop: 10,
-        fontWeight: 'bold',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
     },
     transparentLabel: {
         borderBottomColor: 'transparent',
@@ -62,7 +59,7 @@ export default StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15
     },
     userDetailLabel: {
@@ -71,7 +68,7 @@ export default StyleSheet.create({
         height: 45,
         marginTop: 10,
         borderRadius: 5,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -84,7 +81,7 @@ export default StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 15,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
 
     },
@@ -95,7 +92,7 @@ export default StyleSheet.create({
         marginTop: 20,
         borderRadius: 5,
 
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15
     },
     authTransparentLabel1: {
@@ -105,7 +102,7 @@ export default StyleSheet.create({
         marginTop: 20,
         borderRadius: 5,
         // borderColor:primaryColor,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15
     },
     transparentLabel2: {
@@ -115,13 +112,12 @@ export default StyleSheet.create({
 
         borderRadius: 5,
 
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15
     },
     ButtonText: {
         fontSize: 15,
-        fontWeight: 'bold',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         color: '#fff'
     },
     loginButton: {
@@ -190,7 +186,7 @@ export default StyleSheet.create({
     customText:
     {
         color: 'gray',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         color: primaryColor,
 
@@ -219,14 +215,14 @@ export default StyleSheet.create({
         color: primaryColor,
         height: 45,
         padding: 10,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
 
 
     },
     customPadge: {
         color: 'white',
         textAlign: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
         padding: 5,
 
@@ -247,12 +243,12 @@ export default StyleSheet.create({
         height: 45,
         borderRadius: 5,
         paddingLeft: 15,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
 
     },
     firstCheckBox: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: '#000',
         marginLeft: 5

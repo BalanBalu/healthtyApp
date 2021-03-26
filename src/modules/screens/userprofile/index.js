@@ -476,8 +476,7 @@ class Profile extends Component {
                   <Text
                     style={{
                       fontSize: 26,
-                      fontFamily: 'OpenSans',
-                      fontWeight: 'bold',
+                      fontFamily: 'opensans-bold',
                       textAlign: 'center',
                     }}>
                     {' '}
@@ -492,7 +491,7 @@ class Profile extends Component {
                         <Text
                           style={{
                             fontSize: 20,
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'Roboto',
                             marginLeft: 10,
                             marginTop: 10,
                           }}>
@@ -505,7 +504,7 @@ class Profile extends Component {
                         <Text
                           style={{
                             fontSize: 20,
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'Roboto',
                             marginLeft: 10,
                             marginTop: 10,
                           }}>
@@ -523,7 +522,7 @@ class Profile extends Component {
                           this.setState({selectOptionPoopup: false})
                         }
                         testID="cancleButton">
-                        <Text style={{fontFamily: 'OpenSans', fontSize: 20}}>
+                        <Text style={{fontFamily: 'Roboto', fontSize: 20}}>
                           {' '}
                           Cancel
                         </Text>
@@ -1025,7 +1024,7 @@ class Profile extends Component {
                         <Body>
                           <Text
                             style={{
-                              fontFamily: 'OpenSans',
+                              fontFamily: 'Roboto',
                               fontSize: 12,
                               width: '100%',
                             }}>
@@ -1041,7 +1040,7 @@ class Profile extends Component {
                           <TouchableOpacity style={styles.docbutton}>
                             <Text
                               style={{
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'Roboto',
                                 fontSize: 12,
                                 color: '#fff',
                                 textAlign: 'center',
@@ -1090,19 +1089,19 @@ const styles = StyleSheet.create({
   bodyContent: {},
 
   customHead: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   customText: {
     fontSize: 15,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   customText1: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   customText2: {
     fontSize: 15,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     // marginRight: 100,
   },
   logo: {
@@ -1119,18 +1118,18 @@ const styles = StyleSheet.create({
     marginTop: -100,
     marginLeft: 20,
     marginRight: 20,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   topValue: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 15,
   },
   bottomValue: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 13,
   },
   updateButton: {
@@ -1154,7 +1153,7 @@ const styles = StyleSheet.create({
     color: 'white',
     width: 150,
     textAlign: 'center',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   docbutton: {
     height: 30,
@@ -1212,7 +1211,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     backgroundColor: '#fff',
     borderRadius: 10,
     marginTop: 5,
@@ -1221,7 +1220,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   linkHeader: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 13,
     textDecorationColor: primaryColor,
     textDecorationLine: 'underline',

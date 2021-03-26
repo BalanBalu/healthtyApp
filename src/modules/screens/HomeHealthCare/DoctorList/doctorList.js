@@ -300,13 +300,13 @@ class DoctorList extends Component {
                                 <MaterialIcons name='keyboard-arrow-down' style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
-                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
+                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
                             </Col>
                         </Col>
                         <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 1, justifyContent: 'center' }} onPress={() => this.navigateToFilters()}>
 
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
-                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
+                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
                             </Col>
                             <Col size={2.0} style={{ marginLeft: 5 }}>
                                 <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 20 }} />
@@ -317,13 +317,13 @@ class DoctorList extends Component {
                 <View>
                     <Text style={{
                         marginLeft: 5,
-                        fontFamily: 'OpenSans',
+                        fontFamily: 'Roboto',
                         color: '#000',
                         fontSize: 13,
                         marginTop: 5
                     }}>{"Showing Doctors in the"}
                         <Text style={{
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'Roboto',
                             color: primaryColor,
                             fontSize: 13,
                         }}>{" "}PinCode - {reqPinCode}</Text>
@@ -631,12 +631,12 @@ class DoctorList extends Component {
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
                                     </Col>
                                     <Col size={7.5}>
-                                        <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getNextAvailableDateAndTime(item.slotData && item.slotData[this.selectedDate4DocIdHostpitalIdToStoreInObj[item.doctor_id] || currentDate], item)}</Text>
+                                        <Text note style={{ fontFamily: 'opensans-bold', marginTop: 15, fontSize: 12, marginRight: 50,  }}> {this.getNextAvailableDateAndTime(item.slotData && item.slotData[this.selectedDate4DocIdHostpitalIdToStoreInObj[item.doctor_id] || currentDate], item)}</Text>
                                     </Col>
                                     <Col size={1.7}>
                                         {!expandItemOfDocIdToShowSlotsData.includes(item.doctor_id) ?
                                             <TouchableOpacity onPress={() => this.onBookPress(item.doctor_id, indexOfItem)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
-                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontFamily: 'opensans-bold' }}>BOOK </Text>
                                             </TouchableOpacity> :
                                             null}
                                         {this.state.isLoadingDatesAndSlotsByRespectedItem == item.doctor_id ?
@@ -656,20 +656,20 @@ class DoctorList extends Component {
                                     item.slotData ?
                                         <View>
                                             <Row style={{ marginTop: 10 }}>
-                                                <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment Date</Text>
+                                                <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>Choose appointment Date</Text>
                                             </Row>
                                             {this.renderDatesOnFlatList(item.doctor_id, item.slotData, indexOfItem)}
                                             <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                        <Text style={this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? { fontSize: 12, alignSelf: 'flex-start', color: '#000', fontFamily: 'OpenSans' } : { color: '#a90e0e', fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}> {this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? "You Selected Appointment on" : "Appointment is Not Available"}</Text>
-                                                        <Text style={{ alignSelf: 'flex-start', fontWeight: 'bold', color: primaryColor, fontSize: 12, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 5 }}>{this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? formatDate(this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate].slotDate, 'ddd DD MMM YYYY') : null}</Text>
+                                                        <Text style={this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? { fontSize: 12, alignSelf: 'flex-start', color: '#000', fontFamily: 'Roboto' } : { color: '#a90e0e', fontSize: 12, alignSelf: 'flex-start', fontFamily: 'Roboto' }}> {this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? "You Selected Appointment on" : "Appointment is Not Available"}</Text>
+                                                        <Text style={{ alignSelf: 'flex-start', color: primaryColor, fontSize: 12, fontFamily: 'opensans-bold', marginTop: 5, marginLeft: 5 }}>{this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? formatDate(this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate].slotDate, 'ddd DD MMM YYYY') : null}</Text>
                                                     </Col>
                                                     <Col size={4}>
                                                         <TouchableOpacity
                                                             onPress={() => { this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id], item.doctor_id) }}
                                                             style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: 5 }}>
-                                                            <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
+                                                            <Text style={{ color: '#fff', fontSize: 12, fontFamily: 'opensans-bold' }}>Continue </Text>
                                                         </TouchableOpacity>
                                                     </Col>
                                                 </Row>
