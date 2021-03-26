@@ -426,7 +426,7 @@ class MyAppoinmentList extends Component {
 
 									<Text
 										style={{
-											fontFamily: "OpenSans",
+											fontFamily: "Roboto",
 											fontSize: 15,
 											marginTop: "10%"
 										}}
@@ -439,7 +439,7 @@ class MyAppoinmentList extends Component {
 											onPress={() =>
 												this.navigateToHomeOrCorporate()
 											} testID='navigateToHome'>
-											<Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
+											<Text style={{ fontFamily: 'opensans-bold', fontSize: 15,  }}>Book Now</Text>
 										</Button>
 									</Item>
 								</Card>
@@ -478,10 +478,10 @@ class MyAppoinmentList extends Component {
 
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Col size={9}>
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>{getDoctorNameOrHospitalName(item.appointmentResult)}</Text>
+																	<Text style={{ fontFamily: "opensans-bold", fontSize: 15,  }}>{getDoctorNameOrHospitalName(item.appointmentResult)}</Text>
 																	<Text
 																		style={{
-																			fontFamily: "OpenSans",
+																			fontFamily: "Roboto",
 																			fontSize: 13,
 																			marginTop: "1%"
 																		}}
@@ -492,7 +492,7 @@ class MyAppoinmentList extends Component {
 															</Row>
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Text
-																	style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
+																	style={{ fontFamily: "Roboto", fontSize: 14, width: '60%' }}
 																>
 																	{item.specialist ? item.specialist : item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalName(item.appointmentResult.location[0]) : null}
 																</Text>
@@ -517,15 +517,15 @@ class MyAppoinmentList extends Component {
 
 															<Row style={{ borderBottomWidth: 0 }}>
 																{item.appointmentResult.appointment_status == "APPROVED" && item.appointmentResult.onGoingAppointment ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: 'green', fontWeight: 'bold' }} note>{'Appointment Ongoing'}</Text>
+																	<Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: 'green', }} note>{'Appointment Ongoing'}</Text>
 																	:
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].color : 'red', fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].text : item.appointmentResult.appointment_status}</Text>
+																	<Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].color : 'red',  }} note>{statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].text : item.appointmentResult.appointment_status}</Text>
 																}
 
 
 															</Row>
 
-															<Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
+															<Text style={{ fontFamily: "Roboto", fontSize: 11 }} note>
 																{formatDate(item.appointmentResult.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}</Text>
 															{selectedIndex == 1 &&
 																item.appointmentResult.appointment_status == "COMPLETED" && (item.appointmentResult.is_review_added == undefined || item.appointmentResult.is_review_added == false) ? (
@@ -619,8 +619,7 @@ const styles = StyleSheet.create({
 	},
 	bookAgain1: {
 		fontSize: 13,
-		fontFamily: 'OpenSans',
-		fontWeight: 'bold',
+		fontFamily: 'opensans-bold',
 		textAlign: 'center'
 	},
 	bodyContent: {

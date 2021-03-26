@@ -59,9 +59,9 @@ export const ContactUsCard = props => {
             <Text
               style={{
                 color: '#fff',
-                fontFamily: 'OpenSans',
+                fontFamily: 'opensans-bold',
                 fontSize: 18,
-                fontWeight: '700',
+                
               }}>
               {translate("Help line")}
           </Text>
@@ -71,7 +71,7 @@ export const ContactUsCard = props => {
               <Text
                 style={{
                   color: '#fff',
-                  fontFamily: 'OpenSans',
+                  fontFamily: 'Roboto',
                   fontSize: 15,
                   lineHeight: 24,
                   marginLeft:5
@@ -83,7 +83,7 @@ export const ContactUsCard = props => {
           
           <Row style={{ marginTop: 10, marginLeft: 20 }}>
             <TouchableOpacity style={{ borderRadius: 15, borderColor: '#fff', borderWidth: 1, paddingHorizontal: 5, height: 25, justifyContent: 'center', flexDirection: 'row' }} onPress={() => navigation('ContactUs')}>
-              <Text style={{ color: '#fff', textAlign: 'center' }}>{translate("Contact Us")}</Text>
+              <Text style={{ color: '#fff', textAlign: 'center', fontFamily: 'Roboto', }}>{translate("Contact Us")}</Text>
               <MaterialIcons name="keyboard-arrow-right" style={{ color: '#fff', fontSize: 20, }} />
 
             </TouchableOpacity>

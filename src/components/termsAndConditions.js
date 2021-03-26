@@ -21,7 +21,7 @@ class TermsAndConditions extends Component {
               <Image source={require('../../assets/images/Logo.png')} style={{ height: 40, width: 40 }} />
             </Col>
             <Col style={{ justifyContent: 'center', width: '75%' }} >
-              <Text style={{ fontSize: 20, color: '#fff', }}>Terms and Conditions</Text>
+              <Text style={{ fontSize: 20, color: '#fff',fontFamily:'Roboto' }}>Terms and Conditions</Text>
             </Col>
           </Row>
         </Header>
@@ -29,9 +29,9 @@ class TermsAndConditions extends Component {
 
           <View style={{ padding: 20, marginTop: 10 }}>
 
-            <H3 style={{ fontSize: 15 }}>{`We hope you love using ${CURRENT_APP_NAME}. We really do. This document contains important information that you need to consider before making an important decision.`}</H3>
+            <H3 style={{ fontSize: 15,fontFamily:'Roboto' }}>{`We hope you love using ${CURRENT_APP_NAME}. We really do. This document contains important information that you need to consider before making an important decision.`}</H3>
 
-            <H3 style={{ color: 'gray', fontSize: 16, marginTop: 10 }}>Effective Date: May 14, 2019</H3>
+            <H3 style={{ color: 'gray', fontSize: 16, marginTop: 10,fontFamily:'Roboto' }}>Effective Date: May 14, 2019</H3>
 
             <Text style={termsStyles.normalText}>{`The following terms and conditions constitute an agreement between you and ${CURRENT_APP_NAME}, Inc. (${CURRENT_APP_NAME},” “we,” or “us”), the operator of ${CURRENT_APP_NAME}.com (the “Site”) and related websites, applications, services and mobile applications provided by ${CURRENT_APP_NAME} and on/in which these Terms of Use are posted or referenced (collectively, the “Services”). These terms of use (the “Terms of Use”), together with our `}
 
@@ -305,13 +305,13 @@ The Content that you obtain or receive from ${CURRENT_APP_NAME}, its employees, 
 </Text>
 
             <View style={{ backgroundColor: '#666666', marginTop: 10 }}>
-              <Text style={{ textAlign: 'center', fontSize: 15, color: '#fff', paddingTop: 15, paddingBottom: 15 }}>Copyright © 2017 All Direction Source Technologies private limited</Text>
+              <Text style={{ textAlign: 'center', fontSize: 15, color: '#fff', paddingTop: 15, paddingBottom: 15,fontFamily:'Roboto' }}>Copyright © 2017 All Direction Source Technologies private limited</Text>
 
             </View>
           </View>
         </Content>
         <TouchableOpacity style={termsStyles.backButton} onPress={() => this.props.navigation.navigate('signup')}>
-          <Text style={{ color: '#fff', fontSize: 13 }}>BACK</Text>
+          <Text style={{ color: '#fff', fontSize: 13,fontFamily:'Roboto' }}>BACK</Text>
         </TouchableOpacity>
       </Container>
     )
@@ -319,22 +319,22 @@ The Content that you obtain or receive from ${CURRENT_APP_NAME}, its employees, 
 }
 const termsStyles = StyleSheet.create({
   normalText: {
-    fontSize: 14, marginTop: 10, lineHeight: 25
+    fontSize: 14, marginTop: 10, lineHeight: 25,fontFamily:'Roboto'
   },
   normalTextWithBold: {
-    fontSize: 15, marginTop: 10, color: 'black'
+    fontSize: 15, marginTop: 10, color: 'black',fontFamily:'Roboto'
   },
   urlStyle: {
-    fontSize: 14, color: '#5055d7', fontWeight: 'bold', lineHeight: 25
+    fontSize: 14, color: '#5055d7',  lineHeight: 25,fontFamily:'Roboto'
   },
   offlineText: {
-    color: '#fff'
+    color: '#fff',fontFamily:'Roboto'
   },
   capsText: {
-    fontSize: 14, marginTop: 10, lineHeight: 25
+    fontSize: 14, marginTop: 10, lineHeight: 25,fontFamily:'Roboto'
   },
   mainHeading: {
-    fontSize: 18, marginTop: 20, fontWeight: 'bold'
+    fontSize: 18, marginTop: 20, fontFamily:'Roboto'
   },
   backButton: {
     position: 'absolute',
@@ -349,7 +349,7 @@ const termsStyles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 7,
     shadowColor: 'gray',
-    elevation: 2
+    elevation: 2,
   },
 });
 

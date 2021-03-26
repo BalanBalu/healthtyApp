@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
 
     },
     innerText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         marginTop: 5
 

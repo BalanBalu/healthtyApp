@@ -558,11 +558,11 @@ class labSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: '80%' }}>
                                         <Row style={{ marginLeft: 55, }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.labInfo.lab_name + ' ' + item.labInfo.location_code}</Text>
+                                            <Text style={{ fontFamily: 'opensans-bold', fontSize: 12,  }}>{item.labInfo.lab_name + ' ' + item.labInfo.location_code}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
-                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{(item.labCatInfo.categoryInfo && item.labCatInfo.categoryInfo.category_name) + ' - '}</Text>
-                                            <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{item.labCatInfo.category_name}</Text>
+                                            <Text note style={{ fontFamily: 'Roboto', marginTop: 2, fontSize: 12 }}>{(item.labCatInfo.categoryInfo && item.labCatInfo.categoryInfo.category_name) + ' - '}</Text>
+                                            <Text style={{ fontFamily: 'Roboto', marginTop: 2, fontSize: 12 }}>{item.labCatInfo.category_name}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
 
@@ -611,19 +611,19 @@ class labSearchList extends Component {
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
                                     </Col>
                                     <Col size={7.5}>
-                                        <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}>Available On {moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY')} </Text>
+                                        <Text note style={{ fontFamily: 'opensans-bold', marginTop: 15, fontSize: 12, marginRight: 50,  }}>Available On {moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY')} </Text>
                                     </Col>
                                     <Col size={1.7}>
                                         {!expandedLabIdToShowSlotsData.includes(item.labInfo.lab_id) ?
                                             <TouchableOpacity onPress={() => this.onBookPress(item.labInfo.lab_id)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
-                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12,fontFamily: 'opensans-bold' }}>BOOK </Text>
                                             </TouchableOpacity> : null}
                                     </Col>
                                 </Row>
                                 {expandedLabIdToShowSlotsData.includes(item.labInfo.lab_id) ?
                                     <View>
                                         <Row style={{ marginTop: 10 }}>
-                                            <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appointment date and time</Text>
+                                            <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>Select appointment date and time</Text>
                                         </Row>
                                         {this.renderDatesOnFlatList(item.labInfo.lab_id)}
                                         {
@@ -636,14 +636,14 @@ class labSearchList extends Component {
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
-                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') + ' to ' + formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotEndDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
+                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'Roboto' }}>Selected Appointment on</Text>
+                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'Roboto', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') + ' to ' + formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotEndDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
                                                 <Col size={4}>
                                                     <TouchableOpacity
                                                         onPress={() => { this.onPressToContinue4PaymentReview(item, this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id], item.labInfo.lab_id) }}
                                                         style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
-                                                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
+                                                        <Text style={{ color: '#fff', fontSize: 12,fontFamily: 'opensans-bold' }}>Continue </Text>
                                                     </TouchableOpacity>
                                                 </Col>
                                             </Row>
@@ -673,7 +673,7 @@ class labSearchList extends Component {
                                                 <MaterialIcons name={labListOrder === 'ASC' ? 'keyboard-arrow-down' :'keyboard-arrow-up'} style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
                                             </Col>
                                             <Col style={{ width: '85%' }}>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
+                                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
                                             </Col>
                                         </Row>
                                     </Col>
@@ -684,7 +684,7 @@ class labSearchList extends Component {
                                                     <Icon name='ios-funnel' style={{ color: 'gray',fontSize:20 }} />
                                                 </Col>
                                                 <Col style={{ width: '65%' }}>
-                                                    <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>
+                                                    <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>
                                                 </Col>
                                             </TouchableOpacity>
                                         </Row>
@@ -826,7 +826,7 @@ class labSearchList extends Component {
                                                 <Col size={6}>
 
                                                     <Row style={styles.rowMainText}>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#000' }}>Price</Text>
+                                                        <Text style={{ fontFamily: 'Roboto', fontSize: 15, color: '#000' }}>Price</Text>
                                                     </Row>
                                                 </Col>
                                                 <Col size={4}></Col>
@@ -873,7 +873,7 @@ class labSearchList extends Component {
                                                                 <TouchableOpacity disabled={selectedSubCategory.length != 0 || values.length != 0 || testOption != '' ? false : true}
                                                                     style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: primaryColor, borderWidth: 0.5 }}
                                                                     onPress={() => this.clearFilteredData()}>
-                                                                    <Text style={{ color: primaryColor, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>CLEAR</Text>
+                                                                    <Text style={{ color: primaryColor, fontFamily: 'opensans-bold', fontSize: 13, textAlign: 'center',  }}>CLEAR</Text>
                                                                 </TouchableOpacity>
                                                             </Col>
                                                             <Col size={5}>

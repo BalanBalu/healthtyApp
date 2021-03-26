@@ -160,7 +160,7 @@ export default class HomeHealthCareAddressChange extends Component {
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
                     <View style={{ marginTop: 10, marginBottom: 10 }} >
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor, alignSelf: 'center',fontWeight:'700' }}>MY ADDRESS</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, color: primaryColor, alignSelf: 'center', }}>MY ADDRESS</Text>
                     </View>
                     <View>
                         <FlatList
@@ -196,7 +196,7 @@ export default class HomeHealthCareAddressChange extends Component {
                                 onPress={() => selectedAddressIndex !== -1 ? this.onPressGoToCategoriesPage() : null}
                                 testID='clickButtonToPaymentReviewPage'>
                                 <Row style={{ justifyContent: 'center', }}>
-                                    <Text style={{ marginLeft: -25, marginTop: 2, fontWeight: 'bold', justifyContent: 'center', alignItems: 'center' }}>{selectedAddressIndex !== -1 ? 'NEXT' : 'SELECT ADDRESS'}</Text>
+                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>{selectedAddressIndex !== -1 ? 'NEXT' : 'SELECT ADDRESS'}</Text>
                                 </Row>
                             </Button>
                         </Col>
@@ -244,26 +244,25 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     normalText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 14,
         color: '#fff',
-        fontWeight: 'bold'
     },
     labelTop:
     {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: '#000',
     },
     customText: {
         marginLeft: 10,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
         color: primaryColor
     },
     customSubText: {
         marginLeft: 2,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         marginTop: 3,
         color: 'gray'
@@ -275,7 +274,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         margin: 2,
         fontSize: 13
     },
@@ -286,7 +285,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         margin: 2,
         fontSize: 13
     },

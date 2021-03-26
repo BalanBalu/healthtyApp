@@ -317,8 +317,7 @@ class LabAppointmentInfo extends Component {
                           <Text
                             style={{
                               fontSize: 12,
-                              fontFamily: 'OpenSans',
-                              fontWeight: 'normal',
+                              fontFamily: 'Roboto',
                             }}>
                             {data.labCategoryInfo &&
                               data.labCategoryInfo.category_name}
@@ -761,8 +760,7 @@ class LabAppointmentInfo extends Component {
                             style={{
                               color: '#fff',
                               fontSize: 14,
-                              fontFamily: 'OpenSans',
-                              fontWeight: 'bold',
+                              fontFamily: 'opensans-bold',
                               textAlign: 'center',
                               marginTop: 5,
                             }}>
@@ -818,8 +816,7 @@ class LabAppointmentInfo extends Component {
                             style={{
                               color: '#fff',
                               fontSize: 14,
-                              fontFamily: 'OpenSans',
-                              fontWeight: 'bold',
+                              fontFamily: 'opensans-bold',
                               textAlign: 'center',
                               marginTop: 5,
                             }}>
@@ -978,8 +975,7 @@ class LabAppointmentInfo extends Component {
                         <Text
                           style={{
                             fontSize: 13,
-                            fontFamily: 'OpenSans',
-                            fontWeight: 'bold',
+                            fontFamily: 'opensans-bold',
                             marginTop: -5,
                             color: '#FFF',
                             marginLeft: -5,
@@ -992,7 +988,7 @@ class LabAppointmentInfo extends Component {
                           <Text
                             style={{
                               fontSize: 12,
-                              fontFamily: 'OpenSans',
+                              fontFamily: 'Roboto',
                               textAlign: 'center',
                               marginTop: 10,
                               color: 'red',
@@ -1012,7 +1008,7 @@ class LabAppointmentInfo extends Component {
                           <Text
                             style={{
                               fontSize: 12,
-                              fontFamily: 'OpenSans',
+                              fontFamily: 'Roboto',
                               textAlign: 'center',
                               marginTop: 10,
                               color: 'red',
@@ -1034,7 +1030,7 @@ class LabAppointmentInfo extends Component {
                           <Text
                             style={{
                               fontSize: 14,
-                              fontFamily: 'OpenSans',
+                              fontFamily: 'Roboto',
                               textAlign: 'center',
                               marginTop: 10,
                               color: 'green',
@@ -1049,7 +1045,7 @@ class LabAppointmentInfo extends Component {
                           <Text
                             style={{
                               fontSize: 14,
-                              fontFamily: 'OpenSans',
+                              fontFamily: 'Roboto',
                               textAlign: 'center',
                               marginTop: 10,
                               color: 'green',
@@ -1081,7 +1077,7 @@ class LabAppointmentInfo extends Component {
                                 testID="confirmButton">
                                 <Text
                                   style={{
-                                    fontFamily: 'OpenSans',
+                                    fontFamily: 'Roboto',
                                     fontSize: 14,
                                     textAlign: 'center',
                                     color: '#fff',
@@ -1109,7 +1105,7 @@ class LabAppointmentInfo extends Component {
                                 testID="confirmButton">
                                 <Text
                                   style={{
-                                    fontFamily: 'OpenSans',
+                                    fontFamily: 'Roboto',
                                     fontSize: 12,
                                     textAlign: 'center',
                                     color: '#fff',
@@ -1135,7 +1131,7 @@ class LabAppointmentInfo extends Component {
                                 testID="cancelButton">
                                 <Text
                                   style={{
-                                    fontFamily: 'OpenSans',
+                                    fontFamily: 'Roboto',
                                     fontSize: 12,
                                     textAlign: 'center',
                                     color: '#fff',
@@ -1178,7 +1174,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   cardItemText2: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 13,
     marginTop: 5,
     fontStyle: 'italic',
@@ -1186,28 +1182,25 @@ const styles = StyleSheet.create({
   },
   Textname: {
     fontSize: 14,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold',
+    fontFamily: 'opensans-bold',
   },
   specialistTextStyle: {
     fontSize: 12,
-    fontFamily: 'OpenSans',
-    fontWeight: 'normal',
+    fontFamily: 'Roboto',
     marginTop: 5,
   },
   subText1: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold',
+    fontFamily: 'opensans-bold',
   },
   subText2: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginLeft: 5,
   },
   subText3: {
     fontSize: 12,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginLeft: 5,
   },
   confirmButton: {
@@ -1219,11 +1212,11 @@ const styles = StyleSheet.create({
   ButtonText: {
     color: '#fff',
     fontSize: 10,
-    fontWeight: 'bold',
+    fontFamily:'opensans-bold'
   },
   textApproved: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontFamily:'opensans-bold'
   },
   postponeButton: {
     // backgroundColor:'#4765FF',
@@ -1240,9 +1233,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   timeText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 13,
-    fontWeight: 'bold',
     color: '#FFF',
     marginLeft: 10,
   },
@@ -1262,9 +1254,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   touchableText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 15,
-    fontWeight: 'bold',
     color: '#4765FF',
     marginTop: 4,
     marginLeft: 5,
@@ -1278,30 +1269,28 @@ const styles = StyleSheet.create({
   },
   innerSubText: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold',
+    fontFamily: 'opensans-bold',
   },
   subTextInner1: {
     fontSize: 12,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginTop: 5,
   },
   subTextInner2: {
     fontSize: 10,
     color: 'red',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginBottom: 5,
   },
 
   downText: {
     fontSize: 12,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   cardItemText3: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 18,
     height: 30,
-    fontWeight: 'bold',
     color: '#FFF',
     paddingBottom: -10,
   },
@@ -1326,20 +1315,20 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   diseaseText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     marginLeft: 10,
     fontStyle: 'italic',
     marginTop: -5,
   },
   hospitalText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     marginLeft: 15,
     width: '80%',
   },
   hosAddressText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     marginLeft: 15,
     fontStyle: 'italic',
@@ -1368,23 +1357,21 @@ const styles = StyleSheet.create({
     marginTop: -10,
   },
   cardItemText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 16,
-    fontWeight: 'bold',
     color: '#FFF',
   },
   subText: {
-    fontFamily: 'Opensans',
+    fontFamily: 'opensans-bold',
     fontSize: 18,
-    fontWeight: 'bold',
     marginTop: 15,
     marginLeft: 5,
   },
   customHead: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   customText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: '#000',
     fontSize: 14,
   },
@@ -1403,17 +1390,17 @@ const styles = StyleSheet.create({
     marginTop: -150,
     marginLeft: 15,
     marginRight: 15,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   topValue: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   bottomValue: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
   },
 
@@ -1424,7 +1411,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF9500',
     color: '#fff',
     width: 160,
-    fontFamily: 'opensans-semibold',
+    fontFamily: 'Roboto-semibold',
     textAlign: 'center',
     borderRadius: 10,
   },
@@ -1442,7 +1429,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     height: 25,
     width: 25,
-    fontWeight: 'bold',
+    fontFamily:'opensans-bold'
   },
   leftButton: {
     height: 45,
@@ -1470,7 +1457,7 @@ const styles = StyleSheet.create({
   customPadge: {
     color: 'white',
     textAlign: 'center',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 10,
     padding: 5,
   },
@@ -1516,8 +1503,7 @@ const styles = StyleSheet.create({
   },
   innerSubText1: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold',
+    fontFamily: 'opensans-bold',
     color: primaryColor,
     marginTop: 5,
     // marginBottom: 5
@@ -1532,7 +1518,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   commonText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
   },
   rowStyles: {

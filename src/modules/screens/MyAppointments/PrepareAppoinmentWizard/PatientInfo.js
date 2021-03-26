@@ -139,7 +139,7 @@ class PatientInfo extends PureComponent {
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Personal Information</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Name</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Name</Text>
                             <Form style={styles.formStyle5}>
                                 <TextInput
                                     placeholder="Enter your name"
@@ -155,11 +155,11 @@ class PatientInfo extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Date of birth</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Date of birth</Text>
                             <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={[styles.formStyle2,{flexDirection:'row'}]}>
                                 {/* <Item > */}
                             <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: primaryColor }} />
-                            <Text style={this.state.date_of_birth != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.date_of_birth != null ?formatDate(this.state.date_of_birth, 'DD/MM/YYYY'):'Date of Birth'}</Text>
+                            <Text style={this.state.date_of_birth != null ?{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'Roboto', fontSize: 13, textAlign: 'center', }:{color:'#909090'}}>{this.state.date_of_birth != null ?formatDate(this.state.date_of_birth, 'DD/MM/YYYY'):'Date of Birth'}</Text>
                             <DateTimePicker
                               mode={'date'}
                               minimumDate={new Date(1940, 0, 1)}
@@ -174,7 +174,7 @@ class PatientInfo extends PureComponent {
 
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Sex</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Sex</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }}>
                                     <Radio
@@ -208,7 +208,7 @@ class PatientInfo extends PureComponent {
 
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Marital status</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Marital status</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }} size={6}>
                                     <Col style={{ flexDirection: 'row' }}>
@@ -236,7 +236,7 @@ class PatientInfo extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Blood group</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Blood group</Text>
 
 
                             <Form style={styles.formStyle6}>
@@ -275,7 +275,7 @@ class PatientInfo extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Mobile number</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Mobile number</Text>
                             <Form style={styles.formStyle5}>
                                 <TextInput
                                     placeholder="Enter your mobile number"

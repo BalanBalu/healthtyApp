@@ -61,22 +61,22 @@ const RenderProposeNewPopPage = (props) => {
                     height: 35,
                     marginTop: -10
                 }}>
-                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: -5, color: '#FFF', marginLeft: -5 }}>{'Doctor has Rescheduled the appointment !'}</Text></CardItem>
+                    <Text style={{ fontSize: 13, fontFamily: 'opensans-bold',  marginTop: -5, color: '#FFF', marginLeft: -5 }}>{'Doctor has Rescheduled the appointment !'}</Text></CardItem>
                 <Row style={{ justifyContent: 'center' }}>
                     <Col style={{ width: '25%' }}>
-                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{props.data.previous_data ? formatDate(props.data.previous_data.appointment_date, "DD/MM/YYYY") : null}</Text>
+                        <Text style={{ fontSize: 12, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{props.data.previous_data ? formatDate(props.data.previous_data.appointment_date, "DD/MM/YYYY") : null}</Text>
                     </Col>
                     {/* <Col style={{ width: '75%' }}>
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{props.data.previous_data ? formatDate(props.data.previous_data.startDateTime, "hh:mm a") + formatDate(props.data.previous_data.endDateTime, "-hh:mm a") : null}</Text>
+                                        <Text style={{ fontSize: 12, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{props.data.previous_data ? formatDate(props.data.previous_data.startDateTime, "hh:mm a") + formatDate(props.data.previous_data.endDateTime, "-hh:mm a") : null}</Text>
                                     </Col> */}
 
                 </Row>
                 <Row style={{ justifyContent: 'center' }}>
                     <Col style={{ width: '30%' }}>
-                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(props.data.appointment_date, "DD/MM/YYYY")}</Text>
+                        <Text style={{ fontSize: 14, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(props.data.appointment_date, "DD/MM/YYYY")}</Text>
                     </Col>
                     {/* <Col style={{ width: '70%' }}>
-                                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(props.data.appointment_starttime, "hh:mm a") + formatDate(props.data.appointment_endtime, "-hh:mm a")}</Text>
+                                        <Text style={{ fontSize: 14, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(props.data.appointment_starttime, "hh:mm a") + formatDate(props.data.appointment_endtime, "-hh:mm a")}</Text>
                                     </Col> */}
 
                 </Row>
@@ -87,17 +87,17 @@ const RenderProposeNewPopPage = (props) => {
                             <Col size={3} style={{ marginRight: 3 }}>
                                 <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: primaryColor }}
                                     onPress={() => props.skipAction()} testID='confirmButton'>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.4} style={{ marginRight: 3 }} >
                                 <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, }} onPress={() => props.onPressUpdateAppointmentStatus(props.data, 'APPROVED')} testID='confirmButton'>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}>{'ACCEPT'}</Text>
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center', color: '#fff' }}>{'ACCEPT'}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.6}>
                                 <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: 'red' }} onPress={() => props.onPressNavigateToCancelAppointment()} testID='cancelButton'>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}> {'CANCEL'}</Text>
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center', color: '#fff' }}> {'CANCEL'}</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
@@ -120,14 +120,14 @@ const RenderNoAppointmentsFounds = (props) => {
                 style={{ height: 100, width: 100, marginTop: "10%" }}
             />
             <Text style={{
-                fontFamily: "OpenSans",
+                fontFamily: "Roboto",
                 fontSize: 15,
                 marginTop: "10%"
             }}>{props.text}
             </Text>
             <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                 <Button onPress={() => props.onPressGoToBookNow('BOOK_NOW')} style={[styles.bookingButton, styles.customButton]} testID='navigateToHome'>
-                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
+                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 15,  }}>Book Now</Text>
                 </Button>
             </Item>
         </Card>
@@ -137,7 +137,7 @@ const RenderAddressInfo = (props) => {
     return (
         props.addressInfo ?
             <View>
-                <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, color: '#4c4c4c' }}>{
+                <Text note style={{ fontFamily: 'Roboto', marginTop: 5, fontSize: 11, color: '#4c4c4c' }}>{
                     props.addressInfo.no_and_street + ' , ' +
                     props.addressInfo.district + ' , ' +
                     props.addressInfo.city + ' , ' +
@@ -150,7 +150,7 @@ const RenderPriceDetails = (props) => {
 
     return (
         <>
-            <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
+            <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
             <Row style={{ justifyContent: 'center' }}>
                 <Text style={styles.finalRs}>₹ {(parseInt(props.priceInfo.branch_details.price) - ((parseInt(props.priceInfo.branch_details.offer) / 100) * parseInt(props.priceInfo.branch_details.price)))}</Text>
                 {/* <Text style={styles.finalRs}>₹ {item.finalAmount || ''}</Text> */}
@@ -172,7 +172,7 @@ const RenderOfferDetails = (props) => {
 const RenderStarRatingCount = (props) => {
     return (
         <>
-            <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', }}> Rating</Text>
+            <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center', }}> Rating</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <StarRating
                     fullStarColor='#FF9500'
@@ -259,7 +259,7 @@ const RenderEditingPincode = (props) => {
                 <Col size={2}>
                     <Row style={{ justifyContent: 'flex-end' }}>
                         <TouchableOpacity style={styles.editPincodeButton} onPress={() => onChangeSelection(true)} >
-                            <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 10, }}>Edit Pincode </Text>
+                            <Text style={{ fontFamily: 'Roboto', color: 'gray', fontSize: 10, }}>Edit Pincode </Text>
                         </TouchableOpacity>
                     </Row>
                 </Col>
@@ -284,7 +284,7 @@ const RenderEditingPincode = (props) => {
                 </Col>
                 <Col size={2.5}>
                     <TouchableOpacity style={{ paddingBottom: 10, paddingTop: 9, paddingLeft: 10, paddingRight: 10, backgroundColor: 'green', borderRadius: 3, alignItems: 'center', marginLeft: 5 }} onPress={() => props.onPressEditButton()}>
-                        <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>Apply</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', color: '#fff', fontSize: 12, textAlign: 'center',}}>Apply</Text>
                     </TouchableOpacity>
                 </Col>
             </Row>

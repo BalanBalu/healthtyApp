@@ -228,7 +228,7 @@ class HomeTestConfirmation extends Component {
                                         <Icon name="md-calendar" style={{ fontSize: 15, color: '#0054A5' }} />
                                         <Text style={{
                                             marginLeft: 4,
-                                            fontFamily: 'OpenSans',
+                                            fontFamily: 'Roboto',
                                             color: '#0054A5',
                                             fontSize: 13,
                                         }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotDate, 'Do MMMM, YYYY')}</Text>
@@ -309,7 +309,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}>Consultation Fees</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', color: '#000' }}>Consultation Fees</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'}{Number(amountBySelectedPersons).toFixed(2)}</Text>
@@ -317,7 +317,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}>Charges </Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', color: '#000' }}>Charges </Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
@@ -326,7 +326,7 @@ class HomeTestConfirmation extends Component {
 
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', }}>Amount to be Paid</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'} {Number(finalPaidAmount).toFixed(2)}</Text>
@@ -417,7 +417,7 @@ class HomeTestConfirmation extends Component {
                                     </Row>
                                     <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
                                         <Text style={{
-                                            fontFamily: 'OpenSans', fontSize: 14, marginTop: 3
+                                            fontFamily: 'Roboto', fontSize: 14, marginTop: 3
                                         }}>Gender</Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                                             <Radio
@@ -442,7 +442,7 @@ class HomeTestConfirmation extends Component {
                                         </View>
                                     </View>
                                 </View> : null}
-                            {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 12, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
+                            {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 12, fontFamily: 'Roboto', color: 'red' }}>{errMsg}</Text> : null}
                             {isCheckedOthers ?
                                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
                                     <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()}>
@@ -468,7 +468,7 @@ class HomeTestConfirmation extends Component {
                                                             <Text style={styles.commonText}>-</Text>
                                                         </Col>
                                                         <Col size={7}>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{item.full_name}</Text>
+                                                            <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#000' }}>{item.full_name}</Text>
                                                         </Col>
                                                     </Row>
                                                 </Col>
@@ -488,7 +488,7 @@ class HomeTestConfirmation extends Component {
                                                             <Text style={styles.commonText}>-</Text>
                                                         </Col>
                                                         <Col size={7.5}>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
+                                                            <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
                                                         </Col>
                                                     </Row>
                                                 </Col>
@@ -536,7 +536,7 @@ class HomeTestConfirmation extends Component {
                                 </Row>
                                 <Row style={{ marginTop: 5 }}>
                                     <Col size={6}>
-                                        <Text note style={styles.nameDetails}>Doctor Fees <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(' + patDetailsArray.length + ' persons' + ')'} </Text></Text>
+                                        <Text note style={styles.nameDetails}>Doctor Fees <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#8dc63f' }}>{'(' + patDetailsArray.length + ' persons' + ')'} </Text></Text>
                                     </Col>
                                     <Col size={4}>
                                         <Text style={[styles.rightAmountText, { color: '#8dc63f' }]}>₹ {amountBySelectedPersons}</Text>

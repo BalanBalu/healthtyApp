@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 50,
     fontSize: 15,
-    fontWeight: 'bold'
+    fontFamily:'opensans-bold'
 
   },
 

@@ -311,9 +311,8 @@ class AddInsurance extends PureComponent {
               <Form>
                 <Text
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'opensans-bold',
                     fontSize: 16,
-                    fontWeight: '700',
                   }}>
                   Insurance Company Name
                 </Text>
@@ -894,8 +893,7 @@ class AddInsurance extends PureComponent {
           <Text
             style={{
               fontSize: 16,
-              fontWeight: 'OpenSans',
-              fontWeight: 'bold',
+              fontFamily:'opensans-bold',
               color: '#fff',
             }}>
             Save

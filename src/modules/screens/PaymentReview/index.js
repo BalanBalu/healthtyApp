@@ -250,11 +250,11 @@ export default class PaymentReview extends Component {
                 <Row style={{ borderTopColor: 'gray', borderTopWidth: 1, marginTop: 10 }}>
                   <Col style={{ borderRightColor: 'gray', borderRightWidth: 1, marginTop: 5, alignItems: 'center' }}>
                     <Icon name='md-calendar' style={{ color: '#0055A5', fontSize: 30 }} />
-                    <Text style={{ color: '#0055A5', fontFamily: 'OpenSans', fontSize: 14 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
+                    <Text style={{ color: '#0055A5', fontFamily: 'Roboto', fontSize: 14 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                   </Col>
                   <Col style={{ alignItems: 'center', marginTop: 5 }}>
                     <Icon name="md-clock" style={{ color: 'green', fontSize: 30 }} />
-                    <Text style={{ color: 'green', fontFamily: 'OpenSans', fontSize: 14 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
+                    <Text style={{ color: 'green', fontFamily: 'Roboto', fontSize: 14 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                   </Col>
                 </Row>
               </Grid>
@@ -335,7 +335,7 @@ export default class PaymentReview extends Component {
                   </Row>
                   <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
                     <Text style={{
-                      fontFamily: 'OpenSans', fontSize: 14, marginTop: 3
+                      fontFamily: 'Roboto', fontSize: 14, marginTop: 3
                     }}>Gender</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                       <Radio
@@ -360,7 +360,7 @@ export default class PaymentReview extends Component {
                     </View>
                   </View>
                 </View> : null}
-              {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 14, fontFamily: 'OpenSans', color: 'red' }}>{errMsg}</Text> : null}
+              {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 14, fontFamily: 'Roboto', color: 'red' }}>{errMsg}</Text> : null}
               {isSelected === 'others' && addPatientDataPoPupEnable ?
                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
                   <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()}>
@@ -381,7 +381,7 @@ export default class PaymentReview extends Component {
                             <Text style={styles.commonText}>-</Text>
                           </Col>
                           <Col size={7}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#000' }}>{patientDetailsObj.full_name}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#000' }}>{patientDetailsObj.full_name}</Text>
 
                           </Col>
                         </Row>
@@ -405,7 +405,7 @@ export default class PaymentReview extends Component {
                             <Text style={styles.commonText}>-</Text>
                           </Col>
                           <Col size={7.5}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#000' }}>{(patientDetailsObj.age) + ' - ' + getUserGenderAndAge(patientDetailsObj)}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#000' }}>{(patientDetailsObj.age) + ' - ' + getUserGenderAndAge(patientDetailsObj)}</Text>
                           </Col>
                         </Row>
                       </Col>
@@ -557,7 +557,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909498' }}>Consultation Fees</Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'Roboto', color: '#909498' }}>Consultation Fees</Text>
                 </Col>
                 <Col>
                   <Text style={styles.rupeesText}>{'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
@@ -565,7 +565,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909498' }}>Charges </Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'Roboto', color: '#909498' }}>Charges </Text>
                 </Col>
                 <Col>
                   <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
@@ -573,7 +573,7 @@ export default class PaymentReview extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <Col>
-                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', }}>Amount to be Paid</Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'Roboto', }}>Amount to be Paid</Text>
                 </Col>
                 <Col>
                   <Text style={styles.rupeesText}>{'\u20B9'} {(bookSlotDetails.slotData && bookSlotDetails.slotData.fee || 0) + 0}</Text>
@@ -635,24 +635,22 @@ const styles = StyleSheet.create({
 
   },
   cardItemText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 14,
-    fontWeight: 'bold',
     color: '#FFF',
   },
   cardItemText2: {
     marginTop: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     color: '#FFF',
     lineHeight: 15,
     width: '90%'
   },
   cardItemText3: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 16,
     height: 30,
-    fontWeight: 'bold',
     color: '#FFF', paddingBottom: -10
   },
   card: {
@@ -677,20 +675,20 @@ const styles = StyleSheet.create({
     padding: 5
   },
   diseaseText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     marginLeft: 10,
     fontStyle: 'italic',
     marginTop: -5
   },
   hospitalText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     marginLeft: 15,
     width: "80%"
   },
   hosAddressText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     marginLeft: 15,
     fontStyle: 'italic',
@@ -710,13 +708,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   cardItemText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 14,
-    fontWeight: 'bold',
     color: '#FFF'
   },
   subText: {
-    fontFamily: 'Opensans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     color: '#000',
     marginLeft: 5
@@ -751,11 +748,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#0055A5'
   },
   payButtonText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 14,
     color: '#fff',
     textAlign: 'center',
-    fontWeight: 'bold'
   },
   touchStyle: {
     backgroundColor: primaryColor,
@@ -766,39 +762,37 @@ const styles = StyleSheet.create({
     paddingTop: 5
   },
   touchText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     color: '#fff',
     textAlign: 'center'
   },
   subHead: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 14,
     color: primaryColor,
-    fontWeight: 'bold'
   },
   firstCheckBox: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     color: '#000',
     marginLeft: 20
   },
   nameAndAge: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     color: '#000',
     marginTop: 5
   },
   genderText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     marginLeft: 10
   },
   commonText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 14,
     color: '#000',
-    fontWeight: '500'
   },
   inputText: {
     backgroundColor: '#f2f2f2',
@@ -826,55 +820,54 @@ const styles = StyleSheet.create({
   docName: {
     fontSize: 15,
     marginLeft: 10,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: primaryColor
   },
   specialist: {
     fontSize: 14,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: '#909498',
     marginLeft: 10,
   },
   hospName: {
     fontSize: 14,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginLeft: 10
   },
   hosAddress: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: '#909498',
     marginLeft: 23
   },
   calDate: {
     fontSize: 14,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: '#0054A5',
     marginLeft: 5
   },
   clockTime: {
     fontSize: 14,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: '#8EC63F',
     marginLeft: 5
   },
   rupeesText: {
     fontSize: 14,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     textAlign: 'right',
     color: '#8EC63F'
   },
   redRupesText: {
     fontSize: 14,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     textAlign: 'right',
     color: 'red'
   },
   footerButtonText: {
     fontSize: 16,
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     color: '#fff',
-    fontWeight: '500'
   }
 
 

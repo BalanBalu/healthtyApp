@@ -26,7 +26,7 @@ export default  styles = StyleSheet.create({
         paddingTop: 5
     },
     touchText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: '#fff',
         textAlign: 'center'
@@ -39,35 +39,34 @@ export default  styles = StyleSheet.create({
         marginTop: 8
     },
     nameAndAge: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: '#000',
         marginTop: 5
     },
     subHead: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 12,
         color: '#000',
-        // fontWeight: 'bold'
     },
     NameText: {
         fontSize: 14,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: 'black'
     },
     relationShipText: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: primaryColor
     },
     ageText: {
         fontSize: 14,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         textAlign: 'right',
     },
     commonText: {
         fontSize: 14,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     selectButton: {
         alignItems: 'center',
@@ -89,8 +88,8 @@ export default  styles = StyleSheet.create({
     text: {
         padding: 8,
         paddingLeft: 0,
-        fontWeight: 'bold',
         color: '#4B5164',
+        fontFamily:'opensans-bold'
       },
       inputView: {
         padding: 20,
@@ -107,15 +106,14 @@ export default  styles = StyleSheet.create({
       appButtonText: {
         fontSize: 18,
         color: '#fff',
-        fontWeight: 'bold',
         alignSelf: 'center',
         textTransform: 'uppercase',
+        fontFamily:'opensans-bold'
       },
 
       customizedText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 20,
-        fontWeight: 'bold',
         color: '#fff'
     },
  
@@ -128,13 +126,12 @@ export default  styles = StyleSheet.create({
     },
     successHeading: {
         textAlign: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 18,
-        fontWeight: 'bold'
     },
     subText: {
         textAlign: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 17,
         marginTop: 5,
         color: '#535353',
@@ -143,11 +140,10 @@ export default  styles = StyleSheet.create({
     },
     headerText: {
     textTransform: 'uppercase',
-    fontWeight: '700',
     marginLeft: 40,
     color: '#3E4459',
     lineHeight: 26,
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     marginRight: 40,
     marginTop: 20,
   },
@@ -159,7 +155,7 @@ export default  styles = StyleSheet.create({
     padding: 10
   },
   innerCardText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 15,
     color: '#4765FF'
   },

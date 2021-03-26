@@ -109,10 +109,10 @@ console.log("data",this.state.data)
                                         <Text style={styles.mainText}>{index+1}.</Text>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Member Name")}</Text>
+                                        <Text style={styles.leftHeadingText}>{translate("Member Name")}</Text>
                                     </Col>
                                     <Col size={0.5}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
+                                        <Text style={styles.leftHeadingText}>-</Text>
                                     </Col>
                                     <Col size={5}>
                                         <Text style={styles.mainText}>{this.getMemberName(data)}</Text>
@@ -122,10 +122,10 @@ console.log("data",this.state.data)
                                     <Col size={0.5}>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Member Code")}</Text>
+                                        <Text style={styles.leftHeadingText}>{translate("Member Code")}</Text>
                                     </Col>
                                     <Col size={0.5}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
+                                        <Text style={styles.leftHeadingText}>-</Text>
                                     </Col>
                                     <Col size={5}>
                                         <Text style={styles.mainText}>{data.memberId}</Text>
@@ -135,10 +135,10 @@ console.log("data",this.state.data)
                                     <Col size={0.5}>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Gender")}</Text>
+                                        <Text style={styles.leftHeadingText}>{translate("Gender")}</Text>
                                     </Col>
                                     <Col size={0.5}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
+                                        <Text style={styles.leftHeadingText}>-</Text>
                                     </Col>
                                     <Col size={5}>
                                         <Text style={styles.mainText}>{data.gender}</Text>
@@ -148,10 +148,10 @@ console.log("data",this.state.data)
                                     <Col size={0.5}>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Age")}</Text>
+                                        <Text style={styles.leftHeadingText}>{translate("Age")}</Text>
                                     </Col>
                                     <Col size={0.5}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
+                                        <Text style={styles.leftHeadingText}>-</Text>
                                     </Col>
                                     <Col size={5}>
                                         <Text style={styles.mainText}>{data.age} Years</Text>
@@ -161,10 +161,10 @@ console.log("data",this.state.data)
                                     <Col size={0.5}>
                                     </Col>
                                     <Col size={4}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>{translate("Relationship")}</Text>
+                                        <Text style={styles.leftHeadingText}>{translate("Relationship")}</Text>
                                     </Col>
                                     <Col size={0.5}>
-                                        <Text style={[styles.mainText, { fontWeight: '700' }]}>-</Text>
+                                        <Text style={styles.leftHeadingText}>-</Text>
                                     </Col>
                                     <Col size={5}>
                                         <Text style={styles.mainText}>{data.relationship}</Text>
@@ -174,7 +174,7 @@ console.log("data",this.state.data)
                         </CardItem>
                         <CardItem footer button onPress={() => this.toggleData(index)} style={{ backgroundColor: primaryColor, height: 40 }}>
                             <Left style={{ marginLeft: 5 }}>
-                                <Text style={[styles.mainText, { fontWeight: '700', color: '#fff' }]}>{this.state.selectedIndex === index  ?"Hide Ecard" : "Show Ecard"}</Text>
+                                <Text style={[styles.leftHeadingText, { color: '#fff' }]}>{this.state.selectedIndex === index  ?"Hide Ecard" : "Show Ecard"}</Text>
                             </Left>
                             <Right>
                                 <MaterialIcons name={arrowIcon} style={{ fontSize: 25, color: '#fff' }} />
@@ -310,35 +310,33 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     linkHeader: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 16,
         textDecorationColor: '#2159d9',
         textDecorationLine: 'underline',
         color: '#2159D9'
     },
     headerText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 11,
         color: '#0C0A96',
-        fontWeight: '700'
     },
     compName: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 11,
-        fontWeight: '700'
+       
     },
     innerText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 10,
         color: '#fff'
     },
     footerText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 10,
-        fontWeight: '700'
     },
     footerDeatils: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 10
     },
     compDetails: {
@@ -349,22 +347,25 @@ const styles = StyleSheet.create({
     },
    
     familyHeader: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 18,
-        fontWeight: '700',
         marginTop: 10,
         textAlign: 'center',
         paddingBottom: 10
     },
     addressText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 10,
         textAlign: 'center',
-        fontWeight: '700'
     },
     mainText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: '#000'
     },
+    leftHeadingText:{
+        fontFamily:'opensans-bold',
+        fontSize:14,
+        color:'#000'
+    }
 })
