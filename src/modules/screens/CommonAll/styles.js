@@ -21,7 +21,7 @@ export default styles = StyleSheet.create({
     slotDefaultTextColor: {
         color: '#000',
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         textAlign: 'center'
     },
     slotBookedBgColor: {
@@ -45,7 +45,7 @@ export default styles = StyleSheet.create({
     slotBookedTextColor: {
         color: '#fff',
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         textAlign: 'center'
     },
     slotBookedBgColorFromModal: {
@@ -82,16 +82,16 @@ export default styles = StyleSheet.create({
     rsText: {
         fontSize: 8,
         textAlign: 'center',
-        fontWeight: '200',
         color: '#ff4e42',
         textDecorationLine: 'line-through',
         textDecorationStyle: 'solid',
-        textDecorationColor: '#ff4e42'
+        textDecorationColor: '#ff4e42',
+        fontFamily:'Roboto'
     },
     finalRs: {
         fontSize: 10,
         textAlign: 'center',
-        fontWeight: '200',
+        fontFamily:'Roboto',
         paddingTop: 1,
         marginLeft: 5,
         color: '#8dc63f'
@@ -104,40 +104,40 @@ export default styles = StyleSheet.create({
         marginLeft: 20, borderColor: '#fff', fontSize: 22
     },
     favoritesCount: {
-        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold'
+        fontFamily: 'opensans-bold', fontSize: 12, 
     },
     favoritesText: {
-        fontFamily: 'OpenSans', fontSize: 12
+        fontFamily: 'Roboto', fontSize: 12
     },
     favoritesCount4LalBookApp: {
-        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center'
+        fontFamily: 'opensans-bold', fontSize: 12,  textAlign: 'center'
     },
     favoritesText4LalBookApp: {
-        fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center'
+        fontFamily: 'Roboto', fontSize: 12, textAlign: 'center'
     },
     commentText:
     {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 12,
         marginTop: 5
     },
     reviewText:
     {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 12,
         marginTop: 5,
         marginLeft: -20
     },
     descriptionText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 14,
         marginTop: 5
     },
-    viewMoreAndHideText: { fontFamily: 'OpenSans', color: 'blue', fontSize: 14 },
-    descriptionLabelName: { fontFamily: 'OpenSans', fontSize: 12, },
+    viewMoreAndHideText: { fontFamily: 'Roboto', color: 'blue', fontSize: 14 },
+    descriptionLabelName: { fontFamily: 'Roboto', fontSize: 12, },
     isEnabledFavorite4LalBookApp: {
         marginTop: 10, color: '#B22222', fontSize: 20
     },
@@ -145,22 +145,22 @@ export default styles = StyleSheet.create({
         marginTop: 10, borderColor: '#fff', fontSize: 20
     },
     ratingCount: {
-        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2
+        fontFamily: 'opensans-bold', fontSize: 12, marginLeft: 2
     },
     ratingCount4LalBookApp: {
-        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center'
+        fontFamily: 'opensans-bold', fontSize: 12, textAlign: 'center'
     },
     offerText: {
-        fontFamily: 'OpenSans', fontSize: 12,
+        fontFamily: 'Roboto', fontSize: 12,
     },
     offerText4LalBookApp: {
-        fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center'
+        fontFamily: 'Roboto', fontSize: 12, textAlign: 'center'
     },
     offer: {
-        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green', marginLeft: 5
+        fontFamily: 'opensans-bold', fontSize: 12,color: 'green', marginLeft: 5
     },
     offer4LabBookApp: {
-        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', color: 'green'
+        fontFamily: 'opensans-bold', fontSize: 12,  textAlign: 'center', color: 'green'
     },
     mainCol: {
         justifyContent: "center",
@@ -180,7 +180,7 @@ export default styles = StyleSheet.create({
     mainText: {
         fontSize: 10,
         textAlign: 'center',
-        fontWeight: '200',
+        fontFamily:'Roboto',
         marginTop: 5,
         paddingLeft: 5,
         paddingRight: 5,
@@ -207,7 +207,7 @@ export default styles = StyleSheet.create({
         borderWidth: 1
     },
     innerTexts: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 10,
         color: '#000',
         textAlign: 'center'
@@ -239,18 +239,16 @@ export default styles = StyleSheet.create({
     },
     doneButton: {
         color: '#FFFFFF',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 13,
         textAlign: 'center',
-        fontWeight: '700'
     },
 
     defaultdoneButton: {
         color: primaryColor,
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 13,
         textAlign: 'center',
-        fontWeight: '500'
     },
 
     viewButtonBgGreeen: {
@@ -273,13 +271,13 @@ export default styles = StyleSheet.create({
 
     customText:
     {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 14,
         marginTop: 5
     },
     picodeText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: primaryColor,
         fontSize: 13,
     },
@@ -294,7 +292,7 @@ export default styles = StyleSheet.create({
     },
     showingDoctorText: {
         marginLeft: 5,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 13,
         marginTop: 5
@@ -336,7 +334,7 @@ export default styles = StyleSheet.create({
         textAlign: "center"
     },
     beneficiaryFontStyle: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         marginTop: 5
 

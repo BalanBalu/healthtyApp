@@ -121,7 +121,7 @@ class Login extends Component {
                   <Text uppercase={true} style={[styles.cardHead, { color: primaryColor }]}>Login</Text>
 
                   <Form>
-                    <Label style={{ marginTop: 20, fontSize: 15, color: primaryColor, fontWeight: 'bold' }}>{ isSelected === 'corporate_user' ? "Email" : "Mobile Number/ Email"}</Label>
+                    <Label style={{ marginTop: 20, fontSize: 15, color: primaryColor, fontFamily:'opensans-bold' }}>{ isSelected === 'corporate_user' ? "Email" : "Mobile Number/ Email"}</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
                       <Input placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
@@ -134,9 +134,9 @@ class Login extends Component {
                         onSubmitEditing={() => { this.userEntry._root.focus(); }}
                       />
                     </Item>
-                    <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Password</Label>
+                    <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Password</Label>
                     <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
-                      <Input placeholder="Password" style={{ fontSize: 15, fontFamily: 'OpenSans', paddingLeft: 15, }}
+                      <Input placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 15, }}
                         ref={(input) => { this.userEntry = input; }}
                         secureTextEntry={true}
                         returnKeyType={'done'}
@@ -202,15 +202,15 @@ class Login extends Component {
                         block success disabled={(userEntry && password) == ''} onPress={() => this.doLogin()}>
                         <Text uppercase={true} style={styles.ButtonText}>Login </Text>
                       </TouchableOpacity>
-                      {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans', marginTop: 2 }}>{loginErrorMsg}</Text> */}
+                      {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'Roboto', marginTop: 2 }}>{loginErrorMsg}</Text> */}
                     </View>
 
                     <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
-                      <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: primaryColor }}>Don't Have An Account ?</Text>
+                      <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'Roboto', color: primaryColor }}>Don't Have An Account ?</Text>
                       <TouchableOpacity onPress={() => {
                         this.props.navigation.navigate('signup')
                       }} style={styles.smallSignUpButton}>
-                        <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign Up</Text>
+                        <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'opensans-bold', color: '#fff' }}> Sign Up</Text>
                       </TouchableOpacity>
                     </Item>
                   </Form>

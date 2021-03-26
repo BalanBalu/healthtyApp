@@ -206,13 +206,13 @@ class VideoConsultaions extends Component {
 					<Row style={{ alignItems: 'center', marginBottom: 5,marginTop:5 }}>
 				
 								<Text style={{
-								color: STATUS_VALUE_DATA[item.status].color, fontFamily: 'OpenSans',
+								color: STATUS_VALUE_DATA[item.status].color, fontFamily: 'Roboto',
 								fontSize: 14
 							}}>{"consultation description :"}</Text>
 					</Row>
 					<Row style={{ alignItems: 'center', marginBottom: 5,}}>
 						<Text style={{
-							color: 'grey', fontFamily: 'OpenSans',
+							color: 'grey', fontFamily: 'Roboto',
 				fontSize: 14
 			}}>{item.consultation_description}</Text>
 	
@@ -244,7 +244,7 @@ class VideoConsultaions extends Component {
 
 					{consultaionData.length === 0 && isLoading === false ?
 						<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
-							<Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
+							<Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
 								No Consultations
 						</Text>
 						</View> :
@@ -274,30 +274,28 @@ const styles = StyleSheet.create({
 
 	},
 	dateText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'Roboto',
 		fontSize: 12,
 	},
 	docNameText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'opensans-bold',
 		fontSize: 16,
-		fontWeight: 'bold',
 		width: '60%'
 	},
 	statusText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'opensans-bold',
 		fontSize: 16,
-		fontWeight: 'bold',
 		textAlign: 'center'
 	},
 	genderText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'Roboto',
 		fontSize: 14,
 		color: '#535353',
 		fontStyle: 'italic',
 		width: '60%'
 	},
 	diseaseText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'Roboto',
 		fontSize: 14,
 		marginLeft: 10,
 		fontStyle: 'italic',
@@ -316,10 +314,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	},
 	buttonText1: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'opensans-bold',
 		fontSize: 12,
 		textAlign: 'center',
-		fontWeight: 'bold',
 		color: '#fff',
 
 	},
@@ -345,7 +342,7 @@ const styles = StyleSheet.create({
 	},
 	segText: {
 		textAlign: 'center',
-		fontFamily: 'OpenSans',
+		fontFamily: 'Roboto',
 		fontSize: 20,
 		color: primaryColor,
 
@@ -367,10 +364,9 @@ const styles = StyleSheet.create({
 	},
 	tochText: {
 		marginTop: 7,
-		fontFamily: 'OpenSans',
+		fontFamily: 'opensans-bold',
 		color: '#FFF',
 		fontSize: 18,
-		fontWeight: 'bold'
 	},
 
 
@@ -378,10 +374,9 @@ const styles = StyleSheet.create({
 
 
 	buttonText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'opensans-bold',
 		fontSize: 12,
 		textAlign: 'center',
-		fontWeight: 'bold',
 		color: '#fff',
 		marginLeft: -25
 	},
@@ -394,13 +389,13 @@ const styles = StyleSheet.create({
 
 	},
 	hospitalText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'Roboto',
 		fontSize: 14,
 		marginLeft: 15,
 		width: "80%"
 	},
 	hosAddressText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'Roboto',
 		fontSize: 14,
 		marginLeft: 15,
 		fontStyle: 'italic',
@@ -430,9 +425,8 @@ const styles = StyleSheet.create({
 	},
 
 	cardItemText: {
-		fontFamily: 'OpenSans',
+		fontFamily: 'opensans-bold',
 		fontSize: 16,
-		fontWeight: 'bold',
 		color: '#FFF'
 	},
 	containers: {

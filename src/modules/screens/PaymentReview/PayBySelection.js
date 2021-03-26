@@ -20,7 +20,7 @@ const PayBySelection = (props) => {
         return (
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                 
-               <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#128283' }}>Are You Paying By</Text>
+               <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#128283' }}>Are You Paying By</Text>
                
                 <Row style={{ marginTop: 5 }}>
                   <Col size={10}>
@@ -80,18 +80,18 @@ const styles = StyleSheet.create({
     bodyContent: {
     },
     innerText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 10,
         marginTop: 5
     },
     firstCheckBox: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#000',
         marginLeft: 10
     },
     subHead: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'Roboto',
       fontSize: 12,
       color: '#000',
       marginTop: 10

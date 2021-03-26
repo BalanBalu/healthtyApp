@@ -38,7 +38,7 @@ export default  styles = StyleSheet.create({
       cardText3: {
         color: primaryColor,
         fontSize: 14,
-        fontWeight: 'bold',
+        fontFamily:'opensans-bold',
       },
       Button: {
         marginTop: 20,
@@ -50,8 +50,8 @@ export default  styles = StyleSheet.create({
       },
       buttonText: {
         textAlign: 'center',
-        fontWeight: 'bold',
-        fontSize: 15
+        fontSize: 15,
+        fontFamily:'opensans-bold'
       },
       line: {
         marginTop: 8,
@@ -100,11 +100,10 @@ export default  styles = StyleSheet.create({
         padding: 5
       },
       addInsuranceText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 13,
         color: '#128283',
         marginTop: 2,
-        fontWeight: 'bold'
       },
       CardStyle: {
         marginTop: 10,
@@ -126,7 +125,7 @@ export default  styles = StyleSheet.create({
         width: '70%'
       },
       HeadingText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
         color: '#128283',
         lineHeight: 20
@@ -137,7 +136,7 @@ export default  styles = StyleSheet.create({
         width: '30%'
       },
       rightText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
         color: '#000',
         lineHeight: 20
@@ -148,7 +147,7 @@ export default  styles = StyleSheet.create({
         width: '50%'
       },
       smallrightText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         color: '#000'
       },
@@ -158,7 +157,7 @@ export default  styles = StyleSheet.create({
         width: '50%'
       },
       leftText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
         color: '#000'
       },
@@ -170,10 +169,9 @@ export default  styles = StyleSheet.create({
         paddingVertical: 5
       },
       renewalButtonText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 13,
         color: '#fff',
-        fontWeight: 'bold'
       },
       modalFirstView: {
         flex: 1,
@@ -193,9 +191,9 @@ export default  styles = StyleSheet.create({
       },
       modalHeading: {
         fontSize: 20,
-        fontWeight: 'bold',
         textAlign: 'center',
-        color: '#000'
+        color: '#000',
+        fontFamily:'opensans-bold'
       },
       backToHomeButton: {
         paddingLeft: 10,
@@ -207,11 +205,10 @@ export default  styles = StyleSheet.create({
         justifyContent: 'center'
       },
       backToHomeButtonText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 15,
         textAlign: 'center',
         color: '#fff',
-        fontWeight: 'bold'
       },
       cardStyles: {
         marginTop: 15,
@@ -230,11 +227,10 @@ export default  styles = StyleSheet.create({
         justifyContent: 'center'
       },
       backToHomeButtonText1: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 15,
         textAlign: 'center',
         color: '#fff',
-        fontWeight: 'bold'
       },
       formStyle6: {
         borderColor: '#909090',
@@ -246,9 +242,8 @@ export default  styles = StyleSheet.create({
       },
       subHeadingText: {
         fontSize: 16,
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         marginTop: 25,
-        fontWeight: '700',
       },
       textInputStyle: {
         borderColor: '#909090',
@@ -283,7 +278,7 @@ export default  styles = StyleSheet.create({
       },
       radioButtonStyle: {
         fontSize: 14,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
       },
       ecardButton: {
         marginTop: 15,
@@ -291,7 +286,7 @@ export default  styles = StyleSheet.create({
         justifyContent: 'center',
       },
       linkHeader: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 15,
         textDecorationColor: primaryColor,
         textDecorationLine: 'underline',

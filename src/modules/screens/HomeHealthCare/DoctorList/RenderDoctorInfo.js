@@ -21,10 +21,10 @@ export default class RenderDoctorInfo extends Component {
                     </Col>
                     <Col style={{ width: '73%' }}>
                         <Row style={{ marginLeft: 55, }}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
+                            <Text style={{ fontFamily: 'opensans-bold', fontSize: 12,}}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
                         </Row>
                         <Row style={{ marginLeft: 55, }}>
-                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+                            <Text note style={{ fontFamily: 'Roboto', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
                         </Row>
 
                     </Col>
@@ -40,8 +40,8 @@ export default class RenderDoctorInfo extends Component {
                 </Row>
                 <Row>
                     <Col style={{ width: "25%", marginTop: 20 }}>
-                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}> Experience</Text>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{getDoctorExperience(item.calculatedExperience) || {}}</Text>
+                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, }}> Experience</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{getDoctorExperience(item.calculatedExperience) || {}}</Text>
                     </Col>
                     <Col style={{ width: "25%", marginTop: 20 }}>
                         <RenderStarRatingCount
@@ -54,10 +54,10 @@ export default class RenderDoctorInfo extends Component {
                         />
                     </Col>
                     <Col style={{ width: "25%", marginTop: 20 }}>
-                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Fees</Text>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
+                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> Fees</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
                             {fee !== feeWithoutOffer ?
-                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
+                                <Text style={{ fontFamily: 'Roboto', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
                                     {'\u20B9'}{feeWithoutOffer || 0}</Text> : null
                             }
                         </Text>

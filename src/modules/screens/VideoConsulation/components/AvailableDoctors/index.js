@@ -470,7 +470,7 @@ class AvailableDoctors4Video extends Component {
                         <Col size={4}>
                             <Row style={{ justifyContent: 'center' }}>
                                 {isPremium === true ?
-                                    <Text style={{ paddingLeft: 5, paddingRight: 5, fontSize: 10, fontFamily: 'OpenSans', marginLeft: 5, backgroundColor: '#8EC63F', borderRadius: 10, color: '#fff', height: 15, marginTop: 3 }}>
+                                    <Text style={{ paddingLeft: 5, paddingRight: 5, fontSize: 10, fontFamily: 'Roboto', marginLeft: 5, backgroundColor: '#8EC63F', borderRadius: 10, color: '#fff', height: 15, marginTop: 3 }}>
                                         SPONSORED</Text> : null}
                             </Row>
                         </Col>
@@ -478,9 +478,8 @@ class AvailableDoctors4Video extends Component {
 
                     </Row>
                     <Row style={{ marginTop: 2 }}>
-                        <Text style={styles.docname}>{''}
-                            <Text note style={styles.status}>{this.getDoctorCategory(item)}</Text>
-                        </Text>
+                       
+                            <Text note style={styles.status}>{''}{this.getDoctorCategory(item)}</Text>
                     </Row>
 
                     <Row>
@@ -496,8 +495,7 @@ class AvailableDoctors4Video extends Component {
                                     <Col size={9} style={{ justifyContent: 'center' }}>
                                         <Text style={{
                                             color: '#8EC63F', fontSize: 12,
-                                            fontWeight: 'bold',
-                                            fontFamily: 'OpenSans',
+                                            fontFamily: 'opensans-bold',
                                             marginLeft: 2,
                                             marginTop: 6
                                         }
@@ -537,7 +535,7 @@ class AvailableDoctors4Video extends Component {
                             <Button disabled style={{ height: 30, borderRadius: 10, backgroundColor: primaryColor }}>
                                 <Icon name="ios-videocam" style={{ color: '#FFFFFF', fontSize: 15 }} />
                                 <Text style={{ marginLeft: -20, fontSize: 10 }}>next Available on {this.getNextAvailabiltyData(item)}</Text>
-                                {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
+                                {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                             </Button>
                         </Row> : null}
                 </Col>
@@ -553,7 +551,7 @@ class AvailableDoctors4Video extends Component {
                                         <Col style={{ alignItems: 'center', marginTop: -25 }}>
                                             <TouchableOpacity onPress={() => this.onBookButtonPress4Payment(item.doctor_id, item.chat_service_config.chat_fee)}
                                                 style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center' }}>
-                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, padding: 3, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Chat</Text>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, padding: 3, fontWeight: 'bold', fontFamily: 'Roboto' }}>Chat</Text>
                                             </TouchableOpacity>
                                         </Col>
                                     </Row>
@@ -597,7 +595,7 @@ class AvailableDoctors4Video extends Component {
 
                     {availableVideoDoctors.length === 0 && isLoading === false ?
                         <View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
                                 No Doctors Found for your Search
 						</Text>
                         </View>
@@ -658,12 +656,12 @@ class AvailableDoctors4Video extends Component {
                                         <Row>
                                             <Col size={5}>
                                                 <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, borderRadius: 5, backgroundColor: 'red', height: 25, alignItems: 'center', justifyContent: 'center' }} onPress={() => this.setState({ descriptionVisible: false })} testID='cancelButton'>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: 'bold' }}> {'CANCEL'}</Text>
+                                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, textAlign: 'center', color: '#fff', }}> {'CANCEL'}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                             <Col size={5} style={{ marginRight: 3, marginLeft: 5 }} >
                                                 <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, borderRadius: 5, height: 25, alignItems: 'center', justifyContent: 'center' }} onPress={() => this.descritionSubmission(serviceType)} testID='submitButton'>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>{'SUBMIT'}</Text>
+                                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, textAlign: 'center', color: '#fff', }}>{'SUBMIT'}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                         </Row>
@@ -688,24 +686,23 @@ export default AvailableDoctors4Video
 const styles = StyleSheet.create({
 
     docname: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 14,
-        fontWeight: 'bold'
     },
     date: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: 'gray',
         marginLeft: 15,
         marginTop: 3
     },
     status: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: 'gray'
     },
     msg: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: '#fff',
         borderRadius: 50,
@@ -714,7 +711,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     msgStyle: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: 'blue',
     },
@@ -737,9 +734,8 @@ const styles = StyleSheet.create({
     },
     SubText: {
         color: '#FFF',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 14,
-        fontWeight: 'bold',
         marginLeft: 20
     },
     SearchRow: {
@@ -754,7 +750,7 @@ const styles = StyleSheet.create({
     },
     inputfield: {
         color: 'gray',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 10,
         padding: 5,
         paddingLeft: 10
@@ -811,8 +807,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#FFFFFF',
         fontSize: 8,
-        fontWeight: 'bold',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         marginTop: 4,
         marginLeft: 4,
 
@@ -821,13 +816,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#5A89B6',
         fontSize: 10,
-        fontWeight: 'bold',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         marginLeft: 4,
         marginTop: 4
     },
     reasonText: {
-        fontFamily: 'Opensans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         color: '#fff',
         marginLeft: 5

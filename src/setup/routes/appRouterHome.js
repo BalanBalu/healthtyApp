@@ -213,14 +213,14 @@ const HomeStack = createStackNavigator({
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
                   <Icon name="location-sharp" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
                   <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
-                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
+                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'opensans-bold', }} duration={10000}
                       loop
                       bounce
                       repeatSpacer={50}
                       marqueeDelay={1000}>
                       {navigation.getParam('appBar', { locationName: ' ' }).locationName}
                     </TextTicker>
-                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }} duration={10000}
+                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'Roboto', marginTop: 2 }} duration={10000}
                       loop
                       bounce
                       repeatSpacer={200}
@@ -237,7 +237,7 @@ const HomeStack = createStackNavigator({
               <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
                   <View>
-                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'Roboto', fontSize: 25 }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
                       <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
                   </View>
@@ -272,11 +272,11 @@ const HomeStack = createStackNavigator({
                   <View style={{ flexDirection: 'row' }}>
                     <Icon name="location-sharp" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
                    
-                    <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>{navigation.getParam('appBar', { locationName: ' ' }).locationName}</Text>
+                    <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'Roboto', fontWeight: 'bold' }}>{navigation.getParam('appBar', { locationName: ' ' }).locationName}</Text>
                     <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
                   </View>
                 </TouchableOpacity>
-                <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }}>{navigation.getParam('appBar', { locationCapta: 'You are searching Near by Hospitals' }).locationCapta}</Text>
+                <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'Roboto', marginTop: 2 }}>{navigation.getParam('appBar', { locationCapta: 'You are searching Near by Hospitals' }).locationCapta}</Text>
               </Col>
             </Row>
   
@@ -288,7 +288,7 @@ const HomeStack = createStackNavigator({
           <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
-                <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold' }}></Icon>
+                <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'Roboto' }}></Icon>
                 {navigation.getParam('notificationBadgeCount') != null ?
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
                   : null}
@@ -346,14 +346,14 @@ const HomeStack = createStackNavigator({
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
                   <Icon name="location-sharp" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
                   <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
-                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }} duration={10000}
+                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'Roboto', fontWeight: 'bold' }} duration={10000}
                       loop
                       bounce
                       repeatSpacer={50}
                       marqueeDelay={1000}>
                       {navigation.getParam('appBar', { locationName: ' ' }).locationName}
                     </TextTicker>
-                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }} duration={10000}
+                    <TextTicker style={{ alignSelf: 'flex-start', color: '#fff', fontSize: 12, fontFamily: 'Roboto', marginTop: 2 }} duration={10000}
                       loop
                       bounce
                       repeatSpacer={200}
@@ -370,7 +370,7 @@ const HomeStack = createStackNavigator({
               <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginRight: 5 }}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
                   <View>
-                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'opensans-semibold',fontSize:25 }}></Icon>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'Roboto',fontSize:25 }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
                       <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
                   </View>
@@ -454,9 +454,9 @@ const HomeStack = createStackNavigator({
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('BloodDonerFilters') }} >
               <View>
-                <Icon name="ios-funnel" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+                <Icon name="ios-funnel" style={{ color: '#fff', marginRight: 15, fontFamily: 'Roboto' }}></Icon>
                 {navigation.getParam("filerCount") != undefined && navigation.getParam("filerCount") != 0 ?
-                  <Text style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', backgroundColor: 'red', borderRadius: 30 / 2, position: 'absolute', marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10 }}>{navigation.getParam("filerCount")}</Text>
+                  <Text style={{ color: '#fff', marginRight: 15, fontFamily: 'Roboto', backgroundColor: 'red', borderRadius: 30 / 2, position: 'absolute', marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10 }}>{navigation.getParam("filerCount")}</Text>
                   : null
                 }
               </View>
@@ -923,7 +923,7 @@ const HomeStack = createStackNavigator({
               name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
             />
             {Platform.OS === "ios" ?
-              <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#FFF', marginLeft: 5, fontWeight: '300' }}>Back</Text> : null}
+              <Text style={{ fontFamily: 'Roboto', fontSize: 16, color: '#FFF', marginLeft: 5,  }}>Back</Text> : null}
           </Row>
         </TouchableOpacity>
       ),
@@ -953,8 +953,8 @@ const HomeStack = createStackNavigator({
             </TouchableOpacity>
           </Col>
           <Col style={{ marginLeft: 15, justifyContent: 'center', }}>
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
-            {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
+            <Text style={{ fontFamily: 'Roboto', fontSize: 16, fontFamily: 'opensans-bold', color: '#fff' }}>{navigation.getParam('appBar', { title: '' }).title}</Text>
+            {/* <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#fff', }}>{navigation.getParam('appBar', { isOnline: '' }).isOnline}</Text> */}
           </Col>
 
         </Grid>
@@ -979,11 +979,11 @@ const HomeStack = createStackNavigator({
           <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'Roboto', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
                     <Text
-                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 1.5 }}
                     >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
                     </Text>
                   </View>
@@ -1011,11 +1011,11 @@ const HomeStack = createStackNavigator({
           <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'Roboto', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
                     <Text
-                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 1.5 }}
                     >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
                     </Text>
                   </View>
@@ -1036,11 +1036,11 @@ const HomeStack = createStackNavigator({
           <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'Roboto', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
                     <Text
-                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 1.5 }}
                     >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
                     </Text>
                   </View>
@@ -1073,11 +1073,11 @@ const HomeStack = createStackNavigator({
           <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'Roboto', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
                     <Text
-                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 1.5 }}
                     >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
                     </Text>
                   </View>
@@ -1134,11 +1134,11 @@ const HomeStack = createStackNavigator({
           <Col style={{ justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} style={{ marginRight: 15, paddingRight: 10, paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} >
               <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold', fontSize: 25 }}></Icon>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 10, fontFamily: 'Roboto', fontSize: 25 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <View style={{ alignItems: 'center', backgroundColor: 'red', position: 'absolute', height: 20, width: 20, borderRadius: 20 / 2, padding: 1, justifyContent: 'center', left: 10, bottom: 10 }}>
                     <Text
-                      style={{ color: '#fff', fontSize: 10, flex: 3, fontWeight: 'bold', textAlign: 'center', marginTop: 1.5 }}
+                      style={{ color: '#fff', fontSize: 10, flex: 3, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 1.5 }}
                     >{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}
                     </Text>
                   </View>
@@ -1195,8 +1195,8 @@ const HomeStack = createStackNavigator({
 
         <TouchableOpacity onPress={() => { navigation.navigate('AddReminder') }} style={{ backgroundColor: '#ffffff', borderRadius: 10, height: 30, paddingLeft: 10, paddingRight: 10, marginRight: 10, }}>
           <Row>
-            <Icon name="ios-add-circle" style={{ color: '#7E49C3', fontFamily: 'opensans-semibold', fontSize: 20, marginTop: 3 }}></Icon>
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginLeft: 5, fontWeight: 'bold', marginTop: 5 }}>Add</Text>
+            <Icon name="ios-add-circle" style={{ color: '#7E49C3', fontFamily: 'Roboto', fontSize: 20, marginTop: 3 }}></Icon>
+            <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, marginLeft: 5, marginTop: 5 }}>Add</Text>
           </Row>
         </TouchableOpacity>
 

@@ -114,7 +114,7 @@ class SocialHistory extends PureComponent {
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Social history</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Are you sexually active?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Are you sexually active?</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
@@ -141,7 +141,7 @@ class SocialHistory extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Do you drink alcohol?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Do you drink alcohol?</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
@@ -168,7 +168,7 @@ class SocialHistory extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Do you smoke ?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Do you smoke ?</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
@@ -195,7 +195,7 @@ class SocialHistory extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Do you use recreational drugs?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Do you use recreational drugs?</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
@@ -222,7 +222,7 @@ class SocialHistory extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>How many caffinated drinks do you have per day?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>How many caffinated drinks do you have per day?</Text>
                             <Form style={styles.formStyle6}>
                                 <Picker style={styles.userDetailLabel}
                                     mode="dropdown"
@@ -253,7 +253,7 @@ class SocialHistory extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Have anyone in your home ever physically or verbally hurt you?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Have anyone in your home ever physically or verbally hurt you?</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>
@@ -280,7 +280,7 @@ class SocialHistory extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Do you exercise ?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Do you exercise ?</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }} size={5}>
                                     <Col style={{ flexDirection: 'row' }}>

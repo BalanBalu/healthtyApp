@@ -210,7 +210,7 @@ class NetworkHospitals extends Component {
                                 placeholder="Search your Network Hospitals"
                                 style={{
                                     color: 'gray',
-                                    fontFamily: 'OpenSans',
+                                    fontFamily: 'Roboto',
                                     fontSize: 12,
                                     padding: 5,
                                     paddingLeft: 10
@@ -238,7 +238,7 @@ class NetworkHospitals extends Component {
                             </Col>
                             <Col size={8} style={{ justifyContent: 'center' }}>
                                 <Text style={{
-                                    fontFamily: 'OpenSans',
+                                    fontFamily: 'Roboto',
                                     color: '#000',
                                     fontSize: 13,
                                 }}>

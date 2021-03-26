@@ -247,7 +247,7 @@ class UploadEmr extends Component {
                                 <Col size={5} style={{ backgroundColor: '#fff' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })} style={styles.buttonTouch}>
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#128283', fontWeight: '400' }}>Add More </Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'Roboto', color: '#128283', fontWeight: '400' }}>Add More </Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
@@ -255,7 +255,7 @@ class UploadEmr extends Component {
                                 <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity onPress={() => this.EmrUpload()} style={styles.buttonTouch}>
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>upload</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'Roboto', color: '#fff', fontWeight: '400' }}>upload</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>

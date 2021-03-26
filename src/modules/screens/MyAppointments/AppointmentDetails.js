@@ -374,7 +374,7 @@ class AppointmentDetails extends Component {
                       <Row>
                         <Col size={9}>
                           <Text style={styles.Textname} >{getDoctorNameOrHospitalName(data)}</Text>
-                          <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color: '#4c4c4c' }}>{education}</Text>
+                          <Text note style={{ fontSize: 13, fontFamily: 'Roboto', color: '#4c4c4c' }}>{education}</Text>
                           <Text style={styles.specialistTextStyle} >{specialist} </Text>
                         </Col>
                         <Col size={1}>
@@ -405,7 +405,7 @@ class AppointmentDetails extends Component {
                     </Col>
                     {data.appointment_status == 'APPROVED' && data.onGoingAppointment === true ?
                       <Col size={3}>
-                        <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: 'green' }}>ONGOING</Text>
+                        <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>ONGOING</Text>
                       </Col>
                       :
                       data.appointment_status != undefined &&
@@ -590,7 +590,7 @@ class AppointmentDetails extends Component {
                                   <Text style={styles.commonText}>-</Text>
                                 </Col>
                                 <Col size={7.5}>
-                                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{patDetailsDataObj.patient_name}</Text>
+                                  <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#4c4c4c' }}>{patDetailsDataObj.patient_name}</Text>
                                 </Col>
                               </Row>
                             </Col>
@@ -607,7 +607,7 @@ class AppointmentDetails extends Component {
                                   <Text style={styles.commonText}>-</Text>
                                 </Col>
                                 <Col size={7.5}>
-                                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{(patDetailsDataObj.patient_age) + ' - ' + (patDetailsDataObj.gender)}</Text>
+                                  <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#4c4c4c' }}>{(patDetailsDataObj.patient_age) + ' - ' + (patDetailsDataObj.gender)}</Text>
                                 </Col>
                               </Row>
                             </Col>
@@ -748,7 +748,7 @@ class AppointmentDetails extends Component {
                             block success
                             style={styles.reviewButton
                             }>
-                            <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
+                            <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 5 }}>
                               {translate("Report Issue")}
                             </Text>
                           </TouchableOpacity>
@@ -783,7 +783,7 @@ class AppointmentDetails extends Component {
                           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
 
-                              <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>{translate("Add Feedback")} </Text>
+                              <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 5 }}>{translate("Add Feedback")} </Text>
                               <MaterialIcons name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></MaterialIcons>
                             </TouchableOpacity>
                           </View>
@@ -912,22 +912,22 @@ class AppointmentDetails extends Component {
               }}>
 
                 <CardItem header style={styles.cardItem3}>
-                  <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: -5, color: '#FFF', marginLeft: -5 }}>{'Doctor has Rescheduled the appointment !'}</Text></CardItem>
+                  <Text style={{ fontSize: 13, fontFamily: 'opensans-bold', marginTop: -5, color: '#FFF', marginLeft: -5 }}>{'Doctor has Rescheduled the appointment !'}</Text></CardItem>
                 <Row style={{ justifyContent: 'center' }}>
                   <Col style={{ width: '25%' }}>
-                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "DD/MM/YYYY") : null}</Text>
+                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "DD/MM/YYYY") : null}</Text>
                   </Col>
                   <Col style={{ width: '75%' }}>
-                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "hh:mm a") + formatDate(data.previous_data.endDateTime, "-hh:mm a") : null}</Text>
+                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "hh:mm a") + formatDate(data.previous_data.endDateTime, "-hh:mm a") : null}</Text>
                   </Col>
 
                 </Row>
                 <Row style={{ justifyContent: 'center' }}>
                   <Col style={{ width: '30%' }}>
-                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "DD/MM/YYYY")}</Text>
+                    <Text style={{ fontSize: 14, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "DD/MM/YYYY")}</Text>
                   </Col>
                   <Col style={{ width: '70%' }}>
-                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "hh:mm a") + formatDate(data.appointment_endtime, "-hh:mm a")}</Text>
+                    <Text style={{ fontSize: 14, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "hh:mm a") + formatDate(data.appointment_endtime, "-hh:mm a")}</Text>
                   </Col>
 
                 </Row>
@@ -940,17 +940,17 @@ class AppointmentDetails extends Component {
                         <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: primaryColor }}
                           onPress={() => this.SkipAction()} testID='confirmButton'>
 
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'SKIP'}</Text>
+                          <Text style={{ fontFamily: 'Roboto', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'SKIP'}</Text>
                         </TouchableOpacity>
                       </Col>
                       <Col size={3.4} style={{ marginRight: 3 }} >
                         <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, }} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='confirmButton'>
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}>{'ACCEPT'}</Text>
+                          <Text style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center', color: '#fff' }}>{'ACCEPT'}</Text>
                         </TouchableOpacity>
                       </Col>
                       <Col size={3.6}>
                         <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: 'red' }} onPress={() => this.navigateCancelAppoointment()} testID='cancelButton'>
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}> {'CANCEL'}</Text>
+                          <Text style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center', color: '#fff' }}> {'CANCEL'}</Text>
                         </TouchableOpacity>
                       </Col>
                     </Row>
@@ -997,7 +997,7 @@ const styles = StyleSheet.create({
 
   },
   cardItemText2: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 13,
     marginTop: 5,
     fontStyle: 'italic',
@@ -1005,30 +1005,27 @@ const styles = StyleSheet.create({
   },
   Textname: {
     fontSize: 14,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold'
+    fontFamily: 'opensans-bold',
   },
   specialistTextStyle: {
     fontSize: 12,
-    fontFamily: 'OpenSans',
-    fontWeight: 'normal',
+    fontFamily: 'Roboto',
     marginTop: 5
 
   },
   subText1: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold'
+    fontFamily: 'opensans-bold',
   },
   subText2: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginLeft: 5,
     color: '#4c4c4c'
   },
   subText3: {
     fontSize: 12,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginLeft: 5
   },
   confirmButton: {
@@ -1040,11 +1037,11 @@ const styles = StyleSheet.create({
   ButtonText: {
     color: '#fff',
     fontSize: 10,
-    fontWeight: 'bold',
+    fontFamily:'opensans-bold'
   },
   textApproved: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontFamily:'opensans-bold'
   },
   postponeButton: {
     // backgroundColor:'#4765FF',
@@ -1053,9 +1050,8 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   timeText: {
-    fontFamily: 'OpenSans',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'opensans-bold',
+    fontSize: 13,
     color: '#FFF',
     marginLeft:10
    
@@ -1078,17 +1074,15 @@ const styles = StyleSheet.create({
     padding: 8
   },
   touchableText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 15,
-    fontWeight: 'bold',
     color: '#4765FF',
     marginTop: 4,
     marginLeft: 5
   },
   touchableText1: {
-    fontFamily: 'OpenSans',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'opensans-bold',
+    fontSize: 13,
     color: '#fff',
     textAlign: 'center'
   },
@@ -1109,32 +1103,30 @@ const styles = StyleSheet.create({
   },
   innerSubText: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold',
+    fontFamily: 'opensans-bold',
     marginBottom: 5
   },
   subTextInner1: {
     fontSize: 12,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginBottom: 5,
     color: '#4c4c4c'
   },
   subTextInner2: {
     fontSize: 10,
     color: "red",
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginBottom: 5
   },
 
   downText: {
     fontSize: 12,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   cardItemText3: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 18,
     height: 30,
-    fontWeight: 'bold',
     color: '#FFF', paddingBottom: -10
   },
   card: {
@@ -1159,20 +1151,20 @@ const styles = StyleSheet.create({
     padding: 5
   },
   diseaseText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     marginLeft: 10,
     fontStyle: 'italic',
     marginTop: -5
   },
   hospitalText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     marginLeft: 15,
     width: "80%"
   },
   hosAddressText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     marginLeft: 15,
     fontStyle: 'italic',
@@ -1201,26 +1193,24 @@ const styles = StyleSheet.create({
     marginTop: -10
   },
   cardItemText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 16,
-    fontWeight: 'bold',
     color: '#FFF'
   },
   subText: {
-    fontFamily: 'Opensans',
+    fontFamily: 'opensans-bold',
     fontSize: 18,
-    fontWeight: 'bold',
     marginTop: 15,
     marginLeft: 5
   },
   customHead:
   {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   customText:
   {
 
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: '#000',
     fontSize: 14,
 
@@ -1240,19 +1230,19 @@ const styles = StyleSheet.create({
     marginTop: -150,
     marginLeft: 15,
     marginRight: 15,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
 
   },
   topValue: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   bottomValue:
   {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12
   },
 
@@ -1264,7 +1254,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF9500',
     color: '#fff',
     width: 160,
-    fontFamily: 'opensans-semibold',
+    fontFamily: 'Roboto-semibold',
     textAlign: 'center',
     borderRadius: 10
 
@@ -1284,7 +1274,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     height: 25,
     width: 25,
-    fontWeight: 'bold'
+    fontFamily: 'opensans-bold'
 
   },
   leftButton:
@@ -1314,7 +1304,7 @@ const styles = StyleSheet.create({
   customPadge: {
     color: 'white',
     textAlign: 'center',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 10,
     padding: 5,
   },
@@ -1360,21 +1350,18 @@ const styles = StyleSheet.create({
   },
   innerSubText1: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold',
+    fontFamily: 'opensans-bold',
     color: primaryColor,
     // marginBottom: 5
   },
   commonText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     color: '#4c4c4c',
-    fontWeight: '500'
   },
   bookAgain1: {
     fontSize: 13,
-    fontFamily: 'OpenSans',
-    fontWeight: 'bold'
+    fontFamily: 'opensans-bold',
   },
   bookingButton: {
     marginTop: 10,

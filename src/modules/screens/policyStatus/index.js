@@ -248,12 +248,12 @@ class PolicyStatus extends Component {
                   <Card style={styles.cardStyle}>
                     <Row>
                       <Col size={9}>
-                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: primaryColor, fontWeight: '700' }}
+                        <Text style={{ fontSize: 16, fontFamily: 'opensans-bold', color: primaryColor,}}
                           numberOfLines={1}
                           ellipsizeMode="tail">{item.EMPLOYEE_NAME}</Text>
                         <Row>
                           <Col size={3}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#909090', marginTop: 5 }}
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 16, color: '#909090', marginTop: 5 }}
                               numberOfLines={1}
                               ellipsizeMode="tail">Member Code</Text>
                           </Col>
@@ -312,16 +312,15 @@ export default PolicyStatus
 
 const styles = StyleSheet.create({
   usedAmount: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 18,
     color: '#000',
     textAlign: 'center',
-    fontWeight: 'bold',
     marginLeft: 5
 
   },
   totalAmount: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 13,
     color: '#909090',
     textAlign: 'center'
@@ -329,32 +328,31 @@ const styles = StyleSheet.create({
   nameText: {
     textAlign: 'center',
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily:'opensans-bold',
     color: primaryColor
   },
   policyText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     color: '#909090',
     marginTop: 5,
     textAlign: 'center'
   },
   commonText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     color: '#000'
   },
   commonBoldText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 16,
     color: '#909090'
   },
   boldText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 16,
     color: primaryColor,
     marginTop: 2,
-    fontWeight: 'bold'
   },
   gradientStyle: {
     justifyContent: 'center',
@@ -369,14 +367,14 @@ const styles = StyleSheet.create({
   subHeadingStyle: {
     fontSize: 14,
     marginTop: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: '#909090'
   },
   subHeadingData: {
     fontSize: 15,
     color: '#000',
     marginTop: 5,
-    fontFamily: 'OpenSans'
+    fontFamily: 'Roboto'
   },
   cardStyles: {
     marginTop: 15,
@@ -388,7 +386,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   linkHeader: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 15,
     textDecorationColor: primaryColor,
     textDecorationLine: 'underline',

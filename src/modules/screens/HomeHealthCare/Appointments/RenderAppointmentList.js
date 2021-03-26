@@ -48,7 +48,7 @@ export default class RenderAppointmentList extends Component {
                             </Row>
                             <Row style={{ borderBottomWidth: 0 }}>
                                 <Text
-                                    style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
+                                    style={{ fontFamily: "Roboto", fontSize: 14, width: '60%' }}
                                 >
                                     {item.specialist}
                                 </Text>
@@ -81,7 +81,7 @@ export default class RenderAppointmentList extends Component {
                                 {formatDate(item.appointmentResult.appointment_date, "dddd,MMMM DD-YYYY")} </Text>
                             <Row>
                                 <Col size={4} style={{ justifyContent: 'center' }}>
-                                    <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>
+                                    <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color,  }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>
                                 </Col>
 
                             </Row>

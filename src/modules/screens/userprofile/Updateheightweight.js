@@ -77,37 +77,37 @@ class UpdateHeightWeight extends Component {
                        
                             <Item style={{ borderBottomWidth: 0 }}>
                             
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, marginRight: 10 }} >Height : </Text>
+                            <Text style={{ fontSize: 15, fontFamily: 'Roboto', marginTop: 5, marginRight: 10 }} >Height : </Text>
 
                                 <Col style={styles.transparentLabel1}>
                                     
                                     <Row>
                                         <Input placeholder="Height in cm"
-                                            style={{ fontSize: 13, fontFamily: 'OpenSans', marginTop: -5 }}
+                                            style={{ fontSize: 13, fontFamily: 'Roboto', marginTop: -5 }}
                                             value={this.state.setHeight}
                                              onChangeText={(setHeight) => this.setState({setHeight})}
                                             /> 
-                                       <Text style={{ fontSize: 13, fontFamily: 'OpenSans', marginTop:10, marginRight:50 }}>cm</Text>
+                                       <Text style={{ fontSize: 13, fontFamily: 'Roboto', marginTop:10, marginRight:50 }}>cm</Text>
                                     </Row>
                                 </Col>
 
 
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, marginRight: 10 }} >Weight : </Text>
+                            <Text style={{ fontSize: 15, fontFamily: 'Roboto', marginTop: 5, marginRight: 10 }} >Weight : </Text>
                                 <Col style={styles.transparentLabel1}>
                                     <Row>
                                         <Input placeholder="Weight in kg"
-                                             style={{ fontSize: 13, fontFamily: 'OpenSans', marginTop: -5 }}
+                                             style={{ fontSize: 13, fontFamily: 'Roboto', marginTop: -5 }}
                                              value={this.state.setWeight}
                                              onChangeText={(setWeight) => this.setState({setWeight})}
                                              />
-                                        <Text style={{ fontSize: 13, fontFamily: 'OpenSans', marginTop:10, marginRight:50 }}>kg</Text>
+                                        <Text style={{ fontSize: 13, fontFamily: 'Roboto', marginTop:10, marginRight:50 }}>kg</Text>
                                     </Row>
                                 </Col>
 
                             </Item>
-                            {this.state.errorMsg ? <Text style={{ paddingLeft: 20, fontSize: 13, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errorMsg}</Text> : null}
+                            {this.state.errorMsg ? <Text style={{ paddingLeft: 20, fontSize: 13, fontFamily: 'Roboto', color: 'red' }}>{this.state.errorMsg}</Text> : null}
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>

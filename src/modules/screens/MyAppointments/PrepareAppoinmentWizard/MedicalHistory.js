@@ -119,7 +119,7 @@ class MedicalHistory extends PureComponent {
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Reason for visit</Text>
                         <View style={{ marginTop: 20 }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Why are you booking this appointment ?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Why are you booking this appointment ?</Text>
                             <Form style={styles.formText}>
                                 <TextInput
                                     placeholder="Enter reason"
@@ -135,7 +135,7 @@ class MedicalHistory extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20 }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15 }}>Do you have any other concerns you would like to address ?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15 }}>Do you have any other concerns you would like to address ?</Text>
                             <Form style={{
                                 borderColor: '#909090',
                                 borderWidth: 0.5, height: 80, borderRadius: 5, marginTop: 10,
@@ -154,7 +154,7 @@ class MedicalHistory extends PureComponent {
                         </View>
                         <View style={{ marginTop: 20 }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15 }}>How is your general health?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15 }}>How is your general health?</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col size={5} style={{ flexDirection: 'row' }}>
                                     <Radio

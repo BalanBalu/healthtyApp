@@ -4,12 +4,12 @@ export default  styles = StyleSheet.create({
 HeadingText:{
     marginTop: 10, 
     color: '#128283', 
-    fontWeight: 'bold', 
-    fontSize: 18
+    fontSize: 16,
+    fontFamily:'opensans-bold'
 },
 subHeadingText:{
     fontSize: 15, 
-    fontFamily: 'OpenSans', 
+    fontFamily: 'Roboto', 
     marginTop: 20
 },
 textInputStyle:{
@@ -55,19 +55,17 @@ modalSecondView:{
 },
 modalHeading:{
     fontSize:20,
-    fontWeight:'bold',
+    fontFamily:'opensans-bold',
     textAlign:'center',
     color:'#fff'
 },
 modalSubText:{
     fontSize:14,
-    fontWeight:'500',
     textAlign:'center',
     color:'#fff'
 },
 emailSubText:{
     fontSize:15,
-    fontWeight:'500',
     textAlign:'center',
     marginTop:2,
     color:'#fff'
@@ -82,11 +80,10 @@ backToHomeButton:{
     justifyContent: 'center' 
 },
 backToHomeButtonText:{
-    fontFamily: 'OpenSans', 
+    fontFamily: 'opensans-bold', 
     fontSize: 15, 
     textAlign: 'center', 
     color: '#128283', 
-    fontWeight: 'bold'
 },
 formStyle6: {
     borderColor: '#909090',
