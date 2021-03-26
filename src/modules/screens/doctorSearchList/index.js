@@ -627,7 +627,7 @@ class doctorSearchList extends Component {
             <Row style={{ justifyContent: 'center', marginTop: 20 }}>
                 <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: primaryColor }}>
                     <Text>No Slots Available</Text>
-                    {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
+                    {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                 </Button>
             </Row>
         )
@@ -711,19 +711,19 @@ class doctorSearchList extends Component {
                     </Col>
                     <Col size={8} style={{ marginLeft: 10 }}>
 
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
 
-                        <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, fontWeight: 'bold' }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', marginTop: 2, fontSize: 10, marginTop: 5, }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
 
-                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: 5, fontSize: 11, color: '#808080' }}>
+                        <Text style={{ fontFamily: 'opensans-bold', marginTop: 5, fontSize: 11, color: '#808080' }}>
                             {item.location.name + ' - ' + item.location.location.address.city}
                         </Text>
-                        <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, fontWeight: 'bold', color: '#808080' }}>Experience: {getDoctorExperience(item.calulatedExperience)} </Text>
+                        <Text style={{ fontFamily: 'opensans-bold', marginTop: 2, fontSize: 10, marginTop: 5, color: '#808080' }}>Experience: {getDoctorExperience(item.calulatedExperience)} </Text>
 
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 10 }}>
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginTop: 2 }}> Rating -</Text>
+                    <Text note style={{ fontFamily: 'Roboto', fontSize: 10, textAlign: 'center', marginTop: 2 }}> Rating -</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 5 }}>
                         <StarRating
                             fullStarColor='#FF9500'
@@ -734,18 +734,18 @@ class doctorSearchList extends Component {
                             rating={1}
                             maxStars={1}
                         />
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
                     </View>
 
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginLeft: 10, marginTop: 2 }}> Fees -</Text>
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
+                    <Text note style={{ fontFamily: 'Roboto', fontSize: 10, textAlign: 'center', marginLeft: 10, marginTop: 2 }}> Fees -</Text>
+                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
                         {fee !== feeWithoutOffer ?
-                            <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
                                 {'\u20B9'}{feeWithoutOffer}</Text> : null
                         }
                     </Text>
                     <TouchableOpacity onPress={() => this.navigateToBookAppointmentPage(item)} style={{ backgroundColor: primaryColor, borderRadius: 10, marginLeft: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 2, paddingBottom: 2, justifyContent: 'center', }}>
-                        <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                        <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontFamily: 'opensans-bold' }}>BOOK </Text>
                     </TouchableOpacity>
                 </Row>
             </Grid>
@@ -775,7 +775,7 @@ class doctorSearchList extends Component {
                                             <MaterialIcons name='keyboard-arrow-down' style={{ color: 'gray', fontSize: 20, marginTop: 10 }} />
                                         </Col>
                                         <Col size={8.9} style={{ justifyContent: 'center' }}>
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>{translate("Top Rated")}</Text>
+                                            <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>{translate("Top Rated")}</Text>
                                         </Col>
 
                                     </Col>
@@ -785,7 +785,7 @@ class doctorSearchList extends Component {
                                             <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25, marginTop: 5 }} />
                                         </Col>
                                         <Col size={8.9} style={{ justifyContent: 'center' }}>
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%', textAlign: 'center' }}>{translate("Filters") } </Text>
+                                            <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%', textAlign: 'center' }}>{translate("Filters") } </Text>
                                         </Col>
 
                                     </Col>
@@ -799,7 +799,7 @@ class doctorSearchList extends Component {
                                 :
                                 <View>
                                     <View style={{ borderBottomColor: '#B6B6B6', borderBottomWidth: 0.5, paddingBottom: 8 }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: primaryColor, fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
+                                        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10 }}>Recommended <Text style={{ color: primaryColor, fontFamily: 'Roboto', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
 
                                         <ScrollView
                                             horizontal={true}
@@ -853,14 +853,14 @@ class doctorSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: '73%' }}>
                                         <Row style={{ marginLeft: 55, }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
+                                            <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
-                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+                                            <Text note style={{ fontFamily: 'Roboto', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
 
-                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, }}>
+                                            <Text note style={{ fontFamily: 'Roboto', marginTop: 5, fontSize: 11, }}>
                                                 {item.location.name + ' - ' + item.location.location.address.city}
                                             </Text>
                                         </Row>
@@ -882,7 +882,7 @@ class doctorSearchList extends Component {
                                             </Row>
                                             :
                                             <Row>
-                                                <Text style={{ fontFamily: 'OpenSans', marginTop: 20, fontSize: 12, marginLeft: 15 }}>{this.getDistance(item.doctorIdHostpitalId)}</Text>
+                                                <Text style={{ fontFamily: 'Roboto', marginTop: 20, fontSize: 12, marginLeft: 15 }}>{this.getDistance(item.doctorIdHostpitalId)}</Text>
                                             </Row>
                                         }
 
@@ -891,11 +891,11 @@ class doctorSearchList extends Component {
 
                                 <Row>
                                     <Col style={{ width: "25%", marginTop: 20 }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}> Experience</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
+                                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, }}> Experience</Text>
+                                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{getDoctorExperience(item.calulatedExperience)}</Text>
                                     </Col>
                                     <Col style={{ width: "25%", marginTop: 20 }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', }}> Rating</Text>
+                                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center', }}> Rating</Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                             <StarRating
                                                 fullStarColor='#FF9500'
@@ -907,19 +907,19 @@ class doctorSearchList extends Component {
                                                 maxStars={1}
                                             />
 
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
+                                            <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
                                         </View>
 
                                     </Col>
                                     <Col style={{ width: "25%", marginTop: 20 }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5 }}> Favourite</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0'}</Text>
+                                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 5 }}> Favourite</Text>
+                                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, marginLeft: 5,  }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0'}</Text>
                                     </Col>
                                     <Col style={{ width: "25%", marginTop: 20 }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Fees</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
+                                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> Fees</Text>
+                                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
                                             {fee !== feeWithoutOffer ?
-                                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
+                                                <Text style={{ fontFamily: 'Roboto', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
                                                     {'\u20B9'}{feeWithoutOffer}</Text> : null
                                             }
                                         </Text>
@@ -936,12 +936,12 @@ class doctorSearchList extends Component {
                                     </Col>
                                     <Col size={7.5}>
 
-                                        <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
+                                        <Text note style={{ fontFamily: 'opensans-bold', marginTop: 15, fontSize: 12, marginRight: 50, }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
                                     </Col>
                                     <Col size={1.7}>
                                         {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
                                             <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
-                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontFamily: 'opensans-bold' }}>BOOK </Text>
                                             </TouchableOpacity> : null}
                                     </Col>
 
@@ -952,7 +952,7 @@ class doctorSearchList extends Component {
                                     <View>
 
                                         <Row style={{ marginTop: 10 }}>
-                                            <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
+                                            <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>Choose appointment date and time</Text>
                                         </Row>
                                         {this.renderDatesOnFlatlist(item.slotData, selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate, item.doctorIdHostpitalId)}
                                         {
@@ -964,8 +964,8 @@ class doctorSearchList extends Component {
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                    <Text  style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
-                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
+                                                    <Text  style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'Roboto' }}>Selected Appointment on</Text>
+                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'Roboto', marginTop: 5 }}>{selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
 
                                                 {/* <Col style={{ width: '35%' }}></Col> */}
@@ -974,7 +974,7 @@ class doctorSearchList extends Component {
                                                     <TouchableOpacity
                                                         onPress={() => {this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
                                                         style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
-                                                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
+                                                        <Text style={{ color: '#fff', fontSize: 12, fontFamily: 'opensans-bold' }}>Continue </Text>
                                                     </TouchableOpacity>
                                                 </Col>
 
@@ -1025,8 +1025,8 @@ class doctorSearchList extends Component {
                     <Col style={{ justifyContent: 'center' }}>
                         <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: primaryColor, alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
                             onPress={() => this.onDateChanged(item, doctorIdHostpitalId)}>
-                            <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
-                            <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
+                            <Text style={[{ fontSize: 12, fontFamily: 'Roboto' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
+                            <Text style={[{ fontSize: 10, fontFamily: 'Roboto' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
                         </TouchableOpacity>
                     </Col>
                 } keyExtractor={(item, index) => index.toString()} />
@@ -1070,7 +1070,7 @@ const styles = StyleSheet.create({
     slotDefaultTextColor: {
         color: '#000',
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         textAlign: 'center'
 
     },
@@ -1101,7 +1101,7 @@ const styles = StyleSheet.create({
     slotBookedTextColor: {
         color: '#fff',
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         textAlign: 'center'
     },
     slotBookedBgColorFromModal: {

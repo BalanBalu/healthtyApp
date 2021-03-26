@@ -6,16 +6,15 @@ import {primaryColor} from '../../../setup/config';
 export default  styles = StyleSheet.create(
   {
     usedAmount: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'opensans-bold',
       fontSize: 18,
       color: '#000',
       textAlign: 'center',
-      fontWeight: 'bold',
       marginLeft: 5
   
     },
     linkHeader: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'Roboto',
       fontSize: 15,
       textDecorationColor: primaryColor,
       textDecorationLine: 'underline',
@@ -28,7 +27,7 @@ export default  styles = StyleSheet.create(
     },
   
     totalAmount: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'Roboto',
       fontSize: 13,
       color: '#909090',
       textAlign: 'center'
@@ -36,32 +35,31 @@ export default  styles = StyleSheet.create(
     nameText: {
       textAlign: 'center',
       fontSize: 16,
-      fontWeight: '700',
-      color: primaryColor
+      color: primaryColor,
+      fontFamily:'opensans-bold'
     },
     policyText: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'Roboto',
       fontSize: 16,
       color: '#909090',
       marginTop: 5,
       textAlign: 'center'
     },
     commonText: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'Roboto',
       fontSize: 16,
       color: '#000'
     },
     commonBoldText: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'Roboto',
       fontSize: 16,
       color: '#909090'
     },
     boldText: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'opensans-bold',
       fontSize: 16,
       color: primaryColor,
       marginTop: 2,
-      fontWeight: 'bold'
     }
   
   }

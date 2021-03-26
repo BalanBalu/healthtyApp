@@ -325,7 +325,7 @@ class UpdateUserDetails extends Component {
                             marginTop: 7,
                             marginBottom: 7,
                             marginLeft: 5,
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'Roboto',
                             fontSize: 13,
                             textAlign: 'center',
                           }
@@ -423,12 +423,12 @@ class UpdateUserDetails extends Component {
                         style={
                           Platform.OS === 'ios'
                             ? {
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'Roboto',
                                 fontSize: 14,
                                 marginLeft: 5,
                               }
                             : {
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'Roboto',
                                 fontSize: 12,
                                 marginLeft: 5,
                               }
@@ -451,12 +451,12 @@ class UpdateUserDetails extends Component {
                         style={
                           Platform.OS === 'ios'
                             ? {
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'Roboto',
                                 fontSize: 14,
                                 marginLeft: 5,
                               }
                             : {
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'Roboto',
                                 fontSize: 12,
                                 marginLeft: 5,
                               }
@@ -480,12 +480,12 @@ class UpdateUserDetails extends Component {
                         style={
                           Platform.OS === 'ios'
                             ? {
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'Roboto',
                                 fontSize: 14,
                                 marginLeft: 5,
                               }
                             : {
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'Roboto',
                                 fontSize: 12,
                                 marginLeft: 5,
                               }

@@ -20,10 +20,9 @@ export default class RenderNetworkHospitalInfo extends Component {
             <Col size={7}>
               <Text
                 style={{
-                  fontFamily: 'OpenSans',
+                  fontFamily: 'opensans-bold',
                   fontSize: 16,
                   lineHeight: 25,
-                  fontWeight: '700',
                   color: primaryColor,
                 }}>
                 {item.tpaCompany ? item.tpaCompany : 'UnKnown'}
@@ -40,8 +39,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                 <Text
                   style={{
                     color: '#fff',
-                    fontFamily: 'OpenSans',
-                    fontWeight: '600',
+                    fontFamily: 'opensans-bold',
                     textAlign: 'center',
                     fontSize: 10,
                   }}>

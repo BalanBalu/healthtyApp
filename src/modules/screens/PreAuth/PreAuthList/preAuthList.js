@@ -105,13 +105,14 @@ export default class preAuthList extends Component {
         <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 15, marginRight: '3%' }}>
           <TouchableOpacity style={{ flexDirection: 'row', borderColor: primaryColor, borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('FamilyInfoList', { navigationPage: 'PreAuthSubmission' })}>
             <MaterialIcons name="add" style={{ color: primaryColor, fontSize: 20 }} />
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: primaryColor }}>{translate("Add Pre Auth")}</Text>
+            <Text style={{ fontFamily: 'Roboto', fontSize: 15, color: primaryColor }}>{translate("Add Pre Auth")}</Text>
           </TouchableOpacity>
         </View>
         {isLoading ?
           <Loader style='list' />
           :
           preAuthInfoList.length ?
+          <View style={{padding:10}}>
             <FlatList
               data={preAuthInfoList}
               onEndReachedThreshold={0.5}
@@ -123,6 +124,7 @@ export default class preAuthList extends Component {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index }) => this.renderPreAuthInformationCard(item, index)
               } />
+              </View>
             : <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} >{translate("No Pre Auth list found!")}</Text>
             </Item>

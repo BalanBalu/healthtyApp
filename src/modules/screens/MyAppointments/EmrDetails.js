@@ -266,26 +266,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mednamestyle: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 15,
-    fontWeight: 'bold',
   },
   innerText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 13,
     color: '#7d7d7d'
   },
   timestyle: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 15,
     marginLeft: 10,
-    fontWeight: 'bold'
   },
   remText: {
     textAlign: 'center',
     paddingBottom: 5,
     paddingTop: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14, color: '#128283'
   },
   profileImage: {

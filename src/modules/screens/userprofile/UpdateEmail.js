@@ -113,7 +113,7 @@ class UpdateEmail extends Component {
                     style={{
                       color: 'gray',
                       fontSize: 15,
-                      fontFamily: 'OpenSans',
+                      fontFamily: 'Roboto',
                       marginTop: 5,
                       marginLeft: 7,
                     }}>

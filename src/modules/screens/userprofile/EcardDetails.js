@@ -180,11 +180,11 @@ class EcardDetails extends React.Component {
 const styles = StyleSheet.create({
   customText: {
     fontSize: 15,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
 
   innerText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     marginTop: 5
 
@@ -195,9 +195,8 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 20,
     color: '#000',
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     marginTop: 20,
-    fontWeight: 'bold'
   },
 });
 

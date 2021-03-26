@@ -31,9 +31,9 @@ export default class RenderLabLocation extends Component {
             <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.7, }}>
                 <Row style={{ marginTop: 10 }}>
                     <Icon name='ios-home' style={{ fontSize: 20, color: 'gray' }} />
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>{name}</Text>
+                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13,marginLeft: 10, marginTop: 1 }}>{name}</Text>
                 </Row>
-                {/* <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>  {addressData.no_and_street + ', ' + addressData.city + ', ' + addressData.state } </Text> */}
+                {/* <Text  style={{ fontFamily: 'Roboto',fontSize:13,marginLeft:26}}>  {addressData.no_and_street + ', ' + addressData.city + ', ' + addressData.state } </Text> */}
                 <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
                     <Card style={{ height: 250 }}>
                         <Mapbox locationData={locationData} 
@@ -45,16 +45,16 @@ export default class RenderLabLocation extends Component {
                                     <Icon name="locate" style={{ color: primaryColor, fontSize: 20 }}></Icon>
                                 </Left>
                                 <Body>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.no_and_street}</Text>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.city}</Text>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.state}</Text>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12 }}>{addressData.pin_code}</Text>
+                                    <Text note style={{ fontFamily: 'Roboto', fontSize: 12 }}>{addressData.no_and_street}</Text>
+                                    <Text note style={{ fontFamily: 'Roboto', fontSize: 12 }}>{addressData.city}</Text>
+                                    <Text note style={{ fontFamily: 'Roboto', fontSize: 12 }}>{addressData.state}</Text>
+                                    <Text note style={{ fontFamily: 'Roboto', fontSize: 12 }}>{addressData.pin_code}</Text>
                                 </Body>
                                 <Right>
                                 <TouchableOpacity style={{flexDirection: 'row' }} >
                                     <Icon name="directions" type="MaterialIcons" style={{ color: primaryColor, fontSize: 20 }}></Icon>
                                     <Text onPress={()=> this.openMap(locationData.coordinates[0], locationData.coordinates[1], name)}
-                                        style={{ fontFamily: 'OpenSans',
+                                        style={{ fontFamily: 'Roboto',
                                                  fontSize:13,
                                                  marginLeft: 2,
                                                 }}>{'View Directions'}

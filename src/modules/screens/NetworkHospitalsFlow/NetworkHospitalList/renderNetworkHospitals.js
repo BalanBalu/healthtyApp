@@ -86,7 +86,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                   <Row style={{ marginTop: 15 }}>
                     <Col size={4}>
                       <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
-                        <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>{translate("Continue")}</Text>
+                        <Text style={{ color: '#fff', fontFamily: 'opensans-bold', fontSize: 15,}}>{translate("Continue")}</Text>
                       </TouchableOpacity>
                     </Col>
                     <Col size={4} style={{ marginLeft: 20 }}>
@@ -98,12 +98,12 @@ export default class RenderNetworkHospitalInfo extends Component {
                   <Row style={{ marginTop: 15 }}>
                     <Col size={4}>
                       <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: 'rgba(18,130,131,0.9)', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
-                        <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>{translate("Pre Auth")}</Text>
+                        <Text style={{ color: '#fff', fontFamily: 'opensans-bold', fontSize: 15,}}>{translate("Pre Auth")}</Text>
                       </TouchableOpacity>
                     </Col>
                     <Col size={4} style={{ marginLeft: 20 }}>
                       <TouchableOpacity onPress={() => onPressGoPreConsultation()} style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: 'rgba(18,130,131,0.9)', borderRadius: 5, alignItems: 'center', }}>
-                        <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>{translate("Consultation")}</Text>
+                        <Text style={{ color: '#fff', fontFamily: 'opensans-bold', fontSize: 15, }}>{translate("Consultation")}</Text>
                       </TouchableOpacity>
                     </Col>
                     <Col size={2}>
@@ -118,7 +118,7 @@ export default class RenderNetworkHospitalInfo extends Component {
             <Card style={Styles.cardStyle}>
               <Row>
                 <Col size={9}>
-                  <Text style={{ fontSize: 16, fontFamily: 'OpenSans' }}
+                  <Text style={{ fontSize: 16, fontFamily: 'Roboto' }}
                     numberOfLines={1}
                     ellipsizeMode="tail">{item.hospitalName ? item.hospitalName : 'Un known Hospital'}</Text>
                   <Text style={Styles.subHeadingData}

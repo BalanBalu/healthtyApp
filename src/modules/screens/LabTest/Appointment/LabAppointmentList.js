@@ -240,7 +240,7 @@ class LabAppointmentList extends Component {
                                     />
 
                                     <Text style={{
-                                        fontFamily: "OpenSans",
+                                        fontFamily: "Roboto",
                                         fontSize: 15,
                                         marginTop: "10%"
                                     }}>No appointments scheduled !
@@ -248,7 +248,7 @@ class LabAppointmentList extends Component {
                                     <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                                         <Button style={[styles.bookingButton, styles.customButton]} onPress={() =>this.navigateToHomeOrCorporate() 
                                         } testID='navigateToHome'>
-                                            <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
+                                            <Text style={{ fontFamily: 'opensans-bold', fontSize: 15,  }}>Book Now</Text>
                                         </Button>
                                     </Item>
                                 </Card>
@@ -305,10 +305,10 @@ class LabAppointmentList extends Component {
 
                                                         <Row style={{ borderBottomWidth: 0 }}>
 
-                                                            <Text style={{ fontFamily: "OpenSans", fontSize: 13, color: statusValue[item.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointment_status].text}</Text>
+                                                            <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointment_status].color,  }} note>{statusValue[item.appointment_status].text}</Text>
                                                         </Row>
 
-                                                        <Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
+                                                        <Text style={{ fontFamily: "Roboto", fontSize: 11 }} note>
                                                             {formatDate(item.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")} </Text>
                                                         {selectedIndex == 1 && (item.is_review_added == undefined || item.is_review_added == false) ?
                                                             (<Row style={{ borderBottomWidth: 0, marginTop: 5 }}>
@@ -398,8 +398,7 @@ const styles = StyleSheet.create({
     },
     bookAgain1: {
         fontSize: 13,
-        fontFamily: 'OpenSans',
-        fontWeight: 'bold'
+        fontFamily: 'opensans-bold',
     },
     shareButton: {
         marginTop: 10,
@@ -423,20 +422,18 @@ const styles = StyleSheet.create({
         marginTop: -5
     },
     nameText: {
-        fontFamily: "OpenSans",
+        fontFamily: "opensans-bold",
         fontSize: 15,
-        fontWeight: 'bold'
     },
     subText: {
-        fontFamily: "OpenSans",
+        fontFamily: "Roboto",
         fontSize: 14,
         width: '60%'
     },
     statusText: {
-        fontFamily: "OpenSans",
+        fontFamily: "opensans-bold",
         fontSize: 13,
         color: 'green',
-        fontWeight: 'bold'
     }
 
 })

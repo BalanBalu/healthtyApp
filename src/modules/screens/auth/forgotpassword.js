@@ -214,7 +214,7 @@ class Forgotpassword extends Component {
             <View>
                 {isCorporateUserSelected === false ?
                     <View>
-                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Email / Phone</Label>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Email / Phone</Label>
                         <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                             <Input placeholder="Email Or Phone" style={styles.transparentLabel2}
                                 value={userEntry}
@@ -228,7 +228,7 @@ class Forgotpassword extends Component {
 
 
                     <View>
-                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Email </Label>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Email </Label>
 
                         <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                             <Input placeholder="Email" style={styles.transparentLabel2}
@@ -240,7 +240,7 @@ class Forgotpassword extends Component {
                                 onSubmitEditing={() => { this.employeeId._root.focus(); }}
                             />
                         </Item>
-                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Employee Id</Label>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Employee Id</Label>
                         <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                             <Input placeholder="Employee Id" style={styles.transparentLabel2}
                                 value={this.state.employeeId}
@@ -252,7 +252,7 @@ class Forgotpassword extends Component {
                                 onSubmitEditing={() => { this.corporateName._root.focus(); }}
                             />
                         </Item>
-                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Corporate Name</Label>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:"opensans-bold "}}>Corporate Name</Label>
                         <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                             <Input placeholder="Corporate Name" style={styles.transparentLabel2}
                                 ref={(input) => { this.corporateName = input; }}
@@ -313,11 +313,11 @@ class Forgotpassword extends Component {
             <View>
                 <Row>
                     <Col size={5}>
-                        <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>OTP</Text>
+                        <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>OTP</Text>
                     </Col>
                     <Col size={5}>
                         <TouchableOpacity onPress={() => this.generateOtpCode(true)} >
-                            <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold', alignSelf: 'flex-end' }}>RESEND</Text>
+                            <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold', alignSelf: 'flex-end' }}>RESEND</Text>
                         </TouchableOpacity>
                     </Col>
                 </Row>
@@ -332,12 +332,12 @@ class Forgotpassword extends Component {
                         }}
                         textInputStyle={{
                             width: 38,
-                            fontWeight: 'bold'
+                            fontFamily:'opensans-bold'
                         }}
                         handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
                     />
                 </Item>
-                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Password</Label>
+                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Password</Label>
 
                 <Item style={styles.authTransparentLabel}>
                     <Input placeholder="Enter new password" style={{ fontSize: 15 }}
@@ -350,7 +350,7 @@ class Forgotpassword extends Component {
                     />
                     {password.length >= 6 ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
                 </Item>
-                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontWeight: 'bold' }}>Conform Password</Label>
+                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Conform Password</Label>
 
                 <Item style={styles.authTransparentLabel}>
                     <Input placeholder="Retype new password" style={{ fontSize: 15 }}
@@ -392,9 +392,9 @@ class Forgotpassword extends Component {
                                     </Form>
                                 </View>
                                 <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10, marginTop: 10 }}>
-                                    <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', color: primaryColor }}>Go Back To</Text>
+                                    <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'Roboto', color: primaryColor }}>Go Back To</Text>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
-                                        <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> SignIn</Text>
+                                        <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'opensans-bold', color: '#fff' }}> SignIn</Text>
                                     </TouchableOpacity>
                                 </Item>
                                 <Text style={{ color: 'red', marginLeft: 20, marginTop: 15 }}>{errorMessage}</Text>

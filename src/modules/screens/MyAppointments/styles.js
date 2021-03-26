@@ -9,7 +9,7 @@ export default StyleSheet.create({
     container:
     {
         backgroundColor: '#fff',
-        fontWeight: 'bold',
+        fontFamily: 'opensans-bold',
         fontStyle: 'italic',
 
     },
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     customPadge: {
     color: 'white',
     textAlign: 'center',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 10,
     padding: 5,
     
@@ -64,18 +64,17 @@ export default StyleSheet.create({
 
 },
 touchText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 14,
     color: '#fff',
     textAlign: 'center',
-    fontWeight: 'bold'
 },
 userDetailLabel: {
     // backgroundColor: '#F1F1F1',
     height: 45,
     marginTop: 10,
     borderRadius: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 15,
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -98,12 +97,11 @@ centerContent: {
 textContent: {
     color: primaryColor,
     fontSize: 22,
-    fontFamily: "OpenSans",
-    fontWeight: '700',
+    fontFamily: "opensans-bold",
     textAlign: 'center'
 },
 subText1: {
-    fontFamily: "OpenSans",
+    fontFamily: "Roboto",
     textAlign: 'center',
     marginTop: 10,
     fontSize: 15
@@ -111,11 +109,10 @@ subText1: {
 subHead: {
     color: '#000',
     fontSize: 16,
-    fontFamily: "OpenSans",
-    fontWeight: '700',
+    fontFamily: "opensans-bold",
 },
 innersubTexts: {
-    fontFamily: "OpenSans",
+    fontFamily: "Roboto",
     fontSize: 15,
     marginLeft: 10
 },
@@ -167,7 +164,7 @@ formStyle2: {
    
 },
 flatlistText: {
-    fontFamily: "OpenSans",
+    fontFamily: "Roboto",
     fontSize: 14,
     marginLeft: 20
 },
@@ -232,7 +229,7 @@ formStyle8: {
     justifyContent: 'center'
 },
 radioText1: {
-    fontFamily: "OpenSans",
+    fontFamily: "Roboto",
     fontSize: 12,
     marginLeft: 10,
     color: '#909090'

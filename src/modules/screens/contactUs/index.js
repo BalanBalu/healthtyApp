@@ -225,7 +225,7 @@ class ContactUs extends Component {
                                             <Text style={{ color: 'red', marginRight: 0, marginTop: 10, textAlign: 'right', position: 'absolute', right: 0, top: 485 }}>{this.state.messageErrorMsg}</Text>
                                             : null}
                                         <TouchableOpacity style={styles.submitButton} onPress={this.insertContactInformation}>
-                                            <Text style={{ fontSize: 15, fontWeight: 'OpenSans', fontWeight: 'bold', color: '#fff' }}>{translate("Submit")}</Text>
+                                            <Text style={{ fontSize: 15, fontWeight: 'opensans-bold', color: '#fff' }}>{translate("Submit")}</Text>
                                         </TouchableOpacity>
                                     </Form>
                                 </View>

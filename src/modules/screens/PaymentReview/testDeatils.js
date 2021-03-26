@@ -320,7 +320,7 @@ class TestDetails extends PureComponent {
                             let expandedListIndexPayBy = patientSelectionType + '-' + index;
                             this.setState({ expandedListIndex: this.state.expandedListIndex === expandedListIndexPayBy ? -1 : expandedListIndexPayBy })
                         }}>
-                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'OpenSans', }}>Show Benefeciary Details</Text>
+                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'Roboto', }}>Show Benefeciary Details</Text>
                             <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
                         </TouchableOpacity>
                         <View>
@@ -340,7 +340,7 @@ class TestDetails extends PureComponent {
                             let expandedListIndexPayBy = patientSelectionType + '-' + index;
                             this.setState({ expandedListIndex: this.state.expandedListIndex === expandedListIndexPayBy ? -1 : expandedListIndexPayBy })
                         }}>
-                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'OpenSans', }}>Show Benefeciary Details</Text>
+                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'Roboto', }}>Show Benefeciary Details</Text>
                             <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
                         </TouchableOpacity>
                         <View>
@@ -386,7 +386,7 @@ class TestDetails extends PureComponent {
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
-                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor }}>Appointment for?</Text>
+                <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>Appointment for?</Text>
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                     {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
@@ -472,7 +472,7 @@ class TestDetails extends PureComponent {
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans' ,marginTop: 10}}>Patient Details</Text>
+                            <Text style={{ fontSize: 12, fontFamily: 'Roboto' ,marginTop: 10}}>Patient Details</Text>
                             <View>
                                 {this.renderPatientDetails(this.defaultPatDetails, 0, false, POSSIBLE_FAMILY_MEMBERS.SELF)}
                             </View>
@@ -483,7 +483,7 @@ class TestDetails extends PureComponent {
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ?
                         <View>
                             {onlyFamilyWithPayDetailsData.length !== 0 ?
-                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans',marginTop: 10 }}>Patient Details</Text>
+                                <Text style={{ fontSize: 12, fontFamily: 'Roboto',marginTop: 10 }}>Patient Details</Text>
                                 : null}
                             <FlatList
                                 data={onlyFamilyWithPayDetailsData}
@@ -493,7 +493,7 @@ class TestDetails extends PureComponent {
                                 } />
                             {(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === false) || (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others').length === 0) ?
                                 <View style={{ marginTop: 8, }}>
-                                    {familyDetailsData.length !== 0 ? <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: primaryColor, textAlign: 'center', }}>(OR)</Text> : null}
+                                    {familyDetailsData.length !== 0 ? <Text style={{ fontSize: 12, fontFamily: 'Roboto', color: primaryColor, textAlign: 'center', }}>(OR)</Text> : null}
                                     <Text style={styles.subHead}>Add other patient's details</Text>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={6}>
@@ -533,7 +533,7 @@ class TestDetails extends PureComponent {
                                     </Row>
                                     <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
                                         <Text style={{
-                                            fontFamily: 'OpenSans', fontSize: 12, marginTop: 3
+                                            fontFamily: 'Roboto', fontSize: 12, marginTop: 3
                                         }}>Gender</Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                                             <Radio
@@ -574,7 +574,7 @@ class TestDetails extends PureComponent {
                         {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ?
 
                             <View>
-                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Patient Details</Text>
+                                <Text style={{ fontSize: 12, fontFamily: 'Roboto' }}>Patient Details</Text>
                                 <FlatList
                                     data={payBy === POSSIBLE_PAY_METHODS.INSURANCE ? data.familyDataByInsurance : data.familyDataByCorporate}
                                     keyExtractor={(item, index) => index.toString()}
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
         paddingTop: 5
     },
     touchText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#fff',
         textAlign: 'center'
@@ -642,30 +642,30 @@ const styles = StyleSheet.create({
         marginTop: 8
     },
     nameAndAge: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#000',
         marginTop: 5
     },
     subHead: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#000',
         // fontWeight: 'bold'
     },
     NameText: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: primaryColor
     },
     ageText: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         textAlign: 'right',
     },
     commonText: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     selectButton: {
         paddingLeft: 15,

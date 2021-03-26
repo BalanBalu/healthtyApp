@@ -78,24 +78,24 @@ const LabHeader = (props) => {
 const styles = StyleSheet.create({
     docName: {
         fontSize: 15,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: primaryColor,
     },
     hosAddress: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         marginLeft: 10
     },
     calDate: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#0054A5',
         marginLeft: 5
     },
     clockTime: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#8EC63F',
         marginLeft: 5
     },

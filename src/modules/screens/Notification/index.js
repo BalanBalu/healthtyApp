@@ -238,7 +238,7 @@ class Notification extends PureComponent {
                         <Text
                           style={{
                             fontSize: 12,
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'Roboto',
                             textAlign: 'right',
                             marginTop: 5,
                           }}>
@@ -251,7 +251,7 @@ class Notification extends PureComponent {
                         <Text
                           style={{
                             fontSize: 12,
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'Roboto',
                             marginTop: 5,
                             textAlign: 'right',
                           }}>
@@ -264,7 +264,7 @@ class Notification extends PureComponent {
                       <Text
                         style={{
                           fontSize: 14,
-                          fontFamily: 'OpenSans',
+                          fontFamily: 'Roboto',
                           marginTop: 10,
                           color: '#000',
                           textAlign: 'auto',

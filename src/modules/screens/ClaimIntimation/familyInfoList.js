@@ -42,7 +42,7 @@ class FamilyInfoList extends PureComponent {
                 {familyList && familyList.length ?
                     <Content style={{ padding: 10 }}>
                         <View style={{ marginTop: 10 }}>
-                            <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10, fontWeight: 'bold' }}> {familyList && familyList.length ? 'Family Information' : null}</Text>
+                            <Text style={{ fontSize: 18, fontFamily: 'opensans-bold', marginTop: 10,  }}> {familyList && familyList.length ? 'Family Information' : null}</Text>
                             {familyList.map((item, index) =>
                                 <RenderFamilyList
                                     item={item}

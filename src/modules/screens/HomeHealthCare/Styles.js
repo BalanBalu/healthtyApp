@@ -12,26 +12,25 @@ export default styles = StyleSheet.create({
         padding: 10
     },
     subHead: {
-        fontFamily: 'OpenSans',
-        fontSize: 14,
+        fontFamily: 'opensans-bold',
+        fontSize: 13,
         color: primaryColor,
-        fontWeight: 'bold'
     },
 
     firstCheckBox: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#000',
         marginLeft: 20
     },
     nameAndAge: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#000',
         marginTop: 5
     },
     genderText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         marginLeft: 10
     },
@@ -47,10 +46,9 @@ export default styles = StyleSheet.create({
         textAlign: "center"
     },
     commonText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 12,
         color: '#000',
-        fontWeight: '500'
     },
     inputText: {
         backgroundColor: '#f2f2f2',
@@ -67,15 +65,14 @@ export default styles = StyleSheet.create({
         paddingTop: 5
     },
     touchText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#fff',
         textAlign: 'center'
     },
     nameText: {
-        fontFamily: "OpenSans",
+        fontFamily: "opensans-bold",
         fontSize: 15,
-        fontWeight: 'bold'
     },
     bodyContent: {
         padding: 5
@@ -88,7 +85,7 @@ export default styles = StyleSheet.create({
 
     },
     cardItemText2: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 13,
         marginTop: 5,
         fontStyle: 'italic',
@@ -96,30 +93,27 @@ export default styles = StyleSheet.create({
     },
     Textname: {
         fontSize: 14,
-        fontFamily: 'OpenSans',
-        fontWeight: 'bold'
+        fontFamily: 'opensans-bold',
     },
     specialistTextStyle: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
-        fontWeight: 'normal',
+        fontFamily: 'Roboto',
         marginTop: 5
 
     },
     subText1: {
         fontSize: 13,
-        fontFamily: 'OpenSans',
-        fontWeight: 'bold'
+        fontFamily: 'opensans-bold',
     },
     subText2: {
         fontSize: 13,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginLeft: 5,
         color: '#4c4c4c'
     },
     subText3: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginLeft: 5
     },
     confirmButton: {
@@ -131,11 +125,11 @@ export default styles = StyleSheet.create({
     ButtonText: {
         color: '#fff',
         fontSize: 10,
-        fontWeight: 'bold',
+        fontFamily:'opensans-bold',
     },
     textApproved: {
         fontSize: 12,
-        fontWeight: 'bold',
+        fontFamily:'opensans-bold',
     },
     postponeButton: {
         // backgroundColor:'#4765FF',
@@ -144,9 +138,8 @@ export default styles = StyleSheet.create({
         borderRadius: 5
     },
     timeText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 15,
-        fontWeight: 'bold',
         color: '#FFF',
         marginLeft: -10
     },
@@ -168,17 +161,15 @@ export default styles = StyleSheet.create({
         padding: 8
     },
     touchableText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 15,
-        fontWeight: 'bold',
         color: '#4765FF',
         marginTop: 4,
         marginLeft: 5
     },
     touchableText1: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 15,
-        fontWeight: 'bold',
         color: '#fff',
         textAlign: 'center'
     },
@@ -199,32 +190,30 @@ export default styles = StyleSheet.create({
     },
     innerSubText: {
         fontSize: 13,
-        fontFamily: 'OpenSans',
-        fontWeight: 'bold',
+        fontFamily: 'opensans-bold',
         marginBottom: 5
     },
     subTextInner1: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginBottom: 5,
         color: '#4c4c4c'
     },
     subTextInner2: {
         fontSize: 10,
         color: "red",
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginBottom: 5
     },
 
     downText: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     cardItemText3: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 18,
         height: 30,
-        fontWeight: 'bold',
         color: '#FFF', paddingBottom: -10
     },
     card: {
@@ -249,20 +238,20 @@ export default styles = StyleSheet.create({
         padding: 5
     },
     diseaseText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 16,
         marginLeft: 10,
         fontStyle: 'italic',
         marginTop: -5
     },
     hospitalText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 16,
         marginLeft: 15,
         width: "80%"
     },
     hosAddressText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 16,
         marginLeft: 15,
         fontStyle: 'italic',
@@ -291,26 +280,24 @@ export default styles = StyleSheet.create({
         marginTop: -10
     },
     cardItemText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 16,
-        fontWeight: 'bold',
         color: '#FFF'
     },
     subText: {
-        fontFamily: 'Opensans',
+        fontFamily: 'opensans-bold',
         fontSize: 18,
-        fontWeight: 'bold',
         marginTop: 15,
         marginLeft: 5
     },
     customHead:
     {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     customText:
     {
 
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 14,
 
@@ -330,19 +317,19 @@ export default styles = StyleSheet.create({
         marginTop: -150,
         marginLeft: 15,
         marginRight: 15,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
 
     },
     topValue: {
         marginLeft: 'auto',
         marginRight: 'auto',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     bottomValue:
     {
         marginLeft: 'auto',
         marginRight: 'auto',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12
     },
 
@@ -354,7 +341,7 @@ export default styles = StyleSheet.create({
         backgroundColor: '#FF9500',
         color: '#fff',
         width: 160,
-        fontFamily: 'opensans-semibold',
+        fontFamily: 'Roboto-semibold',
         textAlign: 'center',
         borderRadius: 10
 
@@ -374,7 +361,7 @@ export default styles = StyleSheet.create({
         fontSize: 25,
         height: 25,
         width: 25,
-        fontWeight: 'bold'
+        fontFamily:'opensans-bold'
 
     },
     leftButton:
@@ -404,7 +391,7 @@ export default styles = StyleSheet.create({
     customPadge: {
         color: 'white',
         textAlign: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 10,
         padding: 5,
     },
@@ -450,15 +437,13 @@ export default styles = StyleSheet.create({
     },
     innerSubText1: {
         fontSize: 13,
-        fontFamily: 'OpenSans',
-        fontWeight: 'bold',
+        fontFamily: 'opensans-bold',
         color: primaryColor,
         // marginBottom: 5
     },
     bookAgain1: {
         fontSize: 13,
-        fontFamily: 'OpenSans',
-        fontWeight: 'bold'
+        fontFamily: 'opensans-bold',
     },
 
     appoinmentPrepareStyle2: {
@@ -483,17 +468,16 @@ export default styles = StyleSheet.create({
         marginRight: 5
     },
     mainText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
     },
     subinnerText: {
-        fontFamily: "OpenSans",
+        fontFamily: "Roboto",
         fontSize: 12
     },
     completedText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 18,
-        fontWeight: 'bold',
         color: '#8EC63F'
     },
     HeadingCard: {
@@ -510,7 +494,7 @@ export default styles = StyleSheet.create({
         marginTop: 10
     },
     topRatedText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 13,
         textAlign: 'center',
@@ -527,7 +511,7 @@ export default styles = StyleSheet.create({
         marginTop: 5
     },
     filterText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 13,
         marginTop: 5,
@@ -545,12 +529,12 @@ export default styles = StyleSheet.create({
         borderRightWidth: 1
     },
     showingDoctorText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
         fontSize: 13,
     },
     picodeText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: primaryColor,
         fontSize: 13,
     },
@@ -570,17 +554,16 @@ export default styles = StyleSheet.create({
         marginTop: 5
     },
     commonStyle: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 12,
-        fontWeight: 'bold'
     },
     qualificationText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginTop: 2,
         fontSize: 11
     },
     addressTexts: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginTop: 5,
         fontSize: 11,
     },
@@ -591,7 +574,7 @@ export default styles = StyleSheet.create({
         paddingLeft: 10
     },
     commonText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
     },
     bookBottomButton: {
@@ -609,27 +592,26 @@ export default styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff',
         fontSize: 12,
-        fontWeight: 'bold',
-        fontFamily: 'OpenSans'
+        fontFamily: 'opensans-bold'
     },
     availableText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginTop: 15,
         fontSize: 12,
     },
     homeAdressTexts: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginTop: 5,
         fontSize: 11,
         color:'#000'
     },
     changeText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#ff4e42',
         fontSize: 10,
     },
     nameDetails: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
     },
     totalAmount: {
@@ -639,9 +621,8 @@ export default styles = StyleSheet.create({
     },
     totalAmountText: {
         fontSize: 16,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000',
-        fontWeight: '400'
     },
     proceedButton: {
         alignItems: 'center',
@@ -650,19 +631,18 @@ export default styles = StyleSheet.create({
     },
     proceedButtonText: {
         fontSize: 16,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#fff',
-        fontWeight: '400'
     },
     rightAmountText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#ff4e42',
         fontSize: 10,
         marginTop: 1,
         textAlign: 'right'
     },
     doctorDegreeText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         marginTop: 2,
         fontSize: 11
     },
@@ -674,30 +654,30 @@ export default styles = StyleSheet.create({
     },
 
     subTextBilling: {
-        fontFamily: 'Opensans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         color: '#000',
         marginLeft: 5
     },
     docName: {
         fontSize: 15,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: primaryColor
     },
     specialist: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#000'
     },
     rupeesText: {
         fontSize: 10,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         textAlign: 'right',
         color: '#8EC63F'
     },
     redRupesText: {
         fontSize: 10,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         textAlign: 'right',
         color: 'red'
     },
@@ -718,7 +698,7 @@ export default styles = StyleSheet.create({
     },
     appointmentDateStyle: {
         fontSize: 12,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         color: '#0054A5',
         marginLeft: 5
     },

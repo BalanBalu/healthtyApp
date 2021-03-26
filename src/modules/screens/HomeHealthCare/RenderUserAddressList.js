@@ -23,9 +23,9 @@ export default class RenderUserAddressList extends PureComponent {
                                 onPress={() => onPressRadioBtnToSelectAddressItem(item, index)} />
                         </Col>
                         <Col size={8} style={{ justifyContent: 'center' }}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginTop: 2, }}>{fullName || null}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, marginTop: 2, color: '#4c4c4c', }}>{getHomeHealthCareUserAddress(item.address)}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, marginTop: 2 }}>{'Mobile -' + (mobileNo || 'No Number')}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 14, marginTop: 2, }}>{fullName || null}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 13, marginTop: 2, color: '#4c4c4c', }}>{getHomeHealthCareUserAddress(item.address)}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 13, marginTop: 2 }}>{'Mobile -' + (mobileNo || 'No Number')}</Text>
                         </Col>
                         <Col size={1}>
                             {item.address_type !== 'DEFAULT' ?
