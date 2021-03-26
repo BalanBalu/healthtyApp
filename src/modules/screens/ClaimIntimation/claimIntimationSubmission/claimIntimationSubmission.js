@@ -338,47 +338,6 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-<<<<<<< HEAD
-              <Text style={styles.text}>Date of Admission</Text>
-              <Item regular style={{borderRadius: 6, height: 50}}>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.setState({isVisibleDatePicker: !isVisibleDatePicker});
-                  }}
-                  style={{flexDirection: 'row'}}>
-                  <Icon
-                    name="md-calendar"
-                    style={{
-                      padding: 5,
-                      fontSize: 20,
-                      marginTop: 1,
-                      color: primaryColor,
-                    }}
-                  />
-                  <Text
-                    style={
-                      selectedAdmissionDate
-                        ? {
-                            marginLeft: 5,
-                            fontFamily: 'OpenSans',
-                            fontSize: 13,
-                            textAlign: 'center',
-                            marginTop: 8,
-                            color: '#000',
-                          }
-                        : {
-                            color: '#909090',
-                            fontFamily: 'OpenSans',
-                            fontSize: 13,
-                            textAlign: 'center',
-                            marginTop: 8,
-                          }
-                    }>
-                    {selectedAdmissionDate
-                      ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY')
-                      : 'Date of Admission'}
-                  </Text>
-=======
               <Text
                 style={styles.text}>
                 Date of Admission
@@ -387,7 +346,6 @@ export default class ClaimInitiationSubmission extends Component {
                 <TouchableOpacity onPress={() => { this.setState({ isVisibleDatePicker: !isVisibleDatePicker }) }} style={{ flexDirection: 'row' }}>
                   <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: primaryColor }} />
                   <Text style={selectedAdmissionDate ? { marginLeft: 5, fontFamily: 'Roboto', fontSize: 13, textAlign: 'center',marginTop:8,color:'#000' } : { color: '#909090',fontFamily: 'Roboto', fontSize: 13, textAlign: 'center',marginTop:8 }}>{selectedAdmissionDate ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY') : 'Date of Admission'}</Text>
->>>>>>> cc88595b7a0956e60247e5a99fc8316901796854
                   <DateTimePicker
                     mode={'date'}
                     minimumDate={subTimeUnit(new Date(), 7, 'days')}
