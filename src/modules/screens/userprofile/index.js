@@ -104,6 +104,7 @@ class Profile extends Component {
         //   this.setState({imageSource: result[0].profileImage[0].imageURL});
         // }
         await this.setState({data: result[0]});
+       
       }
     } catch (ex) {
       console.log(ex);
@@ -286,7 +287,6 @@ class Profile extends Component {
   /*Store image into api folder*/
   uploadImageToServer = async (image) => {
     console.log("image",image)
-
     try {
       let appendForm = 'profileImage';
       let endPoint = 'images/upload?path=profileImage';
@@ -299,11 +299,11 @@ class Profile extends Component {
           _id: this.state.data._id,
         };
         let result = await updateMemberDetails(requestData);
-        console.log("result",result)
         if (result) {
           this.setState({
             imageSource: image.path,
           });
+          storeBasicProfile(result);
           Toast.show({
             text: 'Profile picture uploaded successfully',
             type: 'success',

@@ -48,7 +48,18 @@ export function getFullName(data) {
     }
     return name
 }
+export function sidebarImageView(data) {
+    let source = null;
+    if (data && data.profileImage) {
 
+        source = { uri: data.profileImage[0].imageURL }
+    } else {
+        source = require('../../assets/images/hospitalCommon.jpeg')
+    }
+
+    return (source)
+
+}
 
 export function hospitalProfileImages(data) {
     let source = null;

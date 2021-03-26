@@ -96,19 +96,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                   </Text>
                 </Col>
               </Row>
-              <Row style={{marginTop: 5}}>
-                <Col size={4}>
-                  <Text style={Styles.commonBoldText}>{translate("Address")}</Text>
-                </Col>
-                <Col size={0.5}>
-                  <Text>:</Text>
-                </Col>
-                <Col size={5.5}>
-                  <Text style={Styles.commonText}>
-                    {item.hospitalLocation || null}
-                  </Text>
-                </Col>
-              </Row>
+
             </Col>
             <Col size={1} />
           </Row>

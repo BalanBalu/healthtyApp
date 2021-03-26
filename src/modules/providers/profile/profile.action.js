@@ -63,11 +63,11 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
 
 export function storeBasicProfile(result) {
   AsyncStorage.setItem('basicProfileData', JSON.stringify({
-    first_name: result.first_name,
-    last_name: result.last_name,
+    first_name: result.firstName,
+    last_name: result.lastName,
     middle_name:result.middle_name||' ',
     dob: result.dob,
-    profile_image: result.profile_image,
+    profileImage: result.profileImage ,
     gender: result.gender,
     mobile_no: result.mobile_no,
     email: result.email
