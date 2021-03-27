@@ -100,9 +100,6 @@ class Profile extends Component {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        // if (result[0].profileImage) {
-        //   this.setState({imageSource: result[0].profileImage[0].imageURL});
-        // }
         await this.setState({data: result[0]});
        
       }
@@ -117,7 +114,7 @@ class Profile extends Component {
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
       if (result) {
-        this.setState({family_members: result});
+        this.setState({family_members: result,id:result[0]._id});
       }
     } catch (e) {
       console.log(e);
@@ -144,6 +141,7 @@ class Profile extends Component {
       fromProfile: true,
       updatedata: this.state.data || '',
       id: this.state.data._id,
+      updateEmpDetails:this.state.id
     });
   }
 
@@ -286,13 +284,10 @@ class Profile extends Component {
 
   /*Store image into api folder*/
   uploadImageToServer = async (image) => {
-    console.log("image",image)
     try {
       let appendForm = 'profileImage';
       let endPoint = 'images/upload?path=profileImage';
       const response = await uploadImage(image, endPoint, appendForm);
-      console.log("response",response)
-
       if (response.success) {
         let requestData = {
           profileImage: response.data,
@@ -352,7 +347,7 @@ class Profile extends Component {
     try {
       if (value.familyMemberAge == 0 && value.familyMemberMonth <= 1)
         return value.familyMemberMonth + ' Month';
-      else if (value.familyMemberMonth > 1)
+      else if (value.familyMemberAge == 0 &&value.familyMemberMonth > 1)
         return value.familyMemberMonth + ' Months';
       else if (value.familyMemberAge > 1)
         return value.familyMemberAge + ` Years `;
@@ -366,7 +361,6 @@ class Profile extends Component {
       profile: {isLoading},
     } = this.props;
     const {data, imageSource, family_members} = this.state;
-    // console.log("data",data)
     return (
       <Container style={styles.container}>
         <NavigationEvents
@@ -585,7 +579,7 @@ class Profile extends Component {
                   <Text style={styles.topValue}>Blood</Text>
                   <Text note style={styles.bottomValue}>
                     {' '}
-                    {data.blood_group ? data.blood_group : '-'}{' '}
+                    {data.bloodGroup ? data.bloodGroup : '-'}{' '}
                   </Text>
                 </Col>
               </Grid>
@@ -634,6 +628,7 @@ class Profile extends Component {
                               </Col>
                             </Row>
                           </Col>
+                          {item.relationship!='EMPLOYEE'&&item.relationship!='SELF'?
                           <Col size={1}>
                             <TouchableOpacity
                               onPress={() =>
@@ -656,7 +651,8 @@ class Profile extends Component {
                                 }}
                               />
                             </TouchableOpacity>
-                          </Col>
+                          </Col>:null}
+                          {item.relationship!='EMPLOYEE'&&item.relationship!='SELF'?
                           <Col size={0.5}>
                             <TouchableOpacity
                               onPress={() =>
@@ -668,7 +664,7 @@ class Profile extends Component {
                                 style={{color: '#d00729', fontSize: 15}}
                               />
                             </TouchableOpacity>
-                          </Col>
+                          </Col>:null}
                         </Row>
                         <Row>
                           <Col size={10}>
@@ -728,11 +724,7 @@ class Profile extends Component {
                               <Col size={6}>
                                 <Text note style={styles.customText1}>
                                   {item.familyMemberGender
-                                    ? item.familyMemberGender == 'M'
-                                      ? 'Male'
-                                      : item.familyMemberGender == 'F'
-                                      ? "Female'"
-                                      : 'Others'
+                                    ? item.familyMemberGender 
                                     : 'N/A'}
                                 </Text>
                               </Col>
