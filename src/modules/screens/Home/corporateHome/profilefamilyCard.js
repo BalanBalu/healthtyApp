@@ -3,7 +3,7 @@ import {View, TouchableOpacity, Text, Image } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Svg, {Path} from 'react-native-svg';
 import {primaryColor, secondaryColor} from '../../../../setup/config'
-import ProfileFamilyCardDrawing from './svgDrawings';
+import {FamilyData} from './svgDrawings';
 // import { translate } from "../../../../setup/translator.helper"
 
 export const ProfileFamilyCard = props => {
@@ -33,16 +33,15 @@ export const ProfileFamilyCard = props => {
           <Text
             style={{
               color: '#fff',
-              fontFamily: 'OpenSans',
+             fontFamily: 'opensans-bold',
               fontSize: 18,
-              fontWeight: '700',
             }}>
              {translate('Family')}
           </Text>
           <Text
             style={{
               color: '#fff',
-              fontFamily: 'OpenSans',
+              fontFamily: 'Roboto',
               fontSize: 15,
               lineHeight: 24,
             }}>
@@ -64,10 +63,14 @@ export const ProfileFamilyCard = props => {
             />
           </Svg>
         </View>
-        <Image
+        {/* <Image
           source={require('../../../../../assets/images/group.png')}
           style={{height: 60, width: 140, position: 'absolute', right: 5, top: 68}}
-        />
+        /> */}
+        <View style={{position: 'absolute', right: 20, top: -160}}>
+        <FamilyData   />
+        </View>
+      
       </View>
     </TouchableHighlight>
   );

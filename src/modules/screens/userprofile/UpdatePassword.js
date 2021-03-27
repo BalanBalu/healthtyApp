@@ -137,7 +137,7 @@ class UpdatePassword extends Component {
 
 
                         <Text style={styles.headerText}>Update Your Password</Text>
-                        {/* <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 7 }}>Update your Password</Text> */}
+                        {/* <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'Roboto', marginTop: 10, marginLeft: 7 }}>Update your Password</Text> */}
                         <View style={styles.cardEmail}>
 
                             <Item style={{ borderBottomWidth: 0 }}>
@@ -147,7 +147,7 @@ class UpdatePassword extends Component {
                                 <Col style={styles.transparentLabel1}>
                                     <Row>
                                         <Input placeholder="Enter old password"
-                                            secureTextEntry={true} style={{ fontSize: 13, fontFamily: 'OpenSans', marginTop: -5 }}
+                                            secureTextEntry={true} style={{ fontSize: 13, fontFamily: 'Roboto', marginTop: -5 }}
                                             keyboardType="default"
                                             value={this.state.oldPassword}
                                             secureTextEntry={this.state.oldPasswordVisible}
@@ -167,7 +167,7 @@ class UpdatePassword extends Component {
                                 <Col style={styles.transparentLabel1}>
                                     <Row>
                                         <Input placeholder="Enter new password"
-                                            secureTextEntry={true} style={{ fontSize: 13, fontFamily: 'OpenSans', marginTop: -5 }}
+                                            secureTextEntry={true} style={{ fontSize: 13, fontFamily: 'Roboto', marginTop: -5 }}
                                             keyboardType="default"
                                             value={this.state.newPassword}
                                             secureTextEntry={this.state.newPasswordVisible}
@@ -181,7 +181,7 @@ class UpdatePassword extends Component {
                                 </Col>
 
                             </Item>
-                            {this.state.errorMsg ? <Text style={{ paddingLeft: 20, fontSize: 13, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errorMsg}</Text> : null}
+                            {this.state.errorMsg ? <Text style={{ paddingLeft: 20, fontSize: 13, fontFamily: 'Roboto', color: 'red' }}>{this.state.errorMsg}</Text> : null}
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>

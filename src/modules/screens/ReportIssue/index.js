@@ -145,7 +145,7 @@ class ReportIssue extends Component {
             cancelable={false}
           /> : null}
           <View style={{ marginBottom: 40, }}>
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>{this.state.issueFor.serviceType || ' ' + ' Issue'}</Text>
+            <Text style={{ fontFamily: 'opensans-bold', fontSize: 20, textAlign: 'center',  }}>{this.state.issueFor.serviceType || ' ' + ' Issue'}</Text>
 
             <Form>
               <View >
@@ -158,7 +158,7 @@ class ReportIssue extends Component {
                                selected={this.state.issueType === item ? true : false} 
                                onPress={()=>   this.setState({ issueType: item })}  />
 
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, lineHeight: 20, marginLeft: 10,  width: '80%' }}>{item.issue}</Text>
+                        <Text style={{ fontFamily: 'Roboto', fontSize: 16, lineHeight: 20, marginLeft: 10,  width: '80%' }}>{item.issue}</Text>
                       </Row>
                       {this.state.issueType == item ?
                         <Row style={{ marginTop: 10, marginBottom: 10 }}>
@@ -236,11 +236,11 @@ const styles = StyleSheet.create({
 
   },
   ReportButtonText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 18,
     color: '#fff',
     textAlign: 'center',
-    fontWeight: 'bold'
+    
   },
   ReportButton: {
     borderRadius: 10,

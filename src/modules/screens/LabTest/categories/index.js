@@ -118,7 +118,7 @@ class LabCategories extends PureComponent {
   renderStickeyHeader() {
     return (
       <View style={{ width: '100%' }} >
-        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Labs by categories</Text>
+        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Labs by categories</Text>
         <Row style={styles.SearchRow}>
 
           <Col size={9.1} style={{ justifyContent: 'center', }}>
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   textcenter: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'OpenSans'
+    fontFamily: 'Roboto'
   },
 
   column:
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     color: 'white',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
 
   },
   SearchRow: {
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   },
   inputfield: {
     color: 'gray',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     padding: 5,
     paddingLeft: 10
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 10,
     textAlign: 'center',
-    fontWeight: '200',
+    fontFamily:'Roboto',
     marginTop: 5,
     paddingLeft: 5,
     paddingRight: 5,
@@ -288,24 +288,24 @@ const styles = StyleSheet.create({
   subText: {
     fontSize: 8,
     textAlign: 'center',
-    fontWeight: '200',
+    fontFamily:'Roboto',
     paddingTop: 1,
   },
   rsText: {
     fontSize: 8,
     textAlign: 'center',
-    fontWeight: '200',
     paddingTop: 1,
     color: '#ff4e42',
     marginTop: 2,
     textDecorationLine: 'line-through',
     textDecorationStyle: 'solid',
-    textDecorationColor: '#ff4e42'
+    textDecorationColor: '#ff4e42',
+    fontFamily:'Roboto'
   },
   finalRs: {
     fontSize: 10,
     textAlign: 'center',
-    fontWeight: '200',
+    fontFamily: 'Roboto',
     paddingTop: 1,
     marginLeft: 5,
     color: '#8dc63f'

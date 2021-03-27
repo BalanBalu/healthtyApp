@@ -102,7 +102,7 @@ class HospitalizationAndSurgeries extends PureComponent {
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>hospitalization and Surgeries</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Have you ever had any of the following procedures?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Have you ever had any of the following procedures?</Text>
                             <FlatList
                                 data={hospitalizedFor}
                                 keyExtractor={(item, index) => index.toString()}

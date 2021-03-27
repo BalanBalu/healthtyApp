@@ -137,9 +137,8 @@ class SideBar extends React.Component {
                   <View style={{marginLeft: 10}}>
                     <Text
                       style={{
-                        fontFamily: 'OpenSans',
                         fontSize: 16,
-                        fontWeight: 'bold',
+                        fontFamily: 'opensans-bold',
                         color: '#fff',
                       }}>
                       {getFullName(this.activeUserData)}
@@ -149,7 +148,7 @@ class SideBar extends React.Component {
                       style={{paddingRight: 10, paddingTop: 2, width: '100%'}}>
                       <Text
                         style={{
-                          fontFamily: 'OpenSans',
+                          fontFamily: 'Roboto',
                           fontSize: 13,
                           color: '#fff',
                         }}>
@@ -179,9 +178,9 @@ class SideBar extends React.Component {
                         />
                         <Text
                           style={{
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'opensans-bold',
                             fontSize: 15,
-                            fontWeight: 'bold',
+                         
                             color: '#FFF',
                             marginTop: 4,
                             marginLeft: 5,
@@ -223,8 +222,8 @@ class SideBar extends React.Component {
                             style={item.largeIcon}
                           />
                           {item.name === "Consultation" && item.routeName.length === 0 ?
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 16 }}>{translate(item.name)}</Text> :
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{translate(item.name)}</Text>}
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 15, marginLeft: 16 }}>{translate(item.name)}</Text> :
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 15 }}>{translate(item.name)}</Text>}
 
                           {item.name === "Consultation" && item.routeName.length === 0 ?
                             <Right>
@@ -257,7 +256,7 @@ class SideBar extends React.Component {
                                       style={item.largeIcon}
                                     />
                                     <Body style={{ borderBottomWidth: 0, }}>
-                                      <Text style={{ fontFamily: 'OpenSans', fontSize: 13 }}>{translate(item.name)}</Text>
+                                      <Text style={{ fontFamily: 'Roboto', fontSize: 13 }}>{translate(item.name)}</Text>
                                     </Body>
                                   </ListItem>
                                 } />
@@ -278,7 +277,7 @@ class SideBar extends React.Component {
               }} />
               <Body style={{ borderBottomWidth: 0, }}>
                 <Text onPress={() => this.signInOrSignup(hasLoggedIn)}
-                  style={{ fontFamily: 'OpenSans', fontSize: 15, }}>{hasLoggedIn ? translate('Sign Out') : translate('Sign In')}</Text>
+                  style={{ fontFamily: 'Roboto', fontSize: 15, }}>{hasLoggedIn ? translate('Sign Out') : translate('Sign In')}</Text>
               </Body>
             </ListItem>
           </View>
@@ -294,8 +293,7 @@ class SideBar extends React.Component {
               <Text
                 style={{
                   textAlign: 'center',
-                  fontFamily: 'OpenSans',
-                  fontWeight: '700',
+                  fontFamily: 'opensans-bold',
                   fontSize: 20,
                   color: '#fff',
                 }}>
@@ -303,7 +301,7 @@ class SideBar extends React.Component {
               </Text>
               <Text
                 style={{
-                  fontFamily: 'OpenSans',
+                  fontFamily: 'Roboto',
                   fontSize: 12,
                   marginLeft: 15,
                   color: '#000',

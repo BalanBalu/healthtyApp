@@ -165,14 +165,14 @@ class AllergiesAndMedications extends PureComponent {
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Allergies and Medications</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Do you have any allergies?</Text>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>Do you have any allergies?</Text>
                             <Row style={{ marginTop: 15, paddingBottom: 10 }}>
                                 <Col size={5}>
-                                    <Text style={{ fontFamily: "OpenSans", fontSize: 12, }}>Name</Text>
+                                    <Text style={{ fontFamily: "Roboto", fontSize: 12, }}>Name</Text>
 
                                 </Col>
                                 <Col size={5}>
-                                    <Text style={{ fontFamily: "OpenSans", fontSize: 12, }}>Reaction</Text>
+                                    <Text style={{ fontFamily: "Roboto", fontSize: 12, }}>Reaction</Text>
 
                                 </Col>
                             </Row>
@@ -241,7 +241,7 @@ class AllergiesAndMedications extends PureComponent {
                             <TouchableOpacity onPress={() => this.onAddNewAlergics()}
                                 style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#128283', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
                                 <Icon name="md-add" style={{ fontSize: 15, color: '#fff' }} />
-                                <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: 'bold' }}>Add</Text>
+                                <Text style={{ fontSize: 10, fontFamily: 'opensans-bold', color: '#fff', }}>Add</Text>
                             </TouchableOpacity>
 
                         </View>
@@ -249,13 +249,13 @@ class AllergiesAndMedications extends PureComponent {
                         <View>
                             <View style={{ marginTop: 20, width: '100%', }}>
 
-                                <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>What medicines are you currently taking ?</Text>
+                                <Text style={{ fontFamily: "Roboto", fontSize: 15, }}>What medicines are you currently taking ?</Text>
                                 <Row style={{ marginTop: 15, paddingBottom: 10 }}>
                                     <Col size={5}>
-                                        <Text style={{ fontFamily: "OpenSans", fontSize: 12, }}>Name</Text>
+                                        <Text style={{ fontFamily: "Roboto", fontSize: 12, }}>Name</Text>
                                     </Col>
                                     <Col size={5}>
-                                        <Text style={{ fontFamily: "OpenSans", fontSize: 12, }}>Dosage</Text>
+                                        <Text style={{ fontFamily: "Roboto", fontSize: 12, }}>Dosage</Text>
                                     </Col>
                                 </Row>
                                 <View>
@@ -320,7 +320,7 @@ class AllergiesAndMedications extends PureComponent {
                                     <TouchableOpacity onPress={() => this.onAddNewMedicineInfo()}
                                         style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#128283', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
                                         <Icon name="md-add" style={{ fontSize: 15, color: '#fff' }} />
-                                        <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: 'bold' }}>Add</Text>
+                                        <Text style={{ fontSize: 10, fontFamily: 'opensans-bold', color: '#fff',  }}>Add</Text>
                                     </TouchableOpacity>
                                 </View>
 

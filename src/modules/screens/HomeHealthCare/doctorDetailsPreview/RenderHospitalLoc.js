@@ -25,7 +25,7 @@ export default class RenderHospitalLoc extends Component {
 
                 <Row style={{ marginTop: 10 }}>
                     <Icon name='ios-home' style={{ fontSize: 20, color: 'gray' }} />
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>{hopitalLocationData.name}</Text>
+                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13, marginLeft: 10, marginTop: 1 }}>{hopitalLocationData.name}</Text>
                 </Row>
                 <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
 
@@ -37,13 +37,13 @@ export default class RenderHospitalLoc extends Component {
                                     <Icon name="locate" style={{ color: primaryColor, fontSize: 20 }}></Icon>
                                 </Left>
                                 <Body>
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.no_and_street}</Text>
-                                    {addressData.address_line_1 ? <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.address_line_1}</Text> : null}
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.city}</Text>
-                                    {addressData.district ? <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.district}</Text> : null}
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.state}</Text>
-                                    {addressData.post_office_name ? <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.post_office_name}</Text> : null}
-                                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{addressData.pin_code}</Text>
+                                    <Text note style={{ fontFamily: 'Roboto', fontSize: 15 }}>{addressData.no_and_street}</Text>
+                                    {addressData.address_line_1 ? <Text note style={{ fontFamily: 'Roboto', fontSize: 15 }}>{addressData.address_line_1}</Text> : null}
+                                    <Text note style={{ fontFamily: 'Roboto', fontSize: 15 }}>{addressData.city}</Text>
+                                    {addressData.district ? <Text note style={{ fontFamily: 'Roboto', fontSize: 15 }}>{addressData.district}</Text> : null}
+                                    <Text note style={{ fontFamily: 'Roboto', fontSize: 15 }}>{addressData.state}</Text>
+                                    {addressData.post_office_name ? <Text note style={{ fontFamily: 'Roboto', fontSize: 15 }}>{addressData.post_office_name}</Text> : null}
+                                    <Text note style={{ fontFamily: 'Roboto', fontSize: 15 }}>{addressData.pin_code}</Text>
                                 </Body>
                             </ListItem>
                         </List>

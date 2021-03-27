@@ -53,11 +53,11 @@ class PaymentSuccess extends Component {
 
         return (
             <Row style={styles.rowDetail1}>
-                <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 16 }}>Address</Text>
+                <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 16 }}>Address</Text>
                 <Right>
                     <Text style={styles.subText}>{hospitalAddress.name}</Text>
-                    <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{hospitalAddress.location.address.no_and_street}, {hospitalAddress.location.address.city}</Text>
-                    <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{hospitalAddress.location.address.state}, {hospitalAddress.location.address.pin_code}</Text>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{hospitalAddress.location.address.no_and_street}, {hospitalAddress.location.address.city}</Text>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{hospitalAddress.location.address.state}, {hospitalAddress.location.address.pin_code}</Text>
                 </Right>
             </Row>
         )
@@ -68,10 +68,10 @@ class PaymentSuccess extends Component {
         if (patientAddress && Object.keys(patientAddress).length) {
             return (
                 <Row style={styles.rowDetail1}>
-                    <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 16 }}>Address</Text>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 16 }}>Address</Text>
                     <Right>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.no_and_street ? patientAddress.no_and_street + ' ,' : ''} {patientAddress.city}</Text>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.state}, {patientAddress.pin_code}</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.no_and_street ? patientAddress.no_and_street + ' ,' : ''} {patientAddress.city}</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.state}, {patientAddress.pin_code}</Text>
                     </Right>
                 </Row>
             )
@@ -116,8 +116,8 @@ class PaymentSuccess extends Component {
 
                                             <Right>
                                                 <Text style={styles.subText}>{successBookSlotDetails.name || ' '}</Text>
-                                                <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
-                                                <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
                                             </Right>
                                         </Row> :
                                         <Row>
@@ -126,7 +126,7 @@ class PaymentSuccess extends Component {
                                         </Row>
                                     }
                                     <Row>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
+                                        <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
 
                                     </Row>
                                 </Col>
@@ -134,7 +134,7 @@ class PaymentSuccess extends Component {
                             <Row style={styles.rowDetail}>
                                 <Text style={styles.mainText}>Token Number</Text>
                                 <Right>
-                                    <Text style={[styles.subText, { fontWeight: 'bold' }]}> {tokenNo} </Text>
+                                    <Text style={styles.subText2 }> {tokenNo} </Text>
                                 </Right>
                             </Row>
                             {successBookSlotDetails.slotData && fromNavigation === null && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : this.renderPatientLocation()}
@@ -211,9 +211,8 @@ const styles = StyleSheet.create({
 
     },
     customizedText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 20,
-        fontWeight: 'bold',
         color: '#fff'
     },
     userImage:
@@ -238,13 +237,12 @@ const styles = StyleSheet.create({
     },
     successHeading: {
         textAlign: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 18,
-        fontWeight: 'bold'
     },
     subText: {
         textAlign: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 14,
         marginTop: 5,
         color: '#535353',
@@ -252,16 +250,14 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     docHeading: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 16,
-        fontWeight: 'bold',
 
     },
     Degree: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 14,
         marginTop: 8,
-        fontWeight: 'bold',
 
     },
     rowDetail: {
@@ -275,8 +271,17 @@ const styles = StyleSheet.create({
     },
     mainText: {
         textAlign: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 16,
+    },
+    subText2: {
+        textAlign: 'center',
+        fontFamily: 'opensans-bold',
+        fontSize: 14,
+        marginTop: 5,
+        color: '#535353',
+        marginLeft: 20,
+        marginRight: 20
     },
 
 });

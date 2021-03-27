@@ -119,7 +119,7 @@ class Categories extends Component {
   renderStickeyHeader() {
     return (
       <View style={{ width: '100%' }} >
-        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Doctors by their specialism</Text>
+        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Doctors by their specialism</Text>
         <Row style={styles.SearchRow}>
 
           <Col size={9.1} style={{ justifyContent: 'center', }}>
@@ -169,9 +169,8 @@ class Categories extends Component {
                     <Text style={{
                       fontSize: 12,
                       textAlign: 'center',
-                      fontWeight: '200',
+                    fontFamily:'Roboto',
                       marginTop: 5,
-
                       paddingLeft: 5,
                       paddingRight: 5,
                       paddingTop: 1,
@@ -215,7 +214,7 @@ const styles = StyleSheet.create({
   textcenter: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'OpenSans'
+    fontFamily: 'Roboto'
   },
 
   column:
@@ -238,7 +237,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     color: 'white',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
 
   },
   SearchRow: {
@@ -258,7 +257,7 @@ const styles = StyleSheet.create({
   },
   inputfield: {
     color: 'gray',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     padding: 5,
     paddingLeft: 10

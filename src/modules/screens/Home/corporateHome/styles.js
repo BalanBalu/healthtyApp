@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginHorizontal: 12,
     marginVertical: 12,
-    fontWeight: '700',
+    fontFamily: 'opensans-bold',
+
   },
   flexRow: {
     flexDirection: 'row',
@@ -49,7 +50,8 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     color: primaryColor,
-    fontWeight: '700',
+    fontFamily: 'opensans-bold',
+
     textAlign:'center'
   },
 
@@ -57,15 +59,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 2,
     color: primaryColor,
-    fontWeight: '700',
+    fontFamily: 'opensans-bold',
     textAlign: 'center',
   },
   initiationText2: {
     fontSize: 15,
     marginTop: 0,
     color: primaryColor,
-    fontFamily: 'OpenSans',
-    fontWeight: '700',
+    fontFamily: 'opensans-bold',
     textAlign: 'center',
   },
   insuranceRenewalText: {
@@ -73,8 +74,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
     color: primaryColor,
     textAlign: 'center',
+    fontFamily: 'opensans-bold',
 
-    fontWeight: '700',
   },
 
   shadowEffect: {
@@ -88,16 +89,15 @@ const styles = StyleSheet.create({
     height: 150,
   },
   usedAmount: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 18,
     color: '#000',
     textAlign: 'center',
-    fontWeight: 'bold',
     marginLeft: 5
 
   },
   totalAmount: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 13,
     color: '#909090',
     textAlign: 'center'

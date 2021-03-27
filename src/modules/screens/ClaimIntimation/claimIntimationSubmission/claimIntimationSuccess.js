@@ -21,7 +21,7 @@ export default class ClaimPaymentSuccess extends PureComponent {
                             <Text style={styles.successHeading}>SUCCESS</Text>
                             <Text style={styles.subText}>{ this.props.navigation.getParam('successMsg') ? this.props.navigation.getParam('successMsg') : null}  <Text style={{
                                     textAlign: 'center',
-                                    fontFamily: 'OpenSans',
+                                    fontFamily: 'Roboto',
                                     fontSize: 18,
                                     marginTop: 5,
                                     color: '#535353',

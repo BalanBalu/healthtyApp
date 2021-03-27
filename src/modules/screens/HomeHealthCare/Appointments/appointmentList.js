@@ -274,16 +274,18 @@ export default class AppointmentList extends Component {
                             width: 250,
                             marginLeft: "auto",
                             marginRight: "auto",
-                            marginTop: "auto"
+                            marginTop: "auto",
+                            fontFamily:'opensans-bold'
                         }}
                         values={["Upcoming", "Past"]}
                         selectedIndex={selectedIndex}
                         onTabPress={this.onChangeUpComingOrPastTabs}
                         activeTabStyle={{
                             backgroundColor: primaryColor,
-                            borderColor: primaryColor
+                            borderColor: primaryColor,
+                            fontFamily:'opensans-bold'
                         }}
-                        tabStyle={{ borderColor: primaryColor }} />
+                        tabStyle={{ borderColor: primaryColor,fontFamily:'opensans-bold' }} />
                 </Card>
                 {isLoading ?
                     <Spinner

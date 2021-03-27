@@ -754,7 +754,7 @@ class PolicyCoverage extends React.Component {
                 <Col size={5.5}>
                   <Text
                     style={{
-                      fontFamily: 'OpenSans',
+                      fontFamily: 'Roboto',
                       fontSize: 16,
                       marginTop: 10,
                     }}>
@@ -813,13 +813,13 @@ class PolicyCoverage extends React.Component {
                 </Row>
                 <Text style={styles.subHeadingStyle}>{translate("Balance Sum Insured")}</Text>
                 <View style={{marginTop: 2}}>
-                  <Text style={{fontFamily: 'OpenSans', fontSize: 18}}>
+                  <Text style={{fontFamily: 'Roboto', fontSize: 18}}>
                     {memberDetails.balSumInsured
                       ? memberDetails.balSumInsured
                       : 0}
                     <Text
                       style={{
-                        fontFamily: 'OpenSans',
+                        fontFamily: 'Roboto',
                         fontSize: 13,
                         color: '#909090',
                       }}>
@@ -837,7 +837,7 @@ class PolicyCoverage extends React.Component {
 
                 {/* <Text style={[styles.subText, { marginTop: 15 },]}>Family Sum Insured</Text>
                 <View style={{ marginTop: 2 }}>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>15000.00<Text style={{ fontFamily: 'OpenSans', fontSize: 13, color: '#909090' }}>{" "}/ 50000.00</Text></Text>
+                  <Text style={{ fontFamily: 'Roboto', fontSize: 18, }}>15000.00<Text style={{ fontFamily: 'Roboto', fontSize: 13, color: '#909090' }}>{" "}/ 50000.00</Text></Text>
                 </View>
                 <ProgressBar progress={0.2} color={'#2196F3'} style={styles.progressbarStyle} animated={true} /> */}
               </View>
@@ -870,7 +870,7 @@ class PolicyCoverage extends React.Component {
                             styles.policyConitionText,
                             {
                               textDecorationLine: 'underline',
-                              fontWeight: '700',
+                              fontFamily: 'opensans-bold',
                             },
                           ]}>
                           {translate("Policy Conditions")}
@@ -890,14 +890,14 @@ class PolicyCoverage extends React.Component {
                       renderItem={({item, index}) => (
                         <Row style={{marginTop: 0}}>
                           <Col size={1}>
-                            <Text style={{fontWeight: 'bold', fontSize: 35}}>
+                            <Text style={{ fontSize: 35,fontFamily:'opensans-bold'}}>
                               {'\u2022'}
                             </Text>
                           </Col>
                           <Col size={9}>
                             <Text
                               style={{
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'Roboto',
                                 fontSize: 15,
                                 lineHeight: 25,
                                 marginTop: 10,
@@ -948,14 +948,14 @@ export default connect(policyState)(PolicyCoverage);
 
 const styles = StyleSheet.create({
   linkHeader: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     textDecorationColor: primaryColor,
     textDecorationLine: 'underline',
     color: primaryColor,
   },
   subHeadingStyle: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
     color: '#909090',
   },
@@ -968,9 +968,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   myInsuranceText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     fontSize: 16,
-    fontWeight: '700',
     textAlign: 'center',
   },
   cardStyle: {
@@ -990,15 +989,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   policyConitionText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 15,
   },
   subHeadingData: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 14,
   },
   policyConditionSubText: {
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     color: '#909090',
   },

@@ -382,7 +382,7 @@ class DoctorList extends Component {
                 <Text
                   uppercase={false}
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     color: '#000',
                     fontSize: 13,
                     textAlign: 'center',
@@ -404,7 +404,7 @@ class DoctorList extends Component {
                 <Text
                   uppercase={false}
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     color: '#000',
                     fontSize: 13,
                     marginLeft: 10,
@@ -1022,11 +1022,11 @@ class DoctorList extends Component {
                   <Text
                     note
                     style={{
-                      fontFamily: 'OpenSans',
+                      fontFamily: 'opensans-bold',
                       marginTop: 15,
                       fontSize: 12,
                       marginRight: 50,
-                      fontWeight: 'bold',
+                   
                     }}>
                     {' '}
                     {this.getNextAvailableDateAndTime(
@@ -1065,8 +1065,7 @@ class DoctorList extends Component {
                           textAlign: 'center',
                           color: '#fff',
                           fontSize: 13,
-                          fontWeight: 'bold',
-                          fontFamily: 'OpenSans',
+                          fontFamily: 'opensans-bold',
                         }}>
                         BOOK{' '}
                       </Text>
@@ -1092,7 +1091,7 @@ class DoctorList extends Component {
                 item.slotData ? (
                   <View>
                     <Row style={{marginTop: 10}}>
-                      <Text style={{fontSize: 13, fontFamily: 'OpenSans'}}>
+                      <Text style={{fontSize: 13, fontFamily: 'Roboto'}}>
                         Choose appointment date and time
                       </Text>
                     </Row>
@@ -1134,7 +1133,7 @@ class DoctorList extends Component {
                             style={{
                               fontSize: 12,
                               alignSelf: 'flex-start',
-                              fontFamily: 'OpenSans',
+                              fontFamily: 'Roboto',
                             }}>
                             Selected Appointment on
                           </Text>
@@ -1143,7 +1142,7 @@ class DoctorList extends Component {
                               alignSelf: 'flex-start',
                               color: '#000',
                               fontSize: 12,
-                              fontFamily: 'OpenSans',
+                              fontFamily: 'Roboto',
                               marginTop: 5,
                             }}>
                             {this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[
@@ -1185,8 +1184,7 @@ class DoctorList extends Component {
                               style={{
                                 color: '#fff',
                                 fontSize: 12,
-                                fontWeight: 'bold',
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'opensans-bold',
                               }}>
                               Continue{' '}
                             </Text>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {primaryColor, secondaryColor} from '../../../../setup/config'
 
-import Svg, {Defs, Ellipse, G, Path, Stop,Text,TSpan} from 'react-native-svg';
+import Svg, {Defs, Ellipse, G, Path, Stop,Text,TSpan,Circle,Rect } from 'react-native-svg';
 
 /* Coverage Home Dashboard Start */
 function PreAuthDrawing() {
@@ -1269,6 +1269,257 @@ function CircleProgessImage() {
   );
 }
 
+function FamilyData(){
+  return(
+    <Svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="90"
+          height="500.885"
+          viewBox="0 0 89 63.885"
+        >
+          <G
+            id="Group_536"
+            data-name="Group 536"
+            transform="translate(-603 -329)"
+          >
+              <G
+              id="Group_535"
+              data-name="Group 535"
+              transform="translate(603 329)"
+            >
+                <Path
+                id="Path_5286"
+                data-name="Path 5286"
+                d="M768.9,265.585"
+                transform="translate(-709.142 -209.36)"
+                fill="#93278f"
+                stroke="#00a216"
+                stroke-miterlimit="10"
+                stroke-width="1"
+              />
+                <G id="male" transform="translate(12.37 0)">
+                <Circle
+                  id="Ellipse_85"
+                  data-name="Ellipse 85"
+                  cx="6.612"
+                  cy="6.612"
+                  r="6.612"
+                  transform="translate(11.019)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2189"
+                  data-name="Rectangle 2189"
+                  width="6.011"
+                  height="44.885"
+                  rx="2.5"
+                  transform="translate(10.117 18.836)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2190"
+                  data-name="Rectangle 2190"
+                  width="6.011"
+                  height="22.843"
+                  rx="3.006"
+                  transform="translate(11.422 15.657) rotate(30)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2191"
+                  data-name="Rectangle 2191"
+                  width="6.011"
+                  height="22.843"
+                  rx="3.006"
+                  transform="translate(18.034 18.663) rotate(-30)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2192"
+                  data-name="Rectangle 2192"
+                  width="6.011"
+                  height="45.434"
+                  rx="2.5"
+                  transform="translate(18.533 18.286)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2193"
+                  data-name="Rectangle 2193"
+                  width="14.427"
+                  height="30.057"
+                  rx="5.866"
+                  transform="translate(10.117 15.63)"
+                  fill="#128283"
+                />
+              </G>
+              <G id="kid1" transform="translate(0 29.937)">
+                <Ellipse
+                  id="Ellipse_86"
+                  data-name="Ellipse 86"
+                  cx="3.462"
+                  cy="3.478"
+                  rx="3.462"
+                  ry="3.478"
+                  transform="translate(5.194)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2194"
+                  data-name="Rectangle 2194"
+                  width="3.148"
+                  height="23.606"
+                  rx="1.574"
+                  transform="translate(4.722 9.906)"
+                  fill="#128283"
+                />
+                  <Path
+                  id="Path_5287"
+                  data-name="Path 5287"
+                  d="M660.915,244.392h0a1.584,1.584,0,0,1-.576-2.159l4.407-7.667a1.57,1.57,0,0,1,2.15-.578h0a1.584,1.584,0,0,1,.576,2.16l-4.407,7.666A1.57,1.57,0,0,1,660.915,244.392Z"
+                  transform="translate(-660.128 -224.963)"
+                  fill="#128283"
+                />
+                   <Path
+                  id="Path_5288"
+                  data-name="Path 5288"
+                  d="M678.155,233.916l-.156.09a1.494,1.494,0,0,0-.543,2.036l4.5,7.823a1.48,1.48,0,0,0,2.027.546l.156-.09a1.494,1.494,0,0,0,.543-2.036l-4.5-7.823A1.48,1.48,0,0,0,678.155,233.916Z"
+                  transform="translate(-667.846 -224.936)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2195"
+                  data-name="Rectangle 2195"
+                  width="3.148"
+                  height="23.895"
+                  rx="1.574"
+                  transform="translate(9.129 9.617)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2196"
+                  data-name="Rectangle 2196"
+                  width="7.554"
+                  height="15.808"
+                  rx="3.119"
+                  transform="translate(4.722 8.22)"
+                  fill="#128283"
+                />
+              </G>
+              <G
+                id="kid1-2"
+                data-name="kid1"
+                transform="translate(71.969 29.937)"
+              >
+                <Ellipse
+                  id="Ellipse_87"
+                  data-name="Ellipse 87"
+                  cx="3.462"
+                  cy="3.478"
+                  rx="3.462"
+                  ry="3.478"
+                  transform="translate(5.194)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2197"
+                  data-name="Rectangle 2197"
+                  width="3.148"
+                  height="23.606"
+                  rx="1.574"
+                  transform="translate(4.722 9.906)"
+                  fill="#128283"
+                />
+                    <Path
+                  id="Path_5289"
+                  data-name="Path 5289"
+                  d="M791.915,244.392h0a1.584,1.584,0,0,1-.576-2.159l4.407-7.667a1.57,1.57,0,0,1,2.15-.578h0a1.584,1.584,0,0,1,.576,2.16l-4.407,7.666A1.57,1.57,0,0,1,791.915,244.392Z"
+                  transform="translate(-791.128 -224.963)"
+                  fill="#128283"
+                />
+                  <Path
+                  id="Path_5290"
+                  data-name="Path 5290"
+                  d="M809.155,233.916l-.156.09a1.494,1.494,0,0,0-.543,2.036l4.5,7.823a1.48,1.48,0,0,0,2.027.546l.156-.09a1.494,1.494,0,0,0,.543-2.036l-4.5-7.823A1.48,1.48,0,0,0,809.155,233.916Z"
+                  transform="translate(-798.846 -224.936)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2198"
+                  data-name="Rectangle 2198"
+                  width="3.148"
+                  height="23.895"
+                  rx="1.574"
+                  transform="translate(9.129 9.617)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2199"
+                  data-name="Rectangle 2199"
+                  width="7.554"
+                  height="15.808"
+                  rx="3.119"
+                  transform="translate(4.722 8.22)"
+                  fill="#128283"
+                />
+              </G>
+              <G id="female" transform="translate(40.236 0.85)">
+                <Ellipse
+                  id="Ellipse_88"
+                  data-name="Ellipse 88"
+                  cx="6.559"
+                  cy="6.667"
+                  rx="6.559"
+                  ry="6.667"
+                  transform="translate(10.102)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2200"
+                  data-name="Rectangle 2200"
+                  width="5.963"
+                  height="46.33"
+                  rx="2.48"
+                  transform="translate(9.208 16.705)"
+                  fill="#128283"
+                />
+                  <Path
+                  id="Path_5291"
+                  data-name="Path 5291"
+                  d="M735.338,213.688h0a3.058,3.058,0,0,1-1.091-4.14l8.347-14.7a2.954,2.954,0,0,1,4.073-1.109h0a3.057,3.057,0,0,1,1.091,4.14l-8.347,14.7A2.954,2.954,0,0,1,735.338,213.688Z"
+                  transform="translate(-733.583 -177.653)"
+                  fill="#128283"
+                />
+    <Path
+                  id="Path_5292"
+                  data-name="Path 5292"
+                  d="M767.9,193.742h0a3.058,3.058,0,0,0-1.092,4.14l8.348,14.7a2.954,2.954,0,0,0,4.073,1.109h0a3.058,3.058,0,0,0,1.091-4.14l-8.347-14.7A2.955,2.955,0,0,0,767.9,193.742Z"
+                  transform="translate(-748.255 -177.653)"
+                  fill="#128283"
+                />
+                <Rect
+                  id="Rectangle_2201"
+                  data-name="Rectangle 2201"
+                  width="5.963"
+                  height="45.243"
+                  rx="2.48"
+                  transform="translate(17.555 17.792)"
+                  fill="#128283"
+                />
+                <Path
+                  id="Path_5293"
+                  data-name="Path 5293"
+                  d="M764.636,220.36h-31c-2.064,0,8.646-6.549,8.646-8.485v-17.1a3.627,3.627,0,0,1,3.737-3.507h6.836a3.628,3.628,0,0,1,3.737,3.507v15.889C756.587,212.6,766.7,220.36,764.636,220.36Z"
+                  transform="translate(-733.367 -176.721)"
+                  fill="#128283"
+                />
+              </G>
+            </G>
+          </G>
+        </Svg>
+  )
+}
+
 
 export {
   PreAuthDrawing,
@@ -1284,5 +1535,6 @@ export {
   VideoConsultDrawing,
   ProfileFamilyCardDrawing,
   ContactUsImage,
-  CircleProgessImage
+  CircleProgessImage,
+  FamilyData
 };

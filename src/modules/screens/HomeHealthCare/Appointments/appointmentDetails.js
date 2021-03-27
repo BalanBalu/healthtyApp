@@ -262,7 +262,7 @@ class AppointmentDetails extends PureComponent {
                                             <Row>
                                                 <Col size={9}>
                                                     <Text style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
-                                                    <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color: '#4c4c4c' }}>{education}</Text>
+                                                    <Text note style={{ fontSize: 13, fontFamily: 'Roboto',  color: '#4c4c4c' }}>{education}</Text>
                                                     <Text style={styles.specialistTextStyle}>{specialist}</Text>
                                                 </Col>
                                                 <Col size={1}>
@@ -294,7 +294,7 @@ class AppointmentDetails extends PureComponent {
                                         </Col>
                                         {data.appointment_status == 'APPROVED' && data.onGoingAppointment === true ?
                                             <Col size={3}>
-                                                <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: 'green' }}>ONGOING</Text>
+                                                <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>ONGOING</Text>
                                             </Col>
                                             :
                                             data.appointment_status != undefined &&
@@ -417,7 +417,7 @@ class AppointmentDetails extends PureComponent {
                                                                             <Text style={styles.commonText}>-</Text>
                                                                         </Col>
                                                                         <Col size={8}>
-                                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{item.patient_name}</Text>
+                                                                            <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#4c4c4c' }}>{item.patient_name}</Text>
                                                                         </Col>
                                                                     </Row>
                                                                 </Col>
@@ -432,7 +432,7 @@ class AppointmentDetails extends PureComponent {
                                                                             <Text style={styles.commonText}>-</Text>
                                                                         </Col>
                                                                         <Col size={8}>
-                                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#4c4c4c' }}>{(item.patient_age) + ' - ' + getUserGenderAndAge(item)}</Text>
+                                                                            <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#4c4c4c' }}>{(item.patient_age) + ' - ' + getUserGenderAndAge(item)}</Text>
                                                                         </Col>
                                                                     </Row>
                                                                 </Col>
@@ -470,7 +470,7 @@ class AppointmentDetails extends PureComponent {
                                                                 prevState: this.props.navigation.state
                                                             })
                                                         }}>
-                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>Report Issue</Text>
+                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'opensans-bold',textAlign: 'center', marginTop: 5 }}>Report Issue</Text>
                                                     </TouchableOpacity>
                                                 </View>}
                                         </Col>
@@ -499,7 +499,7 @@ class AppointmentDetails extends PureComponent {
                                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                                     <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.setState({ isVisibleAddReviewPop: true })}
                                                         testID='addFeedBack'>
-                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>Add Feedback</Text>
+                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 5 }}>Add Feedback</Text>
                                                         <MaterialIcons name="create" style={{ fontSize: 15, marginTop: 3, marginLeft: 5, color: '#fff' }}></MaterialIcons>
                                                     </TouchableOpacity>
                                                 </View>

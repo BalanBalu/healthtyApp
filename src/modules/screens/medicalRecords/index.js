@@ -259,14 +259,14 @@ class MedicineRecords extends PureComponent {
                                 <Col size={5} style={{ backgroundColor: '#4E85E9' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity style={styles.buttonTouch} onPress={() => this.proceed()} >
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '700' }}>Back</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'opensans-bold', color: '#fff',  }}>Back</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
                                 <Col size={5} style={{ backgroundColor: '#8dc63f' }}>
                                     <Row style={{ alignItems: 'center', justifyContent: 'center', }}>
                                         <TouchableOpacity style={styles.buttonTouch} onPress={() => this.proceed()} >
-                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '700' }}>Continue</Text>
+                                            <Text style={{ fontSize: 16, fontFamily: 'opensans-bold', color: '#fff',  }}>Continue</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </Col>
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
 
     },
     innerText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         marginTop: 5
 
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     },
     inputfield: {
         color: 'gray',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         fontSize: 12,
         padding: 5,
         paddingLeft: 10
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
     },
     mainText: {
         fontSize: 14,
-        fontWeight: '500',
+        fontFamily: 'opensans-bold',
         marginLeft: 5
     },
     buttonTouch: {
@@ -363,10 +363,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     touchText: {
-        fontFamily: 'OpenSans',
+        fontFamily: 'opensans-bold',
         fontSize: 14,
         color: '#fff',
         textAlign: 'center',
-        fontWeight: 'bold'
+        
     },
 });
