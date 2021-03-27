@@ -130,7 +130,6 @@ class SideBar extends React.Component {
                     borderRadius: 30,
                   }}
                 />
-                {/* <Image source={this.renderProfileImageOrLogo()} style={{height:60,width:60}}/> */}
               </Col>
               <Col style={{width: '70%'}}>
                 {hasLoggedIn ? (

@@ -76,7 +76,6 @@ export default class preAuthList extends Component {
     }
   }
   toggleData(data) {
-    console.log("haiiiiii",data)
     const { showCard, show } = this.state
     if(data===showCard){
          this.setState({ showCard: data, show: !this.state.show, })
