@@ -54,7 +54,7 @@ class UpdateFamilyMembers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data:props.navigation.getParam('data')||[],
+      data: props.navigation.getParam('data') || [],
       family_members: [],
       relationship: '',
       name: '',
@@ -196,8 +196,16 @@ class UpdateFamilyMembers extends Component {
       } else {
         response = await addFamilyMembersDetails(requestData);
       }
-
+      console.log('response', response);
       if (response) {
+        console.log('this.state.data', this.state.data);
+        let temp = this.state.data||[];
+        temp.push(response);
+        console.log(' temp', temp);
+
+        this.setState({data: temp});
+        console.log(' data', this.state.data);
+
         Toast.show({
           text: 'Your family member details are updated',
           type: 'success',
@@ -235,20 +243,21 @@ class UpdateFamilyMembers extends Component {
   };
 
   onSelectedItemsChange = async (selectedItems) => {
-    if(this.state.data.length!=0){
+    this.setState({relationship: selectedItems, updateButton: false});
+    if (this.state.data.length != 0) {
       this.state.data.map(async (ele, index) => {
         if (ele.relationship == selectedItems[0]) {
-         await this.setState({
+          await this.setState({
             relationship: '',
             errorMsg: 'Selected relationship is already exist',
             isModalVisible: true,
             updateButton: true,
           });
+          console.log(this.state.relationship)
           return false;
-        } else this.setState({relationship: selectedItems, updateButton: false});
+        } 
       });
-    }else this.setState({relationship: selectedItems, updateButton: false});
- 
+    } 
   };
 
   imageUpload = async (data) => {
@@ -260,18 +269,20 @@ class UpdateFamilyMembers extends Component {
 
   memberValidation = async () => {
     let memberPolicyNo = (await AsyncStorage.getItem('memberPolicyNo')) || null;
-    let response = await familyMemberIdExist(this.state.memberId, memberPolicyNo);
+    let response = await familyMemberIdExist(
+      this.state.memberId,
+      memberPolicyNo,
+    );
     if (response) {
       this.setState({
-        memberId:'',
+        memberId: '',
         errorMsg: 'Member code already exist',
         isModalVisible: true,
         updateButton: true,
       });
       return false;
-    }
-     else {
-      this.setState({memberId:this.state.memberId, updateButton: false});
+    } else {
+      this.setState({memberId: this.state.memberId, updateButton: false});
     }
   };
   uploadImageToServer = async (imagePath) => {
@@ -284,7 +295,10 @@ class UpdateFamilyMembers extends Component {
 
       if (response.success) {
         this.uploadedData = [...this.state.uploadData, ...response.data];
-        await this.setState({uploadData: this.uploadedData});
+        await this.setState({
+          uploadData: this.uploadedData,
+          updateButton: false,
+        });
         toastMeassage('Image upload successfully', 'success', 3000);
       } else {
         toastMeassage(
@@ -390,9 +404,9 @@ class UpdateFamilyMembers extends Component {
                         color={primaryColor}
                         selectedColor={primaryColor}
                         standardStyle={true}
-                        selected={gender === 'M' ? true : false}
+                        selected={gender === 'Male' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'M', updateButton: false})
+                          this.setState({gender: 'Male', updateButton: false})
                         }
                       />
                       <Text
@@ -413,9 +427,9 @@ class UpdateFamilyMembers extends Component {
                       <Radio
                         color={primaryColor}
                         standardStyle={true}
-                        selected={gender === 'F' ? true : false}
+                        selected={gender === 'Female' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'F', updateButton: false})
+                          this.setState({gender: 'Female', updateButton: false})
                         }
                       />
                       <Text
@@ -436,9 +450,9 @@ class UpdateFamilyMembers extends Component {
                       <Radio
                         color={primaryColor}
                         standardStyle={true}
-                        selected={gender === 'O' ? true : false}
+                        selected={gender === 'Others' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'O', updateButton: false})
+                          this.setState({gender: 'Others', updateButton: false})
                         }
                       />
                       <Text
@@ -501,12 +515,12 @@ class UpdateFamilyMembers extends Component {
                     style={styles.textInputStyle}
                     placeholderStyle={{marginTop: 2}}
                     value={memberId}
-                    onChangeText={(code) => this.setState({memberId:code})}
+                    onChangeText={(code) => this.setState({memberId: code})}
                     blurOnSubmit={false}
                     editable={memberId && fromProfile ? false : true}
                     testID="editMemberCode"
                     onSubmitEditing={() => {
-                      this.memberValidation()
+                      this.memberValidation();
                     }}
                   />
                 </View>

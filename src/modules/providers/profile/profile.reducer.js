@@ -1,4 +1,4 @@
-import { PROFILE_REQUEST, PROFILE_RESPONSE, PROFILE_ERROR, REVIEWS_REQUEST, REVIEWS_RESPONSE, REVIEWS_ERROR, AVAILABLE_CREDIT_POINTS, SET_REFER_CODE, SET_USER_DATA_FOR_PREPARATION, SET_CORPORATE_DATA,SET_MEMBER_POLICY_INFO,SET_MEMBER_TPA_DATA,SET_TRANSLATOR, } from './profile.action';
+import { PROFILE_REQUEST, PROFILE_RESPONSE, PROFILE_ERROR, REVIEWS_REQUEST, REVIEWS_RESPONSE, REVIEWS_ERROR, AVAILABLE_CREDIT_POINTS, SET_REFER_CODE, SET_USER_DATA_FOR_PREPARATION, SET_CORPORATE_DATA,SET_MEMBER_POLICY_INFO,SET_MEMBER_TPA_DATA,SET_TRANSLATOR, SET_FAMILY_DATA} from './profile.action';
 
 // Initial State
 export const initialState = {
@@ -158,6 +158,13 @@ export default (state = initialState, action) => {
         ...state,
         set_translator: action.data
       }
+      case SET_FAMILY_DATA:
+     
+        return {
+          ...state,
+          familyData: action.data
+        }
+  
     default:
       return state;
   }

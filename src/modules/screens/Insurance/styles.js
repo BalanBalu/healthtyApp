@@ -87,7 +87,7 @@ export default  styles = StyleSheet.create({
         borderTopLeftRadius: 10,
       },
       mainView: {
-        marginTop: 10,
+        marginTop: 15,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 10
@@ -97,7 +97,8 @@ export default  styles = StyleSheet.create({
         borderWidth: 1,
         flexDirection: 'row',
         borderRadius: 5,
-        padding: 5
+        padding: 5,
+        marginTop: 30,
       },
       addInsuranceText: {
         fontFamily: 'opensans-bold',
