@@ -113,9 +113,8 @@ class PreAuth extends React.PureComponent {
     /* Get Network Hospital list by Member TPA Code   */
     const tpaCode = preAuthInfo && preAuthInfo.tpaInfo && preAuthInfo.tpaInfo.tpaCode;
     if (tpaCode) {
-      // const reqData4GetNetworkWithoutLoc = { tpaCode };
-      const getHospitalList = await serviceOfSearchByNetworkHospitalDetails(tpaCode);
-        //  const getHospitalList = networkHospRepsWithoutLoc && networkHospRepsWithoutLoc.;
+      const reqData4GetNetworkWithoutLoc = { tpaCode };
+      const getHospitalList = await serviceOfSearchByNetworkHospitalDetails(reqData4GetNetworkWithoutLoc);
             if (getHospitalList && getHospitalList.length) {
               var networkHospList = getHospitalList;
             }

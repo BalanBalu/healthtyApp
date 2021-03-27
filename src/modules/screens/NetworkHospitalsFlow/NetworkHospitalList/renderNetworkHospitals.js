@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Styles from '../styles';
 import { getDistanceByKiloMeters } from '../../CommonAll/functions';
-import { getNetworkHospitalAddress } from '../../../common';
+import { getNetworkHospitalAddress,getNetworkHospitalEmail } from '../../../common';
 import {translate} from '../../../../setup/translator.helper'
 
 export default class RenderNetworkHospitalInfo extends Component {
@@ -15,6 +15,7 @@ export default class RenderNetworkHospitalInfo extends Component {
   }
   render() {
     const { item, showFullInfoCard, onPressArrowIconSelectedIndex, onPressUpOrDownArrowToViewFullInfo, onPressGoPreAuthRequestForm, onPressGoPreConsultation, navigation, navigationPage } = this.props;
+  item.email=  getNetworkHospitalEmail(item.email)
     const address = {
       address: item.address,
       city: item.city,

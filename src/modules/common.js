@@ -40,6 +40,26 @@ export function getNetworkHospitalAddress(address) {
 }
 
 
+export function getNetworkHospitalAddressByNewData(address, address1,address2) {
+    const splitByAddress=address&&address.split(',');
+    let finalAddressField=null;
+if(splitByAddress&&splitByAddress.length){
+  return   finalAddressField=address[0];
+}
+ if (address1){
+  return finalAddressField=address1;
+}
+return finalAddressField
+}
+
+
+
+export function getNetworkHospitalEmail(email) {
+    const splitByEmail=email&&email.split(',');
+return splitByEmail&&splitByEmail.length?splitByEmail[0]:email;
+}
+
+
 export function getFullName(data) {
     let name = 'unKnown'
     if (data && Object.keys(data).length) {
