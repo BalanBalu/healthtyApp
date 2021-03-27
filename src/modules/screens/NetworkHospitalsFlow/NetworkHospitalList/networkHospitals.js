@@ -70,8 +70,7 @@ class NetworkHospitals extends Component {
             if(this.selectedTpaCode) reqData4ServiceCall.tpaCode=this.selectedTpaCode;
             if(this.state.hospitalName) reqData4ServiceCall.hospitalName=this.state.hospitalName;
 
-            const hospitalResp = await serviceOfSearchByNetworkHospitalDetails( reqData4ServiceCall,this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
-            const getHospitalList = hospitalResp && hospitalResp.docs;
+            const getHospitalList = await serviceOfSearchByNetworkHospitalDetails( reqData4ServiceCall,this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
             if (getHospitalList && getHospitalList.length) {
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...getHospitalList];

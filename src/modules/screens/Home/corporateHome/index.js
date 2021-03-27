@@ -30,12 +30,16 @@ import {
   getCorporateEmployeeDetailsById,
   getTpaInfoByTpaCode,
   getCorporateHelpLineNumber,
+  getMemberDetailsByPolicyNo,
+  getFamilyMembersByPolicyNoeWithPagination,
+
 } from '../../../providers/corporate/corporate.actions';
 import {
   fetchUserProfile,
   SET_CORPORATE_DATA,
   SET_MEMBER_POLICY_INFO,
   SET_MEMBER_TPA_DATA,
+  SET_FAMILY_DATA
 } from '../../../providers/profile/profile.action';
 import {store} from '../../../../setup/store';
 import {fetchUserMarkedAsReadedNotification} from '../../../providers/notification/notification.actions';
@@ -47,6 +51,8 @@ import {PolicyCoverageCard} from './policyCoverageCard';
 import {getMemberDetailsByEmail} from '../../../providers/corporate/corporate.actions';
 import {formatDate} from '../../../../setup/helpers';
 import {translate} from '../../../../setup/translator.helper';
+
+const LIMIT = 10;
 
 class CorporateHome extends PureComponent {
   locationUpdatedCount = 0;
@@ -60,6 +66,8 @@ class CorporateHome extends PureComponent {
       relationship: null,
       helpLineNumberData: [],
     };
+    this.pagination = 1;
+
   }
   async componentDidMount() {
     let userId = await AsyncStorage.getItem('userId');
@@ -72,6 +80,7 @@ class CorporateHome extends PureComponent {
       this.getCorporateDatails(userId);
     }
     this.initialFunction();
+    await this.getMemberDetailsByPolicyNo();
     this.getMemberDetailsByEmail();
     this.getCorporatePhoneNumber();
   }
@@ -80,6 +89,7 @@ class CorporateHome extends PureComponent {
 //       console.log('pokemons state has changed.');
 //     }
 //   }
+
 
   getMemberDetailsByEmail = async () => {
     try {
@@ -155,6 +165,7 @@ class CorporateHome extends PureComponent {
                 const memberTpaResp = await getTpaInfoByTpaCode(policyData.TPA);
                 const memberTpaData =
                   memberTpaResp && memberTpaResp.length && memberTpaResp[0];
+                  console.log("memberTpaData",memberTpaData)
                 if (memberTpaData) {
                   await store.dispatch({
                     type: SET_MEMBER_TPA_DATA,
@@ -183,6 +194,64 @@ class CorporateHome extends PureComponent {
       });
     }
   };
+
+  getMemberDetailsByPolicyNo = async () => {
+    try {
+      this.setState({isLoading: true});
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let result = await getMemberDetailsByPolicyNo(memberPolicyNo);
+      if (result) {
+        await this.setState({memberDetails: result});
+        this.getFamilyMemberDetailsByPolicyNo(memberPolicyNo);
+      }
+    } catch (ex) {
+      console.log(ex);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+
+  getFamilyMemberDetailsByPolicyNo = async (memberPolicyNo) => {
+    try {
+      this.setState({isLoading: true});
+      let searchText = null;
+      let result = await getFamilyMembersByPolicyNoeWithPagination(
+        searchText,
+        memberPolicyNo,
+        this.pagination,
+        LIMIT,
+      );
+      if (result) {
+        let temp = [],familyList=[];
+        for (let familydetails of result.docs) {
+          this.state.memberDetails.filter((ele) => {
+            ele.employeeId === familydetails.employeeId;
+            temp.push(ele);
+          });
+
+          if (temp &&temp.length != 0) {
+            familydetails.sumInsured = temp[0].sumInsured;
+            familydetails.balSumInsured = temp[0].balSumInsured;
+            familydetails.enrollmentStartDate = temp[0].enrollmentStartDate;
+            familydetails.enrollmentEndDate = temp[0].enrollmentEndDate;
+            familydetails.emailId = temp[0].emailId;
+            familyList.push(familydetails);
+          }
+        }
+         await this.setState({familyList:  familyList});
+         store.dispatch({
+          type: SET_FAMILY_DATA,
+          data: this.state.familyList,
+        });
+      }
+    } catch (ex) {
+      console.log(ex);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+
+
   getMarkedAsReadedNotification = async (userId) => {
     try {
       await fetchUserMarkedAsReadedNotification(userId);

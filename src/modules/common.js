@@ -49,7 +49,6 @@ export function getFullName(data) {
     return name
 }
 
-
 export function hospitalProfileImages(data) {
     let source = null;
     if (data && data.profile_image) {

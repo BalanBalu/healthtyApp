@@ -5,135 +5,192 @@ import {Col, Row} from 'react-native-easy-grid';
 import Styles from '../styles';
 import {formatDate} from '../../../../setup/helpers';
 import {primaryColor} from '../../../../setup/config';
-import {translate} from '../../../../setup/translator.helper'
+import {translate} from '../../../../setup/translator.helper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default class RenderNetworkHospitalInfo extends Component {
   constructor(props) {
     super(props);
   }
   render() {
-    const {item, navigation} = this.props;
+    const {
+      item,
+      navigation,
+      onPressToggleButton,
+      index,
+      showCard,
+      show,
+    } = this.props;
     return (
       <View>
-        <Card style={{padding: 10, borderRadius: 5, marginTop: 10}}>
-          <Row>
-            <Col size={7}>
-              <Text
-                style={{
-                  fontFamily: 'opensans-bold',
-                  fontSize: 16,
-                  lineHeight: 25,
-                  color: primaryColor,
-                }}>
-                {item.tpaCompany ? item.tpaCompany : 'UnKnown'}
-              </Text>
-            </Col>
-            <Col size={3}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#FECE83',
-                  borderRadius: 5,
-                  padding: 2,
-                  marginTop: 2,
-                }}>
-                <Text
+        {showCard === index && !show ? (
+          <View>
+            <Card style={styles.cardStyles}>
+              <Row style={styles.gradientStyle}>
+                <Col size={9}>
+                  <Text style={{fontSize: 16, color: '#fff'}}>
+                    {' '}
+                    {item.tpaCompany ? item.tpaCompany : 'UnKnown'}
+                  </Text>
+                </Col>
+                <Col size={0.8}>
+                  <TouchableOpacity onPress={() => onPressToggleButton(index)}>
+                    <MaterialIcons
+                      name={
+                        showCard === index && !show
+                          ? 'keyboard-arrow-up'
+                          : 'keyboard-arrow-down'
+                      }
+                      style={{fontSize: 25, color: '#fff'}}
+                    />
+                  </TouchableOpacity>
+                </Col>
+              </Row>
+              <View style={styles.mainView}>
+                <Row style={{marginTop: 5}}>
+                  <Col size={4}>
+                    <Text style={styles.subHeadingStyle}>
+                      {translate('Patient name')}
+                    </Text>
+                  </Col>
+                  <Col size={0.5}>
+                    <Text style={{marginTop: 2}}>:</Text>
+                  </Col>
+                  <Col size={6.5}>
+                    <Text style={styles.subHeadingData}>
+                      {item.patientName || null}
+                    </Text>
+                  </Col>
+                </Row>
+                <Row style={{marginTop: 5}}>
+                  <Col size={4}>
+                    <Text style={styles.subHeadingStyle}>
+                      {translate('Hospital')}
+                    </Text>
+                  </Col>
+                  <Col size={0.5}>
+                    <Text style={{marginTop: 2}}>:</Text>
+                  </Col>
+                  <Col size={6.5}>
+                    <Text style={styles.subHeadingData}>
+                      {item.hospitalName || null}
+                    </Text>
+                  </Col>
+                </Row>
+                <Row style={{marginTop: 5}}>
+                  <Col size={4}>
+                    <Text style={styles.subHeadingStyle}>Status</Text>
+                  </Col>
+                  <Col size={0.5}>
+                    <Text style={{marginTop: 2}}>:</Text>
+                  </Col>
+                  <Col size={6.5}>
+                    <Text style={styles.subHeadingData}>
+                      {item.status || null}
+                    </Text>
+                  </Col>
+                </Row>
+
+                <Row
                   style={{
-                    color: '#fff',
-                    fontFamily: 'opensans-bold',
-                    textAlign: 'center',
-                    fontSize: 10,
+                    marginTop: 5,
+                    paddingTop: 10,
+                    borderTopColor: '#909090',
+                    borderTopWidth: 0.5,
                   }}>
-                  {item.status || null}
-                </Text>
-              </TouchableOpacity>
-            </Col>
-          </Row>
-          <Row
-            style={{
-              borderBottomColor: 'gray',
-              borderBottomWidth: 0.3,
-              paddingBottom: 10,
-            }}>
-            <Col size={9}>
-              <Row style={{marginTop: 5}}>
-                <Col size={4}>
-                  <Text style={Styles.commonBoldText}>{translate("Patient name")}</Text>
-                </Col>
-                <Col size={0.5}>
-                  <Text>:</Text>
-                </Col>
-                <Col size={5.5}>
-                  <Text style={Styles.commonText}>
-                    {item.patientName || null}
-                  </Text>
-                </Col>
-              </Row>
-              {/* <Row style={{marginTop: 5}}>
-                <Col size={4}>
-                  <Text style={Styles.commonBoldText}>reference Number</Text>
-                </Col>
-                <Col size={0.5}>
-                  <Text>:</Text>
-                </Col>
-                <Col size={5.5}>
-                  <Text style={Styles.commonText}>
-                    {item.referenceNumber || 'N/A'}
-                  </Text>
-                </Col>
-              </Row> */}
-              <Row style={{marginTop: 5}}>
-                <Col size={4}>
-                  <Text style={Styles.commonBoldText}>{translate("Hospital")}</Text>
-                </Col>
-                <Col size={0.5}>
-                  <Text>:</Text>
-                </Col>
-                <Col size={5.5}>
-                  <Text style={Styles.commonText}>
-                    {item.hospitalName || null}
-                  </Text>
-                </Col>
-              </Row>
-              <Row style={{marginTop: 5}}>
-                <Col size={4}>
-                  <Text style={Styles.commonBoldText}>{translate("Address")}</Text>
-                </Col>
-                <Col size={0.5}>
-                  <Text>:</Text>
-                </Col>
-                <Col size={5.5}>
-                  <Text style={Styles.commonText}>
-                    {item.hospitalLocation || null}
-                  </Text>
-                </Col>
-              </Row>
-            </Col>
-            <Col size={1} />
-          </Row>
-          <Row style={{marginTop: 5}}>
-            <Left>
-              <Text style={Styles.commonBoldText}>{translate("Request sent date")}</Text>
-              <Text style={Styles.boldText}>
-                {item.createdDate
-                  ? formatDate(item.createdDate, 'DD/MM/YYYY')
-                  : null}
-              </Text>
-            </Left>
-            <Right>
-              <TouchableOpacity
-                style={Styles.ecardButton}
-                onPress={() =>
-                  navigation.navigate('DocumentList', {
-                    uploadData: item.patientProof,
-                    data: item,
-                    preAuthData: true,
-                  })
-                }>
-                <Text style={Styles.linkHeader}>{translate("View Document")}</Text>
-              </TouchableOpacity>
-            </Right>
-          </Row>
-        </Card>
+                  <Left>
+                    <Text style={Styles.commonBoldText}>
+                      {translate('Request sent date')}
+                    </Text>
+                    <Text style={Styles.boldText}>
+                      {item.createdDate
+                        ? formatDate(item.createdDate, 'DD/MM/YYYY')
+                        : null}
+                    </Text>
+                  </Left>
+                  <Right style={{justifyContent: 'center'}}>
+                    <TouchableOpacity
+                      style={Styles.ecardButton}
+                      onPress={() =>
+                        navigation.navigate('DocumentList', {
+                          uploadData: item.patientProof,
+                          data: item,
+                          preAuthData: true,
+                        })
+                      }>
+                      <Text style={Styles.linkHeader}>
+                        {translate('View Document')}
+                      </Text>
+                    </TouchableOpacity>
+                  </Right>
+                </Row>
+              </View>
+            </Card>
+          </View>
+        ) : (
+          <View>
+            <TouchableOpacity onPress={() => onPressToggleButton(index)}>
+              <Card style={styles.cardStyle}>
+                <Row>
+                  <Col size={9}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontFamily: 'opensans-bold',
+                        color: primaryColor,
+                      }}
+                      numberOfLines={1}
+                      ellipsizeMode="tail">
+                      {' '}
+                      {item.tpaCompany ? item.tpaCompany : 'UnKnown'}
+                    </Text>
+                    <Row>
+                      <Col size={3}>
+                        <Text
+                          style={{
+                            fontFamily: 'Roboto',
+                            fontSize: 16,
+                            color: '#909090',
+                            marginTop: 5,
+                            marginLeft: 5,
+                          }}
+                          numberOfLines={1}
+                          ellipsizeMode="tail">
+                          Status
+                        </Text>
+                      </Col>
+                      <Col size={0.5}>
+                        <Text style={{marginTop: 5}}>:</Text>
+                      </Col>
+                      <Col size={6.5}>
+                        <Text
+                          style={styles.subHeadingData}
+                          numberOfLines={1}
+                          ellipsizeMode="tail">
+                          {' '}
+                          {item.status || null}
+                        </Text>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col size={0.8} style={{justifyContent: 'center'}}>
+                    <TouchableOpacity
+                      onPress={() => onPressToggleButton(index)}>
+                      <MaterialIcons
+                        name={
+                          showCard === index && !show
+                            ? 'keyboard-arrow-up'
+                            : 'keyboard-arrow-down'
+                        }
+                        style={{fontSize: 25, color: '#000'}}
+                      />
+                    </TouchableOpacity>
+                  </Col>
+                </Row>
+              </Card>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   }

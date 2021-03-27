@@ -52,7 +52,11 @@ class PolicyCoverage extends React.Component {
 
   }
   tpaName = (data) => {
-    return data.tpaName ? data.tpaName :'';
+    let tpaName=""
+    if(data){
+      tpaName=data.tpaName ? data.tpaName :'';
+    }
+    return tpaName
   };
 
   termsAndConditionListDetails = async () => {
@@ -726,7 +730,7 @@ class PolicyCoverage extends React.Component {
   render() {
     const { memberDetails, policyDetails,isLoading} = this.state
     let tpaName = this.props.profile.memberTpaInfo;
-    return (
+     return (
       <Container>
         <Content style={{ backgroundColor: '#F3F3F4' }}>
          {isLoading == true  ?

@@ -12,6 +12,7 @@ export const SET_CORPORATE_DATA='PROFILE/SET_CORPORATE_DATA'
 export const SET_MEMBER_POLICY_INFO='PROFILE/SET_MEMBER_POLICY_INFO';
 export const SET_MEMBER_TPA_DATA='PROFILE/SET_MEMBER_TPA_DATA';
 export const SET_TRANSLATOR='PROFILE/SET_TRANSLATOR'
+export const SET_FAMILY_DATA='PROFILE/SET_FAMILY_DATA'
 
 
 import { store } from '../../../setup/store'
@@ -63,11 +64,11 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
 
 export function storeBasicProfile(result) {
   AsyncStorage.setItem('basicProfileData', JSON.stringify({
-    first_name: result.first_name,
-    last_name: result.last_name,
+    first_name: result.firstName,
+    last_name: result.lastName,
     middle_name:result.middle_name||' ',
     dob: result.dob,
-    profile_image: result.profile_image,
+    profileImage: result.profileImage ,
     gender: result.gender,
     mobile_no: result.mobile_no,
     email: result.email

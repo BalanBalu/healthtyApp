@@ -61,14 +61,13 @@ class Insurance extends Component {
         LIMIT,
       );
       if (result && result.docs && result.docs.length) {
-    
         this.pagination = this.pagination + 1;
         this.insuranceData = [...this.insuranceData, ...result.docs];
 
         this.setState({isLoading: false, data: this.insuranceData});
       } else {
-        if (this.insuranceData.length >8) {
-          toastMeassage('No more data Available!', 'success', 4000);
+        if (this.insuranceData.length > 5) {
+          toastMeassage('No more data Available!', 'success', 3000);
         }
         this.isEnabledLoadMoreData = false;
       }
@@ -113,9 +112,15 @@ class Insurance extends Component {
     let firstDate = moment(startDate, 'YYYY-MM-DD'); //Create date using string-format constructor
     let secondDate = moment(endDaet, 'YYYY-MM-DD');
     policyPrriod = secondDate.diff(firstDate, 'years');
-    if (policyPrriod == 0) return 'N/A';
-    if (policyPrriod > 1) return policyPrriod + ` Years`;
-    else return policyPrriod + ` Year`;
+    if (policyPrriod == 0) {
+      policyPrriod = secondDate.diff(firstDate, 'months');
+      if (policyPrriod <= 1) return policyPrriod + ` Month`;
+      else return policyPrriod + ` Months`;
+    } else {
+      if (policyPrriod == 0) return 'N/A';
+      if (policyPrriod > 1) return policyPrriod + ` Years`;
+      else return policyPrriod + ` Year`;
+    }
   }
 
   onWillFocusUpdate = async (navigationData) => {
@@ -126,8 +131,7 @@ class Insurance extends Component {
     ) {
       this.isEnabledLoadMoreData = true;
       this.pagination = 1;
-      this.insuranceData=[]
-      console.log('Will');
+      this.insuranceData = [];
       await this.getInsuranceList();
     }
   };
@@ -151,20 +155,21 @@ class Insurance extends Component {
             this.onWillFocusUpdate(payload);
           }}
         />
-        <Content style={{padding: 10}}>
-          <View style={styles.mainView}>
-            <TouchableOpacity
-              style={styles.addInsuranceButton}
-              onPress={() => this.props.navigation.navigate('AddInsurance')}>
-              <Icon
-                name="add-circle-outline"
-                style={{fontSize: 20, color: '#128283'}}
-              />
-              <Text style={styles.addInsuranceText}>Add Insurance</Text>
-            </TouchableOpacity>
-            {isLoading ? (
-              <Loader style="list" />
-            ) : data.length ? (
+        {/* <Content style={{padding: 10}}> */}
+        <View style={styles.mainView}>
+          <TouchableOpacity
+            style={styles.addInsuranceButton}
+            onPress={() => this.props.navigation.navigate('AddInsurance')}>
+            <Icon
+              name="add-circle-outline"
+              style={{fontSize: 20, color: '#128283'}}
+            />
+            <Text style={styles.addInsuranceText}>Add Insurance</Text>
+          </TouchableOpacity>
+          {isLoading ? (
+            <Loader style="list" />
+          ) : data.length ? (
+            <View style={{padding:10}}>
               <FlatList
                 data={data}
                 keyExtractor={(item, index) => index.toString()}
@@ -274,102 +279,103 @@ class Insurance extends Component {
                   </Card>
                 )}
               />
-            ) : (
-              <Item
+            </View>
+          ) : (
+            <Item
+              style={{
+                borderBottomWidth: 0,
+                marginTop: 100,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
                 style={{
-                  borderBottomWidth: 0,
-                  marginTop: 100,
+                  fontSize: 20,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  {' '}
-                  No insurance policy list found!
+                {' '}
+                No insurance policy list found!
+              </Text>
+            </Item>
+          )}
+        </View>
+        <Modal
+          visible={this.state.descriptionVisible}
+          transparent={true}
+          animationType={'fade'}>
+          <View style={styles.modalFirstView}>
+            <View style={styles.modalSecondView}>
+              <Row
+                style={{
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                  marginTop: -30,
+                }}>
+                <TouchableOpacity onPress={() => this.popUpClose()}>
+                  <MaterialIcons
+                    name="close"
+                    style={{fontSize: 30, color: 'red'}}
+                  />
+                </TouchableOpacity>
+              </Row>
+              <Row style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={styles.modalHeading}>
+                  You can Renew your Insurance Policy by{' '}
                 </Text>
-              </Item>
-            )}
-          </View>
-          <Modal
-            visible={this.state.descriptionVisible}
-            transparent={true}
-            animationType={'fade'}>
-            <View style={styles.modalFirstView}>
-              <View style={styles.modalSecondView}>
-                <Row
-                  style={{
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-end',
-                    marginTop: -30,
-                  }}>
-                  <TouchableOpacity onPress={() => this.popUpClose()}>
-                    <MaterialIcons
-                      name="close"
-                      style={{fontSize: 30, color: 'red'}}
-                    />
-                  </TouchableOpacity>
-                </Row>
-                <Row style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Text style={styles.modalHeading}>
-                    You can Renew your Insurance Policy by{' '}
-                  </Text>
-                </Row>
+              </Row>
 
-                <Row
-                  style={{
-                    marginTop: 15,
-                    justifyContent: 'flex-end',
-                    marginBottom: 5,
-                  }}>
-                  <Col size={5}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton1}
-                      onPress={() => {
-                        this.arrangeCallback();
-                        this.popUpClose();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText1}>
-                        {' '}
-                        {'Arrange Callback.'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                  <Col size={5} style={{marginLeft: 10}}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton}
-                      onPress={() => {
-                        Linking.openURL('http://www.readypolicy.com/');
-                        this.popUpClose();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText}>
-                        {' '}
-                        {'Renew Online'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                </Row>
-              </View>
+              <Row
+                style={{
+                  marginTop: 15,
+                  justifyContent: 'flex-end',
+                  marginBottom: 5,
+                }}>
+                <Col size={5}>
+                  <TouchableOpacity
+                    danger
+                    style={styles.backToHomeButton1}
+                    onPress={() => {
+                      this.arrangeCallback();
+                      this.popUpClose();
+                    }}
+                    testID="cancelButton">
+                    <Text style={styles.backToHomeButtonText1}>
+                      {' '}
+                      {'Arrange Callback.'}
+                    </Text>
+                  </TouchableOpacity>
+                </Col>
+                <Col size={5} style={{marginLeft: 10}}>
+                  <TouchableOpacity
+                    danger
+                    style={styles.backToHomeButton}
+                    onPress={() => {
+                      Linking.openURL('http://www.readypolicy.com/');
+                      this.popUpClose();
+                    }}
+                    testID="cancelButton">
+                    <Text style={styles.backToHomeButtonText}>
+                      {' '}
+                      {'Renew Online'}
+                    </Text>
+                  </TouchableOpacity>
+                </Col>
+              </Row>
             </View>
-          </Modal>
-          {isLoadingMoreData ? (
-            <View style={{flex: 1, justifyContent: 'flex-end'}}>
-              <ActivityIndicator
-                style={{marginBottom: 17}}
-                animating={isLoadingMoreData}
-                size="large"
-                color="blue"
-              />
-            </View>
-          ) : null}
-        </Content>
+          </View>
+        </Modal>
+        {isLoadingMoreData ? (
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <ActivityIndicator
+              style={{marginBottom: 17}}
+              animating={isLoadingMoreData}
+              size="large"
+              color="blue"
+            />
+          </View>
+        ) : null}
+        {/* </Content> */}
       </Container>
     );
   }
