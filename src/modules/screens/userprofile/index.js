@@ -101,6 +101,7 @@ class Profile extends Component {
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
         await this.setState({data: result[0]});
+       
       }
     } catch (ex) {
       console.log(ex);
@@ -297,6 +298,7 @@ class Profile extends Component {
           this.setState({
             imageSource: image.path,
           });
+          storeBasicProfile(result);
           Toast.show({
             text: 'Profile picture uploaded successfully',
             type: 'success',

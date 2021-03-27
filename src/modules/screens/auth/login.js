@@ -16,7 +16,9 @@ import Spinner from '../../../components/Spinner';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from "../../../setup/config";
 import {primaryColor} from '../../../setup/config'
-
+import {
+  getMemberDetailsByEmail,
+} from '../../providers/corporate/corporate.actions';
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -90,7 +92,9 @@ class Login extends Component {
       let userId = await AsyncStorage.getItem('userId');
       let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
       let result = await fetchUserProfile(userId, fields);
-      if (!result.error) storeBasicProfile(result)
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let coorporateSideresult = await getMemberDetailsByEmail(memberEmailId);
+      if (!coorporateSideresult.error) storeBasicProfile(coorporateSideresult[0])
     }
     catch (e) {
       console.log(e);

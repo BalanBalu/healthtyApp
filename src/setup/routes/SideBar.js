@@ -25,6 +25,7 @@ class SideBar extends React.Component {
     this.arrayData = [];
   }
   async componentDidMount() {
+    this.getBasicData()
     const token = await AsyncStorage.getItem('token');
     const userId = await AsyncStorage.getItem('userId');
     if (
@@ -55,9 +56,9 @@ class SideBar extends React.Component {
     let source = null;
     if (!data || this.state.hasLoggedIn === false)
       return require('../../../assets/images/Logo.png');
-
-    if (data.profile_image) {
-      if (data.profile_image) source = {uri: data.profile_image.imageURL};
+    if (data.profileImage) {
+    
+      if (data.profileImage) source = {uri: data.profileImage[0].original_imageURL};
       else source = require('../../../assets/images/Logo.png');
     } else {
       source = require('../../../assets/images/Logo.png');
