@@ -75,13 +75,28 @@ export default class preAuthList extends Component {
       })
     }
   }
+  toggleData(data) {
+    console.log("haiiiiii",data)
+    const { showCard, show } = this.state
+    if(data===showCard){
+         this.setState({ showCard: data, show: !this.state.show, })
+    }
+    else{
+      this.setState({ showCard: data,show: false})
+    }
+
+  }
 
   renderPreAuthInformationCard(item, index) {
     return (
       <RenderPreAuthList
         item={item}
+        index={index}
+        showCard={this.state.showCard}
+        show={this.state.show}
         onPressArrowIconSelectedIndex={index}
         navigation={this.props.navigation}
+        onPressToggleButton={(data)=>this.toggleData(data)}
       >
       </RenderPreAuthList>
     )
@@ -97,6 +112,7 @@ export default class preAuthList extends Component {
       this.setState({ isLoadingMoreHospitalList: false })
     }
   }
+  
 
   render() {
     const { preAuthInfoList, isLoading, isLoadingMoreHospitalList } = this.state
