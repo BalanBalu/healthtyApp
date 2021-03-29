@@ -29,6 +29,8 @@ import styles from './style.js';
 import Spinner from '../../../components/Spinner';
 import {validateEmailAddress} from '../../common';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {memberEmailValidation} from '../../providers/corporate/corporate.actions';
+import ModalPopup from '../../../components/Shared/ModalPopup';
 
 let loginData;
 class UpdateEmail extends Component {
@@ -43,6 +45,8 @@ class UpdateEmail extends Component {
       id: props.navigation.getParam('id') || null,
       fromProfile: props.navigation.getParam('fromProfile') || false,
       userData: props.navigation.getParam('updatedata') || null,
+      updateButton: true,
+
     };
   }
   componentDidMount() {
@@ -51,7 +55,8 @@ class UpdateEmail extends Component {
 
   bindEmailValues = async () => {
     if (this.state.fromProfile) {
-      this.setState({emailId: this.state.userData.emailId});
+      this.setState({emailId: this.state.userData.emailId,updateButton: true,
+      });
     }
   };
 
@@ -61,7 +66,7 @@ class UpdateEmail extends Component {
         this.setState({errorMsg: 'Kindly enter valid mail id'});
         return false;
       }
-      this.setState({errorMsg: '', isLoading: true});
+      this.setState({errorMsg: '', updateButton: false,isLoading: true});
       let userId = await AsyncStorage.getItem('userId');
       let requestData = {
         emailId: this.state.emailId,
@@ -71,12 +76,11 @@ class UpdateEmail extends Component {
       let response = await updateMemberDetails(requestData);
       if (response) {
         Toast.show({
-            text: 'Your email id is updated successfully',
-            type: "success",
-            duration: 3000,
-
-        })
-        await AsyncStorage.setItem('memberEmailId', this.state.emailId)
+          text: 'Your email id is updated successfully',
+          type: 'success',
+          duration: 3000,
+        });
+        await AsyncStorage.setItem('memberEmailId', this.state.emailId);
         this.props.navigation.navigate('Profile');
       } else {
         Toast.show({
@@ -97,6 +101,21 @@ class UpdateEmail extends Component {
       fromProfile: true,
     });
   }
+  memberEmailValidation = async () => {
+    let memberId = (await AsyncStorage.getItem('memberId')) || null;
+    let response = await memberEmailValidation(this.state.emailId, memberId);
+    if (response || this.state.emailId == this.state.userData.emailId) {
+      this.setState({
+        emailId: '',
+        errorMsg: 'Email already exist',
+        isModalVisible: true,
+        updateButton: true,
+      });
+      return false;
+    } else {
+      this.setState({memberId: this.state.memberId, updateButton: false});
+    }
+  };
 
   render() {
     return (
@@ -127,8 +146,11 @@ class UpdateEmail extends Component {
                     placeholder="Edit Your Email"
                     style={styles.transparentLabel}
                     keyboardType="email-address"
-                    onChangeText={(emailId)=> this.setState({emailId})}
+                    onChangeText={(emailId) => this.setState({emailId,updateButton:false})}
                     value={this.state.emailId}
+                    onSubmitEditing={() => {
+                      this.memberEmailValidation();
+                    }}
                     testID="updateEmail"
                   />
                 </Item>
@@ -152,6 +174,7 @@ class UpdateEmail extends Component {
                     <Right>
                       <Button
                         success
+                        disabled={this.state.updateButton}
                         style={styles.button2}
                         onPress={() => this.handleEmailUpdate()}
                         testID="clickUpdateEmail">
@@ -161,6 +184,16 @@ class UpdateEmail extends Component {
                   </Row>
                 </Item>
               </Card>
+              <View style={{flex: 1}}>
+                <ModalPopup
+                  errorMessageText={this.state.errorMsg}
+                  closeButtonText={'CLOSE'}
+                  closeButtonAction={() =>
+                    this.setState({isModalVisible: !this.state.isModalVisible})
+                  }
+                  visible={this.state.isModalVisible}
+                />
+              </View>
             </View>
           </ScrollView>
         </Content>
