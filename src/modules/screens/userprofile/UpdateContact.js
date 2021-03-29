@@ -120,9 +120,7 @@ class UpdateContact extends Component {
                         style={styles.transparentLabel}
                         keyboardType="numeric"
                         onChangeText={(mobile) =>
-                          acceptNumbersOnly(mobile) == true ||mobile === ''
-                            ? this.setState({mobile})
-                            : null
+                          this.setState({mobile})
                         }
                         value={String(this.state.mobile)}
                         testID="updateContactNo"

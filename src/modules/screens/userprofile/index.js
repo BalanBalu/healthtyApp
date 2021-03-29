@@ -784,6 +784,7 @@ class Profile extends Component {
                       </View>
                     )}
                   />
+                  {family_members.length<11?
                   <Button
                     transparent
                     style={{justifyContent: 'flex-start', marginLeft: -15}}>
@@ -799,7 +800,7 @@ class Profile extends Component {
                       testID="onPressAddFamilyMembers">
                       Add your family details
                     </Text>
-                  </Button>
+                  </Button>:null}
                 </Body>
               </ListItem>
 
