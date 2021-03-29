@@ -60,12 +60,12 @@ class NetworkHospitals extends Component {
             const { isFromMapBox, selectedLocCoOrdinates } = this.state
             const { bookappointment: { locationCordinates } } = this.props;
             const coordinates = isFromMapBox ? selectedLocCoOrdinates : locationCordinates;
-            const location = null;
-            let reqData4ServiceCall = {
-                locationData: {
-                    coordinates,
-                    maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
-                }
+            const reqData4ServiceCall={};
+            if(coordinates&&coordinates.length){
+            //  reqData4ServiceCall.locationData={
+            //         coordinates,
+            //         maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
+            //     }
             }
             if(this.selectedTpaCode) reqData4ServiceCall.tpaCode=this.selectedTpaCode;
             if(this.state.hospitalName) reqData4ServiceCall.hospitalName=this.state.hospitalName;

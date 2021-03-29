@@ -15,7 +15,7 @@ export default class RenderNetworkHospitalInfo extends Component {
   }
   render() {
     const { item, showFullInfoCard, onPressArrowIconSelectedIndex, onPressUpOrDownArrowToViewFullInfo, onPressGoPreAuthRequestForm, onPressGoPreConsultation, navigation, navigationPage } = this.props;
-  item.email=  getNetworkHospitalEmail(item.email)
+  // item.email=  getNetworkHospitalEmail(item.email)
     const address = {
       address: item.address,
       city: item.city,
