@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { formatDate } from '../../../../setup/helpers';
-import { validateEmailAddress, onlySpaceNotAllowed, validateMobileNumber,getNetworkHospitalAddress,truncateByString,calculateAge } from '../../../common'
+import {  onlySpaceNotAllowed, validateMobileNumber,getNetworkHospitalAddress,truncateByString,calculateAge } from '../../../common'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfSearchByNetworkHospitalDetails } from '../../../providers/corporate/corporate.actions';
@@ -198,7 +198,7 @@ class PreAuth extends React.PureComponent {
   }
   submitFirstPage() {
     const { hospitalInfo } = this.state
-    let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalInfo.hospitalId) ? 'Kindly fill hospital id'  : !validateEmailAddress(hospitalInfo.hospitalEmail) ? 'Kindly enter valid mail id' : null
+    let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalInfo.hospitalId) ? 'Kindly fill hospital id'  : !onlySpaceNotAllowed(hospitalInfo.hospitalEmail) ? 'Kindly enter mail id' : null
 
     if (!onlySpaceNotAllowed(hospitalInfo.hospitalName)) {
       this.setState({ hospitalNameTextErrorMsg: 'Kindly fill hospital name' });
@@ -232,8 +232,8 @@ class PreAuth extends React.PureComponent {
     //   });
     //   return false;
     // }
-    if (!validateEmailAddress(hospitalInfo.hospitalEmail)) {
-      this.setState({ hospitalEmailTextErrorMsg: 'Kindly enter valid mail id' });
+    if (!onlySpaceNotAllowed(hospitalInfo.hospitalEmail)) {
+      this.setState({ hospitalEmailTextErrorMsg: 'Kindly enter  mail id' });
       this.scrollViewRef.scrollTo({
         y: this.hospitalEmailText.y,
         animated: true
