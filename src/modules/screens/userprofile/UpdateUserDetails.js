@@ -186,7 +186,6 @@ class UpdateUserDetails extends Component {
           (firstName ? firstName + ' ' : '') +
           (middleName ? middleName + ' ' : '') +
           (lastName ? lastName + ' ' : '');
-        console.log(fullName);
         const getAge = calculateAge(dob);
 
         let data = {
@@ -198,9 +197,7 @@ class UpdateUserDetails extends Component {
           _id:id
         };
         requestData._id = this.state.id;
-        console.log("data",data)
         let updateRes = await updateFamilyMembersDetails(data);
-        console.log("updateRes",updateRes)
         Toast.show({
           text: 'Your Profile has been Updated',
           type: 'success',

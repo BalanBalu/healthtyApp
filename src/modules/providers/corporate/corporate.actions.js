@@ -355,6 +355,19 @@ export async function familyMemberIdExist(memberId,policyNo) {
   }
 }
 
+export async function memberEmailValidation(emailId,memberId) {
+  try {
+    let endPoint = 'member-detail/email/exist?email-id='+emailId+'&memberId='+memberId;
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+
+    return {
+      message: 'exceptio1n' + e,
+      success: false
+    }
+  }
+}
 
 export async function updateFamilyMembersDetails(data) {
   try {
