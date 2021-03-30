@@ -31,7 +31,7 @@ import {
   getTpaInfoByTpaCode,
   getCorporateHelpLineNumber,
   getMemberDetailsByPolicyNo,
-  getFamilyMembersByPolicyNoeWithPagination,
+  getFamilyMemDetails,
 
 } from '../../../providers/corporate/corporate.actions';
 import {
@@ -214,34 +214,15 @@ class CorporateHome extends PureComponent {
   getFamilyMemberDetailsByPolicyNo = async (memberPolicyNo) => {
     try {
       this.setState({isLoading: true});
-      let searchText = null;
-      let result = await getFamilyMembersByPolicyNoeWithPagination(
-        searchText,
-        memberPolicyNo,
-        this.pagination,
-        LIMIT,
-      );
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let employeeCode = await AsyncStorage.getItem('employeeCode');
+      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
       if (result) {
-        let temp = [],familyList=[];
-        for (let familydetails of result.docs) {
-          this.state.memberDetails.filter((ele) => {
-            ele.employeeId === familydetails.employeeId;
-            temp.push(ele);
-          });
-
-          if (temp &&temp.length != 0) {
-            familydetails.sumInsured = temp[0].sumInsured;
-            familydetails.balSumInsured = temp[0].balSumInsured;
-            familydetails.enrollmentStartDate = temp[0].enrollmentStartDate;
-            familydetails.enrollmentEndDate = temp[0].enrollmentEndDate;
-            familydetails.emailId = temp[0].emailId;
-            familyList.push(familydetails);
-          }
-        }
-         await this.setState({familyList:  familyList});
+        this.setState({family_members: result, id: result[0]._id});
+     
          store.dispatch({
           type: SET_FAMILY_DATA,
-          data: this.state.familyList,
+          data: this.state.family_members,
         });
       }
     } catch (ex) {

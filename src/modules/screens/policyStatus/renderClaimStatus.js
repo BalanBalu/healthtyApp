@@ -39,6 +39,14 @@ export default class RenderClaimStatus extends Component {
                </Col>
              </Row>
              <View style={styles.mainView}>
+
+             <Row style={{ marginTop: 5 }}>
+             <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Insurance Company")} </Text></Col>
+                 <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
+                 <Col size={6.5}>
+                   <Text style={styles.subHeadingData}>{item.INSURANCE_COMPANY_NAME?item.INSURANCE_COMPANY_NAME:'-'}</Text>
+                 </Col>
+               </Row>
                <Row style={{ marginTop: 5 }}>
                  <Col size={4}><Text style={styles.subHeadingStyle}>{translate("Member Code")} </Text></Col>
                  <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>

@@ -317,7 +317,7 @@ const RenderBeneficiaryInfo = (props) => {
             {/* <Text style={styles.beneficiaryFontStyle}>:</Text> */}
         </Col>
         <Col size={5.5}>
-            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.familyMemberName?data.familyMemberNam:null}</Text>
+            <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.full_name?data.full_name:null}</Text>
                 <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.memberId?data.memberId:null}</Text>
             <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.enrollmentStartDate?formatDate(data.enrollmentStartDate, 'DD/MM/YYYY'):null}</Text>
             <Text style={[styles.beneficiaryFontStyle, { color: '#909498' }]}>{data.enrollmentEndDate?formatDate(data.enrollmentEndDate, 'DD/MM/YYYY'):null}</Text>

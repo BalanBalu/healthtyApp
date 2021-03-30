@@ -34,6 +34,7 @@ import {
 } from '../../../setup/config';
 import {translate} from '../../../setup/translator.helper';
 import RenderClaimStatus from './renderClaimStatus';
+import { Loader } from '../../../components/ContentLoader';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const LIMIT = 10;
@@ -45,6 +46,7 @@ class PolicyStatus extends Component {
       memberDetails: {},
       policyDetails: {},
       claimsData: [],
+      isLoading: true,
       isLoadingMoreData: false,
       showCard: 0,
       show: true,
@@ -74,6 +76,8 @@ class PolicyStatus extends Component {
       }
     } catch (ex) {
       console.log(ex);
+    } finally {
+      this.setState({isLoading: false});
     }
   };
   getClaimDetails = async () => {
@@ -101,6 +105,8 @@ class PolicyStatus extends Component {
       }
     } catch (ex) {
       console.log(ex);
+    } finally {
+      this.setState({isLoading: false});
     }
   };
   toggleData(data) {
@@ -147,7 +153,7 @@ class PolicyStatus extends Component {
   }
 
   headerComponent() {
-    const {memberDetails, policyDetails} = this.state;
+    const {memberDetails, policyDetails, isLoading} = this.state;
     return (
       <View>
         <Card
@@ -229,40 +235,16 @@ class PolicyStatus extends Component {
       memberDetails,
       policyDetails,
       claimsData,
+      isLoading,
       isLoadingMoreData,
     } = this.state;
     const {showCard, show} = this.state;
 
     return (
       <Container>
-        {/* <Content contentContainerStyle={{margin:15,}}> */}
-        {/* <Card style={{ justifyContent: 'center', alignItems: 'center', padding: 10, borderRadius: 5, }}>
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <AnimatedCircularProgress
-                size={140}
-                width={10}
-                ref='circularProgress'
-                fill={this.percentageCalculation(memberDetails.sumInsured ? memberDetails.sumInsured : 0, memberDetails.balSumInsured ? memberDetails.balSumInsured : 0)}
-                tintColor={primaryColor}
-                backgroundColor='rgba(18, 130, 131, 0.3)'>
-                {() => (
-                  <View>
-                    <Text style={styles.usedAmount}>{memberDetails.balSumInsured ? memberDetails.balSumInsured : 0}</Text>
-                    <Text style={styles.totalAmount}>{" "}/{memberDetails.sumInsured ? memberDetails.sumInsured : 0}</Text>
-                  </View>
-                )}
-              </AnimatedCircularProgress>
-
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.nameText}>{memberDetails.firstName ? (memberDetails.firstName + ' ' + memberDetails.lastName) : '-'}</Text>
-                <Text style={styles.policyText}>{translate("Member Code")} : <Text style={styles.commonText}>{memberDetails.memberId ? memberDetails.memberId : '-'}</Text></Text>
-                <Text style={styles.policyText}>{translate("Validity period")} : <Text style={styles.commonText}>{policyDetails.policyEffectiveFrom?(formatDate(policyDetails.policyEffectiveFrom, "DD-MM-YY") + " - " + formatDate(policyDetails.policyEffectiveTo, "DD-MM-YY")):'N/A'}</Text></Text>
-              </View>
-
-            </View>
-          </Card> */}
-
-        {claimsData && claimsData.length ? (
+        {isLoading ? (
+          <Loader style="list" />
+        ) : claimsData && claimsData.length ? (
           <View style={{padding: 10}}>
             <FlatList
               data={claimsData}
@@ -302,6 +284,7 @@ class PolicyStatus extends Component {
             </Text>
           </Item>
         )}
+
         {isLoadingMoreData ? (
           <View style={{flex: 1, justifyContent: 'flex-end'}}>
             <ActivityIndicator

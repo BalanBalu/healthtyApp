@@ -8,8 +8,9 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import styles from '../Styles';
 import ModalPopup from '../../../../components/Shared/ModalPopup';
 import {primaryColor} from '../../../../setup/config';
+import { serviceOfClaimIntimation} from '../../../providers/corporate/corporate.actions'
 
-import {acceptNumbersOnly} from '../../../common';
+import {acceptNumbersOnly,toastMeassage} from '../../../common';
 
 export default class ClaimInitiationSubmission extends Component {
   constructor(props) {
@@ -146,19 +147,29 @@ export default class ClaimInitiationSubmission extends Component {
         ailment,
         amount,
         contactNumber: contactNum,
+        relationship: this.memberInfo && this.memberInfo.relationship
+        ? this.memberInfo.relationship
+        : null,
         status: 'REQUEST-SENT',
       };
-      if (claimIntimationReqData) {
-        this.props.navigation.navigate('DocumentList', {
-          docsUpload: true,
-          data: claimIntimationReqData,
-        });
-      } else {
-        this.setState({
-          errorMsg: ' Error : Unable to Continue Claim Request',
-          isModalVisible: true,
-        });
+      const claimUpdateResp = await serviceOfClaimIntimation(claimIntimationReqData);
+      if (claimUpdateResp && claimUpdateResp.referenceNumber) {
+        this.props.navigation.navigate('ClaimIntimationSuccess', { referenceNumber: claimUpdateResp.referenceNumber, successMsg: 'Your Claim Intimation request is being processed, will be notified on successful completion, your app reference id is' });
       }
+      else if (claimUpdateResp && claimUpdateResp.success === false) {
+        toastMeassage('Unable to Submit Claim Request')
+      }
+      // if (claimIntimationReqData) {
+      //   this.props.navigation.navigate('DocumentList', {
+      //     docsUpload: true,
+      //     data: claimIntimationReqData,
+      //   });
+      // } else {
+      //   this.setState({
+      //     errorMsg: ' Error : Unable to Continue Claim Request',
+      //     isModalVisible: true,
+      //   });
+      // }
     } catch (error) {
       this.setState({
         errorMsg: 'Something Went Wrong' + error.message,
@@ -459,7 +470,7 @@ export default class ClaimInitiationSubmission extends Component {
                     <TouchableOpacity
                       onPress={() => this.onPressSubmitClaimData()}
                       style={styles.appButtonContainer}>
-                      <Text style={styles.appButtonText}>CONTINUE</Text>
+                      <Text style={styles.appButtonText}>SAVE</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

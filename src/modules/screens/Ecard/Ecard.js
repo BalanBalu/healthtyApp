@@ -53,7 +53,6 @@ class Ecard extends PureComponent {
     this.getEcardDetail();
   }
   async getEcardDetail() {
-      console.log("memberTpaInfo",this.props.profile.memberTpaInfo)
     await this.setState({isLoading: true});
     await this.setState({
       isLoading: false,
@@ -64,7 +63,6 @@ class Ecard extends PureComponent {
   async open(data) {
     try {
       let policyResult = await getPolicyDetailsByPolicyNo(data.policyNo);
-      console.log('policyResult', policyResult);
       if (policyResult && policyResult.TPA) {
         let requestObject = {
           payer_code: policyResult.TPA,
@@ -73,8 +71,6 @@ class Ecard extends PureComponent {
           first_name: data.familyMemberName,
         };
         let result = await getEcardLink(requestObject);
-        console.log('result', result);
-
         if (result) {
           Linking.openURL(result);
         } else {
@@ -299,7 +295,6 @@ class Ecard extends PureComponent {
 
   render() {
     const {data, isLoading} = this.state;
-    console.log('data', data);
     return (
       <Container>
         <Content style={{padding: 15}}>

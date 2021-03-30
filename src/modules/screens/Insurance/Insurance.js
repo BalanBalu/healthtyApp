@@ -31,14 +31,14 @@ import {dateDiff, formatDate} from '../../../setup/helpers';
 import moment from 'moment';
 import {NavigationEvents} from 'react-navigation';
 
-const LIMIT = 10;
+const LIMIT = 5;
 
 class Insurance extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      isLoading: false,
+      isLoading: true,
       descriptionVisible: false,
       isLoadingMoreData: false,
       selectedInsurance: '',
@@ -66,7 +66,7 @@ class Insurance extends Component {
 
         this.setState({isLoading: false, data: this.insuranceData});
       } else {
-        if (this.insuranceData.length > 5) {
+        if (this.insuranceData.length > 3) {
           toastMeassage('No more data Available!', 'success', 3000);
         }
         this.isEnabledLoadMoreData = false;
@@ -169,7 +169,7 @@ class Insurance extends Component {
           {isLoading ? (
             <Loader style="list" />
           ) : data.length ? (
-            <View style={{padding:10}}>
+            <View style={{padding:10,marginBottom:35}}>
               <FlatList
                 data={data}
                 keyExtractor={(item, index) => index.toString()}
