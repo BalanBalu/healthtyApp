@@ -64,17 +64,12 @@ class FamilyInfoList extends PureComponent {
 
   getFamilyMemberDetailsByPolicyNo = async (memberPolicyNo) => {
     try {
+      
       this.setState({isLoading: true});
-      let searchText = null;
-      let result = await getFamilyMembersByPolicyNoeWithPagination(
-        searchText,
-        memberPolicyNo,
-        this.pagination,
-        LIMIT,
-      );
-      if (result) {
+      let result = this.props.profile.familyData||[]
+      if (result&&result.length!=0) {
         let temp = [],familyList=[];
-        for (let familydetails of result.docs) {
+        for (let familydetails of result) {
           this.state.memberDetails.filter((ele) => {
             ele.employeeId === familydetails.employeeId;
             temp.push(ele);
@@ -89,7 +84,8 @@ class FamilyInfoList extends PureComponent {
             familyList.push(familydetails);
           }
         }
-         await this.setState({familyList:  familyList});
+      await this.setState({familyList: familyList || []});
+      console.log(this.state.familyList)
       }
     } catch (ex) {
       console.log(ex);

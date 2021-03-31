@@ -167,7 +167,7 @@ class ClaimIntimationList extends PureComponent {
                             </Col>
                             <Col size={6.5}>
                               <Text style={styles.subHeadingData}>
-                                {item.claimBy ? item.claimBy : `-`}
+                                {item.relationship ? item.relationship : `-`}
                               </Text>
                             </Col>
                           </Row>
@@ -214,7 +214,7 @@ class ClaimIntimationList extends PureComponent {
                           </Col>
                         </Row> */}
                         </View>
-                        <View style={styles.subView}>
+                        {/* <View style={styles.subView}>
                           <Row
                             style={{
                               justifyContent: 'center',
@@ -236,14 +236,14 @@ class ClaimIntimationList extends PureComponent {
                                   {translate("View Document")}
                                 </Text>
                               </TouchableOpacity>
-                            </Left>
+                            </Left> */}
                             {/* <Right>
                             <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { docsUpload: true,data: item })}>
                               <Text style={styles.linkHeader}>Upload Document</Text>
                             </TouchableOpacity>
                           </Right> */}
-                          </Row>
-                        </View>
+                          {/* </Row>
+                        </View> */}
                       </Card>
                     </View>
                   ) : (
@@ -274,7 +274,7 @@ class ClaimIntimationList extends PureComponent {
                                     }}
                                     numberOfLines={1}
                                     ellipsizeMode="tail">
-                                   {translate(" Member Code")} 
+                                   {translate("Member Code")} 
                                   </Text>
                                 </Col>
                                 <Col size={0.5}>

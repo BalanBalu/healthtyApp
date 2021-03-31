@@ -110,12 +110,7 @@ class Profile extends Component {
   getFamilyDetails = async () => {
     try {
       this.setState({isLoading: true});
-      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
-      let employeeCode = await AsyncStorage.getItem('employeeCode');
-      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-      if (result) {
-        this.setState({family_members: result,id:result[0]._id});
-      }
+        await this.setState({family_members: this.props.profile.familyData || []});
     } catch (e) {
       console.log(e);
     } finally {
@@ -430,7 +425,10 @@ class Profile extends Component {
                         onPress={() => this.editProfile('UpdateUserDetails')}>
                         {data.firstName ? data.firstName + ' ' : ''}
                         <Text style={styles.nameStyle}>
+                          {data.middleName ? data.middleName : ''}
+                        <Text style={styles.nameStyle}>
                           {data.lastName ? data.lastName : ''}
+                        </Text>
                         </Text>
                       </Text>
 
