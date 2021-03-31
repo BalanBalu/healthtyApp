@@ -52,7 +52,7 @@ import {Loader} from '../../../components/ContentLoader';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadImage} from '../../providers/common/common.action';
-import {renderDoctorImage, renderProfileImage} from '../../common';
+import {renderDoctorImage, renderProfileImage,getMemberName} from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -621,7 +621,7 @@ class Profile extends Component {
                               </Col>
                               <Col size={6}>
                                 <Text note style={styles.customText1}>
-                                  {item.familyMemberName}
+                                {getMemberName(item)}
                                 </Text>
                               </Col>
                             </Row>
