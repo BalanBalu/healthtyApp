@@ -198,7 +198,7 @@ class PreAuth extends React.PureComponent {
   }
   submitFirstPage() {
     const { hospitalInfo } = this.state
-    let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location' : !onlySpaceNotAllowed(hospitalInfo.hospitalId) ? 'Kindly fill hospital id'  : !onlySpaceNotAllowed(hospitalInfo.hospitalEmail) ? 'Kindly enter mail id' : null
+    let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location': null
 
     if (!onlySpaceNotAllowed(hospitalInfo.hospitalName)) {
       this.setState({ hospitalNameTextErrorMsg: 'Kindly fill hospital name' });
@@ -216,14 +216,14 @@ class PreAuth extends React.PureComponent {
       });
       return false;
     }
-    if (!onlySpaceNotAllowed(hospitalInfo.hospitalId)) {
-      this.setState({ hospitalIdTextErrorMsg: 'Kindly fill hospital id' });
-      this.scrollViewRef.scrollTo({
-        y: this.hospitalIdText.y,
-        animated: true
-      });
-      return false;
-    }
+    // if (!onlySpaceNotAllowed(hospitalInfo.hospitalId)) {
+    //   this.setState({ hospitalIdTextErrorMsg: 'Kindly fill hospital id' });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.hospitalIdText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
     // if (!onlySpaceNotAllowed(hospitalInfo.rohiniId)) {
     //   this.setState({ rohiniIdTextErrorMsg: 'Kindly fill rohini Id' });
     //   this.scrollViewRef.scrollTo({
@@ -232,14 +232,14 @@ class PreAuth extends React.PureComponent {
     //   });
     //   return false;
     // }
-    if (!onlySpaceNotAllowed(hospitalInfo.hospitalEmail)) {
-      this.setState({ hospitalEmailTextErrorMsg: 'Kindly enter  mail id' });
-      this.scrollViewRef.scrollTo({
-        y: this.hospitalEmailText.y,
-        animated: true
-      });
-      return false;
-    }
+    // if (!onlySpaceNotAllowed(hospitalInfo.hospitalEmail)) {
+    //   this.setState({ hospitalEmailTextErrorMsg: 'Kindly enter  mail id' });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.hospitalEmailText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
 
 
     if (errorMsg) {
