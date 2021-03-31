@@ -65,6 +65,21 @@ export default class RenderNetworkHospitalInfo extends Component {
                 <Row style={{marginTop: 5}}>
                   <Col size={4}>
                     <Text style={styles.subHeadingStyle}>
+                      {translate('Patient relationship')}
+                    </Text>
+                  </Col>
+                  <Col size={0.5}>
+                    <Text style={{marginTop: 2}}>:</Text>
+                  </Col>
+                  <Col size={6.5}>
+                    <Text style={styles.subHeadingData}>
+                      {item.patientRelationship || "N/A"}
+                    </Text>
+                  </Col>
+                </Row>
+                <Row style={{marginTop: 5}}>
+                  <Col size={4}>
+                    <Text style={styles.subHeadingStyle}>
                       {translate('Hospital')}
                     </Text>
                   </Col>

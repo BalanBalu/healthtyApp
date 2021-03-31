@@ -137,7 +137,7 @@ class FamilyInfoList extends PureComponent {
                     :
                     <Content contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                         <View style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > Family List Not Found!</Text>
+                            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No member details found!</Text>
                         </View>
                     </Content>
                 }

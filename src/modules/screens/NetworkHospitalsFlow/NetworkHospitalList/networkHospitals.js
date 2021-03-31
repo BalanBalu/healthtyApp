@@ -62,10 +62,10 @@ class NetworkHospitals extends Component {
             const coordinates = isFromMapBox ? selectedLocCoOrdinates : locationCordinates;
             const reqData4ServiceCall={};
             if(coordinates&&coordinates.length){
-            //  reqData4ServiceCall.locationData={
-            //         coordinates,
-            //         maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
-            //     }
+             reqData4ServiceCall.locationData={
+                    coordinates,
+                    maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
+                }
             }
             if(this.selectedTpaCode) reqData4ServiceCall.tpaCode=this.selectedTpaCode;
             if(this.state.hospitalName) reqData4ServiceCall.hospitalName=this.state.hospitalName;
