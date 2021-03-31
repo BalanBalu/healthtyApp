@@ -264,7 +264,7 @@ class ClaimIntimationList extends PureComponent {
                                 {item.employeeName}
                               </Text>
                               <Row>
-                                <Col size={3}>
+                                <Col size={3.5}>
                                   <Text
                                     style={{
                                       fontFamily: 'Roboto',
@@ -272,7 +272,7 @@ class ClaimIntimationList extends PureComponent {
                                       color: '#909090',
                                       marginTop: 5,
                                     }}
-                                    numberOfLines={1}
+                                    // numberOfLines={1}
                                     ellipsizeMode="tail">
                                    {translate("Member Code")} 
                                   </Text>
@@ -280,7 +280,7 @@ class ClaimIntimationList extends PureComponent {
                                 <Col size={0.5}>
                                   <Text style={{marginTop: 5}}>:</Text>
                                 </Col>
-                                <Col size={6.5}>
+                                <Col size={6}>
                                   <Text
                                     style={styles.subHeadingData}
                                     numberOfLines={1}
