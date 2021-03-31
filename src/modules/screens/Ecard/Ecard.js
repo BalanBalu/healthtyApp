@@ -31,7 +31,7 @@ import {
 } from '../../providers/corporate/corporate.actions';
 import {fetchUserProfile} from '../../providers/profile/profile.action';
 import Spinner from '../../../components/Spinner';
-import {toastMeassage} from '../../common';
+import {toastMeassage,getMemberName} from '../../common';
 import {connect} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {primaryColor} from '../../../setup/config';
@@ -89,16 +89,6 @@ class Ecard extends PureComponent {
 
     return temp;
   }
-  getMemberName(data) {
-    let temp = '';
-    if (data) {
-      temp = `${data.familyMemberName || ' '} ${data.middleName || ''} ${
-        data.familyMemberLastName || ''
-      }`;
-    }
-
-    return temp;
-  }
   familyMemAgeCal = (value) => {
     try {
       if (value.familyMemberAge == 0 && value.familyMemberMonth <= 1)
@@ -142,7 +132,7 @@ class Ecard extends PureComponent {
                                         <Text style={styles.leftHeadingText}>-</Text>
                                     </Col>
                                     <Col size={5}>
-                                        <Text style={styles.mainText}>{this.getMemberName(data)}</Text>
+                                        <Text style={styles.mainText}>{getMemberName(data)}</Text>
                                     </Col>
                                 </Grid>
                                 <Grid style={{ marginTop: 8 }}>
@@ -199,96 +189,24 @@ class Ecard extends PureComponent {
                                 </Grid>
                             </Body>
                         </CardItem>
-                        <CardItem footer button onPress={() => this.toggleData(index)} style={{ backgroundColor: primaryColor, height: 40 }}>
-                            <Left style={{ marginLeft: 5 }}>
-                                <Text style={[styles.leftHeadingText, { color: '#fff' }]}>{this.state.selectedIndex === index  ?"Hide Ecard" : "Show Ecard"}</Text>
-                            </Left>
-                            <Right>
-                                <MaterialIcons name={arrowIcon} style={{ fontSize: 25, color: '#fff' }} />
-                            </Right>
+                        <CardItem footer style={{ backgroundColor: primaryColor, height: 40, alignItems: 'center',
+                               justifyContent: 'center', }}>
+                                                       
+                            <TouchableOpacity
+                               onPress={() => this.open(data)}
+                               style={{
+                               marginTop: 10,
+                               alignItems: 'center',
+                               justifyContent: 'center',flexDirection:'row'
+                            }}>
+                             <Text style={[styles.linkHeader, { color: '#fff' }]}>Download</Text>
+                             <MaterialIcons name="file-download" style={{ fontSize: 20, color: '#fff',marginBottom:5 }} />
+                               </TouchableOpacity>
+                           
                         </CardItem>
                     </Card>
                 </View>
-                {this.state.selectedIndex === index  ?(
-                    <View>
-                        <View style={{ backgroundColor: '#f2f5f4', paddingTop: 10, justifyContent: 'center', alignItems: 'center', paddingBottom: 8, marginTop: 5 }}>
-
-                            <Text style={styles.headerText}>{data.insuranceCompany ? data.insuranceCompany.toUpperCase() : CURRENT_APP_NAME + ' INSURANCE'}</Text>
-                            {/* <Text style={styles.headerText}>COMPANY LIMITED</Text> */}
-                            <Text style={styles.compName}>{data.address1 || ' '}</Text>
-
-                        </View>
-                        <Row style={{ backgroundColor: '#1C5BA8', padding: 5, paddingBottom: 25 }}>
-                            <Col size={3.5}>
-                                <Text style={styles.innerText}>Policy No.</Text>
-                                {/* <Text style={styles.innerText}>Health India ID</Text> */}
-                                <Text style={styles.innerText}>Member code</Text>
-                                <Text style={styles.innerText}>Member Name</Text>
-                                <Text style={styles.innerText}>Gender</Text>
-                                <Text style={styles.innerText}>Age</Text>
-                                <Text style={styles.innerText}>Relationship</Text>
-                                <Text style={styles.innerText}>Employee code</Text>
-                                <Text style={styles.innerText}>Valid Upto</Text>
-                            </Col>
-                            <Col size={0.5}>
-                                <Text style={styles.innerText}>:</Text>
-                                {/* <Text style={styles.innerText}>:</Text> */}
-                                <Text style={styles.innerText}>:</Text>
-                                <Text style={styles.innerText}>:</Text>
-                                <Text style={styles.innerText}>:</Text>
-                                <Text style={styles.innerText}>:</Text>
-                                <Text style={styles.innerText}>:</Text>
-                                <Text style={styles.innerText}>:</Text>
-                                <Text style={styles.innerText}>:</Text>
-
-
-                            </Col>
-                            <Col size={6}>
-                                <Text style={styles.innerText}>{data.policyNo}</Text>
-                                {/* <Text style={styles.innerText}>{data.health_india_Id || ' '}</Text> */}
-                                <Text style={styles.innerText}>{data.memberId}</Text>
-                                <Text style={styles.innerText}>{this.getMemberName(data)}</Text>
-                                <Text style={styles.innerText}>{data.familyMemberGender}</Text>
-                                <Text style={styles.innerText}>{this.familyMemAgeCal(data)}</Text>
-                                <Text style={styles.innerText}>{data.relationship}</Text>
-                                <Text style={styles.innerText}>{data.employeeId}</Text>
-                                <Text style={styles.innerText}> {formatDate(data.enrollmentEndDate, "DD-MMM-YY")||''}</Text>
-                            </Col>
-                            {/* <Col size={1.8} style={{ alignItems: 'center' }}>
-
-                            </Col> */}
-            </Row>
-            <Row
-              style={{
-                backgroundColor: '#5CB533',
-                paddingBottom: 5,
-                paddingTop: 5,
-              }}>
-              <Col size={2.6} style={styles.colStyle}>
-                <Image
-                  source={require('../../../../assets/images/healthIndia.png')}
-                  style={{height: 60, width: 80}}
-                />
-              </Col>
-              <Col size={7.4} style={styles.colStyle}>
-                <Text style={styles.footerText}>{data.GroupName}</Text>
-                <Text style={styles.addressText}>
-                  {this.getInsuranceAddress(data.Address)}
-                </Text>
-              </Col>
-            </Row>
-
-            <TouchableOpacity
-              onPress={() => this.open(data)}
-              style={{
-                marginTop: 10,
-                alignItems: 'flex-end',
-                justifyContent: 'flex-end',
-              }}>
-              <Text style={styles.linkHeader}>Download</Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
+                
       </View>
     );
   }
@@ -353,7 +271,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textDecorationColor: '#2159d9',
         textDecorationLine: 'underline',
-        color: '#2159D9'
+        color: '#000',
+        marginBottom:10
     },
     headerText: {
         fontFamily: 'opensans-bold',

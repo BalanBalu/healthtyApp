@@ -726,6 +726,14 @@ class PolicyCoverage extends React.Component {
       console.log(ex);
     }
   };
+  percentageCalculation = (total, balance) => {
+    if (total != 0 && balance != 0) {
+      let percentage = (balance / total);
+      return percentage;
+    } else {
+      return 0;
+    }
+  };
 
   render() {
     const { memberDetails, policyDetails,isLoading} = this.state
@@ -829,7 +837,10 @@ class PolicyCoverage extends React.Component {
                   </Text>
                 </View>
                 <ProgressBar
-                  progress={0.5}
+                  progress={this.percentageCalculation(
+                    memberDetails.sumInsured ? memberDetails.sumInsured : 0,
+                    memberDetails.balSumInsured ? memberDetails.balSumInsured : 0,
+                  )}
                   color={'#4CAF50'}
                   style={styles.progressbarStyle}
                   animated={true}

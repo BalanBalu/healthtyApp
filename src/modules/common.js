@@ -140,16 +140,19 @@ export const RenderPatientAddress = (props) => {
 
 export function renderProfileImage(data) {
     let source = null;
-    if (data&&data.profileImage) {
-        source = { uri: data.profileImage[0].original_imageURL }
-    } else if (data.gender == 'M') {
-        source = require('../../assets/images/male_user.png')
-    } else if (data.gender == 'F') {
-        source = require('../../assets/images/Female.png')
-    } else {
-        source = require('../../assets/images/male_user.png')
+    if (data){
+        if (data&&data.profileImage) {
+            source = { uri: data.profileImage[0].original_imageURL }
+        } else if (data.gender == 'M') {
+            source = require('../../assets/images/male_user.png')
+        } else if (data.gender == 'F') {
+            source = require('../../assets/images/Female.png')
+        } else {
+            source = require('../../assets/images/male_user.png')
+        }
+        return (source)
     }
-    return (source)
+   
 }
 export function renderDoctorImage(data) {
     let source = null;
@@ -220,6 +223,16 @@ export function getName(data) {
     return name
 
 }
+export function getMemberName(data) {
+    let temp = '';
+    if (data) {
+      temp = `${data.familyMemberName || ' '} ${data.middleName || ''} ${
+        data.familyMemberLastName || ''
+      }`;
+    }
+
+    return temp;
+  }
 export function getUserLocation(location) {
     if (!location.address) return ''
     if (location.address)
