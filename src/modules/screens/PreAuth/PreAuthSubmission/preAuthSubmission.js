@@ -140,9 +140,9 @@ class PreAuth extends React.PureComponent {
       rohiniId: hospitalInfo.rohiniId||''
     }
     let memberInformation = this.props.navigation.getParam('memberInfo');
-
     let memberInfo = {
       patientName: this.getMemberName(memberInformation),
+      relationship: memberInformation.relationship || '',
       contactNo: memberInformation.mobile || '',
       alterNateContactNumber: memberInformation.phone || '',
       patientAgeInYr:memberInformation.age?String(memberInformation.age) :'',
@@ -378,7 +378,6 @@ class PreAuth extends React.PureComponent {
       });
       return false;
     }
-
     if (errorMsg) {
       this.setState({ errorMsg: errorMsg });
     } else {
@@ -393,6 +392,7 @@ class PreAuth extends React.PureComponent {
         tpaCompanyPhoneNumber: tpaInfo.tpaCompanyPhoneNumber,
         tpaTollFreeFaxNo: tpaInfo.tpaTollFreeFaxNo,
         patientName: memberInfo.patientName,
+        patientRelationship: memberInfo.relationship,
         patientDob: memberInfo.dob,
         patientGender: memberInfo.selectedGender,
         patientAgeInYr:parseInt(memberInfo.patientAgeInYr),
