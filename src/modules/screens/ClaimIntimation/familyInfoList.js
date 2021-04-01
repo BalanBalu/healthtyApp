@@ -10,6 +10,7 @@ import {
   Content,
   Item,
 } from 'native-base';
+import { Loader } from '../../../components/ContentLoader';
 import {Col, Row} from 'react-native-easy-grid';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
@@ -26,6 +27,7 @@ class FamilyInfoList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading:false,
       memberDetails: [],
       claimList: [],
       familyList: [],
@@ -112,10 +114,13 @@ class FamilyInfoList extends PureComponent {
     }
   }
     render() {
-        const { familyList } = this.state;
+        const { familyList, isLoading } = this.state;
         return (
             <Container>
-                {familyList && familyList.length ?
+              
+              {isLoading ? (
+            <Loader style="list" />
+          ) :familyList && familyList.length ?
                     <Content style={{ padding: 10 }}>
                         <View style={{ marginTop: 10 }}>
                             <Text style={{ fontSize: 18, fontFamily: 'opensans-bold', marginTop: 10,  }}> {familyList && familyList.length ? 'Family Information' : null}</Text>
@@ -133,7 +138,9 @@ class FamilyInfoList extends PureComponent {
                                 </RenderFamilyList>)
                             }
                         </View>
+                        
                     </Content>
+                    
                     :
                     <Content contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                         <View style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
