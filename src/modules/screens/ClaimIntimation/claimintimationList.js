@@ -272,7 +272,6 @@ class ClaimIntimationList extends PureComponent {
                                       color: '#909090',
                                       marginTop: 5,
                                     }}
-                                    // numberOfLines={1}
                                     ellipsizeMode="tail">
                                    {translate("Member Code")} 
                                   </Text>
