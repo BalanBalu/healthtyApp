@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import { Text, View, Card } from 'native-base';
+import { Text, View, Card, Icon } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Styles from '../styles';
 import { getDistanceByKiloMeters } from '../../CommonAll/functions';
-import { getNetworkHospitalAddress,getNetworkHospitalEmail } from '../../../common';
-import {translate} from '../../../../setup/translator.helper'
+import { getNetworkHospitalAddress, getNetworkHospitalEmail } from '../../../common';
+import { translate } from '../../../../setup/translator.helper'
+import { primaryColor } from '../../../../setup/config'
 
 export default class RenderNetworkHospitalInfo extends Component {
   constructor(props) {
     super(props)
   }
   render() {
-    const { item, showFullInfoCard, onPressArrowIconSelectedIndex, onPressUpOrDownArrowToViewFullInfo, onPressGoPreAuthRequestForm, onPressGoPreConsultation, navigation, navigationPage } = this.props;
-  // item.email=  getNetworkHospitalEmail(item.email)
+    const { item, showFullInfoCard, onPressArrowIconSelectedIndex, onPressUpOrDownArrowToViewFullInfo, onPressGoPreAuthRequestForm, onPressGoPreConsultation, navigation, navigationPage, onPressOpenGoogleMapPage } = this.props;
     const address = {
       address: item.address,
       city: item.city,
@@ -73,21 +73,27 @@ export default class RenderNetworkHospitalInfo extends Component {
                 </Col>
                 <Col size={0.8}></Col>
               </Row>
-
               <Row style={{ marginTop: 5 }}>
                 <Col size={2}><Text style={Styles.subHeadingStyle}>{translate("Distance")}</Text></Col>
                 <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
-                <Col size={7}>
+                <Col size={7} style={{ flexDirection: 'row' }}>
                   <Text style={Styles.subHeadingData}>{getDistanceByKiloMeters(item.distInKiloMeter)}</Text>
+                  <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => onPressOpenGoogleMapPage(item)}>
+                    <Icon name="directions" type="MaterialIcons" style={{ color: primaryColor, fontSize: 20, marginLeft: 45, marginTop: 5 }} />
+                    <Text style={{
+                      fontSize: 12,
+                      fontFamily: 'OpenSans', color: primaryColor, fontWeight: 'bold', marginLeft: 2, marginTop: 8,
+                    }}>View Distance</Text>
+                  </TouchableOpacity>
                 </Col>
                 <Col size={0.8}></Col>
               </Row>
               {
                 navigationPage === 'PRE_AUTH' ?
-                  <Row style={{ marginTop: 15 }}>
+                  <Row style={{ marginTop: 20 }}>
                     <Col size={4}>
                       <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#935DD7', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
-                        <Text style={{ color: '#fff', fontFamily: 'opensans-bold', fontSize: 15,}}>{translate("Continue")}</Text>
+                        <Text style={{ color: '#fff', fontFamily: 'opensans-bold', fontSize: 15, }}>{translate("Continue")}</Text>
                       </TouchableOpacity>
                     </Col>
                     <Col size={4} style={{ marginLeft: 20 }}>
@@ -99,7 +105,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                   <Row style={{ marginTop: 15 }}>
                     <Col size={4}>
                       <TouchableOpacity style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: 'rgba(18,130,131,0.9)', borderRadius: 5, alignItems: 'center', }} onPress={() => onPressGoPreAuthRequestForm()}>
-                        <Text style={{ color: '#fff', fontFamily: 'opensans-bold', fontSize: 15,}}>{translate("Pre Auth")}</Text>
+                        <Text style={{ color: '#fff', fontFamily: 'opensans-bold', fontSize: 15, }}>{translate("Pre Auth")}</Text>
                       </TouchableOpacity>
                     </Col>
                     <Col size={4} style={{ marginLeft: 20 }}>

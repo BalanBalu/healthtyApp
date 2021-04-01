@@ -36,7 +36,7 @@ export function calculateAge(date) {
 export function getNetworkHospitalAddress(address) {
     if (!address) return ''
     if (address)
-        return (address.address ? address.address + ', ' : " ") + (address.post_office_name ? address.post_office_name + ', ' : " ") + (address.city ? address.city + ', ' : " ") + (address.state ? address.state + ', ' : " ") + (address.pinCode ? address.pinCode : " ");
+        return (address.address ? address.address + ', ' : " ") + (address.city ? address.city + ', ' : " ") + (address.state ? address.state + ', ' : " ") + (address.pinCode ? address.pinCode : " ");
 }
 
 
