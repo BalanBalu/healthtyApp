@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, Container, Icon, Item, Input, Toast } from 'native-base';
 import { Row, Col } from 'react-native-easy-grid';
-import { View, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { View, TouchableOpacity, FlatList, ActivityIndicator, Alert, Platform, Linking } from 'react-native';
 import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER_HOSPITALS } from '../../../../setup/config';
 import RenderNetworkHospitalInfo from './renderNetworkHospitals';
@@ -60,17 +60,17 @@ class NetworkHospitals extends Component {
             const { isFromMapBox, selectedLocCoOrdinates } = this.state
             const { bookappointment: { locationCordinates } } = this.props;
             const coordinates = isFromMapBox ? selectedLocCoOrdinates : locationCordinates;
-            const reqData4ServiceCall={};
-            if(coordinates&&coordinates.length){
-             reqData4ServiceCall.locationData={
+            const reqData4ServiceCall = {};
+            if (coordinates && coordinates.length) {
+                reqData4ServiceCall.locationData = {
                     coordinates,
                     maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
                 }
             }
-            if(this.selectedTpaCode) reqData4ServiceCall.tpaCode=this.selectedTpaCode;
-            if(this.state.hospitalName) reqData4ServiceCall.hospitalName=this.state.hospitalName;
+            if (this.selectedTpaCode) reqData4ServiceCall.tpaCode = this.selectedTpaCode;
+            if (this.state.hospitalName) reqData4ServiceCall.hospitalName = this.state.hospitalName;
 
-            const getHospitalList = await serviceOfSearchByNetworkHospitalDetails( reqData4ServiceCall,this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
+            const getHospitalList = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
             if (getHospitalList && getHospitalList.length) {
                 this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...getHospitalList];
@@ -119,7 +119,6 @@ class NetworkHospitals extends Component {
     }
     renderHospitalInformationCard(item, index) {
         const { showFullInfoCard } = this.state;
-        // const { bookappointment: { locationCordinates }} = this.props;
         return (
             <RenderNetworkHospitalInfo
                 item={item}
@@ -130,9 +129,37 @@ class NetworkHospitals extends Component {
                 onPressUpOrDownArrowToViewFullInfo={(onPressArrowIconSelectedIndex, typeOfArrowIcon, selectedHospitalData) => this.onPressUpOrDownArrowToViewFullInfo(onPressArrowIconSelectedIndex, typeOfArrowIcon, selectedHospitalData)}
                 onPressGoPreAuthRequestForm={() => this.onPressGoPreAuthRequestForm()}
                 onPressGoPreConsultation={() => this.onPressGoPreConsultation()}
+                onPressOpenGoogleMapPage={(item) => this.onPressOpenGoogleMapPage(item)}
+
             >
             </RenderNetworkHospitalInfo>
         )
+    }
+    onPressOpenGoogleMapPage = (item) => {
+        try {
+            const hospitalName = item.hospitalName ? item.hospitalName : 'Un known hospital';
+            const destinationCoOrdinates = item.geoLocation && item.geoLocation.coordinates;
+            console.log(destinationCoOrdinates);
+            if (!destinationCoOrdinates && !destinationCoOrdinates.length) {
+                Toast.show({
+                    text: 'coordinates getting Invalid! ',
+                    type: 'warning',
+                    duration: 3000,
+                });
+                return
+            }
+            const [lat, long] = destinationCoOrdinates;
+            const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+            const latLong = `${lat},${long}`;
+            const label = hospitalName;
+            const url = Platform.select({
+                ios: `${scheme}${label}@${latLong}`,
+                android: `${scheme}${latLong}(${label})`
+            });
+            Linking.openURL(url);
+        } catch (error) {
+            console.log('Error is getting on View destination Map ', error.message);
+        }
     }
     loadMoreData = async () => {
         try {
