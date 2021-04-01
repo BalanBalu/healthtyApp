@@ -82,10 +82,12 @@ class PolicyStatus extends Component {
   };
   getClaimDetails = async () => {
     try {
+      let employeeCode = (await AsyncStorage.getItem('employeeCode')) || null;
       const {memberDetails, policyDetails} = this.state;
       let result = await getClaimsDataByPayerCode(
         policyDetails.TPA,
         memberDetails.policyNo,
+        employeeCode,
         this.pagination,
         LIMIT,
       );
@@ -192,8 +194,7 @@ class PolicyStatus extends Component {
             <View style={{marginTop: 10}}>
               <Text style={styles.nameText}>
                 {memberDetails.firstName
-                  ? memberDetails.firstName + ' ' + memberDetails.lastName
-                  : '-'}
+                  ? memberDetails.firstName : '-'}
               </Text>
               <Text style={styles.policyText}>
                 {translate('Member Code')} :{' '}
