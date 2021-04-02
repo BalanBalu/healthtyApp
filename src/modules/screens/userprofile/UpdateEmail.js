@@ -67,7 +67,6 @@ class UpdateEmail extends Component {
         return false;
       }
       this.setState({errorMsg: '', updateButton: false,isLoading: true});
-      let userId = await AsyncStorage.getItem('userId');
       let requestData = {
         emailId: this.state.emailId,
         _id: this.state.id,
@@ -113,6 +112,7 @@ class UpdateEmail extends Component {
       });
       return false;
     } else {
+      this.handleEmailUpdate();
       this.setState({memberId: this.state.memberId, updateButton: false});
     }
   };
@@ -176,7 +176,7 @@ class UpdateEmail extends Component {
                         success
                         disabled={this.state.updateButton}
                         style={styles.button2}
-                        onPress={() => this.handleEmailUpdate()}
+                        onPress={() => this.memberEmailValidation()}
                         testID="clickUpdateEmail">
                         <Text style={styles.buttonText}>Update</Text>
                       </Button>
