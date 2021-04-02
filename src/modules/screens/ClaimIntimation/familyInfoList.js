@@ -38,8 +38,9 @@ class FamilyInfoList extends PureComponent {
     this.navigationPage = props.navigation.getParam('navigationPage');
     this.preAuthReqData = props.navigation.getParam('preAuthReqData');
   }
-  UNSAFE_componentWillMount() {
+  UNSAFE_componentWillMount= async () => {
     this.getMemberDetailsByPolicyNo();
+    this.memberEmailId = await AsyncStorage.getItem('memberEmailId');
   }
   getMemberDetailsByPolicyNo = async () => {
     try {
@@ -75,12 +76,11 @@ class FamilyInfoList extends PureComponent {
             familydetails.balSumInsured = temp[0].balSumInsured;
             familydetails.enrollmentStartDate = temp[0].enrollmentStartDate;
             familydetails.enrollmentEndDate = temp[0].enrollmentEndDate;
-            familydetails.emailId = temp[0].emailId;
+            familydetails.emailId = temp[0].emailId|| this.memberEmailId;
             familyList.push(familydetails);
           }
         }
         await this.setState({familyList: familyList || []});
-        console.log(this.state.familyList);
       }
     } catch (ex) {
       console.log(ex);
@@ -93,6 +93,7 @@ class FamilyInfoList extends PureComponent {
     if (this.navigationPage === 'ClaimIntimationSubmission') {
       this.props.navigation.navigate(this.navigationPage, {
         memberInfo: selectedMemObj,
+        tpaCode:this.props.profile && this.props.profile.memberTpaInfo,
       });
     } else if (this.navigationPage === 'PreAuthSubmission') {
       if (!this.preAuthReqData) {

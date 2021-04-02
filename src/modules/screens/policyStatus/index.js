@@ -62,8 +62,7 @@ class PolicyStatus extends Component {
   getMemberDetailsByEmail = async () => {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      let memberPolicyNo =
-        (await AsyncStorage.getItem('memberPolicyNo')) || null;
+      let memberPolicyNo = (await AsyncStorage.getItem('memberPolicyNo')) || null;
 
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
