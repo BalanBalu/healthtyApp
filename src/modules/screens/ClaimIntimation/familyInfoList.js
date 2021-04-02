@@ -93,6 +93,7 @@ class FamilyInfoList extends PureComponent {
     if (this.navigationPage === 'ClaimIntimationSubmission') {
       this.props.navigation.navigate(this.navigationPage, {
         memberInfo: selectedMemObj,
+        tpaCode:this.props.profile && this.props.profile.memberTpaInfo,
       });
     } else if (this.navigationPage === 'PreAuthSubmission') {
       if (!this.preAuthReqData) {

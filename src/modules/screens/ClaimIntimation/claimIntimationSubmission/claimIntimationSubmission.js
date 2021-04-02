@@ -34,6 +34,7 @@ export default class ClaimInitiationSubmission extends Component {
     this.emailEditable = true;
     this.mIdEditable = true;
     this.memberInfo = props.navigation.getParam('memberInfo');
+    this.tpaCode = props.navigation.getParam('tpaCode');
   }
   async UNSAFE_componentWillMount() {
     if (this.memberInfo && this.memberInfo.emailId) {
@@ -159,6 +160,7 @@ export default class ClaimInitiationSubmission extends Component {
             ? this.memberInfo.relationship
             : null,
         status: 'REQUEST-SENT',
+        payerCode: this.tpaCode.tpaCode || null,
       };
       const claimUpdateResp = await serviceOfClaimIntimation(
         claimIntimationReqData,
@@ -297,7 +299,6 @@ export default class ClaimInitiationSubmission extends Component {
                   onChangeText={(enteredMemberIdText) =>
                     this.setState({memberId: enteredMemberIdText})
                   }
-                 
                 />
               </Item>
             </Col>
@@ -311,7 +312,7 @@ export default class ClaimInitiationSubmission extends Component {
 
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                                   placeholder="Enter Employee Id"
+                  placeholder="Enter Employee Id"
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={employeeId}
@@ -320,7 +321,6 @@ export default class ClaimInitiationSubmission extends Component {
                   onChangeText={(enteredEmployeeIdText) =>
                     this.setState({employeeId: enteredEmployeeIdText})
                   }
-                
                 />
               </Item>
             </Col>
@@ -431,9 +431,9 @@ export default class ClaimInitiationSubmission extends Component {
               <Text style={styles.text}>Amount</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                 ref={(input) => {
-                  this.ailment = input;
-                }}
+                  ref={(input) => {
+                    this.ailment = input;
+                  }}
                   placeholder="Enter Amount"
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
