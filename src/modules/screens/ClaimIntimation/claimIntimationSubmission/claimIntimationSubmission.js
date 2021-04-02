@@ -8,9 +8,9 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import styles from '../Styles';
 import ModalPopup from '../../../../components/Shared/ModalPopup';
 import {primaryColor} from '../../../../setup/config';
-import { serviceOfClaimIntimation} from '../../../providers/corporate/corporate.actions'
+import {serviceOfClaimIntimation} from '../../../providers/corporate/corporate.actions';
 
-import {acceptNumbersOnly,toastMeassage} from '../../../common';
+import {acceptNumbersOnly, toastMeassage} from '../../../common';
 
 export default class ClaimInitiationSubmission extends Component {
   constructor(props) {
@@ -31,16 +31,24 @@ export default class ClaimInitiationSubmission extends Component {
       isLoading: false,
       amount: '',
     };
+    this.emailEditable = true;
+    this.mIdEditable = true;
     this.memberInfo = props.navigation.getParam('memberInfo');
+    this.tpaCode = props.navigation.getParam('tpaCode');
   }
   async UNSAFE_componentWillMount() {
+    if (this.memberInfo && this.memberInfo.emailId) {
+      this.emailEditable = false;
+    }
+    if (this.memberInfo && this.memberInfo.memberId) {
+      this.mIdEditable = false;
+    }
     await this.setState({
       policyNo: this.memberInfo && this.memberInfo.policyNo,
       name: this.memberInfo && this.memberInfo.full_name,
       email: this.memberInfo && this.memberInfo.emailId,
       memberId: this.memberInfo && this.memberInfo.memberId,
       employeeId: this.memberInfo && this.memberInfo.employeeId,
-
     });
   }
 
@@ -133,7 +141,7 @@ export default class ClaimInitiationSubmission extends Component {
         email:
           this.memberInfo && this.memberInfo.emailId
             ? this.memberInfo.emailId
-            : null,
+            : this.state.email,
         employeeName:
           this.memberInfo && this.memberInfo.full_name
             ? this.memberInfo.full_name
@@ -147,17 +155,24 @@ export default class ClaimInitiationSubmission extends Component {
         ailment,
         amount,
         contactNumber: contactNum,
-        relationship: this.memberInfo && this.memberInfo.relationship
-        ? this.memberInfo.relationship
-        : null,
+        relationship:
+          this.memberInfo && this.memberInfo.relationship
+            ? this.memberInfo.relationship
+            : null,
         status: 'REQUEST-SENT',
+        payerCode: this.tpaCode.tpaCode || null,
       };
-      const claimUpdateResp = await serviceOfClaimIntimation(claimIntimationReqData);
+      const claimUpdateResp = await serviceOfClaimIntimation(
+        claimIntimationReqData,
+      );
       if (claimUpdateResp && claimUpdateResp.referenceNumber) {
-        this.props.navigation.navigate('ClaimIntimationSuccess', { referenceNumber: claimUpdateResp.referenceNumber, successMsg: 'Your Claim Intimation request is being processed, will be notified on successful completion, your app reference id is' });
-      }
-      else if (claimUpdateResp && claimUpdateResp.success === false) {
-        toastMeassage('Unable to Submit Claim Request')
+        this.props.navigation.navigate('ClaimIntimationSuccess', {
+          referenceNumber: claimUpdateResp.referenceNumber,
+          successMsg:
+            'Your Claim Intimation request is being processed, will be notified on successful completion, your app reference id is',
+        });
+      } else if (claimUpdateResp && claimUpdateResp.success === false) {
+        toastMeassage('Unable to Submit Claim Request');
       }
       // if (claimIntimationReqData) {
       //   this.props.navigation.navigate('DocumentList', {
@@ -196,7 +211,6 @@ export default class ClaimInitiationSubmission extends Component {
       isLoading,
       amount,
     } = this.state;
-
     return (
       <Container>
         <Content>
@@ -258,7 +272,7 @@ export default class ClaimInitiationSubmission extends Component {
                   returnKeyType={'next'}
                   value={email}
                   keyboardType={'default'}
-                  editable={email == undefined ? true : false}
+                  editable={this.emailEditable}
                   onChangeText={(mailId) => this.setState({email: mailId})}
                   blurOnSubmit={false}
                   onSubmitEditing={() => {
@@ -276,22 +290,15 @@ export default class ClaimInitiationSubmission extends Component {
 
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                  ref={(input) => {
-                    this.enteredPolicyText = input;
-                  }}
                   placeholder="Enter Member Id"
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={memberId}
                   keyboardType={'number-pad'}
-                  editable={memberId == undefined ? true : false}
+                  editable={this.mIdEditable}
                   onChangeText={(enteredMemberIdText) =>
                     this.setState({memberId: enteredMemberIdText})
                   }
-                  blurOnSubmit={false}
-                  onSubmitEditing={() => {
-                    this.enteredMemberIdText._root.focus();
-                  }}
                 />
               </Item>
             </Col>
@@ -305,9 +312,6 @@ export default class ClaimInitiationSubmission extends Component {
 
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                  ref={(input) => {
-                    this.enteredPolicyText = input;
-                  }}
                   placeholder="Enter Employee Id"
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
@@ -317,10 +321,6 @@ export default class ClaimInitiationSubmission extends Component {
                   onChangeText={(enteredEmployeeIdText) =>
                     this.setState({employeeId: enteredEmployeeIdText})
                   }
-                  blurOnSubmit={false}
-                  onSubmitEditing={() => {
-                    this.enteredEmployeeIdText._root.focus();
-                  }}
                 />
               </Item>
             </Col>
@@ -333,7 +333,7 @@ export default class ClaimInitiationSubmission extends Component {
               <Item regular style={{borderRadius: 6}}>
                 <Input
                   ref={(input) => {
-                    this.enteredEmployeeIdText = input;
+                    this.mailId = input;
                   }}
                   placeholder="Enter Hospital name"
                   placeholderTextColor={'#CDD0D9'}
@@ -349,14 +349,45 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text
-                style={styles.text}>
-                Date of Admission
-            </Text>
-              <Item regular style={{ borderRadius: 6, height: 50, }}>
-                <TouchableOpacity onPress={() => { this.setState({ isVisibleDatePicker: !isVisibleDatePicker }) }} style={{ flexDirection: 'row' }}>
-                  <Icon name='md-calendar' style={{ padding: 5, fontSize: 20, marginTop: 1, color: primaryColor }} />
-                  <Text style={selectedAdmissionDate ? { marginLeft: 5, fontFamily: 'Roboto', fontSize: 13, textAlign: 'center',marginTop:8,color:'#000' } : { color: '#909090',fontFamily: 'Roboto', fontSize: 13, textAlign: 'center',marginTop:8 }}>{selectedAdmissionDate ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY') : 'Date of Admission'}</Text>
+              <Text style={styles.text}>Date of Admission</Text>
+              <Item regular style={{borderRadius: 6, height: 50}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({isVisibleDatePicker: !isVisibleDatePicker});
+                  }}
+                  style={{flexDirection: 'row'}}>
+                  <Icon
+                    name="md-calendar"
+                    style={{
+                      padding: 5,
+                      fontSize: 20,
+                      marginTop: 1,
+                      color: primaryColor,
+                    }}
+                  />
+                  <Text
+                    style={
+                      selectedAdmissionDate
+                        ? {
+                            marginLeft: 5,
+                            fontFamily: 'Roboto',
+                            fontSize: 13,
+                            textAlign: 'center',
+                            marginTop: 8,
+                            color: '#000',
+                          }
+                        : {
+                            color: '#909090',
+                            fontFamily: 'Roboto',
+                            fontSize: 13,
+                            textAlign: 'center',
+                            marginTop: 8,
+                          }
+                    }>
+                    {selectedAdmissionDate
+                      ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY')
+                      : 'Date of Admission'}
+                  </Text>
                   <DateTimePicker
                     mode={'date'}
                     minimumDate={subTimeUnit(new Date(), 7, 'days')}
@@ -400,12 +431,19 @@ export default class ClaimInitiationSubmission extends Component {
               <Text style={styles.text}>Amount</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
+                  ref={(input) => {
+                    this.ailment = input;
+                  }}
                   placeholder="Enter Amount"
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={amount}
                   keyboardType={'number-pad'}
                   onChangeText={(amount) => this.setState({amount})}
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => {
+                    this.amount._root.focus();
+                  }}
                 />
               </Item>
             </Col>
@@ -418,7 +456,7 @@ export default class ClaimInitiationSubmission extends Component {
               <Item regular style={{borderRadius: 6}}>
                 <Input
                   ref={(input) => {
-                    this.ailment = input;
+                    this.amount = input;
                   }}
                   placeholder="Enter Contact number"
                   placeholderTextColor={'#CDD0D9'}

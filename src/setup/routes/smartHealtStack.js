@@ -636,9 +636,8 @@ export const smartHealthStack=createStackNavigator({
     screen: ClaimIntimationSuccess,
     navigationOptions: {
       title: 'Success page',
-      headerTitleStyle: { fontFamily: "Roboto",},
+      headerTitleStyle: { fontFamily: "Roboto"},
       headerLeft: null
-
     }
   },
   ClaimIntimationList: {

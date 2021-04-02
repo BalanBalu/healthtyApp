@@ -74,7 +74,7 @@ class PolicyCoverage extends React.Component {
             let text = '';
             if (renewalTerm.key === 'FAMILY_DEFINITION') {
               let values = renewalTerm['value'];
-              text = text + 'Includes ';
+              text = text + 'Family definition includes ';
               for (let value of values) {
                 if (value && value['employee'] && value['employee'] === true) {
                   text = text + 'Employee,';
@@ -101,6 +101,7 @@ class PolicyCoverage extends React.Component {
             } else if (renewalTerm.key === 'SUM_INSURED') {
               let values = renewalTerm['value'];
               text = '';
+              text = text + 'Sum insured per family ';
               for (let value of values) {
                 if (
                   value &&
@@ -118,7 +119,7 @@ class PolicyCoverage extends React.Component {
               }
             } else if (renewalTerm.key === 'MAX_AGE') {
               let values = renewalTerm['value'];
-              text = '';
+              text = 'Max age - ';
               for (let value of values) {
                 if (value && value['noLimit'] && value['noLimit'] === true) {
                   text = text + 'There is no age limit.';
@@ -355,7 +356,7 @@ class PolicyCoverage extends React.Component {
               }
             } else if (renewalTerm.key === 'DECLARATION_PERIOD') {
               let values = renewalTerm['value'];
-              text = '';
+              text = 'Declaration period - ';
               for (let value of values) {
                 if (
                   value &&
@@ -377,7 +378,7 @@ class PolicyCoverage extends React.Component {
               }
             } else if (renewalTerm.key === 'CO_PAY') {
               let values = renewalTerm['value'];
-              text = '';
+              text = 'Co-pay - ';
               for (let value of values) {
                 if (
                   value &&
@@ -414,7 +415,7 @@ class PolicyCoverage extends React.Component {
               }
             } else if (renewalTerm.key === 'PRE_HOSPITALISATION') {
               let values = renewalTerm['value'];
-              text = '';
+              text = 'Pre Hospitalisation - ';
               for (let value of values) {
                 if (value && value['days'] && value['days'] === true) {
                   text = text + 'Pre Hospitalisation period is 30 days.';
@@ -422,7 +423,7 @@ class PolicyCoverage extends React.Component {
               }
             } else if (renewalTerm.key === 'POST_HOSPITALISATION') {
               let values = renewalTerm['value'];
-              text = '';
+              text = 'Post hospitalisation - ';
               for (let value of values) {
                 if (value && value['days'] && value['days'] === true) {
                   text = text + 'Post hospitalisation period is 90 days.';
