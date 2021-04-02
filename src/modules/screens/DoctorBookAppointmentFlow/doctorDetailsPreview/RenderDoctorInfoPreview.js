@@ -88,14 +88,14 @@ export default class RenderDoctorInfoPreview extends Component {
                             </TouchableOpacity>
                         </Col>
                         : null}
-                    {isChatAvailability === true ?
+                    {/* {isChatAvailability === true ?
                         <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
                             <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }} onPress={() => navigation.navigate("Video and Chat Service")}>
                                 <Icon name="chatbox" style={{ fontSize: 20, color: primaryColor,marginTop:2 }} />
                                 <Text style={{ marginLeft: 5, fontFamily: 'Roboto', fontSize: 13, color: primaryColor,  }}>Chat</Text>
                             </TouchableOpacity>
                         </Col>
-                        : null}
+                        : null} */}
                     <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
                         <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }} onPress={() => shareDocInfo(doctorData)}>
                             <Icon name="share-social" style={{ fontSize: 20, color: primaryColor }} />
