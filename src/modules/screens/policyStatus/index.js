@@ -62,8 +62,7 @@ class PolicyStatus extends Component {
   getMemberDetailsByEmail = async () => {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      let memberPolicyNo =
-        (await AsyncStorage.getItem('memberPolicyNo')) || null;
+      let memberPolicyNo = (await AsyncStorage.getItem('memberPolicyNo')) || null;
 
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
@@ -83,11 +82,13 @@ class PolicyStatus extends Component {
   getClaimDetails = async () => {
     try {
       let employeeCode = (await AsyncStorage.getItem('employeeCode')) || null;
+      let memberId = (await AsyncStorage.getItem('memberId')) || null;
       const {memberDetails, policyDetails} = this.state;
       let result = await getClaimsDataByPayerCode(
         policyDetails.TPA,
         memberDetails.policyNo,
         employeeCode,
+        memberId,
         this.pagination,
         LIMIT,
       );

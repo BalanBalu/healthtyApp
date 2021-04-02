@@ -157,10 +157,9 @@ export async function serviceOfGetPreAuthList(policyNo, empCode, page, limit) {
 }
 
 
-export async function getClaimsDataByPayerCode(payer_code, policy_no,empId, page, limit) {
+export async function getClaimsDataByPayerCode(payer_code, policy_no,empId,memberId, page, limit) {
   try {
-    let endPoint = 'claim-data?payerCode=' + payer_code + '&policyno=' + policy_no+'&eid=' + empId + '&p=' + page + '&l=' + limit;
-    console.log("endPoint",endPoint)
+    let endPoint = 'claim-data?payerCode=' + payer_code + '&policyno=' + policy_no+'&eid=' + empId +'&mid='+memberId+ '&p=' + page + '&l=' + limit;
     let response = await smartHealthGetService(endPoint);
     return response.data;
   } catch (e) {
