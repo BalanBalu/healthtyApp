@@ -20,6 +20,8 @@ import {
   getMemberDetailsByPolicyNo,
   getFamilyMembersByPolicyNoeWithPagination,
 } from '../../providers/corporate/corporate.actions';
+import {Loader} from '../../../components/ContentLoader';
+
 const LIMIT = 10;
 
 class FamilyInfoList extends PureComponent {
@@ -30,6 +32,7 @@ class FamilyInfoList extends PureComponent {
       claimList: [],
       familyList: [],
       isShowBeneficiaryInfoCard: -1,
+      isLoading: true,
     };
     this.pagination = 1;
     this.navigationPage = props.navigation.getParam('navigationPage');
@@ -38,14 +41,6 @@ class FamilyInfoList extends PureComponent {
   UNSAFE_componentWillMount() {
     this.getMemberDetailsByPolicyNo();
   }
-//   UNSAFE_componentWillMount() {
-//     const {
-//       profile: {corporateData},
-//     } = this.props;
-//     console.log("corporateData",corporateData)
-
-//     this.setState({familyList: corporateData || []});
-//   }
   getMemberDetailsByPolicyNo = async () => {
     try {
       this.setState({isLoading: true});
@@ -64,18 +59,18 @@ class FamilyInfoList extends PureComponent {
 
   getFamilyMemberDetailsByPolicyNo = async (memberPolicyNo) => {
     try {
-      
       this.setState({isLoading: true});
-      let result = this.props.profile.familyData||[]
-      if (result&&result.length!=0) {
-        let temp = [],familyList=[];
+      let result = this.props.profile.familyData || [];
+      if (result && result.length != 0) {
+        let temp = [],
+          familyList = [];
         for (let familydetails of result) {
           this.state.memberDetails.filter((ele) => {
             ele.employeeId === familydetails.employeeId;
             temp.push(ele);
           });
 
-          if (temp &&temp.length != 0) {
+          if (temp && temp.length != 0) {
             familydetails.sumInsured = temp[0].sumInsured;
             familydetails.balSumInsured = temp[0].balSumInsured;
             familydetails.enrollmentStartDate = temp[0].enrollmentStartDate;
@@ -84,8 +79,8 @@ class FamilyInfoList extends PureComponent {
             familyList.push(familydetails);
           }
         }
-      await this.setState({familyList: familyList || []});
-      console.log(this.state.familyList)
+        await this.setState({familyList: familyList || []});
+        console.log(this.state.familyList);
       }
     } catch (ex) {
       console.log(ex);
@@ -110,42 +105,82 @@ class FamilyInfoList extends PureComponent {
         preAuthInfo: this.preAuthReqData,
       });
     }
-  }
-    render() {
-        const { familyList } = this.state;
-        return (
-            <Container>
-                {familyList && familyList.length ?
-                    <Content style={{ padding: 10 }}>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={{ fontSize: 18, fontFamily: 'opensans-bold', marginTop: 10,  }}> {familyList && familyList.length ? 'Family Information' : null}</Text>
-                            {familyList.map((item, index) =>
-                                <RenderFamilyList
-                                    item={item}
-                                    index={index}
-                                    isShowBeneficiaryInfoCard={this.state.isShowBeneficiaryInfoCard}
-                                    navigation={this.props.navigation}
-                                    onPressIsShowBeneficiaryInfo={(isShowBeneficiaryInfoCard, typeOfArrowIcon) => this.setState({ isShowBeneficiaryInfoCard: typeOfArrowIcon === 'DOWN' ? isShowBeneficiaryInfoCard : -1 })
-                                    }
-                                    onPressSelectBtnToGoNextProcess={(selectedMemObj) => this.onPressSelectBtnToGoNextProcess(selectedMemObj)}
-                                // shouldUpdate={``}
-                                >
-                                </RenderFamilyList>)
-                            }
-                        </View>
-                    </Content>
-                    :
-                    <Content contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                        <View style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No member details found!</Text>
-                        </View>
-                    </Content>
-                }
-            </Container>
-        )
-    }
   };
-  
+  render() {
+    const {familyList, isLoading} = this.state;
+    return (
+      <Container>
+        {isLoading ? (
+          <Loader style="list" />
+        ) : familyList && familyList.length ? (
+          <Content style={{padding: 10}}>
+            <View style={{marginTop: 10}}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontFamily: 'opensans-bold',
+                  marginTop: 10,
+                }}>
+                {' '}
+                {familyList && familyList.length ? 'Family Information' : null}
+              </Text>
+              {familyList.map((item, index) => (
+                <RenderFamilyList
+                  item={item}
+                  index={index}
+                  isShowBeneficiaryInfoCard={
+                    this.state.isShowBeneficiaryInfoCard
+                  }
+                  navigation={this.props.navigation}
+                  onPressIsShowBeneficiaryInfo={(
+                    isShowBeneficiaryInfoCard,
+                    typeOfArrowIcon,
+                  ) =>
+                    this.setState({
+                      isShowBeneficiaryInfoCard:
+                        typeOfArrowIcon === 'DOWN'
+                          ? isShowBeneficiaryInfoCard
+                          : -1,
+                    })
+                  }
+                  onPressSelectBtnToGoNextProcess={(selectedMemObj) =>
+                    this.onPressSelectBtnToGoNextProcess(selectedMemObj)
+                  }
+                  // shouldUpdate={``}
+                ></RenderFamilyList>
+              ))}
+            </View>
+          </Content>
+        ) : (
+          <Content
+            contentContainerStyle={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+            }}>
+            <View
+              style={{
+                borderBottomWidth: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+              }}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                {' '}
+                No member details found!
+              </Text>
+            </View>
+          </Content>
+        )}
+      </Container>
+    );
+  }
+}
 
 const familyInfoListState = ({profile} = state) => ({profile});
 export default connect(familyInfoListState)(FamilyInfoList);

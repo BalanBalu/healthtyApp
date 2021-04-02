@@ -31,17 +31,25 @@ export default class ClaimInitiationSubmission extends Component {
       isLoading: false,
       amount: '',
     };
+    this.emailEditable = true;
+    this.mIdEditable = true;
     this.memberInfo = props.navigation.getParam('memberInfo');
   }
   async UNSAFE_componentWillMount() {
+
     await this.setState({
       policyNo: this.memberInfo && this.memberInfo.policyNo,
       name: this.memberInfo && this.memberInfo.full_name,
       email: this.memberInfo && this.memberInfo.emailId,
       memberId: this.memberInfo && this.memberInfo.memberId,
       employeeId: this.memberInfo && this.memberInfo.employeeId,
-
     });
+    if( this.memberInfo && this.memberInfo.emailId){
+      this.emailEditable = false;
+    }
+    if(this.memberInfo && this.memberInfo.memberId){
+      this.mIdEditable = false;
+    }
   }
 
   onPressConfirmDateValue = (date) => {
@@ -133,7 +141,7 @@ export default class ClaimInitiationSubmission extends Component {
         email:
           this.memberInfo && this.memberInfo.emailId
             ? this.memberInfo.emailId
-            : null,
+            : this.state.email,
         employeeName:
           this.memberInfo && this.memberInfo.full_name
             ? this.memberInfo.full_name
@@ -258,7 +266,7 @@ export default class ClaimInitiationSubmission extends Component {
                   returnKeyType={'next'}
                   value={email}
                   keyboardType={'default'}
-                  editable={email == undefined ? true : false}
+                  editable={this.emailEditable}
                   onChangeText={(mailId) => this.setState({email: mailId})}
                   blurOnSubmit={false}
                   onSubmitEditing={() => {
@@ -284,7 +292,7 @@ export default class ClaimInitiationSubmission extends Component {
                   returnKeyType={'next'}
                   value={memberId}
                   keyboardType={'number-pad'}
-                  editable={memberId == undefined ? true : false}
+                  editable={this.mIdEditable}
                   onChangeText={(enteredMemberIdText) =>
                     this.setState({memberId: enteredMemberIdText})
                   }
