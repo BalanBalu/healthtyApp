@@ -21,7 +21,6 @@ import {
   getMemberDetailsByPolicyNo,
   getFamilyMembersByPolicyNoeWithPagination,
 } from '../../providers/corporate/corporate.actions';
-import {Loader} from '../../../components/ContentLoader';
 
 const LIMIT = 10;
 
@@ -29,7 +28,6 @@ class FamilyInfoList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading:false,
       memberDetails: [],
       claimList: [],
       familyList: [],
