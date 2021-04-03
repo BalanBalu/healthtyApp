@@ -71,7 +71,7 @@ export default class MapBox extends Component {
         district: null,
         state: null,
         country: null,
-        pinCode: null,
+        pinCode: '',
       },
     };
     this.onRegionDidChange = this.onRegionDidChange.bind(this);
