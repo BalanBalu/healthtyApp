@@ -34,7 +34,7 @@ import {
 import styles from './style.js';
 import {formatDate, subTimeUnit} from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import {bloodGroupList, validateName,calculateAge} from '../../common';
+import {bloodGroupList, validateName, calculateAge} from '../../common';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {primaryColor} from '../../../setup/config';
 import ModalPopup from '../../../components/Shared/ModalPopup';
@@ -77,8 +77,6 @@ class UpdateUserDetails extends Component {
     const {navigation} = this.props;
     const userData = navigation.getParam('updatedata');
     const fromProfile = navigation.getParam('fromProfile') || false;
-    const id = navigation.getParam('updateEmpDetails') || null;
-
     if (fromProfile) {
       await this.setState({
         dob: userData.dob || null,
@@ -88,7 +86,6 @@ class UpdateUserDetails extends Component {
         gender: userData.gender,
         updateButton: true,
         selectedBloodGroup: userData.bloodGroup || null,
-        id,
         userData,
       });
     }
@@ -139,7 +136,7 @@ class UpdateUserDetails extends Component {
       dob,
       gender,
       selectedBloodGroup,
-      id
+      id,
     } = this.state;
     try {
       if (!firstName) {
@@ -182,6 +179,12 @@ class UpdateUserDetails extends Component {
 
       let response = await updateMemberDetails(requestData);
       if (response) {
+        let temp =
+          this.props &&
+          this.props.profile &&
+          this.props.profile.familyData.filter(
+            (ele) => ele.memberId === response.memberId,
+          );
         let fullName =
           (firstName ? firstName + ' ' : '') +
           (middleName ? middleName + ' ' : '') +
@@ -190,13 +193,13 @@ class UpdateUserDetails extends Component {
 
         let data = {
           familyMemberName: fullName,
+          // familyMemberLastName:lastName
           familyMemberGender: gender,
           familyMemberMonth: String(getAge.months),
           familyMemberAge: String(getAge.years),
           familyMemberDob: dob,
-          _id:id
+          _id: temp[0]._id || null,
         };
-        requestData._id = this.state.id;
         let updateRes = await updateFamilyMembersDetails(data);
         Toast.show({
           text: 'Your Profile has been Updated',
@@ -552,9 +555,10 @@ class UpdateUserDetails extends Component {
   }
 }
 
-function userDetailsState(state) {
+function userDetailsState(state, profile) {
   return {
     user: state.user,
+    profile: state.profile,
   };
 }
 export default connect(userDetailsState)(UpdateUserDetails);
