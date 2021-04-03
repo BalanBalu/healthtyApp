@@ -10,6 +10,7 @@ import {
   Content,
   Item,
 } from 'native-base';
+import { Loader } from '../../../components/ContentLoader';
 import {Col, Row} from 'react-native-easy-grid';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
@@ -20,7 +21,6 @@ import {
   getMemberDetailsByPolicyNo,
   getFamilyMembersByPolicyNoeWithPagination,
 } from '../../providers/corporate/corporate.actions';
-import {Loader} from '../../../components/ContentLoader';
 
 const LIMIT = 10;
 

@@ -71,7 +71,7 @@ export function storeBasicProfile(result) {
     profileImage: result.profileImage ,
     gender: result.gender,
     mobile_no: result.mobile_no,
-    email: result.email
+    email: result.emailId
   }))
 }
 
