@@ -643,3 +643,18 @@ export async function updateSmartNewPassword(data) {
   }
 }
 
+
+export async function getAllCorporateNames(inputCorporateText) {
+  try {
+    const  endPoint = 'member-detail/corporate-names?s='+inputCorporateText;
+    let response = await smartHealthGetService(endPoint);
+    return response.data;
+  } catch (e) {
+    return {
+      message: 'Ex getting' + e,
+      success: false
+    }
+  }
+}
+
+
