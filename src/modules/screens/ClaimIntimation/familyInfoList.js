@@ -112,7 +112,7 @@ class FamilyInfoList extends PureComponent {
     return (
       <Container>
         {isLoading ? (
-          <Loader style="list" />
+          <Loader style="familyList" />
         ) : familyList && familyList.length ? (
           <Content style={{padding: 10}}>
             <View style={{marginTop: 10}}>

@@ -102,7 +102,7 @@ class ClaimIntimationList extends PureComponent {
             </Card>
           </View>
           {isLoading ? (
-            <Loader style="list" />
+            <Loader style="newList" />
           ) : claimList.length ? (
             <FlatList
               data={claimList}

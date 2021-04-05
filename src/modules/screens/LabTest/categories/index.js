@@ -149,7 +149,7 @@ class LabCategories extends PureComponent {
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
         {isLoading ?
-        <Loader style="list" /> : labData.length ?
+        <Loader style="boxList" /> : labData.length ?
           <View style={{ marginBottom: 10 }}>
             <FlatList horizontal={false} numColumns={3}
               data={this.state.labData}

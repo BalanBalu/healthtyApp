@@ -152,7 +152,7 @@ export default class HomeHealthCareAddressChange extends Component {
     }
     render() {
         const { addressList, selectedAddressIndex, isVisibleDeletePop, isLoading } = this.state
-        if (isLoading) return <Loader style='list' />;
+        if (isLoading) return <Loader style='newList' />;
         return (
             <Container style={{ flex: 1 }}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
