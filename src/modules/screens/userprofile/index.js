@@ -142,10 +142,11 @@ class Profile extends Component {
 
   editAddress = async (item) => {
     try {
+      
       let addrressData;
-      if (item === null) {
-        this.editProfile('MapBox');
-      } else {
+      if (item === null||item.pinCode===null) {
+        this.editProfile('MapBox',{ id: this.state.data._id});
+      } else{
         let address = {
           address1: item.address1,
           address2: item.address2,

@@ -163,6 +163,13 @@ class UpdateUserDetails extends Component {
         });
         return false;
       }
+      if (selectedBloodGroup=='Select Blood Group') {
+        this.setState({
+          errorMsg: 'Please select blood group',
+          isModalVisible: true,
+        });
+        return false;
+      }
       this.setState({
         errorMsg: '',
         firstNameMsg: '',
