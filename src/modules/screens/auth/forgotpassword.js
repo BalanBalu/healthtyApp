@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { View, Container, Content, Button, Text, Form, Item, Input, Card, Footer, FooterTab, Toast, Icon, Label, Row, Col, Radio } from 'native-base';
-import { generateOTP, generateOTPForSmartHealth, changePassword, changePasswordForSmartHelath } from '../../providers/auth/auth.actions';
+import { generateOTP, generateOTPForSmartHealth, changePassword, changePasswordForSmartHelath, getAllCorporateNames } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
-import { StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native'
+import { FlatList, Image, ImageBackground, TabBarIOS, TouchableOpacity } from 'react-native'
 import styles from '../../screens/auth/styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { debounce, validateEmailAddress, acceptNumbersOnly } from '../../common';
 import Spinner from '../../../components/Spinner';
 import OTPTextInput from 'react-native-otp-textinput';
-import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE,primaryColor } from "../../../setup/config";
+import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE, primaryColor } from "../../../setup/config";
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
@@ -26,6 +26,8 @@ class Forgotpassword extends Component {
             isCorporateUserSelected: false,
             corporateName: '',
             employeeId: '',
+            corporateNameList: [],
+            isEnableCorporateItems: false
 
         }
         this.smartHealthOtpData = null
@@ -43,14 +45,14 @@ class Forgotpassword extends Component {
 
     /*  Generate OTP Code for Reset Password   */
     generateOtpCode = async (isResendOtp) => {
-        const { userEntry, employeeId,corporateName} = this.state;
+        const { userEntry, employeeId, corporateName } = this.state;
         try {
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
                 if (!userEntry) {
                     this.setState({ errorMessage: 'Enter your Email' });
                     return false;
                 }
-                if (validateEmailAddress(userEntry)===false) {
+                if (validateEmailAddress(userEntry) === false) {
                     this.setState({ errorMessage: 'You Entered Email is Not valid' });
                     return false;
                 }
@@ -62,12 +64,12 @@ class Forgotpassword extends Component {
                     this.setState({ errorMessage: "kindly enter your Corporate Name" });
                     return false
                 }
-            }else{
+            } else {
                 if (!userEntry) {
                     this.setState({ errorMessage: 'Enter your Email' });
                     return false;
                 }
-                if (validateEmailAddress(userEntry)===false) {
+                if (validateEmailAddress(userEntry) === false) {
                     this.setState({ errorMessage: 'You Entered Email is Not valid' });
                     return false;
                 }
@@ -107,7 +109,7 @@ class Forgotpassword extends Component {
                 if (reqOtpResponse.success == true)
                     await this.setState({ isOTPGenerated: true });
                 else
-                    this.setState({ errorMessage: reqOtpResponse.error&& reqOtpResponse.error.code? reqOtpResponse.error.code:reqOtpResponse.error});
+                    this.setState({ errorMessage: reqOtpResponse.error && reqOtpResponse.error.code ? reqOtpResponse.error.code : reqOtpResponse.error });
             }
         }
         catch (e) {
@@ -146,7 +148,7 @@ class Forgotpassword extends Component {
                 this.setState({ errorMessage: 'Passwords do not match' });
                 return false;
             }
-         
+
             await this.setState({ errorMessage: '', isLoading: true })
             let reqOtpVerifyResponse = {};
             if (CURRENT_APP_NAME === MY_SMART_HEALTH_CARE && this.state.isCorporateUserSelected) {
@@ -207,14 +209,44 @@ class Forgotpassword extends Component {
         // code to remove White Spaces from text field
         this.setState({ userEntry: value.replace(/\s/g, "") });
     }
+
+    onPressChangeCorporateName = async (value) => {
+        try {
+            this.setState({ corporateName: value });
+            if (value) {
+                const getCorporateResp = await getAllCorporateNames(value);
+                if (getCorporateResp && getCorporateResp.length) {
+                    this.setState({ corporateNameList: getCorporateResp, isEnableCorporateItems: true });
+                    return true;
+                }
+            }
+                    this.setState({ corporateNameList: [], isEnableCorporateItems: false });
+        } catch (error) {
+            console.log('Error is getting on Get All Corporate items', error.message);
+        }
+    }
+    itemSeparatedByListView = () => {
+        return (
+            <View
+                style={{
+                    padding: 4,
+                    borderBottomColor: 'gray',
+                    borderBottomWidth: 0.5
+                }}
+            />
+        );
+    };
+    onSelectCorporateName(value) {
+        this.setState({ corporateName: value, isEnableCorporateItems: false });
+    }
     renderEnterEmail() {
         const { user: { isLoading } } = this.props;
-        const { userEntry, isCorporateUserSelected } = this.state;
+        const { userEntry, isCorporateUserSelected, corporateNameList, isEnableCorporateItems } = this.state;
         return (
             <View>
                 {isCorporateUserSelected === false ?
                     <View>
-                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Email / Phone</Label>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Email / Phone</Label>
                         <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                             <Input placeholder="Email Or Phone" style={styles.transparentLabel2}
                                 value={userEntry}
@@ -228,7 +260,43 @@ class Forgotpassword extends Component {
 
 
                     <View>
-                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Email </Label>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: "opensans-bold " }}>Corporate Name</Label>
+                        <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                            <Input placeholder="Corporate Name" style={styles.transparentLabel2}
+                                // ref={(input) => { this.corporateName = input; }}
+                                value={this.state.corporateName}
+                                autoCapitalize={false}
+                                keyboardType={'email-address'}
+                                returnKeyType={'done'}
+                                onChangeText={corporateName => this.onPressChangeCorporateName(corporateName)}
+                                // onSubmitEditing={() => { this.state.corporateName !== '' ? this.generateOtpCode() : null }}
+                            />
+                        </Item>
+                            {isEnableCorporateItems && corporateNameList && corporateNameList.length ?
+                                                    <Card  style={{position: 'absolute',top:85,width:'100%'}}>
+                                <FlatList
+                                    data={corporateNameList}
+                                    ItemSeparatorComponent={this.itemSeparatedByListView}
+                                    renderItem={({ item, index }) => (
+                                        <TouchableOpacity style={{ marginTop: 5, marginBottom: 5 }} onPress={() => this.onSelectCorporateName(item)}>
+                                            <Text style={{
+                                                color: '#775DA3',
+                                                marginTop: 2,
+                                                fontFamily: 'OpenSans',
+                                                fontSize: 16,
+                                                paddingLeft: 14
+                                            }}>{item}</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                    enableEmptySections={true}
+                                    style={{ marginTop: 10 }}
+                                    keyExtractor={(item, index) => index.toString()}
+                                />
+                                                        </Card>
+
+                                : null}
+
+                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Email </Label>
 
                         <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                             <Input placeholder="Email" style={styles.transparentLabel2}
@@ -240,30 +308,19 @@ class Forgotpassword extends Component {
                                 onSubmitEditing={() => { this.employeeId._root.focus(); }}
                             />
                         </Item>
-                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Employee Id</Label>
+                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Employee Id</Label>
                         <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                             <Input placeholder="Employee Id" style={styles.transparentLabel2}
                                 value={this.state.employeeId}
                                 autoCapitalize={false}
                                 ref={(input) => { this.employeeId = input; }}
                                 keyboardType={'email-address'}
-                                returnKeyType={'next'}
-                                onChangeText={employeeId => this.setState({ employeeId: employeeId.replace(/\s/g, "") })}
-                                onSubmitEditing={() => { this.corporateName._root.focus(); }}
-                            />
-                        </Item>
-                        <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:"opensans-bold "}}>Corporate Name</Label>
-                        <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                            <Input placeholder="Corporate Name" style={styles.transparentLabel2}
-                                ref={(input) => { this.corporateName = input; }}
-                                value={this.state.corporateName}
-                                autoCapitalize={false}
-                                keyboardType={'email-address'}
                                 returnKeyType={'done'}
-                                onChangeText={corporateName => this.setState({ corporateName: corporateName })}
-                                onSubmitEditing={() => { this.state.corporateName !== '' ? this.generateOtpCode() : null }}
+                                onChangeText={employeeId => this.setState({ employeeId: employeeId.replace(/\s/g, "") })}
+                                // onSubmitEditing={() => { this.corporateName._root.focus(); }}
                             />
                         </Item>
+
                     </View>
 
                 }
@@ -272,7 +329,7 @@ class Forgotpassword extends Component {
                         <Col size={3}>
                             <Row style={{ alignItems: 'center' }}>
                                 <Radio
-                                   color={primaryColor}
+                                    color={primaryColor}
                                     standardStyle={true}
                                     selected={isCorporateUserSelected === false}
                                     onPress={() => this.setState({ isCorporateUserSelected: false })}
@@ -283,7 +340,7 @@ class Forgotpassword extends Component {
                         <Col size={3}>
                             <Row style={{ alignItems: 'center' }}>
                                 <Radio
-                                   color={primaryColor}
+                                    color={primaryColor}
                                     standardStyle={true}
                                     selected={isCorporateUserSelected === true}
                                     onPress={() => this.setState({ isCorporateUserSelected: true })}
@@ -313,11 +370,11 @@ class Forgotpassword extends Component {
             <View>
                 <Row>
                     <Col size={5}>
-                        <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>OTP</Text>
+                        <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>OTP</Text>
                     </Col>
                     <Col size={5}>
                         <TouchableOpacity onPress={() => this.generateOtpCode(true)} >
-                            <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold', alignSelf: 'flex-end' }}>RESEND</Text>
+                            <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold', alignSelf: 'flex-end' }}>RESEND</Text>
                         </TouchableOpacity>
                     </Col>
                 </Row>
@@ -332,12 +389,12 @@ class Forgotpassword extends Component {
                         }}
                         textInputStyle={{
                             width: 38,
-                            fontFamily:'opensans-bold'
+                            fontFamily: 'opensans-bold'
                         }}
                         handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
                     />
                 </Item>
-                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Password</Label>
+                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Password</Label>
 
                 <Item style={styles.authTransparentLabel}>
                     <Input placeholder="Enter new password" style={{ fontSize: 15 }}
@@ -350,7 +407,7 @@ class Forgotpassword extends Component {
                     />
                     {password.length >= 6 ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
                 </Item>
-                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily:'opensans-bold' }}>Conform Password</Label>
+                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Conform Password</Label>
 
                 <Item style={styles.authTransparentLabel}>
                     <Input placeholder="Retype new password" style={{ fontSize: 15 }}
