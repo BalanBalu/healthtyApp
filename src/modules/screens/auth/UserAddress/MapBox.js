@@ -71,8 +71,9 @@ export default class MapBox extends Component {
         district: null,
         state: null,
         country: null,
-        pinCode: null,
+        pinCode: '',
       },
+      updateId:this.props.navigation.getParam('id') || null
     };
     this.onRegionDidChange = this.onRegionDidChange.bind(this);
     this.onRegionIsChanging = this.onRegionIsChanging.bind(this);
@@ -104,18 +105,16 @@ export default class MapBox extends Component {
       let showAllAddressFields = navigation.getParam('mapEdit') || false;
       this.navigationOption = navigation.getParam('navigationOption') || null;
       let locationData = this.props.navigation.getParam('locationData');
-      let updateId = this.props.navigation.getParam('id') || null;
 
       if (fromProfile) {
         await this.setState({fromProfile: true});
         if (locationData) {
           this.setAndAutoFillAddressFields(locationData);
-          console.log("typeof",locationData.center)
           await this.setState({
             coordinates: locationData.center,
             fromProfile,
             showAllAddressFields,
-            updateId,
+            // updateId,
           });
         } else {
           this.getCurrentLocation();
