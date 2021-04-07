@@ -7,7 +7,7 @@ import {
   Row,
   Col
 } from 'native-base';
-import { TextInput, StyleSheet, SafeAreaView } from 'react-native';
+import { TextInput, StyleSheet, SafeAreaView,ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -1053,7 +1053,7 @@ class PreAuth extends React.PureComponent {
   }
 
   HospitalDetails = () => {
-    const { hospitalInfo, hospitalInfomation, networkHospList, selectedHospitalName } = this.state
+    const { hospitalInfo, hospitalInfomation, networkHospList, selectedHospitalName , isLoading } = this.state
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
@@ -1136,6 +1136,15 @@ class PreAuth extends React.PureComponent {
                         },
                       }}
                       IconRenderer={IconName}
+                      loading ={networkHospList.length === 0 ?true: false}
+                      loadingComponent={networkHospList.length === 0 ?<ActivityIndicator
+                      style={{marginTop: 300,
+                        justifyContent: "center"}}
+                      animating={true}
+                  size= "large" 
+                  color ={primaryColor}
+                  /> : null}
+                
                       readOnlyHeadings={false}
                       showCancelButton={true}
                       items={networkHospList}
@@ -1162,6 +1171,7 @@ class PreAuth extends React.PureComponent {
                       colors={{ primary: '#18c971' }}
                       showCancelButton={true}
                       animateDropDowns={true}
+                      
                       dropDownToggleIconDownComponent={
                         <MaterialIcons
                           name="keyboard-arrow-down"
