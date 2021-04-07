@@ -243,7 +243,7 @@ class PolicyStatus extends Component {
     return (
       <Container>
         {isLoading ? (
-          <Loader style="list" />
+          <Loader style="newList" />
         ) : claimsData && claimsData.length ? (
           <View style={{padding: 10}}>
             <FlatList

@@ -221,7 +221,7 @@ class NetworkHospitals extends Component {
         const { hospitalInfoList, isLoadingMoreHospitalList, enableSearchIcon, isLoading, isLoadingOnChangeHospitalList, selectedCityName, isFromMapBox } = this.state;
         const { bookappointment: { isLocationSelected, patientSearchLocationName, isSearchByCurrentLocation } } = this.props;
         const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'Showing Hospitals in Near Current Location' : 'Showing Hospitals in ' + patientSearchLocationName + ' City' : 'Please Choose your Location in Map';
-        if (isLoading) return <Loader style='list' />;
+        if (isLoading) return <Loader style='newList' />;
         return (
             <Container>
                 <View style={{ paddingBottom: 5, height: 45, marginHorizontal: 15, }}>

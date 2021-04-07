@@ -124,7 +124,7 @@ export default class preAuthList extends Component {
           </TouchableOpacity>
         </View>
         {isLoading ?
-          <Loader style='list' />
+          <Loader style='newList' />
           :
           preAuthInfoList.length ?
           <View style={{padding:10}}>

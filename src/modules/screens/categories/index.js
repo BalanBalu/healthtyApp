@@ -150,7 +150,7 @@ class Categories extends Component {
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
         {isLoading ?
-        <Loader style="list" />: data.length ?
+        <Loader style="boxList" />: data.length ?
           <View style={{ marginBottom: 10 }}>
             <FlatList horizontal={false} numColumns={3}
               data={this.state.data}
