@@ -217,11 +217,10 @@ class Forgotpassword extends Component {
                 const getCorporateResp = await getAllCorporateNames(value);
                 if (getCorporateResp && getCorporateResp.length) {
                     this.setState({ corporateNameList: getCorporateResp, isEnableCorporateItems: true });
+                    return true;
                 }
             }
-            else {
-                this.setState({ corporateNameList: [], isEnableCorporateItems: false });
-            }
+                    this.setState({ corporateNameList: [], isEnableCorporateItems: false });
         } catch (error) {
             console.log('Error is getting on Get All Corporate items', error.message);
         }
@@ -264,17 +263,17 @@ class Forgotpassword extends Component {
                         <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: "opensans-bold " }}>Corporate Name</Label>
                         <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                             <Input placeholder="Corporate Name" style={styles.transparentLabel2}
-                                ref={(input) => { this.corporateName = input; }}
+                                // ref={(input) => { this.corporateName = input; }}
                                 value={this.state.corporateName}
                                 autoCapitalize={false}
                                 keyboardType={'email-address'}
                                 returnKeyType={'done'}
                                 onChangeText={corporateName => this.onPressChangeCorporateName(corporateName)}
-                                onSubmitEditing={() => { this.state.corporateName !== '' ? this.generateOtpCode() : null }}
+                                // onSubmitEditing={() => { this.state.corporateName !== '' ? this.generateOtpCode() : null }}
                             />
                         </Item>
-                        <View>
                             {isEnableCorporateItems && corporateNameList && corporateNameList.length ?
+                                                    <Card  style={{position: 'absolute',top:85,width:'100%'}}>
                                 <FlatList
                                     data={corporateNameList}
                                     ItemSeparatorComponent={this.itemSeparatedByListView}
@@ -284,7 +283,7 @@ class Forgotpassword extends Component {
                                                 color: '#775DA3',
                                                 marginTop: 2,
                                                 fontFamily: 'OpenSans',
-                                                fontSize: 15,
+                                                fontSize: 16,
                                                 paddingLeft: 14
                                             }}>{item}</Text>
                                         </TouchableOpacity>
@@ -293,8 +292,9 @@ class Forgotpassword extends Component {
                                     style={{ marginTop: 10 }}
                                     keyExtractor={(item, index) => index.toString()}
                                 />
+                                                        </Card>
+
                                 : null}
-                        </View>
 
                         <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Email </Label>
 
@@ -315,9 +315,9 @@ class Forgotpassword extends Component {
                                 autoCapitalize={false}
                                 ref={(input) => { this.employeeId = input; }}
                                 keyboardType={'email-address'}
-                                returnKeyType={'next'}
+                                returnKeyType={'done'}
                                 onChangeText={employeeId => this.setState({ employeeId: employeeId.replace(/\s/g, "") })}
-                                onSubmitEditing={() => { this.corporateName._root.focus(); }}
+                                // onSubmitEditing={() => { this.corporateName._root.focus(); }}
                             />
                         </Item>
 
