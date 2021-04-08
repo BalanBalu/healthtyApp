@@ -20,8 +20,8 @@ import {
   View,
   Row,
 } from 'native-base';
-import {updateMemberDetails} from '../../providers/auth/auth.actions';
-import {ScrollView} from 'react-native';
+import {updateMemberDetails,logout} from '../../providers/auth/auth.actions';
+import {ScrollView,Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {connect} from 'react-redux';
@@ -79,9 +79,9 @@ class UpdateEmail extends Component {
           type: 'success',
           duration: 3000,
         });
-        await AsyncStorage.setItem('memberEmailId', this.state.emailId);
-        this.props.navigation.navigate('Profile');
-      } else {
+        logout();
+        this.props.navigation.navigate('login');
+        } else {
         Toast.show({
           text: response.message,
           type: 'danger',
@@ -95,10 +95,26 @@ class UpdateEmail extends Component {
     }
   };
   verifyEmail() {
-    this.props.navigation.navigate('renderOtpInput', {
-      loginData: loginData,
-      fromProfile: true,
-    });
+    Alert.alert(
+      "Update Mail",
+      "Activation link for your new email has been sent. Please click on the link and change your password",
+      [
+          {
+              text: "Cancel",
+              onPress: () => {
+                  console.log("Cancel Pressed");
+              },
+              style: "cancel"
+          },
+          {
+              text: "Update", onPress: () => {
+                      this.handleEmailUpdate()
+              }
+
+          }
+      ],
+      { cancelable: false }
+  );
   }
   memberEmailValidation = async () => {
     let memberId = (await AsyncStorage.getItem('memberId')) || null;
@@ -112,7 +128,7 @@ class UpdateEmail extends Component {
       });
       return false;
     } else {
-      this.handleEmailUpdate();
+      this.verifyEmail();
       this.setState({memberId: this.state.memberId, updateButton: false});
     }
   };

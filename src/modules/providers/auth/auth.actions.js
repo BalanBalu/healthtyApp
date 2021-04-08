@@ -512,8 +512,15 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
 
 
     let response = await smartHealthPostService(endPoint, req);
+    if (response && response.data && response.data.isValdationRequired) {
+      store.dispatch({
+        type: LOGIN_HAS_ERROR,
+        message: "Activation link for your new email."
+      })
+      return 
+    }
     if (response && response.data && response.data.access_token) {
-      await AsyncStorage.setItem('smartToken', response.data.access_token)
+       await AsyncStorage.setItem('smartToken', response.data.access_token)
       let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
 
       let res = await smartHealthGetService(ends);
