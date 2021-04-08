@@ -515,7 +515,7 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
     if (response && response.data && response.data.isValdationRequired) {
       store.dispatch({
         type: LOGIN_HAS_ERROR,
-        message: "Activation link for your new email."
+        message: "Activation link for your new email. Please check on your mail and change your password"
       })
       return 
     }
