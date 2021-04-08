@@ -9,6 +9,9 @@ import RenderPreAuthList from './RenderPreAuthList';
 import { Loader } from '../../../../components/ContentLoader';
 import {primaryColor} from '../../../../setup/config'
 import {translate} from '../../../../setup/translator.helper'
+import {
+  PreAuthDrawing
+} from '../../../../modules/screens/Home/corporateHome/svgDrawings';
 
 
 const PAGINATION_COUNT_FOR_GET_PRE_AUTH_LIST = 10;
@@ -140,9 +143,17 @@ export default class preAuthList extends Component {
               renderItem={({ item, index }) => this.renderPreAuthInformationCard(item, index)
               } />
               </View>
-            : <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} >{translate("No Pre Auth list found!")}</Text>
-            </Item>
+            : <View style={{ borderBottomWidth: 0, flex:1, justifyContent: 'center', alignItems: 'center' }}>
+              <PreAuthDrawing/>
+              <View style={{borderTopWidth:3,width:55,transform:[{rotate: '120 deg'}],position: 'absolute',borderTopColor: primaryColor,top:326}}/>
+
+              <Text style={{fontFamily: "Roboto",
+                fontSize: 15,
+                marginTop: "10%",
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center', }} >{translate("No Pre Auth list found!")}</Text>
+            </View>
         }
         {isLoadingMoreHospitalList ?
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
