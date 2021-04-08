@@ -8,6 +8,7 @@ import {
   Right,
   Content,
   Toast,
+  Thumbnail,
 } from 'native-base';
 import {Col, Row, Grid} from 'react-native-easy-grid';
 import {
@@ -35,7 +36,8 @@ import {
 import {translate} from '../../../setup/translator.helper';
 import RenderClaimStatus from './renderClaimStatus';
 import { Loader } from '../../../components/ContentLoader';
-
+import noAppointmentImage from "../../../../assets/images/noappointment.png";
+import {ClaimStatusDrawing} from '../../../modules/screens/Home/corporateHome/svgDrawings';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const LIMIT = 10;
 
@@ -266,23 +268,27 @@ class PolicyStatus extends Component {
             />
           </View>
         ) : (
-          <Item
-            style={{
-              borderBottomWidth: 0,
-              marginTop: 100,
-              justifyContent: 'center',
-              alignItems: 'center',
+          <View
+           style={{
+            alignItems: "center",
+            justifyContent: "center",
+            flex:1
             }}>
-            <Text
+              <ClaimStatusDrawing/>
+              <View style={{borderTopWidth:3,width:55,transform:[{rotate: '120 deg'}],position: 'absolute',borderTopColor: primaryColor,top:344}}/>
+
+           <Text
               style={{
-                fontSize: 20,
+                fontFamily: "Roboto",
+                fontSize: 15,
+                marginTop: "10%",
                 justifyContent: 'center',
                 alignItems: 'center',
                 textAlign: 'center',
               }}>
               {translate('No claim list found!')}
             </Text>
-          </Item>
+          </View>
         )}
 
         {isLoadingMoreData ? (

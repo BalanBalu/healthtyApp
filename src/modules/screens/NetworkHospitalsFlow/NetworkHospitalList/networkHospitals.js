@@ -11,7 +11,7 @@ import Styles from '../styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { NavigationEvents } from 'react-navigation';
 import { primaryColor } from '../../../../setup/config'
-
+import {HospitalDrawing} from '../../Home/corporateHome/svgDrawings';
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
@@ -306,9 +306,14 @@ class NetworkHospitals extends Component {
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) => this.renderHospitalInformationCard(item, index)
                             } />
-                        : <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No Hospitals list found!</Text>
-                        </Item>
+                        : <View style={{ borderBottomWidth: 0, flex:1, justifyContent: 'center', alignItems: 'center' }}>
+                            <HospitalDrawing/>
+                            <Text style={{ fontFamily: "Roboto",
+                                        fontSize: 15,
+                                        marginTop: "10%" }} > No Hospitals list found!</Text>
+              <View style={{borderTopWidth:3,width:55,transform:[{rotate: '120 deg'}],position: 'absolute',borderTopColor: primaryColor,top:297}}/>
+
+                        </View>
                 }
                 {isLoadingMoreHospitalList ?
                     <View style={{ flex: 1, justifyContent: 'flex-end' }}>
