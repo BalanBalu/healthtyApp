@@ -52,7 +52,11 @@ import {Loader} from '../../../components/ContentLoader';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadImage} from '../../providers/common/common.action';
-import {renderDoctorImage, renderProfileImage,getMemberName} from '../../common';
+import {
+  renderDoctorImage,
+  renderProfileImage,
+  getMemberName,
+} from '../../common';
 // import EcardDetails from '../userprofile/EcardDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -81,6 +85,7 @@ class Profile extends Component {
     };
   }
   async componentDidMount() {
+    console.log('componentDidMount');
     const isLoggedIn = await hasLoggedIn(this.props);
     if (!isLoggedIn) {
       this.props.navigation.navigate('login');
@@ -101,7 +106,6 @@ class Profile extends Component {
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
         await this.setState({data: result[0]});
-       
       }
     } catch (ex) {
       console.log(ex);
@@ -110,7 +114,12 @@ class Profile extends Component {
   getFamilyDetails = async () => {
     try {
       this.setState({isLoading: true});
-        await this.setState({family_members: this.props.profile.familyData || []});
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let employeeCode = await AsyncStorage.getItem('employeeCode');
+      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
+      if (result) {
+        this.setState({family_members: result});
+      }
     } catch (e) {
       console.log(e);
     } finally {
@@ -136,16 +145,16 @@ class Profile extends Component {
       fromProfile: true,
       updatedata: this.state.data || '',
       id: this.state.data._id,
-      updateEmpDetails:this.state.id
     });
   }
 
   editAddress = async (item) => {
     try {
+      
       let addrressData;
-      if (item === null) {
-        this.editProfile('MapBox');
-      } else {
+      if (item === null||item.pinCode===null) {
+        this.editProfile('MapBox',{ id: this.state.data._id});
+      } else{
         let address = {
           address1: item.address1,
           address2: item.address2,
@@ -259,7 +268,7 @@ class Profile extends Component {
         });
     } else {
       ImagePicker.openPicker({
-        multiple:false,
+        multiple: false,
         width: 300,
         height: 400,
         // cropping: true,
@@ -342,7 +351,7 @@ class Profile extends Component {
     try {
       if (value.familyMemberAge == 0 && value.familyMemberMonth <= 1)
         return value.familyMemberMonth + ' Month';
-      else if (value.familyMemberAge == 0 &&value.familyMemberMonth > 1)
+      else if (value.familyMemberAge == 0 && value.familyMemberMonth > 1)
         return value.familyMemberMonth + ' Months';
       else if (value.familyMemberAge > 1)
         return value.familyMemberAge + ` Years `;
@@ -351,6 +360,7 @@ class Profile extends Component {
       console.error('Error on Date Picker: ', error);
     }
   };
+
   render() {
     const {
       profile: {isLoading},
@@ -360,7 +370,8 @@ class Profile extends Component {
       <Container style={styles.container}>
         <NavigationEvents
           onWillFocus={(payload) => {
-            this.getMemberDetailsByEmail(payload), this.getFamilyDetails();
+            this.getMemberDetailsByEmail(payload),
+              this.getFamilyDetails(payload);
           }}
         />
 
@@ -425,10 +436,10 @@ class Profile extends Component {
                         onPress={() => this.editProfile('UpdateUserDetails')}>
                         {data.firstName ? data.firstName + ' ' : ''}
                         <Text style={styles.nameStyle}>
-                          {data.middleName ? data.middleName : ''}
-                        <Text style={styles.nameStyle}>
-                          {data.lastName ? data.lastName : ''}
-                        </Text>
+                          {data.middleName ? data.middleName + ' ' : ''}
+                          <Text style={styles.nameStyle}>
+                            {data.lastName ? data.lastName : ''}
+                          </Text>
                         </Text>
                       </Text>
 
@@ -621,48 +632,52 @@ class Profile extends Component {
                               </Col>
                               <Col size={6}>
                                 <Text note style={styles.customText1}>
-                                {getMemberName(item)}
+                                  {getMemberName(item)}
                                 </Text>
                               </Col>
                             </Row>
                           </Col>
-                          {item.relationship!='EMPLOYEE'&&item.relationship!='SELF'?
-                          <Col size={1}>
-                            <TouchableOpacity
-                              onPress={() =>
-                                this.props.navigation.navigate(
-                                  'UpdateFamilyMembers',
-                                  {
-                                    updatedata: item,
-                                    fromProfile: true,
-                                    data: family_members,
-                                  },
-                                )
-                              }>
-                              <MaterialIcons
-                                active
-                                name="create"
-                                style={{
-                                  color: 'black',
-                                  fontSize: 15,
-                                  marginRight: 5,
-                                }}
-                              />
-                            </TouchableOpacity>
-                          </Col>:null}
-                          {item.relationship!='EMPLOYEE'&&item.relationship!='SELF'?
-                          <Col size={0.5}>
-                            <TouchableOpacity
-                              onPress={() =>
-                                this.deleteSelectedDocs(item._id, index)
-                              }>
-                              <Icon
-                                active
-                                name="ios-trash"
-                                style={{color: '#d00729', fontSize: 15}}
-                              />
-                            </TouchableOpacity>
-                          </Col>:null}
+                          {item.relationship != 'EMPLOYEE' &&
+                          item.relationship != 'SELF' ? (
+                            <Col size={1}>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  this.props.navigation.navigate(
+                                    'UpdateFamilyMembers',
+                                    {
+                                      updatedata: item,
+                                      fromProfile: true,
+                                      data: family_members,
+                                    },
+                                  )
+                                }>
+                                <MaterialIcons
+                                  active
+                                  name="create"
+                                  style={{
+                                    color: 'black',
+                                    fontSize: 15,
+                                    marginRight: 5,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                            </Col>
+                          ) : null}
+                          {item.relationship != 'EMPLOYEE' &&
+                          item.relationship != 'SELF' ? (
+                            <Col size={0.5}>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  this.deleteSelectedDocs(item._id, index)
+                                }>
+                                <Icon
+                                  active
+                                  name="ios-trash"
+                                  style={{color: '#d00729', fontSize: 15}}
+                                />
+                              </TouchableOpacity>
+                            </Col>
+                          ) : null}
                         </Row>
                         <Row>
                           <Col size={10}>
@@ -722,7 +737,7 @@ class Profile extends Component {
                               <Col size={6}>
                                 <Text note style={styles.customText1}>
                                   {item.familyMemberGender
-                                    ? item.familyMemberGender 
+                                    ? item.familyMemberGender
                                     : 'N/A'}
                                 </Text>
                               </Col>
@@ -782,23 +797,27 @@ class Profile extends Component {
                       </View>
                     )}
                   />
-                  {family_members.length<11?
-                  <Button
-                    transparent
-                    style={{justifyContent: 'flex-start', marginLeft: -15}}>
-                    <Icon name="add" style={{color: 'gray'}} />
-                    <Text
-                      uppercase={false}
-                      style={styles.customText2}
-                      onPress={() =>
-                        this.props.navigation.navigate('UpdateFamilyMembers', {
-                          data: family_members,
-                        })
-                      }
-                      testID="onPressAddFamilyMembers">
-                      Add your family details
-                    </Text>
-                  </Button>:null}
+                  {family_members.length < 11 ? (
+                    <Button
+                      transparent
+                      style={{justifyContent: 'flex-start', marginLeft: -15}}>
+                      <Icon name="add" style={{color: 'gray'}} />
+                      <Text
+                        uppercase={false}
+                        style={styles.customText2}
+                        onPress={() =>
+                          this.props.navigation.navigate(
+                            'UpdateFamilyMembers',
+                            {
+                              data: family_members,
+                            },
+                          )
+                        }
+                        testID="onPressAddFamilyMembers">
+                        Add your family details
+                      </Text>
+                    </Button>
+                  ) : null}
                 </Body>
               </ListItem>
 
