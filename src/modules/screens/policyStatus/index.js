@@ -36,7 +36,6 @@ import {
 import {translate} from '../../../setup/translator.helper';
 import RenderClaimStatus from './renderClaimStatus';
 import { Loader } from '../../../components/ContentLoader';
-import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import {ClaimStatusDrawing} from '../../../modules/screens/Home/corporateHome/svgDrawings';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const LIMIT = 10;
