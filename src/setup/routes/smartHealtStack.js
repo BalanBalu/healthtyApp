@@ -238,7 +238,7 @@ export const smartHealthStack=createStackNavigator({
   Categories: {
     screen: Categories,
     navigationOptions: ({ navigation }) => ({
-      title: 'Specialists',
+      title: 'Specialty',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     })
@@ -840,7 +840,7 @@ export const smartHealthStack=createStackNavigator({
   'My Home Healthcare Appointments': {
     screen: HomeHealthcareAppointmentList,
     navigationOptions: {
-      title: 'My Home Healthcare Appointments',
+      title: 'My Home Care Appointments',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }
@@ -872,7 +872,7 @@ export const smartHealthStack=createStackNavigator({
   "Home Healthcare Address List": {
     screen: HomeHealthcareAddressList,
     navigationOptions: {
-      title: 'Home Healthcare Address List',
+      title: 'Home Care Address List',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }
