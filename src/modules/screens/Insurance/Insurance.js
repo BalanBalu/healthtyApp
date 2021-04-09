@@ -9,6 +9,7 @@ import {
   Content,
   Item,
   Left,
+  Right,
 } from 'native-base';
 import {
   FlatList,
@@ -90,11 +91,15 @@ class Insurance extends Component {
       fullName,
       this.state.selectedInsurance,
     );
-    Alert.alert('Thanks', 'Mail send successfully', [
-      {
-        text: 'OK',
-      },
-    ]);
+    Alert.alert(
+      'Thanks',
+      'Mail sent successfully, Team will contact you soon',
+      [
+        {
+          text: 'OK',
+        },
+      ],
+    );
   };
 
   loadMoreData = async () => {
@@ -157,19 +162,34 @@ class Insurance extends Component {
         />
         {/* <Content style={{padding: 10}}> */}
         <View style={styles.mainView}>
-          <TouchableOpacity
-            style={styles.addInsuranceButton}
-            onPress={() => this.props.navigation.navigate('AddInsurance')}>
-            <Icon
-              name="add-circle-outline"
-              style={{fontSize: 20, color: '#128283'}}
-            />
-            <Text style={styles.addInsuranceText}>Add Insurance</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row'}}>
+         <View style={{width:'50%'}}>
+            <TouchableOpacity
+              style={[styles.addInsuranceButton,{width:'80%',marginLeft:25,}]}
+              onPress={() => this.props.navigation.navigate('AddInsurance')}>
+              <Icon
+                name="add-circle-outline"
+                style={{fontSize: 20, color: '#128283'}}
+              />
+              <Text style={styles.addInsuranceText}>Add Insurance</Text>
+            </TouchableOpacity>
+            </View>
+            <View style={{width:'50%',justifyContent:'flex-end',alignItems:'flex-end'}}>
+            <TouchableOpacity
+              style={[styles.addInsuranceButton,{width:'80%',marginRight:30}]}
+              onPress={() => this.props.navigation.navigate('BuyInsurance')}>
+              <Icon
+                name="add-circle-outline"
+                style={{fontSize: 20, color: '#128283'}}
+              />
+              <Text style={styles.addInsuranceText}>Buy Insurance</Text>
+            </TouchableOpacity>
+            </View >
+          </View>
           {isLoading ? (
             <Loader style="list" />
           ) : data.length ? (
-            <View style={{padding:10,marginBottom:35}}>
+            <View style={{padding: 10, marginBottom: 35}}>
               <FlatList
                 data={data}
                 keyExtractor={(item, index) => index.toString()}
