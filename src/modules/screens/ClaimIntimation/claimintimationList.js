@@ -10,6 +10,7 @@ import {log} from 'react-native-reanimated';
 import {primaryColor} from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
 import {translate} from '../../../setup/translator.helper'
+import {ClaimInitiationDrawing} from '../../screens/Home/corporateHome/svgDrawings';
 
 const LIMIT = 10;
 
@@ -103,7 +104,7 @@ class ClaimIntimationList extends PureComponent {
           </View>
           {isLoading ? (
             <Loader style="newList" />
-          ) : claimList.length ? (
+          ) : claimList.length  ? (
             <FlatList
               data={claimList}
               keyExtractor={(item, index) => index.toString()}
@@ -315,23 +316,25 @@ class ClaimIntimationList extends PureComponent {
               )}
             />
           ) : (
-            <Item
+            <View
               style={{
-                borderBottomWidth: 0,
-                marginTop: 100,
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop:250
+              }}>
+                <ClaimInitiationDrawing/>
+              <Text
+                style={{fontFamily: "Roboto",
+                fontSize: 15,
+                marginTop: "10%",
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                textAlign: 'center',
                 }}>
-                {' '}
                 No claim intimation list found!
               </Text>
-            </Item>
+              <View style={{borderTopWidth:3,width:55,transform:[{rotate: '120 deg'}],position: 'absolute',borderTopColor: primaryColor,bottom:85}}/>
+            </View>
           )}
         </Content>
       </Container>

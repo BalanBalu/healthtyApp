@@ -7,7 +7,7 @@ import {
   Row,
   Col
 } from 'native-base';
-import { TextInput, StyleSheet, SafeAreaView } from 'react-native';
+import { TextInput, StyleSheet, SafeAreaView,ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -98,21 +98,22 @@ class PreAuth extends React.PureComponent {
       hospitalLocationTextErrorMsg: null,
       hospitalIdTextErrorMsg: null,
       rohiniIdTextErrorMsg: null,
-      hospitalEmailTextErrorMsg: null
+      hospitalEmailTextErrorMsg: null,
+      isLoadingNetworkHosp:false,
     };
 
     this.preAuthInfoObj = props.navigation.getParam('preAuthInfo') || null
     this.onDOBChange = this.onDOBChange.bind(this);
   }
   async componentDidMount() {
+    try {
     let preAuthInfo = this.props.navigation.getParam('preAuthInfo')
     let currentForm = this.props.navigation.getParam('currentForm') || 1
     let uploadDocs = this.props.navigation.getParam('uploadDocs') || 1;
-
-
     /* Get Network Hospital list by Member TPA Code   */
     const tpaCode = preAuthInfo && preAuthInfo.tpaInfo && preAuthInfo.tpaInfo.tpaCode;
     if (tpaCode) {
+      this.setState({isLoadingNetworkHosp:true})
       const reqData4GetNetworkWithoutLoc = { tpaCode };
       const getHospitalList = await serviceOfSearchByNetworkHospitalDetails(reqData4GetNetworkWithoutLoc);
       if (getHospitalList && getHospitalList.length) {
@@ -169,6 +170,13 @@ class PreAuth extends React.PureComponent {
       dob: memberInformation.dob || new Date()
     }
     await this.setState({ networkHospList: networkHospList || [], hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
+  
+} catch (error) {
+      console.log('error is getting on Pre Auth submission componentDidMount', error.message)
+}
+finally {
+  this.setState({isLoadingNetworkHosp: false})
+}
   }
   getMemberName(item) {
     let name = ''
@@ -1053,7 +1061,7 @@ class PreAuth extends React.PureComponent {
   }
 
   HospitalDetails = () => {
-    const { hospitalInfo, hospitalInfomation, networkHospList, selectedHospitalName } = this.state
+    const { hospitalInfo, hospitalInfomation, networkHospList, selectedHospitalName ,isLoadingNetworkHosp, isLoading } = this.state
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
@@ -1136,6 +1144,15 @@ class PreAuth extends React.PureComponent {
                         },
                       }}
                       IconRenderer={IconName}
+                      loading ={isLoadingNetworkHosp}
+                      loadingComponent={isLoadingNetworkHosp?<ActivityIndicator
+                      style={{marginTop: 300,
+                        justifyContent: "center"}}
+                      animating={isLoadingNetworkHosp}
+                  size= "large" 
+                  color ={primaryColor}
+                  /> : null}
+                
                       readOnlyHeadings={false}
                       showCancelButton={true}
                       items={networkHospList}
@@ -1162,6 +1179,7 @@ class PreAuth extends React.PureComponent {
                       colors={{ primary: '#18c971' }}
                       showCancelButton={true}
                       animateDropDowns={true}
+                      
                       dropDownToggleIconDownComponent={
                         <MaterialIcons
                           name="keyboard-arrow-down"
