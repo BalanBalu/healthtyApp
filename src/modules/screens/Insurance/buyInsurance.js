@@ -43,10 +43,10 @@ import ModalPopup from '../../../components/Shared/ModalPopup';
 
 const PolicyTypeList = [
   'Choose Policy Type',
-  'Health',
-  'Motor',
-  'Personal accident',
-  'Term life',
+  'Health Insurance',
+  'Motor Insurance',
+  'Personal Accident Insurance',
+  'Life Insurance',
 ];
 
 class BuyInsurance extends PureComponent {
