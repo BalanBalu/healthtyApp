@@ -508,23 +508,24 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
       userId: userCredentials.userEntry,
       password: userCredentials.password
     }
-
-
-
     let response = await smartHealthPostService(endPoint, req);
-    if (response && response.data && response.data.isValdationRequired) {
-      store.dispatch({
-        type: LOGIN_HAS_ERROR,
-        message: "Activation link for your new email. Please check on your mail and change your password"
-      })
-      return 
+    let changePasswordEndPoint = 'member-users/member-id?id=' + userCredentials.userEntry
+    let forgotResult = await smartHealthGetService(changePasswordEndPoint)
+    if (forgotResult && forgotResult.data && forgotResult.data.isValdationRequired) {
+     store.dispatch({
+       type: LOGIN_HAS_ERROR,
+       message: "Activation link for your new email. Please check on your mail and change your password"
+     })
+     return   
+        }
+    if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
+      await AsyncStorage.setItem('forceToChangePassword', 'true')
     }
     if (response && response.data && response.data.access_token) {
-       await AsyncStorage.setItem('smartToken', response.data.access_token)
-      let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
+     await AsyncStorage.setItem('smartToken', response.data.access_token)
+     let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
 
       let res = await smartHealthGetService(ends);
-
       if (res && res.data && res.data[0]) {
         let reqData = res.data[0]
         if (reqData.relationship) {
@@ -584,14 +585,7 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
           await AsyncStorage.setItem('memberPolicyNo', reqData.policyNo)
           await AsyncStorage.setItem('employeeCode', reqData.employeeId)
 
-          changePasswordEndPoint = 'member-users/member-id?id=' + reqData.emailId
-
-          let forgotResult = await smartHealthGetService(changePasswordEndPoint)
-
-          if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
-
-            await AsyncStorage.setItem('forceToChangePassword', 'true')
-          }
+        
           const token = signUpResult.data.token;
           signUpResult.data.data.is_corporate_user = true;
           await setUserLocally(token, signUpResult.data.data);
