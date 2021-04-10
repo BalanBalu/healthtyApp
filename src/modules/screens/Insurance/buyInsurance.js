@@ -40,6 +40,7 @@ import {uploadImage} from '../../providers/common/common.action';
 import styles from './styles';
 import IconName from 'react-native-vector-icons/MaterialIcons';
 import ModalPopup from '../../../components/Shared/ModalPopup';
+import InsuranceRenewalPopup from '../../shared/insuranceRenewalPopup';
 
 const PolicyTypeList = [
   'Choose Policy Type',
@@ -47,6 +48,29 @@ const PolicyTypeList = [
   'Motor Insurance',
   'Personal Accident Insurance',
   'Life Insurance',
+];
+const HealthInsurance = [
+  'Choose Health Insurance',
+  'Family floater insurance',
+  'Senior citizen insurance',
+  'Topup insurance',
+  'Covid-19 insurance',
+];
+const MotorInsurance = [
+  'Choose Motor Insurance',
+  'Bike insurance',
+  'car insurance',
+  'commercial vehicle insurance',
+];
+const PersonalAccidentInsurance = [
+  'Choose Personal Accident Insurance',
+  'Accidental death',
+  'accidental death & disability',
+];
+const LifeInsurance = [
+  'Choose Life Insurance',
+  'Term insurance',
+  'endowment policies',
 ];
 
 class BuyInsurance extends PureComponent {
@@ -57,7 +81,10 @@ class BuyInsurance extends PureComponent {
       policyName: null,
       policyType: '',
       policyNo: null,
-      tpaName: '',
+      healthInsuranceType: '',
+      motorInsuranceType: '',
+      personalAccidentInsuranceType:'',
+      lifeInsuranceType:'',
       motorType: '',
       premiumAmount: 0,
       renewal: true,
@@ -67,6 +94,8 @@ class BuyInsurance extends PureComponent {
       uploadData: [],
       isModalVisible: false,
       errorMsg: '',
+      descriptionVisible: false,
+
     };
     this.initialTpaList = [];
     this.insuranceCompanyList = [];
@@ -284,13 +313,19 @@ class BuyInsurance extends PureComponent {
       this.setState({isLoadingUploadDocs: false});
     }
   };
+  popUpClose() {
+    this.setState({descriptionVisible: false});
+  }
 
   render() {
     const {
       insuranceCompany,
       policyName,
       policyType,
-      tpaName,
+      healthInsuranceType,
+      motorInsuranceType,
+      lifeInsuranceType,
+      personalAccidentInsuranceType,
       motorType,
       policyNo,
       startDate,
@@ -309,9 +344,6 @@ class BuyInsurance extends PureComponent {
           <View>
             <ScrollView style={{padding: 20, marginBottom: 20}}>
               <Form>
-                
-
-               
                 <Text style={styles.subHeadingText}>Select Policy Type</Text>
 
                 <View style={styles.formStyle6}>
@@ -337,7 +369,7 @@ class BuyInsurance extends PureComponent {
                       this.setState({policyType: sample});
                     }}
                     selectedValue={policyType}
-                    testID="editBloodGroup">
+                    testID="editPolicyTypeList">
                     {PolicyTypeList.map((value, key) => {
                       return (
                         <Picker.Item
@@ -349,169 +381,182 @@ class BuyInsurance extends PureComponent {
                     })}
                   </Picker>
                 </View>
-                {policyType === 'Health' ? (
+                {policyType === 'Health Insurance' ? (
                   <View>
-                    <Text style={styles.subHeadingText}>Select TPA/Payer </Text>
-
-                    <TouchableOpacity>
-                      <Col
-                        size={10}
-                        style={{
-                          borderRadius: 6,
-                          borderColor: '#E0E1E4',
-                          borderWidth: 2,
-                          justifyContent: 'center',
-                          height: 40,
-                          paddingTop: 10,
-                          fontFamily: 'Helvetica-Light',
-                          marginTop: 5,
-                        }}>
-                        <SectionedMultiSelect
-                          IconRenderer={IconName}
-                          styles={{
-                            selectToggleText:
-                              Platform.OS === 'ios'
-                                ? {
-                                    color: '#000',
-                                    fontSize: 16,
-                                    height: 20,
-                                    fontFamily: 'Helvetica-Light',
-                                  }
-                                : {
-                                    color: '#909090',
-                                    fontSize: 16,
-                                    fontFamily: 'Helvetica-Light',
-                                  },
-                            chipIcon: {
-                              color: '#000',
-                            },
-                            itemText: {
-                              fontSize: 16,
-                              marginLeft: 5,
-                              marginBottom: 5,
-                              marginTop: 8,
-                              borderRadius: 5,
-                              fontFamily: 'Helvetica-Light',
-                            },
-                            button: {
-                              backgroundColor: '#128283',
-                              fontFamily: 'Helvetica-Light',
-                            },
-                            cancelButton: {
-                              backgroundColor: '#000',
-                              fontFamily: 'Helvetica-Light',
-                            },
-                          }}
-                          selectedIconComponent={
-                            <View
-                              style={{
-                                height: 24,
-                                width: 24,
-                                borderWidth: 1,
-                                borderColor: 'gray',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: 5,
-                              }}>
-                              <MaterialIcons
-                                name="check"
-                                style={{
-                                  fontSize: 20,
-                                  marginHorizontal: 3,
-                                  color: 'green',
-                                  textAlign: 'center',
-                                }}
-                              />
-                            </View>
-                          }
-                          unselectedIconComponent={
-                            <View
-                              style={{
-                                height: 24,
-                                width: 24,
-                                borderWidth: 1,
-                                borderColor: 'gray',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: 5,
-                              }}
+                    <Text style={styles.subHeadingText}>Health Insurance</Text>
+                    <View style={styles.formStyle6}>
+                      <Picker
+                        style={styles.userDetailLabel}
+                        mode="dropdown"
+                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                        iosIcon={
+                          <Icon
+                            name="ios-arrow-down"
+                            style={{
+                              color: 'gray',
+                              fontSize: 20,
+                              marginLeft: 170,
+                            }}
+                          />
+                        }
+                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                        note={false}
+                        itemStyle={{
+                          paddingLeft: 10,
+                          fontSize: 16,
+                        }}
+                        itemTextStyle={{color: '#5cb85c'}}
+                        style={{width: undefined, color: '#000'}}
+                        onValueChange={(sample) => {
+                          this.setState({healthInsuranceType: sample, descriptionVisible: true,});
+                        }}
+                        selectedValue={healthInsuranceType}
+                        testID="editHealthInsurance">
+                        {HealthInsurance.map((value, key) => {
+                          return (
+                            <Picker.Item
+                              label={String(value)}
+                              value={String(value)}
+                              key={key}
                             />
-                          }
-                          items={this.initialTpaList}
-                          uniqueKey="tpaName"
-                          displayKey="tpaName"
-                          selectText={tpaName ? '' : 'Choose your TPA or Payer'}
-                          modalWithTouchable={true}
-                          showDropDowns={true}
-                          hideSearch={false}
-                          showChips={false}
-                          single={true}
-                          readOnlyHeadings={false}
-                          onSelectedItemsChange={(name) =>
-                            this.setState({tpaName: name})
-                          }
-                          selectedItems={tpaName}
-                          colors={{primary: '#18c971'}}
-                          showCancelButton={true}
-                          animateDropDowns={true}
-                          selectToggleIconComponent={
-                            <MaterialIcons
-                              name="keyboard-arrow-down"
-                              style={
-                                Platform.OS === 'ios'
-                                  ? {
-                                      fontSize: 20,
-                                      marginHorizontal: 6,
-                                      color: '#909090',
-                                      textAlign: 'center',
-                                      marginTop: 5,
-                                    }
-                                  : {
-                                      fontSize: 25,
-                                      marginHorizontal: 6,
-                                      color: '#909090',
-                                      textAlign: 'center',
-                                      marginTop: 10,
-                                    }
-                              }
-                            />
-                          }
-                          confirmText={tpaName ? 'Confirm' : 'Please Select'}
-                        />
-                      </Col>
-                    </TouchableOpacity>
-                  </View>
-                ) : null}
-                {policyType === 'Motor' ? (
-                  <View>
-                    <Text style={styles.subHeadingText}>Select Motor Type</Text>
-                    <View style={{flexDirection: 'row', marginTop: 10}}>
-                      <View style={{flexDirection: 'row'}}>
-                        <Radio
-                          standardStyle={true}
-                          selected={motorType == 'Two Wheeler' ? true : false}
-                          onPress={() =>
-                            this.setState({motorType: 'Two Wheeler'})
-                          }
-                        />
-                        <Text style={styles.radioButtonStyle}>Two Wheeler</Text>
-                      </View>
-                      <View style={{flexDirection: 'row', marginLeft: 10}}>
-                        <Radio
-                          standardStyle={true}
-                          selected={motorType == 'Passenger Car' ? true : false}
-                          onPress={() =>
-                            this.setState({motorType: 'Passenger Car'})
-                          }
-                        />
-                        <Text style={styles.radioButtonStyle}>
-                          Passenger Car
-                        </Text>
-                      </View>
+                          );
+                        })}
+                      </Picker>
                     </View>
                   </View>
                 ) : null}
-        
+                {policyType === 'Motor Insurance' ? (
+                  <View>
+                    <Text style={styles.subHeadingText}>Motor Insurance</Text>
+                    <View style={styles.formStyle6}>
+                      <Picker
+                        style={styles.userDetailLabel}
+                        mode="dropdown"
+                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                        iosIcon={
+                          <Icon
+                            name="ios-arrow-down"
+                            style={{
+                              color: 'gray',
+                              fontSize: 20,
+                              marginLeft: 170,
+                            }}
+                          />
+                        }
+                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                        note={false}
+                        itemStyle={{
+                          paddingLeft: 10,
+                          fontSize: 16,
+                        }}
+                        itemTextStyle={{color: '#5cb85c'}}
+                        style={{width: undefined, color: '#000'}}
+                        onValueChange={(sample) => {
+                          this.setState({motorInsuranceType: sample, descriptionVisible: true,});
+                        }}
+                        selectedValue={motorInsuranceType}
+                        testID="editMotorInsurance">
+                        {MotorInsurance.map((value, key) => {
+                          return (
+                            <Picker.Item
+                              label={String(value)}
+                              value={String(value)}
+                              key={key}
+                            />
+                          );
+                        })}
+                      </Picker>
+                    </View>
+                  </View>
+                ) : null}
+                {policyType === 'Personal Accident Insurance' ? (
+                  <View>
+                    <Text style={styles.subHeadingText}>Personal Accident Insurance</Text>
+                    <View style={styles.formStyle6}>
+                      <Picker
+                        style={styles.userDetailLabel}
+                        mode="dropdown"
+                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                        iosIcon={
+                          <Icon
+                            name="ios-arrow-down"
+                            style={{
+                              color: 'gray',
+                              fontSize: 20,
+                              marginLeft: 170,
+                            }}
+                          />
+                        }
+                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                        note={false}
+                        itemStyle={{
+                          paddingLeft: 10,
+                          fontSize: 16,
+                        }}
+                        itemTextStyle={{color: '#5cb85c'}}
+                        style={{width: undefined, color: '#000'}}
+                        onValueChange={(sample) => {
+                          this.setState({personalAccidentInsuranceType: sample, descriptionVisible: true,});
+                        }}
+                        selectedValue={personalAccidentInsuranceType}
+                        testID="editPersonalAccidentInsurance">
+                        {PersonalAccidentInsurance.map((value, key) => {
+                          return (
+                            <Picker.Item
+                              label={String(value)}
+                              value={String(value)}
+                              key={key}
+                            />
+                          );
+                        })}
+                      </Picker>
+                    </View>
+                  </View>
+                ) : null}
+                 {policyType === 'Life Insurance' ? (
+                  <View>
+                    <Text style={styles.subHeadingText}>Life Insurance</Text>
+                    <View style={styles.formStyle6}>
+                      <Picker
+                        style={styles.userDetailLabel}
+                        mode="dropdown"
+                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                        iosIcon={
+                          <Icon
+                            name="ios-arrow-down"
+                            style={{
+                              color: 'gray',
+                              fontSize: 20,
+                              marginLeft: 170,
+                            }}
+                          />
+                        }
+                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                        note={false}
+                        itemStyle={{
+                          paddingLeft: 10,
+                          fontSize: 16,
+                        }}
+                        itemTextStyle={{color: '#5cb85c'}}
+                        style={{width: undefined, color: '#000'}}
+                        onValueChange={(sample) => {
+                          this.setState({lifeInsuranceType: sample, descriptionVisible: true,});
+                        }}
+                        selectedValue={lifeInsuranceType}
+                        testID="editLifeInsurance">
+                        {LifeInsurance.map((value, key) => {
+                          return (
+                            <Picker.Item
+                              label={String(value)}
+                              value={String(value)}
+                              key={key}
+                            />
+                          );
+                        })}
+                      </Picker>
+                    </View>
+                  </View>
+                ) : null}
               </Form>
             </ScrollView>
           </View>
@@ -538,12 +583,29 @@ class BuyInsurance extends PureComponent {
           <Text
             style={{
               fontSize: 16,
-              fontFamily:'opensans-bold',
+              fontFamily: 'opensans-bold',
               color: '#fff',
             }}>
             Save
           </Text>
         </TouchableOpacity>
+        <InsuranceRenewalPopup
+                messageText={'You can Renew your Insurance Policy by!'}
+                callbackButtonText={'Arrange Callback'}
+                renewOnlineButtonText={'Renew Online'}
+                callbackButtonAction={() => {
+                    this.arrangeCallback();
+                    this.popUpClose();
+                }}
+                renewOnlineButtonAction={() =>{
+                    Linking.openURL('http://www.readypolicy.com/');
+                    this.popUpClose();
+                }}
+                popUpClose={() =>{
+                    this.popUpClose();
+                }}
+                visible={this.state.descriptionVisible}
+              />
       </Container>
     );
   }
