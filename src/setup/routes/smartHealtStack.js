@@ -95,11 +95,9 @@ import HomeHealthcareAppointmentDetail from '../../modules/screens/HomeHealthCar
 import HomeHealthcareCancelAppointment from '../../modules/screens/HomeHealthCare/Appointments/cancelAppointment';
 import HomeHealthcareDoctorDetailsPreview from '../../modules/screens/HomeHealthCare/doctorDetailsPreview/doctorDetailsPreview';
 import HomeHealthcareAddressList from '../../modules/screens/HomeHealthCare/homeDeliveryAddressPage';
-import MedicineRecords from '../../modules/screens/medicalRecords';
 import EmrInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/emrInfo'
 import UploadEmr from '../../modules/screens/medicalRecords/uploadEmr'
 
-// import PublicForumDetail from '../../modules/screens/publicForum/publicForumDetail'
 import DropDownMenu from '../../modules/screens/chat/dropDownMenu';
 import Ecard from '../../modules/screens/Ecard/Ecard'
 import TextTicker from 'react-native-text-ticker';
@@ -570,14 +568,6 @@ export const smartHealthStack=createStackNavigator({
     screen: UploadEmr,
     navigationOptions: {
       title: 'Upload Emr',
-      headerTitleStyle: { fontFamily: "Roboto",}
-
-    }
-  },
-  "Health Records": {
-    screen: MedicineRecords,
-    navigationOptions: {
-      title: 'Health Records',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }

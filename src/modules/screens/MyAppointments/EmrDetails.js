@@ -137,7 +137,7 @@ class EmrDetails extends Component {
               data.length == 0 ?
                 <View style={{ backgroundColor: '#F1F1F1', marginTop: height / 4, justifyContent: 'center', alignItems: 'center' }}>
 
-                  <Image source={require('../../../../assets/images/Remindericon.png')} style={{ justifyContent: 'center', height: 150, width: 150 }} />
+                  {/* <Image source={require('../../../../assets/images/Remindericon.png')} style={{ justifyContent: 'center', height: 150, width: 150 }} /> */}
                   <Text style={{ color: '#d83939' }}>No EMR  avaialble now!</Text>
                 </View>
                 : <View style={{ paddingRight: 10, paddingLeft: 10 }}>

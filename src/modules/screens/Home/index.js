@@ -16,14 +16,10 @@ import {primaryColor} from '../../../setup/config'
 import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/DashBoardImage/ChatAndVideo.jpg');
-const pharmacyImg = require('../../../../assets/images/DashBoardImage/pharmacyDashboard.jpg');
-const BloodImg = require('../../../../assets/images/blood.png');
-const ReminderImg = require('../../../../assets/images/reminder.png');
 const doctorConsultations = require('../../../../assets/images/DashBoardImage/DoctorConsultation.jpg');
 const HomeTestImg = require('../../../../assets/images/DashBoardImage/HomeConsultation.jpg');
 const LabTestImgs = require('../../../../assets/images/DashBoardImage/LabTest.jpg');
 const hospitalLogoImg = require('../../../../assets/images/hospital.png');
-const publicForum = require('../../../../assets/images/public_forum.png');
 const hospitalImg = require('../../../../assets/images/DashBoardImage/Hospital-banner.jpg');
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
@@ -502,25 +498,7 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col style={{ width: '50%', marginLeft: 5 }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
-                                    <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
-                                        <Row style={styles.rowStyle}>
-                                            <FastImage
-                                                source={pharmacyImg}
-                                                style={{
-                                                    width: '100%', height: '100%', alignItems: 'center'
-                                                }}
-                                            />
-                                        </Row>
-                                        <Row style={styles.secondRow}>
-                                            <Col style={{ width: '100%', }}>
-                                                <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
-                                                <Text style={styles.subText}>{translate('Get medicines delivered to home')} </Text>
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                </TouchableOpacity>
-                            </Col>
+                                                        </Col>
                         </Grid>
                         <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                             <Row >
@@ -544,65 +522,13 @@ class Home extends Component {
                                     </TouchableOpacity>
                                 </Col>
                                 <Col size={5}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
-                                        <Card style={{ padding: 5, borderRadius: 2 }}>
-                                            <Row>
-                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                    <Text style={styles.mainText}>{translate('Medicine Reminder')}</Text>
-                                                </Col>
-                                                <Col size={2.5}>
-                                                    <FastImage
-                                                        source={ReminderImg}
-                                                        style={{
-                                                            width: 35, height: 35, alignItems: 'center'
-                                                        }}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                        </Card>
-                                    </TouchableOpacity>
-                                </Col>
+                                                                  </Col>
 
                             </Row>
                             <Row>
                                 <Col size={5} >
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Public Forum")} >
-                                        <Card style={{ padding: 5, borderRadius: 2 }}>
-                                            <Row>
-                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                    <Text style={styles.mainText}>{translate('Public Forum')} </Text>
-                                                </Col>
-                                                <Col size={2.5}>
-                                                    <FastImage
-                                                        source={publicForum}
-                                                        style={{
-                                                            width: 35, height: 35, alignItems: 'center'
-                                                        }}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                        </Card>
-                                    </TouchableOpacity>
-                                </Col>
+                                                                  </Col>
                                 <Col size={5} >
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")} >
-                                        <Card style={{ padding: 5, borderRadius: 2 }}>
-                                            <Row>
-                                                <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                    <Text style={styles.mainText}>{translate('Blood Donors')} </Text>
-                                                </Col>
-                                                <Col size={2.5}>
-
-                                                    <FastImage
-                                                        source={BloodImg}
-                                                        style={{
-                                                            width: 35, height: 35, alignItems: 'center'
-                                                        }}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                        </Card>
-                                    </TouchableOpacity>
                                 </Col>
                             </Row>
                         </Grid>
