@@ -165,6 +165,7 @@ class Categories extends Component {
                       style={{
                         width: 60, height: 60, alignItems: 'center'
                       }}
+                      resizeMode={FastImage.resizeMode.contain}
                     />
                     <Text style={{
                       fontSize: 12,
@@ -266,9 +267,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderColor: 'gray',
-    borderRadius: 5,
+    borderRadius: 20,
     flexDirection: 'row',
-    borderWidth: 0.1,
+    // borderWidth: 0.1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
@@ -278,5 +279,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginLeft: 11,
     marginBottom: 1, width: '29.5%', flexDirection: 'row', backgroundColor: '#fafafa',
+    minHeight:110
   }
 });
