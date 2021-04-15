@@ -12,7 +12,6 @@ import Razorpay from 'react-native-razorpay';
 import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_POINTS,CURRENT_APP_NAME,MY_SMART_HEALTH_CARE } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { getReferalPoints } from '../../providers/profile/profile.action';
-import { deleteCartByIds } from '../../providers/pharmacy/pharmacy.action'
 import { validatePromoCode, applyPromoCode } from '../../providers/PromoCode/promo.action'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
@@ -328,7 +327,7 @@ class PaymentPage extends Component {
                         cartData.forEach(ele => {
                             cartIds.push(ele.id)
                         })
-                        deleteCartByIds(cartIds)
+                        // deleteCartByIds(cartIds)
 
 
                     }

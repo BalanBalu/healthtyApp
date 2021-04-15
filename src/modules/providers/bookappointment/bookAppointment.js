@@ -1,6 +1,6 @@
 import { bookAppointment, createPaymentRazor, bookAppointment4Healthcare } from './bookappointment.action';
 import { updateChat } from '../chat/chat.action'
-import { createMedicineOrder, capturePayment, deletePrescriptionByUserId } from '../pharmacy/pharmacy.action'
+// import { createMedicineOrder, capturePayment, deletePrescriptionByUserId } from '../pharmacy/pharmacy.action'
 import { SERVICE_TYPES } from '../../../setup/config'
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
@@ -369,12 +369,13 @@ export default class BookAppointmentPaymentUpdate {
 
                 requestData.pharmacyId = orderData.pharmacyId
             }
-            let resultData = await createMedicineOrder(requestData);
-           
+            // let resultData = await createMedicineOrder(requestData);
+            let resultData = null;
+
             if (resultData) {
-                capturePayment(paymentId)
+                // capturePayment(paymentId)
                 if (orderData.prescriptions) {
-                    deletePrescriptionByUserId(userId)
+                    // deletePrescriptionByUserId(userId)
 
 
                 }
