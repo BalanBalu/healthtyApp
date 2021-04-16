@@ -6,41 +6,23 @@ import {
   Picker,
   Form,
   Icon,
-  Col,
-  Row,
-  Radio,
-  Card,
 } from 'native-base';
 import {
-  FlatList,
   View,
-  StyleSheet,
-  TextInput,
   TouchableOpacity,
   ScrollView,
-  Image,
-} from 'react-native';
-import moment from 'moment';
+  Linking,
+  Alert
+  } from 'react-native';
+  import {
+    arrangeCallbackActionForBuyInsurance,
+  } from '../../providers/insurance/insurance.action';  
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {primaryColor} from '../../../setup/config';
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import {formatDate, subTimeUnit, addTimeUnit} from '../../../setup/helpers';
-import {smartHealthGetService} from '../../../setup/services/httpservices';
-import {
-  createMemberInsurance,
-  getInsuranceCompanyNameList,
-} from '../../providers/insurance/insurance.action';
-import {ImageUpload} from '../../screens/commonScreen/imageUpload';
-import {toastMeassage, RenderDocumentUpload} from '../../common';
-import {uploadImage} from '../../providers/common/common.action';
 import styles from './styles';
-import IconName from 'react-native-vector-icons/MaterialIcons';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import InsuranceRenewalPopup from '../../shared/insuranceRenewalPopup';
+import {getFullName} from '../../common';
 
 const PolicyTypeList = [
   'Choose Policy Type',
@@ -77,264 +59,50 @@ class BuyInsurance extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      insuranceCompany: '',
-      policyName: null,
       policyType: '',
-      policyNo: null,
       healthInsuranceType: '',
       motorInsuranceType: '',
       personalAccidentInsuranceType:'',
       lifeInsuranceType:'',
-      motorType: '',
-      premiumAmount: 0,
-      renewal: true,
-      isStartDateTimePickerVisible: false,
-      isEndDateTimePickerVisible: false,
-      selectOptionPoopup: false,
-      uploadData: [],
       isModalVisible: false,
       errorMsg: '',
       descriptionVisible: false,
-
+      selectedInsurance: '',
     };
-    this.initialTpaList = [];
-    this.insuranceCompanyList = [];
   }
-
-  async componentDidMount() {
-    await this.getInsuranceCompanyNAmeList();
-    this.getTpaList();
-  }
-  getTpaList = async () => {
-    try {
-      const endPoint = 'tpa-master';
-      const tpaListResp = await smartHealthGetService(endPoint);
-      if (tpaListResp && tpaListResp.data && tpaListResp.data.length) {
-        this.setState({tpaList: tpaListResp.data});
-        this.initialTpaList = tpaListResp.data;
-      }
-    } catch (error) {
-      console.log('Ex is getting on get All TPA list', error.message);
-    } finally {
-      this.setState({isLoading: false});
-    }
+  arrangeCallback = async () => {
+    const basicProfileData = await AsyncStorage.getItem('basicProfileData');
+    const basicData = JSON.parse(basicProfileData);
+    let fullName = getFullName(basicData);
+    let result = await arrangeCallbackActionForBuyInsurance(
+      fullName,
+      this.state.selectedInsurance,
+    );
+    Alert.alert(
+      'Thanks',
+      'Mail sent successfully, Team will contact you soon',
+      [
+        {
+          text: 'OK',
+        },
+      ],
+    );
   };
-  getInsuranceCompanyNAmeList = async () => {
-    try {
-      const insuranceListResp = await getInsuranceCompanyNameList();
-      console.log(insuranceListResp);
-      if (
-        insuranceListResp &&
-        insuranceListResp.data &&
-        insuranceListResp.data.length
-      ) {
-        this.setState({insuranceCompanyList: insuranceListResp.data});
-        this.insuranceCompanyList = insuranceListResp.data;
-      }
-    } catch (error) {
-      console.log('Ex is getting on get All TPA list', error.message);
-    } finally {
-      this.setState({isLoading: false});
-    }
-  };
-
-  createMemberInsurance = async () => {
-    const {
-      insuranceCompany,
-      policyName,
-      policyType,
-      tpaName,
-      motorType,
-      policyNo,
-      startDate,
-      endDate,
-      premiumAmount,
-      uploadData,
-    } = this.state;
-    try {
-      if (!insuranceCompany) {
-        this.setState({
-          errorMsg: 'Please select insurance company name',
-          isModalVisible: true,
-        });
-        return false;
-      }
-      if (!policyType || policyType == 'Choose Policy Type') {
-        this.setState({
-          errorMsg: 'Please select Policy type',
-          isModalVisible: true,
-        });
-        return false;
-      }
-      if (policyType == 'Health' && !tpaName) {
-        this.setState({
-          errorMsg: 'Please select TPA name',
-          isModalVisible: true,
-        });
-        return false;
-      }
-      if (policyType == 'Motor' && !motorType) {
-        this.setState({
-          errorMsg: 'Please select motor type',
-          isModalVisible: true,
-        });
-        return false;
-      }
-      if (!policyName) {
-        this.setState({
-          errorMsg: 'Please Enter Policy name',
-          isModalVisible: true,
-        });
-        return false;
-      }
-      if (!policyNo) {
-        this.setState({
-          errorMsg: 'Please Enter Policy number',
-          isModalVisible: true,
-        });
-        return false;
-      }
-
-      if (!startDate) {
-        this.setState({
-          errorMsg: 'Please Choose policy start date',
-          isModalVisible: true,
-        });
-        return false;
-      }
-
-      if (!premiumAmount) {
-        this.setState({
-          errorMsg: 'Please Enter premium amount',
-          isModalVisible: true,
-        });
-        return false;
-      }
-      if (uploadData && uploadData.length == 0) {
-        this.setState({
-          errorMsg: 'Please upload your policy copy',
-          isModalVisible: true,
-        });
-        return false;
-      }
-      this.setState({isLoading: true});
-      let memberId = await AsyncStorage.getItem('memberId');
-      const insuranceData = {
-        memberId: memberId,
-        insuranceName: String(insuranceCompany),
-        productName: policyName,
-        productType: policyType,
-        tpaName: String(tpaName) || null,
-        motorType: motorType || null,
-        policyNo: policyNo,
-        policyStartDate: startDate,
-        policyEndDate: endDate,
-        Amount: Number(premiumAmount),
-        isRenewal: true,
-        policyCopy: uploadData,
-      };
-
-      let result = await createMemberInsurance(insuranceData);
-      if (result) {
-        toastMeassage(
-          'Your insurance details is submited successfully',
-          'success',
-          1000,
-        );
-        this.props.navigation.setParams({isNewInsurance: true});
-
-        this.props.navigation.navigate('Insurance');
-      }
-    } catch (error) {
-      console.log('Ex is getting on', error.message);
-    } finally {
-      this.setState({isLoading: false});
-    }
-  };
-
-  showStartDateTimePicker = () => {
-    this.setState({isStartDateTimePickerVisible: true});
-  };
-  hideStartDateTimePicker = () => {
-    this.setState({isStartDateTimePickerVisible: false});
-  };
-  handleStartDateTimePicker = (date) => {
-    try {
-      this.endDateCal = moment(date).add(365, 'd');
-      this.setState({
-        startDate: date,
-        endDate: this.endDateCal.format(),
-        isStartDateTimePickerVisible: false,
-      });
-    } catch (error) {
-      console.error('Error on Date Picker: ', error);
-    }
-  };
-  showEndDateTimePicker = () => {
-    this.setState({isEndDateTimePickerVisible: true});
-  };
-  hideStartDateTimePicker = () => {
-    this.setState({isEndDateTimePickerVisible: false});
-  };
-  handleEndDateTimePicker = (date) => {
-    try {
-      this.setState({endDate: date, isEndDateTimePickerVisible: false});
-    } catch (error) {
-      console.error('Error on Date Picker: ', error);
-    }
-  };
-  imageUpload = async (data) => {
-    this.setState({selectOptionPoopup: false});
-    if (data.image !== null) {
-      await this.uploadImageToServer(data.image);
-    }
-  };
-
-  uploadImageToServer = async (imagePath) => {
-    try {
-      this.setState({isLoadingUploadDocs: true});
-      let appendForm = 'policyCopy';
-      let endPoint = 'images/upload?path=policyCopy';
-      const response = await uploadImage(imagePath, endPoint, appendForm);
-      if (response.success) {
-        this.uploadedData = [...this.state.uploadData, ...response.data];
-        await this.setState({uploadData: this.uploadedData});
-        toastMeassage('Image upload successfully', 'success', 1000);
-      } else {
-        toastMeassage(
-          'Problem Uploading Picture' + response.error,
-          'danger',
-          3000,
-        );
-      }
-    } catch (e) {
-      toastMeassage('Problem Uploading Picture' + e, 'danger', 3000);
-    } finally {
-      this.setState({isLoadingUploadDocs: false});
-    }
-  };
+ 
+ 
+ 
+ 
   popUpClose() {
     this.setState({descriptionVisible: false});
   }
 
   render() {
     const {
-      insuranceCompany,
-      policyName,
       policyType,
       healthInsuranceType,
       motorInsuranceType,
       lifeInsuranceType,
       personalAccidentInsuranceType,
-      motorType,
-      policyNo,
-      startDate,
-      endDate,
-      premiumAmount,
-      isStartDateTimePickerVisible,
-      isEndDateTimePickerVisible,
-      selectOptionPoopup,
-      uploadData,
       isModalVisible,
       errorMsg,
     } = this.state;

@@ -1,15 +1,17 @@
 
 
 import React from 'react';
-import { View, Modal } from "react-native";
-import { Text, Button } from 'native-base';
+import { View, Modal,TouchableOpacity } from "react-native";
+import { Text, Button,Col } from 'native-base';
 import { Row } from 'react-native-easy-grid';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import styles from '../screens/Insurance/styles';
 
 const insuranceRenewalPopup = (props) => {
     const { callbackButtonText, renewOnlineButtonText, messageText, callbackButtonAction, renewOnlineButtonAction, popUpClose, cancelButtonStyle } = props;
     if (props.visible) {
         return <Modal
-        visible={this.state.descriptionVisible}
+        visible={props.visible}
         transparent={true}
         animationType={'fade'}>
         <View style={styles.modalFirstView}>
