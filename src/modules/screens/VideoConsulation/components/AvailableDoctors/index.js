@@ -27,6 +27,7 @@ import BookAppointmentPaymentUpdate from '../../../../providers/bookappointment/
 import { AuthService } from '../../services'
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../../../../../setup/config'
 import moment from 'moment';
+import {translate} from '../../../../../setup/translator.helper';
 class AvailableDoctors4Video extends Component {
     constructor(props) {
         super(props)
@@ -471,7 +472,7 @@ class AvailableDoctors4Video extends Component {
                             <Row style={{ justifyContent: 'center' }}>
                                 {isPremium === true ?
                                     <Text style={{ paddingLeft: 5, paddingRight: 5, fontSize: 10, fontFamily: 'Roboto', marginLeft: 5, backgroundColor: '#8EC63F', borderRadius: 10, color: '#fff', height: 15, marginTop: 3 }}>
-                                        SPONSORED</Text> : null}
+                                        {translate("SPONSORED")}</Text> : null}
                             </Row>
                         </Col>
 
@@ -521,7 +522,7 @@ class AvailableDoctors4Video extends Component {
                                     style={isBothPremium ? styles.ButtonStyle : isVideoFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
                                     <Icon name="ios-videocam" style={!isBothPremium && isVideoFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
                                     <Text style={isBothPremium ? styles.TextStyle : isVideoFree ? styles.SponsorText : styles.TextStyle}>
-                                        {isBothPremium ? 'Video' : isVideoFree ? 'Free Consult' : `Video - ₹ ${this.getVideoConsultFee(item)}`}
+                                        {isBothPremium ? translate('Video') : isVideoFree ? translate('Free Consult') : `Video - ₹ ${this.getVideoConsultFee(item)}`}
                                     </Text>
                                 </TouchableOpacity>
                             </Col>
@@ -534,7 +535,7 @@ class AvailableDoctors4Video extends Component {
                         <Row style={{ marginTop: 5, width: '100%' }}>
                             <Button disabled style={{ height: 30, borderRadius: 10, backgroundColor: primaryColor }}>
                                 <Icon name="ios-videocam" style={{ color: '#FFFFFF', fontSize: 15 }} />
-                                <Text style={{ marginLeft: -20, fontSize: 10 }}>next Available on {this.getNextAvailabiltyData(item)}</Text>
+                                <Text style={{ marginLeft: -20, fontSize: 10 }}>{translate("next Available on")} {this.getNextAvailabiltyData(item)}</Text>
                                 {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                             </Button>
                         </Row> : null}
@@ -569,13 +570,13 @@ class AvailableDoctors4Video extends Component {
                     />
                     <View style={{ backgroundColor: primaryColor }}>
                         <View style={{ marginTop: 20 }}>
-                            <Text style={styles.SubText}>Search for Doctors</Text>
+                            <Text style={styles.SubText}>{translate("Search for Doctors")}</Text>
 
                             <Row style={styles.SearchRow}>
 
                                 <Col size={9.1} style={{ justifyContent: 'center', }}>
                                     <Input
-                                        placeholder="Search for Symptoms,Categories,etc"
+                                        placeholder={translate("Search for Symptoms,Categories,etc")}
                                         style={styles.inputfield}
                                         onChangeText={(text) => this.setState({ keyword: text })}
                                         placeholderTextColor="gray"
@@ -596,7 +597,7 @@ class AvailableDoctors4Video extends Component {
                     {availableVideoDoctors.length === 0 && isLoading === false ?
                         <View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
                             <Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
-                                No Doctors Found for your Search
+                                {translate("No Doctors Found for your Search")}
 						</Text>
                         </View>
                         :

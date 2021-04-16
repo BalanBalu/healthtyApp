@@ -12,6 +12,7 @@ import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 import { Loader } from '../../../components/ContentLoader';
+import {translate} from '../../../setup/translator.helper';
 
 
 class Categories extends Component {
@@ -119,12 +120,12 @@ class Categories extends Component {
   renderStickeyHeader() {
     return (
       <View style={{ width: '100%' }} >
-        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Doctors by their specialism</Text>
+        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10, marginTop: 10 }}>{translate('Search Doctors by their specialism')}</Text>
         <Row style={styles.SearchRow}>
 
           <Col size={9.1} style={{ justifyContent: 'center', }}>
             <Input
-              placeholder="Specialism and Categories"
+              placeholder={translate("Specialism and Categories")}
               style={styles.inputfield}
               placeholderTextColor="#e2e2e2"
               keyboardType={'email-address'}

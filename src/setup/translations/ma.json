@@ -182,8 +182,23 @@
     "View E card and family":"ഇ കാർഡും കുടുംബ പ്രൊഫൈലും",
     "profile from here":"ഇവിടെ നിന്ന് കാണുക",
     "Family":"കുടുംബം",
-    "Insurance Company":"ഇൻഷ്വറൻസ് കമ്പനി"
-
+    "Insurance Company":"ഇൻഷ്വറൻസ് കമ്പനി",
+    "Search your Network Hospitals":"നിങ്ങളുടെ നെറ്റ്‌വർക്ക് ആശുപത്രികളിൽ തിരയുക",
+    "Specialism and Categories":"സ്പെഷ്യലിസവും വിഭാഗങ്ങളും",
+"No Hospitals list found!":"ആശുപത്രികളുടെ പട്ടികയൊന്നും കണ്ടെത്തിയില്ല!",
+"My Insurance Policies":"എന്റെ ഇൻഷുറൻസ് നയങ്ങൾ",
+"Insurance History":"ഇൻഷുറൻസ് ചരിത്രം",
+"Search Doctors by their specialism":"ഡോക്ടർമാരെ അവരുടെ സ്പെഷ്യലിസത്തിനനുസരിച്ച് തിരയുക",
+"Search Labs by categories":"ചർച്ച് ലാബുകൾ പ്രകാരം വിഭാഗം",
+"MY ADDRESS":"എന്റെ വിലാസം",
+"ADD NEW ADDRESS":"പുതിയ വിലാസം ചേർക്കുക",
+"Search for Doctors":"ഡോക്ടർമാർക്കായി തിരയുക",
+"Search for Symptoms,Categories,etc":"ലക്ഷണങ്ങൾ, വിഭാഗങ്ങൾ മുതലായവ തിരയുക",
+"No Doctors Found for your Search":"നിങ്ങളുടെ തിരയലിനായി ഡോക്ടർമാരൊന്നും കണ്ടെത്തിയില്ല",
+"Free Consult":"സ Consult ജന്യ കൺസൾട്ട്",
+"next Available on":"അടുത്തത് ലഭ്യമാണ്",
+"SPONSORED":"സ്പോൺസേർഡ്"
+    
 
 
 }

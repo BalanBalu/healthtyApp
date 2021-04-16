@@ -46,7 +46,10 @@
     "Next": "Next",
     "Edit": "Edit",
     "Preview": "Preview",
+    "No claim intimation list found!":"No claim intimation list found!",
     "No Reminder is available now!": "No Reminder is available now",
+    "No Hospitals list found!":"No Hospitals list found!",
+    "Search your Network Hospitals":"Search your Network Hospitals",
     "SET MEDICINE REMINDER": "SET MEDICINE REMINDER",
     "Start Date": "Start Date",
     "End Date": "End Date",
@@ -187,9 +190,19 @@
     "Help line": "Help line",
     "Contact Us": "Contact Us",
     "Family":"Family",
-    "Insurance Company":"Insurance Company"
-    
+    "Insurance Company":"Insurance Company",
+    "Search Doctors by their specialism":"Search Doctors by their specialism",
+    "Specialism and Categories":"Specialism and Categories",
+    "Search Labs by categories":"Search Labs by categories",
+    "MY ADDRESS":"MY ADDRESS",
+    "ADD NEW ADDRESS":"ADD NEW ADDRESS",
 
+    "Search for Doctors":"Search for Doctors",
+    "Search for Symptoms,Categories,etc":"Search for Symptoms,Categories,etc",
+    "No Doctors Found for your Search":"No Doctors Found for your Search",
+"Free Consult":"Free Consult",
+"next Available on":"next Available on",
+"SPONSORED":"SPONSORED"
 
     
 }

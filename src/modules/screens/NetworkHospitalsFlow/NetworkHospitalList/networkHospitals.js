@@ -12,6 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { NavigationEvents } from 'react-navigation';
 import { primaryColor } from '../../../../setup/config'
 import {HospitalDrawing} from '../../Home/corporateHome/svgDrawings';
+import {translate} from '../../../../setup/translator.helper';
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
@@ -236,7 +237,7 @@ class NetworkHospitals extends Component {
                     }}>
                         <Col size={8.1} style={{ justifyContent: 'center', }}>
                             <Input
-                                placeholder="Search your Network Hospitals"
+                                placeholder={translate('Search your Network Hospitals')}
                                 style={{
                                     color: 'gray',
                                     fontFamily: 'Roboto',
@@ -310,7 +311,7 @@ class NetworkHospitals extends Component {
                             <HospitalDrawing/>
                             <Text style={{ fontFamily: "Roboto",
                                         fontSize: 15,
-                                        marginTop: "10%" }} > No Hospitals list found!</Text>
+                                        marginTop: "10%" }} > {translate('No Hospitals list found!')}</Text>
               <View style={{borderTopWidth:3,width:55,transform:[{rotate: '120 deg'}],position: 'absolute',borderTopColor: primaryColor,top:297}}/>
 
                         </View>
