@@ -54,6 +54,7 @@ import { Badge, onPopupEvent } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import LocationDetail from '../../modules/screens/Home/LocationDetail';
 import Insurance from '../../modules/screens/Insurance/Insurance';
+import InsuranceHistory from '../../modules/screens/Insurance/InsuranceHistory';
 import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
@@ -930,6 +931,12 @@ const HomeStack = createStackNavigator({
       title: 'Insurance'
     }
   },
+  InsuranceHistory: {
+    screen: InsuranceHistory,
+    navigationOptions: {
+      title: 'Insurance History'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -979,6 +986,10 @@ const drawerNavigatorRoutes = {
     screen: Insurance,
     routeName: 'Insurance'
   },
+  "InsuranceHistory": {
+    screen: InsuranceHistory,
+    routeName: 'InsuranceHistory'
+  },
 
   "E Card": {
     screen: Ecard,
@@ -1026,13 +1037,26 @@ export const corporateUserSideBarMenuList = [
         largeIcon: { height: 15, width: 28, marginRight: 10 },
         appoinmentSubMenus: []
       },
-      {
+       {
         name: 'Insurance',
-        routeName: drawerNavigatorRoutes['Insurance'].routeName,
+        routeName: [],
         icon: require('../../../assets/images/drawerIcons/Insurance.png'),
-        largeIcon: { height: 25, width: 28, marginRight: 10 },
-        appoinmentSubMenus: []
-      },
+        largeIcon: {height: 25, width: 28, marginRight: 10},
+        appoinmentSubMenus: [
+          {
+            name: 'My Insurance Policies',
+            routeName: drawerNavigatorRoutes['Insurance'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Insurance.png'),
+            largeIcon: {height: 20, width: 20},
+          },
+          {
+            name: 'Insurance History',
+            routeName: drawerNavigatorRoutes['InsuranceHistory'].routeName,
+            icon: require('../../../assets/images/drawerIcons/Insurance.png'),
+            largeIcon: {height: 20, width: 20},
+          }]
+       },
+        
       {
         name: 'Claim Status',
         routeName: drawerNavigatorRoutes['PolicyStatus'].routeName,
