@@ -69,6 +69,7 @@
 		A0947C5525ED2359002FF5EA /* opensans-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "opensans-regular.ttf"; path = "../assets/fonts/opensans-regular.ttf"; sourceTree = "<group>"; };
 		A0947C5625ED2359002FF5EA /* opensans-semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "opensans-semibold.ttf"; path = "../assets/fonts/opensans-semibold.ttf"; sourceTree = "<group>"; };
 		A0EDF1EE25EDE8E80088A5F9 /* Roboto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Roboto.ttf; path = ../assets/fonts/Roboto.ttf; sourceTree = "<group>"; };
+		A0EDF1F025EDF4910088A5F9 /* mysmarthealth.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = mysmarthealth.entitlements; path = mysmarthealth/mysmarthealth.entitlements; sourceTree = "<group>"; };
 		BB18287B64B8CD0D300418FA /* Pods-mysmarthealth-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mysmarthealth-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-mysmarthealth-tvOSTests/Pods-mysmarthealth-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		D2EE270A942DD36B61D1F1CD /* Pods-mysmarthealth-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mysmarthealth-tvOS.release.xcconfig"; path = "Target Support Files/Pods-mysmarthealth-tvOS/Pods-mysmarthealth-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		D8B391BA01E1DA6A870E00FF /* Pods-mysmarthealth-mysmarthealthTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mysmarthealth-mysmarthealthTests.release.xcconfig"; path = "Target Support Files/Pods-mysmarthealth-mysmarthealthTests/Pods-mysmarthealth-mysmarthealthTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -135,6 +136,7 @@
 		13B07FAE1A68108700A75B9A /* mysmarthealth */ = {
 			isa = PBXGroup;
 			children = (
+				A0EDF1F025EDF4910088A5F9 /* mysmarthealth.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -880,6 +882,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = mysmarthealth/mysmarthealth.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J8BHA9LVY9;
 				ENABLE_BITCODE = NO;
@@ -905,6 +908,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = mysmarthealth/mysmarthealth.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J8BHA9LVY9;
 				INFOPLIST_FILE = mysmarthealth/Info.plist;
