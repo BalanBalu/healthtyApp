@@ -47,6 +47,7 @@ import {NavigationEvents} from 'react-navigation';
 import moment from 'moment';
 import {store} from '../../../setup/store';
 import {primaryColor} from '../../../setup/config';
+import {translate} from '../../../setup/translator.helper';
 
 import {
   RenderListNotFound,
@@ -144,7 +145,9 @@ class DoctorList extends Component {
       this.setState({isLoading: false});
     }
   }
-  callInitialSearchOrFilterServiceWithClearedData = async conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond => {
+  callInitialSearchOrFilterServiceWithClearedData = async (
+    conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond,
+  ) => {
     this.setState({isLoading: true});
     if (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) {
       this.props.navigation.setParams({conditionFromFilterPage: false});
@@ -166,13 +169,13 @@ class DoctorList extends Component {
 
   callSearchAndFilterServiceWithActiveSponsorTrueAndFalse = async () => {
     await Promise.all([
-      this.searchByDoctorDetails(true).catch(Ex =>
+      this.searchByDoctorDetails(true).catch((Ex) =>
         console.log(
           'Ex is getting on get Doctor details by search service call using Active Sponsor TRUE====>',
           Ex.message,
         ),
       ),
-      this.searchByDoctorDetails(false).catch(Ex =>
+      this.searchByDoctorDetails(false).catch((Ex) =>
         console.log(
           'Ex is getting on get Doctor details by search service call using Active Sponsor FALSE====>',
           Ex.message,
@@ -195,7 +198,7 @@ class DoctorList extends Component {
       data: [],
     });
   };
-  searchByDoctorDetails = async activeSponsor => {
+  searchByDoctorDetails = async (activeSponsor) => {
     try {
       const locationDataFromSearch = this.props.navigation.getParam(
         'locationDataFromSearch',
@@ -242,7 +245,7 @@ class DoctorList extends Component {
         const searchedDoctorIdsArray = [];
         const activeSponsorDocIdsArry = [];
         const docListData = docListResponse.data || [];
-        docListData.map(item => {
+        docListData.map((item) => {
           item.specialist = item.specialistInfo;
           delete item.specialistInfo;
           const doctorIdHostpitalId = item.hospitalInfo.doctorIdHostpitalId;
@@ -270,19 +273,21 @@ class DoctorList extends Component {
           }
         });
         await Promise.all([
-          ServiceOfGetDoctorFavoriteListCount4Pat(searchedDoctorIdsArray).catch(
-            Ex =>
-              console.log(
-                'Ex is getting on get Favorites list details for Patient====>',
-                Ex,
-              ),
+          ServiceOfGetDoctorFavoriteListCount4Pat(
+            searchedDoctorIdsArray,
+          ).catch((Ex) =>
+            console.log(
+              'Ex is getting on get Favorites list details for Patient====>',
+              Ex,
+            ),
           ),
-          serviceOfGetTotalReviewsCount4Doctors(searchedDoctorIdsArray).catch(
-            Ex =>
-              console.log(
-                'Ex is getting on get Total Reviews  list details for Patient' +
-                  Ex,
-              ),
+          serviceOfGetTotalReviewsCount4Doctors(
+            searchedDoctorIdsArray,
+          ).catch((Ex) =>
+            console.log(
+              'Ex is getting on get Total Reviews  list details for Patient' +
+                Ex,
+            ),
           ),
         ]);
         if (activeSponsor) {
@@ -310,7 +315,7 @@ class DoctorList extends Component {
         if (!activeSponsor) this.isEnabledLoadMoreData = false;
         if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.size > 7) {
           Toast.show({
-            text: 'No more Doctors Available!',
+            text: translate('No more Doctors Available!'),
             duration: 4000,
             type: 'success',
           });
@@ -325,7 +330,7 @@ class DoctorList extends Component {
     }
   };
 
-  getFavoriteCounts4PatByUserId = async userId => {
+  getFavoriteCounts4PatByUserId = async (userId) => {
     try {
       await getFavoriteListCount4PatientService(userId);
     } catch (Ex) {
@@ -354,7 +359,7 @@ class DoctorList extends Component {
     return (
       <Container style={styles.container}>
         <NavigationEvents
-          onWillFocus={payload => {
+          onWillFocus={(payload) => {
             this.componentNavigationMount();
           }}
         />
@@ -387,7 +392,7 @@ class DoctorList extends Component {
                     fontSize: 13,
                     textAlign: 'center',
                   }}>
-                  Top Rated{' '}
+                  {translate('Top Rated')}{' '}
                 </Text>
               </Col>
             </Col>
@@ -411,7 +416,7 @@ class DoctorList extends Component {
                     width: '100%',
                     textAlign: 'center',
                   }}>
-                  Filters{' '}
+                  {translate('Filters')}{' '}
                 </Text>
               </Col>
               <Col size={2.0} style={{marginLeft: 5}}>
@@ -469,7 +474,7 @@ class DoctorList extends Component {
     }
   };
 
-  updateDocSponsorViewersCountByUser = async sponsorIds => {
+  updateDocSponsorViewersCountByUser = async (sponsorIds) => {
     try {
       let userId = await AsyncStorage.getItem('userId');
       if (!userId) userId = 'NO_USER';
@@ -485,7 +490,7 @@ class DoctorList extends Component {
     }
   };
   /* Update Favorites for Doctor by UserId  */
-  addToFavoritesList = async doctorId => {
+  addToFavoritesList = async (doctorId) => {
     const userId = await AsyncStorage.getItem('userId');
     const updateResp = await addFavoritesToDocByUserService(userId, doctorId);
     if (updateResp)
@@ -618,20 +623,22 @@ class DoctorList extends Component {
       const endTime = moment(
         selectedSlotData[selectedSlotData.length - 1].slotEndDateAndTime,
       ).format('h:mm a');
-      return 'Available ' + startTime + ' - ' + endTime;
+      return translate('Available') + startTime + ' - ' + endTime;
     } else {
       if (item.nextAvailableDateAndTime) {
         const availableOn = moment(item.nextAvailableDateAndTime).format(
           'ddd, DD MMM YY',
         );
-        return 'Available On ' + availableOn;
+        return translate('Available On') + availableOn;
       } else {
-        return 'Not Available';
+        return translate('Not Available');
       }
     }
   };
 
-  getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService = indexOfItem => {
+  getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService = (
+    indexOfItem,
+  ) => {
     const {
       bookAppointmentData: {doctorInfoListAndSlotsData},
     } = this.props;
@@ -658,7 +665,7 @@ class DoctorList extends Component {
         indexOfItem,
       ); // get 5 Or LessThan 5 of doctorIdHostpitalIds in order wise using index of given input of doctorInfoListAndSlotsData
       const setDoctorIdHostpitalIdsArrayMap = new Map();
-      orderedDataFromWholeData.map(item => {
+      orderedDataFromWholeData.map((item) => {
         const doctorIdFromItem = item.doctor_id;
         const hospitalIdFromItem =
           item.hospitalInfo && item.hospitalInfo.hospital_id;
@@ -716,8 +723,10 @@ class DoctorList extends Component {
     }
   };
   /*  Set Doctor Availability Slots data by doctorIdHostpitalIds   */
-  setDoctorAvailabilitySlotsDataByDocAndHospitalIds = SourceOfSlotsDataArray => {
-    SourceOfSlotsDataArray.map(item => {
+  setDoctorAvailabilitySlotsDataByDocAndHospitalIds = (
+    SourceOfSlotsDataArray,
+  ) => {
+    SourceOfSlotsDataArray.map((item) => {
       const baCupOfDocInfo = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
         item.doctorIdHostpitalId,
       );
@@ -740,7 +749,7 @@ class DoctorList extends Component {
     } = this.props;
     if (!this.isRenderedTopRatedDocList) {
       this.isRenderedTopRatedDocList = true;
-      const doctorDataListBySort = doctorDataList.sort(function(a, b) {
+      const doctorDataListBySort = doctorDataList.sort(function (a, b) {
         let ratingA = 0;
         let ratingB = 0;
         if (docReviewListCountOfDoctorIDs[a.doctor_id]) {
@@ -804,10 +813,10 @@ class DoctorList extends Component {
             docFavoriteListCountOfDoctorIDs,
             docReviewListCountOfDoctorIDs,
           }}
-          addToFavoritesList={doctorId => {
+          addToFavoritesList={(doctorId) => {
             this.addToFavoritesList(doctorId);
           }}
-          onPressGoToBookAppointmentPage={item => {
+          onPressGoToBookAppointmentPage={(item) => {
             this.onPressGoToBookAppointmentPage(item);
           }}
           shouldUpdate={`${
@@ -842,9 +851,7 @@ class DoctorList extends Component {
             this.selectedSlotItem4DocIdHostpitalIdToStoreInObj
           }
           slotDetails={{slotData, selectedSlotIndex, doctorIdHostpitalId}}
-          shouldUpdate={`${doctorIdHostpitalId}-${selectedSlotIndex}-${
-            this.selectedDate4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId]
-          }`}
+          shouldUpdate={`${doctorIdHostpitalId}-${selectedSlotIndex}-${this.selectedDate4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId]}`}
           onSlotItemPress={(
             doctorIdHostpitalId,
             selectedSlot,
@@ -1026,7 +1033,6 @@ class DoctorList extends Component {
                       marginTop: 15,
                       fontSize: 12,
                       marginRight: 50,
-                   
                     }}>
                     {' '}
                     {this.getNextAvailableDateAndTime(
@@ -1067,7 +1073,7 @@ class DoctorList extends Component {
                           fontSize: 13,
                           fontFamily: 'opensans-bold',
                         }}>
-                        BOOK{' '}
+                        {translate('BOOK')}{' '}
                       </Text>
                     </TouchableOpacity>
                   ) : null}
@@ -1092,7 +1098,7 @@ class DoctorList extends Component {
                   <View>
                     <Row style={{marginTop: 10}}>
                       <Text style={{fontSize: 13, fontFamily: 'Roboto'}}>
-                        Choose appointment date and time
+                        {translate('Choose appointment date and time')}
                       </Text>
                     </Row>
                     {this.renderDatesOnFlatList(
@@ -1114,7 +1120,7 @@ class DoctorList extends Component {
                         ],
                       )
                     ) : (
-                      <RenderNoSlotsAvailable text={'No Slots Available'} />
+                      <RenderNoSlotsAvailable text={translate('No Slots Available')} />
                     )}
                     <View
                       style={{
@@ -1135,7 +1141,7 @@ class DoctorList extends Component {
                               alignSelf: 'flex-start',
                               fontFamily: 'Roboto',
                             }}>
-                            Selected Appointment on
+                            {translate("Selected Appointment on")}
                           </Text>
                           <Text
                             style={{
@@ -1186,7 +1192,7 @@ class DoctorList extends Component {
                                 fontSize: 12,
                                 fontFamily: 'opensans-bold',
                               }}>
-                              Continue{' '}
+                              {translate("Continue")}{' '}
                             </Text>
                           </TouchableOpacity>
                         </Col>
