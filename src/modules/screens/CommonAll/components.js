@@ -92,7 +92,7 @@ const RenderProposeNewPopPage = (props) => {
               color: '#FFF',
               marginLeft: -5,
             }}>
-            {'Doctor has Rescheduled the appointment !'}
+            {translate('Doctor has Rescheduled the appointment !')}
           </Text>
         </CardItem>
         <Row style={{justifyContent: 'center'}}>
@@ -161,7 +161,7 @@ const RenderProposeNewPopPage = (props) => {
                       textAlign: 'center',
                       color: '#fff',
                     }}>
-                    {'Skip'}
+                    {translate('Skip')}
                   </Text>
                 </TouchableOpacity>
               </Col>
@@ -186,7 +186,7 @@ const RenderProposeNewPopPage = (props) => {
                       textAlign: 'center',
                       color: '#fff',
                     }}>
-                    {'ACCEPT'}
+                    {translate('ACCEPT')}
                   </Text>
                 </TouchableOpacity>
               </Col>
@@ -211,7 +211,7 @@ const RenderProposeNewPopPage = (props) => {
                       color: '#fff',
                     }}>
                     {' '}
-                    {'CANCEL'}
+                    {translate('CANCEL')}
                   </Text>
                 </TouchableOpacity>
               </Col>
@@ -250,7 +250,7 @@ const RenderNoAppointmentsFounds = (props) => {
           style={[styles.bookingButton, styles.customButton]}
           testID="navigateToHome">
           <Text style={{fontFamily: 'opensans-bold', fontSize: 15}}>
-            Book Now
+            {translate("Book Now")}
           </Text>
         </Button>
       </Item>
@@ -286,7 +286,7 @@ const RenderPriceDetails = (props) => {
       <Text
         note
         style={{fontFamily: 'Roboto', fontSize: 12, textAlign: 'center'}}>
-        Package Amt
+        {translate("Package Amt")}
       </Text>
       <Row style={{justifyContent: 'center'}}>
         <Text style={styles.finalRs}>
@@ -311,7 +311,7 @@ const RenderOfferDetails = (props) => {
             ? styles.offerText4LalBookApp
             : styles.offerText
         }>
-        Offer
+        {translate("Offer")}
       </Text>
       <Text
         style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>
@@ -480,7 +480,7 @@ const RenderEditingPincode = (props) => {
     <Row style={{padding: 5, height: 45}}>
       <Col size={7.5} style={{borderColor: 'gray', borderWidth: 0.7}}>
         <TextInput
-          placeholder="Enter PinCode"
+          placeholder={translate("Enter PinCode")}
           style={
             Platform.OS === 'ios'
               ? {fontSize: 12, marginLeft: 5, borderRadius: 5, marginTop: 9}

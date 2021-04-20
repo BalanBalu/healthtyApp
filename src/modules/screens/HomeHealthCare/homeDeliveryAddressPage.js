@@ -179,11 +179,11 @@ export default class HomeHealthCareAddressChange extends Component {
                    
                 </Content>
                 <ConfirmPopup
-                    warningMessageText={'Are you sure you want to delete this Address !'}
-                    confirmButtonText={'Confirm'}
+                    warningMessageText={translate('Are you sure you want to delete this Address !')}
+                    confirmButtonText={translate('Confirm')}
                     confirmButtonStyle={styles.confirmButton}
                     cancelButtonStyle={styles.cancelButton}
-                    cancelButtonText={'Cancel'}
+                    cancelButtonText={translate('Cancel')}
                     confirmButtonAction={() => {
                         this.removeSelectedUserAddress();
                         this.setState({ isVisibleDeletePop: false })
@@ -197,7 +197,7 @@ export default class HomeHealthCareAddressChange extends Component {
                                 onPress={() => selectedAddressIndex !== -1 ? this.onPressGoToCategoriesPage() : null}
                                 testID='clickButtonToPaymentReviewPage'>
                                 <Row style={{ justifyContent: 'center', }}>
-                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>{selectedAddressIndex !== -1 ? 'NEXT' : 'SELECT ADDRESS'}</Text>
+                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>{selectedAddressIndex !== -1 ? translate('NEXT') : translate('SELECT ADDRESS')}</Text>
                                 </Row>
                             </Button>
                         </Col>

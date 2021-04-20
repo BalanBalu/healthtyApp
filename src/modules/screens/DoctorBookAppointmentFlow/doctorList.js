@@ -323,7 +323,7 @@ class DoctorList extends Component {
       }
     } catch (Ex) {
       Toast.show({
-        text: 'Something Went Wrong' + Ex,
+        text: translate('Something Went Wrong') + Ex,
         duration: 3000,
         type: 'danger',
       });
@@ -444,8 +444,8 @@ class DoctorList extends Component {
           <RenderListNotFound
             text={
               this.conditionFromFilterPage
-                ? 'Doctors Not found!..Choose Filter again'
-                : ' No Doctor list found!'
+                ? translate('Doctors Not found!..Choose Filter again')
+                : translate('No Doctor list found!')
             }
           />
         )}
@@ -495,7 +495,7 @@ class DoctorList extends Component {
     const updateResp = await addFavoritesToDocByUserService(userId, doctorId);
     if (updateResp)
       Toast.show({
-        text: 'Doctor wish list updated successfully',
+        text: translate('Doctor wish list updated successfully'),
         type: 'success',
         duration: 3000,
       });
@@ -510,7 +510,7 @@ class DoctorList extends Component {
   ) => {
     if (!selectedSlotItemByDoctor) {
       Toast.show({
-        text: 'Please select a slot to continue booking',
+        text: translate('Please select a slot to continue booking'),
         type: 'warning',
         duration: 3000,
       });
@@ -544,7 +544,7 @@ class DoctorList extends Component {
         undefined
       ) {
         Toast.show({
-          text: 'Appointment Fee Updated',
+          text: translate('Appointment Fee Updated'),
           type: 'warning',
           duration: 3000,
         });

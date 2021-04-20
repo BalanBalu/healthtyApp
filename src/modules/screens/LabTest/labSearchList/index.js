@@ -3,6 +3,7 @@ import { Container, Content, Text, Toast, Button, Card, Form, CheckBox, Picker, 
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {translate} from '../../../../setup/translator.helper'
 
 import { StyleSheet, TouchableOpacity, View, FlatList, ScrollView, Image, Modal, Dimensions } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
@@ -80,7 +81,7 @@ class labSearchList extends Component {
         const updateResp = await addFavoritesToLabByUserService(userId, labId);
         if (updateResp)
             Toast.show({
-                text: 'Lab wish list updated successfully',
+                text: translate('Lab wish list updated successfully'),
                 type: "success",
                 duration: 3000,
             });
@@ -128,7 +129,7 @@ class labSearchList extends Component {
             }
         } catch (ex) {
             Toast.show({
-                text: 'Something Went Wrong' + ex,
+                text: translate('Something Went Wrong') + ex,
                 duration: 3000,
                 type: "danger"
             })
@@ -316,7 +317,7 @@ class labSearchList extends Component {
         const { labInfo, labCatInfo } = labData;
         if (!selectedSlotItem) {
             Toast.show({
-                text: 'Please select a slot to continue booking',
+                text: translate('Please select a slot to continue booking'),
                 type: 'warning',
                 duration: 3000
             })
@@ -493,7 +494,7 @@ class labSearchList extends Component {
                     let filteredLabData = [];
                     if (filteredListArray.length === 0) {
                         Toast.show({
-                            text: 'Labs Not found!..Choose Filter again',
+                            text: translate('Labs Not found!..Choose Filter again'),
                             type: "danger",
                             duration: 5000,
                         })
@@ -611,39 +612,39 @@ class labSearchList extends Component {
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
                                     </Col>
                                     <Col size={7.5}>
-                                        <Text note style={{ fontFamily: 'opensans-bold', marginTop: 15, fontSize: 12, marginRight: 50,  }}>Available On {moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY')} </Text>
+                                        <Text note style={{ fontFamily: 'opensans-bold', marginTop: 15, fontSize: 12, marginRight: 50,  }}>{translate("Available On")}{moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY')} </Text>
                                     </Col>
                                     <Col size={1.7}>
                                         {!expandedLabIdToShowSlotsData.includes(item.labInfo.lab_id) ?
                                             <TouchableOpacity onPress={() => this.onBookPress(item.labInfo.lab_id)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
-                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12,fontFamily: 'opensans-bold' }}>BOOK </Text>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12,fontFamily: 'opensans-bold' }}>{translate("BOOK")}</Text>
                                             </TouchableOpacity> : null}
                                     </Col>
                                 </Row>
                                 {expandedLabIdToShowSlotsData.includes(item.labInfo.lab_id) ?
                                     <View>
                                         <Row style={{ marginTop: 10 }}>
-                                            <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>Select appointment date and time</Text>
+                                            <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>{translate("Select appointment date and time")}</Text>
                                         </Row>
                                         {this.renderDatesOnFlatList(item.labInfo.lab_id)}
                                         {
                                             slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate] !== undefined ?
                                                 this.renderWorkingHours(item.labInfo.lab_id, slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate])
                                                 : <RenderNoSlotsAvailable
-                                                    text={'NO SLOT AVAILABLE'}
+                                                    text={translate('NO SLOT AVAILABLE')}
                                                 />
                                         }
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'Roboto' }}>Selected Appointment on</Text>
+                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'Roboto' }}>{translate("Selected Appointment on")}</Text>
                                                     <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'Roboto', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') + ' to ' + formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotEndDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
                                                 <Col size={4}>
                                                     <TouchableOpacity
                                                         onPress={() => { this.onPressToContinue4PaymentReview(item, this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id], item.labInfo.lab_id) }}
                                                         style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
-                                                        <Text style={{ color: '#fff', fontSize: 12,fontFamily: 'opensans-bold' }}>Continue </Text>
+                                                        <Text style={{ color: '#fff', fontSize: 12,fontFamily: 'opensans-bold' }}>{translate("Continue")} </Text>
                                                     </TouchableOpacity>
                                                 </Col>
                                             </Row>
@@ -666,25 +667,25 @@ class labSearchList extends Component {
                     <Content>
                         <View>
                             <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
-                                <Row>
+                                <Row style={{height: 35, alignItems: 'center'}}>
                                     <Col style={{ width: '55%', flexDirection: 'row', marginLeft: 5, }} onPress={() => this.topRatingLabs(labListItemData)}>
                                         <Row>
-                                            <Col style={{ width: '15%' }}>
+                                            <Col style={{ width: '20%' }}>
                                                 <MaterialIcons name={labListOrder === 'ASC' ? 'keyboard-arrow-down' :'keyboard-arrow-up'} style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
                                             </Col>
-                                            <Col style={{ width: '85%' }}>
-                                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
+                                            <Col style={{ width: '95%' }}>
+                                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, textAlign: 'center',marginTop:4}}>{translate("Top Rated")}</Text>
                                             </Col>
                                         </Row>
                                     </Col>
                                     <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', borderLeftColor: 'gray', borderLeftWidth: 1 }}>
                                         <Row>
                                             <TouchableOpacity onPress={() => this.filterLabListData(labPreviousData)} style={{ flexDirection: 'row' }}>
-                                                <Col style={{ width: '35%', marginLeft: 10 }}>
+                                                <Col style={{ width: '15%', marginLeft: 10 }}>
                                                     <Icon name='ios-funnel' style={{ color: 'gray',fontSize:20 }} />
                                                 </Col>
-                                                <Col style={{ width: '65%' }}>
-                                                    <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>
+                                                <Col style={{ width: '95%' }}>
+                                                    <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13,marginLeft:-30, width: '100%',textAlign: 'center' }}>{translate("Filters")}{' '}</Text>
                                                 </Col>
                                             </TouchableOpacity>
                                         </Row>
@@ -729,7 +730,7 @@ class labSearchList extends Component {
                                         <Row >
                                             <Col size={6}>
                                                 <Row style={styles.rowMainText}>
-                                                    <Text style={styles.mainHeadText}>Test Option</Text>
+                                                    <Text style={styles.mainHeadText}>{translate("Test Option")}</Text>
                                                 </Row>
                                             </Col>
                                             <Col size={4}></Col>
@@ -745,7 +746,7 @@ class labSearchList extends Component {
                                                     <Row style={{ marginTop: 10, paddingLeft: 5 }}>
                                                         <Col size={5}>
                                                             <TouchableOpacity onPress={() => this.onSelecteTestOption('Test at Home')} style={styles.homeTextButton}>
-                                                                <Text style={styles.innerTexts}>Test at Home</Text>
+                                                                <Text style={styles.innerTexts}>{translate("Test at Home")}</Text>
 
                                                             </TouchableOpacity>
                                                         </Col>
@@ -759,7 +760,7 @@ class labSearchList extends Component {
                                         <Row style={{ marginTop: 10 }}>
                                             <Col size={6}>
                                                 <Row style={styles.rowMainText}>
-                                                    <Text style={styles.mainHeadText}>Sub Categories</Text>
+                                                    <Text style={styles.mainHeadText}>{translate("Sub Categories")}</Text>
                                                 </Row>
                                             </Col>
                                             <Col size={4}></Col>
@@ -784,9 +785,9 @@ class labSearchList extends Component {
                                                             items={this.state.subCategoryInfoList}
                                                             uniqueKey='category_name'
                                                             displayKey='category_name'
-                                                            selectText='Select Sub Category'
+                                                            selectText={translate('Select Sub Category')}
                                                             selectToggleText={{ fontSize: 10, }}
-                                                            searchPlaceholderText='Select Sub Category'
+                                                            searchPlaceholderText={translate('Select Sub Category')}
                                                             modalWithTouchable={true}
                                                             showDropDowns={true}
                                                             hideSearch={false}
@@ -800,6 +801,7 @@ class labSearchList extends Component {
                                                             selectedItems={this.state.selectedSubCategory}
                                                             colors={{ primary: '#18c971' }}
                                                             showCancelButton={true}
+                                                            confirmText={translate("Confirm")}
                                                             animateDropDowns={true}
                                                             selectToggleIconComponent={
                                                                 <Icon
@@ -826,7 +828,7 @@ class labSearchList extends Component {
                                                 <Col size={6}>
 
                                                     <Row style={styles.rowMainText}>
-                                                        <Text style={{ fontFamily: 'Roboto', fontSize: 15, color: '#000' }}>Price</Text>
+                                                        <Text style={{ fontFamily: 'Roboto', fontSize: 15, color: '#000' }}>{translate("Price")}</Text>
                                                     </Row>
                                                 </Col>
                                                 <Col size={4}></Col>
@@ -873,14 +875,14 @@ class labSearchList extends Component {
                                                                 <TouchableOpacity disabled={selectedSubCategory.length != 0 || values.length != 0 || testOption != '' ? false : true}
                                                                     style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: primaryColor, borderWidth: 0.5 }}
                                                                     onPress={() => this.clearFilteredData()}>
-                                                                    <Text style={{ color: primaryColor, fontFamily: 'opensans-bold', fontSize: 13, textAlign: 'center',  }}>CLEAR</Text>
+                                                                    <Text style={{ color: primaryColor, fontFamily: 'opensans-bold', fontSize: 13, textAlign: 'center',  }}>{translate("CLEAR")}</Text>
                                                                 </TouchableOpacity>
                                                             </Col>
                                                             <Col size={5}>
                                                                 <TouchableOpacity disabled={(selectedSubCategory.length != 0 || values.length != 0 || testOption != '') && !disabled ? false : true}
                                                                     style={(selectedSubCategory.length != 0 || values.length != 0 || testOption != '') && !disabled ? styles.viewButtonBgGreeen : styles.viewButtonBgGray}
                                                                     onPress={() => this.applyFilterData()}>
-                                                                    <Text style={(selectedSubCategory.length != 0 || values.length != 0 || testOption != '') && !disabled ? styles.doneButton : styles.defaultdoneButton}>DONE</Text>
+                                                                    <Text style={(selectedSubCategory.length != 0 || values.length != 0 || testOption != '') && !disabled ? styles.doneButton : styles.defaultdoneButton}>{translate("DONE")}</Text>
                                                                 </TouchableOpacity>
                                                             </Col>
                                                         </Row>
