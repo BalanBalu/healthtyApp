@@ -142,13 +142,13 @@ class CorporateHome extends PureComponent {
   getCorporateDatails = async (userId) => {
     try {
       let fields = 'corporate_member_id,employee_code';
+      let employeeCode = await AsyncStorage.getItem('employeeCode');
       let userResult = await fetchUserProfile(userId, fields);
 
-      if (userResult) {
+      if (userResult||employeeCode) {
         let corporateResult = await getCorporateEmployeeDetailsById(
-          userResult.employee_code,
+          userResult.employee_code||employeeCode
         );
-
         if (!!corporateResult && !corporateResult.error) {
           store.dispatch({
             type: SET_CORPORATE_DATA,
@@ -162,10 +162,10 @@ class CorporateHome extends PureComponent {
             const policyData = await getPolicyByPolicyNo(memberPolicyNo);
             if (policyData && Object.keys(policyData).length) {
               if (policyData && policyData.TPA) {
+
                 const memberTpaResp = await getTpaInfoByTpaCode(policyData.TPA);
                 const memberTpaData =
                   memberTpaResp && memberTpaResp.length && memberTpaResp[0];
-                  console.log("memberTpaData",memberTpaData)
                 if (memberTpaData) {
                   await store.dispatch({
                     type: SET_MEMBER_TPA_DATA,
