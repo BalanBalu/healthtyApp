@@ -17,6 +17,7 @@ import { getMultipleDoctorDetails } from "../../../providers/bookappointment/boo
 import InsertReview from '../Reviews/insertReviews';
 import { RenderNoAppointmentsFounds } from '../../CommonAll/components';
 import RenderAppointmentList from './RenderAppointmentList';
+import {translate} from '../../../../setup/translator.helper';
 const PAGINATION_COUNT_FOR_GET_APPOINTMENT_LIST = 6;
 const DOCTOR_FIELDS = "specialist,education,prefix,profile_image,gender";
 
@@ -164,7 +165,7 @@ export default class AppointmentList extends Component {
                 this.isEnabledLoadMoreData = false;
                 if (this.state.data.length > 4) {
                     Toast.show({
-                        text: 'No more Appointments Available!',
+                        text: translate('No more Appointments Available !'),
                         duration: 4000,
                         type: "success"
                     })
@@ -277,7 +278,7 @@ export default class AppointmentList extends Component {
                             marginTop: "auto",
                             fontFamily:'opensans-bold'
                         }}
-                        values={["Upcoming", "Past"]}
+                        values={[translate("Upcoming"), translate("Past")]}
                         selectedIndex={selectedIndex}
                         onTabPress={this.onChangeUpComingOrPastTabs}
                         activeTabStyle={{
@@ -305,7 +306,7 @@ export default class AppointmentList extends Component {
                             keyExtractor={(item, index) => index.toString()}
                         />
                         : < RenderNoAppointmentsFounds 
-                        text={"No Appointments are scheduled !"}
+                        text={translate("No Appointments are scheduled !")}
                         onPressGoToBookNow={(item) => { this.onPressGoToBookNow(item) }}/>
                 }
                 {isVisibleAddReviewPop === true ?

@@ -4,8 +4,9 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { TouchableOpacity, View, FlatList, Dimensions, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
 import styles from '../../CommonAll/styles'
-import {primaryColor} from '../../../../setup/config'
+import { primaryColor } from '../../../../setup/config'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { translate } from '../../../../setup/translator.helper';
 
 
 import {
@@ -79,7 +80,7 @@ class DoctorList extends Component {
             }
         } catch (Ex) {
             Toast.show({
-                text: 'Something Went Wrong' + Ex,
+                text: translate('Something Went Wrong') + Ex,
                 duration: 3000,
                 type: "danger"
             })
@@ -202,7 +203,7 @@ class DoctorList extends Component {
                 if (this.docInfoAndAvailableSlotsMapByDoctorId.size < 3) this.isEnabledLoadMoreData = false;
                 else if (this.docInfoAndAvailableSlotsMapByDoctorId.size > 4) {
                     Toast.show({
-                        text: 'No more Doctors Available!',
+                        text: translate('No more Doctors Available!'),
                         duration: 4000,
                         type: "success"
                     })
@@ -210,7 +211,7 @@ class DoctorList extends Component {
             }
         } catch (Ex) {
             Toast.show({
-                text: 'Something Went Wrong' + Ex,
+                text: translate('Something Went Wrong') + Ex,
                 duration: 3000,
                 type: "danger"
             })
@@ -300,13 +301,13 @@ class DoctorList extends Component {
                                 <MaterialIcons name='keyboard-arrow-down' style={{ color: 'gray', fontSize: 24 }} />
                             </Col>
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
-                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, textAlign: 'center' }}>Top Rated </Text>
+                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, textAlign: 'center' }}>{translate("Top Rated")}</Text>
                             </Col>
                         </Col>
                         <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 1, justifyContent: 'center' }} onPress={() => this.navigateToFilters()}>
 
                             <Col size={8.0} style={{ justifyContent: 'center' }}>
-                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>Filters </Text>
+                                <Text uppercase={false} style={{ fontFamily: 'Roboto', color: '#000', fontSize: 13, marginLeft: 10, width: '100%', textAlign: 'center' }}>{translate("Filters")} </Text>
                             </Col>
                             <Col size={2.0} style={{ marginLeft: 5 }}>
                                 <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 20 }} />
@@ -321,7 +322,7 @@ class DoctorList extends Component {
                         color: '#000',
                         fontSize: 13,
                         marginTop: 5
-                    }}>{"Showing Doctors in the"}
+                    }}>{translate("Showing Doctors in the")}
                         <Text style={{
                             fontFamily: 'Roboto',
                             color: primaryColor,
@@ -344,7 +345,7 @@ class DoctorList extends Component {
                     />
                     :
                     <Item style={{ borderBottomWidth: 0, marginTop: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? 'Doctors Not found!..Choose Filter again' : ' No Doctor list found!'}</Text>
+                        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >{this.conditionFromFilterPage ? translate('Doctors Not found!..Choose Filter again') : translate('No Doctor list found!')}</Text>
                     </Item>
                 }
                 {isLoadingMoreDocList ?
@@ -379,7 +380,7 @@ class DoctorList extends Component {
         const updateResp = await addFavoritesToDocByUserService(userId, doctorId);
         if (updateResp)
             Toast.show({
-                text: 'Doctor wish list updated successfully',
+                text: translate('Doctor wish list updated successfully'),
                 type: "success",
                 duration: 3000,
             });
@@ -390,7 +391,7 @@ class DoctorList extends Component {
     onPressToContinue4PaymentReview = async (doctorData, selectedSlotItemByDoctor, doctor_id) => {
         if (!selectedSlotItemByDoctor) {
             Toast.show({
-                text: 'Please select a slot to continue booking',
+                text: translate('Please select a slot to continue booking'),
                 type: 'warning',
                 duration: 3000
             })
@@ -426,14 +427,14 @@ class DoctorList extends Component {
     getNextAvailableDateAndTime = (selectedSlotData, item) => {
         if (selectedSlotData) {
             const availableOn = moment(selectedSlotData.slotDate).format('ddd, DD MMM YY');
-            return 'Available On ' + availableOn;
+            return translate('Available On') + availableOn;
         }
         else if (item.nextAvailableDateAndTime) {
             const availableOn = moment(item.nextAvailableDateAndTime).format('ddd, DD MMM YY');
-            return 'Available On ' + availableOn;
+            return translate('Available On') + availableOn;
         }
         else {
-            return 'Not Available';
+            return translate('Not Available');
         }
     }
 
@@ -544,7 +545,7 @@ class DoctorList extends Component {
         }
         if (selectedSlotItem && selectedSlotItem.fee != this.storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctor_id]) {
             Toast.show({
-                text: 'Appointment Fee Updated',
+                text: translate('Appointment Fee Updated'),
                 type: 'warning',
                 duration: 1000
             });
@@ -631,12 +632,12 @@ class DoctorList extends Component {
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
                                     </Col>
                                     <Col size={7.5}>
-                                        <Text note style={{ fontFamily: 'opensans-bold', marginTop: 15, fontSize: 12, marginRight: 50,  }}> {this.getNextAvailableDateAndTime(item.slotData && item.slotData[this.selectedDate4DocIdHostpitalIdToStoreInObj[item.doctor_id] || currentDate], item)}</Text>
+                                        <Text note style={{ fontFamily: 'opensans-bold', marginTop: 15, fontSize: 12, marginRight: 50, }}> {this.getNextAvailableDateAndTime(item.slotData && item.slotData[this.selectedDate4DocIdHostpitalIdToStoreInObj[item.doctor_id] || currentDate], item)}</Text>
                                     </Col>
                                     <Col size={1.7}>
                                         {!expandItemOfDocIdToShowSlotsData.includes(item.doctor_id) ?
                                             <TouchableOpacity onPress={() => this.onBookPress(item.doctor_id, indexOfItem)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 18, height: 31, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, marginLeft: -6 }}>
-                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontFamily: 'opensans-bold' }}>BOOK </Text>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 13, fontFamily: 'opensans-bold' }}>{translate("BOOK")}</Text>
                                             </TouchableOpacity> :
                                             null}
                                         {this.state.isLoadingDatesAndSlotsByRespectedItem == item.doctor_id ?
@@ -656,20 +657,20 @@ class DoctorList extends Component {
                                     item.slotData ?
                                         <View>
                                             <Row style={{ marginTop: 10 }}>
-                                                <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>Choose appointment Date</Text>
+                                                <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>{translate("Choose appointment Date")}</Text>
                                             </Row>
                                             {this.renderDatesOnFlatList(item.doctor_id, item.slotData, indexOfItem)}
                                             <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                        <Text style={this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? { fontSize: 12, alignSelf: 'flex-start', color: '#000', fontFamily: 'Roboto' } : { color: '#a90e0e', fontSize: 12, alignSelf: 'flex-start', fontFamily: 'Roboto' }}> {this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? "You Selected Appointment on" : "Appointment is Not Available"}</Text>
+                                                        <Text style={this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? { fontSize: 12, alignSelf: 'flex-start', color: '#000', fontFamily: 'Roboto' } : { color: '#a90e0e', fontSize: 12, alignSelf: 'flex-start', fontFamily: 'Roboto' }}> {this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? translate("You Selected Appointment on") : translate("Appointment is Not Available")}</Text>
                                                         <Text style={{ alignSelf: 'flex-start', color: primaryColor, fontSize: 12, fontFamily: 'opensans-bold', marginTop: 5, marginLeft: 5 }}>{this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate] ? formatDate(this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id || currentDate].slotDate, 'ddd DD MMM YYYY') : null}</Text>
                                                     </Col>
                                                     <Col size={4}>
                                                         <TouchableOpacity
                                                             onPress={() => { this.onPressToContinue4PaymentReview(item, this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[item.doctor_id], item.doctor_id) }}
                                                             style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: 5 }}>
-                                                            <Text style={{ color: '#fff', fontSize: 12, fontFamily: 'opensans-bold' }}>Continue </Text>
+                                                            <Text style={{ color: '#fff', fontSize: 12, fontFamily: 'opensans-bold' }}>{translate("Continue")} </Text>
                                                         </TouchableOpacity>
                                                     </Col>
                                                 </Row>

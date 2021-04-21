@@ -14,6 +14,7 @@ import { SERVICE_TYPES } from '../../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
 import { PayBySelection, POSSIBLE_PAY_METHODS } from '../../PaymentReview/PayBySelection';
 import { POSSIBLE_FAMILY_MEMBERS, TestDetails } from '../../PaymentReview/testDeatils';
+import {translate} from '../../../../setup/translator.helper';
 import {primaryColor} from '../../../../setup/config'
 class HomeTestConfirmation extends Component {
     constructor(props) {
@@ -221,7 +222,7 @@ class HomeTestConfirmation extends Component {
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                             <Row>
                                 <Col size={4}>
-                                    <Text style={styles.subHead}>Appointment Date</Text>
+                                    <Text style={styles.subHead}>{translate("Appointment Date")}</Text>
                                 </Col>
                                 <Col size={6}>
                                     <Row style={{ justifyContent: 'flex-end', marginTop: 1 }}>
@@ -239,7 +240,7 @@ class HomeTestConfirmation extends Component {
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                             <Row>
                                 <Col size={3}>
-                                    <Text style={styles.subHead}>Home Address</Text>
+                                    <Text style={styles.subHead}>{translate("Home Address")}</Text>
                                 </Col>
                                 <Col size={7}>
                                 </Col>
@@ -285,7 +286,7 @@ class HomeTestConfirmation extends Component {
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                             <Row>
                                 <Icon name="create" style={{ fontSize: 15, color: '#000' }} />
-                                <Text style={styles.subTextBilling}> Your Reason For Checkup</Text>
+                                <Text style={styles.subTextBilling}> {translate("Your Reason For Checkup")}</Text>
                             </Row>
                             <Form style={{ marginRight: 1, marginLeft: -13 }}>
                                 <Item style={{ borderBottomWidth: 0 }}>
@@ -295,7 +296,7 @@ class HomeTestConfirmation extends Component {
                                             bookSlotDetails.diseaseDescription = enteredDiseaseText;
                                             this.setState({ enteredDiseaseText, bookSlotDetails })
                                         }}
-                                        multiline={true} placeholder="Write Reason...."
+                                        multiline={true} placeholder={translate("Write Reason")}
                                         placeholderTextColor={'#909498'}
                                         style={styles.textInput} />
                                 </Item>
@@ -305,11 +306,11 @@ class HomeTestConfirmation extends Component {
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                             <Row>
                                 <Icon name="ios-cash" style={{ fontSize: 15, color: primaryColor }} />
-                                <Text style={styles.subTextBilling}> Billing Details</Text>
+                                <Text style={styles.subTextBilling}> {translate("Billing Details")}</Text>
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', color: '#000' }}>Consultation Fees</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', color: '#000' }}>{translate("Consultation Fees")}</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'}{Number(amountBySelectedPersons).toFixed(2)}</Text>
@@ -317,7 +318,7 @@ class HomeTestConfirmation extends Component {
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', color: '#000' }}>Charges </Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', color: '#000' }}>{translate("Charges")} </Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
@@ -326,7 +327,7 @@ class HomeTestConfirmation extends Component {
 
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
-                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', }}>Amount to be Paid</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'Roboto', }}>{translate("Amount to be Paid")}</Text>
                                 </Col>
                                 <Col>
                                     <Text style={styles.rupeesText}>{'\u20B9'} {Number(finalPaidAmount).toFixed(2)}</Text>
@@ -584,7 +585,7 @@ class HomeTestConfirmation extends Component {
                                 :
                                 <Col size={5} style={styles.proceedButton}>
                                     <TouchableOpacity onPress={() => this.onPressPayAtHome()} >
-                                        <Text style={styles.proceedButtonText}>Book Appointment</Text>
+                                        <Text style={styles.proceedButtonText}>{translate("Book Appointment")}</Text>
                                     </TouchableOpacity>
                                 </Col>
                             }
