@@ -98,7 +98,7 @@ class HomeTestConfirmation extends Component {
         const findFamilyDetailsInPatDetailsArray = patDetailsArray.find(item => item.type === 'others');
         if (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && !findFamilyDetailsInPatDetailsArray) {
             Toast.show({
-                text: 'You have selected family details, kindly add family members to continue',
+                text: translate('You have selected family details, kindly add family members to continue'),
                 type: 'warning',
                 duration: 3000
             })
@@ -106,7 +106,7 @@ class HomeTestConfirmation extends Component {
         }
         if (!patDetailsArray.length) {
             Toast.show({
-                text: 'Kindly select Self or Add other patient details',
+                text: translate('Kindly select Self or Add other patient details'),
                 type: 'warning',
                 duration: 3000
             })
@@ -114,7 +114,7 @@ class HomeTestConfirmation extends Component {
         }
         if (!enteredDiseaseText) {
             Toast.show({
-                text: 'Kindly enter your Reason for Checkup ',
+                text: translate('Kindly enter your Reason for Checkup '),
                 type: 'warning',
                 duration: 3000
             })
@@ -137,7 +137,7 @@ class HomeTestConfirmation extends Component {
         const findFamilyDetailsInPatDetailsArray = patDetailsArray.find(item => item.type === 'others');
         if (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && !findFamilyDetailsInPatDetailsArray) {
             Toast.show({
-                text: 'You have selected family details, kindly add family members to continue',
+                text: translate('You have selected family details, kindly add family members to continue'),
                 type: 'warning',
                 duration: 3000
             })
@@ -145,7 +145,7 @@ class HomeTestConfirmation extends Component {
         }
         if (!patDetailsArray.length) {
             Toast.show({
-                text: 'Kindly select Self or Add other patient details',
+                text: translate('Kindly select Self or Add other patient details'),
                 type: 'warning',
                 duration: 3000
             })
@@ -153,13 +153,13 @@ class HomeTestConfirmation extends Component {
         }
         if (!enteredDiseaseText) {
             Toast.show({
-                text: 'Kindly enter your Reason for Checkup ',
+                text: translate('Kindly enter your Reason for Checkup '),
                 type: 'warning',
                 duration: 3000
             })
             return false;
         }
-        this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
+        this.setState({ isLoading: true, spinnerText: translate("We are Booking your Appoinmtent") })
         let patientData = [];
         patDetailsArray.map(ele => {
             patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })

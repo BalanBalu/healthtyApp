@@ -395,7 +395,19 @@
   "Hide":"...Hide",
   "View more":"...View more",
   "Service":"Service",
-  "Description":"Description"
+  "Description":"Description",
+
+  "No Appointments are scheduled !":"No Appointments are scheduled !",
+  "Visit home address :":"Visit home address :",
+  "Visited On :":"Visited On :",
+  "Choose appointment date":"Choose appointment date",
+  "You have selected family details, kindly add family members to continue":"You have selected family details, kindly add family members to continue",
+  "Kindly enter your Reason for Checkup ":"Kindly enter your Reason for Checkup ",
+  "Patient Address":"Patient Address",
+  "Likes":"Likes"
+  
+
+
   
   
   

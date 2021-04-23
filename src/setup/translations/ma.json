@@ -389,7 +389,15 @@
   "Hide":"...ഒളിക്കുക",
   "View more":"...കൂടുതൽ കാണു",
   "Service":"സേവനം",
-  "Description":"വിവരണം"
+  "Description":"വിവരണം",
+  "No Appointments are scheduled !":"കൂടിക്കാഴ്ചകളൊന്നും ഷെഡ്യൂൾ ചെയ്തിട്ടില്ല !",
+  "Visit home address :":"ഹോം വിലാസം സന്ദർശിക്കുക :",
+  "Visited On :":"സന്ദർശിച്ചു :",
+  "Choose appointment date":"അപ്പോയിന്റ്മെന്റ് തീയതി തിരഞ്ഞെടുക്കുക",
+  "You have selected family details, kindly add family members to continue":"നിങ്ങൾ കുടുംബ വിശദാംശങ്ങൾ തിരഞ്ഞെടുത്തു, തുടരാൻ കുടുംബാംഗങ്ങളെ ചേർക്കുക",
+  "Kindly enter your Reason for Checkup ":"ചെക്ക്അപ്പിനായി നിങ്ങളുടെ കാരണം ദയവായി നൽകുക ",
+  "Patient Address":"ക്ഷമ വിലാസം",
+  "Likes":"ഇഷ്ടങ്ങൾ"
 
 
 }
