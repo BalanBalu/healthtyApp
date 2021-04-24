@@ -31,6 +31,7 @@ import {validateEmailAddress} from '../../common';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {memberEmailValidation} from '../../providers/corporate/corporate.actions';
 import ModalPopup from '../../../components/Shared/ModalPopup';
+import {translate} from '../../../setup/translator.helper';
 
 let loginData;
 class UpdateEmail extends Component {
@@ -63,7 +64,7 @@ class UpdateEmail extends Component {
   handleEmailUpdate = async () => {
     try {
       if (validateEmailAddress(this.state.emailId) == false) {
-        this.setState({errorMsg: 'Kindly enter valid mail id'});
+        this.setState({errorMsg: translate('Kindly enter valid mail id')});
         return false;
       }
       this.setState({errorMsg: '', updateButton: false,isLoading: true});
@@ -75,7 +76,7 @@ class UpdateEmail extends Component {
       let response = await updateMemberDetails(requestData);
       if (response) {
         Toast.show({
-          text: 'Your email id is updated successfully',
+          text: translate('Your email id is updated successfully'),
           type: 'success',
           duration: 3000,
         });
@@ -100,14 +101,14 @@ class UpdateEmail extends Component {
       "Activation link for your new email has been sent. Please click on the link and change your password",
       [
           {
-              text: "Cancel",
+              text: translate("Cancel"),
               onPress: () => {
                   console.log("Cancel Pressed");
               },
               style: "cancel"
           },
           {
-              text: "Update", onPress: () => {
+              text: translate("Update"), onPress: () => {
                       this.handleEmailUpdate()
               }
 
@@ -122,7 +123,7 @@ class UpdateEmail extends Component {
     if (response || this.state.emailId == this.state.userData.emailId) {
       this.setState({
         emailId: '',
-        errorMsg: 'Email already exist',
+        errorMsg: translate('Email already exist'),
         isModalVisible: true,
         updateButton: true,
       });
@@ -139,7 +140,7 @@ class UpdateEmail extends Component {
         <Content contentContainerStyle={styles.bodyContent}>
           <ScrollView>
             <View style={{marginTop: 30}}>
-              <Text style={styles.headerText}>Update Email</Text>
+              <Text style={styles.headerText}>{translate("Update Email")}</Text>
 
               <Card style={styles.cardEmail}>
                 <Item
@@ -152,14 +153,14 @@ class UpdateEmail extends Component {
                       marginTop: 5,
                       marginLeft: 7,
                     }}>
-                    Email
+                    {translate("Email")}
                   </Text>
                 </Item>
 
                 <Item style={{borderBottomWidth: 0}}>
                   <Icon name="mail" style={styles.centeredIcons}></Icon>
                   <Input
-                    placeholder="Edit Your Email"
+                    placeholder={translate("Edit Your Email")}
                     style={styles.transparentLabel}
                     keyboardType="email-address"
                     onChangeText={(emailId) => this.setState({emailId,updateButton:false})}
@@ -194,7 +195,7 @@ class UpdateEmail extends Component {
                         style={styles.button2}
                         onPress={() => this.memberEmailValidation()}
                         testID="clickUpdateEmail">
-                        <Text style={styles.buttonText}>Update</Text>
+                        <Text style={styles.buttonText}>{translate("Update")}</Text>
                       </Button>
                     </Right>
                   </Row>
@@ -203,7 +204,7 @@ class UpdateEmail extends Component {
               <View style={{flex: 1}}>
                 <ModalPopup
                   errorMessageText={this.state.errorMsg}
-                  closeButtonText={'CLOSE'}
+                  closeButtonText={translate('CLOSE')}
                   closeButtonAction={() =>
                     this.setState({isModalVisible: !this.state.isModalVisible})
                   }

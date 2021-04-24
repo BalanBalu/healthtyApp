@@ -418,7 +418,45 @@
   "SELECT":"SELECT",
   "Hide Beneficiary Details":"Hide Beneficiary Details ",
   "Show Beneficiary Details":"Show Beneficiary Details ",
-  "No Details Available":"No Details Available"
+  "No Details Available":"No Details Available",
+
+
+  "Select a Photo":"Select a Photo",
+  "Take Photo":"Take Photo",
+  "Choose from Library":"Choose from Library",
+  "Blood":"Blood",
+  "Personal details":"Personal details..",
+  "Family details":"Family details",
+  "Relation":"Relation",
+  "Add your family details":"Add your family details",
+  "Are you sure you want to delete !":"Are you sure you want to delete !",
+  "Add your email":"Add your email",
+  "Add Address":"Add Address",
+  "Contact":"Contact",
+  "Add Contact Number":"Add Contact Number",
+  "Change Password":"Change Password",
+  "Your Doctors":"Your Doctors",
+  "Firstname must be a Characters":"Firstname must be a Characters",
+  "Middlename must be a Characters":"Middlename must be a Characters",
+  "Lastname must be a Characters":"Lastname must be a Characters",
+  "Please enter first name":"Please enter first name",
+  "Please select date of birth":"Please select date of birth",
+  "Please select gender":"Please select gender",
+  "Please select blood group":"Please select blood group",
+  "Your Profile has been Updated":"Your Profile has been Updated",
+  "Update Your Details":"Update Your Details",
+  "First Name":"First Name",
+  "Middle Name":"Middle Name",
+  "Last Name":"Last Name",
+  "Date of Birth":"Date of Birth",
+  "Update":"Update",
+  "Kindly enter valid mail id":"Kindly enter valid mail id",
+  "Your email id is updated successfully":"Your email id is updated successfully",
+  "Email already exist":"Email already exist",
+  "Update Email":"Update Email",
+  "Edit Your Email":"Edit Your Email",
+  "CLOSE":"CLOSE"
+  
   
 
 

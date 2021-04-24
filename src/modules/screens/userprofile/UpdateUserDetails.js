@@ -23,6 +23,7 @@ import {connect} from 'react-redux';
 import {Row, Col} from 'react-native-easy-grid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {updateFamilyMembersDetails} from '../../providers/corporate/corporate.actions';
+import {translate} from '../../../setup/translator.helper';
 
 import {
   Image,
@@ -103,7 +104,7 @@ class UpdateUserDetails extends Component {
     }
     if (this.state.firstName && validateName(this.state.firstName) == false) {
       this.setState({
-        errorMsg: 'Firstname must be a Characters',
+        errorMsg: translate('Firstname must be a Characters'),
         isModalVisible: true,
         updateButton: true,
       });
@@ -111,7 +112,7 @@ class UpdateUserDetails extends Component {
     }
     if (this.state.middleName && validateName(this.state.middleName) == false) {
       this.setState({
-        errorMsg: 'Middlename must be a Characters',
+        errorMsg: translate('Middlename must be a Characters'),
         isModalVisible: true,
         updateButton: true,
       });
@@ -119,7 +120,7 @@ class UpdateUserDetails extends Component {
     }
     if (this.state.lastName && validateName(this.state.lastName) == false) {
       this.setState({
-        errorMsg: 'Lastname must be a Characters',
+        errorMsg: translate('Lastname must be a Characters'),
         isModalVisible: true,
         updateButton: true,
       });
@@ -141,28 +142,28 @@ class UpdateUserDetails extends Component {
     try {
       if (!firstName) {
         this.setState({
-          errorMsg: 'Please enter first name',
+          errorMsg: translate('Please enter first name'),
           isModalVisible: true,
         });
         return false;
       }
       if (!dob) {
         this.setState({
-          errorMsg: 'Please select date of birth',
+          errorMsg: translate('Please select date of birth'),
           isModalVisible: true,
         });
         return false;
       }
       if (!gender) {
         this.setState({
-          errorMsg: 'Please select gender',
+          errorMsg: translate('Please select gender'),
           isModalVisible: true,
         });
         return false;
       }
       if (selectedBloodGroup=='Select Blood Group') {
         this.setState({
-          errorMsg: 'Please select blood group',
+          errorMsg: translate('Please select blood group'),
           isModalVisible: true,
         });
         return false;
@@ -209,7 +210,7 @@ class UpdateUserDetails extends Component {
         };
         let updateRes = await updateFamilyMembersDetails(data);
         Toast.show({
-          text: 'Your Profile has been Updated',
+          text: translate('Your Profile has been Updated'),
           type: 'success',
           duration: 3000,
         });
@@ -259,12 +260,12 @@ class UpdateUserDetails extends Component {
               <Spinner color="blue" visible={this.state.isLoading} />
             ) : null}
 
-            <Text style={styles.headerText}>Update Your Details</Text>
+            <Text style={styles.headerText}>{translate("Update Your Details")}</Text>
             <View style={{marginLeft: -10}}>
               <Form style={{marginTop: 10}}>
                 <Item style={{borderBottomWidth: 0}}>
                   <Input
-                    placeholder="First Name"
+                    placeholder={translate("First Name")}
                     style={styles.transparentLabel2}
                     value={this.state.firstName}
                     keyboardType={'default'}
@@ -283,7 +284,7 @@ class UpdateUserDetails extends Component {
 
                 <Item style={{borderBottomWidth: 0}}>
                   <Input
-                    placeholder="Middle Name"
+                    placeholder={translate("Middle Name")}
                     style={styles.transparentLabel2}
                     ref={(input) => {
                       this.firstName = input;
@@ -304,7 +305,7 @@ class UpdateUserDetails extends Component {
                 </Item>
                 <Item style={{borderBottomWidth: 0}}>
                   <Input
-                    placeholder="Last Name"
+                    placeholder={translate("Last Name")}
                     style={styles.transparentLabel2}
                     ref={(input) => {
                       this.middleName = input;
@@ -365,7 +366,7 @@ class UpdateUserDetails extends Component {
                     }>
                     {this.state.dob != null
                       ? formatDate(this.state.dob, 'DD/MM/YYYY')
-                      : 'Date of Birth'}
+                      : translate('Date of Birth')}
                   </Text>
                   <DateTimePicker
                     mode={'date'}
@@ -465,7 +466,7 @@ class UpdateUserDetails extends Component {
                                 marginLeft: 5,
                               }
                         }>
-                        Male
+                        {translate("Male")}
                       </Text>
                     </Col>
                     <Col
@@ -493,7 +494,7 @@ class UpdateUserDetails extends Component {
                                 marginLeft: 5,
                               }
                         }>
-                        Female
+                        {translate("Female")}
                       </Text>
                     </Col>
                     <Col
@@ -522,7 +523,7 @@ class UpdateUserDetails extends Component {
                                 marginLeft: 5,
                               }
                         }>
-                        Others
+                        {translate("Others")}
                       </Text>
                     </Col>
                   </Row>
@@ -540,7 +541,7 @@ class UpdateUserDetails extends Component {
                     block
                     onPress={() => this.userUpdate()}
                     testID="updateBasicDetails">
-                    <Text style={styles.buttonText}>Update</Text>
+                    <Text style={styles.buttonText}>{translate("Update")}</Text>
                   </Button>
                 </View>
               </Form>
