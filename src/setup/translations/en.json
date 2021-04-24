@@ -455,7 +455,31 @@
   "Email already exist":"Email already exist",
   "Update Email":"Update Email",
   "Edit Your Email":"Edit Your Email",
-  "CLOSE":"CLOSE"
+  "CLOSE":"CLOSE",
+
+
+  "Select Post Name":"Select Post Name",
+  "Enter address1 in above":"Enter address1 in above",
+  "Enter address2 in above":"Enter address2 in above",
+  "Enter Valid Pin Code":"Enter Valid Pin Code",
+  "Enter city Or area":"Enter city Or area",
+  "Enter district":"Enter district",
+  "Enter state":"Enter state",
+  "Enter country":"Enter country",
+  "Address updated successfully":"Address updated successfully",
+  "Click Here Login to continue":"Click Here Login to continue",
+  "Please wait Loading":"Please wait Loading......",
+  "Confirm Location":"Confirm Location",
+  "Address 1":"Address 1",
+  "Address 2":"Address 2",
+  "Address Line":"Address Line",
+  "Select your Post Office Name":"Select your Post Office Name",
+  "City Or Area":"City Or Area",
+  "Search Location":"Search Location",
+  "Back":"Back",
+  "Hai, Add Your Location":"Hai, Add Your Location",
+  "Search Your Location":"Search Your Location",
+  "Okay":"Okay"
   
   
 
