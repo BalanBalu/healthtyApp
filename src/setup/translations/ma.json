@@ -464,6 +464,22 @@
   "Back":"പിന്നിലുള്ള",
   "Hai, Add Your Location":"ഹാ, നിങ്ങളുടെ സ്ഥാനം ചേർക്കുക",
   "Search Your Location":"നിങ്ങളുടെ സ്ഥാനം തിരയുക",
-  "Okay":"ശരി"
+  "Okay":"ശരി",
+  "Please enter mobile number":"മൊബൈൽ നമ്പർ നൽകുക",
+  "Contacts has been saved":"കോൺടാക്റ്റുകൾ സംരക്ഷിച്ചു",
+  "Update Mobile Number":"മൊബൈൽ നമ്പർ അപ്ഡേറ്റുചെയ്യുക",
+  "Edit Your Number":"നിങ്ങളുടെ നമ്പർ എഡിറ്റുചെയ്യുക",
+  "Mobile Number":"മൊബൈൽ നമ്പർ",
+  "Kindly enter the old password":"പഴയ പാസ്വേഡ് ദയവായി നൽകുക",
+  "Kindly enter the new password":"ദയവായി പുതിയ പാസ്വേഡ് നൽകുക",
+  "Password is required Min 6 Characters":"പാസ്വേഡിന് കുറഞ്ഞത് 6 പ്രതീകങ്ങൾ ആവശ്യമാണ്",
+  "Password Accepted Max 16 Characters only":"പാസ്വേഡ് സ്വീകാര്യമായ 16 പ്രതീകങ്ങൾ മാത്രം സ്വീകരിച്ചു",
+  "Cannot have the same password. Kindly enter a new Password":"ഒരേ പാസ്വേഡ് ലഭിക്കാൻ കഴിയില്ല.ദയയോടെ ഒരു പുതിയ പാസ്വേഡ് നൽകുക",
+  "Your Password is changed Successfully":"നിങ്ങളുടെ പാസ്വേഡ് വിജയകരമായി മാറ്റി",
+  "Update Your Password":"നിങ്ങളുടെ പാസ്വേഡ് അപ്ഡേറ്റുചെയ്യുക",
+  "Enter old password":"പഴയ പാസ്വേഡ് നൽകുക",
+  "Enter new password":"പുതിയ പാസ്വേഡ് നൽകുക",
+  "Old password doesn't match":"പഴയ പാസ്വേഡ് പൊരുത്തപ്പെടുന്നില്ല",
+  "Failed to change password":"പാസ്വേഡ് മാറ്റുന്നതിൽ പരാജയപ്പെട്ടു"
 
 }

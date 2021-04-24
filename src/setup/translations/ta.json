@@ -466,6 +466,22 @@
   "Back":"Back",
   "Hai, Add Your Location":"ஹாய், உங்கள் இருப்பிடத்தை சேர்க்கவும்",
   "Search Your Location":"உங்கள் இருப்பிடத்தைத் தேடுங்கள்",
-  "Okay":"சரி"
+  "Okay":"சரி",
+  "Please enter mobile number":"மொபைல் எண்ணை உள்ளிடவும்",
+  "Contacts has been saved":"தொடர்புகள் சேமிக்கப்பட்டுள்ளன",
+  "Update Mobile Number":"மொபைல் எண் புதுப்பிக்கவும்",
+  "Edit Your Number":"உங்கள் எண்ணை திருத்தவும்",
+  "Mobile Number":"கைபேசி எண்",
+  "Kindly enter the old password":"பழைய கடவுச்சொல்லை உள்ளிடவும்",
+  "Kindly enter the new password":"தயவுசெய்து புதிய கடவுச்சொல்லை உள்ளிடவும்",
+  "Password is required Min 6 Characters":"கடவுச்சொல் தேவை 6 எழுத்துகள் தேவைப்படுகிறது",
+  "Password Accepted Max 16 Characters only":"கடவுச்சொல் அதிகபட்சம் 16 எழுத்துக்களை மட்டுமே ஏற்றுக்கொண்டது",
+  "Cannot have the same password. Kindly enter a new Password":"அதே கடவுச்சொல்லை கொண்டிருக்க முடியாது.தயவுசெய்து ஒரு புதிய கடவுச்சொல்லை உள்ளிடவும்",
+  "Your Password is changed Successfully":"உங்கள் கடவுச்சொல் வெற்றிகரமாக மாற்றப்பட்டது",
+  "Update Your Password":"உங்கள் கடவுச்சொல்லை புதுப்பிக்கவும்",
+  "Enter old password":"பழைய கடவுச்சொல்லை உள்ளிடவும்",
+  "Enter new password":"புதிய கடவுச்சொல்லை உள்ளிடவும்",
+  "Old password doesn't match":"பழைய கடவுச்சொல் பொருந்தவில்லை",
+  "Failed to change password":"கடவுச்சொல்லை மாற்ற முடியவில்லை"
 
 }

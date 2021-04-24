@@ -456,8 +456,6 @@
   "Update Email":"Update Email",
   "Edit Your Email":"Edit Your Email",
   "CLOSE":"CLOSE",
-
-
   "Select Post Name":"Select Post Name",
   "Enter address1 in above":"Enter address1 in above",
   "Enter address2 in above":"Enter address2 in above",
@@ -479,7 +477,25 @@
   "Back":"Back",
   "Hai, Add Your Location":"Hai, Add Your Location",
   "Search Your Location":"Search Your Location",
-  "Okay":"Okay"
+  "Okay":"Okay",
+  "Please enter mobile number":"Please enter mobile number",
+  "Contacts has been saved":"Contacts has been saved",
+  "Update Mobile Number":"Update Mobile Number",
+  "Edit Your Number":"Edit Your Number",
+  "Mobile Number":"Mobile Number",
+
+
+  "Kindly enter the old password":"Kindly enter the old password",
+  "Kindly enter the new password":"|Kindly enter the new password",
+  "Password is required Min 6 Characters":"Password is required Min 6 Characters",
+  "Password Accepted Max 16 Characters only":"Password Accepted Max 16 Characters only",
+  "Cannot have the same password. Kindly enter a new Password":"Cannot have the same password. Kindly enter a new Password",
+  "Your Password is changed Successfully":"|Your Password is changed Successfully",
+  "Update Your Password":"Update Your Password",
+  "Enter old password":"Enter old password",
+  "Enter new password":"Enter new password",
+  "Old password doesn't match":"Old password doesn't match",
+  "Failed to change password":"Failed to change password"
   
   
 
