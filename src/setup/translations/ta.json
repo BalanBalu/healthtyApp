@@ -397,5 +397,17 @@
   "You have selected family details, kindly add family members to continue":"நீங்கள் குடும்ப விவரங்களைத் தேர்ந்தெடுத்துள்ளீர்கள், தயவுசெய்து குடும்ப உறுப்பினர்களைத் தொடரவும்",
   "Kindly enter your Reason for Checkup ":"தயவுசெய்து சரிபார்க்க உங்கள் காரணத்தை உள்ளிடவும் ",
   "Patient Address":"நோயாளி முகவரி",
-  "Likes":"பிடிக்கும்"
+  "Likes":"பிடிக்கும்",
+  "Family Information":"குடும்ப தகவல்",
+  "No member details found!":"உறுப்பினர் விவரங்கள் இல்லை!",
+  "Edit Pincode":"பின்கோடை திருத்தவும்",
+  "Beneficiary":"பயனாளிகள்",
+  "Member code":"உறுப்பினர் குறியீடு",
+  "Enrollment Start Date":"பதிவு தொடக்க தேதி",
+  "Enrollment End Date":"பதிவு முடிவு தேதி",
+  "Sum Insured":"காப்பீட்டு தொகை",
+  "SELECT":"தேர்ந்தெடு",
+  "Hide Beneficiary Details":"விவரங்களை மறை ",
+  "Show Beneficiary Details":"விவரங்களைக் காண்பி ",
+  "No Details Available":"விவரங்கள் கிடைக்கவில்லை"
 }

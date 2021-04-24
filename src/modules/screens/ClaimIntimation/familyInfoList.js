@@ -17,6 +17,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
 import RenderFamilyList from './RenderFamilyList';
+import {translate} from '../../../setup/translator.helper';
 import {
   getMemberDetailsByPolicyNo,
   getFamilyMembersByPolicyNoeWithPagination,
@@ -123,7 +124,7 @@ class FamilyInfoList extends PureComponent {
                   marginTop: 10,
                 }}>
                 {' '}
-                {familyList && familyList.length ? 'Family Information' : null}
+                {familyList && familyList.length ? translate('Family Information') : null}
               </Text>
               {familyList.map((item, index) => (
                 <RenderFamilyList
@@ -173,7 +174,7 @@ class FamilyInfoList extends PureComponent {
                   alignItems: 'center',
                 }}>
                 {' '}
-                No member details found!
+                {translate("No member details found!")}
               </Text>
             </View>
           </Content>

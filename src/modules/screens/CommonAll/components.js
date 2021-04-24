@@ -461,7 +461,7 @@ const RenderEditingPincode = (props) => {
       <Col size={8}>
         <Text style={styles.showingDoctorText}>
           {'Showing ' + showPinCodeResultByType + ' in the'}
-          <Text style={styles.picodeText}> PinCode - {value}</Text>
+          <Text style={styles.picodeText}> {translate("PinCode")} - {value}</Text>
         </Text>
       </Col>
       <Col size={2}>
@@ -470,7 +470,7 @@ const RenderEditingPincode = (props) => {
             style={styles.editPincodeButton}
             onPress={() => onChangeSelection(true)}>
             <Text style={{fontFamily: 'Roboto', color: 'gray', fontSize: 10}}>
-              Edit Pincode{' '}
+              {translate("Edit Pincode")}{' '}
             </Text>
           </TouchableOpacity>
         </Row>
@@ -524,7 +524,7 @@ const RenderEditingPincode = (props) => {
               fontSize: 12,
               textAlign: 'center',
             }}>
-            Apply
+            {translate("Apply")}
           </Text>
         </TouchableOpacity>
       </Col>
@@ -539,11 +539,11 @@ const RenderBeneficiaryInfo = (props) => {
     <View style={{backgroundColor: '#fff', marginTop: 5}}>
       <Row>
         <Col size={4}>
-          <Text style={styles.beneficiaryFontStyle}>Beneficiary</Text>
-          <Text style={styles.beneficiaryFontStyle}>Member code</Text>
-          <Text style={styles.beneficiaryFontStyle}>Enrollment Start Date</Text>
-          <Text style={styles.beneficiaryFontStyle}>Enrollment End Date</Text>
-          <Text style={styles.beneficiaryFontStyle}>Sum Insured</Text>
+          <Text style={styles.beneficiaryFontStyle}>{translate("Beneficiary")}</Text>
+          <Text style={styles.beneficiaryFontStyle}>{translate("Member code")}</Text>
+          <Text style={styles.beneficiaryFontStyle}>{translate("Enrollment Start Date")}</Text>
+          <Text style={styles.beneficiaryFontStyle}>{translate("Enrollment End Date")}</Text>
+          <Text style={styles.beneficiaryFontStyle}>{translate("Sum Insured")}</Text>
           <Text style={styles.beneficiaryFontStyle}>BSI</Text>
           {/* <Text style={styles.beneficiaryFontStyle}>Eligible Amount</Text> */}
         </Col>
