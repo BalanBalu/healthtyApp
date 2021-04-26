@@ -482,6 +482,20 @@
   "Enter old password":"பழைய கடவுச்சொல்லை உள்ளிடவும்",
   "Enter new password":"புதிய கடவுச்சொல்லை உள்ளிடவும்",
   "Old password doesn't match":"பழைய கடவுச்சொல் பொருந்தவில்லை",
-  "Failed to change password":"கடவுச்சொல்லை மாற்ற முடியவில்லை"
+  "Failed to change password":"கடவுச்சொல்லை மாற்ற முடியவில்லை",
+  "Please enter name":"பெயரை உள்ளிடவும்",
+  "Please select relationship":"உறவைத் தேர்ந்தெடுக்கவும்",
+  "Please enter member code":"உறுப்பினர் குறியீட்டை உள்ளிடவும்",
+  "Your family member details are updated":"உங்கள் குடும்ப உறுப்பினர் விவரங்கள் புதுப்பிக்கப்படுகின்றன",
+  "Selected relationship is already exist":"தேர்ந்தெடுக்கப்பட்ட உறவு ஏற்கனவே உள்ளது",
+  "Member code already exist":"உறுப்பினர் குறியீடு ஏற்கனவே உள்ளது",
+  "Image upload successfully":"படம் வெற்றிகரமாக பதிவேற்றம் ",
+  "Problem Uploading Picture":"பிரச்சனை பதிவேற்றம் படம்",
+  "Date of birth":"பிறந்த தேதி",
+  "Enter member code":"உறுப்பினர் குறியீட்டை உள்ளிடவும்",
+  "Upload Document":"ஆவணத்தை பதிவேற்றவும்",
+  "UPDATE":"புதுப்பிக்கவும்",
+  "Save":"சேமிக்கவும்",
+  "Select relation":"தொடர்பு தேர்வு"
 
 }

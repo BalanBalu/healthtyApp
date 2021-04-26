@@ -483,8 +483,6 @@
   "Update Mobile Number":"Update Mobile Number",
   "Edit Your Number":"Edit Your Number",
   "Mobile Number":"Mobile Number",
-
-
   "Kindly enter the old password":"Kindly enter the old password",
   "Kindly enter the new password":"|Kindly enter the new password",
   "Password is required Min 6 Characters":"Password is required Min 6 Characters",
@@ -495,7 +493,22 @@
   "Enter old password":"Enter old password",
   "Enter new password":"Enter new password",
   "Old password doesn't match":"Old password doesn't match",
-  "Failed to change password":"Failed to change password"
+  "Failed to change password":"Failed to change password",
+
+  "Please enter name":"Please enter name",
+  "Please select relationship":"Please select relationship",
+  "Please enter member code":"Please enter member code",
+  "Your family member details are updated":"Your family member details are updated",
+  "Selected relationship is already exist":"Selected relationship is already exist",
+  "Member code already exist":"Member code already exist",
+  "Image upload successfully":"Image upload successfully",
+  "Problem Uploading Picture":"Problem Uploading Picture",
+  "Date of birth":"Date of birth",
+  "Enter member code":"Enter member code",
+  "Upload Document":"Upload Document",
+  "UPDATE":"UPDATE",
+  "Save":"Save",
+  "Select relation":"Select relation"
   
   
 

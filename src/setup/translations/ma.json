@@ -480,6 +480,20 @@
   "Enter old password":"പഴയ പാസ്വേഡ് നൽകുക",
   "Enter new password":"പുതിയ പാസ്വേഡ് നൽകുക",
   "Old password doesn't match":"പഴയ പാസ്വേഡ് പൊരുത്തപ്പെടുന്നില്ല",
-  "Failed to change password":"പാസ്വേഡ് മാറ്റുന്നതിൽ പരാജയപ്പെട്ടു"
+  "Failed to change password":"പാസ്വേഡ് മാറ്റുന്നതിൽ പരാജയപ്പെട്ടു",
+  "Please enter name":"ദയവായി പേര് നൽകുക",
+  "Please select relationship":"ദയവായി ബന്ധം തിരഞ്ഞെടുക്കുക",
+  "Please enter member code":"ദയവായി അംഗ കോഡ് നൽകുക",
+  "Your family member details are updated":"നിങ്ങളുടെ കുടുംബാംഗ വിശദാംശങ്ങൾ അപ്ഡേറ്റുചെയ്തു",
+  "Selected relationship is already exist":"തിരഞ്ഞെടുത്ത ബന്ധം ഇതിനകം നിലവിലുണ്ട്",
+  "Member code already exist":"അംഗ കോഡ് ഇതിനകം നിലവിലുണ്ട്",
+  "Image upload successfully":"ഇമേജ് അപ്ലോഡ് വിജയകരമായി",
+  "Problem Uploading Picture":"പ്രശ്നം അപ്ലോഡുചെയ്യുന്ന ചിത്രം",
+  "Date of birth":"ജനനത്തീയതി",
+  "Enter member code":"അംഗ കോഡ് നൽകുക",
+  "Upload Document":"രേഖ അപ്ലോഡുചെയ്യുക",
+  "UPDATE":"അപ്ഡേറ്റ് ചെയ്യുക",
+  "Save":"രക്ഷിക്കും",
+  "Select relation":"ബന്ധം തിരഞ്ഞെടുക്കുക"
 
 }
