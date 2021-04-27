@@ -15,12 +15,10 @@ import { getReferalPoints } from '../../providers/profile/profile.action';
 import { validatePromoCode, applyPromoCode } from '../../providers/PromoCode/promo.action'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
-import {primaryColor} from '../../../setup/config'
-import IconName from 'react-native-vector-icons/MaterialIcons'
-
+import {primaryColor} from '../../../setup/config';
+import IconName from 'react-native-vector-icons/MaterialIcons';
+import {translate} from '../../../setup/translator.helper';
 import { NavigationEvents } from 'react-navigation';
-
-
 import { connect } from 'react-redux';
 import { AuthService } from '../VideoConsulation/services';
 class PaymentPage extends Component {
@@ -113,7 +111,7 @@ class PaymentPage extends Component {
         debugger
         if (this.state.selectedSavedCardId === null && this.state.paymentOption === null) {
             Toast.show({
-                text: 'Select your Payment Option',
+                text: translate('Select your Payment Option'),
                 duration: 3000,
                 type: 'warning'
             })
@@ -128,7 +126,7 @@ class PaymentPage extends Component {
             });
             if (!this.checkCVV(this.state[selectedSavedCardId + '-savedCardCVV'])) {
                 Toast.show({
-                    text: 'Please enter Valid CVV',
+                    text: translate('Please enter Valid CVV'),
                     duration: 3000,
                     type: 'warning'
                 });
@@ -155,7 +153,7 @@ class PaymentPage extends Component {
             if (this.state.paymentOption === 'CREDIT_CARD' || this.state.paymentOption === 'DEBIT_CARD') {
                 if (!luhnCheck(this.state.cardPaymentDetails.number)) {
                     Toast.show({
-                        text: 'Please Enter valid Card number',
+                        text: translate('Please Enter valid Card number'),
                         type: 'danger',
                         duration: 3000
                     })
@@ -163,7 +161,7 @@ class PaymentPage extends Component {
                 };
                 if (this.state.cardPaymentDetails.monthyear.length !== 5) {
                     Toast.show({
-                        text: 'Please Enter valid Expiry Date',
+                        text: translate('Please Enter valid Expiry Date'),
                         type: 'danger',
                         duration: 3000
                     })
@@ -171,7 +169,7 @@ class PaymentPage extends Component {
                 };
                 if (!this.checkCVV(this.state.cardPaymentDetails.cvv)) {
                     Toast.show({
-                        text: 'Please enter Valid CVV',
+                        text: translate('Please enter Valid CVV'),
                         duration: 3000,
                         type: 'warning'
                     });
@@ -191,7 +189,7 @@ class PaymentPage extends Component {
             } else if (this.state.paymentOption === 'NET_BANKING') {
                 if (this.state.selectedNetBank === null) {
                     Toast.show({
-                        text: 'Choose the Bank and Continue',
+                        text: translate('Choose the Bank and Continue'),
                         duration: 3000,
                         type: 'warning'
                     })
@@ -205,7 +203,7 @@ class PaymentPage extends Component {
             } else if (this.state.paymentOption === 'WALLET') {
                 if (this.state.selectedWallet === null) {
                     Toast.show({
-                        text: 'Choose the Wallet and Continue',
+                        text: translate('Choose the Wallet and Continue'),
                         duration: 3000,
                         type: 'warning'
                     })
@@ -221,7 +219,7 @@ class PaymentPage extends Component {
                 var result = re.test(this.state.upiVPA);
                 if (result === false) {
                     Toast.show({
-                        text: 'Enter the valid UPI and Continue',
+                        text: translate('Enter the valid UPI and Continue'),
                         duration: 3000,
                         type: 'warning'
                     })
@@ -311,7 +309,7 @@ class PaymentPage extends Component {
             } else if (serviceType === SERVICE_TYPES.CHAT) {
                 this.props.navigation.navigate('SuccessChat');
                 Toast.show({
-                    text: 'Payment Success',
+                    text: translate('Payment Success'),
                     type: 'success',
                     duration: 3000
                 })
@@ -337,14 +335,14 @@ class PaymentPage extends Component {
                 }
                 this.props.navigation.navigate('OrderDetails', { serviceId: response.orderNo, prevState: 'CREATE_ORDER' })
                 Toast.show({
-                    text: 'Payment Success',
+                    text: translate('Payment Success'),
                     type: 'success',
                     duration: 3000
                 })
             } else if (serviceType === SERVICE_TYPES.VIDEO_CONSULTING) {
                 this.props.navigation.navigate('SuccessChat', { manualNaviagationPage:CURRENT_APP_NAME===MY_SMART_HEALTH_CARE?'CorporateHome':'Home' });
                 Toast.show({
-                    text: 'Payment Success',
+                    text: translate('Payment Success'),
                     type: 'success',
                     duration: 3000
                 })
@@ -355,7 +353,7 @@ class PaymentPage extends Component {
             else if (serviceType === SERVICE_TYPES.LAB_TEST) {
                 this.props.navigation.navigate('SuccessChat', { manualNaviagationPage:CURRENT_APP_NAME===MY_SMART_HEALTH_CARE?'CorporateHome': 'Home' });
                 Toast.show({
-                    text: 'Payment Success for Lab Test',
+                    text: translate('Payment Success for Lab Test'),
                     type: 'success',
                     duration: 3000
                 })
@@ -374,7 +372,7 @@ class PaymentPage extends Component {
             if (serviceType === SERVICE_TYPES.PHARMACY) {
                 this.props.navigation.navigate('Home');
                 Toast.show({
-                    text: 'Payment Failed',
+                    text: translate('Payment Failed'),
                     type: 'danger',
                     duration: 5000
                 })
@@ -507,7 +505,7 @@ class PaymentPage extends Component {
                 this.setState({ promoCodeErrorMsg: result.message, promoCodeApplyMsg: '', isLoading: false })
             }
         } else {
-            this.setState({ promoCodeErrorMsg: "please enter the promo code", isLoading: false })
+            this.setState({ promoCodeErrorMsg: translate("please enter the promo code"), isLoading: false })
         }
     }
     async applyPromoCode() {
@@ -576,12 +574,12 @@ class PaymentPage extends Component {
 
                     <View style={{ backgroundColor: '#f2f2f2' }}>
                         <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 10 }}>
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>Select Options To Pay</Text>
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>{translate("Select Options To Pay")}</Text>
                             <Grid style={{ marginRight: 15, marginLeft: 15, marginTop: 5 }}>
                                 <Col>
                                     <Form>
                                         <Item style={styles.transparentLabel1}>
-                                            <Input placeholder="Enter Your Coupon Code here" style={styles.firstTransparentLabel}
+                                            <Input placeholder={translate("Enter Your Coupon Code here")} style={styles.firstTransparentLabel}
                                                 placeholderTextColor="#C1C1C1"
                                                 getRef={(input) => { this.enterCouponCode = input; }}
                                                 keyboardType={'default'}
@@ -591,7 +589,7 @@ class PaymentPage extends Component {
                                                 onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
                                             />
                                             <TouchableOpacity onPress={() => this.validatePromoCode()} style={{ marginRight: 15, alignItems: 'center', justifyContent: 'center' }} >
-                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: primaryColor, textAlign: 'center' }}>APPLY</Text>
+                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: primaryColor, textAlign: 'center' }}>{translate("APPLY")}</Text>
                                             </TouchableOpacity>
                                         </Item>
                                     </Form>
@@ -603,7 +601,7 @@ class PaymentPage extends Component {
                             <Row style={{ marginRight: 15, marginLeft: 15, marginTop: 10 }}>
                                 <Right style={{ marginRight: 5 }}>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode",{isFilter:true,serviceType:this.state.serviceType})}>
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: primaryColor, borderBottomColor: primaryColor, borderBottomWidth: 0.5, borderStyle: 'dotted', }}>Available Promo Codes</Text>
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: primaryColor, borderBottomColor: primaryColor, borderBottomWidth: 0.5, borderStyle: 'dotted', }}>{translate("Available Promo Codes")}</Text>
                                     </TouchableOpacity>
                                 </Right>
                             </Row>
@@ -615,12 +613,12 @@ class PaymentPage extends Component {
 
                             <Text style={{
                                 fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',
-                            }}> Payment Info</Text>
+                            }}> {translate("Payment Info")}</Text>
 
                         </Row>
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
                             <Col style={{ width: '70%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, }}> Amount </Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, }}> {translate("Amount")} </Text>
                             </Col>
                             <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{amount}</Text>
@@ -629,7 +627,7 @@ class PaymentPage extends Component {
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
                             <Col style={{ width: '70%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13 }}> Credit Points </Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13 }}> {translate("Credit Points")} </Text>
                             </Col>
                             <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{creditPointDiscountAmount}</Text>
@@ -638,7 +636,7 @@ class PaymentPage extends Component {
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
                             <Col style={{ width: '70%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13 }}> Coupon Discount </Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13 }}> {translate("Coupon Discount")} </Text>
                             </Col>
                             <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{couponCodeDiscountAmount}</Text>
@@ -648,7 +646,7 @@ class PaymentPage extends Component {
 
                         <Row style={{ borderTopColor: '#C1C1C1', borderTopWidth: 0.3, marginTop: 10, marginBottom: 5, marginRight: 15, marginLeft: -3 }}>
                             <Col style={{ width: '70%', marginTop: 5 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 13 }}> Final Amount </Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 13 }}> {translate("Final Amount")} </Text>
                             </Col>
                             <Col style={{ width: '30%', marginTop: 5 }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 13 }}>{'  '}{'\u20B9'}{amount - (creditPointDiscountAmount + couponCodeDiscountAmount)}</Text>
@@ -659,7 +657,7 @@ class PaymentPage extends Component {
                     {maxDicountAmountByCreditPoints > 0 ?
                         <Grid style={{ backgroundColor: '#fff' }}>
                             <Row style={{ marginTop: 15 }}>
-                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>CREDIT POINTS</Text>
+                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>{translate("CREDIT POINTS")}</Text>
 
                             </Row>
                             <Row style={{ paddingLeft: 5, alignItems: 'center', marginTop: 10 }}>
@@ -670,7 +668,7 @@ class PaymentPage extends Component {
                                     checked={this.state.creditPointsApplied}
                                     onPress={() => this.setPaymentByCreditApplied()}
                                 />
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>Apply your {maxDicountAmountByCreditPoints} credit points to pay your appointment</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%', marginLeft: 20 }}>{translate("Apply your")}, {maxDicountAmountByCreditPoints} {translate("credit points to pay your appointment")}</Text>
                             </Row>
                         </Grid> : null}
 
@@ -759,7 +757,7 @@ class PaymentPage extends Component {
 
 
                 </Content>
-                <TouchableOpacity  onPress={() => this.makeDirectRazorPayMentMethod() /*this.makePaymentMethod() */} block style={styles.paymentButton}><Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'#fff' }}>Pay</Text></TouchableOpacity> 
+                <TouchableOpacity  onPress={() => this.makeDirectRazorPayMentMethod() /*this.makePaymentMethod() */} block style={styles.paymentButton}><Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'#fff' }}>{translate("Pay")}</Text></TouchableOpacity> 
             </Container >
         )
     }
@@ -775,10 +773,10 @@ class PaymentPage extends Component {
 
                             <Grid style={{ marginTop: 10, marginRight: 10, marginLeft: 10 }}>
                                 <Col>
-                                    <Text style={styles.labelTop}>Card Number</Text>
+                                    <Text style={styles.labelTop}>{translate("Card Number")}</Text>
                                     <Form>
 
-                                        <Input placeholder="Card Number"
+                                        <Input placeholder={translate("Card Number")}
                                             maxLength={19}
                                             returnKeyType={'next'}
                                             keyboardType={'numeric'}
@@ -791,7 +789,7 @@ class PaymentPage extends Component {
                             <Grid style={{ marginTop: 10, marginRight: 10, marginLeft: 10 }}>
 
                                 <Col>
-                                    <Text style={styles.labelTop}>Expired Date</Text>
+                                    <Text style={styles.labelTop}>{translate("Expired Date")}</Text>
                                     <Form>
 
                                         <Input placeholder='MM/YY'
@@ -826,10 +824,10 @@ class PaymentPage extends Component {
                             </Grid>
                             <Grid style={{ marginRight: 10, marginLeft: 10 }}>
                                 <Col>
-                                    <Text style={styles.labelTop}>Card Holder Name (Optional)</Text>
+                                    <Text style={styles.labelTop}>{translate("Card Holder Name (Optional)")}</Text>
                                     <Form>
 
-                                        <Input placeholder="Card Holder Name"
+                                        <Input placeholder={translate("Card Holder Name")}
                                             returnKeyType={'next'}
                                             keyboardType={'default'}
                                             value={cardPaymentDetails ? cardPaymentDetails.name : ''}
@@ -854,7 +852,7 @@ class PaymentPage extends Component {
                                                 checked={this.state.saveCardCheckbox}
                                                 onPress={() => this.setState({ saveCardCheckbox: !this.state.saveCardCheckbox })}
                                             />
-                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', marginLeft: 20 }}>Save card for faster transaction</Text>
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', marginLeft: 20 }}>{translate("Save card for faster transaction")}</Text>
                                         </Row>
                                     </Col>
                                 </Row>
@@ -970,11 +968,11 @@ class PaymentPage extends Component {
 
                                         </Form>
                                         <Text style={{ marginTop: 1, fontSize: 13, fontFamily: 'OpenSans', color: '#000', marginLeft: 5 }}>
-                                            Please enter a valid upi id
+                                            {translate("Please enter a valid UPI id")}
                       </Text>
                                     </Card>
                                     <View style={{ marginBottom: 10 }} >
-                                        <Text style={{ marginTop: 10, fontSize: 13, fontFamily: 'OpenSans', }}>Please enter your VPA and Tap on PAY.You need to approve the request on your UPI App to complete the payment</Text>
+                                        <Text style={{ marginTop: 10, fontSize: 13, fontFamily: 'OpenSans', }}>{translate("Please enter your VPA and Tap on PAY,You need to approve the request on your UPI App to complete the payment")}</Text>
                                     </View>
                                 </Col>
                             </Grid>
@@ -1048,7 +1046,7 @@ class PaymentPage extends Component {
                         <Row onPress={() => this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null })}
                         >
                             <Text
-                                style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>provide Valid CVV</Text>
+                                style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{translate("provide Valid CVV")}</Text>
                             <View style={{ width: '25%', alignItems: 'center' }}>
                                 <Form>
 
