@@ -586,7 +586,7 @@ export default class MapBox extends Component {
                   success
                   onPress={() => this.confirmLocation()}>
                   <Icon name="paper-plane"></Icon>
-                  <Text>P{translate("Confirm Location")}</Text>
+                  <Text>{translate("Confirm Location")}</Text>
                 </Button>
               </Body>
             </CardItem>
