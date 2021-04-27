@@ -305,21 +305,21 @@ class Profile extends Component {
           });
           storeBasicProfile(result);
           Toast.show({
-            text: 'Profile picture uploaded successfully',
+            text: translate('Profile picture uploaded successfully'),
             type: 'success',
             duration: 3000,
           });
         }
       } else {
         Toast.show({
-          text: 'Problem Uploading Profile Picture',
+          text: translate('Problem Uploading Profile Picture'),
           duration: 3000,
           type: 'danger',
         });
       }
     } catch (e) {
       Toast.show({
-        text: 'Problem Uploading Profile Picture' + e,
+        text: translate('Problem Uploading Profile Picture') + e,
         duration: 3000,
         type: 'danger',
       });
@@ -342,7 +342,7 @@ class Profile extends Component {
     );
     if (deleteFamilyMembers) {
       Toast.show({
-        text: 'Deleted your family member details',
+        text: translate('Deleted your family member details'),
         type: 'success',
         duration: 3000,
       });
