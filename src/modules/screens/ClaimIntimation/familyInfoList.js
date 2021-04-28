@@ -76,7 +76,7 @@ class FamilyInfoList extends PureComponent {
             familydetails.balSumInsured = temp[0].balSumInsured;
             familydetails.enrollmentStartDate = temp[0].enrollmentStartDate;
             familydetails.enrollmentEndDate = temp[0].enrollmentEndDate;
-            familydetails.emailId = temp[0].emailId|| this.memberEmailId;
+            familydetails.emailId =  this.memberEmailId;
             familyList.push(familydetails);
           }
         }

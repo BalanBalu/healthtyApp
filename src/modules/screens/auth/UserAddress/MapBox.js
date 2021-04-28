@@ -353,8 +353,10 @@ export default class MapBox extends Component {
           Toast.show(reqData4displayToastMsg);
         return;
       }
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       const reqUserAddressData = {
         _id: updateId,
+        emailId:memberEmailId,
         coordinates: [center[1], center[0]],
         pinCode: Number(pinCode),
         address1,
