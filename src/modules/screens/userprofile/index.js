@@ -150,11 +150,10 @@ class Profile extends Component {
 
   editAddress = async (item) => {
     try {
-      
       let addrressData;
-      if (item === null||item.pinCode===null) {
-        this.editProfile('MapBox',{ id: this.state.data._id});
-      } else{
+      if (item === null || item.pinCode === null) {
+        this.editProfile('MapBox', {id: this.state.data._id});
+      } else {
         let address = {
           address1: item.address1,
           address2: item.address2,
@@ -182,6 +181,10 @@ class Profile extends Component {
               postOfficeData[0].Longitude,
               postOfficeData[0].Latitude,
             );
+          }
+          if (coordinates.length == 0) {
+            this.editProfile('MapBox', {id: this.state.data._id});
+            return
           }
           addrressData = {
             address1: item.address1,
