@@ -40,11 +40,14 @@ class AvailableDoctors4Video extends Component {
             description: '',
             serviceType: '',
             doctorId: '',
-            fees: ''
+            fees: '',
+            isCorporateUser:false
         }
         this.bookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
     async componentDidMount() {
+        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+        this.setState({isCorporateUser: isCorporateUser});
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate("login");
@@ -593,13 +596,9 @@ class AvailableDoctors4Video extends Component {
                         </View>
                     </View>
 
-                    {availableVideoDoctors.length === 0 && isLoading === false ?
-                        <View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
-                            <Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
-                                No Doctors Found for your Search
-						</Text>
-                        </View>
-                        :
+                    {this.state.isCorporateUser===false&&availableVideoDoctors.length&& isLoading === false ?
+                      
+                        
                         <FlatList
                             style={{ marginTop: 10 }}
                             extraData={availableVideoDoctors}
@@ -608,6 +607,12 @@ class AvailableDoctors4Video extends Component {
                                 this.renderAvailableDoctors(item)
                             }
                             keyExtractor={(item, index) => index.toString()} />
+                            :
+                              <View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
+                                No Doctors Found for your Search
+						</Text>
+                        </View>
                     }
 
                     <Modal
