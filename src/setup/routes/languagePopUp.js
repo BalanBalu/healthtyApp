@@ -6,9 +6,9 @@ import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { setI18nConfig } from '../translator.helper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import {primaryColor} from '../../setup/config';
+import { primaryColor } from '../../setup/config';
 import { store } from '../../setup/store';
-import {SET_TRANSLATOR} from '../../modules/providers/profile/profile.action';
+import { SET_TRANSLATOR } from '../../modules/providers/profile/profile.action';
 
 class LanguagePopUp extends React.PureComponent {
   constructor(props) {
@@ -35,11 +35,15 @@ class LanguagePopUp extends React.PureComponent {
     });
     switch (language) {
       case 'English':
-        return  setI18nConfig('en');
+        return setI18nConfig('en');
       case 'Tamil':
         return setI18nConfig('ta');
-        case 'Malayalam':
-            return  setI18nConfig('ma');
+      case 'Malayalam':
+        return setI18nConfig('ma');
+      case 'Hindi':
+        return setI18nConfig('hi');
+      case 'Kannada':
+        return setI18nConfig('ka');
     }
   };
 
@@ -48,7 +52,7 @@ class LanguagePopUp extends React.PureComponent {
   }
 
   render() {
-    const data = [{ listName: 'English'}, { listName: 'Tamil' },{ listName: 'Malayalam'}]
+    const data = [{ listName: 'English' }, { listName: 'Tamil' }, { listName: 'Malayalam' }, { listName: 'Hindi' }, { listName: 'Kannada' }]
     const { selectedIndex } = this.state
     return (
 
@@ -57,8 +61,8 @@ class LanguagePopUp extends React.PureComponent {
           ref={this.setMenuRef}
           button={
             <TouchableOpacity activeOpacity={1} onPress={this.showMenu} style={styles.menuIcon}>
-               <FontAwesome
-            name='language' style={{ color: '#fff', fontSize: 22 }}></FontAwesome>
+              <FontAwesome
+                name='language' style={{ color: '#fff', fontSize: 22 }}></FontAwesome>
             </TouchableOpacity>
           }
         >
@@ -77,7 +81,7 @@ class LanguagePopUp extends React.PureComponent {
                   style={
                     selectedIndex === index ? { backgroundColor: primaryColor, color: '#fff', } : {}
                   }
-                  onPress={() => this.hideMenu(index,item.listName)}>
+                  onPress={() => this.hideMenu(index, item.listName)}>
                   {item.listName}
                 </MenuItem>
               </View>
