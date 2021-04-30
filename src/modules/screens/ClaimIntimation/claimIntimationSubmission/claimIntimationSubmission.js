@@ -161,7 +161,7 @@ export default class ClaimInitiationSubmission extends Component {
             ? this.memberInfo.relationship
             : null,
         status: 'REQUEST-SENT',
-        payerCode: this.tpaCode.tpaCode || null,
+        payerCode: this.tpaCode ? this.tpaCode.tpaCode : null,
       };
       const claimUpdateResp = await serviceOfClaimIntimation(
         claimIntimationReqData,

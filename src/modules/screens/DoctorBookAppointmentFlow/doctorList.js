@@ -86,6 +86,7 @@ class DoctorList extends Component {
       isLoading: true,
       isLoadingDatesAndSlots: false,
       isLoadingMoreDocList: false,
+      isCorporateUser:false
     };
     (this.conditionFromFilterPage = false), (this.isEnabledLoadMoreData = true);
     this.selectedDataFromFilterPage = null;
@@ -126,7 +127,8 @@ class DoctorList extends Component {
 
   async componentDidMount() {
     try {
-      this.setState({isLoading: true});
+      const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+      this.setState({isCorporateUser: isCorporateUser});
       await this.dispatchAndCResetOfRattingAndFavorites(); // clear the Ratting and Favorites counts in search list Props
       const userId = await AsyncStorage.getItem('userId');
       /** Passing ActiveSponsor is TRUE Or FALSE values on Params **/
@@ -425,7 +427,7 @@ class DoctorList extends Component {
             </Col>
           </Row>
         </Card>
-        {doctorInfoListAndSlotsData.length ? (
+        {this.state.isCorporateUser===false&&doctorInfoListAndSlotsData.length ? (
           <FlatList
             scrollEventThrottle={26}
             data={doctorInfoListAndSlotsData}

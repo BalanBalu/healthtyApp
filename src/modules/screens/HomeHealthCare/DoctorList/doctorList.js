@@ -60,6 +60,7 @@ class DoctorList extends Component {
             userAddressInfo: props.navigation.getParam('userAddressInfo') || null,
             isLoadingOnChangeDocList: false,
             isOnEditPincode: false,
+            isCorporateUser:false
         }
         this.conditionFromFilterPage = false,
             this.isEnabledLoadMoreData = true;
@@ -70,7 +71,8 @@ class DoctorList extends Component {
 
     async componentDidMount() {
         try {
-            this.setState({ isLoading: true });
+            const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+            this.setState({isLoading: true ,isCorporateUser: isCorporateUser});
             await this.dispatchAndCResetOfRattingAndFavorites();  // clear the Ratting and Favorites counts in search list Props
             const userId = await AsyncStorage.getItem('userId');
             await this.searchByDoctorDetails();
@@ -330,7 +332,7 @@ class DoctorList extends Component {
                         }}>{" "}PinCode - {reqPinCode}</Text>
                     </Text>
                 </View>
-                {                        doctorInfoListAndSlotsData.length ?
+                {this.state.isCorporateUser===false&& doctorInfoListAndSlotsData.length ?
                     < FlatList
                         data={doctorInfoListAndSlotsData}
                         onEndReachedThreshold={doctorInfoListAndSlotsData.length <= 3 ? 2 : 0.5}

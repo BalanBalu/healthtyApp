@@ -41,11 +41,14 @@ class AvailableDoctors4Video extends Component {
             description: '',
             serviceType: '',
             doctorId: '',
-            fees: ''
+            fees: '',
+            isCorporateUser:false
         }
         this.bookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
     async componentDidMount() {
+        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+        this.setState({isCorporateUser: isCorporateUser});
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate("login");
@@ -189,14 +192,14 @@ class AvailableDoctors4Video extends Component {
                     if (response.success) {
                         this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home' });
                         Toast.show({
-                            text: 'Your Chat Consultation Request Success. We will notify Doctor',
+                            text: translate('Your Chat Consultation Request Success. We will notify Doctor'),
                             type: 'success',
                             duration: 3000
                         });
                         AuthService.signup(this.userId);
                     } else {
                         Toast.show({
-                            text: 'We could not Process Your Video Consultation Request at this time. Please Try again later',
+                            text: translate('We could not Process Your Video Consultation Request at this time. Please Try again later'),
                             type: 'success',
                             duration: 3000
                         });
@@ -263,14 +266,14 @@ class AvailableDoctors4Video extends Component {
                     if (response.success) {
                         this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home' });
                         Toast.show({
-                            text: 'Your Video Consultation Request Success. We will notify the Doctor',
+                            text: translate('Your Video Consultation Request Success. We will notify the Doctor'),
                             type: 'success',
                             duration: 3000
                         });
                         AuthService.signup(this.userId);
                     } else {
                         Toast.show({
-                            text: 'We could not Process Your Video Consultation Request at this time. Please Try again later',
+                            text: translate('We could not Process Your Video Consultation Request at this time. Please Try again later'),
                             type: 'success',
                             duration: 3000
                         });
@@ -414,7 +417,7 @@ class AvailableDoctors4Video extends Component {
         if (serviceType === "VIDEO_CONSULTING") {
             if (description === '') {
                 Toast.show({
-                    text: 'Kindly fill  the fields',
+                    text: translate('Kindly fill  the fields'),
                     type: 'danger',
                     duration: 3000
                 });
@@ -594,13 +597,9 @@ class AvailableDoctors4Video extends Component {
                         </View>
                     </View>
 
-                    {availableVideoDoctors.length === 0 && isLoading === false ?
-                        <View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
-                            <Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
-                                {translate("No Doctors Found for your Search")}
-						</Text>
-                        </View>
-                        :
+                    {this.state.isCorporateUser===false&&availableVideoDoctors.length&& isLoading === false ?
+                      
+                        
                         <FlatList
                             style={{ marginTop: 10 }}
                             extraData={availableVideoDoctors}
@@ -609,6 +608,12 @@ class AvailableDoctors4Video extends Component {
                                 this.renderAvailableDoctors(item)
                             }
                             keyExtractor={(item, index) => index.toString()} />
+                            :
+                              <View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
+                            <Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
+                                {translate("No Doctors Found for your Search")}
+						</Text>
+                        </View>
                     }
 
                     <Modal

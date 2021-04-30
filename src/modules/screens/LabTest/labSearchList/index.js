@@ -60,14 +60,16 @@ class labSearchList extends Component {
             filterData: null,
             disabled: true,
             minPrice:0,
-            maxPrice:0
-
+            maxPrice:0,
+            isCorporateUser:false,
         }
         this.isFilteredData = false;
 
     }
     async componentDidMount() {
         const userId = await AsyncStorage.getItem('userId');
+        const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+        this.setState({isCorporateUser: isCorporateUser});
         this.searchByLabCatAndDetails();
         if (userId) {
             this.getPatientWishListsByUserId(userId);
@@ -693,7 +695,7 @@ class labSearchList extends Component {
                                 </Row>
                             </Card>
                             <View>
-                                {labListItemData.length === 0 ? <RenderListNotFound text={this.isFilteredData ? 'Labs Not found!..Choose Filter again' : ' No Lab list found!'} /> :
+                                 {this.state.isCorporateUser===false&&labListItemData.length?  
                                     <View>
                                         <FlatList
                                             data={labListItemData}
@@ -702,6 +704,7 @@ class labSearchList extends Component {
                                                 this.renderLabListCards(item)
                                             } />
                                     </View>
+                                    :<RenderListNotFound text={this.isFilteredData ? 'Labs Not found!..Choose Filter again' : ' No Lab list found!'} />
                                 }
                             </View>
                         </View>
