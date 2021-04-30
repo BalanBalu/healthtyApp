@@ -695,6 +695,10 @@
   "Find & Book": "கண்டுபிடி & புத்தகம்",
   "Lab Category": "லேப் பகுப்பு",
   "Lab List": "ஆய்வக பட்டியல்",
-  "Lab BookAppointment": "ஆய்வக BookAppointment.",
-  "Add Insurance": "காப்பீடு சேர்க்கவும்"
+  "Lab BookAppointment": "ஆய்வக சந்திப்பு பதிவு..",
+  "Add Insurance": "காப்பீடு சேர்க்கவும்",
+  "Your Chat Consultation Request Success, We will notify Doctor":"உங்கள் அரட்டை ஆலோசனை கோரிக்கை வெற்றி. நாங்கள் டாக்டர் அறிவிப்போம்",
+  "We could not Process Your Video Consultation Request at this time, Please Try again later":"இந்த நேரத்தில் உங்கள் வீடியோ ஆலோசனை கோரிக்கையை செயல்படுத்த முடியவில்லை. தயவுசெய்து பின்னர் முயற்சிக்கவும்",
+  "Your Video Consultation Request Success, We will notify the Doctor":"உங்கள் வீடியோ ஆலோசனை கோரிக்கை வெற்றி. டாக்டரை நாங்கள் அறிவிப்போம்",
+  "Kindly fill  the fields":"தயவுசெய்து துறைகளை நிரப்பவும்"
 }

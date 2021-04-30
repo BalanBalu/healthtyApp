@@ -702,7 +702,11 @@
   "Lab Category":"ലാബ് വിഭാഗം",
   "Lab List":"ലാബ് പട്ടിക",
   "Lab BookAppointment":"ലാബ് ബുസ്സപ്പൂനിപ്ഷൻ",
-  "Add Insurance":"ഇൻഷുറൻസ് ചേർക്കുക"
+  "Add Insurance":"ഇൻഷുറൻസ് ചേർക്കുക",
+  "Your Chat Consultation Request Success, We will notify Doctor":"നിങ്ങളുടെ ചാറ്റ് കൺസൾട്ടേഷൻ അഭ്യർത്ഥന വിജയം. ഞങ്ങൾ ഡോക്ടറെ അറിയിക്കും",
+  "We could not Process Your Video Consultation Request at this time, Please Try again later":"Wഇത്തവണ നിങ്ങളുടെ വീഡിയോ കൺസൾട്ടേഷൻ അഭ്യർത്ഥന പ്രോസസ്സ് ചെയ്യാൻ കഴിഞ്ഞില്ല. പിന്നീട് വീണ്ടും ശ്രമിക്കുക",
+  "Your Video Consultation Request Success, We will notify the Doctor":"നിങ്ങളുടെ വീഡിയോ കൺസൾട്ടേഷൻ അഭ്യർത്ഥന വിജയം. ഞങ്ങൾ ഡോക്ടറെ അറിയിക്കും",
+  "Kindly fill  the fields":"ഫീൽഡുകൾ ദയവായി നിറയ്ക്കുക"
 
 
 }

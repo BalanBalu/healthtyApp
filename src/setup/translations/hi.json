@@ -697,5 +697,9 @@
     "Lab Category": "प्रयोगशाला श्रेणी",
     "Lab List": "प्रयोगशाला सूची",
     "Lab BookAppointment": "लैब बुकैपॉशन",
-    "Add Insurance": "बीमा जोड़ें"
+    "Add Insurance": "बीमा जोड़ें",
+    "Your Chat Consultation Request Success, We will notify Doctor":"आपकी चैट परामर्श अनुरोध सफलता. हम डॉक्टर को सूचित करेंगे",
+    "We could not Process Your Video Consultation Request at this time, Please Try again later":"हम इस समय आपके वीडियो परामर्श अनुरोध को संसाधित नहीं कर सके. कृपया बाद में पुन: प्रयास करें",
+    "Your Video Consultation Request Success, We will notify the Doctor":"आपका वीडियो परामर्श अनुरोध सफलता. हम डॉक्टर को सूचित करेंगे",
+    "Kindly fill  the fields":"कृपया खेतों को भरें"
 }

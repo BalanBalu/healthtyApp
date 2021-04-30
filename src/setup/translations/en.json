@@ -697,5 +697,9 @@
   "Lab Category": "Lab Category",
   "Lab List": "Lab List",
   "Lab BookAppointment": "Lab BookAppointment",
-  "Add Insurance": "Add Insurance"
+  "Add Insurance": "Add Insurance",
+  "Your Chat Consultation Request Success, We will notify Doctor":"Your Chat Consultation Request Success. We will notify Doctor",
+  "We could not Process Your Video Consultation Request at this time, Please Try again later":"We could not Process Your Video Consultation Request at this time. Please Try again later",
+  "Your Video Consultation Request Success, We will notify the Doctor":"Your Video Consultation Request Success. We will notify the Doctor",
+  "Kindly fill  the fields":"Kindly fill  the fields"
 }

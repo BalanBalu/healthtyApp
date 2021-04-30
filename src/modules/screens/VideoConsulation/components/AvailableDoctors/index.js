@@ -192,14 +192,14 @@ class AvailableDoctors4Video extends Component {
                     if (response.success) {
                         this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home' });
                         Toast.show({
-                            text: translate('Your Chat Consultation Request Success. We will notify Doctor'),
+                            text: translate('Your Chat Consultation Request Success, We will notify Doctor'),
                             type: 'success',
                             duration: 3000
                         });
                         AuthService.signup(this.userId);
                     } else {
                         Toast.show({
-                            text: translate('We could not Process Your Video Consultation Request at this time. Please Try again later'),
+                            text: translate('We could not Process Your Video Consultation Request at this time, Please Try again later'),
                             type: 'success',
                             duration: 3000
                         });
@@ -266,14 +266,14 @@ class AvailableDoctors4Video extends Component {
                     if (response.success) {
                         this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home' });
                         Toast.show({
-                            text: translate('Your Video Consultation Request Success. We will notify the Doctor'),
+                            text: translate('Your Video Consultation Request Success, We will notify the Doctor'),
                             type: 'success',
                             duration: 3000
                         });
                         AuthService.signup(this.userId);
                     } else {
                         Toast.show({
-                            text: translate('We could not Process Your Video Consultation Request at this time. Please Try again later'),
+                            text: translate('We could not Process Your Video Consultation Request at this time, Please Try again later'),
                             type: 'success',
                             duration: 3000
                         });
