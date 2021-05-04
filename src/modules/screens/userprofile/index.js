@@ -438,7 +438,7 @@ class Profile extends Component {
                       <Text
                         style={styles.nameStyle}
                         onPress={() => this.editProfile('UpdateUserDetails')}>
-                        {data?.firstName ? data?.firstName + ' ' : 'Add your name'}
+                        {data?.firstName ? data?.firstName + ' ' : ''}
                         <Text style={styles.nameStyle}>
                           {data?.middleName ? data?.middleName + ' ' : ''}
                           <Text style={styles.nameStyle}>
