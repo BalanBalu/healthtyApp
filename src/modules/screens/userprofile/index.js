@@ -233,7 +233,7 @@ class Profile extends Component {
                 obj.id = 'pinCode.123';
                 break;
             }
-            contextdata?.push(obj);
+            contextData.push(obj);
             placeName += locationObj[keyEle] + ', ';
           });
 
@@ -369,7 +369,7 @@ class Profile extends Component {
       profile: {isLoading},
     } = this.props;
     const {data, imageSource, family_members} = this.state;
-    
+
     return (
       <Container style={styles.container}>
         <NavigationEvents
