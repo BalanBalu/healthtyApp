@@ -369,6 +369,7 @@ class Profile extends Component {
       profile: {isLoading},
     } = this.props;
     const {data, imageSource, family_members} = this.state;
+    
     return (
       <Container style={styles.container}>
         <NavigationEvents
