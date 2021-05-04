@@ -144,7 +144,7 @@ class Profile extends Component {
       screen: screen,
       fromProfile: true,
       updatedata: this.state.data || '',
-      id: this.state.data._id,
+      id: this.state.data?._id,
     });
   }
 
@@ -152,7 +152,7 @@ class Profile extends Component {
     try {
       let addrressData;
       if (item === null || item.pinCode === null) {
-        this.editProfile('MapBox', {id: this.state.data._id});
+        this.editProfile('MapBox', {id: this.state.data?._id});
       } else {
         let address = {
           address1: item.address1,
@@ -183,7 +183,7 @@ class Profile extends Component {
             );
           }
           if (coordinates.length == 0) {
-            this.editProfile('MapBox', {id: this.state.data._id});
+            this.editProfile('MapBox', {id: this.state.data?._id});
             return
           }
           addrressData = {
@@ -196,7 +196,7 @@ class Profile extends Component {
         this.props.navigation.navigate('MapBox', {
           locationData: addrressData,
           fromProfile: true,
-          id: this.state.data._id,
+          id: this.state.data?._id,
           mapEdit: true,
         });
 
@@ -233,7 +233,7 @@ class Profile extends Component {
                 obj.id = 'pinCode.123';
                 break;
             }
-            contextData.push(obj);
+            contextdata?.push(obj);
             placeName += locationObj[keyEle] + ', ';
           });
 
@@ -298,7 +298,7 @@ class Profile extends Component {
       if (response.success) {
         let requestData = {
           profileImage: response.data,
-          _id: this.state.data._id,
+          _id: this.state.data?._id,
         };
         let result = await updateMemberDetails(requestData);
         if (result) {
@@ -437,11 +437,11 @@ class Profile extends Component {
                       <Text
                         style={styles.nameStyle}
                         onPress={() => this.editProfile('UpdateUserDetails')}>
-                        {data.firstName ? data.firstName + ' ' : ''}
+                        {data?.firstName ? data?.firstName + ' ' : 'Add your name'}
                         <Text style={styles.nameStyle}>
-                          {data.middleName ? data.middleName + ' ' : ''}
+                          {data?.middleName ? data?.middleName + ' ' : ''}
                           <Text style={styles.nameStyle}>
-                            {data.lastName ? data.lastName : ''}
+                            {data?.lastName ? data?.lastName : ''}
                           </Text>
                         </Text>
                       </Text>
@@ -560,7 +560,7 @@ class Profile extends Component {
                   <Text style={styles.topValue}> Age </Text>
                   <Text note style={styles.bottomValue}>
                     {' '}
-                    {dateDiff(data.dob, new Date(), 'years')}{' '}
+                    {dateDiff(data?.dob, new Date(), 'years')}{' '}
                   </Text>
                 </Col>
 
@@ -577,7 +577,7 @@ class Profile extends Component {
                     <Text style={styles.topValue}>Gender </Text>
                   </View>
                   <Text note style={styles.bottomValue}>
-                    {data.gender ? data.gender : '-'}{' '}
+                    {data?.gender ? data?.gender : '-'}{' '}
                   </Text>
                 </Col>
 
@@ -591,7 +591,7 @@ class Profile extends Component {
                   <Text style={styles.topValue}>Blood</Text>
                   <Text note style={styles.bottomValue}>
                     {' '}
-                    {data.bloodGroup ? data.bloodGroup : '-'}{' '}
+                    {data?.bloodGroup ? data?.bloodGroup : '-'}{' '}
                   </Text>
                 </Col>
               </Grid>
@@ -852,9 +852,9 @@ class Profile extends Component {
                     onPress={() => this.editProfile('UpdateEmail')}
                     testID="onPressEmail">
                     <Text style={styles.customText}>Email</Text>
-                    {data.emailId != undefined ? (
+                    {data?.emailId != undefined ? (
                       <Text note style={styles.customText1}>
-                        {data.emailId}
+                        {data?.emailId}
                       </Text>
                     ) : (
                       <Button
@@ -873,7 +873,7 @@ class Profile extends Component {
                   </TouchableOpacity>
                 </Body>
 
-                {data.emailId != undefined ? (
+                {data?.emailId != undefined ? (
                   <Right>
                     <MaterialIcons
                       name="create"
@@ -895,28 +895,28 @@ class Profile extends Component {
                     onPress={() => this.editAddress(data)}
                     testID="onPressAddress">
                     <Text style={styles.customText}>Address</Text>
-                    {data.address1 ? (
+                    {data?.address1 ? (
                       <View>
                         <Text note style={styles.customText1}>
-                          {data.address1 + ','}
+                          {data?.address1 + ','}
                           <Text note style={styles.customText1}>
-                            {data.address2 ? data.address2 : ' '}
+                            {data?.address2 ? data?.address2 : ' '}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.address3 ? data.address3 + ',' : ' '}
+                          {data?.address3 ? data?.address3 + ',' : ' '}
                           <Text note style={styles.customText1}>
-                            {data.city ? data.city : ' '}
+                            {data?.city ? data?.city : ' '}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.state ? data.state + ',' : ' '}
+                          {data?.state ? data?.state + ',' : ' '}
                           <Text note style={styles.customText1}>
-                            {data.country ? data.country : ' '}
+                            {data?.country ? data?.country : ' '}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data.pinCode}
+                          {data?.pinCode}
                         </Text>
                       </View>
                     ) : (
@@ -932,7 +932,7 @@ class Profile extends Component {
                     )}
                   </TouchableOpacity>
                 </Body>
-                {data.address1 ? (
+                {data?.address1 ? (
                   <Right>
                     <MaterialIcons
                       name="create"
@@ -953,9 +953,9 @@ class Profile extends Component {
                     onPress={() => this.editProfile('UpdateContact')}
                     testID="onPressUpdateContact">
                     <Text style={styles.customText}>Contact</Text>
-                    {data.mobile != undefined ? (
+                    {data?.mobile != undefined ? (
                       <Text note style={styles.customText1}>
-                        {data.mobile}
+                        {data?.mobile}
                       </Text>
                     ) : (
                       <Button
@@ -967,7 +967,7 @@ class Profile extends Component {
                           style={styles.customText}
                           onPress={() =>
                             this.props.navigation.navigate('UpdateContact', {
-                              id: this.state.data._id || null,
+                              id: this.state.data?._id || null,
                             })
                           }
                           testID="clickAddContactNo">
@@ -978,7 +978,7 @@ class Profile extends Component {
                   </TouchableOpacity>
                 </Body>
 
-                {data.mobile ? (
+                {data?.mobile ? (
                   <Right>
                     <MaterialIcons
                       name="create"
