@@ -151,9 +151,7 @@ export function renderProfileImage(data) {
             source = require('../../assets/images/male_user.png')
         }
         return (source)
-    } else {
-        return source = require('../../assets/images/profile_common.png')
-    }
+    } 
    
 }
 export function renderDoctorImage(data) {
