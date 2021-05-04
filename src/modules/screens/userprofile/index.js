@@ -399,7 +399,7 @@ class Profile extends Component {
                           title: 'Profile photo',
                         })
                       }>
-                      {imageSource != undefined ? (
+                      {imageSource != undefined && imageSource != null ? (
                         <Thumbnail
                           style={styles.profileImage}
                           source={{uri: imageSource}}
