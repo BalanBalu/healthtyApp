@@ -63,7 +63,6 @@ import {
   getMemberDetailsByEmail,
   getFamilyMemDetails,
   deleteFamilyMembersDetails,
-  getUserById
 } from '../../providers/corporate/corporate.actions';
 import ConfirmPopup from '../../shared/confirmPopup';
 

@@ -128,19 +128,19 @@ export async function getMemberDetailsByEmail(emailId) {
   }
 }
 
-export async function getUserById(id) {
-  try {
-    let endPoint = '/users/' + id;
-    let response = await smartHealthGetService(endPoint);
-    return response.data;
-  } catch (e) {
+// export async function getUserById(id) {
+//   try {
+//     let endPoint = '/users/' + id;
+//     let response = await smartHealthGetService(endPoint);
+//     return response.data;
+//   } catch (e) {
 
-    return {
-      message: 'exceptio1n' + e,
-      success: false
-    }
-  }
-}
+//     return {
+//       message: 'exceptio1n' + e,
+//       success: false
+//     }
+//   }
+// }
 
 
 
