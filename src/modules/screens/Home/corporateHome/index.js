@@ -61,8 +61,11 @@ class CorporateHome extends PureComponent {
     this.state = {
       isCorporateUser: false,
       relationship: null,
+      corporateData: {},
+      TPAData: null,
       memberDetails: {},
       policyDetails: {},
+      connectionStatus: null,
       relationship: null,
       helpLineNumberData: [],
     };
@@ -71,7 +74,7 @@ class CorporateHome extends PureComponent {
   }
   async componentDidMount() {
     let userId = await AsyncStorage.getItem('userId');
-    let relationship = (await AsyncStorage.getItem('relationship')) || null;
+    let relationship = (await AsyncStorage.getItem('relationship')) || null; 
 
     const isCorporateUser =
       (await AsyncStorage.getItem('is_corporate_user')) === 'true';
@@ -83,12 +86,25 @@ class CorporateHome extends PureComponent {
     await this.getMemberDetailsByPolicyNo();
     this.getMemberDetailsByEmail();
     this.getCorporatePhoneNumber();
+    this.setState({ corporateData: this.props?.profile?.corporateData })
+    this.setState({ TPAData: this.props?.profile?.memberTpaInfo })
   }
-//   componentDidUpdate(prevProps, prevState) {
-//     if (prevState.translation !== this.state.translation) {
-//       console.log('pokemons state has changed.');
-//     }
-//   }
+  
+
+ async componentDidUpdate(prevProps, prevState) {
+   this.setState({connectionStatus: this.props.profile.connectionStatus})
+    if (prevState.connectionStatus !== this.state.connectionStatus) {
+      let userID = await AsyncStorage.getItem('userID');
+      await this.getCorporateDatails(userID)
+      await this.getFamilyMemberDetailsByPolicyNo()
+      await this.getMemberDetailsByPolicyNo();
+    this.getMemberDetailsByEmail();
+    this.getCorporatePhoneNumber();
+      
+      this.setState({ corporateData: this.props?.profile?.corporateData })
+      this.setState({ TPAData: this.props?.profile?.memberTpaInfo })
+    }
+  }
 
 
   getMemberDetailsByEmail = async () => {
@@ -96,7 +112,7 @@ class CorporateHome extends PureComponent {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        let policyData = await getPolicyByPolicyNo(result[0].policyNo);
+        let policyData = await getPolicyByPolicyNo(result[0]?.policyNo);
         await this.setState({
           memberDetails: result[0],
           policyDetails: policyData,
@@ -140,6 +156,7 @@ class CorporateHome extends PureComponent {
   };
 
   getCorporateDatails = async (userId) => {
+    console.log('yyyyyyyyyyyy');
     try {
       let fields = 'corporate_member_id,employee_code';
       let employeeCode = await AsyncStorage.getItem('employeeCode');
@@ -211,20 +228,26 @@ class CorporateHome extends PureComponent {
     }
   };
 
-  getFamilyMemberDetailsByPolicyNo = async (memberPolicyNo) => {
+  getFamilyMemberDetailsByPolicyNo = async () => {
     try {
       this.setState({isLoading: true});
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-      if (result) {
-        this.setState({family_members: result, id: result[0]._id});
+
+      // if (result) {
+      //   this.setState({family_members: result, id: result[0]?._id});
      
-         store.dispatch({
-          type: SET_FAMILY_DATA,
-          data: this.state.family_members,
-        });
-      }
+      //    store.dispatch({
+      //     type: SET_FAMILY_DATA,
+      //     data: this.state.family_members,
+      //   });
+      // }
+
+      await store.dispatch({
+        type: SET_FAMILY_DATA,
+        data: result ?? {},
+      });
     } catch (ex) {
       console.log(ex);
     } finally {
@@ -259,8 +282,9 @@ class CorporateHome extends PureComponent {
   };
 
   render() {
-    let corporateData = this.props.profile.corporateData;
-    let TPAData = this.props.profile.memberTpaInfo;
+    const { corporateData, TPAData } = this.state;
+    // let corporateData = this.props.profile.corporateData;
+    // let TPAData = this.props.profile.memberTpaInfo;
     const {navigate} = this.props.navigation;
 
     const {

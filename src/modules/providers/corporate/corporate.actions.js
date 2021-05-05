@@ -103,7 +103,6 @@ export async function serviceOfClaimIntimation(reqBodyData) {
   try {
     const endpoint = 'claim-intimation';
     const resp = await smartHealthPostService(endpoint, reqBodyData)
-    console.log('resp :', resp);
     return resp.data
   } catch (Ex) {
     return {
@@ -117,7 +116,6 @@ export async function getMemberDetailsByEmail(emailId) {
   try {
     let endPoint = 'member-detail/memberId/by-email?email=' + emailId;
     let response = await smartHealthGetService(endPoint);
-    console.log('response :', response);
     return response.data;
   } catch (e) {
 
