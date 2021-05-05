@@ -44,8 +44,18 @@ class SideBar extends React.Component {
       this.setState({is_corporate_user: true});
     }
   }
+  clearAysncStorage = async () => {
+    try {
+      await AsyncStorage.clear()
+    } catch(e) {
+      console.log(e);
+    }
+  
+    // console.log('Cleared AysyncStorage')
+  }
   signInOrSignup(hasLoggedIn) {
     if (hasLoggedIn) {
+      this.clearAysncStorage()
       logout();
       this.props.navigation.navigate('login');
     } else {
