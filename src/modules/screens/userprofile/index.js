@@ -63,6 +63,7 @@ import {
   getMemberDetailsByEmail,
   getFamilyMemDetails,
   deleteFamilyMembersDetails,
+  getUserById
 } from '../../providers/corporate/corporate.actions';
 import ConfirmPopup from '../../shared/confirmPopup';
 
@@ -104,11 +105,18 @@ class Profile extends Component {
     try {
       let userData = await AsyncStorage.getItem('user')
       userData = JSON.parse(userData)
-      // let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      let result = await getMemberDetailsByEmail(userData.email ?? null);
-      if (result) {
-        await this.setState({data: result[0]});
+      let userID = userData?.userId
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let result;
+      if(memberEmailId) {
+        result = await getMemberDetailsByEmail(memberEmailId);
+      } else {
+        result = await getUserById(userID);
       }
+      this.setState({data: result[0] ?? {} });
+      // if (result) {
+      //   await this.setState({data: result[0]});
+      // }
     } catch (ex) {
       console.log(ex);
     }
