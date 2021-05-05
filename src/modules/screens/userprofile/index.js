@@ -104,7 +104,6 @@ class Profile extends Component {
     try {
       let userData = await AsyncStorage.getItem('user')
       userData = JSON.parse(userData)
-      let userID = userData?.userId
       let emailID = userData?.email
       // let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(emailID ?? null);
