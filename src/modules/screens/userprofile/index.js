@@ -107,12 +107,12 @@ class Profile extends Component {
       userData = JSON.parse(userData)
       let userID = userData?.userId
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      let result;
-      if(memberEmailId) {
-        result = await getMemberDetailsByEmail(memberEmailId);
-      } else {
-        result = await getUserById(userID);
-      }
+      let result = await getMemberDetailsByEmail(memberEmailId);;
+      // if(memberEmailId) {
+      //   result = await getMemberDetailsByEmail(memberEmailId);
+      // } else {
+      //   result = await getUserById(userID);
+      // }
       this.setState({data: result[0] ?? {} });
       // if (result) {
       //   await this.setState({data: result[0]});
