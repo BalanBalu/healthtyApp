@@ -108,7 +108,7 @@ class Profile extends Component {
       // let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(emailID ?? null);
 
-      this.setState({data: result[0] ?? {} });
+      this.setState({data: result?.[0] ?? {} });
       // if (result) {
       //   await this.setState({data: result[0]});
       // }
