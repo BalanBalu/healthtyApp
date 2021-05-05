@@ -105,8 +105,9 @@ class Profile extends Component {
       let userData = await AsyncStorage.getItem('user')
       userData = JSON.parse(userData)
       let userID = userData?.userId
-      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      let result = await getMemberDetailsByEmail(memberEmailId);;
+      let emailID = userData?.email
+      // let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let result = await getMemberDetailsByEmail(emailID ?? null);
       // if(memberEmailId) {
       //   result = await getMemberDetailsByEmail(memberEmailId);
       // } else {
