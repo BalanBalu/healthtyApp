@@ -1,27 +1,27 @@
 import React from 'react';
-import {StyleSheet, Image, FlatList} from 'react-native';
+import { StyleSheet, Image, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {connect} from 'react-redux';
-import {Container, Content, Text, View, Card, Toast} from 'native-base';
-import {Col, Row, Grid} from 'react-native-easy-grid';
+import { connect } from 'react-redux';
+import { Container, Content, Text, View, Card, Toast } from 'native-base';
+import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import ProgressBar from 'react-native-horizontal-progress-bar';
-import {getMemberDetailsByEmail} from '../../providers/corporate/corporate.actions';
+import { getMemberDetailsByEmail } from '../../providers/corporate/corporate.actions';
 
-import {getPolicyByPolicyNo} from '../../providers/policy/policy.action';
-import {formatDate} from '../../../setup/helpers';
-import {primaryColor} from '../../../setup/config';
+import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
+import { formatDate } from '../../../setup/helpers';
+import { primaryColor } from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
-import {translate} from '../../../setup/translator.helper'
+import { translate } from '../../../setup/translator.helper'
 class PolicyCoverage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       memberDetails: {},
       policyDetails: {},
-      isLoading:false,
-     policyAccordianOpen: false,
+      isLoading: false,
+      policyAccordianOpen: false,
 
     }
 
@@ -32,7 +32,7 @@ class PolicyCoverage extends React.Component {
   }
   getMemberDetailsByEmail = async () => {
     try {
-      this.setState({isLoading:true})
+      this.setState({ isLoading: true })
       let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
@@ -46,22 +46,22 @@ class PolicyCoverage extends React.Component {
     } catch (ex) {
       console.log(ex);
     }
-    finally{
-      this.setState({isLoading:false})
+    finally {
+      this.setState({ isLoading: false })
     }
 
   }
   tpaName = (data) => {
-    let tpaName=""
-    if(data){
-      tpaName=data.tpaName ? data.tpaName :'';
+    let tpaName = ""
+    if (data) {
+      tpaName = data.tpaName ? data.tpaName : '';
     }
     return tpaName
   };
 
   termsAndConditionListDetails = async () => {
     try {
-      const {policyDetails} = this.state;
+      const { policyDetails } = this.state;
       this.termsAndConditionList = [];
 
       if (
@@ -737,67 +737,67 @@ class PolicyCoverage extends React.Component {
   };
 
   render() {
-    const { memberDetails, policyDetails,isLoading} = this.state
+    const { memberDetails, policyDetails, isLoading } = this.state
     let tpaName = this.props.profile.memberTpaInfo;
-     return (
+    return (
       <Container>
         <Content style={{ backgroundColor: '#F3F3F4' }}>
-         {isLoading == true  ?
-          <Loader style='smallList' />
-          : 
-          <View style={{ marginTop: 20, marginRight: 10, marginLeft: 10 }}>
-            <Text style={styles.myInsuranceText}>{translate('My Insurance')}</Text>
-            <Card style={styles.cardStyle}>
-              <Row
-                style={{
-                  borderBottomColor: 'gray',
-                  borderBottomWidth: 1,
-                  paddingBottom: 10,
-                }}>
-                <Col size={2}>
-                  <Image
-                    source={require('../../../../assets/images/male_user.png')}
-                    style={{height: 45, width: 45}}
-                  />
-                </Col>
-                <Col size={5.5}>
-                  <Text
-                    style={{
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
-                      marginTop: 10,
-                    }}>
-                    {memberDetails.firstName
-                      ? memberDetails.firstName + ' ' + memberDetails.lastName
-                      : '-'}
-                  </Text>
-                </Col>
-                <Col size={2.5}>
-                  <TouchableOpacity
-                    style={styles.ecardButton}
-                    onPress={() => this.props.navigation.navigate('E Card')}>
-                    <Text style={styles.linkHeader}>{translate("View E-card")}</Text>
-                  </TouchableOpacity>
-                </Col>
-              </Row>
-              <View style={{marginBottom: 10}}>
-                <Row style={{paddingBottom: 10, marginTop: 10}}>
-                  <Col size={5}>
-                    <Text style={styles.subHeadingStyle}>{translate("Card Number")}</Text>
-                    <Text style={styles.subHeadingData}>
-                      {memberDetails.memberId ? memberDetails.memberId : '-'}
+          {isLoading == true ?
+            <Loader style='smallList' />
+            :
+            <View style={{ marginTop: 20, marginRight: 10, marginLeft: 10 }}>
+              <Text style={styles.myInsuranceText}>{translate('My Insurance')}</Text>
+              <Card style={styles.cardStyle}>
+                <Row
+                  style={{
+                    borderBottomColor: 'gray',
+                    borderBottomWidth: 1,
+                    paddingBottom: 10,
+                  }}>
+                  <Col size={2}>
+                    <Image
+                      source={require('../../../../assets/images/male_user.png')}
+                      style={{ height: 45, width: 45 }}
+                    />
+                  </Col>
+                  <Col size={5.5}>
+                    <Text
+                      style={{
+                        fontFamily: 'Roboto',
+                        fontSize: 16,
+                        marginTop: 10,
+                      }}>
+                      {memberDetails.firstName
+                        ? memberDetails.firstName + ' ' + memberDetails.middleName + ' ' + memberDetails.lastName
+                        : '-'}
                     </Text>
                   </Col>
-                  <Col
-                    size={5}
-                    style={{
-                      alignItems: 'flex-end',
-                      justifyContent: 'flex-end',
-                    }}>
-                    <Text style={styles.subHeadingStyle}>{translate("Validity period")}</Text>
-                    <Text style={[styles.subHeadingData, {textAlign: 'right'}]}>
-                      {policyDetails.policyEffectiveFrom
-                        ? formatDate(
+                  <Col size={2.5}>
+                    <TouchableOpacity
+                      style={styles.ecardButton}
+                      onPress={() => this.props.navigation.navigate('E Card')}>
+                      <Text style={styles.linkHeader}>{translate("View E-card")}</Text>
+                    </TouchableOpacity>
+                  </Col>
+                </Row>
+                <View style={{ marginBottom: 10 }}>
+                  <Row style={{ paddingBottom: 10, marginTop: 10 }}>
+                    <Col size={5}>
+                      <Text style={styles.subHeadingStyle}>{translate("Card Number")}</Text>
+                      <Text style={styles.subHeadingData}>
+                        {memberDetails.memberId ? memberDetails.memberId : '-'}
+                      </Text>
+                    </Col>
+                    <Col
+                      size={5}
+                      style={{
+                        alignItems: 'flex-end',
+                        justifyContent: 'flex-end',
+                      }}>
+                      <Text style={styles.subHeadingStyle}>{translate("Validity period")}</Text>
+                      <Text style={[styles.subHeadingData, { textAlign: 'right' }]}>
+                        {policyDetails.policyEffectiveFrom
+                          ? formatDate(
                             policyDetails.policyEffectiveFrom,
                             'DD/MM/YY',
                           ) +
@@ -808,142 +808,142 @@ class PolicyCoverage extends React.Component {
                             policyDetails.policyEffectiveTo,
                             'DD/MM/YY',
                           )
-                        : 'N/A'}
-                    </Text>
-                  </Col>
-                </Row>
-                <Row style={{paddingBottom: 10, marginTop: 10}}>
-                  <Col size={5}>
-                    <Text style={styles.subHeadingStyle}>{translate("Payer Name")}</Text>
-                    <Text style={styles.subHeadingData}>
-                      {this.tpaName(tpaName)}
-                    </Text>
-                  </Col>
-                </Row>
-                <Text style={styles.subHeadingStyle}>{translate("Balance Sum Insured")}</Text>
-                <View style={{marginTop: 2}}>
-                  <Text style={{fontFamily: 'Roboto', fontSize: 18}}>
-                    {memberDetails.balSumInsured
-                      ? memberDetails.balSumInsured
-                      : 0}
-                    <Text
-                      style={{
-                        fontFamily: 'Roboto',
-                        fontSize: 13,
-                        color: '#909090',
-                      }}>
-                      {' '}
+                          : 'N/A'}
+                      </Text>
+                    </Col>
+                  </Row>
+                  <Row style={{ paddingBottom: 10, marginTop: 10 }}>
+                    <Col size={5}>
+                      <Text style={styles.subHeadingStyle}>{translate("Payer Name")}</Text>
+                      <Text style={styles.subHeadingData}>
+                        {this.tpaName(tpaName)}
+                      </Text>
+                    </Col>
+                  </Row>
+                  <Text style={styles.subHeadingStyle}>{translate("Balance Sum Insured")}</Text>
+                  <View style={{ marginTop: 2 }}>
+                    <Text style={{ fontFamily: 'Roboto', fontSize: 18 }}>
+                      {memberDetails.balSumInsured
+                        ? memberDetails.balSumInsured
+                        : 0}
+                      <Text
+                        style={{
+                          fontFamily: 'Roboto',
+                          fontSize: 13,
+                          color: '#909090',
+                        }}>
+                        {' '}
                       /{memberDetails.sumInsured ? memberDetails.sumInsured : 0}
+                      </Text>
                     </Text>
-                  </Text>
-                </View>
-                <ProgressBar
-                  progress={this.percentageCalculation(
-                    memberDetails.sumInsured ? memberDetails.sumInsured : 0,
-                    memberDetails.balSumInsured ? memberDetails.balSumInsured : 0,
-                  )}
-                  color={'#4CAF50'}
-                  style={styles.progressbarStyle}
-                  animated={true}
-                />
+                  </View>
+                  <ProgressBar
+                    progress={this.percentageCalculation(
+                      memberDetails.sumInsured ? memberDetails.sumInsured : 0,
+                      memberDetails.balSumInsured ? memberDetails.balSumInsured : 0,
+                    )}
+                    color={'#4CAF50'}
+                    style={styles.progressbarStyle}
+                    animated={true}
+                  />
 
-                {/* <Text style={[styles.subText, { marginTop: 15 },]}>Family Sum Insured</Text>
+                  {/* <Text style={[styles.subText, { marginTop: 15 },]}>Family Sum Insured</Text>
                 <View style={{ marginTop: 2 }}>
                   <Text style={{ fontFamily: 'Roboto', fontSize: 18, }}>15000.00<Text style={{ fontFamily: 'Roboto', fontSize: 13, color: '#909090' }}>{" "}/ 50000.00</Text></Text>
                 </View>
                 <ProgressBar progress={0.2} color={'#2196F3'} style={styles.progressbarStyle} animated={true} /> */}
-              </View>
-            </Card>
-            <TouchableOpacity
-              onPress={() => {
-                if (
-                  this.termsAndConditionList &&
-                  this.termsAndConditionList.length != 0
-                ) {
-                  this.setState({
-                    policyAccordianOpen: !this.state.policyAccordianOpen,
-                  });
-                  // this.props.navigation.navigate("PolicyConditions", { termsAndConditionList: this.termsAndConditionList })
-                } else {
-                  Toast.show({
-                    text: translate('No Details Available'),
-                    type: 'warning',
-                    duration: 3000,
-                  });
-                }
-              }}>
-              <Card style={styles.cardStyle}>
-                {this.state.policyAccordianOpen === true ? (
-                  <View>
+                </View>
+              </Card>
+              <TouchableOpacity
+                onPress={() => {
+                  if (
+                    this.termsAndConditionList &&
+                    this.termsAndConditionList.length != 0
+                  ) {
+                    this.setState({
+                      policyAccordianOpen: !this.state.policyAccordianOpen,
+                    });
+                    // this.props.navigation.navigate("PolicyConditions", { termsAndConditionList: this.termsAndConditionList })
+                  } else {
+                    Toast.show({
+                      text: translate('No Details Available'),
+                      type: 'warning',
+                      duration: 3000,
+                    });
+                  }
+                }}>
+                <Card style={styles.cardStyle}>
+                  {this.state.policyAccordianOpen === true ? (
+                    <View>
+                      <Row>
+                        <Col size={9} style={{ justifyContent: 'center' }}>
+                          <Text
+                            style={[
+                              styles.policyConitionText,
+                              {
+                                textDecorationLine: 'underline',
+                                fontFamily: 'opensans-bold',
+                              },
+                            ]}>
+                            {translate("Policy Conditions")}
+                          </Text>
+                        </Col>
+                        <Col size={1} style={{ justifyContent: 'center' }}>
+                          <TouchableOpacity>
+                            <MaterialIcons
+                              name="keyboard-arrow-up"
+                              style={{ fontSize: 30 }}
+                            />
+                          </TouchableOpacity>
+                        </Col>
+                      </Row>
+                      <FlatList
+                        data={this.termsAndConditionList}
+                        renderItem={({ item, index }) => (
+                          <Row style={{ marginTop: 0 }}>
+                            <Col size={1}>
+                              <Text style={{ fontSize: 35, fontFamily: 'opensans-bold' }}>
+                                {'\u2022'}
+                              </Text>
+                            </Col>
+                            <Col size={9}>
+                              <Text
+                                style={{
+                                  fontFamily: 'Roboto',
+                                  fontSize: 15,
+                                  lineHeight: 25,
+                                  marginTop: 10,
+                                }}>
+                                {item}
+                              </Text>
+                            </Col>
+                          </Row>
+                        )}
+                      />
+                    </View>
+                  ) : (
                     <Row>
-                      <Col size={9} style={{justifyContent: 'center'}}>
-                        <Text
-                          style={[
-                            styles.policyConitionText,
-                            {
-                              textDecorationLine: 'underline',
-                              fontFamily: 'opensans-bold',
-                            },
-                          ]}>
+                      <Col size={9} style={{ justifyContent: 'center' }}>
+                        <Text style={styles.policyConitionText}>
                           {translate("Policy Conditions")}
                         </Text>
+                        <Text style={styles.policyConditionSubText}>
+                          {translate("View all the policy and conditions given to you")}{' '}
+                        </Text>
                       </Col>
-                      <Col size={1} style={{justifyContent: 'center'}}>
+                      <Col size={1} style={{ justifyContent: 'center' }}>
                         <TouchableOpacity>
                           <MaterialIcons
-                            name="keyboard-arrow-up"
-                            style={{fontSize: 30}}
+                            name="keyboard-arrow-down"
+                            style={{ fontSize: 30 }}
                           />
                         </TouchableOpacity>
                       </Col>
                     </Row>
-                    <FlatList
-                      data={this.termsAndConditionList}
-                      renderItem={({item, index}) => (
-                        <Row style={{marginTop: 0}}>
-                          <Col size={1}>
-                            <Text style={{ fontSize: 35,fontFamily:'opensans-bold'}}>
-                              {'\u2022'}
-                            </Text>
-                          </Col>
-                          <Col size={9}>
-                            <Text
-                              style={{
-                                fontFamily: 'Roboto',
-                                fontSize: 15,
-                                lineHeight: 25,
-                                marginTop: 10,
-                              }}>
-                              {item}
-                            </Text>
-                          </Col>
-                        </Row>
-                      )}
-                    />
-                  </View>
-                ) : (
-                  <Row>
-                    <Col size={9} style={{justifyContent: 'center'}}>
-                      <Text style={styles.policyConitionText}>
-                      {translate("Policy Conditions")}
-                      </Text>
-                      <Text style={styles.policyConditionSubText}>
-                        {translate("View all the policy and conditions given to you")}{' '}
-                      </Text>
-                    </Col>
-                    <Col size={1} style={{justifyContent: 'center'}}>
-                      <TouchableOpacity>
-                        <MaterialIcons
-                          name="keyboard-arrow-down"
-                          style={{fontSize: 30}}
-                        />
-                      </TouchableOpacity>
-                    </Col>
-                  </Row>
-                )}
-              </Card>
-            </TouchableOpacity>
-          </View>}
+                  )}
+                </Card>
+              </TouchableOpacity>
+            </View>}
 
         </Content>
       </Container>
