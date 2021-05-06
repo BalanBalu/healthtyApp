@@ -75,10 +75,6 @@ class CorporateHome extends PureComponent {
   async componentDidMount() {
     let userId = await AsyncStorage.getItem('userId');
     let relationship = (await AsyncStorage.getItem('relationship')) || null; 
-    let fields = 'first_name,middle_name,last_name,gender';
-
-    let userResult = await fetchUserProfile(userId, fields);
-    console.log('userResult :', userResult);
 
     const isCorporateUser =
       (await AsyncStorage.getItem('is_corporate_user')) === 'true';
