@@ -75,6 +75,10 @@ class CorporateHome extends PureComponent {
   async componentDidMount() {
     let userId = await AsyncStorage.getItem('userId');
     let relationship = (await AsyncStorage.getItem('relationship')) || null; 
+    let fields = 'first_name,middle_name,last_name,gender';
+
+    let userResult = await fetchUserProfile(userId, fields);
+    console.log('userResult :', userResult);
 
     const isCorporateUser =
       (await AsyncStorage.getItem('is_corporate_user')) === 'true';
@@ -156,7 +160,6 @@ class CorporateHome extends PureComponent {
   };
 
   getCorporateDatails = async (userId) => {
-    console.log('yyyyyyyyyyyy');
     try {
       let fields = 'corporate_member_id,employee_code';
       let employeeCode = await AsyncStorage.getItem('employeeCode');
@@ -234,7 +237,8 @@ class CorporateHome extends PureComponent {
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-
+      
+      //comment out sing no states family_members and id is declared -aashiq
       // if (result) {
       //   this.setState({family_members: result, id: result[0]?._id});
      
