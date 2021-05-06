@@ -238,7 +238,7 @@ class CorporateHome extends PureComponent {
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
       
-      //comment out sing no states family_members and id is declared -aashiq
+      //commented out since no states family_members and id is declared -aashiq
       // if (result) {
       //   this.setState({family_members: result, id: result[0]?._id});
      
