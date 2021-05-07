@@ -85,7 +85,7 @@ class Profile extends Component {
     };
   }
   async componentDidMount() {
-    console.log('componentDidMount');
+    // console.log('componentDidMount');
     const isLoggedIn = await hasLoggedIn(this.props);
     if (!isLoggedIn) {
       this.props.navigation.navigate('login');
