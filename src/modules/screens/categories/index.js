@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Left, Right, Thumbnail, Body, Icon, locations, Input } from 'native-base';
+import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Left, Right, Thumbnail, Body, Icon, locations, Input ,Toast} from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList ,Modal,Linking} from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl } from '../../../setup/helpers';
 import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 import { Loader } from '../../../components/ContentLoader';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 class Categories extends Component {
@@ -20,11 +22,16 @@ class Categories extends Component {
     this.state = {
       data: [],
       categoriesMain: [],
+      consultPopVisible:false,
+      selectedSpecialist:null,
       isLoading: false,
+      isCorporateUser:false,
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
+    this.setState({isCorporateUser: isCorporateUser});
     this.getCatagries();
   }
   getCatagries = async () => {
@@ -143,12 +150,107 @@ class Categories extends Component {
       </View>
     )
   }
+  callToBookAppointment(){
+   const  number="+917823908908"
+    let phoneNumber = '';
+      if (Platform.OS === 'android') { 
+        phoneNumber = `tel:${number}`;
+       }
+      else { 
+        phoneNumber = `telprompt:${number}`;
+       }
+      Linking.canOpenURL(phoneNumber)
+        .then(supported => {
+          if (!supported) {
+            Alert.alert('Phone number is not available');
+          } else {
+            return Linking.openURL(phoneNumber);
+          }
+        })
+        .catch(err => console.log(err));
+  }
+  onPressArrangeCallBack(){
+    Toast.show({
+      text: 'We Accepted your arrange Call back, We will contact you soon',
+      type: 'success',
+      duration: 5000,
+    });
+    this.props.navigation.navigate('CorporateHome');
+  }
+  onPressCloseToConsultPop(){
+    this.setState({consultPopVisible: false});
+  }
   render() {
     // const { user: { isLoading } } = this.props;
     const { data ,isLoading} = this.state;
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
+        <Modal
+          visible={this.state.consultPopVisible}
+          transparent={true}
+          animationType={'fade'}>
+          <View style={styles.modalFirstView}>
+            <View style={styles.modalSecondView}>
+              <Row
+                style={{
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                  marginTop: -30,
+                }}>
+                <TouchableOpacity onPress={() =>this.onPressCloseToConsultPop()}>
+                  <MaterialIcons
+                    name="close"
+                    style={{fontSize: 30, color: 'red'}}
+                  />
+                </TouchableOpacity>
+              </Row>
+              <Row style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={styles.modalHeading}>
+                {`You can Consult ${this.state.selectedSpecialist||''} ${this.state.selectedSpecialist==="Primary Care Doctor"?'':"Doctor"} by `}
+                </Text>
+              </Row>
+
+              <Row
+                style={{
+                  marginTop: 15,
+                  justifyContent: 'flex-end',
+                  marginBottom: 5,
+                }}>
+                <Col size={5}>
+                  <TouchableOpacity
+                    danger
+                    style={styles.backToHomeButton1}
+                    onPress={() => {
+                      this.callToBookAppointment();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Text style={styles.backToHomeButtonText1}>
+                      {' '}
+                      {'Call to Book Appointment'}
+                    </Text>
+                  </TouchableOpacity>
+                </Col>
+                <Col size={5} style={{marginLeft: 10}}>
+                  <TouchableOpacity
+                    danger
+                    style={styles.backToHomeButton}
+                    onPress={() => {
+                     this.onPressArrangeCallBack();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Text style={styles.backToHomeButtonText}>
+                      {' '}
+                      {'Arrange Callback'}
+                    </Text>
+                  </TouchableOpacity>
+                </Col>
+              </Row>
+            </View>
+          </View>
+        </Modal>
         {isLoading ?
         <Loader style="boxList" />: data.length ?
           <View style={{ marginBottom: 10 }}>
@@ -158,7 +260,7 @@ class Categories extends Component {
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>
-                  <TouchableOpacity onPress={() => this.navigate(item.category_name, item.category_id)}
+                  <TouchableOpacity onPress={() =>this.state.isCorporateUser===true?this.setState({consultPopVisible:true,selectedSpecialist:item.category_name}): this.navigate(item.category_name, item.category_id)}
                     style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                     <FastImage
                       source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
@@ -280,5 +382,57 @@ const styles = StyleSheet.create({
     marginLeft: 11,
     marginBottom: 1, width: '29.5%', flexDirection: 'row', backgroundColor: '#fafafa',
     minHeight:110
-  }
+  },
+  modalFirstView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalSecondView: {
+    width: '95%',
+    height: 200,
+    backgroundColor: '#fff',
+    borderColor: '#909090',
+    borderWidth: 3,
+    padding: 10,
+    borderRadius: 10,
+  },
+  modalHeading: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#000',
+    fontFamily:'opensans-bold'
+  },
+  backToHomeButton1: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 5,
+    backgroundColor: '#128283',
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  backToHomeButtonText1: {
+    fontFamily: 'opensans-bold',
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#fff',
+  },
+  backToHomeButton: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 5,
+    backgroundColor: '#59a7a8',
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  backToHomeButtonText: {
+    fontFamily: 'opensans-bold',
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#fff',
+  },
 });
