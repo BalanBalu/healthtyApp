@@ -101,7 +101,6 @@ class Profile extends Component {
 
   /*Get userProfile*/
   getUserLoginDetails = async () => {
-  console.log('getUserLoginDetails :');
   let userId = await AsyncStorage.getItem('userId');
     let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob,is_corporate_user"
   let result = await fetchUserProfile(userId, fields);
