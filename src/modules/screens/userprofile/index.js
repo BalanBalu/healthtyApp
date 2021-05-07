@@ -100,10 +100,52 @@ class Profile extends Component {
   }
 
   /*Get userProfile*/
+  getUserLoginDetails = async () => {
+  console.log('getUserLoginDetails :');
+  let userId = await AsyncStorage.getItem('userId');
+    let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob,is_corporate_user"
+  let result = await fetchUserProfile(userId, fields);
+  const toCamel = (str) => {
+    return str.replace(/([-_][a-z])/ig, ($1) => {
+      return $1.toUpperCase()
+        .replace('-', '')
+        .replace('_', '');
+    });
+  };
+  
+  const isObject = function (obj) {
+    return obj === Object(obj) && !Array.isArray(obj) && typeof obj !== 'function';
+  };
+  
+  const keysToCamel = function (obj) {
+    if (isObject(obj)) {
+      const n = {};
+  
+      Object.keys(obj)
+        .forEach((k) => {
+          n[toCamel(k)] = keysToCamel(obj[k]);
+        });
+  
+      return n;
+    } else if (Array.isArray(obj)) {
+      return obj.map((i) => {
+        return keysToCamel(i);
+      });
+    }
+    
+    return obj;
+  };
+  
+  
+  
+  this.setState({data: keysToCamel(result) ?? {}})
+  }
+
+  
   getMemberDetailsByEmail = async () => {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      let result = await getMemberDetailsByEmail(memberEmailId ?? null);
+      let result = await getMemberDetailsByEmail(memberEmailId ?? this.getUserLoginDetails());
 
       this.setState({data: result?.[0] ?? {} });
       // if (result) {
