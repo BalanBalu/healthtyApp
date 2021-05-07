@@ -75,13 +75,15 @@ class CorporateHome extends PureComponent {
   async componentDidMount() {
     let userId = await AsyncStorage.getItem('userId');
     let relationship = (await AsyncStorage.getItem('relationship')) || null; 
+    if (isCorporateUser) {
+      await this.getCorporateDatails(userId);
+    }
 
     const isCorporateUser =
       (await AsyncStorage.getItem('is_corporate_user')) === 'true';
     this.setState({isCorporateUser, relationship});
-    if (isCorporateUser) {
-      this.getCorporateDatails(userId);
-    }
+    console.log('isCorporateUser :', this.state.isCorporateUser);
+   
     this.initialFunction();
     await this.getMemberDetailsByPolicyNo();
     this.getMemberDetailsByEmail();
