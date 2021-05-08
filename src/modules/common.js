@@ -69,6 +69,15 @@ export function getFullName(data) {
     return name
 }
 
+export function getCorporateFullName(data) {
+    let name = 'unKnown'
+    if (data && Object.keys(data).length) {
+        name = `${data.firstName ? data.firstName + ' ' : ''}${data.middleName ? data.middleName + ' ' : ''}${data.lastName ? data.lastName : ''}`;
+        name = name ? name : 'unKnown';
+    }
+    return name
+}
+
 export function hospitalProfileImages(data) {
     let source = null;
     if (data && data.profile_image) {

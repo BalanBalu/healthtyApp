@@ -151,7 +151,9 @@ export const SearchAndAppointmentCard = props => {
           style={styles.rectBox}
           activeOpacity={0.6}
           underlayColor={secondaryColorTouch}
-          onPress={() => navigation('Video and Chat Service')}>
+          // onPress={() => navigation('Video and Chat Service')}>
+                      onPress={() => navigateBycalenderPermission()}>
+
           <View>
             <View
               style={{
