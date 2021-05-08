@@ -8,7 +8,8 @@ class OtpInput extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            otp: []
+            otp: [],
+            noOfDigits:this.props&&this.props.noOfDigits?Number(this.props.noOfDigits):6,
         };
         this.otpTextInput = [];
     }
@@ -17,7 +18,7 @@ class OtpInput extends Component {
     }
 
     renderInputs() {
-        const inputs = Array(6).fill(0);   //for 6 digit OTP code
+        const inputs = Array(this.state.noOfDigits).fill(0);   //for 6 digit OTP code
         const txt = inputs.map(
             (i, j) =>
                 <Col key={j}
