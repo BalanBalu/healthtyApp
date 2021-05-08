@@ -474,7 +474,7 @@ class BookAppoinment extends Component {
         availabilityForVideo = true;
     });
     availableDocsChat.forEach(docChat => {
-       availabilityForChat = true;
+       availabilityForChat = false;
     })
     this.setState({ availabilityForVideo, availabilityForChat, isLoading: false})
 }

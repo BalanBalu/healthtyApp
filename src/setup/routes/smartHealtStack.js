@@ -16,6 +16,7 @@ import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetai
 import { Icon, View, Thumbnail, Item, Input, Left, Right } from 'native-base';
 import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
+import InsuranceHistory from"../../modules/screens/Insurance/InsuranceHistory"
 
 import UserAddress from "../../modules/screens/auth/UserAddress";
 import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
@@ -774,6 +775,7 @@ export const smartHealthStack=createStackNavigator({
 
     }
   },
+
   PolicyStatus: {
     screen: PolicyStatus,
     navigationOptions: {
@@ -803,7 +805,7 @@ export const smartHealthStack=createStackNavigator({
   "Home Health Care": {
     screen: HomeHealthcareDoctorList,
     navigationOptions: {
-      title: 'HomeHealthcare DoctorList',
+      title: 'Home Care DoctorList',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }
@@ -820,7 +822,7 @@ export const smartHealthStack=createStackNavigator({
   HomeHealthcareConfirmation: {
     screen: HomeHealthcareConfirmation,
     navigationOptions: {
-      title: 'Home Healthcare Confirmation',
+      title: 'Home Care Confirmation',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }
@@ -836,7 +838,7 @@ export const smartHealthStack=createStackNavigator({
   HomeHealthcareAppointmentDetail: {
     screen: HomeHealthcareAppointmentDetail,
     navigationOptions: {
-      title: 'Home Healthcare Appointment info',
+      title: 'Home Care Appointment info',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }
@@ -844,7 +846,7 @@ export const smartHealthStack=createStackNavigator({
   "Home Healthcare Cancel Appointment": {
     screen: HomeHealthcareCancelAppointment,
     navigationOptions: {
-      title: 'Home Healthcare Cancel Appointment',
+      title: 'Home Care Cancel Appointment',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }
@@ -852,7 +854,7 @@ export const smartHealthStack=createStackNavigator({
   "Home Healthcare Doctor Details Preview": {
     screen: HomeHealthcareDoctorDetailsPreview,
     navigationOptions: {
-      title: 'Home Healthcare Doctor Details Preview',
+      title: 'Doctor Details Preview',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }
@@ -1008,6 +1010,14 @@ export const smartHealthStack=createStackNavigator({
     screen: Insurance,
     navigationOptions: {
       title: 'My Insurance Policies',
+      headerTitleStyle: { fontFamily: "Roboto",}
+
+    }
+  },
+  InsuranceHistory: {
+    screen: InsuranceHistory,
+    navigationOptions: {
+      title: 'Insurance History',
       headerTitleStyle: { fontFamily: "Roboto",}
 
     }
