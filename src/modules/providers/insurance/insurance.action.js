@@ -99,3 +99,17 @@ export async function arrangeCallbackAction(name,insuranceName) {
     }
   }
   
+  export async function arrangeCallbackActionForBuyInsurance(name,insuranceName) {
+    try {
+      let endPoint = 'member-wallet/renewal-buy_insurance?name=' + name+'&insuranceName='+insuranceName;
+      let response = await smartHealthPostService(endPoint);
+      return response.data;
+    } catch (e) {
+  
+      return {
+        message: 'exceptio1n' + e,
+        success: false
+      }
+    }
+  }
+
