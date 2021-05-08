@@ -9,7 +9,7 @@ import { Image, TouchableOpacity, View, ScrollView, ImageBackground } from 'reac
 import { login, RESET_REDIRECT_NOTICE,SmartHealthlogin } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
-import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
+import { fetchUserProfile, storeBasicProfile, storeBasicProfileUserLogin } from '../../providers/profile/profile.action';
 import { acceptNumbersOnly } from '../../screens/../common';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
 import Spinner from '../../../components/Spinner';
@@ -58,7 +58,7 @@ class Login extends Component {
         await login(requestData);
       }  // Do Login Process
       if (this.props.user.isAuthenticated) {
-        this.getUserProfile();
+        this.getUserProfile(isSelected);
         if (this.props.user.needToRedirect === true) {
           let redirectNoticeData = this.props.user.redirectNotice;
           this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
@@ -87,14 +87,22 @@ class Login extends Component {
       this.setState({ loginErrorMsg: 'Something Went Wrong' + e, isModalVisible: true })
     }
   }
-  getUserProfile = async () => {
+  getUserProfile = async (isSelected) => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
-      let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
-      let result = await fetchUserProfile(userId, fields);
-      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      let coorporateSideresult = await getMemberDetailsByEmail(memberEmailId);
-      if (!coorporateSideresult.error) storeBasicProfile(coorporateSideresult[0])
+      if(isSelected === 'corporate_user') {
+        let userId = await AsyncStorage.getItem('userId');
+        let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
+        let result = await fetchUserProfile(userId, fields);
+        let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+        let coorporateSideresult = await getMemberDetailsByEmail(memberEmailId);
+        if (!coorporateSideresult.error) storeBasicProfile(coorporateSideresult[0])
+      } else {
+        let userId = await AsyncStorage.getItem('userId');
+        let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
+        let result = await fetchUserProfile(userId, fields);
+        storeBasicProfileUserLogin(result)
+      }
+     
     }
     catch (e) {
       console.log(e);

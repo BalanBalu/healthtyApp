@@ -1,7 +1,12 @@
 import React from 'react';
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import {
+  SET_CONNECTION_STATUS
+} from '../modules/providers/profile/profile.action';
+
 import { store } from '../setup/store';
+
 const { width={} } = Dimensions.get('window');
 
 RenderOffline = () => {
@@ -33,10 +38,17 @@ class OfflineNotice extends React.PureComponent {
   componentWillUnmount() {
   }
 
-  changeNetworkState = (isConnected) => {
+  
+
+  changeNetworkState = async (isConnected) => {
     if (isConnected.isConnected == true) {
       if(store.getState().user.appLoaded) {
         this.setState({ connectionStatus: "Online" })
+        store.dispatch({
+          type: SET_CONNECTION_STATUS,
+          data: "online",
+        });
+       
         setTimeout(() => {
           if(this.state.connectionStatus === 'Online') {
             this.setState({ connectionStatus: "" })
@@ -46,6 +58,10 @@ class OfflineNotice extends React.PureComponent {
     }
     else {
       this.setState({ connectionStatus: "Offline" })
+      store.dispatch({
+        type: SET_CONNECTION_STATUS,
+        data: "offline",
+      });
     }
   };
 

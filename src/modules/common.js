@@ -160,7 +160,7 @@ export function renderProfileImage(data) {
             source = require('../../assets/images/male_user.png')
         }
         return (source)
-    }
+    } 
    
 }
 export function renderDoctorImage(data) {
