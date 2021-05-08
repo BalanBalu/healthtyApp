@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
@@ -9,12 +9,12 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import {CorporateProfileCard} from './profileCard';
-import {ProfileFamilyCard} from './profilefamilyCard';
-import {SearchAndAppointmentCard} from './searchAndAppointmentcard';
-import {TransactionHistoryCard} from './transactionHistoryCard';
-import {CoverageCard} from './converageCard';
-import {connect} from 'react-redux';
+import { CorporateProfileCard } from './profileCard';
+import { ProfileFamilyCard } from './profilefamilyCard';
+import { SearchAndAppointmentCard } from './searchAndAppointmentcard';
+import { TransactionHistoryCard } from './transactionHistoryCard';
+import { CoverageCard } from './converageCard';
+import { connect } from 'react-redux';
 import {
   Container,
   Content,
@@ -41,16 +41,16 @@ import {
   SET_MEMBER_TPA_DATA,
   SET_FAMILY_DATA
 } from '../../../providers/profile/profile.action';
-import {store} from '../../../../setup/store';
-import {fetchUserMarkedAsReadedNotification} from '../../../providers/notification/notification.actions';
-import {getPolicyByPolicyNo} from '../../../providers/policy/policy.action';
+import { store } from '../../../../setup/store';
+import { fetchUserMarkedAsReadedNotification } from '../../../providers/notification/notification.actions';
+import { getPolicyByPolicyNo } from '../../../providers/policy/policy.action';
 import CurrentLocation from '../CurrentLocation';
-import {NavigationEvents} from 'react-navigation';
-import {ContactUsCard} from './contactUsCard';
-import {PolicyCoverageCard} from './policyCoverageCard';
-import {getMemberDetailsByEmail} from '../../../providers/corporate/corporate.actions';
-import {formatDate} from '../../../../setup/helpers';
-import {translate} from '../../../../setup/translator.helper';
+import { NavigationEvents } from 'react-navigation';
+import { ContactUsCard } from './contactUsCard';
+import PolicyCoverageCard from './policyCoverageCard';
+import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions';
+import { formatDate } from '../../../../setup/helpers';
+import { translate } from '../../../../setup/translator.helper';
 
 const LIMIT = 10;
 
@@ -75,7 +75,7 @@ class CorporateHome extends PureComponent {
 
     const isCorporateUser =
       (await AsyncStorage.getItem('is_corporate_user')) === 'true';
-    this.setState({isCorporateUser, relationship});
+    this.setState({ isCorporateUser, relationship });
     if (isCorporateUser) {
       this.getCorporateDatails(userId);
     }
@@ -84,11 +84,11 @@ class CorporateHome extends PureComponent {
     this.getMemberDetailsByEmail();
     this.getCorporatePhoneNumber();
   }
-//   componentDidUpdate(prevProps, prevState) {
-//     if (prevState.translation !== this.state.translation) {
-//       console.log('pokemons state has changed.');
-//     }
-//   }
+  //   componentDidUpdate(prevProps, prevState) {
+  //     if (prevState.translation !== this.state.translation) {
+  //       console.log('pokemons state has changed.');
+  //     }
+  //   }
 
 
   getMemberDetailsByEmail = async () => {
@@ -109,7 +109,7 @@ class CorporateHome extends PureComponent {
   getCorporatePhoneNumber = async () => {
     try {
       let result = await getCorporateHelpLineNumber();
-      await this.setState({helpLineNumberData: result[0]});
+      await this.setState({ helpLineNumberData: result[0] });
     } catch (ex) {
       console.log(ex);
     }
@@ -124,7 +124,7 @@ class CorporateHome extends PureComponent {
       let userId = await AsyncStorage.getItem('userId');
       if (userId) {
         const {
-          notification: {notificationCount},
+          notification: { notificationCount },
           navigation,
         } = this.props;
 
@@ -145,9 +145,9 @@ class CorporateHome extends PureComponent {
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let userResult = await fetchUserProfile(userId, fields);
 
-      if (userResult||employeeCode) {
+      if (userResult || employeeCode) {
         let corporateResult = await getCorporateEmployeeDetailsById(
-          userResult.employee_code||employeeCode
+          userResult.employee_code || employeeCode
         );
         if (!!corporateResult && !corporateResult.error) {
           store.dispatch({
@@ -184,7 +184,7 @@ class CorporateHome extends PureComponent {
       let forceToChangePassword =
         (await AsyncStorage.getItem('forceToChangePassword')) || null;
       if (forceToChangePassword) {
-        this.props.navigation.navigate('UpdatePassword', {updatedata: {}});
+        this.props.navigation.navigate('UpdatePassword', { updatedata: {} });
       }
     } catch (error) {
       Toast.show({
@@ -197,30 +197,30 @@ class CorporateHome extends PureComponent {
 
   getMemberDetailsByPolicyNo = async () => {
     try {
-      this.setState({isLoading: true});
+      this.setState({ isLoading: true });
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let result = await getMemberDetailsByPolicyNo(memberPolicyNo);
       if (result) {
-        await this.setState({memberDetails: result});
+        await this.setState({ memberDetails: result });
         this.getFamilyMemberDetailsByPolicyNo(memberPolicyNo);
       }
     } catch (ex) {
       console.log(ex);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
 
   getFamilyMemberDetailsByPolicyNo = async (memberPolicyNo) => {
     try {
-      this.setState({isLoading: true});
+      this.setState({ isLoading: true });
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
       if (result) {
-        this.setState({family_members: result, id: result[0]._id});
-     
-         store.dispatch({
+        this.setState({ family_members: result, id: result[0]._id });
+
+        store.dispatch({
           type: SET_FAMILY_DATA,
           data: this.state.family_members,
         });
@@ -228,7 +228,7 @@ class CorporateHome extends PureComponent {
     } catch (ex) {
       console.log(ex);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
 
@@ -237,7 +237,7 @@ class CorporateHome extends PureComponent {
     try {
       await fetchUserMarkedAsReadedNotification(userId);
       const {
-        notification: {notificationCount},
+        notification: { notificationCount },
         navigation,
       } = this.props;
       navigation.setParams({
@@ -261,7 +261,7 @@ class CorporateHome extends PureComponent {
   render() {
     let corporateData = this.props.profile.corporateData;
     let TPAData = this.props.profile.memberTpaInfo;
-    const {navigate} = this.props.navigation;
+    const { navigate } = this.props.navigation;
 
     const {
       isCorporateUser,
@@ -291,7 +291,7 @@ class CorporateHome extends PureComponent {
     }
 
     return (
-      <Container style={[styles.container, {backgroundColor: '#FAFBFF'}]}>
+      <Container style={[styles.container, { backgroundColor: '#FAFBFF' }]}>
         <Content
           keyboardShouldPersistTaps={'handled'}
           style={styles.bodyContent}>
@@ -300,13 +300,13 @@ class CorporateHome extends PureComponent {
               this.backNavigation(payload);
             }}
           />
-          <View style={{padding: 10}}>
+          <View style={{ padding: 10 }}>
             {isCorporateUser && corporateData && corporateData.length ? (
               <PolicyCoverageCard
-                //  data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
-                data={memberDetails}
-                policyData={policyDetails}
-                TPAdata={TPAData}
+              //  data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
+              // data={memberDetails}
+              // policyData={policyDetails}
+              // TPAdata={TPAData}
               />
             ) : null}
 
