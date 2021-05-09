@@ -32,7 +32,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Communications from 'react-native-communications';
 import { MAX_DISTANCE_TO_COVER, CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2, primaryColor } from '../../../../setup/config';
 import { getCorporateFullName } from '../../../common';
-import {primaryColor, secondaryColor} from '../../../../setup/config';
 import {translate} from '../../../../setup/translator.helper';
 
 class LabCategories extends PureComponent {
