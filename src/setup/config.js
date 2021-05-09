@@ -6,6 +6,7 @@ export const IS_IOS = Platform.OS === 'ios';
 
 export const API_URL = 'https://medflic-qa-api.aopks.com/api/';
 export const SMART_HEALTH_API_URL = 'https://sh-qa-api.aopks.com/';
+
 export const INVENTORY_API_URL = 'https://med-inv-qa-api.aopks.com/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category_smart_health/';
 export const CHAT_API_URL = 'https://chat-qa-api.aopks.com';
@@ -71,4 +72,9 @@ export const MY_MEDFLIC = 'Medflic';
 export const CURRENT_APP_NAME = MY_SMART_HEALTH_CARE;
 
 export const ANDROID_BUNDLE_IDENTIFIER = CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'com.ads.medflic' : 'com.ads.mysmarthealth';
+
+export const CONSULTATION_ADMIN_MOBILE_NUMBER="7823908908";
+
+export const CONSULTATION_ADMIN_EMAIL_ID1="no-reply@smart-health.app";
+export const CONSULTATION_ADMIN_EMAIL_ID2="mysmarthealth.info@gmail.com";
 

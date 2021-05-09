@@ -1,5 +1,6 @@
 import React from "react";
-import { AppRegistry, Image, StatusBar, TouchableOpacity, FlatList, AsyncStorage } from "react-native";
+import { AppRegistry, Image, StatusBar, TouchableOpacity, FlatList } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Container, Content, Text, List, ListItem, View, Row, Col, Right, Footer, FooterTab, Icon, Button, Body } from "native-base";
 import { DragwerLogos } from './appRouterHome';
 import { logout } from '../../modules/providers/auth/auth.actions';
@@ -43,8 +44,18 @@ class SideBar extends React.Component {
       this.setState({is_corporate_user: true});
     }
   }
+  clearAysncStorage = async () => {
+    try {
+      await AsyncStorage.clear()
+    } catch(e) {
+      console.log(e);
+    }
+  
+    // console.log('Cleared AysyncStorage')
+  }
   signInOrSignup(hasLoggedIn) {
     if (hasLoggedIn) {
+      this.clearAysncStorage()
       logout();
       this.props.navigation.navigate('login');
     } else {

@@ -99,6 +99,8 @@ export default  styles = StyleSheet.create({
         borderRadius: 5,
         padding: 5,
         marginTop: 30,
+        justifyContent:'center',
+        alignItems:'center'
       },
       addInsuranceText: {
         fontFamily: 'opensans-bold',
