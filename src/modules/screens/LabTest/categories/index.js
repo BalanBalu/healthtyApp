@@ -1,4 +1,4 @@
-import React, {Component, PureComponent} from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
   Container,
   Content,
@@ -30,8 +30,7 @@ import { Loader } from '../../../../components/ContentLoader';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Communications from 'react-native-communications';
-import {primaryColor, secondaryColor} from '../../../../setup/config';
-import {translate} from '../../../../setup/translator.helper';
+import { translate } from '../../../../setup/translator.helper';
 import { MAX_DISTANCE_TO_COVER, CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2, primaryColor } from '../../../../setup/config';
 import { getCorporateFullName } from '../../../common';
 
@@ -66,16 +65,16 @@ class LabCategories extends PureComponent {
   }
   getLabCategories = async () => {
     try {
-      this.setState({isLoading: true});
+      this.setState({ isLoading: true });
       const {
-        bookappointment: {locationCordinates, isLocationSelected},
+        bookappointment: { locationCordinates, isLocationSelected },
       } = this.props;
       if (!isLocationSelected) {
         Alert.alert(
           'Location Warning',
           'Please select the location to continue...!',
           [
-            {text: 'Cancel'},
+            { text: 'Cancel' },
             {
               text: 'OK',
               onPress: () => this.props.navigation.navigate('Locations'),
@@ -91,18 +90,18 @@ class LabCategories extends PureComponent {
       let result = await getLabTestCateries(JSON.stringify(locationData));
 
       if (result.success) {
-        this.setState({labData: result.data});
+        this.setState({ labData: result.data });
         this.mainLabData = result.data;
       }
     } catch (e) {
       console.log(e);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   }
   onPressCatItem = async (type, value) => {
     const {
-      bookappointment: {locationCordinates, isLocationSelected},
+      bookappointment: { locationCordinates, isLocationSelected },
     } = this.props;
 
     if (!isLocationSelected) {
@@ -110,7 +109,7 @@ class LabCategories extends PureComponent {
         'Location Warning',
         'Please select the location to continue...!',
         [
-          {text: 'Cancel'},
+          { text: 'Cancel' },
           {
             text: 'OK',
             onPress: () => this.props.navigation.navigate('Locations'),
@@ -146,20 +145,20 @@ class LabCategories extends PureComponent {
       return [];
     }
     if (!searchValue) {
-      this.setState({searchValue, data: labData});
+      this.setState({ searchValue, data: labData });
     } else {
       if (this.mainLabData != undefined) {
         const filteredCategories = this.mainLabData.filter(ele =>
           ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
         );
-        this.setState({searchValue, labData: filteredCategories});
+        this.setState({ searchValue, labData: filteredCategories });
       }
     }
   }
 
   renderStickeyHeader() {
     return (
-      <View style={{width: '100%'}}>
+      <View style={{ width: '100%' }}>
         <Text
           style={{
             fontFamily: 'Roboto',
@@ -170,7 +169,7 @@ class LabCategories extends PureComponent {
           {translate('Search Labs by categories')}
         </Text>
         <Row style={styles.SearchRow}>
-          <Col size={9.1} style={{justifyContent: 'center'}}>
+          <Col size={9.1} style={{ justifyContent: 'center' }}>
             <Input
               placeholder={translate('Categories')}
               style={styles.inputfield}
@@ -182,10 +181,10 @@ class LabCategories extends PureComponent {
             />
           </Col>
           <Col size={0.9} style={styles.SearchStyle}>
-            <TouchableOpacity style={{justifyContent: 'center'}}>
+            <TouchableOpacity style={{ justifyContent: 'center' }}>
               <Icon
                 name="ios-search"
-                style={{color: 'gray', fontSize: 20, padding: 2}}
+                style={{ color: 'gray', fontSize: 20, padding: 2 }}
               />
             </TouchableOpacity>
           </Col>
@@ -445,7 +444,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // borderWidth: 0.1,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 0.5},
+    shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
     shadowRadius: 5,
     elevation: 10,
