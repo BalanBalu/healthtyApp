@@ -128,6 +128,9 @@ export async function getMemberDetailsByEmail(emailId) {
 
 
 
+
+
+
 export async function getPolicyDetailsByPolicyNo(policyNo) {
   try {
     let endPoint = 'policy/by-policyNo?pno=' + policyNo;
@@ -397,4 +400,36 @@ export async function deleteFamilyMembersDetails(id) {
     }
   }
 }
+
+
+export async function serviceOfGenerateOtp4UpdateMemberEmail(bodyData) {
+  try {
+    const endpoint = 'auth/member/send-update-email-otp'
+    const resp = await smartHealthPostService(endpoint, bodyData)
+    return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}
+
+
+export async function serviceOfVerifyOtpCode4UpdateEmail(bodyData) {
+  try {
+    const endpoint = 'auth/member/update-email'
+    const resp = await smartHealthPostService(endpoint, bodyData)
+    return resp.data
+  } catch (Ex) {
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}
+
 

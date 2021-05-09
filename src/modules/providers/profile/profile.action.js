@@ -13,6 +13,8 @@ export const SET_MEMBER_POLICY_INFO='PROFILE/SET_MEMBER_POLICY_INFO';
 export const SET_MEMBER_TPA_DATA='PROFILE/SET_MEMBER_TPA_DATA';
 export const SET_TRANSLATOR='PROFILE/SET_TRANSLATOR'
 export const SET_FAMILY_DATA='PROFILE/SET_FAMILY_DATA'
+export const SET_CONNECTION_STATUS='PROFILE/SET_CONNECTION_STATUS'
+
 
 
 import { store } from '../../../setup/store'
@@ -66,6 +68,19 @@ export function storeBasicProfile(result) {
   AsyncStorage.setItem('basicProfileData', JSON.stringify({
     first_name: result.firstName,
     last_name: result.lastName,
+    middle_name:result.middle_name||' ',
+    dob: result.dob,
+    profileImage: result.profileImage ,
+    gender: result.gender,
+    mobile_no: result.mobile_no,
+    email: result.emailId
+  }))
+}
+
+export function storeBasicProfileUserLogin(result) {
+  AsyncStorage.setItem('basicProfileData', JSON.stringify({
+    first_name: result.first_name,
+    last_name: result.last_name,
     middle_name:result.middle_name||' ',
     dob: result.dob,
     profileImage: result.profileImage ,

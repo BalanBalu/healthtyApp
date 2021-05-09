@@ -41,12 +41,12 @@ import styles from './styles';
 import IconName from 'react-native-vector-icons/MaterialIcons';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 
-const ProductTypeList = [
-  'Choose Product Type',
-  'Health',
-  'Motor',
-  'Personal accident',
-  'Term life',
+const PolicyTypeList = [
+  'Choose Policy Type',
+  'Health Insurance',
+  'Motor Insurance',
+  'Personal Accident Insurance',
+  'Life Insurance',
 ];
 
 class AddInsurance extends PureComponent {
@@ -54,12 +54,12 @@ class AddInsurance extends PureComponent {
     super(props);
     this.state = {
       insuranceCompany: '',
-      productName: null,
-      productType: '',
+      policyName: null,
+      policyType: '',
       policyNo: null,
       tpaName: '',
       motorType: '',
-      policyAmount: 0,
+      premiumAmount: 0,
       renewal: true,
       isStartDateTimePickerVisible: false,
       isEndDateTimePickerVisible: false,
@@ -112,14 +112,14 @@ class AddInsurance extends PureComponent {
   createMemberInsurance = async () => {
     const {
       insuranceCompany,
-      productName,
-      productType,
+      policyName,
+      policyType,
       tpaName,
       motorType,
       policyNo,
       startDate,
       endDate,
-      policyAmount,
+      premiumAmount,
       uploadData,
     } = this.state;
     try {
@@ -130,30 +130,30 @@ class AddInsurance extends PureComponent {
         });
         return false;
       }
-      if (!productType || productType == 'Choose Product Type') {
+      if (!policyType || policyType == 'Choose Policy Type') {
         this.setState({
-          errorMsg: 'Please select product type',
+          errorMsg: 'Please select Policy type',
           isModalVisible: true,
         });
         return false;
       }
-      if (productType == 'Health' && !tpaName) {
+      if (policyType == 'Health' && !tpaName) {
         this.setState({
           errorMsg: 'Please select TPA name',
           isModalVisible: true,
         });
         return false;
       }
-      if (productType == 'Motor' && !motorType) {
+      if (policyType == 'Motor' && !motorType) {
         this.setState({
           errorMsg: 'Please select motor type',
           isModalVisible: true,
         });
         return false;
       }
-      if (!productName) {
+      if (!policyName) {
         this.setState({
-          errorMsg: 'Please Enter product name',
+          errorMsg: 'Please Enter Policy name',
           isModalVisible: true,
         });
         return false;
@@ -174,9 +174,9 @@ class AddInsurance extends PureComponent {
         return false;
       }
 
-      if (!policyAmount) {
+      if (!premiumAmount) {
         this.setState({
-          errorMsg: 'Please Enter policy amount',
+          errorMsg: 'Please Enter premium amount',
           isModalVisible: true,
         });
         return false;
@@ -193,14 +193,14 @@ class AddInsurance extends PureComponent {
       const insuranceData = {
         memberId: memberId,
         insuranceName: String(insuranceCompany),
-        productName: productName,
-        productType: productType,
+        productName: policyName,
+        productType: policyType,
         tpaName: String(tpaName) || null,
         motorType: motorType || null,
         policyNo: policyNo,
         policyStartDate: startDate,
         policyEndDate: endDate,
-        Amount: Number(policyAmount),
+        Amount: Number(premiumAmount),
         isRenewal: true,
         policyCopy: uploadData,
       };
@@ -288,14 +288,14 @@ class AddInsurance extends PureComponent {
   render() {
     const {
       insuranceCompany,
-      productName,
-      productType,
+      policyName,
+      policyType,
       tpaName,
       motorType,
       policyNo,
       startDate,
       endDate,
-      policyAmount,
+      premiumAmount,
       isStartDateTimePickerVisible,
       isEndDateTimePickerVisible,
       selectOptionPoopup,
@@ -485,7 +485,7 @@ class AddInsurance extends PureComponent {
                   </Col>
                 </TouchableOpacity>
 
-                <Text style={styles.subHeadingText}>Select Product Type</Text>
+                <Text style={styles.subHeadingText}>Select Policy Type</Text>
 
                 <View style={styles.formStyle6}>
                   <Picker
@@ -507,11 +507,11 @@ class AddInsurance extends PureComponent {
                     itemTextStyle={{color: '#5cb85c'}}
                     style={{width: undefined, color: '#000'}}
                     onValueChange={(sample) => {
-                      this.setState({productType: sample});
+                      this.setState({policyType: sample});
                     }}
-                    selectedValue={productType}
+                    selectedValue={policyType}
                     testID="editBloodGroup">
-                    {ProductTypeList.map((value, key) => {
+                    {PolicyTypeList.map((value, key) => {
                       return (
                         <Picker.Item
                           label={String(value)}
@@ -522,7 +522,7 @@ class AddInsurance extends PureComponent {
                     })}
                   </Picker>
                 </View>
-                {productType === 'Health' ? (
+                {policyType === 'Health' ? (
                   <View>
                     <Text style={styles.subHeadingText}>Select TPA/Payer </Text>
 
@@ -655,7 +655,7 @@ class AddInsurance extends PureComponent {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                {productType === 'Motor' ? (
+                {policyType === 'Motor' ? (
                   <View>
                     <Text style={styles.subHeadingText}>Select Motor Type</Text>
                     <View style={{flexDirection: 'row', marginTop: 10}}>
@@ -684,16 +684,16 @@ class AddInsurance extends PureComponent {
                     </View>
                   </View>
                 ) : null}
-                <Text style={styles.subHeadingText}>Product Name</Text>
+                <Text style={styles.subHeadingText}>Policy Name</Text>
                 <TextInput
-                  placeholder="Enter Product Name"
+                  placeholder="Enter Policy Name"
                   placeholderTextColor={'#909090'}
                   style={styles.textInputStyle}
                   placeholderStyle={{marginTop: 2}}
-                  value={productName}
+                  value={policyName}
                   onChangeText={(text) =>
                     this.setState({
-                      productName: text,
+                      policyName: text,
                     })
                   }
                 />
@@ -782,17 +782,17 @@ class AddInsurance extends PureComponent {
                   </TouchableOpacity>
                 </View>
 
-                <Text style={styles.subHeadingText}>Policy Amount</Text>
+                <Text style={styles.subHeadingText}>Premium Amount</Text>
                 <TextInput
-                  placeholder="Enter Policy Amount"
+                  placeholder="Enter Premium Amount"
                   placeholderTextColor={'#909090'}
                   style={styles.textInputStyle}
                   placeholderStyle={{marginTop: 2}}
                   keyboardType={'number-pad'}
-                  value={policyAmount}
+                  value={premiumAmount}
                   onChangeText={(number) =>
                     this.setState({
-                      policyAmount: number,
+                      premiumAmount: number,
                     })
                   }
                 />

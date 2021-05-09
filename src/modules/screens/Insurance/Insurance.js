@@ -9,6 +9,7 @@ import {
   Content,
   Item,
   Left,
+  Right,
 } from 'native-base';
 import {
   FlatList,
@@ -30,6 +31,7 @@ import {
 import {dateDiff, formatDate} from '../../../setup/helpers';
 import moment from 'moment';
 import {NavigationEvents} from 'react-navigation';
+import InsuranceRenewalPopup from '../../shared/insuranceRenewalPopup';
 
 const LIMIT = 5;
 
@@ -86,15 +88,20 @@ class Insurance extends Component {
     const basicProfileData = await AsyncStorage.getItem('basicProfileData');
     const basicData = JSON.parse(basicProfileData);
     let fullName = getFullName(basicData);
+    console.log("this.state.selectedInsurance",this.state.selectedInsurance)
     let result = await arrangeCallbackAction(
       fullName,
       this.state.selectedInsurance,
     );
-    Alert.alert('Thanks', 'Mail send successfully', [
-      {
-        text: 'OK',
-      },
-    ]);
+    Alert.alert(
+      'Thanks',
+      'Mail sent successfully, Team will contact you soon',
+      [
+        {
+          text: 'OK',
+        },
+      ],
+    );
   };
 
   loadMoreData = async () => {
@@ -157,19 +164,34 @@ class Insurance extends Component {
         />
         {/* <Content style={{padding: 10}}> */}
         <View style={styles.mainView}>
-          <TouchableOpacity
-            style={styles.addInsuranceButton}
-            onPress={() => this.props.navigation.navigate('AddInsurance')}>
-            <Icon
-              name="add-circle-outline"
-              style={{fontSize: 20, color: '#128283'}}
-            />
-            <Text style={styles.addInsuranceText}>Add Insurance</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row'}}>
+         <View style={{width:'50%'}}>
+            <TouchableOpacity
+              style={[styles.addInsuranceButton,{width:'80%',marginLeft:25,}]}
+              onPress={() => this.props.navigation.navigate('AddInsurance')}>
+              <Icon
+                name="add-circle-outline"
+                style={{fontSize: 20, color: '#128283'}}
+              />
+              <Text style={styles.addInsuranceText}>Add Insurance</Text>
+            </TouchableOpacity>
+            </View>
+            <View style={{width:'50%',justifyContent:'flex-end',alignItems:'flex-end'}}>
+            <TouchableOpacity
+              style={[styles.addInsuranceButton,{width:'80%',marginRight:30}]}
+              onPress={() => this.props.navigation.navigate('BuyInsurance')}>
+              <Icon
+                name="add-circle-outline"
+                style={{fontSize: 20, color: '#128283'}}
+              />
+              <Text style={styles.addInsuranceText}>Buy Insurance</Text>
+            </TouchableOpacity>
+            </View >
+          </View>
           {isLoading ? (
             <Loader style="list" />
           ) : data.length ? (
-            <View style={{padding:10,marginBottom:35}}>
+            <View style={{padding: 10, marginBottom: 35}}>
               <FlatList
                 data={data}
                 keyExtractor={(item, index) => index.toString()}
@@ -300,71 +322,23 @@ class Insurance extends Component {
             </Item>
           )}
         </View>
-        <Modal
-          visible={this.state.descriptionVisible}
-          transparent={true}
-          animationType={'fade'}>
-          <View style={styles.modalFirstView}>
-            <View style={styles.modalSecondView}>
-              <Row
-                style={{
-                  justifyContent: 'flex-end',
-                  alignItems: 'flex-end',
-                  marginTop: -30,
-                }}>
-                <TouchableOpacity onPress={() => this.popUpClose()}>
-                  <MaterialIcons
-                    name="close"
-                    style={{fontSize: 30, color: 'red'}}
-                  />
-                </TouchableOpacity>
-              </Row>
-              <Row style={{justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={styles.modalHeading}>
-                  You can Renew your Insurance Policy by{' '}
-                </Text>
-              </Row>
-
-              <Row
-                style={{
-                  marginTop: 15,
-                  justifyContent: 'flex-end',
-                  marginBottom: 5,
-                }}>
-                <Col size={5}>
-                  <TouchableOpacity
-                    danger
-                    style={styles.backToHomeButton1}
-                    onPress={() => {
-                      this.arrangeCallback();
-                      this.popUpClose();
-                    }}
-                    testID="cancelButton">
-                    <Text style={styles.backToHomeButtonText1}>
-                      {' '}
-                      {'Arrange Callback.'}
-                    </Text>
-                  </TouchableOpacity>
-                </Col>
-                <Col size={5} style={{marginLeft: 10}}>
-                  <TouchableOpacity
-                    danger
-                    style={styles.backToHomeButton}
-                    onPress={() => {
-                      Linking.openURL('http://www.readypolicy.com/');
-                      this.popUpClose();
-                    }}
-                    testID="cancelButton">
-                    <Text style={styles.backToHomeButtonText}>
-                      {' '}
-                      {'Renew Online'}
-                    </Text>
-                  </TouchableOpacity>
-                </Col>
-              </Row>
-            </View>
-          </View>
-        </Modal>
+        <InsuranceRenewalPopup
+                messageText={'You can Renew your Insurance Policy by!'}
+                callbackButtonText={'Arrange Callback'}
+                renewOnlineButtonText={'Renew Online'}
+                callbackButtonAction={() => {
+                    this.arrangeCallback();
+                    this.popUpClose();
+                }}
+                renewOnlineButtonAction={() =>{
+                    Linking.openURL('http://www.readypolicy.com/');
+                    this.popUpClose();
+                }}
+                popUpClose={() =>{
+                    this.popUpClose();
+                }}
+                visible={this.state.descriptionVisible}
+              />
         {isLoadingMoreData ? (
           <View style={{flex: 1, justifyContent: 'flex-end'}}>
             <ActivityIndicator
