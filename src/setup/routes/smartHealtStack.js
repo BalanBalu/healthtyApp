@@ -203,19 +203,19 @@ export const smartHealthStack = createStackNavigator({
   },
   EarnReward: {
     screen: EarnReward,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Refer and Earn'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   NextAppoinmentPreparation: {
     screen: NextAppoinmentPreparation,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Next Appoinment Preparation'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   // ================Categories  ===============
   Locations: {
@@ -260,164 +260,164 @@ export const smartHealthStack = createStackNavigator({
   ///  =============Appointments Stack ==================
   "My Appointments": {
     screen: MyAppoinmentList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Appointments'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "AppointmentInfo": {
     screen: AppointmentDetails,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate("Appointment info"),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   "EmrDetails": {
     screen: EmrDetails,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate("EMR Details"),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   ReportIssue: {
     screen: ReportIssue,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Report issue'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   ReportDetails: {
     screen: ReportDetails,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Report details'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   PreAuthSubmission: {
     screen: PreAuthSubmission,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Pre Authorization'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "CancelAppointment": {
     screen: CancelAppointment,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Cancel Appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "InsertReview": {
     screen: InsertReview,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Rate and Review'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   PrepareAppointmentWizard: {
     screen: PrepareAppointmentWizard,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   BasicInfo: {
     screen: BasicInfo,
-    navigationOptions: {
+    navigationOptions:({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   MedicalHistory: {
     screen: MedicalHistory,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   PhysicianInfo: {
     screen: PhysicianInfo,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   PastMedicalConditions: {
     screen: PastMedicalConditions,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   PatientInfo: {
     screen: PatientInfo,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   AllergiesAndMedications: {
     screen: AllergiesAndMedications,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   FamilyMedicalConditions: {
     screen: FamilyMedicalConditions,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   AllergicDisease: {
     screen: AllergicDisease,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   HospitalizationAndSurgeries: {
     screen: HospitalizationAndSurgeries,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   SocialHistory: {
     screen: SocialHistory,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   PrepareAppointmentLastStep: {
     screen: PrepareAppointmentLastStep,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   CancelService: {
@@ -431,360 +431,360 @@ export const smartHealthStack = createStackNavigator({
   // ================Profile Stack =================
   Profile: {
     screen: Profile,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Profile'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   UpdateEmail: {
     screen: UpdateEmail,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Update Email'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   UpdateContact: {
     screen: UpdateContact,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Update Contact'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   UpdatePassword: {
     screen: UpdatePassword,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Update Password'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   Updateheightweight: {
     screen: Updateheightweight,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Update height and weight'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   UpdateFamilyMembers: {
     screen: UpdateFamilyMembers,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Update family details'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   UpdateInsurance: {
     screen: UpdateInsurance,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Update Insurance'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   UpdateUserDetails: {
     screen: UpdateUserDetails,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Update User Details'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   UserAddress: {
     screen: UserAddress,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Search Location'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   MapBox: {
     screen: MapBox,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Search Location'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   paymentsuccess: {
     screen: PaymentSuccess,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       headerLeft: null,
       title: translate('Success'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   //================ Lab Test ===============
   LabAppointmentInfo: {
     screen: LabAppointmentInfo,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Lab Test Appointment Details'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   'My Lab Test Appointments': {
     screen: LabAppointmentList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('My Lab Test Appointments'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   LabCancelAppointment: {
     screen: LabCancelAppointment,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Lab Test Cancel Appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   //================  Ecard  ===============
   "E Card": {
     screen: Ecard,
-    navigationOptions: {
+    navigationOptions:({ navigation }) => ({
       title: translate('Ecard Details'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   //================  MedicineRecords ===============
 
   EmrInfo: {
     screen: EmrInfo,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('EmrInfo'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   UploadEmr: {
     screen: UploadEmr,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Upload Emr'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   ///  =============Contact Us ==================
   ContactUs: {
     screen: ContactUs,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('ContactUs'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   //================  Appoinment Booking Through Hospitals ===============
   HospitalList: {
     screen: HospitalList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Hospital List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   TpaList: {
     screen: TpaList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('TPA List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   NetworkHospitals: {
     screen: NetworkHospitals,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Network Hospitals'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   ClaimIntimationSubmission: {
     screen: ClaimIntimationSubmission,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Claim Intimation'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   FamilyInfoList: {
     screen: FamilyInfoList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Family List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   ClaimIntimationSuccess: {
     screen: ClaimIntimationSuccess,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Success Page'),
       headerTitleStyle: { fontFamily: "Roboto" },
       headerLeft: null
-    }
+    })
   },
   ClaimIntimationList: {
     screen: ClaimIntimationList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('ClaimIntimation List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   DocumentList: {
     screen: DocumentList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: 'Document List',
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Doctor List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "Doctor Search List": {
     screen: doctorList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Doctor List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "Doctor Details Preview": {
     screen: doctorDetailsPreview,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Book Appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   "Filter Doctor Info": {
     screen: filterDocInfo,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Filter Page'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   Filters: {
     screen: FilterList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Filters'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "Book Appointment": {
     screen: BookAppoinment,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Book Appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "Mapbox": {
     screen: Mapbox,
-    navigationOptions: {
+    navigationOptions:({ navigation }) => ({
       title: translate('Mapbox'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   Reviews: {
     screen: Reviews,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Reviews'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   "Payment Review": {
     screen: PaymentReview,
-    navigationOptions: {
+    navigationOptions:({ navigation }) => ({
       title: translate('Payment Review'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   paymentPage: {
     screen: PaymentPage,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Payment Page'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   PromoCode: {
     screen: PromoCode,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Promo  codes'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   paymentsuccess: {
     screen: PaymentSuccess,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       headerLeft: null,
       title: translate('Success'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   labConfirmation: {
     screen: labConfirmation,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Lab Confirmation'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   PolicyCoverage: {
     screen: PolicyCoverage,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Policy Coverage'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
 
   PreAuthList: {
     screen: PreAuthList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Pre Auth List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   PolicyStatus: {
     screen: PolicyStatus,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Claim Status'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
 
@@ -806,79 +806,79 @@ export const smartHealthStack = createStackNavigator({
   // ============Home Test ========================
   "Home Health Care": {
     screen: HomeHealthcareDoctorList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Home Care DoctorList'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   HomeHealthcareFilterPage: {
     screen: HomeHealthcareFilterPage,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Home Filter Page'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   HomeHealthcareConfirmation: {
     screen: HomeHealthcareConfirmation,
-    navigationOptions: {
+    navigationOptions:({ navigation }) => ({
       title: translate('Home Care Confirmation'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   'My Home Healthcare Appointments': {
     screen: HomeHealthcareAppointmentList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('My Home Care Appointments'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   HomeHealthcareAppointmentDetail: {
     screen: HomeHealthcareAppointmentDetail,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Home Care Appointment info'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "Home Healthcare Cancel Appointment": {
     screen: HomeHealthcareCancelAppointment,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Home Care Cancel Appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "Home Healthcare Doctor Details Preview": {
     screen: HomeHealthcareDoctorDetailsPreview,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Doctor Details Preview'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "Home Healthcare Address List": {
     screen: HomeHealthcareAddressList,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Home Care Address List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
 
   // ============Chat ========================
   "Chat Service": {
     screen: AvailableDoctors4Chat,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Available Doctors'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   "My Chats": {
     screen: MyChats,
@@ -906,11 +906,11 @@ export const smartHealthStack = createStackNavigator({
   },
   "SuccessChat": {
     screen: SuccessChatPaymentPage,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Success'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 
   IndividualChat: {
@@ -950,27 +950,27 @@ export const smartHealthStack = createStackNavigator({
   /* Video Consultation */
   VideoScreen: {
     screen: VideoScreen,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Video Calling'),
       headerLeft: null,
       gesturesEnabled: false
-    }
+    })
   },
   'Video and Chat Service': {
     screen: AvailableDoctors4Video,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Tele consult services'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   'My Video Consultations': {
     screen: VideoConsultaions,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('My Video Consultations'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   /**** Get Suggestion list from Search Bar ****/
   RenderSuggestionList: {
@@ -986,59 +986,59 @@ export const smartHealthStack = createStackNavigator({
   /* ========>  Lab Test  <========== */
   'Lab Test': {
     screen: LabCategory,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Lab Category'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   LabSearchList: {
     screen: LabSearchList,
-    navigationOptions: {
+    navigationOptions:({ navigation }) => ({
       title: translate('Lab List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   LabBookAppointment: {
     screen: LabBookAppointment,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Lab BookAppointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   Insurance: {
     screen: Insurance,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('My Insurance Policies'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   InsuranceHistory: {
     screen: InsuranceHistory,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Insurance History'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   AddInsurance: {
     screen: AddInsurance,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: translate('Add Insurance'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
   BuyInsurance: {
     screen: BuyInsurance,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: 'Buy Insurance',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
-    }
+    })
   },
 },
   {
