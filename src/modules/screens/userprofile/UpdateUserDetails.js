@@ -174,6 +174,8 @@ class UpdateUserDetails extends Component {
         isLoading: true,
         updateButton: false,
       });
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+
       let requestData = {
         firstName: firstName,
         middleName: middleName,
@@ -182,6 +184,7 @@ class UpdateUserDetails extends Component {
         gender: gender,
         bloodGroup: selectedBloodGroup,
         _id: this.state.userData._id,
+        emailId:memberEmailId,
       };
 
       let response = await updateMemberDetails(requestData);
@@ -197,17 +200,19 @@ class UpdateUserDetails extends Component {
           (middleName ? middleName + ' ' : '') +
           (lastName ? lastName + ' ' : '');
         const getAge = calculateAge(dob);
-
-        let data = {
-          familyMemberName: fullName,
-          // familyMemberLastName:lastName
-          familyMemberGender: gender,
-          familyMemberMonth: String(getAge.months),
-          familyMemberAge: String(getAge.years),
-          familyMemberDob: dob,
-          _id: temp[0]._id || null,
-        };
-        let updateRes = await updateFamilyMembersDetails(data);
+        if(temp.length!==0){
+          let data = {
+            familyMemberName: fullName,
+            // familyMemberLastName:lastName
+            familyMemberGender: gender,
+            familyMemberMonth: String(getAge.months),
+            familyMemberAge: String(getAge.years),
+            familyMemberDob: dob,
+            _id: temp?temp[0]._id : null,
+          };
+          let updateRes = await updateFamilyMembersDetails(data);
+        }
+      
         Toast.show({
           text: 'Your Profile has been Updated',
           type: 'success',
