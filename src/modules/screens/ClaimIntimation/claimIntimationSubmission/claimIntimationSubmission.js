@@ -9,6 +9,7 @@ import styles from '../Styles';
 import ModalPopup from '../../../../components/Shared/ModalPopup';
 import {primaryColor} from '../../../../setup/config';
 import {serviceOfClaimIntimation} from '../../../providers/corporate/corporate.actions';
+import {translate} from '../../../../setup/translator.helper';
 
 import {acceptNumbersOnly, toastMeassage} from '../../../common';
 
@@ -74,64 +75,64 @@ export default class ClaimInitiationSubmission extends Component {
       let employeeId = await AsyncStorage.getItem('employeeCode');
       if (!policyNo) {
         this.setState({
-          errorMsg: 'Please Enter Policy number',
+          errorMsg: translate('Please Enter Policy number'),
           isModalVisible: true,
         });
         return false;
       }
       if (!memberId) {
         this.setState({
-          errorMsg: 'Please Enter Member Id',
+          errorMsg: translate('Please Enter Member Id'),
           isModalVisible: true,
         });
         return false;
       }
       if (!employeeId) {
         this.setState({
-          errorMsg: 'Please Enter Employee Id',
+          errorMsg: translate('Please Enter Employee Id'),
           isModalVisible: true,
         });
         return false;
       }
       if (!hospitalName) {
         this.setState({
-          errorMsg: 'Please Enter Hospital name',
+          errorMsg: translate('Please Enter Hospital name'),
           isModalVisible: true,
         });
         return false;
       }
       if (!selectedAdmissionDate) {
         this.setState({
-          errorMsg: 'Please Choose Date of Admission',
+          errorMsg: translate('Please Choose Date of Admission'),
           isModalVisible: true,
         });
         return false;
       }
       if (!ailment) {
-        this.setState({errorMsg: 'Please Enter Ailment', isModalVisible: true});
+        this.setState({errorMsg: translate('Please Enter Ailment'), isModalVisible: true});
         return false;
       }
       if (!amount) {
-        this.setState({errorMsg: 'Please Enter amount', isModalVisible: true});
+        this.setState({errorMsg: translate('Please Enter amount'), isModalVisible: true});
         return false;
       }
       if (!contactNum) {
         this.setState({
-          errorMsg: 'Please Enter Member Contact Number',
+          errorMsg: translate('Please Enter Member Contact Number'),
           isModalVisible: true,
         });
         return false;
       }
       if (contactNum.length < 10) {
         this.setState({
-          errorMsg: 'Contact Number is required Min 10 Characters',
+          errorMsg: translate('Contact Number is required Min 10 Characters'),
           isModalVisible: true,
         });
         return false;
       }
       if (contactNum.length > 15) {
         this.setState({
-          errorMsg: 'Contact Number Accepted Max 15 Characters only',
+          errorMsg: translate('Contact Number Accepted Max 15 Characters only'),
           isModalVisible: true,
         });
         return false;
@@ -169,10 +170,10 @@ export default class ClaimInitiationSubmission extends Component {
         this.props.navigation.navigate('ClaimIntimationSuccess', {
           referenceNumber: claimUpdateResp.referenceNumber,
           successMsg:
-            'Your Claim Intimation request is being processed, will be notified on successful completion, your app reference id is',
+            translate('Your Claim Intimation request is being processed, will be notified on successful completion, your app reference id is'),
         });
       } else if (claimUpdateResp && claimUpdateResp.success === false) {
-        toastMeassage('Unable to Submit Claim Request');
+        toastMeassage(translate('Unable to Submit Claim Request'));
       }
       // if (claimIntimationReqData) {
       //   this.props.navigation.navigate('DocumentList', {
@@ -187,7 +188,7 @@ export default class ClaimInitiationSubmission extends Component {
       // }
     } catch (error) {
       this.setState({
-        errorMsg: 'Something Went Wrong' + error.message,
+        errorMsg: translate('Something Went Wrong') + error.message,
         isModalVisible: true,
       });
     } finally {
@@ -218,10 +219,10 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Policy Number</Text>
+              <Text style={styles.text}>{translate("Policy Number")}</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                  placeholder="Enter Policy Number"
+                  placeholder={translate("Enter Policy Number")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={policyNo}
@@ -242,10 +243,10 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Name</Text>
+              <Text style={styles.text}>{translate("Name")}</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                  placeholder="Enter Name"
+                  placeholder={translate("Enter Name")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={name}
@@ -264,10 +265,10 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Email Id</Text>
+              <Text style={styles.text}>{translate("Email Id")}</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                  placeholder="Enter mail did"
+                  placeholder={translate("Enter mail did")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={email}
@@ -286,11 +287,11 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Member Id</Text>
+              <Text style={styles.text}>{translate("Member Id")}</Text>
 
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                  placeholder="Enter Member Id"
+                  placeholder={translate("Enter Member Id")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={memberId}
@@ -308,11 +309,11 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Employee Id</Text>
+              <Text style={styles.text}>{translate("Employee Id")}</Text>
 
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                  placeholder="Enter Employee Id"
+                  placeholder={translate("Enter Employee Id")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={employeeId}
@@ -329,13 +330,13 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Hospital</Text>
+              <Text style={styles.text}>{translate("Hospital")}</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
                   ref={(input) => {
                     this.mailId = input;
                   }}
-                  placeholder="Enter Hospital name"
+                  placeholder={translate("Enter Hospital name")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'done'}
                   value={hospitalName}
@@ -349,7 +350,7 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Date of Admission</Text>
+              <Text style={styles.text}>{translate("Date of Admission")}</Text>
               <Item regular style={{borderRadius: 6, height: 50}}>
                 <TouchableOpacity
                   onPress={() => {
@@ -386,7 +387,7 @@ export default class ClaimInitiationSubmission extends Component {
                     }>
                     {selectedAdmissionDate
                       ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY')
-                      : 'Date of Admission'}
+                      : translate('Date of Admission')}
                   </Text>
                   <DateTimePicker
                     mode={'date'}
@@ -407,10 +408,10 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Ailment</Text>
+              <Text style={styles.text}>{translate("Ailment")}</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
-                  placeholder="Enter Ailment"
+                  placeholder={translate("Enter Ailment")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={ailment}
@@ -428,13 +429,13 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Amount</Text>
+              <Text style={styles.text}>{translate("Amount")}</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
                   ref={(input) => {
                     this.ailment = input;
                   }}
-                  placeholder="Enter Amount"
+                  placeholder={translate("Enter Amount")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={amount}
@@ -452,13 +453,13 @@ export default class ClaimInitiationSubmission extends Component {
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
-              <Text style={styles.text}>Contact Number</Text>
+              <Text style={styles.text}>{translate("Contact Number")}</Text>
               <Item regular style={{borderRadius: 6}}>
                 <Input
                   ref={(input) => {
                     this.amount = input;
                   }}
-                  placeholder="Enter Contact number"
+                  placeholder={translate("Enter Contact number")}
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'done'}
                   value={contactNum}
@@ -475,7 +476,7 @@ export default class ClaimInitiationSubmission extends Component {
           <View style={{flex: 1}}>
             <ModalPopup
               errorMessageText={errorMsg}
-              closeButtonText={'CLOSE'}
+              closeButtonText={translate('CLOSE')}
               closeButtonAction={() =>
                 this.setState({isModalVisible: !isModalVisible})
               }
@@ -508,7 +509,7 @@ export default class ClaimInitiationSubmission extends Component {
                     <TouchableOpacity
                       onPress={() => this.onPressSubmitClaimData()}
                       style={styles.appButtonContainer}>
-                      <Text style={styles.appButtonText}>SAVE</Text>
+                      <Text style={styles.appButtonText}>{translate("SAVE")}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

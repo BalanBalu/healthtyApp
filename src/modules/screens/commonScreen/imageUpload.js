@@ -4,6 +4,7 @@ import {  Modal } from 'react-native';
 import {
   Container,Right, Body, Button, Row, View, Text} from 'native-base';
   import ImagePicker from 'react-native-image-crop-picker';
+  import {translate} from '../../../setup/translator.helper';
 
 
 export class ImageUpload extends Component {
@@ -98,14 +99,14 @@ export class ImageUpload extends Component {
                             }}>
 
 
-                                <Text style={{ fontSize: 22, fontFamily: 'opensans-bold', textAlign: 'center' }}> Select a Photo  </Text>
+                                <Text style={{ fontSize: 22, fontFamily: 'opensans-bold', textAlign: 'center' }}> {translate("Select a Photo")}  </Text>
                                 {/* </Item> */}
 
                                 <Button transparent style={{ paddingTop: 5, paddingBottom: 5, marginTop: 20 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
-                                    <Text style={{ fontSize: 18, fontFamily: 'Roboto', marginTop: 10 }}>Take Photo</Text>
+                                    <Text style={{ fontSize: 18, fontFamily: 'Roboto', marginTop: 10 }}>{translate("Take Photo")}</Text>
                                 </Button>
                                 <Button transparent style={{ paddingTop: 5, paddingBottom: 5 }} onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
-                                    <Text style={{ fontSize: 18, fontFamily: 'Roboto', marginTop: 10 }}>Choose from Library</Text>
+                                    <Text style={{ fontSize: 18, fontFamily: 'Roboto', marginTop: 10 }}>{translate("Choose from Library")}</Text>
                                 </Button>
 
                                 <Row style={{ marginTop: 50, marginBottom: 20 }}>
@@ -114,7 +115,7 @@ export class ImageUpload extends Component {
 
                                             onPress={() => this.props.popupVisible({ image: null })}
                                             testID='cancleButton'>
-                                            <Text style={{ fontFamily: 'Roboto', fontSize: 18, }}> Cancel</Text>
+                                            <Text style={{ fontFamily: 'Roboto', fontSize: 18, }}> {translate("Cancel")}</Text>
                                         </Button>
                                     </Right>
                                 </Row>

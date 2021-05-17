@@ -18,7 +18,8 @@ import RenderLabLocation from '../RenderLabLocation';
 import { Loader } from '../../../../components/ContentLoader';
 import { addFavoritesToLabByUserService, getLabDetails, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService } from '../../../providers/labTest/labTestBookAppointment.action'
 import RenderLabCategories from '../RenderLabCategories';
-import styles from '../../CommonAll/styles'
+import { translate } from '../../../../setup/translator.helper';
+import styles from '../../CommonAll/styles';
 fields = "lab_name,mobile_no,location_code,location,extra_charges,available_lab_test_categories";
 
 class LabBookAppointment extends Component {
@@ -216,7 +217,7 @@ class LabBookAppointment extends Component {
     const { labInfo, labCatInfo } = labData;
     if (!selectedSlotItem) {
       Toast.show({
-        text: 'Please select a slot to continue booking',
+        text: translate('Please select a slot to continue booking'),
         type: 'warning',
         duration: 3000
       })
@@ -243,7 +244,7 @@ class LabBookAppointment extends Component {
     const updateResp = await addFavoritesToLabByUserService(this.state.userId, labId);
     if (updateResp)
       Toast.show({
-        text: 'Lab wish list updated successfully',
+        text: translate('Lab wish list updated successfully'),
         type: "success",
         duration: 3000,
       });
@@ -270,7 +271,7 @@ class LabBookAppointment extends Component {
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Col size={9}>
-                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12,  }}>{(labInfo && labInfo.lab_name) + ' ' + (labInfo && labInfo.location_code)}</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{(labInfo && labInfo.lab_name) + ' ' + (labInfo && labInfo.location_code)}</Text>
                         <Row>
                           <Text note style={{ fontFamily: 'Roboto', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.categoryInfo && labCatInfo.categoryInfo.category_name}</Text>
                           <Text note style={{ fontFamily: 'Roboto', fontSize: 12, marginTop: 5 }}>{' - '}</Text>
@@ -320,10 +321,10 @@ class LabBookAppointment extends Component {
             <Row style={{ marginLeft: 5, marginRight: 5 }}>
               <Segment>
                 <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 4, alignItems: 'center', justifyContent: 'center', borderBottomColor: '#000' }]} onPress={() => { this.setState({ onPressTabView: 1 }) }}>
-                  <Text style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', textAlign: 'center' }}>About</Text>
+                  <Text style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', textAlign: 'center' }}>{translate("About")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 4, alignContent: 'center', justifyContent: 'center', borderBottomColor: '#000' }]} onPress={() => { this.setState({ onPressTabView: 2 }) }}>
-                  <Text style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', textAlign: 'center' }}>Reviews</Text>
+                  <Text style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', textAlign: 'center' }}>{translate("Reviews")}</Text>
                 </TouchableOpacity>
               </Segment>
             </Row>
@@ -334,19 +335,19 @@ class LabBookAppointment extends Component {
               <Content>
                 <View>
                   <Row style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>Choose appointment date and time</Text>
+                    <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>{translate("Choose appointment date and time")}</Text>
                   </Row>
                   {this.availabilitySlotsDatesArry.length !== 0 ? this.renderDatesOnFlatList() : null}
                   {
                     slotDataObj4Item[selectedDate] ?
                       this.renderWorkingHours(slotDataObj4Item[selectedDate])
                       : <RenderNoSlotsAvailable
-                        text={'No Slots Available'}
+                        text={translate('No Slots Available')}
                       />
                   }
                   <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                     <Row style={{ marginTop: 10 }}>
-                      <Text note style={{ fontSize: 12, fontFamily: 'Roboto' }}>Selected Appointment on</Text>
+                      <Text note style={{ fontSize: 12, fontFamily: 'Roboto' }}>{translate("Selected Appointment on")}</Text>
                     </Row>
                     <Row style={{ marginTop: 5 }}>
                       <Col style={{ width: '40%' }}>
@@ -370,7 +371,7 @@ class LabBookAppointment extends Component {
                 onPress={() => this.onPressContinueForPaymentReview(labInfoData, this.selectedSlotItem)}
                 testID='clickButtonToPaymentReviewPage'>
                 <Row style={{ justifyContent: 'center', }}>
-                  <Text style={{ marginLeft: -25, marginTop: 2,  justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>BOOK APPOINTMENT</Text>
+                  <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center', fontFamily: 'opensans-bold' }}>{translate("BOOK APPOINTMENT")}</Text>
                 </Row>
               </Button>
             </Col>

@@ -309,8 +309,8 @@ class CorporateHome extends PureComponent {
         appBar: {
           locationName: patientSearchLocationName,
           locationCapta: isSearchByCurrentLocation
-            ? 'You are searching Near by Hospitals'
-            : 'You are searching hospitals in ' + patientSearchLocationName,
+            ? translate('You are searching Near by Hospitals')
+            : translate('You are searching hospitals in ') + patientSearchLocationName,
         },
       });
       this.locationUpdatedCount = locationUpdatedCount;

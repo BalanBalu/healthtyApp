@@ -27,6 +27,7 @@ import BookAppointmentPaymentUpdate from '../../../../providers/bookappointment/
 import { AuthService } from '../../services'
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../../../../../setup/config'
 import moment from 'moment';
+import {translate} from '../../../../../setup/translator.helper';
 class AvailableDoctors4Video extends Component {
     constructor(props) {
         super(props)
@@ -191,14 +192,14 @@ class AvailableDoctors4Video extends Component {
                     if (response.success) {
                         this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home' });
                         Toast.show({
-                            text: 'Your Chat Consultation Request Success. We will notify Doctor',
+                            text: translate('Your Chat Consultation Request Success, We will notify Doctor'),
                             type: 'success',
                             duration: 3000
                         });
                         AuthService.signup(this.userId);
                     } else {
                         Toast.show({
-                            text: 'We could not Process Your Video Consultation Request at this time. Please Try again later',
+                            text: translate('We could not Process Your Video Consultation Request at this time, Please Try again later'),
                             type: 'success',
                             duration: 3000
                         });
@@ -265,14 +266,14 @@ class AvailableDoctors4Video extends Component {
                     if (response.success) {
                         this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? 'CorporateHome' : 'Home' });
                         Toast.show({
-                            text: 'Your Video Consultation Request Success. We will notify the Doctor',
+                            text: translate('Your Video Consultation Request Success, We will notify the Doctor'),
                             type: 'success',
                             duration: 3000
                         });
                         AuthService.signup(this.userId);
                     } else {
                         Toast.show({
-                            text: 'We could not Process Your Video Consultation Request at this time. Please Try again later',
+                            text: translate('We could not Process Your Video Consultation Request at this time, Please Try again later'),
                             type: 'success',
                             duration: 3000
                         });
@@ -416,7 +417,7 @@ class AvailableDoctors4Video extends Component {
         if (serviceType === "VIDEO_CONSULTING") {
             if (description === '') {
                 Toast.show({
-                    text: 'Kindly fill  the fields',
+                    text: translate('Kindly fill  the fields'),
                     type: 'danger',
                     duration: 3000
                 });
@@ -474,7 +475,7 @@ class AvailableDoctors4Video extends Component {
                             <Row style={{ justifyContent: 'center' }}>
                                 {isPremium === true ?
                                     <Text style={{ paddingLeft: 5, paddingRight: 5, fontSize: 10, fontFamily: 'Roboto', marginLeft: 5, backgroundColor: '#8EC63F', borderRadius: 10, color: '#fff', height: 15, marginTop: 3 }}>
-                                        SPONSORED</Text> : null}
+                                        {translate("SPONSORED")}</Text> : null}
                             </Row>
                         </Col>
 
@@ -524,7 +525,7 @@ class AvailableDoctors4Video extends Component {
                                     style={isBothPremium ? styles.ButtonStyle : isVideoFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
                                     <Icon name="ios-videocam" style={!isBothPremium && isVideoFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
                                     <Text style={isBothPremium ? styles.TextStyle : isVideoFree ? styles.SponsorText : styles.TextStyle}>
-                                        {isBothPremium ? 'Video' : isVideoFree ? 'Free Consult' : `Video - ₹ ${this.getVideoConsultFee(item)}`}
+                                        {isBothPremium ? translate('Video') : isVideoFree ? translate('Free Consult') : `Video - ₹ ${this.getVideoConsultFee(item)}`}
                                     </Text>
                                 </TouchableOpacity>
                             </Col>
@@ -537,7 +538,7 @@ class AvailableDoctors4Video extends Component {
                         <Row style={{ marginTop: 5, width: '100%' }}>
                             <Button disabled style={{ height: 30, borderRadius: 10, backgroundColor: primaryColor }}>
                                 <Icon name="ios-videocam" style={{ color: '#FFFFFF', fontSize: 15 }} />
-                                <Text style={{ marginLeft: -20, fontSize: 10 }}>next Available on {this.getNextAvailabiltyData(item)}</Text>
+                                <Text style={{ marginLeft: -20, fontSize: 10 }}>{translate("next Available on")} {this.getNextAvailabiltyData(item)}</Text>
                                 {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                             </Button>
                         </Row> : null}
@@ -572,13 +573,13 @@ class AvailableDoctors4Video extends Component {
                     />
                     <View style={{ backgroundColor: primaryColor }}>
                         <View style={{ marginTop: 20 }}>
-                            <Text style={styles.SubText}>Search for Doctors</Text>
+                            <Text style={styles.SubText}>{translate("Search for Doctors")}</Text>
 
                             <Row style={styles.SearchRow}>
 
                                 <Col size={9.1} style={{ justifyContent: 'center', }}>
                                     <Input
-                                        placeholder="Search for Symptoms,Categories,etc"
+                                        placeholder={translate("Search for Symptoms,Categories,etc")}
                                         style={styles.inputfield}
                                         onChangeText={(text) => this.setState({ keyword: text })}
                                         placeholderTextColor="gray"
@@ -610,7 +611,7 @@ class AvailableDoctors4Video extends Component {
                             :
                               <View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
                             <Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
-                                No Doctors Found for your Search
+                                {translate("No Doctors Found for your Search")}
 						</Text>
                         </View>
                     }
@@ -639,13 +640,13 @@ class AvailableDoctors4Video extends Component {
                             }}>
                                 <Row style={styles.headerStyle}>
                                     <Icon name="create" style={{ fontSize: 15, color: '#fff', marginLeft: 15 }} />
-                                    <Text style={styles.reasonText}> Enter your reason for consultation?</Text>
+                                    <Text style={styles.reasonText}> {translate("Enter your reason for consultation?")}</Text>
                                 </Row>
                                 <View>
                                     <TextInput
                                         style={{ height: 120, borderWidth: 0.3, width: "100%", borderRadius: 5, fontSize: 14, borderColor: '#909090', padding: 2, marginTop: 10 }}
                                         returnKeyType={'next'}
-                                        placeholder="Write Reason............"
+                                        placeholder={translate("Write Reason")}
                                         multiline={true}
                                         keyboardType={'default'}
 
@@ -661,12 +662,12 @@ class AvailableDoctors4Video extends Component {
                                         <Row>
                                             <Col size={5}>
                                                 <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, borderRadius: 5, backgroundColor: 'red', height: 25, alignItems: 'center', justifyContent: 'center' }} onPress={() => this.setState({ descriptionVisible: false })} testID='cancelButton'>
-                                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, textAlign: 'center', color: '#fff', }}> {'CANCEL'}</Text>
+                                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, textAlign: 'center', color: '#fff', }}> {translate('CANCEL')}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                             <Col size={5} style={{ marginRight: 3, marginLeft: 5 }} >
                                                 <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, borderRadius: 5, height: 25, alignItems: 'center', justifyContent: 'center' }} onPress={() => this.descritionSubmission(serviceType)} testID='submitButton'>
-                                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, textAlign: 'center', color: '#fff', }}>{'SUBMIT'}</Text>
+                                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, textAlign: 'center', color: '#fff', }}>{translate('SUBMIT')}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                         </Row>

@@ -29,6 +29,7 @@ import {connect} from 'react-redux';
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
 import {acceptNumbersOnly} from '../../common';
+import {translate} from '../../../setup/translator.helper'
 
 class UpdateContact extends Component {
   numberCategory = ['Home', 'Emergency'];
@@ -67,7 +68,7 @@ class UpdateContact extends Component {
     try {
       if (!mobile) {
         this.setState({
-          errorMsg: 'Please enter mobile number',
+          errorMsg: translate('Please enter mobile number'),
           isModalVisible: true,
         });
         return false;
@@ -81,7 +82,7 @@ class UpdateContact extends Component {
       let response = await updateMemberDetails(requestData);
       if (response) {
         Toast.show({
-          text: 'Contacts has been saved',
+          text: translate('Contacts has been saved'),
           type: 'success',
           duration: 3000,
         });
@@ -108,15 +109,15 @@ class UpdateContact extends Component {
         <Content contentContainerStyle={styles.bodyContent1}>
           <ScrollView>
             <View style={{marginTop: 10, padding: 10}}>
-              <Text style={styles.headerText}>Update Mobile Number</Text>
+              <Text style={styles.headerText}>{translate("Update Mobile Number")}</Text>
               <View style={styles.cardEmail}>
                 <Item style={{borderBottomWidth: 0}}>
                   <Col>
-                    <Text>Mobile Number</Text>
+                    <Text>{translate("Mobile Number")}</Text>
                     <Row>
                       <Icon name="call" style={styles.centeredIcons}></Icon>
                       <Input
-                        placeholder="Edit Your Number"
+                        placeholder={translate("Edit Your Number")}
                         style={styles.transparentLabel}
                         keyboardType="numeric"
                         onChangeText={(mobile) =>
@@ -137,7 +138,7 @@ class UpdateContact extends Component {
                       onPress={() => this.commonUpdateContactMethod()}
                       testID="clickUpdateContact">
                       <Text uppercase={false} note style={styles.buttonText}>
-                        Update
+                        {translate("Update")}
                       </Text>
                     </Button>
                   </Right>
@@ -148,7 +149,7 @@ class UpdateContact extends Component {
           <View style={{flex: 1}}>
             <ModalPopup
               errorMessageText={this.state.errorMsg}
-              closeButtonText={'CLOSE'}
+              closeButtonText={translate('CLOSE')}
               closeButtonAction={() =>
                 this.setState({isModalVisible: !this.state.isModalVisible})
               }

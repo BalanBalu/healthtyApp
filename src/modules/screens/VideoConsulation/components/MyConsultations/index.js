@@ -14,6 +14,7 @@ import { getVideoConsuting, updateVideoConsuting,createEmrByVideoConsultation } 
 import { formatDate } from '../../../../../setup/helpers';
 import { connect } from 'react-redux';
 import {primaryColor} from '../../../../../setup/config';
+import {translate} from '../../../../../setup/translator.helper'
 
 export const IS_ANDROID = Platform.OS === 'android';
 class VideoConsultaions extends Component {
@@ -74,7 +75,7 @@ class VideoConsultaions extends Component {
 			}
 		} catch (error) {
 			Toast.show({
-				text: 'Something went wrong: ' + error,
+				text: translate('Something went wrong: ') + error,
 				duration: 3000
 			})
 		} finally {
@@ -168,7 +169,7 @@ class VideoConsultaions extends Component {
 										<Button primary iconLeft style={[styles.actionButton, { backgroundColor: '#08BF01' }]}
 											onPress={() => this.callDoctor(item)}>
 											<Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-call' : 'ios-call'} />
-											<Text style={[styles.buttonText1, { marginLeft: -10 }]}>Call</Text>
+											<Text style={[styles.buttonText1, { marginLeft: -10 }]}>{translate("Call")}</Text>
 										</Button>
 									</Row>
 									: 	item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING&&!item.emr_details  ?
@@ -177,7 +178,7 @@ class VideoConsultaions extends Component {
 												 onPress={() => this.uploadRecords(item)}
 											>
 											{/* <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-call' : 'ios-call'} /> */}
-											<Text style={[styles.buttonText1, { marginLeft: -10 }]}>Upload Records</Text>
+											<Text style={[styles.buttonText1, { marginLeft: -10 }]}>{translate("Upload Records")}</Text>
 										</Button>
 										</Row> : item.emr_details ?
 											<Row style={{ marginLeft: '22%' }} >
@@ -185,7 +186,7 @@ class VideoConsultaions extends Component {
 													 onPress={() => this.viewRecored(item.emr_details )}
 												>
 												{/* <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-call' : 'ios-call'} /> */}
-												<Text style={[styles.buttonText1, { marginLeft: -10 }]}>view Records</Text>
+												<Text style={[styles.buttonText1, { marginLeft: -10 }]}>{translate("View Records")}</Text>
 											</Button>
 											</Row>:
 										null
@@ -208,7 +209,7 @@ class VideoConsultaions extends Component {
 								<Text style={{
 								color: STATUS_VALUE_DATA[item.status].color, fontFamily: 'Roboto',
 								fontSize: 14
-							}}>{"consultation description :"}</Text>
+							}}>{translate("consultation description :")}</Text>
 					</Row>
 					<Row style={{ alignItems: 'center', marginBottom: 5,}}>
 						<Text style={{
@@ -245,7 +246,7 @@ class VideoConsultaions extends Component {
 					{consultaionData.length === 0 && isLoading === false ?
 						<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
 							<Text style={{ fontFamily: "Roboto", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
-								No Consultations
+								{translate("No Consultations")}
 						</Text>
 						</View> :
 						<FlatList

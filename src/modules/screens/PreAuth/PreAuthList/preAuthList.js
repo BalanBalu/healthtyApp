@@ -38,7 +38,7 @@ export default class preAuthList extends Component {
       await this.getPreAuthList();
     } catch (Ex) {
       Toast.show({
-        text: 'Something Went Wrong' + Ex,
+        text: translate('Something Went Wrong') + Ex,
         duration: 3000,
         type: "danger"
       })
@@ -62,7 +62,7 @@ export default class preAuthList extends Component {
       else {
         if (this.preAuthListArray.length > 5) {
           Toast.show({
-            text: 'No more hospitals Available!',
+            text: translate('No more hospitals Available!'),
             duration: 3000,
             type: "success"
           })
@@ -72,7 +72,7 @@ export default class preAuthList extends Component {
     } catch (Ex) {
       console.log('Ex is getting on Get Network Hospitals ==>', Ex.message)
       Toast.show({
-        text: 'Something Went Wrong' + Ex.message,
+        text: translate('Something Went Wrong') + Ex.message,
         duration: 3000,
         type: "danger"
       })

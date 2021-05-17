@@ -1,5 +1,24 @@
 import React, { Component, PureComponent } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Left, Right, Thumbnail, Body, Icon, locations, Input } from 'native-base';
+import {
+  Container,
+  Content,
+  Text,
+  Title,
+  Header,
+  Button,
+  H3,
+  Item,
+  List,
+  ListItem,
+  Card,
+  Left,
+  Right,
+  Thumbnail,
+  Body,
+  Icon,
+  locations,
+  Input,
+} from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -11,12 +30,13 @@ import { Loader } from '../../../../components/ContentLoader';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Communications from 'react-native-communications';
+import { translate } from '../../../../setup/translator.helper';
 import { MAX_DISTANCE_TO_COVER, CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2, primaryColor } from '../../../../setup/config';
 import { getCorporateFullName } from '../../../common';
 
 class LabCategories extends PureComponent {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       labData: [],
       categoriesMain: [],
@@ -45,54 +65,58 @@ class LabCategories extends PureComponent {
   }
   getLabCategories = async () => {
     try {
-      this.setState({ isLoading: true })
-      const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
+      this.setState({ isLoading: true });
+      const {
+        bookappointment: { locationCordinates, isLocationSelected },
+      } = this.props;
       if (!isLocationSelected) {
         Alert.alert(
-          "Location Warning",
-          "Please select the location to continue...!",
+          'Location Warning',
+          'Please select the location to continue...!',
           [
-            { text: "Cancel" },
+            { text: 'Cancel' },
             {
-              text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
-            }
+              text: 'OK',
+              onPress: () => this.props.navigation.navigate('Locations'),
+            },
           ],
         );
-        return
+        return;
       }
       let locationData = {
-        "coordinates": locationCordinates,
-        "maxDistance": MAX_DISTANCE_TO_COVER
-      }
+        coordinates: locationCordinates,
+        maxDistance: MAX_DISTANCE_TO_COVER,
+      };
       let result = await getLabTestCateries(JSON.stringify(locationData));
 
       if (result.success) {
         this.setState({ labData: result.data });
         this.mainLabData = result.data;
       }
-    }
-    catch (e) {
-      console.log(e)
-    }
-    finally {
+    } catch (e) {
+      console.log(e);
+    } finally {
       this.setState({ isLoading: false });
     }
   }
   onPressCatItem = async (type, value) => {
-    const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
+    const {
+      bookappointment: { locationCordinates, isLocationSelected },
+    } = this.props;
 
     if (!isLocationSelected) {
       Alert.alert(
-        "Location Warning",
-        "Please select the location to continue...!",
+        'Location Warning',
+        'Please select the location to continue...!',
         [
-          { text: "Cancel" },
+          { text: 'Cancel' },
           {
-            text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
-          }
+            text: 'OK',
+            onPress: () => this.props.navigation.navigate('Locations'),
+          },
         ],
       );
-      return
+      return;
     }
     const inputDataBySearch = [
       {
@@ -127,39 +151,46 @@ class LabCategories extends PureComponent {
         const filteredCategories = this.mainLabData.filter(ele =>
           ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
         );
-        this.setState({ searchValue, labData: filteredCategories })
+        this.setState({ searchValue, labData: filteredCategories });
       }
-
     }
   }
 
-
   renderStickeyHeader() {
     return (
-      <View style={{ width: '100%' }} >
-        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Labs by categories</Text>
+      <View style={{ width: '100%' }}>
+        <Text
+          style={{
+            fontFamily: 'Roboto',
+            fontSize: 12,
+            marginLeft: 10,
+            marginTop: 10,
+          }}>
+          {translate('Search Labs by categories')}
+        </Text>
         <Row style={styles.SearchRow}>
-
-          <Col size={9.1} style={{ justifyContent: 'center', }}>
+          <Col size={9.1} style={{ justifyContent: 'center' }}>
             <Input
-              placeholder="Categories"
+              placeholder={translate('Categories')}
               style={styles.inputfield}
               placeholderTextColor="#e2e2e2"
               keyboardType={'email-address'}
-              onChangeText={searchValue => this.filterCategories(searchValue)}
+              onChangeText={(searchValue) => this.filterCategories(searchValue)}
               underlineColorAndroid="transparent"
               blurOnSubmit={false}
             />
           </Col>
           <Col size={0.9} style={styles.SearchStyle}>
             <TouchableOpacity style={{ justifyContent: 'center' }}>
-              <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
+              <Icon
+                name="ios-search"
+                style={{ color: 'gray', fontSize: 20, padding: 2 }}
+              />
             </TouchableOpacity>
           </Col>
-
         </Row>
       </View>
-    )
+    );
   }
 
   callToBookAppointment() {
@@ -337,52 +368,44 @@ class LabCategories extends PureComponent {
               </View> : null}
         </Content>
       </Container>
-
-    )
+    );
   }
-
 }
 function labCategoriesState(state) {
-
   return {
     profile: state.profile,
     bookappointment: state.bookappointment,
-  }
+  };
 }
-export default connect(labCategoriesState)(LabCategories)
-
+export default connect(labCategoriesState)(LabCategories);
 
 const styles = StyleSheet.create({
-
-  container:
-  {
-    backgroundColor: '#F4F4F4'
+  container: {
+    backgroundColor: '#F4F4F4',
   },
 
   bodyContent: {
     padding: 5,
-    backgroundColor: '#F4F4F4'
+    backgroundColor: '#F4F4F4',
   },
   textcenter: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'Roboto'
+    fontFamily: 'Roboto',
   },
 
-  column:
-  {
+  column: {
     width: '15%',
     borderRadius: 10,
     margin: 10,
-    padding: 6
+    padding: 6,
   },
-
 
   customImage: {
     height: 100,
     width: 100,
     margin: 10,
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   titleText: {
@@ -390,7 +413,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontFamily: 'Roboto',
-
   },
   SearchRow: {
     backgroundColor: 'white',
@@ -399,10 +421,10 @@ const styles = StyleSheet.create({
     height: 35,
     marginRight: 10,
     marginLeft: 10,
-    marginTop: 5, borderRadius: 5
+    marginTop: 5,
+    borderRadius: 5,
   },
   SearchStyle: {
-
     width: '85%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -412,11 +434,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 12,
     padding: 5,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   mainCol: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderColor: 'gray',
     borderRadius: 20,
     flexDirection: 'row',
@@ -440,7 +462,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     paddingTop: 1,
-    color: primaryColor
+    color: primaryColor,
   },
   subText: {
     fontSize: 8,

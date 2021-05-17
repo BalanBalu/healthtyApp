@@ -866,7 +866,7 @@ class PolicyCoverage extends React.Component {
                   // this.props.navigation.navigate("PolicyConditions", { termsAndConditionList: this.termsAndConditionList })
                 } else {
                   Toast.show({
-                    text: 'No Details Available',
+                    text: translate('No Details Available'),
                     type: 'warning',
                     duration: 3000,
                   });

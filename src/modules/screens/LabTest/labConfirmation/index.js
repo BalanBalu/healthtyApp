@@ -3,6 +3,7 @@ import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, In
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {translate} from '../../../../setup/translator.helper'
 
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
@@ -153,7 +154,7 @@ class LabConfirmation extends Component {
             const userId = await AsyncStorage.getItem('userId')
             if (!startDatePlaceholder) {
                 Toast.show({
-                    text: 'Kindly select your appointment time',
+                    text: translate('Kindly select your appointment time'),
                     type: 'warning',
                     duration: 3000
                 })
@@ -200,7 +201,7 @@ class LabConfirmation extends Component {
         try {
             if (patientDetails.length == 0) {
                 Toast.show({
-                    text: 'Kindly select or add patient details',
+                    text: translate('Kindly select or add patient details'),
                     type: 'warning',
                     duration: 3000
                 })
@@ -208,7 +209,7 @@ class LabConfirmation extends Component {
             }
             if (errMsg) {
                 Toast.show({
-                    text: 'Kindly fill other patient details',
+                    text: translate('Kindly fill other patient details'),
                     type: "warning",
                     duration: 3000
                 });
@@ -216,7 +217,7 @@ class LabConfirmation extends Component {
             }
             if (itemSelected === 'TEST_AT_HOME' && selectedAddress == null) {
                 Toast.show({
-                    text: 'Kindly chosse Address',
+                    text: translate('Kindly chosse Address'),
                     type: 'warning',
                     duration: 3000
                 })
@@ -267,7 +268,7 @@ class LabConfirmation extends Component {
                 if (response.success) {
                     this.props.navigation.navigate('SuccessChat', { manualNaviagationPage:CURRENT_APP_NAME===MY_SMART_HEALTH_CARE?'CorporateHome': 'Home' });
                     Toast.show({
-                        text: 'Appointment has Succcessfully Requested',
+                        text: translate('Appointment has Succcessfully Requested'),
                         type: "success",
                         duration: 3000
                     });
@@ -330,7 +331,7 @@ class LabConfirmation extends Component {
         catch (e) {
          
             Toast.show({
-                text: 'Exception While Creating the Appointment' + e,
+                text: translate('Exception While Creating the Appointment') + e,
                 type: "danger",
                 duration: 3000
             });
@@ -350,7 +351,7 @@ class LabConfirmation extends Component {
         const valid = startDate <= date && endDate >= date;
         if (date <= currentDate) {
             Toast.show({
-                text: 'Your selected time is not valid, Please try again',
+                text: translate('Your selected time is not valid, Please try again'),
                 duration: 2000,
                 type: 'danger'
             });
@@ -360,7 +361,7 @@ class LabConfirmation extends Component {
         }
         if (valid === false) {
             Toast.show({
-                text: 'Please choose the time between ' + getTimeWithMeredian(startDate) + ' and ' + getTimeWithMeredian(endDate),
+                text: translate('Please choose the time between ') + getTimeWithMeredian(startDate) + translate('and') + getTimeWithMeredian(endDate),
                 duration: 2000,
                 type: 'danger'
             });
@@ -447,7 +448,7 @@ class LabConfirmation extends Component {
                                     selected={itemSelected === 'TEST_AT_LAP' ? true : false}
                                     onPress={() => this.setState({ itemSelected: 'TEST_AT_LAP' })} />
 
-                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 14,  paddingTop: 2, paddingLeft: 5 }}>Test at Lab</Text>
+                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 14,  paddingTop: 2, paddingLeft: 5 }}>{translate("Test at Lab")}</Text>
 
                             </Col>
 
@@ -457,7 +458,7 @@ class LabConfirmation extends Component {
                                     standardStyle={true}
                                     selected={itemSelected === 'TEST_AT_HOME' ? true : false}
                                     onPress={() => this.setState({ itemSelected: 'TEST_AT_HOME' })} />
-                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, paddingTop: 2, paddingLeft: 5 }}>Test at home </Text>
+                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, paddingTop: 2, paddingLeft: 5 }}>{translate("Test at home")} </Text>
                             </Col>
 
                             <Col size={2} />
@@ -480,19 +481,19 @@ class LabConfirmation extends Component {
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                             <Row>
                                 <Col size={5}>
-                                    <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>Lab Address</Text>
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>{translate("Lab Address")}</Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 </Col>
                             </Row>
                             <Text style={{ fontFamily: 'Roboto', fontSize: 12,  marginTop: 5 }}>{packageDetails.lab_name}</Text>
                             <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(packageDetails.location)}</Text>
-                            <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (packageDetails.mobile_no || 'Nil')}</Text>
+                            <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginTop: 2 }}>{translate('Mobile') + (packageDetails.mobile_no || translate('Nil'))}</Text>
                         </View> :
                         null}
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5,marginBottom:20 }}>
-                        <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>Package Details</Text>
+                        <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>{translate("Package Details")}</Text>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
                                 <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#6a6a6a' }}>{packageDetails.category_name}
@@ -511,7 +512,7 @@ class LabConfirmation extends Component {
                         {itemSelected === 'TEST_AT_HOME' ?
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={8}>
-                                    <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#6a6a6a' }}>Charges for Home Test</Text>
+                                    <Text style={{ fontFamily: 'Roboto', fontSize: 12, color: '#6a6a6a' }}>{translate("Charges for Home Test")}</Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                     <Text style={{ fontFamily: 'Roboto', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹{packageDetails.extra_charges ? packageDetails.extra_charges : 0}</Text>
@@ -520,7 +521,7 @@ class LabConfirmation extends Component {
                             : null}
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
-                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>Amount to be Paid</Text>
+                                <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{translate("Amount to be Paid")}</Text>
                             </Col>
                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
