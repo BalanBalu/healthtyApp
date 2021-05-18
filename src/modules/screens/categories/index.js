@@ -12,7 +12,7 @@ import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 import { Loader } from '../../../components/ContentLoader';
-import {translate} from '../../../setup/translator.helper';
+import { translate } from '../../../setup/translator.helper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Communications from 'react-native-communications';
@@ -58,10 +58,10 @@ class Categories extends Component {
         this.setState({ data: result.data, categoriesMain: result.data })
         for (let i = 0; i < result.data.length; i++) {
           const item = result.data[i];
-          imageURL = item.imageBaseURL + item.category_id + '.png';
-          base64ImageDataRes = await toDataUrl(imageURL)
-          result.data[i].base64ImageData = base64ImageDataRes;
-          this.setState({ categoriesMain: result.data })
+          // imageURL = item.imageBaseURL + item.category_id + '.png';
+          // base64ImageDataRes = await toDataUrl(imageURL)
+          // result.data[i].base64ImageData = base64ImageDataRes;
+          // this.setState({ categoriesMain: result.data })
         }
       }
     } catch (e) {
@@ -313,7 +313,7 @@ class Categories extends Component {
               </View>
             </View>
           </Modal>
-          {isLoading ?
+          {Object.keys(data).length === 0 ?
             <Loader style="boxList" /> : data && data.length ?
               <View style={{ marginBottom: 10 }}>
                 <FlatList horizontal={false} numColumns={3}
