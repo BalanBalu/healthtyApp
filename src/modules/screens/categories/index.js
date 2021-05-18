@@ -27,7 +27,7 @@ class Categories extends Component {
       categoriesMain: [],
       consultPopVisible: false,
       selectedSpecialist: null,
-      isLoading: false,
+      isLoading: true,
       isCorporateUser: false
     }
 
@@ -313,7 +313,7 @@ class Categories extends Component {
               </View>
             </View>
           </Modal>
-          {Object.keys(data).length === 0 ?
+          {isLoading ?
             <Loader style="boxList" /> : data && data.length ?
               <View style={{ marginBottom: 10 }}>
                 <FlatList horizontal={false} numColumns={3}
@@ -345,7 +345,21 @@ class Categories extends Component {
                   }
                   keyExtractor={(item, index) => index.toString()}
                 />
-              </View> : null}
+              </View> : Object.keys(data).length === 0 ?
+                <View style={{ marginBottom: 10 }}>
+                  <FlatList horizontal={false} numColumns={3}
+                    ListHeaderComponent={this.renderStickeyHeader()}
+                  />
+                  <View><Text style={{
+                    fontFamily: "Roboto",
+                    fontSize: 15,
+                    marginTop: "10%",
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                  }} >Your Search Is Not Found</Text></View>
+                </View>
+                : null}
         </Content>
       </Container>
 
