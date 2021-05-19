@@ -7,8 +7,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfGetPreAuthList } from '../../../providers/corporate/corporate.actions'
 import RenderPreAuthList from './RenderPreAuthList';
 import { Loader } from '../../../../components/ContentLoader';
-import {primaryColor} from '../../../../setup/config'
-import {translate} from '../../../../setup/translator.helper'
+import { primaryColor } from '../../../../setup/config'
+import { translate } from '../../../../setup/translator.helper'
 import {
   NegativePreAuthDrawing
 } from '../../../../modules/screens/Home/corporateHome/svgDrawings';
@@ -80,11 +80,11 @@ export default class preAuthList extends Component {
   }
   toggleData(data) {
     const { showCard, show } = this.state
-    if(data===showCard){
-         this.setState({ showCard: data, show: !this.state.show, })
+    if (data === showCard) {
+      this.setState({ showCard: data, show: !this.state.show, })
     }
-    else{
-      this.setState({ showCard: data,show: false})
+    else {
+      this.setState({ showCard: data, show: false })
     }
 
   }
@@ -98,7 +98,7 @@ export default class preAuthList extends Component {
         show={this.state.show}
         onPressArrowIconSelectedIndex={index}
         navigation={this.props.navigation}
-        onPressToggleButton={(data)=>this.toggleData(data)}
+        onPressToggleButton={(data) => this.toggleData(data)}
       >
       </RenderPreAuthList>
     )
@@ -114,7 +114,7 @@ export default class preAuthList extends Component {
       this.setState({ isLoadingMoreHospitalList: false })
     }
   }
-  
+
 
   render() {
     const { preAuthInfoList, isLoading, isLoadingMoreHospitalList } = this.state
@@ -129,28 +129,30 @@ export default class preAuthList extends Component {
         {isLoading ?
           <Loader style='newList' />
           :
-          preAuthInfoList.length == 0?
-          <View style={{padding:10}}>
-            <FlatList
-              data={preAuthInfoList}
-              onEndReachedThreshold={0.5}
-              onEndReached={() => {
-                if (this.isEnabledLoadMoreData) {
-                  this.loadMoreData();
-                }
-              }}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item, index }) => this.renderPreAuthInformationCard(item, index)
-              } />
-              </View>
-            : <View style={{ borderBottomWidth: 0, flex:1, justifyContent: 'center', alignItems: 'center' }}>
-              <NegativePreAuthDrawing/>
-              <Text style={{fontFamily: "Roboto",
+          preAuthInfoList.length ?
+            <View style={{ padding: 10 }}>
+              <FlatList
+                data={preAuthInfoList}
+                onEndReachedThreshold={0.5}
+                onEndReached={() => {
+                  if (this.isEnabledLoadMoreData) {
+                    this.loadMoreData();
+                  }
+                }}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) => this.renderPreAuthInformationCard(item, index)
+                } />
+            </View>
+            : <View style={{ borderBottomWidth: 0, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <NegativePreAuthDrawing />
+              <Text style={{
+                fontFamily: "Roboto",
                 fontSize: 15,
                 marginTop: "10%",
                 justifyContent: 'center',
                 alignItems: 'center',
-                textAlign: 'center', }} >{translate("No Pre Auth list found!")}</Text>
+                textAlign: 'center',
+              }} >{translate("No Pre Auth list found!")}</Text>
             </View>
         }
         {isLoadingMoreHospitalList ?
