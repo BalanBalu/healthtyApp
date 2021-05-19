@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Communications from 'react-native-communications';
 import { CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2 } from '../../../setup/config';
 import { getCorporateFullName } from '../../common';
-
+import { NegativeConsultationDrawing } from '../../screens/Home/corporateHome/svgDrawings';
 class Categories extends Component {
   constructor(props) {
     super(props)
@@ -350,14 +350,16 @@ class Categories extends Component {
                   <FlatList horizontal={false} numColumns={3}
                     ListHeaderComponent={this.renderStickeyHeader()}
                   />
-                  <View><Text style={{
-                    fontFamily: "Roboto",
-                    fontSize: 15,
-                    marginTop: "10%",
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                  }} >Your Search Is Not Found</Text></View>
+                  <View style={{ marginTop: "70%", flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <NegativeConsultationDrawing />
+                    <Text style={{
+                      fontFamily: "Roboto",
+                      fontSize: 15,
+                      marginTop: "10%",
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                    }} >Your Search Is Not Found</Text></View>
                 </View>
                 : null}
         </Content>
