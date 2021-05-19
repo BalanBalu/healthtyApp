@@ -91,41 +91,41 @@ class UpdateUserDetails extends Component {
     }
   }
 
-  onChangeFirstnameAndLastname = async (text, type) => {
-    if (type === 'Firstname') {
-      await this.setState({firstName: text, updateButton: false});
-    }
-    if (type === 'MiddleName') {
-      await this.setState({middleName: text, updateButton: false});
-    }
-    if (type === 'LastName') {
-      await this.setState({lastName: text, updateButton: false});
-    }
-    if (this.state.firstName && validateName(this.state.firstName) == false) {
-      this.setState({
-        errorMsg: 'Firstname must be a Characters',
-        isModalVisible: true,
-        updateButton: true,
-      });
-      return false;
-    }
-    if (this.state.middleName && validateName(this.state.middleName) == false) {
-      this.setState({
-        errorMsg: 'Middlename must be a Characters',
-        isModalVisible: true,
-        updateButton: true,
-      });
-      return false;
-    }
-    if (this.state.lastName && validateName(this.state.lastName) == false) {
-      this.setState({
-        errorMsg: 'Lastname must be a Characters',
-        isModalVisible: true,
-        updateButton: true,
-      });
-      return false;
-    }
-  };
+  // onChangeFirstnameAndLastname = async (text, type) => {
+  //   if (type === 'Firstname') {
+  //     await this.setState({firstName: text, updateButton: false});
+  //   }
+  //   if (type === 'MiddleName') {
+  //     await this.setState({middleName: text, updateButton: false});
+  //   }
+  //   if (type === 'LastName') {
+  //     await this.setState({lastName: text, updateButton: false});
+  //   }
+  //   if (this.state.firstName && validateName(this.state.firstName) == false) {
+  //     this.setState({
+  //       errorMsg: 'Firstname must be a Characters',
+  //       isModalVisible: true,
+  //       updateButton: true,
+  //     });
+  //     return false;
+  //   }
+  //   if (this.state.middleName && validateName(this.state.middleName) == false) {
+  //     this.setState({
+  //       errorMsg: 'Middlename must be a Characters',
+  //       isModalVisible: true,
+  //       updateButton: true,
+  //     });
+  //     return false;
+  //   }
+  //   if (this.state.lastName && validateName(this.state.lastName) == false) {
+  //     this.setState({
+  //       errorMsg: 'Lastname must be a Characters',
+  //       isModalVisible: true,
+  //       updateButton: true,
+  //     });
+  //     return false;
+  //   }
+  // };
 
   userUpdate = async () => {
     const {
@@ -277,6 +277,7 @@ class UpdateUserDetails extends Component {
                     onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'Firstname')
                     }
+                    disabled={true}
                     autoCapitalize="none"
                     blurOnSubmit={false}
                     onSubmitEditing={() => {
@@ -299,6 +300,7 @@ class UpdateUserDetails extends Component {
                     onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'MiddleName')
                     }
+                    disabled={true}
                     autoCapitalize="none"
                     blurOnSubmit={false}
                     onSubmitEditing={() => {
@@ -320,6 +322,7 @@ class UpdateUserDetails extends Component {
                     onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'LastName')
                     }
+                    disabled={true}
                     autoCapitalize="none"
                     blurOnSubmit={false}
                     // onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
