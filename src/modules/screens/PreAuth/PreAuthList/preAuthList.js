@@ -10,7 +10,7 @@ import { Loader } from '../../../../components/ContentLoader';
 import {primaryColor} from '../../../../setup/config'
 import {translate} from '../../../../setup/translator.helper'
 import {
-  PreAuthDrawing
+  NegativePreAuthDrawing
 } from '../../../../modules/screens/Home/corporateHome/svgDrawings';
 
 
@@ -129,7 +129,7 @@ export default class preAuthList extends Component {
         {isLoading ?
           <Loader style='newList' />
           :
-          preAuthInfoList.length ?
+          preAuthInfoList.length == 0?
           <View style={{padding:10}}>
             <FlatList
               data={preAuthInfoList}
@@ -144,9 +144,7 @@ export default class preAuthList extends Component {
               } />
               </View>
             : <View style={{ borderBottomWidth: 0, flex:1, justifyContent: 'center', alignItems: 'center' }}>
-              <PreAuthDrawing/>
-              <View style={{borderTopWidth:3,width:55,transform:[{rotate: '120 deg'}],position: 'absolute',borderTopColor: primaryColor,top:326}}/>
-
+              <NegativePreAuthDrawing/>
               <Text style={{fontFamily: "Roboto",
                 fontSize: 15,
                 marginTop: "10%",
