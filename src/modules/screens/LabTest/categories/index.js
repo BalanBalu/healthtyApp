@@ -365,7 +365,21 @@ class LabCategories extends PureComponent {
                   }
                   keyExtractor={(item, index) => index.toString()}
                 />
-              </View> : null}
+              </View> : Object.keys(labData).length === 0 ?
+                <View style={{ marginBottom: 10 }}>
+                  <FlatList horizontal={false} numColumns={3}
+                    ListHeaderComponent={this.renderStickeyHeader()}
+                  />
+                  <View><Text style={{
+                    fontFamily: "Roboto",
+                    fontSize: 15,
+                    marginTop: "10%",
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                  }} >Your Search Is Not Found</Text></View>
+                </View>
+                : null}
         </Content>
       </Container>
     );
