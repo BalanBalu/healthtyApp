@@ -278,6 +278,232 @@ function ClaimStatusDrawing() {
     </Svg>
   );
 }
+function NegativeClaimStatusDrawing() {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      // width="48.284"
+      // height="52.247"
+      width="44.3"
+      height="49.26"
+      viewBox="0 0 48.284 52.247">
+      <Image source={require('../../../../../assets/images/No.png')} style={{ height: 70, width: 70, position: 'absolute', top: -11.50, right: -14 }} />
+
+      <G
+        id="Group_410"
+        data-name="Group 410"
+        transform="translate(-421.196 -31.286)">
+        <Path
+          id="Path_5185"
+          data-name="Path 5185"
+          d="M471.856,31.787c2.687-.036,4.295.834,5,2.72l.346,1.682c1.2-.019,5.049-.261,5.639.247.493.425.443,4.973-.05,5.342-.67.5-4.744.2-5.985.2h-8.36l-.989-.792a24.8,24.8,0,0,1-4.946-4.5v-.148c1.388-.764,3.994.066,5.787-.4C468.51,33.37,469.87,32.788,471.856,31.787Z"
+          transform="translate(-21.174 0)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5186"
+          data-name="Path 5186"
+          d="M480.982,35.8c-1.075.409-1.917.646-2.226,1.781a2.427,2.427,0,0,0,2.77,3.067A2.456,2.456,0,0,0,480.982,35.8Z"
+          transform="translate(-29.558 -2.081)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5187"
+          data-name="Path 5187"
+          d="M451.4,40.937l1.137.05v.05c-.08.4-.041,1.63-.3,1.929a2.394,2.394,0,0,0-2.72,1.83c-.137.546.023.934-.2,1.286l-1.83,1.237c-.038-3.194.427-5.241,2.671-6.084Z"
+          transform="translate(-13.385 -4.748)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5188"
+          data-name="Path 5188"
+          d="M494.66,40.936c2.692-.034,4.115,1.031,4.847,2.918.408,1.051.1,3.042.1,4.3V75.313c0,2.669.327,5.866-.841,7.37-1.649,2.124-6,1.583-9.744,1.583l-8.112-.05.148-.2,2.078-1.781h9.893a10.686,10.686,0,0,0,3.166-.1,2.871,2.871,0,0,0,1.137-.94c.7-1.072.346-6.853.346-8.8V50.978c0-2.912.662-7.08-1.484-7.914l-1.385-.149A17.588,17.588,0,0,0,494.66,40.936Z"
+          transform="translate(-30.722 -4.747)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5189"
+          data-name="Path 5189"
+          d="M441.085,46.386c.767.239,1.287,1.3,1.88,1.78,1.61,1.3,3.2,2.646,4.946,3.809a36.1,36.1,0,0,0,9.1,4.4l3.71.89c.162,13.379-4.411,23.116-11.97,28.837-1.965,1.487-4.895,3.706-7.419,4.5-.41.129-1.857-.777-2.176-.94a36.361,36.361,0,0,1-5.738-3.66c-5.839-4.487-9.143-10.839-11.03-19.34a33.551,33.551,0,0,1-.692-7.271l.05-2.176a16.622,16.622,0,0,0,3.314-.841,36.359,36.359,0,0,0,11.525-6.034A21.884,21.884,0,0,0,441.085,46.386Z"
+          transform="translate(0 -7.575)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5190"
+          data-name="Path 5190"
+          d="M444.384,55.226A43.428,43.428,0,0,1,433.6,62.3l-3.858,1.484-1.78.544c-.214,13.164,7.377,23.526,16.372,27.5,1.387-.2,4.1-2.277,5.145-3.066,4.835-3.645,8.1-8.524,9.991-15.136a66.5,66.5,0,0,0,1.286-6.974c.089-.534.227-2.157-.05-2.374l-2.72-.841a32.9,32.9,0,0,1-5.639-2.572,58.628,58.628,0,0,1-5.194-3.364Z"
+          transform="translate(-3.249 -12.162)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5191"
+          data-name="Path 5191"
+          d="M492.731,62.434c1.626-.013,7.847-.294,8.656.247l.049.1a.753.753,0,0,1-.2.544C499.4,63.749,493.318,63.363,492.731,62.434Z"
+          transform="translate(-36.856 -15.858)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5192"
+          data-name="Path 5192"
+          d="M452.074,67.357l5.886,3.413-.049.1-5.738,3.314-.149-.1V72.352l-.1-.148a8.373,8.373,0,0,0-4.254,1.929l-1.286,1.385-2.176-1.533v-.149l1.731-1.879a13.687,13.687,0,0,1,6.084-2.572Z"
+          transform="translate(-11.681 -18.456)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5193"
+          data-name="Path 5193"
+          d="M506.091,69.985c.644-.025,1.879-.157,2.127.247.212.288,0,.5-.149.693h-2.077Z"
+          transform="translate(-43.736 -19.798)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5194"
+          data-name="Path 5194"
+          d="M473.757,75.683c1.541.471,3.421,3.491,4.007,5.045q.346,1.41.692,2.82h2.028l-3.462,5.886-.148-.1-3.265-5.787c.622.022,1.673.128,1.979-.2a9.613,9.613,0,0,0-2.028-4.3l-1.286-1.138v-.148Z"
+          transform="translate(-26.241 -22.776)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5195"
+          data-name="Path 5195"
+          d="M505.881,77.421a9.408,9.408,0,0,1,2.077.1l.2.247a.805.805,0,0,1-.247.643l-2.226-.05v-.05l.1-.841Z"
+          transform="translate(-43.576 -23.673)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5196"
+          data-name="Path 5196"
+          d="M439.246,83.8c.548.352.792,1.361,1.137,1.929l2.275,3.808v.149a5.7,5.7,0,0,0-1.929.1,7.291,7.291,0,0,0,1.929,4.3l1.385,1.286-1.583,2.176h-.1l-1.336-1.137a11.569,11.569,0,0,1-3.116-6.678c-.489-.076-1.665.116-2.028-.149Z"
+          transform="translate(-7.36 -26.99)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5197"
+          data-name="Path 5197"
+          d="M504.861,85.867q.074-.47.148-.94a5.746,5.746,0,0,1,2.572.1l.148.445-.1.247A9.754,9.754,0,0,1,504.861,85.867Z"
+          transform="translate(-43.149 -27.518)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5198"
+          data-name="Path 5198"
+          d="M456.924,86.169l3.066.05.05,2.324h2.275v2.919l-2.325.049v2.177h-3.066c.016-.519.176-1.875-.1-2.177l-2.028-.049V88.543l2.127-.049Z"
+          transform="translate(-17.174 -28.216)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5199"
+          data-name="Path 5199"
+          d="M503.616,92.373c.785-.033,3.6-.307,3.314.643-.161.528-2.92.5-3.611.3v-.05A2.853,2.853,0,0,1,503.616,92.373Z"
+          transform="translate(-42.349 -31.403)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5200"
+          data-name="Path 5200"
+          d="M501.4,99.944l4.056.05.3.3c0,.348-.058.435-.3.544l-4.4.049v-.049Z"
+          transform="translate(-41.176 -35.363)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5201"
+          data-name="Path 5201"
+          d="M463.806,103.748a6.439,6.439,0,0,1,2.275,1.583c-1.806,2.583-4.19,3.724-7.815,4.551l-.05,2.028-4.55-2.622c-.42-.226-1.17-.423-1.336-.89l5.787-3.314.148.1a4.3,4.3,0,0,0,.05,1.83l.148.049C460.871,106.388,462.579,105.562,463.806,103.748Z"
+          transform="translate(-15.894 -37.337)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5202"
+          data-name="Path 5202"
+          d="M498.308,107.243c1.225.311,5.306-.393,5.688.4v.4l-.247.3c-1,.1-5.371.273-6.084-.05A3.368,3.368,0,0,1,498.308,107.243Z"
+          transform="translate(-39.416 -39.15)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5203"
+          data-name="Path 5203"
+          d="M498.422,107.654l-.346.792h5.738l.148-.05.2-.3-.149-.4Z"
+          transform="translate(-39.629 -39.363)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+      </G>
+    </Svg>
+  );
+}
 
 function PolicyCoverageDrawing() {
   return (
@@ -1550,6 +1776,7 @@ export {
   PreAuthDrawing,
   NegativePreAuthDrawing,
   ClaimStatusDrawing,
+  NegativeClaimStatusDrawing,
   PolicyCoverageDrawing,
   ClaimInitiationDrawing,
   InsuranceRenewalDrawing,
