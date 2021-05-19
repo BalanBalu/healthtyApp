@@ -1057,6 +1057,47 @@ function LabTestDrawing() {
     </Svg>
   );
 }
+function NegativeLabTestDrawing() {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      // width="43.846" height="52.866"
+      width="44.3"
+      height="49.26"
+      viewBox="0 0 43.846 52.866">
+              <Image source={require('../../../../../assets/images/No.png')} style={{ height: 70, width: 70, position: 'absolute', top: -11.50, right: -13 }} />
+
+      <G
+        id="Group_440"
+        data-name="Group 440"
+        transform="translate(-127.59 -258)">
+        <Path
+          id="Path_5266"
+          data-name="Path 5266"
+          d="M156.43,260.24h.1q.075,7.926.14,15.878c.91,3.965,3.76,6.924,5.5,10.256,2.22,4.27,4.33,8.438,6.5,12.885,1.48,3.069,3.96,7.415,1.12,10.864-2.6.524-6.51.228-9.6.228H140.44c-2.84,0-8.4.752-10.58-.228-3.96-1.742-.16-9.131.84-11.228q3.465-6.607,6.92-13.24c1.72-2.934,4.25-5.884,5.08-9.427.04-5.081.09-10.171.12-15.261"
+          transform="translate(0 -0.225)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+        />
+        <Ellipse
+          id="Ellipse_82"
+          data-name="Ellipse 82"
+          cx="7"
+          cy="1.742"
+          rx="7"
+          ry="1.742"
+          transform="translate(142.5 258.5)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+        />
+      </G>
+    </Svg>
+  );
+}
 
 function HospitalDrawing() {
   return (
@@ -2042,6 +2083,7 @@ export {
   NegativeClaimInitiationDrawing,
   InsuranceRenewalDrawing,
   LabTestDrawing,
+  NegativeLabTestDrawing,
   HospitalDrawing,
   ConsultationDrawing,
   NegativeConsultationDrawing,
