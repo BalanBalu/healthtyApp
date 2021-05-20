@@ -92,41 +92,41 @@ class UpdateUserDetails extends Component {
     }
   }
 
-  onChangeFirstnameAndLastname = async (text, type) => {
-    if (type === 'Firstname') {
-      await this.setState({firstName: text, updateButton: false});
-    }
-    if (type === 'MiddleName') {
-      await this.setState({middleName: text, updateButton: false});
-    }
-    if (type === 'LastName') {
-      await this.setState({lastName: text, updateButton: false});
-    }
-    if (this.state.firstName && validateName(this.state.firstName) == false) {
-      this.setState({
-        errorMsg: translate('Firstname must be a Characters'),
-        isModalVisible: true,
-        updateButton: true,
-      });
-      return false;
-    }
-    if (this.state.middleName && validateName(this.state.middleName) == false) {
-      this.setState({
-        errorMsg: translate('Middlename must be a Characters'),
-        isModalVisible: true,
-        updateButton: true,
-      });
-      return false;
-    }
-    if (this.state.lastName && validateName(this.state.lastName) == false) {
-      this.setState({
-        errorMsg: translate('Lastname must be a Characters'),
-        isModalVisible: true,
-        updateButton: true,
-      });
-      return false;
-    }
-  };
+  // onChangeFirstnameAndLastname = async (text, type) => {
+  //   if (type === 'Firstname') {
+  //     await this.setState({firstName: text, updateButton: false});
+  //   }
+  //   if (type === 'MiddleName') {
+  //     await this.setState({middleName: text, updateButton: false});
+  //   }
+  //   if (type === 'LastName') {
+  //     await this.setState({lastName: text, updateButton: false});
+  //   }
+  //   if (this.state.firstName && validateName(this.state.firstName) == false) {
+  //     this.setState({
+  //       errorMsg: 'Firstname must be a Characters',
+  //       isModalVisible: true,
+  //       updateButton: true,
+  //     });
+  //     return false;
+  //   }
+  //   if (this.state.middleName && validateName(this.state.middleName) == false) {
+  //     this.setState({
+  //       errorMsg: 'Middlename must be a Characters',
+  //       isModalVisible: true,
+  //       updateButton: true,
+  //     });
+  //     return false;
+  //   }
+  //   if (this.state.lastName && validateName(this.state.lastName) == false) {
+  //     this.setState({
+  //       errorMsg: 'Lastname must be a Characters',
+  //       isModalVisible: true,
+  //       updateButton: true,
+  //     });
+  //     return false;
+  //   }
+  // };
 
   userUpdate = async () => {
     const {
@@ -175,6 +175,8 @@ class UpdateUserDetails extends Component {
         isLoading: true,
         updateButton: false,
       });
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+
       let requestData = {
         firstName: firstName,
         middleName: middleName,
@@ -183,6 +185,7 @@ class UpdateUserDetails extends Component {
         gender: gender,
         bloodGroup: selectedBloodGroup,
         _id: this.state.userData._id,
+        emailId:memberEmailId,
       };
 
       let response = await updateMemberDetails(requestData);
@@ -198,17 +201,19 @@ class UpdateUserDetails extends Component {
           (middleName ? middleName + ' ' : '') +
           (lastName ? lastName + ' ' : '');
         const getAge = calculateAge(dob);
-
-        let data = {
-          familyMemberName: fullName,
-          // familyMemberLastName:lastName
-          familyMemberGender: gender,
-          familyMemberMonth: String(getAge.months),
-          familyMemberAge: String(getAge.years),
-          familyMemberDob: dob,
-          _id: temp[0]._id || null,
-        };
-        let updateRes = await updateFamilyMembersDetails(data);
+        if(temp.length!==0){
+          let data = {
+            familyMemberName: fullName,
+            // familyMemberLastName:lastName
+            familyMemberGender: gender,
+            familyMemberMonth: String(getAge.months),
+            familyMemberAge: String(getAge.years),
+            familyMemberDob: dob,
+            _id: temp?temp[0]._id : null,
+          };
+          let updateRes = await updateFamilyMembersDetails(data);
+        }
+      
         Toast.show({
           text: translate('Your Profile has been Updated'),
           type: 'success',
@@ -273,6 +278,7 @@ class UpdateUserDetails extends Component {
                     onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'Firstname')
                     }
+                    disabled={true}
                     autoCapitalize="none"
                     blurOnSubmit={false}
                     onSubmitEditing={() => {
@@ -295,6 +301,7 @@ class UpdateUserDetails extends Component {
                     onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'MiddleName')
                     }
+                    disabled={true}
                     autoCapitalize="none"
                     blurOnSubmit={false}
                     onSubmitEditing={() => {
@@ -316,6 +323,7 @@ class UpdateUserDetails extends Component {
                     onChangeText={(text) =>
                       this.onChangeFirstnameAndLastname(text, 'LastName')
                     }
+                    disabled={true}
                     autoCapitalize="none"
                     blurOnSubmit={false}
                     // onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
