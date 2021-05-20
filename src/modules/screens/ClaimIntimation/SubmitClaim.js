@@ -323,6 +323,11 @@ class SubmitClaim extends PureComponent {
             </Item>
           </Col>
         </Row>
+        <View style={{ justifyContent: "center", alignItems: 'center', marginTop: 15, marginBottom: 5 }}>
+                        <TouchableOpacity style={{ backgroundColor: primaryColor, paddingHorizontal: 30, paddingVertical: 6, borderRadius: 10 }} >
+                          <Text style={{ color: "#fff" }}>Submit</Text>
+                        </TouchableOpacity>
+                      </View>
       </View>
     )
   }
@@ -379,11 +384,7 @@ class SubmitClaim extends PureComponent {
                       borderLeftColor: '#909090', borderRightColor: '#909090', paddingBottom: 10
                     }}>
                       {item.id === 1 && this.primaryInsured(item, index)}
-                      <View style={{ justifyContent: "center", alignItems: 'center', marginTop: 15, marginBottom: 5 }}>
-                        <TouchableOpacity style={{ backgroundColor: primaryColor, paddingHorizontal: 30, paddingVertical: 6, borderRadius: 10 }} >
-                          <Text style={{ color: "#fff" }}>Submit</Text>
-                        </TouchableOpacity>
-                      </View>
+                     
                     </View>
                   </Card>) : (
                   <Card>
