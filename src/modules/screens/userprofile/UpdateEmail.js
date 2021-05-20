@@ -20,15 +20,13 @@ import {
   View,
   Row,
 } from 'native-base';
-import { updateMemberDetails, logout } from '../../providers/auth/auth.actions';
-import { ScrollView, Alert } from 'react-native';
+import { ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { connect } from 'react-redux';
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
 import { validateEmailAddress } from '../../common';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { memberEmailValidation } from '../../providers/corporate/corporate.actions';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import {translate} from '../../../setup/translator.helper';

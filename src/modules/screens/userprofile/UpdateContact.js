@@ -73,11 +73,12 @@ class UpdateContact extends Component {
         });
         return false;
       }
-
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       this.setState({errorMsg: '', isLoading: true});
       let requestData = {
         mobile: mobile,
         _id: id,
+        emailId:memberEmailId,
       };
       let response = await updateMemberDetails(requestData);
       if (response) {
