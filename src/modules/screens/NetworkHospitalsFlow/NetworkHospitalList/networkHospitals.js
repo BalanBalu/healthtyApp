@@ -13,7 +13,8 @@ import { NavigationEvents } from 'react-navigation';
 import { primaryColor } from '../../../../setup/config'
 import { HospitalDrawing } from '../../Home/corporateHome/svgDrawings';
 import { debounce } from '../../../common';
-import { translate } from '../../../../setup/translator.helper';
+import {translate} from '../../../../setup/translator.helper';
+
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
 class NetworkHospitals extends Component {
@@ -280,7 +281,6 @@ class NetworkHospitals extends Component {
                     }}>
                         <Col size={8.1} style={{ justifyContent: 'center', }}>
                             <Input
-                                placeholder={translate('Search your Network Hospitals')}
                                 placeholder="Search by name, pinCode, city State, Country etc..."
                                 style={{
                                     color: '#7B7776',
@@ -357,7 +357,7 @@ class NetworkHospitals extends Component {
                                 fontFamily: "Roboto",
                                 fontSize: 15,
                                 marginTop: "10%"
-                            }} > {translate('No Hospitals list found!')}</Text>
+                            }} >{translate('No Hospitals list found!')}</Text>
                             <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, top: 297 }} />
 
                         </View>

@@ -65,7 +65,7 @@ class UpdateEmail extends Component {
     try {
       if (validateEmailAddress(this.state.emailId) == false) {
         this.setState({
-          errorMsg: 'Kindly enter valid mail id', isModalVisible: true,
+          errorMsg: translate('Kindly enter valid mail id'), isModalVisible: true,
         });
         return false;
       }

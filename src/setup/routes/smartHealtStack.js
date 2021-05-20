@@ -333,7 +333,7 @@ export const smartHealthStack = createStackNavigator({
   },
   BasicInfo: {
     screen: BasicInfo,
-    navigationOptions:({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: translate('Prepare for the appointment'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
@@ -550,7 +550,7 @@ export const smartHealthStack = createStackNavigator({
   //================  Ecard  ===============
   "E Card": {
     screen: Ecard,
-    navigationOptions:({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: translate('Ecard Details'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
@@ -701,7 +701,7 @@ export const smartHealthStack = createStackNavigator({
   },
   "Mapbox": {
     screen: Mapbox,
-    navigationOptions:({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: translate('Mapbox'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
@@ -718,7 +718,7 @@ export const smartHealthStack = createStackNavigator({
 
   "Payment Review": {
     screen: PaymentReview,
-    navigationOptions:({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: translate('Payment Review'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
@@ -823,7 +823,7 @@ export const smartHealthStack = createStackNavigator({
 
   HomeHealthcareConfirmation: {
     screen: HomeHealthcareConfirmation,
-    navigationOptions:({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: translate('Home Care Confirmation'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
@@ -994,7 +994,7 @@ export const smartHealthStack = createStackNavigator({
   },
   LabSearchList: {
     screen: LabSearchList,
-    navigationOptions:({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: translate('Lab List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
