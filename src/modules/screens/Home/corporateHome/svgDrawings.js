@@ -1065,7 +1065,7 @@ function NegativeLabTestDrawing() {
       width="44.3"
       height="49.26"
       viewBox="0 0 43.846 52.866">
-              <Image source={require('../../../../../assets/images/No.png')} style={{ height: 70, width: 70, position: 'absolute', top: -11.50, right: -13 }} />
+      <Image source={require('../../../../../assets/images/No.png')} style={{ height: 70, width: 70, position: 'absolute', top: -11.50, right: -13 }} />
 
       <G
         id="Group_440"
@@ -1108,6 +1108,200 @@ function HospitalDrawing() {
       // width="55.3"
       // height="53.26"
       viewBox="0 0 66.012 45.563">
+      <G
+        id="Group_417"
+        data-name="Group 417"
+        transform="translate(-368.327 -225.519)">
+        <Path
+          id="Path_5230"
+          data-name="Path 5230"
+          d="M391.254,226.087h15.394c1.894,0,4.95-.385,6.1.465,1.435,1.06.871,7.2.871,9.817v19.111c0,3.391.22,7.148-.116,10.34l.058.058h1.511c.52-2.038.232-5.125.232-7.552V243.8c0-1.237-.285-7.231.174-7.726l9.991.058c1.3,0,3.1-.2,3.892.349,1.5,1.044.93,5.2.929,7.667q-.028,10.862-.057,21.725l3.6.058-.058,4.647-64.942-.058.058-4.647h3.834l.058-.116a57.186,57.186,0,0,1-.116-7.319V244.617c0-2.045-.409-6.509.465-7.668,1.047-1.389,8.225-.813,10.862-.813l3.369.058v22.422c0,1.508-.312,6.846.465,7.319l1.336-.116v-.058c-.455-3.081-.116-6.873-.116-10.165V236.078c0-2.258-.487-7.848.464-9.12C389.941,226.384,390.524,226.392,391.254,226.087Z"
+          transform="translate(0 0)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5231"
+          data-name="Path 5231"
+          d="M403.367,227.2l-1.684.349a8.4,8.4,0,0,0-5.054,4.7c-2.191,5.727,2.537,12.318,8.771,11.153C415.127,241.59,414.568,227.1,403.367,227.2Z"
+          transform="translate(-2.876 -0.127)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5232"
+          data-name="Path 5232"
+          d="M402.622,230.643h3.892l.058.174a6.546,6.546,0,0,0,.058,2.9l3.021.058-.058,3.892c-.674-.019-2.723-.241-3.021.174l-.058,2.9h-3.892l-.058-.174V237.73l-3.079-.116.058-3.892a9.422,9.422,0,0,0,3.079-.116Z"
+          transform="translate(-3.235 -0.49)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5233"
+          data-name="Path 5233"
+          d="M377.122,243.632a8.331,8.331,0,0,0-.057,3.31c.547.164,3.022.266,3.31-.116V243.69Z"
+          transform="translate(-0.854 -1.861)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5234"
+          data-name="Path 5234"
+          d="M382.86,243.632V247l3.311-.058c.019-.731.279-2.814-.116-3.252Z"
+          transform="translate(-1.48 -1.861)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5235"
+          data-name="Path 5235"
+          d="M424.878,243.632V247l3.31-.058c.019-.731.28-2.814-.115-3.252Z"
+          transform="translate(-5.915 -1.861)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5236"
+          data-name="Path 5236"
+          d="M430.634,243.632a8.183,8.183,0,0,0-.058,3.368c.713.019,2.994.266,3.31-.174V243.69Z"
+          transform="translate(-6.501 -1.861)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5237"
+          data-name="Path 5237"
+          d="M377.122,249.866a8.336,8.336,0,0,0-.057,3.311,8.155,8.155,0,0,0,3.368-.058l-.058-3.2Z"
+          transform="translate(-0.854 -2.519)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5238"
+          data-name="Path 5238"
+          d="M382.9,249.866c-.316.538-.26,3.076.116,3.428l3.137-.116a10.2,10.2,0,0,0-.116-3.311Z"
+          transform="translate(-1.463 -2.519)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5239"
+          data-name="Path 5239"
+          d="M424.917,249.866a7.6,7.6,0,0,0-.058,3.369l3.31-.058a10.232,10.232,0,0,0-.115-3.311Z"
+          transform="translate(-5.897 -2.519)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5240"
+          data-name="Path 5240"
+          d="M430.634,249.866c-.282.569-.3,3.157.174,3.428.67-.157,2.7.253,3.079-.233v-3.137Z"
+          transform="translate(-6.502 -2.519)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5241"
+          data-name="Path 5241"
+          d="M377.2,256.3l-.115.058v3.2l.115.174,3.079-.058.174-.116-.058-3.079-.116-.174Z"
+          transform="translate(-0.871 -3.198)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5242"
+          data-name="Path 5242"
+          d="M382.958,256.3l-.174.174c-.018.721-.273,2.763.116,3.2a7.142,7.142,0,0,0,3.253-.058c.019-.7.26-2.939-.174-3.253Z"
+          transform="translate(-1.462 -3.198)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5243"
+          data-name="Path 5243"
+          d="M424.976,256.3l-.174.174c-.019.721-.274,2.763.116,3.2h3.2c.163-.548.265-3.023-.116-3.311Z"
+          transform="translate(-5.897 -3.198)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5244"
+          data-name="Path 5244"
+          d="M430.693,256.3l-.174.174c-.02.7-.256,2.885.174,3.2h3.078l.174-.116-.058-3.2Z"
+          transform="translate(-6.502 -3.198)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5245"
+          data-name="Path 5245"
+          d="M400.179,256.815l-.174.174q.03,5.983.058,11.966l6.97.058a8.678,8.678,0,0,0,2.73-.116v-9.062c0-.679.25-2.657-.174-2.962Z"
+          transform="translate(-3.29 -3.252)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+      </G>
+    </Svg>
+  );
+}
+function NegativeHospitalDrawing() {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="66.012"
+      height="45.563"
+      // width="55.3"
+      // height="53.26"
+      viewBox="0 0 66.012 45.563">
+      <Image source={require('../../../../../assets/images/No.png')} style={{ height: 75, width: 75, position: 'absolute', top: -12, right: -4.50 }} />
       <G
         id="Group_417"
         data-name="Group 417"
@@ -2085,6 +2279,7 @@ export {
   LabTestDrawing,
   NegativeLabTestDrawing,
   HospitalDrawing,
+  NegativeHospitalDrawing,
   ConsultationDrawing,
   NegativeConsultationDrawing,
   MyChatsDrawing,

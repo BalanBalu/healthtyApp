@@ -11,7 +11,7 @@ import Styles from '../styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { NavigationEvents } from 'react-navigation';
 import { primaryColor } from '../../../../setup/config'
-import { HospitalDrawing } from '../../Home/corporateHome/svgDrawings';
+import { NegativeHospitalDrawing } from '../../Home/corporateHome/svgDrawings';
 import { debounce } from '../../../common';
 import { translate } from '../../../../setup/translator.helper';
 
@@ -352,32 +352,30 @@ class NetworkHospitals extends Component {
                             renderItem={({ item, index }) => this.renderHospitalInformationCard(item, index)
                             } />
                         : <View style={{ borderBottomWidth: 0, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <HospitalDrawing />
-                                <Text style={{
-                                    fontFamily: "Roboto",
-                                    fontSize: 15,
-                                    marginTop: "10%"
-                                }} >{translate('No Hospitals list found!')}</Text>
-                                <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, top: 297 }} />
-
-                            </View>
+                            <NegativeHospitalDrawing />
+                            <Text style={{
+                                fontFamily: "Roboto",
+                                fontSize: 15,
+                                marginTop: "10%"
+                            }} >{translate('No Hospitals list found!')}</Text>
+                        </View>
                 }
                 {isLoadingMoreHospitalList ?
-                                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                                    <ActivityIndicator
-                                        style={{ marginBottom: 17 }}
-                                        animating={isLoadingMoreHospitalList}
-                                        size="large"
-                                        color='blue'
-                                    />
-                                </View>
-                                : null}
+                    <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                        <ActivityIndicator
+                            style={{ marginBottom: 17 }}
+                            animating={isLoadingMoreHospitalList}
+                            size="large"
+                            color='blue'
+                        />
+                    </View>
+                    : null}
             </Container>
         )
     }
 }
 
 
-const NetworkHospitalsDataState = ({ NetworkHospitalsData, bookappointment, profile} = state) => ({ NetworkHospitalsData, bookappointment, profile})
+const NetworkHospitalsDataState = ({ NetworkHospitalsData, bookappointment, profile } = state) => ({ NetworkHospitalsData, bookappointment, profile })
 export default connect(NetworkHospitalsDataState)(NetworkHospitals)
 
