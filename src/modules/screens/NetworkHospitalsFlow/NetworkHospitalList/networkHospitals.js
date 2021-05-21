@@ -141,9 +141,9 @@ class NetworkHospitals extends Component {
         try {
             const hospitalName = item.hospitalName ? item.hospitalName : 'Un known hospital';
             const destinationCoOrdinates = item.geoLocation && item.geoLocation.coordinates;
-            if (!destinationCoOrdinates && !destinationCoOrdinates.length) {
+            if (!destinationCoOrdinates || destinationCoOrdinates.length<=0) {
                 Toast.show({
-                    text: 'coordinates getting Invalid! ',
+                    text: 'Hospital coordinates not found! ',
                     type: 'warning',
                     duration: 3000,
                 });
