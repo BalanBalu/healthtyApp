@@ -122,7 +122,7 @@ import BuyInsurance from '../../modules/screens/Insurance/buyInsurance'
 
 import PreAuthSubmission from '../../modules/screens/PreAuth/PreAuthSubmission/preAuthSubmission';
 import PreAuthList from '../../modules/screens/PreAuth/PreAuthList/preAuthList';
-import SubmitClaim from '../../modules/screens/ClaimIntimation/SubmitClaim';
+import SubmitClaim from '../../modules/screens/ClaimIntimation/submitClaim';
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
     screen: CorporateHome,
