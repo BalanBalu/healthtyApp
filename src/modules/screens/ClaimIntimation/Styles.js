@@ -204,5 +204,44 @@ form_field: {
     height: 45,
     fontSize:12
 },
+submit_ButtonStyle:{
+    backgroundColor: primaryColor, 
+    paddingHorizontal: 30, 
+    paddingVertical: 6, 
+    borderRadius: 10
+},
+ButtonView: {
+    justifyContent: "center", 
+    alignItems: 'center', 
+    marginTop: 15, 
+    marginBottom: 5
+},
+calenderStyle:{
+    padding: 5,
+    fontSize: 20,
+    marginTop: 1,
+    color: primaryColor,
+},
+timeplaceHolder:{
+    marginLeft: 5,
+    fontFamily: 'Roboto',
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: 8,
+    color: '#000',
+},
+afterTimePlaceholder: {
+    color: '#909090',
+    fontFamily: 'Roboto',
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: 8,
+},
+radioButtonStyle: {
+    marginLeft: 20, 
+    flexDirection: 'row',
+     alignItems: 'center', 
+     justifyContent: 'center' 
+}
 
   })
