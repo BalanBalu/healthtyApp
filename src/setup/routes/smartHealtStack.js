@@ -168,7 +168,7 @@ export const smartHealthStack = createStackNavigator({
                       bounce
                       repeatSpacer={200}
                       marqueeDelay={1000}>
-                      {navigation.getParam('appBar', { locationCapta: 'Searching Near by Hospitals' }).locationCapta}
+                      {navigation.getParam('appBar', { locationCapta: 'Searching near by hospitals' }).locationCapta}
 
                     </TextTicker>
 
@@ -1024,8 +1024,7 @@ export const smartHealthStack = createStackNavigator({
 
     })
   },
-  AddInsurance: {
-    screen: AddInsurance,
+  AddInsurance: {    screen: AddInsurance,
     navigationOptions: ({ navigation }) => ({
       title: translate('Add Insurance'),
       headerTitleStyle: { fontFamily: "Roboto", }

@@ -233,7 +233,7 @@ class NetworkHospitals extends Component {
     render() {
         const { visibleClearIcon, hospitalInfoList, isLoadingMoreHospitalList, enableSearchIcon, isLoading, isLoadingOnChangeHospitalList, selectedCityName, isFromMapBox } = this.state;
         const { bookappointment: { isLocationSelected, patientSearchLocationName, isSearchByCurrentLocation } } = this.props;
-        const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'Showing Hospitals in Near Current Location' : 'Showing Hospitals in ' + patientSearchLocationName + ' City' : 'Please Choose your Location in Map';
+        const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'Showing Hospitals By Current Location' : 'Showing Hospitals In ' + patientSearchLocationName + ' City' : 'Please Choose your Location In Map';
         if (isLoading) return <Loader style='newList' />;
         return (
             <Container>
