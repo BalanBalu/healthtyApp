@@ -31,9 +31,7 @@ class SideBar extends React.Component {
     const userId = await AsyncStorage.getItem('userId');
     if (
       token === undefined ||
-      userId === undefined ||
-      token === null ||
-      userId === null
+      token === null 
     ) {
     } else {
       this.setState({hasLoggedIn: true});

@@ -300,7 +300,7 @@ class NetworkHospitals extends Component {
                         </Col>
                     </Row>
                 </View> */}
-                <View>
+                {/* <View>
                     <TouchableOpacity onPress={() => this.navigateToLocationMap()}>
                         <Row style={{ padding: 5, height: 30, marginHorizontal: 15, marginVertical: 5, backgroundColor: '#EFEFF0', borderRadius: 5 }}>
                             <Col size={1} style={{ justifyContent: 'center' }}>
@@ -328,7 +328,7 @@ class NetworkHospitals extends Component {
                             </Col>
                         </Row>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 {isLoadingOnChangeHospitalList ?
                     <View style={{ marginTop: 60 }}>
                         <ActivityIndicator

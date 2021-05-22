@@ -57,6 +57,7 @@ class Login extends Component {
       } else {
         await login(requestData);
       }  // Do Login Process
+      console.log('this.props.user===>',JSON.stringify(this.props.user))
       if (this.props.user.isAuthenticated) {
         this.getUserProfile(isSelected);
         if (this.props.user.needToRedirect === true) {
@@ -90,11 +91,14 @@ class Login extends Component {
   getUserProfile = async (isSelected) => {
     try {
       if(isSelected === 'corporate_user') {
-        let userId = await AsyncStorage.getItem('userId');
-        let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
-        let result = await fetchUserProfile(userId, fields);
+        // let userId = await AsyncStorage.getItem('userId');
+        // let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
+        // let result = await fetchUserProfile(userId, fields);
         let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+        console.log('memberEmailId==',memberEmailId)
+
         let coorporateSideresult = await getMemberDetailsByEmail(memberEmailId);
+        console.log('coorporateSideresult==',JSON.stringify(coorporateSideresult))
         if (!coorporateSideresult.error) storeBasicProfile(coorporateSideresult[0])
       } else {
         let userId = await AsyncStorage.getItem('userId');
