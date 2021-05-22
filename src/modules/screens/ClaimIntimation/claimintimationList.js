@@ -13,8 +13,8 @@ import {primaryColor} from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
 import {translate} from '../../../setup/translator.helper'
 import {ClaimInitiationDrawing} from '../../screens/Home/corporateHome/svgDrawings';
-import { toastMeassage } from '../../common'
-import { REIMBURSEMENT_FORMS } from '../../screens/VideoConsulation/constants';
+// import { toastMeassage } from '../../common'
+// import { REIMBURSEMENT_FORMS } from '../../screens/VideoConsulation/constants';
 const LIMIT = 10;
 
 class ClaimIntimationList extends PureComponent {
@@ -66,53 +66,53 @@ class ClaimIntimationList extends PureComponent {
     }
   }
 
-  async onPressDownLoadForm() {
-    try {
+//   async onPressDownLoadForm() {
+//     try {
 
-//       const file ='./reimbursement-claim-form.pdf' ; // this is your file name
-// const dest = `${RNFS.DocumentDirectoryPath}/reimbursement-claim-form.pdf`;
-// RNFS.copyFileAssets(file, dest)
-// .then(() => FileViewer.open(dest))
-// .then(() => {
-//   console.log('SUCCESS')
-//   // toastMeassage('success','success',3000)
-//    // success
-// })
-// .catch(Ex => {
-//   console.log('Ex is getting on download forms===>',Ex);
-// });
+// //       const file ='./reimbursement-claim-form.pdf' ; // this is your file name
+// // const dest = `${RNFS.DocumentDirectoryPath}/reimbursement-claim-form.pdf`;
+// // RNFS.copyFileAssets(file, dest)
+// // .then(() => FileViewer.open(dest))
+// // .then(() => {
+// //   console.log('SUCCESS')
+// //   // toastMeassage('success','success',3000)
+// //    // success
+// // })
+// // .catch(Ex => {
+// //   console.log('Ex is getting on download forms===>',Ex);
+// // });
 
 
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission',
-          message: 'App needs access to memory to download the file ',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        // this.actualDownload(path, fileName);
-      } else {
-        Alert.alert(
-          'Permission Denied!',
-          'You need to give storage permission to download the file',
-        );
-        return 
-      }
+//       const granted = await PermissionsAndroid.request(
+//         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+//         {
+//           title: 'Storage Permission',
+//           message: 'App needs access to memory to download the file ',
+//         },
+//       );
+//       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+//         // this.actualDownload(path, fileName);
+//       } else {
+//         Alert.alert(
+//           'Permission Denied!',
+//           'You need to give storage permission to download the file',
+//         );
+//         return 
+//       }
 
-      const fileName=" Claim_Submission_Form.pdf";
-      const forms = REIMBURSEMENT_FORMS.filter(form => form.tpaCode === this.memberTpaCode);
-      if (forms && forms.length > 0) {
-        var path=forms[0].path;
-      } else {
-        toastMeassage('Form not available to download. Please contact your HR.', 'danger', 2000);
-        return 
-      }
-  //  await   this.actualDownload()
-    } catch (err) {
-      console.log(err);
-    }
-  }
+//       const fileName=" Claim_Submission_Form.pdf";
+//       const forms = REIMBURSEMENT_FORMS.filter(form => form.tpaCode === this.memberTpaCode);
+//       if (forms && forms.length > 0) {
+//         var path=forms[0].path;
+//       } else {
+//         toastMeassage('Form not available to download. Please contact your HR.', 'danger', 2000);
+//         return 
+//       }
+//   //  await   this.actualDownload()
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   }
   // actualDownload = (path, fileName) => {
 
   //   const { dirs } = RNFetchBlob.fs;
@@ -142,7 +142,13 @@ class ClaimIntimationList extends PureComponent {
     return (
       <Container>
         <Content>
-          <View
+        <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 15, marginRight: '5%' }}>
+          <TouchableOpacity style={{ flexDirection: 'row', borderColor: primaryColor, borderWidth: 1, borderRadius: 5, paddingHorizontal: 10, paddingVertical: 3 }} onPress={() => this.props.navigation.navigate('FamilyInfoList', { navigationPage: 'ClaimIntimationSubmission' })}>
+            <MaterialIcons name="add" style={{ color: primaryColor, fontSize: 20 }} />
+            <Text style={{ fontFamily: 'Roboto', fontSize: 15, color: primaryColor }}>{translate("Add New")}</Text>
+          </TouchableOpacity>
+        </View>
+          {/* <View
             style={{
               justifyContent: 'center',
               alignItems: 'center',
@@ -210,7 +216,7 @@ class ClaimIntimationList extends PureComponent {
             </Card>
             </Col>
             </Row>
-          </View>
+          </View> */}
           {isLoading ? (
             <Loader style="newList" />
           ) : claimList.length  ? (
