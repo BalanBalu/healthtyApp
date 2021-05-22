@@ -1,8 +1,10 @@
 import React, {PureComponent} from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import {FlatList, StyleSheet,PermissionsAndroid,Alert} from 'react-native';
+import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Container, Content, Text, Left, Item, View, Card} from 'native-base';
 import {Col, Row} from 'react-native-easy-grid';
+import RNFetchBlob from 'rn-fetch-blob';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {getClaimIntimationWithPagination} from '../../providers/corporate/corporate.actions';
@@ -11,6 +13,10 @@ import {primaryColor} from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
 import {translate} from '../../../setup/translator.helper'
 import {ClaimInitiationDrawing} from '../../screens/Home/corporateHome/svgDrawings';
+import { toastMeassage } from '../../common'
+import { REIMBURSEMENT_FORMS } from '../../screens/VideoConsulation/constants';
+import RNFS from 'react-native-fs';
+import FileViewer from 'react-native-file-viewer';
 
 const LIMIT = 10;
 
@@ -24,6 +30,8 @@ class ClaimIntimationList extends PureComponent {
       isLoading:false
     };
     this.pagination = 1;
+    this.memberTpaCode = props.profile && props.profile.memberTpaInfo && props.profile.memberTpaInfo.tpaCode || null;
+
   }
   componentDidMount() {
     this.getClaimIntimationDetails();
@@ -60,6 +68,77 @@ class ClaimIntimationList extends PureComponent {
       this.setState({showCard: -1, show: null});
     }
   }
+
+  async onPressDownLoadForm() {
+    try {
+
+//       const file ='./reimbursement-claim-form.pdf' ; // this is your file name
+// const dest = `${RNFS.DocumentDirectoryPath}/reimbursement-claim-form.pdf`;
+// RNFS.copyFileAssets(file, dest)
+// .then(() => FileViewer.open(dest))
+// .then(() => {
+//   console.log('SUCCESS')
+//   // toastMeassage('success','success',3000)
+//    // success
+// })
+// .catch(Ex => {
+//   console.log('Ex is getting on download forms===>',Ex);
+// });
+
+
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission',
+          message: 'App needs access to memory to download the file ',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        this.actualDownload(path, fileName);
+      } else {
+        Alert.alert(
+          'Permission Denied!',
+          'You need to give storage permission to download the file',
+        );
+        return 
+      }
+
+      const fileName=" Claim_Submission_Form.pdf";
+      const forms = REIMBURSEMENT_FORMS.filter(form => form.tpaCode === this.memberTpaCode);
+      if (forms && forms.length > 0) {
+        var path=forms[0].path;
+      } else {
+        toastMeassage('Form not available to download. Please contact your HR.', 'danger', 2000);
+        return 
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  // actualDownload = (path, fileName) => {
+
+  //   const { dirs } = RNFetchBlob.fs;
+  //   RNFetchBlob.config({
+  //     fileCache: true,
+  //     addAndroidDownloads: {
+  //       useDownloadManager: true,
+  //       notification: true,
+  //       mediaScannable: true,
+  //       title: fileName,
+  //       path: '/assets/images/Axisbank.jpg',
+  //     },
+  //   })
+  //     .fetch('GET', '/assets/images/Axisbank.jpg', {})
+  //     .then((res) => {
+  //       toastMeassage('Your file has been downloaded to downloads folder!', 'success', 1000)
+  //       console.log('The file saved to ', res.path());
+  //     })
+  //     .catch((e) => {
+  //       console.log(e)
+  //     });
+  // };
+
   render() {
     const {showCard, show, claimList, isLoading} = this.state;
 
@@ -72,14 +151,16 @@ class ClaimIntimationList extends PureComponent {
               alignItems: 'center',
               marginTop: 15,
             }}>
+              <Row style={{padding: 3}}>
+              <Col size={5} style={{ flexDirection: 'row' ,marginLeft:15}}>
             <Card style={{borderRadius: 20}}>
               <TouchableOpacity
                 style={{
+                  height:31,
+                  backgroundColor: primaryColor,
                   flexDirection: 'row',
-                  paddingHorizontal: 10,
-                  borderRadius: 20,
-                  borderColor: primaryColor,
-                  borderWidth: 1,
+                  paddingHorizontal: 30,
+                  borderRadius: 10,
                   paddingVertical: 3,
                 }}
                 onPress={() => {
@@ -89,18 +170,49 @@ class ClaimIntimationList extends PureComponent {
                 }}>
                 <MaterialIcons
                   name="add"
-                  style={{fontSize: 20, color: primaryColor}}
+                  style={{fontSize: 20, color: "#FFFFFF"}}
                 />
                 <Text
                   style={{
                     fontSize: 15,
                     fontFamily: 'opensans-bold',
-                    color: primaryColor,
+                    color: "#FFFFFF",
                   }}>
                   {translate("Add New")}
                 </Text>
               </TouchableOpacity>
             </Card>
+            </Col>
+            <Col size={5} style={{ flexDirection: 'row' ,marginLeft:30}}>
+            <Card style={{borderRadius: 20}}>
+              <TouchableOpacity
+                style={{
+                  height:31,
+                  backgroundColor: primaryColor,
+                  flexDirection: 'row',
+                  paddingHorizontal: 30,
+                  borderRadius: 10,
+                  // borderColor: "#FFFFFF",
+                  // borderWidth: 1,
+                  paddingVertical: 3,
+                }}
+                onPress={() => this.onPressDownLoadForm()}>
+            <MaterialIcons
+                  name="file-download"
+                  style={{fontSize: 20, color: "#FFFFFF"}}
+                />
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: 'opensans-bold',
+                    color: "#FFFFFF",
+                  }}>
+                 {"Download"}
+                </Text>
+              </TouchableOpacity>
+            </Card>
+            </Col>
+            </Row>
           </View>
           {isLoading ? (
             <Loader style="newList" />
@@ -342,7 +454,13 @@ class ClaimIntimationList extends PureComponent {
   }
 }
 
-export default ClaimIntimationList;
+
+
+
+const ClaimIntimationListState = ({  profile } = state) => ({ profile })
+export default connect(ClaimIntimationListState)(ClaimIntimationList)
+
+
 
 const styles = StyleSheet.create({
   gradientStyle: {
