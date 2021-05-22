@@ -15,9 +15,6 @@ import {translate} from '../../../setup/translator.helper'
 import {ClaimInitiationDrawing} from '../../screens/Home/corporateHome/svgDrawings';
 import { toastMeassage } from '../../common'
 import { REIMBURSEMENT_FORMS } from '../../screens/VideoConsulation/constants';
-import RNFS from 'react-native-fs';
-import FileViewer from 'react-native-file-viewer';
-
 const LIMIT = 10;
 
 class ClaimIntimationList extends PureComponent {
@@ -94,7 +91,7 @@ class ClaimIntimationList extends PureComponent {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.actualDownload(path, fileName);
+        // this.actualDownload(path, fileName);
       } else {
         Alert.alert(
           'Permission Denied!',
@@ -111,7 +108,7 @@ class ClaimIntimationList extends PureComponent {
         toastMeassage('Form not available to download. Please contact your HR.', 'danger', 2000);
         return 
       }
-
+  //  await   this.actualDownload()
     } catch (err) {
       console.log(err);
     }
@@ -126,10 +123,10 @@ class ClaimIntimationList extends PureComponent {
   //       notification: true,
   //       mediaScannable: true,
   //       title: fileName,
-  //       path: '/assets/images/Axisbank.jpg',
+  //       path: '../../../../assets/forms/re-imbursment/mediassist/reimbursement-claim-form.pdf',
   //     },
   //   })
-  //     .fetch('GET', '/assets/images/Axisbank.jpg', {})
+  //     .fetch('GET', '../../../../assets/forms/re-imbursment/mediassist/reimbursement-claim-form.pdf', {})
   //     .then((res) => {
   //       toastMeassage('Your file has been downloaded to downloads folder!', 'success', 1000)
   //       console.log('The file saved to ', res.path());
