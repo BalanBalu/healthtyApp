@@ -41,7 +41,7 @@ class ContactUs extends Component {
         const basicData = JSON.parse(basicProfileData);
         const data = { basicData }
         await this.setState({
-            userName: `${data.basicData.first_name? data.basicData.first_name:''+ " " + data.basicData.last_name? data.basicData.last_name:''}`,
+            userName: `${data.basicData&&data.basicData.first_name? data.basicData.first_name:''+ " " + data.basicData&&data.basicData.last_name? data.basicData.last_name:''}`,
             email: data.basicData.email,
             userNameError: null,
             emailErrorMsg: null,

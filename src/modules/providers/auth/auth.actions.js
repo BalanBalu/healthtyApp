@@ -288,7 +288,6 @@ export async function logout() {
 // Set user token and info locally (AsyncStorage)
 export async function setUserLocally(token, userData) {
   try {
-    console.log('userData-==>',JSON.stringify(userData));
     if (userData.is_corporate_user) {
       await AsyncStorage.setItem('is_corporate_user', 'true')
     }
@@ -313,7 +312,7 @@ export async function setUserLocally(token, userData) {
 export const hasLoggedIn = async (props) => {
   const token = await AsyncStorage.getItem('token')
   const userId = await AsyncStorage.getItem('userId')
-  if (token === undefined || userId === undefined || token === null || userId === null) {
+  if (token === undefined ||  token === null ) {
     if (props) {
       let navigation = props.navigation;
       if (navigation.state) {
@@ -499,43 +498,34 @@ export async function verifyEmployeeDetails(empCode, authCode) {
 
 export async function SmartHealthlogin(userCredentials, isLoading = true) {
   try {
-debugger
     store.dispatch({
       type: LOGIN_REQUEST,
       isLoading
     })
-
     let endPoint = 'auth/member-login'
     let req = {
       userId: userCredentials.userEntry,
       password: userCredentials.password
     }
     let response = await smartHealthPostService(endPoint, req);
-    // let changePasswordEndPoint = 'member-users/member-id?id=' + userCredentials.userEntry
-    // let forgotResult = await smartHealthGetService(changePasswordEndPoint)
-    // // if (forgotResult && forgotResult.data && forgotResult.data.isValdationRequired) {
-    // //  store.dispatch({
-    // //    type: LOGIN_HAS_ERROR,
-    // //    message: "Activation link for your new email. Please check on your mail and change your password"
-    // //  })
-    // //  return   
-    // //     }
-    // if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
-    //   await AsyncStorage.setItem('forceToChangePassword', 'true')
-    // }
-    debugger
+    let changePasswordEndPoint = 'member-users/member-id?id=' + userCredentials.userEntry
+    let forgotResult = await smartHealthGetService(changePasswordEndPoint)
+    // if (forgotResult && forgotResult.data && forgotResult.data.isValdationRequired) {
+    //  store.dispatch({
+    //    type: LOGIN_HAS_ERROR,
+    //    message: "Activation link for your new email. Please check on your mail and change your password"
+    //  })
+    //  return   
+    //     }
+    if (forgotResult && forgotResult.data && forgotResult.data.forceToChangePassword) {
+      await AsyncStorage.setItem('forceToChangePassword', 'true')
+    }
     if (response && response.data && response.data.access_token) {
-      debugger
      await AsyncStorage.setItem('smartToken', response.data.access_token)
      let ends = 'member-detail/memberId/by-email?email=' + userCredentials.userEntry;
-
       let res = await smartHealthGetService(ends);
-      debugger
       if (res && res.data && res.data[0]) {
-        debugger
         let reqData = res.data[0];
-
-        // console.log('reqData===>',JSON.stringify(reqData));
         const loggedUsersData={
           is_corporate_user : true
         }
@@ -552,89 +542,12 @@ debugger
           await AsyncStorage.setItem('memberEmailId', reqData.emailId)
           await AsyncStorage.setItem('memberPolicyNo', reqData.policyNo)
           await AsyncStorage.setItem('employeeCode', reqData.employeeId)
-
-          debugger
           const token = response.data.access_token;
-          // console.log('token==>',JSON.stringify(token));
           await setUserLocally(token, loggedUsersData);
           store.dispatch({
             type: LOGIN_RESPONSE,
             message: "Successfully Logged in"
           })
-
-          debugger
-
-
-
-        // let reqBody = {
-        //   type: 'user',
-        //   email: reqData.emailId,
-        //   password: userCredentials.password,
-        //   gender: reqData.gender === 'Male' ? 'M' : reqData.gender === 'Female' ? 'F' : 'O',
-        //   dob: reqData.dob,
-        //   is_corporate_user: true,
-        //   corporate_member_id: userCredentials.userEntry,
-        //   employee_code: reqData.employeeId,
-        //   address: {
-        //     type: 'Point',
-        //     address: {
-        //       no_and_street: reqData.address1 || '1',
-        //       address_line_1: reqData.address2 || ' ',
-        //       district: reqData.district || 'district',
-        //       city: reqData.city,
-        //       state: reqData.state,
-        //       country: reqData.countryCode,
-        //       pin_code: String(reqData.pinCode)
-        //     }
-        //   }
-
-        // }
-        // if (reqData.mobile) {
-        //   reqBody.mobile_no = reqData.mobile
-        // }
-        // if (reqData.firstName) {
-        //   reqBody.first_name = reqData.firstName
-        // }
-        // let name = ''
-        // if (reqData.middleName) {
-        //   name = reqData.middleName
-        // }
-        // if (reqData.lastName) {
-        //   if (name === '') {
-        //     name = reqData.lastName
-        //   } else {
-        //     name = name + ' ' + reqData.lastName
-        //   }
-        // }
-        // if (name) {
-        //   reqBody.last_name = name
-        // }
-
-
-
-        // let insertEndPoint = 'auth/smart_health/signUp';
-        // let signUpResult = await postService(insertEndPoint, reqBody);
-        // console.log('signUpResult===>',JSON.stringify(signUpResult));
-        // if (signUpResult.data.success) {
-        //   await AsyncStorage.setItem('memberId', reqData.memberId)
-        //   await AsyncStorage.setItem('memberEmailId', reqData.emailId)
-        //   await AsyncStorage.setItem('memberPolicyNo', reqData.policyNo)
-        //   await AsyncStorage.setItem('employeeCode', reqData.employeeId)
-
-        
-        //   const token = signUpResult.data.token;
-        //   signUpResult.data.data.is_corporate_user = true;
-        //   await setUserLocally(token, signUpResult.data.data);
-        //   store.dispatch({
-        //     type: LOGIN_RESPONSE,
-        //     message: signUpResult && signUpResult.data.message
-        //   })
-        // } else {
-        //   store.dispatch({
-        //     type: LOGIN_HAS_ERROR,
-        //     message: "Invalid Login Credentials"
-        //   })
-        // }
       }
       else{
       store.dispatch({
@@ -642,15 +555,12 @@ debugger
         message: "Invalid Login Credentials"
       })
     }
-    debugger
     } else {
-
       store.dispatch({
         type: LOGIN_HAS_ERROR,
         message: "Invalid Login Credentials"
       })
     }
-    debugger
     return true
   } catch (e) {
     store.dispatch({

@@ -28,7 +28,6 @@ class SideBar extends React.Component {
   async componentDidMount() {
     this.getBasicData()
     const token = await AsyncStorage.getItem('token');
-    const userId = await AsyncStorage.getItem('userId');
     if (
       token === undefined ||
       token === null 
