@@ -10,7 +10,7 @@ import {subTimeUnit, formatDate} from '../../../../setup/helpers';
 import {toastMeassage} from '../../../common';
 
 const InsuredPersonHospitalized = (props) => {
-  const {dropdownData, Occupation,updateSubmissionDetails} = props;
+  const {dropdownData, Occupation,updateInsuredPersonHospitalizedDetails} = props;
   const [patientName, setPatientName] = useState('');
   const [patientGender, setPatientGender] = useState();
   const [patientAge, setPatientAge] = useState('');
@@ -451,7 +451,7 @@ const InsuredPersonHospitalized = (props) => {
             patientCountry &&
             patientPhoneNumber &&
             patientEmail
-              ? updateSubmissionDetails({
+              ? updateInsuredPersonHospitalizedDetails({
                   patientName: patientName,
                   patientGender: patientGender,
                   patientAge: patientAge,
@@ -479,19 +479,3 @@ const InsuredPersonHospitalized = (props) => {
 };
 
 export default InsuredPersonHospitalized;
-//  const [patientName, setPatientName] = useState('');
-// const [patientGender, setPatientGender] = useState();
-// const [patientAge, setPatientAge] = useState('');
-// const [patientDob, setPatientDob] = useState();
-// const [isVisible, setIsVisible] = useState(false);
-// const [relationship, setRelationship] = useState('');
-// const [relationshipDetail, setRelationshipDetail] = useState('');
-// const [occupation, setOccupation] = useState();
-// const [occupationDetail, setOccupationDetail] = useState('');
-// const [patientAddress, setPatientAddress] = useState('');
-// const [patientNoAndStreet, setPatientNoAndStreet] = useState('');
-// const [patientCity, setPatientCity] = useState('');
-// const [patientState, setPatientState] = useState('');
-// const [patientCountry, setPatientCountry] = useState('');
-// const [patientPhoneNumber, setPatientPhoneNumber] = useState('');
-// const [patientEmail, setPatientEmail] = useState('');

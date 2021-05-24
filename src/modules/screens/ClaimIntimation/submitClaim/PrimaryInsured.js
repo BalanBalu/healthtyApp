@@ -22,45 +22,6 @@ const PrimaryInsured = (props) => {
   const [phoneNo, setPhoneNo] = useState(claimListData.contactNumber);
   const [emailId, setEmailId] = useState(claimListData.email);
 
-  //    submissionDetails = () => {
-  //     if (
-  //       policyNo &&
-  //       certificateNo &&
-  //       tpaID &&
-  //       firstName &&
-  //       middleName &&
-  //       lastName &&
-  //       pinCode &&
-  //       noAndStreet &&
-  //       address &&
-  //       city &&
-  //       state &&
-  //       country &&
-  //       phoneNo &&
-  //       emailId
-  //     ) {
-  //       let data = {
-  //         certificateNumber: certificateNo,
-  //         tpaIdNo: tpaID,
-  //         policyHolderFirstName: firstName,
-  //         policyHolderMiddleName: middleName,
-  //         policyHolderLastName: lastName,
-  //         policyHolderPincode: pinCode,
-  //         noAndStreet: noAndStreet,
-  //         holderAddress: address,
-  //         policyHolderCity: city,
-  //         policyHolderState: state,
-  //         policyHolderCountry: country,
-  //         phoneNumber: phoneNo,
-  //         policyHolderMailId: emailId,
-  //       };
-  //       console.log("data>>>",data.certificateNumber)
-  //       return data
-  //     }else{
-  //         toastMeassage('Unable to Submit Claim, Please fill all details');
-
-  //     }
-  //   };
   return (
     <View>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
@@ -77,9 +38,8 @@ const PrimaryInsured = (props) => {
               value={claimListData.policyNo ? claimListData.policyNo : policyNo}
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
-              onChangeText={(text) => {
-                console.log(text), setPolicyNo(text);
-              }}
+              onChangeText={(text) =>setPolicyNo(text)}
+              testID="editPolicyNo"
             />
           </Item>
         </Col>
@@ -99,6 +59,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setCertificateNo(text)}
+              testID="editCertificateNo"
             />
           </Item>
         </Col>
@@ -118,6 +79,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setTPAID(text)}
+              testID="editTPAID" 
             />
           </Item>
         </Col>
@@ -137,6 +99,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setFirstName(text)}
+              testID="editFirstName" 
             />
           </Item>
         </Col>
@@ -156,6 +119,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setMiddleName(text)}
+              testID="editMiddleName"
             />
           </Item>
         </Col>
@@ -175,6 +139,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setLastName(text)}
+              testID="editLastName"
             />
           </Item>
         </Col>
@@ -194,6 +159,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setPinCode(text)}
+              testID="editPinCode"
             />
           </Item>
         </Col>
@@ -213,6 +179,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setNoAndStreet(text)}
+              testID="editNoAndStreet"
             />
           </Item>
         </Col>
@@ -232,6 +199,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setAddress(text)}
+              testID="editAddress"
             />
           </Item>
         </Col>
@@ -251,6 +219,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setCity(text)}
+              testID="editCity"
             />
           </Item>
         </Col>
@@ -270,6 +239,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setState(text)}
+              testID="editState"
             />
           </Item>
         </Col>
@@ -289,6 +259,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setCountry(text)}
+              testID="editCountry"
             />
           </Item>
         </Col>
@@ -312,6 +283,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setPhoneNo(text)}
+              testID="editPhoneNo"
             />
           </Item>
         </Col>
@@ -331,6 +303,7 @@ const PrimaryInsured = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setEmailId(text)}
+              testID="editEmailId"
             />
           </Item>
         </Col>
@@ -369,7 +342,7 @@ const PrimaryInsured = (props) => {
                   policyHolderMailId: emailId,
                 })
               : toastMeassage('Unable to Submit Claim, Please fill all details')
-          }>
+          }testID="submitDetails1">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>

@@ -15,7 +15,7 @@ const HospitalizationDetails = (props) => {
     RoomCategory,
     Hospitalization,
     InjuryCause,
-    updateSubmissionDetails,
+    updateHospitalization,
   } = props;
   const [hospitalName, setHospitalName] = useState('');
   const [roomCategory, setRoomCategory] = useState();
@@ -57,6 +57,7 @@ const HospitalizationDetails = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setHospitalName(text)}
+              testID="editHospitalName"
             />
           </Item>
         </Col>
@@ -477,17 +478,6 @@ const HospitalizationDetails = (props) => {
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-            console.log( "hospitalName",hospitalName,
-            "roomCategory",roomCategory,
-            "hospitalizationDueTo" ,hospitalizationDueTo,
-            "dayOfInjury",dayOfInjury,
-            "dateOfAdmission" ,dateOfAdmission,
-            "dateOfDischarge" ,dateOfDischarge,
-            "injuryCause" ,injuryCause,
-            "medicoLegal",medicoLegal,
-            "reportedTpPolice" ,reportedTpPolice,
-            "mlcReport" ,mlcReport,
-            "systemOfMedicine,",systemOfMedicine),
             hospitalName &&
             roomCategory &&
             hospitalizationDueTo &&
@@ -499,7 +489,7 @@ const HospitalizationDetails = (props) => {
             reportedTpPolice &&
             mlcReport &&
             systemOfMedicine
-              ? updateSubmissionDetails({
+              ? updateHospitalization({
                 hospitalName: hospitalName,
                 roomCategory: roomCategory,
                 hospitalizationDueTo: hospitalizationDueTo,

@@ -102,14 +102,14 @@ class SubmitClaim extends PureComponent {
       checkBoxClick: false,
       claimListData: this.props.navigation.getParam('claimListData') || null,
       sectionADisable: true,
-      sectionBDisable: true,
-      sectionCDisable: true,
-      sectionDDisable: true,
+      sectionBDisable: false,
+      sectionCDisable: false,
+      sectionDDisable: false,
       sectionEDisable: true,
       sectionFDisable: true,
-      sectionGDisable: true,
-      sectionHDisable: true,
-      updateId: '60a8b766243fd248c8a8cc1d',
+      sectionGDisable: false,
+      sectionHDisable: false,
+      updateId: '',
     };
   }
 
@@ -151,8 +151,6 @@ class SubmitClaim extends PureComponent {
         memberId: memberId,
         mobileNo: claimListData.mobileNo,
         emailId: claimListData.email,
-        dateOfAdmission: claimListData.dateOfAdmission,
-        dateOfDischarge: claimListData.dateOfAdmission || '',
         hospitalName: claimListData.hospitalName,
         ailment: claimListData.ailment,
         claimAmount: claimListData.amount,
@@ -178,13 +176,91 @@ class SubmitClaim extends PureComponent {
     }
   };
 
+
+
+
+
   updateSubmissionDetails = async (data) => {
     try {
       console.log('data', data);
       const {submissionDetails} = this.state;
       let reqData = {
         _id: this.state.updateId,
-        submissionDetails: data,
+        submissionDetails: {
+          certificateNumber: data.certificateNo?data.certificateNo:submissionDetails.certificateNo?submissionDetails.certificateNo:null,
+          tpaIdNo: data.tpaIdNo?data.tpaIdNo:submissionDetails.tpaIdNo?submissionDetails.tpaIdNo:null,
+          policyHolderFirstName: data.policyHolderFirstName?data.policyHolderFirstName:submissionDetails.policyHolderFirstName?submissionDetails.policyHolderFirstName:null,
+          policyHolderMiddleName: data.policyHolderMiddleName?data.policyHolderMiddleName:submissionDetails.policyHolderMiddleName?submissionDetails.policyHolderMiddleName:null,
+          policyHolderLastName: data.policyHolderLastName?data.policyHolderLastName:submissionDetails.policyHolderLastName?submissionDetails.policyHolderLastName:null,
+          policyHolderPincode: data.policyHolderPincode?data.policyHolderPincode:submissionDetails.policyHolderPincode?submissionDetails.policyHolderPincode:null,
+          noAndStreet: data.noAndStreet?data.noAndStreet:submissionDetails.noAndStreet?submissionDetails.noAndStreet:null,
+          holderAddress: data.holderAddress?data.holderAddress:submissionDetails.holderAddress?submissionDetails.holderAddress:null,
+          policyHolderCity: data.policyHolderCity?data.policyHolderCity:submissionDetails.policyHolderCity?submissionDetails.policyHolderCity:null,
+          policyHolderState: data.policyHolderState?data.policyHolderState:submissionDetails.policyHolderState?submissionDetails.policyHolderState:null,
+          policyHolderCountry: data.policyHolderCountry?data.policyHolderCountry:submissionDetails.policyHolderCountry?submissionDetails.policyHolderCountry:null,
+          phoneNumber: data.phoneNumber?data.phoneNumber:submissionDetails.phoneNumber?submissionDetails.phoneNumber:null,
+          policyHolderMailId: data.policyHolderMailId?data.policyHolderMailId:submissionDetails.policyHolderMailId?submissionDetails.policyHolderMailId:null,
+          currentlyHaveMediClaim: data.currentlyHaveMediClaim?data.currentlyHaveMediClaim:submissionDetails.currentlyHaveMediClaim?submissionDetails.currentlyHaveMediClaim:null,
+          commencementOfFirstInsuranceDate: data.commencementOfFirstInsuranceDate?data.commencementOfFirstInsuranceDate:submissionDetails.commencementOfFirstInsuranceDate?submissionDetails.commencementOfFirstInsuranceDate:null,
+          mediClaimCompanyName: data.mediClaimCompanyName?data.mediClaimCompanyName:submissionDetails.mediClaimCompanyName?submissionDetails.mediClaimCompanyName:null,
+          hospitalized: data.hospitalized?data.hospitalized:submissionDetails.hospitalized?submissionDetails.hospitalized:null,
+          sumInsuresPerPolicy: data.sumInsuresPerPolicy?data.sumInsuresPerPolicy:submissionDetails.sumInsuresPerPolicy?submissionDetails.sumInsuresPerPolicy:null,
+          hospitalizationDate: data.hospitalizationDate?data.hospitalizationDate:submissionDetails.hospitalizationDate?submissionDetails.hospitalizationDate:null,
+          diagnosisDetails: data.diagnosisDetails?data.diagnosisDetails:submissionDetails.diagnosisDetails?submissionDetails.diagnosisDetails:null,
+          hospitalizedCompany: data.hospitalizedCompany?data.hospitalizedCompany:submissionDetails.hospitalizedCompany?submissionDetails.hospitalizedCompany:null,
+          isCoveredByOtherClaim: data.isCoveredByOtherClaim?data.isCoveredByOtherClaim:submissionDetails.isCoveredByOtherClaim?submissionDetails.isCoveredByOtherClaim:null,
+          patientName: data.patientName?data.patientName:submissionDetails.patientName?submissionDetails.patientName:null,
+          patientGender: data.patientGender?data.patientGender:submissionDetails.patientGender?submissionDetails.patientGender:null,
+          patientAge: data.patientAge?data.patientAge:submissionDetails.patientAge?submissionDetails.patientAge:null,
+          patientDob: data.patientDob?data.patientDob:submissionDetails.patientDob?submissionDetails.patientDob:null,
+          relationship: data.relationship?data.relationship:submissionDetails.relationship?submissionDetails.relationship:null,
+          relationshipDetail: data.relationshipDetail?data.relationshipDetail:submissionDetails.relationshipDetail?submissionDetails.relationshipDetail:null,
+          occupation: data.occupation?data.occupation:submissionDetails.occupation?submissionDetails.occupation:null,
+          occupationDetail: data.occupationDetailNo?data.occupationDetailNo:submissionDetails.occupationDetailNo?submissionDetails.occupationDetailNo:null,
+          patientAddress: data.patientAddressNo?data.patientAddressNo:submissionDetails.patientAddressNo?submissionDetails.patientAddressNo:null,
+          patientNoAndStreet: data.patientNoAndStreetNo?data.patientNoAndStreetNo:submissionDetails.patientNoAndStreetNo?submissionDetails.patientNoAndStreetNo:null,
+          patientCity: data.patientCityNo?data.patientCityNo:submissionDetails.patientCityNo?submissionDetails.patientCityNo:null,
+          patientState: data.patientStateNo?data.patientStateNo:submissionDetails.patientStateNo?submissionDetails.patientStateNo:null,
+          patientCountry: data.patientCountryNo?data.patientCountryNo:submissionDetails.patientCountryNo?submissionDetails.patientCountryNo:null,
+          patientPhoneNumber: data.patientPhoneNumberNo?data.patientPhoneNumberNo:submissionDetails.patientPhoneNumberNo?submissionDetails.patientPhoneNumberNo:null,
+          patientEmail: data.patientEmailNo?data.patientEmailNo:submissionDetails.patientEmailNo?submissionDetails.patientEmailNo:null,
+          hospitalName: data.hospitalNameNo?data.hospitalNameNo:submissionDetails.hospitalNameNo?submissionDetails.hospitalNameNo:null,
+          roomCategory: data.roomCategoryNo?data.roomCategoryNo:submissionDetails.roomCategoryNo?submissionDetails.roomCategoryNo:null,
+          hospitalizationDueTo: data.hospitalizationDueToNo?data.hospitalizationDueToNo:submissionDetails.hospitalizationDueToNo?submissionDetails.hospitalizationDueToNo:null,
+          dayOfInjury: data.dayOfInjuryNo?data.dayOfInjuryNo:submissionDetails.dayOfInjuryNo?submissionDetails.dayOfInjuryNo:null,
+          dateOfAdmission: data.dateOfAdmissionNo?data.dateOfAdmissionNo:submissionDetails.dateOfAdmissionNo?submissionDetails.dateOfAdmissionNo:null,
+          dateOfDischarge: data.dateOfDischargeNo?data.dateOfDischargeNo:submissionDetails.dateOfDischargeNo?submissionDetails.dateOfDischargeNo:null,
+          injuryCause: data.injuryCauseNo?data.injuryCauseNo:submissionDetails.injuryCauseNo?submissionDetails.injuryCauseNo:null,
+          medicoLegal: data.medicoLegalNo?data.medicoLegalNo:submissionDetails.medicoLegalNo?submissionDetails.medicoLegalNo:null,
+          reportedTpPolice: data.reportedTpPoliceNo?data.reportedTpPoliceNo:submissionDetails.reportedTpPoliceNo?submissionDetails.reportedTpPoliceNo:null,
+          mlcReport: data.mlcReportNo?data.mlcReportNo:submissionDetails.mlcReportNo?submissionDetails.mlcReportNo:null,
+          systemOfMedicine: data.systemOfMedicineNo?data.systemOfMedicineNo:submissionDetails.systemOfMedicineNo?submissionDetails.systemOfMedicineNo:null,
+          preHospitalizationExpenses: data.preHospitalizationExpensesNo?data.preHospitalizationExpensesNo:submissionDetails.preHospitalizationExpensesNo?submissionDetails.preHospitalizationExpensesNo:null,
+          hospitalizationExpenses: data.hospitalizationExpensesNo?data.hospitalizationExpensesNo:submissionDetails.hospitalizationExpensesNo?submissionDetails.hospitalizationExpensesNo:null,
+          postHospitalizationExpenses: data.postHospitalizationExpensesNo?data.postHospitalizationExpensesNo:submissionDetails.postHospitalizationExpensesNo?submissionDetails.postHospitalizationExpensesNo:null,
+          healthCheckupCost: data.healthCheckupCostNo?data.healthCheckupCostNo:submissionDetails.healthCheckupCostNo?submissionDetails.healthCheckupCostNo:null,
+          ambulanceCharges: data.ambulanceChargesNo?data.ambulanceChargesNo:submissionDetails.ambulanceChargesNo?submissionDetails.ambulanceChargesNo:null,
+          othersCode: data.othersCodeNo?data.othersCodeNo:submissionDetails.othersCodeNo?submissionDetails.othersCodeNo:null,
+          totalClaim: data.totalClaimNo?data.totalClaimNo:submissionDetails.totalClaimNo?submissionDetails.totalClaimNo:null,
+          preHospitalizationPeriod: data.preHospitalizationPeriodNo?data.preHospitalizationPeriodNo:submissionDetails.preHospitalizationPeriodNo?submissionDetails.preHospitalizationPeriodNo:null,
+          postHospitalizationPeriod: data.postHospitalizationPeriodNo?data.postHospitalizationPeriodNo:submissionDetails.postHospitalizationPeriodNo?submissionDetails.postHospitalizationPeriodNo:null,
+          claimForDomiciliaryHospitalization: data.claimForDomiciliaryHospitalizationNo?data.claimForDomiciliaryHospitalizationNo:submissionDetails.claimForDomiciliaryHospitalizationNo?submissionDetails.claimForDomiciliaryHospitalizationNo:null,
+          hospitalDailyCash: data.hospitalDailyCashNo?data.hospitalDailyCashNo:submissionDetails.hospitalDailyCashNo?submissionDetails.hospitalDailyCashNo:null,
+          surgicalCash: data.surgicalCashNo?data.surgicalCashNo:submissionDetails.surgicalCashNo?submissionDetails.surgicalCashNo:null,
+          criticalIllness: data.criticalIllnessNo?data.criticalIllnessNo:submissionDetails.criticalIllnessNo?submissionDetails.criticalIllnessNo:null,
+          convalescence: data.convalescenceNo?data.convalescenceNo:submissionDetails.convalescenceNo?submissionDetails.convalescenceNo:null,
+          lumsumBenefit: data.lumsumBenefitNo?data.lumsumBenefitNo:submissionDetails.lumsumBenefitNo?submissionDetails.lumsumBenefitNo:null,
+          others: data.othersNo?data.othersNo:submissionDetails.othersNo?submissionDetails.othersNo:null,
+          totalClaimValue: data.totalClaimValueNo?data.totalClaimValueNo:submissionDetails.totalClaimValueNo?submissionDetails.totalClaimValueNo:null,
+          PanCardDetail: data.PanCardDetailNo?data.PanCardDetailNo:submissionDetails.PanCardDetailNo?submissionDetails.PanCardDetailNo:null,
+          accountNo: data.accountNoNo?data.accountNoNo:submissionDetails.accountNoNo?submissionDetails.accountNoNo:null,
+          bankName: data.bankNameNo?data.bankNameNo:submissionDetails.bankNameNo?submissionDetails.bankNameNo:null,
+          chequeDetails: data.chequeDetailsNo?data.chequeDetailsNo:submissionDetails.chequeDetailsNo?submissionDetails.chequeDetailsNo:null,
+          ifscCode: data.ifscCodeNo?data.ifscCodeNo:submissionDetails.ifscCodeNo?submissionDetails.ifscCodeNo:null,
+          insuredPlace: data.insuredPlaceNo?data.insuredPlaceNo:submissionDetails.insuredPlaceNo?submissionDetails.insuredPlaceNo:null,
+          dateOfHospitalization: data.dateOfHospitalizationNo?data.dateOfHospitalizationNo:submissionDetails.dateOfHospitalizationNo?submissionDetails.dateOfHospitalizationNo:null,
+          signatureOfInsures: data.signatureOfInsuresNo?data.signatureOfInsuresNo:submissionDetails.signatureOfInsuresNo?submissionDetails.signatureOfInsuresNo:null,
+        },
       };
       console.log('reqData', reqData);
       let result = await updateClaimSubmission(reqData);
@@ -192,13 +268,63 @@ class SubmitClaim extends PureComponent {
       console.log('result', result._id);
 
       if (result) {
-        this.setState({sectionCDisable: true, updateId: result._id});
+        this.setState({
+          updateId: result._id,
+          submissionDetails: result.submissionDetails,
+        });
+        return true;
       }
+
       console.log('updateId', this.state.updateId);
+
     } catch (error) {
       console.error('Error on: ', error);
     }
   };
+  updatePrimaryInsuredDetails = async (data) => {
+  }
+  updateInsuranceHistoryDetails = async (data) => {
+    let historyDetails=this.updateSubmissionDetails(data)
+    if(historyDetails==true){
+      this.setState({sectionCDisable:true})
+    }
+  }
+  updateInsuredPersonHospitalizedDetails = async (data) => {
+    let personDetails=this.updateSubmissionDetails(data)
+    if(personDetails==true){
+      this.setState({sectionDDisable:true})
+    }
+  }
+  updateHospitalization = async (data) => {
+    let hospitalDetails=this.updateSubmissionDetails(data)
+    if(hospitalDetails==true){
+      this.setState({sectionEDisable:true})
+    }
+  }
+  updateClaimDetails = async (data) => {
+    let claimDetails=this.updateSubmissionDetails(data)
+    if(claimDetails==true){
+      this.setState({sectionFDisable:true})
+    }
+  }
+  updateBillsEnclosedDetails = async (data) => {
+    let billEnclosedDetails=this.updateSubmissionDetails(data)
+    if(billEnclosedDetails==true){
+      this.setState({sectionGDisable:true})
+    }
+  }
+  updatePrimaryInsuredBankAccountDetails = async (data) => {
+    let bankAccDetails=this.updateSubmissionDetails(data)
+    if(personDetails==true){
+      this.setState({sectionHDisable:true})
+    }
+  }
+  updateDeclarationByInsuredDetails = async (data) => {
+    let declarationDetails=this.updateSubmissionDetails(data)
+    // if(declarationDetails==true){
+    //   this.setState({sectionHDisable:true})
+    // }
+  }
 
   render() {
     const data = [
@@ -283,8 +409,8 @@ class SubmitClaim extends PureComponent {
                       {item.id === 2 && sectionBDisable && (
                         <InsuranceHistory
                           claimListData={claimListData}
-                          updateSubmissionDetails={(data) =>
-                            this.updateSubmissionDetails(data)
+                          updateInsuranceHistoryDetails={(data) =>
+                            this.updateInsuranceHistoryDetails(data)
                           }
                         />
                       )}
@@ -293,8 +419,8 @@ class SubmitClaim extends PureComponent {
                           dropdownData={dropdownData}
                           Occupation={Occupation}
                           claimListData={claimListData}
-                          updateSubmissionDetails={(data) =>
-                            this.updateSubmissionDetails(data)
+                          updateInsuredPersonHospitalizedDetails={(data) =>
+                            this.updateInsuredPersonHospitalizedDetails(data)
                           }
                         />
                       )}
@@ -304,16 +430,16 @@ class SubmitClaim extends PureComponent {
                           Hospitalization={Hospitalization}
                           InjuryCause={InjuryCause}
                           claimListData={claimListData}
-                          updateSubmissionDetails={(data) =>
-                            this.updateSubmissionDetails(data)
+                          updateHospitalization={(data) =>
+                            this.updateHospitalization(data)
                           }
                         />
                       )}
                       {item.id === 5 && sectionEDisable && (
                         <ClaimDetail
                           claimListData={claimListData}
-                          updateSubmissionDetails={(data) =>
-                            this.updateSubmissionDetails(data)
+                          updateClaimDetails={(data) =>
+                            this.updateClaimDetails(data)
                           }
                           isSelected={this.state.isSelected}
                           isVisiblePicker={this.state.isVisibleDatePicker}
@@ -334,13 +460,14 @@ class SubmitClaim extends PureComponent {
                           onPressConfirmDateValue={this.onPressConfirmDateValue}
                           oncancelThePicker={this.oncancelThePicker}
                           openPicker={this.openPicker}
+                          updateBillsEnclosedDetails={(data)=>this.updateBillsEnclosedDetails(data)}
                         />
                       )}
                       {item.id === 7 && sectionGDisable && (
                         <PrimaryInsuredBank
                           claimListData={claimListData}
-                          updateSubmissionDetails={(data) =>
-                            this.updateSubmissionDetails(data)
+                          updatePrimaryInsuredBankAccountDetails={(data) =>
+                            this.updatePrimaryInsuredBankAccountDetails(data)
                           }
                           isSelected={this.state.isSelected}
                           isVisiblePicker={this.state.isVisibleDatePicker}
@@ -352,8 +479,8 @@ class SubmitClaim extends PureComponent {
                       {item.id === 8 && sectionHDisable && (
                         <DeclarationByInsured
                           claimListData={claimListData}
-                          updateSubmissionDetails={(data) =>
-                            this.updateSubmissionDetails(data)
+                          updateDeclarationByInsuredDetails={(data) =>
+                            this.updateDeclarationByInsuredDetails(data)
                           }
                           isSelected={this.state.isSelected}
                           isVisiblePicker={this.state.isVisibleDatePicker}

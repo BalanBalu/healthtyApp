@@ -7,7 +7,7 @@ import {toastMeassage} from '../../../common';
 
 
 const PrimaryInsuredBank = (props) => {
-  const {updateSubmissionDetails} = props;
+  const {updatePrimaryInsuredBankAccountDetails} = props;
   const [PanCardDetail, setPanCardDetail] = useState('');
   const [accountNo, setAccountNo] = useState('');
   const [bankName, setBankName] = useState('');
@@ -31,7 +31,7 @@ const PrimaryInsuredBank = (props) => {
             keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
           onChangeText={(text) =>setPanCardDetail(text)}
-
+          testID="editPanCardDetail"
           />
         </Item>
       </Col>
@@ -51,7 +51,7 @@ const PrimaryInsuredBank = (props) => {
             keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
           onChangeText={(text) =>setAccountNo(text)}
-
+          testID="editAccountNo"
           />
         </Item>
       </Col>
@@ -71,7 +71,7 @@ const PrimaryInsuredBank = (props) => {
             keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
           onChangeText={(text) =>setBankName(text)}
-
+          testID="editBankName"
           />
         </Item>
       </Col>
@@ -91,6 +91,7 @@ const PrimaryInsuredBank = (props) => {
             keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
           onChangeText={(text) =>setChequeDetails(text)}
+          testID="editChequeDetails"
           />
         </Item>
       </Col>
@@ -110,19 +111,33 @@ const PrimaryInsuredBank = (props) => {
             keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
           onChangeText={(text) =>setIfscCode(text)}
-
+          testID="editIfscCode"
           />
         </Item>
       </Col>
     </Row>
     <View style={styles.ButtonView}>
-      <TouchableOpacity style={styles.submit_ButtonStyle} >
+      <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() =>
+            PanCardDetail &&
+            accountNo &&
+            bankName &&
+            chequeDetails &&
+            ifscCode 
+              ? updatePrimaryInsuredBankAccountDetails({
+                PanCardDetail: PanCardDetail,
+                accountNo: accountNo,
+                bankName: bankName,
+                chequeDetails: chequeDetails,
+                ifscCode: ifscCode,
+                })
+              : toastMeassage('Unable to Submit Claim, Please fill all details')
+          }
+          testID="submitDetails7">
         <Text style={{ color: "#fff" }}>Submit And Continue</Text>
       </TouchableOpacity>
     </View>
   </View>
   );
 }
-
 
 export default PrimaryInsuredBank
