@@ -187,6 +187,22 @@ form_field_inline_label: {
   
 
 },
+Heading_form_field_inline_label: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: '400',
+    lineHeight: 20,
+    width: 100,
+    height: 45,
+    textAlign: 'center',
+    paddingVertical:12,
+    borderBottomRightRadius:0,
+    borderTopRightRadius:0,
+    backgroundColor: primaryColor
+  
+
+},
+
 
 form_field: {
     color: '#000',
@@ -196,6 +212,21 @@ form_field: {
     borderTopColor:'#C6C6C4',
     borderBottomColor:'#C6C6C4',
     borderTopWidth:1,
+    borderBottomWidth:1,
+    borderRightWidth:1,
+    width:'100%',
+    borderBottomLeftRadius:0,
+    borderTopLeftRadius:0,
+    height: 45,
+    fontSize:12
+},
+Heading_form_field: {
+    color: '#000',
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRightColor:'#C6C6C4',
+    borderTopColor:'#C6C6C4',
+    backgroundColor:primaryColor,
     borderBottomWidth:1,
     borderRightWidth:1,
     width:'100%',
