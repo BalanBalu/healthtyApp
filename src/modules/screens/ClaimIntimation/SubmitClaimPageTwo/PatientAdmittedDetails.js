@@ -1,0 +1,647 @@
+import React, { useEffect, useState, useRef } from 'react';
+import { Text, View, Item, Input, Picker, Radio, Icon, } from 'native-base';
+import { TouchableOpacity, } from 'react-native'
+import { Col, Row } from 'react-native-easy-grid';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import styles from '../Styles';
+import { primaryColor } from '../../../../setup/config';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import { subTimeUnit, formatDate } from '../../../../setup/helpers';
+import ModalPopup from '../../../../components/Shared/ModalPopup';
+
+
+
+const PatientAdmittedDetails = (props) => {
+    const { updateSubmissionDetails,isSelected, dropdownList, dropdownData, OccupationText, Occupation,openPicker ,dischargeTimeStatus} = props;
+    const [patientFirstName, setpatientFirstName] = useState('')
+    const [patientMiddleName, setpatientMiddleName] = useState('')
+    const [patientLastName, setpatientLastName] = useState('')
+    const [registrationNo, setregistrationNo] = useState('')
+    const[gender,setgender] = useState('Male')
+    const [selectedAdmissionDate,setselectedAdmissionDate] =useState('')
+    const [isVisiblePicker,setisVisiblePicker]= useState(false)
+    const [selectedDateOfBirth,setselectedDateOfBirth] =useState('')
+    const [dateofBirthPickerOpen,setdateofBirthPickerOpen] = useState(false)
+    const [timeOfAdmission,settimeOfAdmission]= useState('')
+    const [selectDischargeDate,setselectDischargeDate]=useState('')
+    const [isVisibleDischargeDatePicker,setisVisibleDischargeDatePicker]= useState(false)
+    const [timeOfDischarge,settimeOfDischarge]= useState('')
+    const [admissionType,setadmissionType] = useState('')
+    const [selectdeliveryDate,setselectdeliveryDate] = useState('')
+    const [isVisibledeliveryDatePicker,setisVisibledeliveryDatePicker]= useState(false)
+    const [gravidaStatus,setgravidaStatus] = useState('')
+    const [claimAmount,setclaimAmount] = useState('')
+    const [dischargeTime,setdischargeTime]= useState('')
+    const [age,setage] = useState('')
+    const inputEl1 = useRef(null);
+    const inputEl2 = useRef(null);
+    const inputEl3 = useRef(null);
+
+   const  onPressConfirmDateValue = (date) => {
+        try {
+            setdateofBirthPickerOpen(false)
+            setselectedDateOfBirth(date)
+        } catch (error) {
+          console.error('Error on Date Picker: ', error);
+        }
+      };
+      const oncancelDateOfBirthPiscker =()=>{ 
+        setdateofBirthPickerOpen(!dateofBirthPickerOpen)
+      }
+
+      const openDateOfBirthPiscker =()=>{
+        setdateofBirthPickerOpen(!dateofBirthPickerOpen)
+
+      }
+
+      const  oncancelThePicker =()=>{ 
+        setisVisiblePicker(!isVisiblePicker)
+      }
+const onPressConfirmAdmissionDateValue= (date) => {
+    try {
+        setisVisiblePicker(false)
+        setselectedAdmissionDate(date)
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
+  };
+
+ const openAdmissionDatePicker =()=>{
+    setisVisiblePicker(!isVisiblePicker)
+  }
+  const  oncancelTheDischargeDatePicker =()=>{ 
+    setisVisibleDischargeDatePicker(!isVisibleDischargeDatePicker)
+  }
+
+  const  openTheDischargeDatePicker=()=>{ 
+    setisVisibleDischargeDatePicker(!isVisibleDischargeDatePicker)
+  }
+
+  const onPressConfirmDischargeDatePicker =(date) => {
+    try {
+        setisVisibleDischargeDatePicker(false)
+        setselectDischargeDate(date)
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
+  };
+
+  const opendeliveryDatePicker=()=>{ 
+    setisVisibledeliveryDatePicker(!isVisibledeliveryDatePicker)
+  }
+
+  const  oncanceldeliveryDatePicker =()=>{ 
+    setisVisibledeliveryDatePicker(!isVisibledeliveryDatePicker)
+  }
+  const onPressConfirmdeliveryDatePicker =(date) => {
+    try {
+        setisVisibledeliveryDatePicker(false)
+        setselectdeliveryDate(date)
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
+  };
+
+const submmitData = () => {
+    if (patientFirstName != '' && patientMiddleName != '' && patientLastName != ''  && timeOfAdmission != '' && timeOfDischarge != '' && gravidaStatus != '' && claimAmount != '' && age != '' && dischargeTime != '') {
+        updateSubmissionDetails({
+            patientFirstName: patientFirstName,
+            patientMiddleName: patientMiddleName,
+            patientLastName: patientLastName,
+            timeOfAdmission: timeOfAdmission,
+            timeOfDischarge: timeOfDischarge,
+            gravidaStatus: gravidaStatus,
+            claimAmount: claimAmount,
+            age: age,
+            dischargeTime: dischargeTime,
+            gender:gender,
+            selectedAdmissionDate:selectedAdmissionDate,
+            selectedDateOfBirth:selectedDateOfBirth,
+            admissionType:admissionType,
+            selectdeliveryDate:selectdeliveryDate,
+            registrationNo:registrationNo,
+            selectDischargeDate:selectDischargeDate
+        })
+
+    }else{
+        if (patientFirstName === '') {
+            seterrorMsg('Please enter patient first name')
+            setisModalVisible(true)
+            return false
+        }
+        if (patientMiddleName === '') {
+            seterrorMsg('Please enter patient middle name')
+            setisModalVisible(true)
+            return false
+        }
+        if (patientLastName === '') {
+            seterrorMsg('Please enter patient Last name')
+            setisModalVisible(true)
+            return false
+        }
+        if (registrationNo === '') {
+            seterrorMsg('Please enter registration number')
+            setisModalVisible(true)
+            return false
+        }
+        if (timeOfAdmission === '') {
+            seterrorMsg('Please enter time Of admission')
+            setisModalVisible(true)
+            return false
+        }
+        if (claimAmount === '') {
+            seterrorMsg('Please enter claimAmount')
+            setisModalVisible(true)
+            return false
+        }
+        if (age === '') {
+            seterrorMsg('Please enter age')
+            setisModalVisible(true)
+            return false
+        }
+        if (dischargeTime === '' || dischargeTime ===  'Select your Status' ) {
+            seterrorMsg('Please enter time Of discharge')
+            setisModalVisible(true)
+            return false
+        }
+    }
+
+
+
+}
+    return (
+        <View>
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Patient first name<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                       
+                         <Input
+                            placeholder="Enter Patient first name"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            value={patientFirstName}
+                            keyboardType={'default'}
+                            onChangeText={(text) => setpatientFirstName(text)}
+                            onSubmitEditing={() => inputEl1.current._root.focus()}
+                            testID="editpatientFirstName"
+
+                        />
+                    </Item>
+                </Col>
+            </Row>
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Patient middle name<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Input
+                            placeholder="Enter Patient middle name"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            value={patientMiddleName}
+                            ref={inputEl1}
+                            keyboardType={'default'}
+                            onChangeText={(text) => setpatientMiddleName(text)}
+                            onSubmitEditing={() => inputEl2.current._root.focus()}
+                            testID="editpatientMiddleName"
+                        />
+                    </Item>
+                </Col>
+            </Row>
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Patient last name<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Input
+                            placeholder="Enter Patient last name"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            value={patientLastName}
+                            ref={inputEl2}
+                            keyboardType={'default'}
+                            onChangeText={(text) => setpatientLastName(text)}
+                            onSubmitEditing={() => inputEl3.current._root.focus()}
+                            testID="editpatientLastName"
+
+                        />
+                    </Item>
+                </Col>
+            </Row>
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>IP_REGISTRATION_NO<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Input
+                            placeholder="Action"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            value={registrationNo}
+                            ref={inputEl3}
+                            keyboardType={'number-pad'}
+                            onChangeText={(text) => setregistrationNo(text)}
+                            testID="editpatientLastName"
+
+                        />
+                    </Item>
+                </Col>
+            </Row>
+
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Gender<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
+                        <Radio
+                            color={primaryColor}
+                            selectedColor={primaryColor}
+                            standardStyle={true}
+                            selected={gender=== 'Male'}
+                            onPress={() => setgender('Male')}
+                        />
+                        <Text style={styles.text}>Male</Text>
+
+                        <View style={styles.radioButtonStyle}>
+                            <Radio
+                                color={primaryColor}
+                                selectedColor={primaryColor}
+                                standardStyle={true}
+                                selected={gender=== 'Female'}
+                                onPress={() => setgender('Female')}
+                            />
+                            <Text style={styles.text}>Female</Text>
+
+                        </View>
+                        <View style={styles.radioButtonStyle}>
+                            <Radio
+                                color={primaryColor}
+                                selectedColor={primaryColor}
+                                standardStyle={true}
+                                selected={gender=== 'Other'}
+                                onPress={() => setgender('Other')}
+                            />
+                            <Text style={styles.text}>Other</Text>
+
+                        </View>
+                    </Item>
+                </Col>
+            </Row>
+
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Age<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Input
+                            placeholder="YY/MM"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            value={age}
+                            keyboardType={'number-pad'}
+                            onChangeText={(text) => setage(text)}
+                            testID="editpatientAge"
+                        />
+                    </Item>
+                </Col>
+            </Row>
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Date Of Birth<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+
+                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={openDateOfBirthPiscker}>
+                            <Icon
+                                name="md-calendar"
+                                style={styles.calenderStyle}
+                            />
+                            <Text
+                                style={
+                                    selectedDateOfBirth
+                                        ? styles.timeplaceHolder
+                                        : styles.afterTimePlaceholder
+                                }>
+                                {selectedDateOfBirth
+                                    ? formatDate(selectedDateOfBirth, 'DD/MM/YYYY')
+                                    : 'Enter Date of birth'}
+                            </Text>
+                            <DateTimePicker
+                                mode={'date'}
+                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                                maximumDate={new Date()}
+                                value={selectedDateOfBirth}
+                                isVisible={dateofBirthPickerOpen}
+                                onConfirm={onPressConfirmDateValue}
+                                onCancel={oncancelDateOfBirthPiscker}
+                            />
+                        </TouchableOpacity>
+                    </Item>
+                </Col>
+            </Row>
+
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Date of Admission<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+
+                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={openAdmissionDatePicker}>
+                            <Icon
+                                name="md-calendar"
+                                style={styles.calenderStyle}
+                            />
+                            <Text
+                                style={
+                                    selectedAdmissionDate
+                                        ? styles.timeplaceHolder
+                                        : styles.afterTimePlaceholder
+                                }>
+                                {selectedAdmissionDate
+                                    ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY')
+                                    : 'Enter Date of Admission'}
+                            </Text>
+                            <DateTimePicker
+                                mode={'date'}
+                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                                maximumDate={new Date()}
+                                value={selectedAdmissionDate}
+                                isVisible={isVisiblePicker}
+                                onConfirm={onPressConfirmAdmissionDateValue}
+                                onCancel={oncancelThePicker}
+                            />
+                        </TouchableOpacity>
+                    </Item>
+                </Col>
+            </Row>
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Time of admission<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Input
+                            placeholder="HH/MH"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            value={timeOfAdmission}
+                            keyboardType={'default'}
+                            onChangeText={(text) => settimeOfAdmission(text)}
+                            testID="editTimeOfAdmission"
+                        />
+                    </Item>
+                </Col>
+            </Row>
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Date Of Discharge<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+
+                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={openTheDischargeDatePicker}>
+                            <Icon
+                                name="md-calendar"
+                                style={styles.calenderStyle}
+                            />
+                            <Text
+                                style={
+                                    selectDischargeDate
+                                        ? styles.timeplaceHolder
+                                        : styles.afterTimePlaceholder
+                                }>
+                                {selectDischargeDate
+                                    ? formatDate(selectDischargeDate, 'DD/MM/YYYY')
+                                    : 'Enter Date Of Discharge'}
+                            </Text>
+                            <DateTimePicker
+                                mode={'date'}
+                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                                maximumDate={new Date()}
+                                value={selectDischargeDate}
+                                isVisible={isVisibleDischargeDatePicker}
+                                onConfirm={onPressConfirmDischargeDatePicker}
+                                onCancel={oncancelTheDischargeDatePicker}
+                            />
+                        </TouchableOpacity>
+                    </Item>
+                </Col>
+            </Row>
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Time of discharge<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Input
+                            placeholder="HH/MH"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            value={timeOfDischarge}
+                            keyboardType={'default'}
+                            onChangeText={(text) => settimeOfDischarge(text)}
+                            testID="editTimeOfDischarge"
+                        />
+                    </Item>
+                </Col>
+            </Row>
+
+
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Type of admission<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Picker
+                            mode="dropdown"
+                            placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
+                            iosIcon={<MaterialIcons name="keyboard-arrow-down" style={Platform.OS === "ios" ? { color: '#fff', fontSize: 20, marginRight: 15 } : { color: '#fff', fontSize: 20 }} />}
+                            textStyle={{ color: "#fff", left: 0, marginLeft: 5 }}
+                            note={false}
+                            itemStyle={{
+                                paddingLeft: 10,
+                                fontSize: 16,
+                                fontFamily: 'Helvetica-Light',
+                                color: "#fff",
+                            }}
+                            itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
+                            style={{ width: "100%", color: "#000", }}
+                            onValueChange={(sample) => { setadmissionType(sample)}}
+                            selectedValue={admissionType}
+                            testID="editadmissionType"
+                        >
+
+                            {dropdownData.map((value, key) => {
+
+                                return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                />
+                            })
+                            }
+                        </Picker>
+                    </Item>
+                </Col>
+            </Row>
+
+
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>If maternity, enter delivery date<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+
+                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={opendeliveryDatePicker}>
+                            <Icon
+                                name="md-calendar"
+                                style={styles.calenderStyle}
+                            />
+                            <Text
+                                style={
+                                    selectdeliveryDate
+                                        ? styles.timeplaceHolder
+                                        : styles.afterTimePlaceholder
+                                }>
+                                {selectdeliveryDate
+                                    ? formatDate(selectdeliveryDate, 'DD/MM/YYYY')
+                                    : 'If maternity, enter delivery date'}
+                            </Text>
+                            <DateTimePicker
+                                mode={'date'}
+                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                                maximumDate={new Date()}
+                                value={selectdeliveryDate}
+                                isVisible={isVisibledeliveryDatePicker}
+                                onConfirm={onPressConfirmdeliveryDatePicker}
+                                onCancel={oncanceldeliveryDatePicker}
+                            />
+                        </TouchableOpacity>
+                    </Item>
+                </Col>
+            </Row>
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Gravida status<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Input
+                            placeholder="Enter Gravida status"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            value={gravidaStatus}
+                            keyboardType={'default'}
+                            onChangeText={(text) => setgravidaStatus(text)}
+                            testID="editgravidaStatus"
+                        />
+                    </Item>
+                </Col>
+            </Row>
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Status at time of discharge<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Picker
+                            mode="dropdown"
+                            placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
+                            iosIcon={<MaterialIcons name="keyboard-arrow-down" style={Platform.OS === "ios" ? { color: '#fff', fontSize: 20, marginRight: 15 } : { color: '#fff', fontSize: 20 }} />}
+                            textStyle={{ color: "#fff", left: 0, marginLeft: 5 }}
+                            note={false}
+                            itemStyle={{
+                                paddingLeft: 10,
+                                fontSize: 16,
+                                fontFamily: 'Helvetica-Light',
+                                color: "#fff",
+                            }}
+                            itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
+                            style={{ width: "100%", color: "#000", }}
+                            onValueChange={(sample) => { setdischargeTime(sample)}}
+                            selectedValue={dischargeTime}
+                            testID="editdischargeTime"
+                        >
+
+                            {dischargeTimeStatus.map((value, key) => {
+
+                                return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                />
+                            })
+                            }
+                        </Picker>
+                    </Item>
+                </Col>
+            </Row>
+
+            <Row
+                size={4}
+                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
+                <Col size={1}>
+                    <Text style={styles.text}>Total claimed amount<Text style={{ color: 'red' }}>*</Text></Text>
+
+                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                        <Input
+                            placeholder="Enter Total claimed amount"
+                            placeholderTextColor={'#CDD0D9'}
+                            returnKeyType={'next'}
+                            keyboardType={'number-pad'}
+                            value={claimAmount}
+                            onChangeText={(text) => setclaimAmount(text)}
+                            testID="editclaimAmount"
+                        />
+                    </Item>
+                </Col>
+            </Row>
+            <View style={styles.ButtonView}>
+                <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() => submmitData()}>
+                    <Text style={{ color: "#fff" }}>Submit And Continue</Text>
+                </TouchableOpacity>
+            </View>
+            <ModalPopup
+                errorMessageText={errorMsg}
+                closeButtonText={'CLOSE'}
+                closeButtonAction={() => setisModalVisible(false)}
+                visible={isModalVisible} />
+        </View>
+    )
+}
+
+
+
+
+
+export default PatientAdmittedDetails
