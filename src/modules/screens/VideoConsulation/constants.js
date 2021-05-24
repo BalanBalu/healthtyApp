@@ -60,3 +60,14 @@ export const POSSIBLE_VIDEO_CONSULTING_STATUS = {
       }
   }
   
+
+  export const PRE_AUTH_FORMS = [
+    {tpaCode: "003", path: '/assets/forms/cashless-form/MediAssist.pdf'},
+    {tpaCode: "022", path: '/assets/forms/cashless-form/HealthIndia.pdf'},
+    {tpaCode: "015", path: '/assets/forms/cashless-form/Icici.pdf'},
+    {tpaCode: "008", path: '/assets/forms/cashless-form/Heritage.pdf'},
+]
+
+export const REIMBURSEMENT_FORMS= [
+  {tpaCode: "003", path: '/assets/forms/re-imbursment/mediassist/reimbursement-claim-form.pdf'},
+]
