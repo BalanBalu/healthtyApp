@@ -32,6 +32,8 @@ const PatientAdmittedDetails = (props) => {
     const [gravidaStatus,setgravidaStatus] = useState('')
     const [claimAmount,setclaimAmount] = useState('')
     const [dischargeTime,setdischargeTime]= useState('')
+    const [errorMsg, seterrorMsg] = useState('')
+    const [isModalVisible, setisModalVisible] = useState(false)
     const [age,setage] = useState('')
     const inputEl1 = useRef(null);
     const inputEl2 = useRef(null);
