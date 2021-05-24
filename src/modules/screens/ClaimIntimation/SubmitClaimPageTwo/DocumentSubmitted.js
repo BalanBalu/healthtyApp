@@ -26,14 +26,14 @@ const DocumentSubmitted = (props) => {
     const [claimFormDulySigned, setCheckBox1] = useState(false);
     const [ctInvestigationReports, setCheckBox2] = useState(false);
     const [copyOfPreAuthApprovalLetter, setCheckBox3] = useState(false);
-    const [patientVerifiedByHospital, selectCheckBox4] = useState(false);
+    const [patientVerifiedByHospital, setCheckBox4] = useState(false);
     const [hospitalDischargeSummary, setCheckBox5] = useState(false);
     const [operationTheatreNotes, setCheckBox6] = useState(false);
     const [hospitalMainBill, setCheckBox7] = useState(false);
     const [anyOthers, setCheckBox8] = useState(false);
     const [investigationReports, setCheckBox9] = useState(false);
     const [originalPreAuthRequest, setCheckBox10] = useState(false);
-    const [DoctorReferenceSlipForInvestigation, selectCheckBox11] = useState(false);
+    const [DoctorReferenceSlipForInvestigation, setCheckBox11] = useState(false);
     const [ecg, setCheckBox12] = useState(false);
     const [pharmacyBill, setCheckBox13] = useState(false);
     const [MLCReportsAndPoliceFIR, setCheckBox14] = useState(false);

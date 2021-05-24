@@ -15,7 +15,7 @@ const DeclarationByHospital = (props) => {
     const [place, setPlace] = useState('');
     const [signatureOfHospitalAuthority, setSignatureOfHospitalAuthority] = useState('');
     const onPressConfirmDateValue = (date) => {
-      setDateOfHospitalization(date);
+        setDeclarationDate(date);
       setIsVisible(false);
     };
     const onCancelPicker = () => {
