@@ -43,6 +43,7 @@ class ClaimIntimationList extends PureComponent {
       );
       if (result) {
         await this.setState({ claimList: result.docs });
+        console.log("claimList",this.state.claimList)
       }
     } catch (ex) {
       console.log(ex);
@@ -208,7 +209,7 @@ class ClaimIntimationList extends PureComponent {
                             </Col>
                           </Row>
                           <View style={{ justifyContent: "flex-end", alignItems: 'flex-end', marginTop: 10, marginBottom: 5 }}>
-                            <TouchableOpacity style={{ backgroundColor: primaryColor, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }} onPress={() => { this.props.navigation.navigate('SubmitClaim') }}>
+                            <TouchableOpacity style={{ backgroundColor: primaryColor, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }} onPress={() => { this.props.navigation.navigate('SubmitClaim',{claimListData:item}) }}>
                               <Text style={{ color: "#fff" }}>Submit Claim</Text>
                             </TouchableOpacity>
                           </View>

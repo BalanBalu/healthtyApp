@@ -1,418 +1,497 @@
-import React, { PureComponent } from 'react';
-import { Text, View,  Item, Input, Picker, Radio, Icon, } from 'native-base';
-import { TouchableOpacity,  } from 'react-native'
-import { Col, Row } from 'react-native-easy-grid';
+import React, {useEffect, useState} from 'react';
+import {Text, View, Item, Input, Picker, Radio, Icon} from 'native-base';
+import {TouchableOpacity} from 'react-native';
+import {Col, Row} from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
-import { primaryColor } from '../../../../setup/config';
+import {primaryColor} from '../../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import { subTimeUnit, formatDate } from '../../../../setup/helpers';
+import {subTimeUnit, formatDate} from '../../../../setup/helpers';
+import {toastMeassage} from '../../../common';
 
+const InsuredPersonHospitalized = (props) => {
+  const {dropdownData, Occupation,updateSubmissionDetails} = props;
+  const [patientName, setPatientName] = useState('');
+  const [patientGender, setPatientGender] = useState();
+  const [patientAge, setPatientAge] = useState('');
+  const [patientDob, setPatientDob] = useState();
+  const [isVisible, setIsVisible] = useState(false);
+  const [relationship, setRelationship] = useState('');
+  const [relationshipDetail, setRelationshipDetail] = useState('');
+  const [occupation, setOccupation] = useState();
+  const [occupationDetail, setOccupationDetail] = useState('');
+  const [patientAddress, setPatientAddress] = useState('');
+  const [patientNoAndStreet, setPatientNoAndStreet] = useState('');
+  const [patientCity, setPatientCity] = useState('');
+  const [patientState, setPatientState] = useState('');
+  const [patientCountry, setPatientCountry] = useState('');
+  const [patientPhoneNumber, setPatientPhoneNumber] = useState('');
+  const [patientEmail, setPatientEmail] = useState('');
 
+  const onPressConfirmDateValue = (date) => {
+    setPatientDob(date);
+    setIsVisible(false);
+  };
+  const onCancelPicker = () => {
+    setIsVisible(false);
+  };
 
-const InsuredPersonHospitalized = ({ isSelected, isVisiblePicker, selectedAdmissionDate, dropdownList, dropdownData, OccupationText, Occupation, onPressConfirmDateValue, oncancelThePicker, openPicker }) => {
+  const openPicker = () => {
+    setIsVisible(true);
+  };
 
-    return (
-        <View>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>Name<Text style={{ color: 'red' }}>*</Text></Text>
+  return (
+    <View>
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Name<Text style={{color: 'red'}}>*</Text>
+          </Text>
 
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter Name"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter Name"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientName}
+              keyboardType={'default'}
+              onChangeText={(text) => setPatientName(text)}
+              testID="editName"
+            />
+          </Item>
+        </Col>
+      </Row>
 
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Gender<Text style={{color: 'red'}}>*</Text>
+          </Text>
 
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>Gender<Text style={{ color: 'red' }}>*</Text></Text>
+          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+            <Radio
+              color={primaryColor}
+              selectedColor={primaryColor}
+              standardStyle={true}
+              selected={patientGender === 'Male'}
+              onPress={() => setPatientGender('Male')}
+              testID="selectMale"
+            />
+            <Text style={styles.text}>Male</Text>
 
-                    <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
-                        <Radio
-                            color={primaryColor}
-                            selectedColor={primaryColor}
-                            standardStyle={true}
-                            selected={isSelected === true}
-                            onPress={() => this.setState({ isSelected: true })}
-                        />
-                        <Text style={styles.text}>Male</Text>
-
-                        <View style={styles.radioButtonStyle}>
-                            <Radio
-                                color={primaryColor}
-                                selectedColor={primaryColor}
-                                standardStyle={true}
-                                selected={isSelected === false}
-                                onPress={() => this.setState({ isSelected: false })}
-                            />
-                            <Text style={styles.text}>Female</Text>
-
-                        </View>
-                        <View style={styles.radioButtonStyle}>
-                            <Radio
-                                color={primaryColor}
-                                selectedColor={primaryColor}
-                                standardStyle={true}
-                                selected={isSelected === false}
-                                onPress={() => this.setState({ isSelected: false })}
-                            />
-                            <Text style={styles.text}>Other</Text>
-
-                        </View>
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>AGE(MA_ID)NO<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter age of the patient"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-
-
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>Date Of Birth<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-
-                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={openPicker}>
-                            <Icon
-                                name="md-calendar"
-                                style={styles.calenderStyle}
-                            />
-                            <Text
-                                style={
-                                    selectedAdmissionDate
-                                        ? styles.timeplaceHolder
-                                        : styles.afterTimePlaceholder
-                                }>
-                                {selectedAdmissionDate
-                                    ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY')
-                                    : 'Enter Date of birth of patient'}
-                            </Text>
-                            <DateTimePicker
-                                mode={'date'}
-                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
-                                maximumDate={new Date()}
-                                value={selectedAdmissionDate}
-                                isVisible={isVisiblePicker}
-                                onConfirm={onPressConfirmDateValue}
-                                onCancel={oncancelThePicker}
-                            />
-                        </TouchableOpacity>
-                    </Item>
-                </Col>
-            </Row>
-
-
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>Relation to primary Insured<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Picker
-                            mode="dropdown"
-                            placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
-                            iosIcon={<MaterialIcons name="keyboard-arrow-down" style={Platform.OS === "ios" ? { color: '#fff', fontSize: 20, marginRight: 15 } : { color: '#fff', fontSize: 20 }} />}
-                            textStyle={{ color: "#fff", left: 0, marginLeft: 5 }}
-                            note={false}
-                            itemStyle={{
-                                paddingLeft: 10,
-                                fontSize: 16,
-                                fontFamily: 'Helvetica-Light',
-                                color: "#fff",
-                            }}
-                            itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
-                            style={{ width: "100%", color: "#000", }}
-                            onValueChange={(sample) => { this.setState({ dropdownList: sample }) }}
-                            selectedValue={dropdownList}
-                            testID="editJobType"
-                        >
-
-                            {dropdownData.map((value, key) => {
-
-                                return <Picker.Item label={String(value)} value={String(value)} key={key}
-                                />
-                            })
-                            }
-                        </Picker>
-                    </Item>
-                </Col>
-            </Row>
-
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>If other, details<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Specify your Relation"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>indicate occupation of patient<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Picker
-                            mode="dropdown"
-                            placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
-                            iosIcon={<MaterialIcons name="keyboard-arrow-down" style={Platform.OS === "ios" ? { color: '#fff', fontSize: 20, marginRight: 15 } : { color: '#fff', fontSize: 20 }} />}
-                            textStyle={{ color: "#fff", left: 0, marginLeft: 5 }}
-                            note={false}
-                            itemStyle={{
-                                paddingLeft: 10,
-                                fontSize: 16,
-                                fontFamily: 'Helvetica-Light',
-                                color: "#fff",
-                            }}
-                            itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
-                            style={{ width: "100%", color: "#000", }}
-                            onValueChange={(sample) => { this.setState({ OccupationText: sample }) }}
-                            selectedValue={OccupationText}
-                            testID="editJobType"
-                        >
-
-                            {Occupation.map((value, key) => {
-
-                                return <Picker.Item label={String(value)} value={String(value)} key={key}
-                                />
-                            })
-                            }
-                        </Picker>
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>If other, details<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Specify your ocupation"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>Address<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter Address Details"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>City<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter City"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>State<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter State"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>Country<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter Country"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>No and Street<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter No and Street"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>Phone Number<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter Phone Number"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-            <Row
-                size={4}
-                style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
-                <Col size={1}>
-                    <Text style={styles.text}>Email ID<Text style={{ color: 'red' }}>*</Text></Text>
-
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="Enter Email ID"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
-                        />
-                    </Item>
-                </Col>
-            </Row>
-            <View style={styles.ButtonView}>
-                <TouchableOpacity style={styles.submit_ButtonStyle} >
-                    <Text style={{ color: "#fff" }}>Submit And Continue</Text>
-                </TouchableOpacity>
+            <View style={styles.radioButtonStyle}>
+              <Radio
+                color={primaryColor}
+                selectedColor={primaryColor}
+                standardStyle={true}
+                selected={patientGender === 'Female'}
+                onPress={() => setPatientGender('Female')}
+                testID="selectFemale"
+              />
+              <Text style={styles.text}>Female</Text>
             </View>
-        </View>
-    )
-}
+            <View style={styles.radioButtonStyle}>
+              <Radio
+                color={primaryColor}
+                selectedColor={primaryColor}
+                standardStyle={true}
+                selected={patientGender === 'Other'}
+                onPress={() => setPatientGender('Other')}
+                testID="selectOther"
+              />
+              <Text style={styles.text}>Other</Text>
+            </View>
+          </Item>
+        </Col>
+      </Row>
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            AGE(MA_ID)NO<Text style={{color: 'red'}}>*</Text>
+          </Text>
 
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter age of the patient"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientAge}
+              keyboardType={'number-pad'}
+              onChangeText={(text) => setPatientAge(text)}
+              testID="editAge"
+            />
+          </Item>
+        </Col>
+      </Row>
 
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Date Of Birth<Text style={{color: 'red'}}>*</Text>
+          </Text>
 
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <TouchableOpacity
+              style={{flexDirection: 'row'}}
+              onPress={openPicker}
+              testID="editDOB">
+              <Icon name="md-calendar" style={styles.calenderStyle} />
+              <Text
+                style={
+                  patientDob
+                    ? styles.timeplaceHolder
+                    : styles.afterTimePlaceholder
+                }>
+                {patientDob
+                  ? formatDate(patientDob, 'DD/MM/YYYY')
+                  : 'Enter Date of birth of patient'}
+              </Text>
+              <DateTimePicker
+                mode={'date'}
+                // minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                maximumDate={new Date()}
+                value={patientDob}
+                isVisible={isVisible}
+                onConfirm={onPressConfirmDateValue}
+                onCancel={onCancelPicker}
+              />
+            </TouchableOpacity>
+          </Item>
+        </Col>
+      </Row>
 
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Relation to primary Insured<Text style={{color: 'red'}}>*</Text>
+          </Text>
 
-export default InsuredPersonHospitalized
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Picker
+              mode="dropdown"
+              placeholderStyle={{fontSize: 12, marginLeft: -5}}
+              iosIcon={
+                <MaterialIcons
+                  name="keyboard-arrow-down"
+                  style={
+                    Platform.OS === 'ios'
+                      ? {color: '#fff', fontSize: 20, marginRight: 15}
+                      : {color: '#fff', fontSize: 20}
+                  }
+                />
+              }
+              textStyle={{color: '#fff', left: 0, marginLeft: 5}}
+              note={false}
+              itemStyle={{
+                paddingLeft: 10,
+                fontSize: 16,
+                fontFamily: 'Helvetica-Light',
+                color: '#fff',
+              }}
+              itemTextStyle={{color: '#fff', fontFamily: 'Helvetica-Light'}}
+              style={{width: '100%', color: '#000'}}
+              onValueChange={(sample) => {
+                setRelationship(sample);
+              }}
+              selectedValue={relationship}
+              testID="editRelationShip">
+              {dropdownData.map((value, key) => {
+                return (
+                  <Picker.Item
+                    label={String(value)}
+                    value={String(value)}
+                    key={key}
+                  />
+                );
+              })}
+            </Picker>
+          </Item>
+        </Col>
+      </Row>
+
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            If other, details<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Specify your Relation"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={relationshipDetail}
+              keyboardType={'default'}
+              onChangeText={(text) => setRelationshipDetail(text)}
+              testID="editRelationDetail"
+            />
+          </Item>
+        </Col>
+      </Row>
+
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            indicate occupation of patient<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Picker
+              mode="dropdown"
+              placeholderStyle={{fontSize: 12, marginLeft: -5}}
+              iosIcon={
+                <MaterialIcons
+                  name="keyboard-arrow-down"
+                  style={
+                    Platform.OS === 'ios'
+                      ? {color: '#fff', fontSize: 20, marginRight: 15}
+                      : {color: '#fff', fontSize: 20}
+                  }
+                />
+              }
+              textStyle={{color: '#fff', left: 0, marginLeft: 5}}
+              note={false}
+              itemStyle={{
+                paddingLeft: 10,
+                fontSize: 16,
+                fontFamily: 'Helvetica-Light',
+                color: '#fff',
+              }}
+              itemTextStyle={{color: '#fff', fontFamily: 'Helvetica-Light'}}
+              style={{width: '100%', color: '#000'}}
+              onValueChange={(sample) => {
+                setOccupation(sample);
+              }}
+              selectedValue={occupation}
+              testID="editOccupation"
+              >
+              {Occupation.map((value, key) => {
+                return (
+                  <Picker.Item
+                    label={String(value)}
+                    value={String(value)}
+                    key={key}
+                  />
+                );
+              })}
+            </Picker>
+          </Item>
+        </Col>
+      </Row>
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            If other, details<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Specify your ocupation"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={occupationDetail}
+              keyboardType={'default'}
+              onChangeText={(text) => setOccupationDetail(text)}
+              testID="editOccupationDetail"
+            />
+          </Item>
+        </Col>
+      </Row>
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Address<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter Address Details"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientAddress}
+              keyboardType={'default'}
+              onChangeText={(text) => setPatientAddress(text)}
+              testID="editAddress"
+            />
+          </Item>
+        </Col>
+      </Row>
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            No and Street<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter No and Street"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientNoAndStreet}
+              keyboardType={'default'}
+              onChangeText={(text) => setPatientNoAndStreet(text)}
+              testID="editNoAndStreet"
+            />
+          </Item>
+        </Col>
+      </Row>
+
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            City<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter City"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientCity}
+              keyboardType={'default'}
+              onChangeText={(text) => setPatientCity(text)}
+              testID="editCity"
+            />
+          </Item>
+        </Col>
+      </Row>
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            State<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter State"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientState}
+              keyboardType={'default'}
+              onChangeText={(text) => setPatientState(text)}
+              testID="editState"
+            />
+          </Item>
+        </Col>
+      </Row>
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Country<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter Country"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientCountry}
+              keyboardType={'default'}
+              onChangeText={(text) => setPatientCountry(text)}
+              testID="editCountry"
+            />
+          </Item>
+        </Col>
+      </Row>
+
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Phone Number<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter Phone Number"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientPhoneNumber}
+              keyboardType={'number-pad'}
+              onChangeText={(text) => setPatientPhoneNumber(text)}
+              testID="editMobileNo"
+            />
+          </Item>
+        </Col>
+      </Row>
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Email ID<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <Input
+              placeholder="Enter Email ID"
+              placeholderTextColor={'#CDD0D9'}
+              returnKeyType={'next'}
+              value={patientEmail}
+              keyboardType={'default'}
+              onChangeText={(text) => setPatientEmail(text)}
+              testID="editEmailId"
+            />
+          </Item>
+        </Col>
+      </Row>
+      <View style={styles.ButtonView}>
+        <TouchableOpacity
+          style={styles.submit_ButtonStyle}
+          onPress={() =>
+            patientName &&
+            patientGender &&
+            patientAge &&
+            patientDob &&
+            relationship &&
+            relationshipDetail &&
+            occupation &&
+            occupationDetail &&
+            patientAddress &&
+            patientNoAndStreet &&
+            patientCity &&
+            patientState &&
+            patientCountry &&
+            patientPhoneNumber &&
+            patientEmail
+              ? updateSubmissionDetails({
+                  patientName: patientName,
+                  patientGender: patientGender,
+                  patientAge: patientAge,
+                  patientDob: patientDob,
+                  relationship: relationship,
+                  relationshipDetail: relationshipDetail,
+                  occupation: occupation,
+                  occupationDetail: occupationDetail,
+                  patientAddress: patientAddress,
+                  patientNoAndStreet: patientNoAndStreet,
+                  patientCity: patientCity,
+                  patientState: patientState,
+                  patientCountry: patientCountry,
+                  patientPhoneNumber: patientPhoneNumber,
+                  patientEmail: patientEmail,
+                })
+              : toastMeassage('Unable to Submit Claim, Please fill all details')
+          }
+          testID="submitDetails3">
+          <Text style={{color: '#fff'}}>Submit And Continue</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+export default InsuredPersonHospitalized;
+//  const [patientName, setPatientName] = useState('');
+// const [patientGender, setPatientGender] = useState();
+// const [patientAge, setPatientAge] = useState('');
+// const [patientDob, setPatientDob] = useState();
+// const [isVisible, setIsVisible] = useState(false);
+// const [relationship, setRelationship] = useState('');
+// const [relationshipDetail, setRelationshipDetail] = useState('');
+// const [occupation, setOccupation] = useState();
+// const [occupationDetail, setOccupationDetail] = useState('');
+// const [patientAddress, setPatientAddress] = useState('');
+// const [patientNoAndStreet, setPatientNoAndStreet] = useState('');
+// const [patientCity, setPatientCity] = useState('');
+// const [patientState, setPatientState] = useState('');
+// const [patientCountry, setPatientCountry] = useState('');
+// const [patientPhoneNumber, setPatientPhoneNumber] = useState('');
+// const [patientEmail, setPatientEmail] = useState('');

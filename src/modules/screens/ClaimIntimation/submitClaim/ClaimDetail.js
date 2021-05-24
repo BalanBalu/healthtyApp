@@ -1,14 +1,33 @@
-import React, { PureComponent } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Text, View,  Item, Input, Radio, CheckBox } from 'native-base';
 import { TouchableOpacity, FlatList, } from 'react-native'
 import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
 import { primaryColor } from '../../../../setup/config';
+import {toastMeassage} from '../../../common';
 
 
 
 
-const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
+const ClaimDetail = (props) => {
+    const {isSelected, ListOfData, checkBoxClick,updateSubmissionDetails} = props;
+    const [preHospitalizationExpenses, setPreHospitalizationExpenses] = useState('');
+    const [hospitalizationExpenses, setHospitalizationExpenses] = useState('');
+    const [postHospitalizationExpenses, setPostHospitalizationExpenses] = useState('');
+    const [healthCheckupCost, setHealthCheckupCost] = useState('');
+    const [ambulanceCharges, setAmbulanceCharges] = useState('');
+    const [othersCode, setOthersCode] = useState('');
+    const [totalClaim, setTotalClaim] = useState('');
+    const [preHospitalizationPeriod, setPreHospitalizationPeriod] = useState('');
+    const [postHospitalizationPeriod, setPostHospitalizationPeriod] = useState('');
+    const [claimForDomiciliaryHospitalization, setClaimForDomiciliaryHospitalization] = useState('');
+    const [hospitalDailyCash, setHospitalDailyCash] = useState('');
+    const [surgicalCash, setSurgicalCash] = useState('');
+    const [criticalIllness, setCriticalIllness] = useState('');
+    const [convalescence, setConvalescence] = useState('');
+    const [lumsumBenefit, setLumsumBenefit] = useState('');
+    const [others, setOthers] = useState('');
+    const [totalClaimValue, setTotalClaimValue] = useState('');
 
     return (
         <View>
@@ -24,12 +43,11 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Pre hospitalization Expense"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
+                              value={preHospitalizationExpenses}
+                            keyboardType={'default'}
                         //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                          onChangeText={(text) =>setPreHospitalizationExpenses(text)}
+                        
                         />
                     </Item>
                 </Col>
@@ -45,12 +63,11 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Hospitalization Expenses"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
-                            keyboardType={'number-pad'}
+                              value={hospitalizationExpenses}
+                            keyboardType={'default'}
                         //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                        onChangeText={(text) =>setHospitalizationExpenses(text)}
+
                         />
                     </Item>
                 </Col>
@@ -66,12 +83,11 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Post hospitalization Expense"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={postHospitalizationExpenses}
                             keyboardType={'number-pad'}
                         //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                        onChangeText={(text) =>setPostHospitalizationExpenses(text)}
+
                         />
                     </Item>
                 </Col>
@@ -87,12 +103,11 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Health checkup costs in Rs"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={healthCheckupCost}
                             keyboardType={'number-pad'}
                         //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                        onChangeText={(cost) =>setHealthCheckupCost(cost)}
+
                         />
                     </Item>
                 </Col>
@@ -108,12 +123,11 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Ambulance charges"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={ambulanceCharges}
                             keyboardType={'number-pad'}
                         //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                             onChangeText={(charges) =>setAmbulanceCharges(charges)}
+
                         />
                     </Item>
                 </Col>
@@ -129,12 +143,11 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Others code"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={othersCode}
                             keyboardType={'number-pad'}
                         //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                        onChangeText={(text) =>setOthersCode(text)}
+
                         />
                     </Item>
                 </Col>
@@ -150,12 +163,9 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter TOTAL"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={totalClaim}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setTotalClaim(text)}
                         />
                     </Item>
                 </Col>
@@ -171,12 +181,10 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Pre Hospitalization period"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={preHospitalizationPeriod}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setPreHospitalizationPeriod(text)}
+
                         />
                     </Item>
                 </Col>
@@ -192,12 +200,10 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Post Hospitalization period"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={postHospitalizationPeriod}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setPostHospitalizationPeriod(text)}
+
                         />
                     </Item>
                 </Col>
@@ -213,8 +219,8 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             color={primaryColor}
                             selectedColor={primaryColor}
                             standardStyle={true}
-                            selected={isSelected === true}
-                            onPress={() => this.setState({ isSelected: true })}
+                            selected={claimForDomiciliaryHospitalization === true}
+                            onPress={() => setClaimForDomiciliaryHospitalization(true)}
                         />
                         <Text style={styles.text}>Yes</Text>
 
@@ -223,9 +229,9 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                                 color={primaryColor}
                                 selectedColor={primaryColor}
                                 standardStyle={true}
-                                selected={isSelected === false}
-                                onPress={() => this.setState({ isSelected: false })}
-                            />
+                                selected={claimForDomiciliaryHospitalization === false}
+                                onPress={() => setClaimForDomiciliaryHospitalization(false)}
+                                />
                             <Text style={styles.text}>No</Text>
                             <Text style={{ width: '80%', marginTop: 10 }}> If yes, provide details in annexure</Text>
 
@@ -245,12 +251,10 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter health ceckup cost in Rs"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={hospitalDailyCash}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setHospitalDailyCash(text)}
+
                         />
                     </Item>
                 </Col>
@@ -266,12 +270,10 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter Surgical cash"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={surgicalCash}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setSurgicalCash(text)}
+
                         />
                     </Item>
                 </Col>
@@ -287,12 +289,10 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter in Rs"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={criticalIllness}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setCriticalIllness(text)}
+
                         />
                     </Item>
                 </Col>
@@ -308,12 +308,10 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter in Rs"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={convalescence}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setConvalescence(text)}
+
                         />
                     </Item>
                 </Col>
@@ -329,12 +327,10 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter in Rs"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={lumsumBenefit}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setLumsumBenefit(text)}
+
                         />
                     </Item>
                 </Col>
@@ -350,12 +346,10 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter in Rs"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={others}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setOthers(text)}
+
                         />
                     </Item>
                 </Col>
@@ -371,19 +365,17 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                             placeholder="Enter in Rs"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={totalClaimValue}
                             keyboardType={'number-pad'}
-                        //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                            onChangeText={(text) =>setTotalClaimValue(text)}
+
                         />
                     </Item>
                 </Col>
             </Row>
 
 
-            <FlatList
+            {/* <FlatList
                 data={ListOfData}
                 keyExtractor={(item, index) => index.toString()}
                 extraData={checkBoxClick}
@@ -396,7 +388,7 @@ const ClaimDetail = ({ isSelected, ListOfData, checkBoxClick }) => {
                         />
                         <Text style={styles.flatlistText}>{item.text}</Text>
                     </View>
-                )} />
+                )} /> */}
 
             <View style={styles.ButtonView}>
                 <TouchableOpacity style={styles.submit_ButtonStyle} >

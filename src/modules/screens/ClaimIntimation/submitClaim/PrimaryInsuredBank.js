@@ -1,12 +1,19 @@
-import React, { PureComponent } from 'react';
+import React,{useEffect, useState} from 'react';
 import { Text, View,Item, Input,} from 'native-base';
 import { TouchableOpacity,  } from 'react-native'
 import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
+import {toastMeassage} from '../../../common';
 
 
-const PrimaryInsuredBank = ({isSelected, isVisiblePicker, selectedAdmissionDate}) => {
-  
+const PrimaryInsuredBank = (props) => {
+  const {updateSubmissionDetails} = props;
+  const [PanCardDetail, setPanCardDetail] = useState('');
+  const [accountNo, setAccountNo] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [chequeDetails, setChequeDetails] = useState('');
+  const [ifscCode, setIfscCode] = useState('');
+
   return (
     <View>
     <Row
@@ -20,12 +27,11 @@ const PrimaryInsuredBank = ({isSelected, isVisiblePicker, selectedAdmissionDate}
             placeholder="Enter PAN number"
             placeholderTextColor={'#CDD0D9'}
             returnKeyType={'next'}
-            //   value={employeeId}
-            keyboardType={'number-pad'}
+              value={PanCardDetail}
+            keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
-          //   onChangeText={(enteredEmployeeIdText) =>
-          //     this.setState({employeeId: enteredEmployeeIdText})
-          //   }
+          onChangeText={(text) =>setPanCardDetail(text)}
+
           />
         </Item>
       </Col>
@@ -41,12 +47,11 @@ const PrimaryInsuredBank = ({isSelected, isVisiblePicker, selectedAdmissionDate}
             placeholder="Enter Bank Account No"
             placeholderTextColor={'#CDD0D9'}
             returnKeyType={'next'}
-            //   value={employeeId}
-            keyboardType={'number-pad'}
+              value={accountNo}
+            keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
-          //   onChangeText={(enteredEmployeeIdText) =>
-          //     this.setState({employeeId: enteredEmployeeIdText})
-          //   }
+          onChangeText={(text) =>setAccountNo(text)}
+
           />
         </Item>
       </Col>
@@ -62,12 +67,11 @@ const PrimaryInsuredBank = ({isSelected, isVisiblePicker, selectedAdmissionDate}
             placeholder="Enter Bank Branch Name"
             placeholderTextColor={'#CDD0D9'}
             returnKeyType={'next'}
-            //   value={employeeId}
-            keyboardType={'number-pad'}
+              value={bankName}
+            keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
-          //   onChangeText={(enteredEmployeeIdText) =>
-          //     this.setState({employeeId: enteredEmployeeIdText})
-          //   }
+          onChangeText={(text) =>setBankName(text)}
+
           />
         </Item>
       </Col>
@@ -83,12 +87,10 @@ const PrimaryInsuredBank = ({isSelected, isVisiblePicker, selectedAdmissionDate}
             placeholder="Enter Cheque dd payable details"
             placeholderTextColor={'#CDD0D9'}
             returnKeyType={'next'}
-            //   value={employeeId}
-            keyboardType={'number-pad'}
+              value={chequeDetails}
+            keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
-          //   onChangeText={(enteredEmployeeIdText) =>
-          //     this.setState({employeeId: enteredEmployeeIdText})
-          //   }
+          onChangeText={(text) =>setChequeDetails(text)}
           />
         </Item>
       </Col>
@@ -104,12 +106,11 @@ const PrimaryInsuredBank = ({isSelected, isVisiblePicker, selectedAdmissionDate}
             placeholder="Enter IFSC Code of bank branch "
             placeholderTextColor={'#CDD0D9'}
             returnKeyType={'next'}
-            //   value={employeeId}
-            keyboardType={'number-pad'}
+              value={ifscCode}
+            keyboardType={'default'}
           //   editable={employeeId == undefined ? true : false}
-          //   onChangeText={(enteredEmployeeIdText) =>
-          //     this.setState({employeeId: enteredEmployeeIdText})
-          //   }
+          onChangeText={(text) =>setIfscCode(text)}
+
           />
         </Item>
       </Col>

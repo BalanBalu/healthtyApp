@@ -25,6 +25,7 @@ export default class ClaimInitiationSubmission extends Component {
       ailment: '',
       contactNum: '',
       selectedAdmissionDate: '',
+      selectedDischargeDate: '',
       errorMsg: '',
       isVisibleDatePicker: false,
       isModalVisible: false,
@@ -59,6 +60,13 @@ export default class ClaimInitiationSubmission extends Component {
       console.error('Error on Date Picker: ', error);
     }
   };
+  onPressDischargeDateValue = (date) => {
+    try {
+      this.setState({isVisibleDischargeDatePicker: false, selectedDischargeDate: date});
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
+  };
   onPressSubmitClaimData = async () => {
     const {
       policyNo,
@@ -66,6 +74,7 @@ export default class ClaimInitiationSubmission extends Component {
       employeeId,
       hospitalName,
       selectedAdmissionDate,
+      selectedDischargeDate,
       ailment,
       contactNum,
       amount,
@@ -107,6 +116,7 @@ export default class ClaimInitiationSubmission extends Component {
         });
         return false;
       }
+      
       if (!ailment) {
         this.setState({errorMsg: 'Please Enter Ailment', isModalVisible: true});
         return false;
@@ -152,6 +162,7 @@ export default class ClaimInitiationSubmission extends Component {
         employeeId,
         hospitalName,
         dateOfAdmission: selectedAdmissionDate,
+        dateOfDischarge:selectedDischargeDate,
         ailment,
         amount,
         contactNumber: contactNum,
@@ -205,7 +216,9 @@ export default class ClaimInitiationSubmission extends Component {
       ailment,
       contactNum,
       selectedAdmissionDate,
+      selectedDischargeDate,
       isVisibleDatePicker,
+      isVisibleDischargeDatePicker,
       isModalVisible,
       errorMsg,
       isLoading,
@@ -403,6 +416,66 @@ export default class ClaimInitiationSubmission extends Component {
               </Item>
             </Col>
           </Row>
+
+          <Row
+            size={4}
+            style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+            <Col size={1}>
+              <Text style={styles.text}>Date of Discharge</Text>
+              <Item regular style={{borderRadius: 6, height: 50}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({isVisibleDischargeDatePicker: !isVisibleDischargeDatePicker});
+                  }}
+                  style={{flexDirection: 'row'}}>
+                  <Icon
+                    name="md-calendar"
+                    style={{
+                      padding: 5,
+                      fontSize: 20,
+                      marginTop: 1,
+                      color: primaryColor,
+                    }}
+                  />
+                  <Text
+                    style={
+                      selectedDischargeDate
+                        ? {
+                            marginLeft: 5,
+                            fontFamily: 'Roboto',
+                            fontSize: 13,
+                            textAlign: 'center',
+                            marginTop: 8,
+                            color: '#000',
+                          }
+                        : {
+                            color: '#909090',
+                            fontFamily: 'Roboto',
+                            fontSize: 13,
+                            textAlign: 'center',
+                            marginTop: 8,
+                          }
+                    }>
+                    {selectedDischargeDate
+                      ? formatDate(selectedDischargeDate, 'DD/MM/YYYY')
+                      : 'Date of Discharge'}
+                  </Text>
+                  <DateTimePicker
+                    mode={'date'}
+                    minimumDate={new Date()}
+                    // maximumDate={new Date()}
+                    value={selectedDischargeDate}
+                    isVisible={isVisibleDischargeDatePicker}
+                    onConfirm={this.onPressDischargeDateValue}
+                    onCancel={() =>
+                      this.setState({isVisibleDischargeDatePicker: !isVisibleDischargeDatePicker})
+                    }
+                  />
+                </TouchableOpacity>
+              </Item>
+            </Col>
+          </Row>
+
           <Row
             size={4}
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
