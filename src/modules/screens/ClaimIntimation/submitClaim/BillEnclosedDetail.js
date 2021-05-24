@@ -47,117 +47,7 @@ const BillEnclosedDeatil = (props) => {
 
   };
 
- const renderItem = ({ item }) => {
-    <View style={{padding: 10, marginTop: 10, marginBottom: 20}}>
-      <View style={styles.form_field_view}>
-        <Text style={[styles.form_field_inline_label]}>SL No</Text>
-        <Text
-          style={[
-            styles.form_field,
-            {paddingTop: 15, paddingLeft: 10},
-          ]}>
-          1
-        </Text>
-      </View>
-      <View style={styles.form_field_view}>
-        <Text style={[styles.form_field_inline_label]}>BILL No</Text>
-        {/* <Text style={styles.form_field}>{item.billNo}</Text> */}
-        <Input
-          placeholder="Enter BILL No "
-          placeholderTextColor={'#CDD0D9'}
-          returnKeyType={'next'}
-          value={item.billNo}
-          style={styles.form_field}
-          keyboardType={'default'}
-          //   editable={employeeId == undefined ? true : false}
-          onChangeText={(text) => setBillNo(text)}
-          testID="editBillNo"
-        />
-      </View>
-      <View style={styles.form_field_view}>
-        <View
-          style={[
-            styles.form_field_inline_label,
-            {
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            },
-          ]}>
-          <Text style={{fontSize: 12}}>Date of</Text>
-
-          <Text style={{fontSize: 12}}>hospitalization</Text>
-        </View>
-        <TouchableOpacity
-          style={[styles.form_field, {flexDirection: 'row'}]}
-          onPress={openPicker}>
-          <Icon name="md-calendar" style={styles.calenderStyle} />
-          <Text
-            style={
-              item.dateOfHospitalizationForBill
-                ? styles.timeplaceHolder
-                : styles.afterTimePlaceholder
-            }>
-            {item.dateOfHospitalizationForBill
-              ? formatDate(dateOfHospitalizationForBill, 'DD/MM/YYYY')
-              : new Date()}
-          </Text>
-          <DateTimePicker
-            mode={'date'}
-            // minimumDate={subTimeUnit(new Date(), 7, 'days')}
-            // maximumDate={new Date()}
-            value={item.dateOfHospitalizationForBill}
-            isVisible={isVisible}
-            onConfirm={onPressConfirmDateValue}
-            onCancel={onCancelPicker}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.form_field_view}>
-        <Text style={[styles.form_field_inline_label]}>
-          Inssured by
-        </Text>
-        <Input
-          placeholder="Enter Inssured by details "
-          placeholderTextColor={'#CDD0D9'}
-          returnKeyType={'next'}
-          value={item.issuedBy}
-          style={styles.form_field}
-          keyboardType={'default'}
-          //   editable={employeeId == undefined ? true : false}
-          onChangeText={(text) => setIssuedBy(text)}
-          testID="editIssuedBy"
-        />
-      </View>
-      <View style={styles.form_field_view}>
-        <Text style={[styles.form_field_inline_label]}>Towards</Text>
-        <Input
-          placeholder="Enter Towards details "
-          placeholderTextColor={'#CDD0D9'}
-          returnKeyType={'next'}
-          value={item.towards}
-          style={styles.form_field}
-          keyboardType={'default'}
-          //   editable={employeeId == undefined ? true : false}
-          onChangeText={(text) => setTowards(text)}
-          testID="editTowards"
-        />
-      </View>
-      <View style={styles.form_field_view}>
-        <Text style={[styles.form_field_inline_label]}>AMOUNT(RS)</Text>
-        <Input
-          placeholder="Enter Amount "
-          placeholderTextColor={'#CDD0D9'}
-          returnKeyType={'next'}
-          value={item.amount}
-          style={styles.form_field}
-          keyboardType={'number-pad'}
-          onChangeText={(text) => setAmount(text)}
-          testID="editAmount"
-        />
-      </View>
-    </View>
- }
+  renderItem = ({ item }) => (<View key={item.key}><Text>{item.title}</Text></View>);
 
   console.log('bilEnclosedList', bilEnclosedList.length);
 
@@ -288,13 +178,123 @@ const BillEnclosedDeatil = (props) => {
           <Text style={{color: '#fff'}}>Save</Text>
         </TouchableOpacity>
       </View>
-      {/* {bilEnclosedList.length!=0 ? ( */}
+      {bilEnclosedList.length!=0 ? (
         <FlatList
           data={bilEnclosedList}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={renderItem}
+          renderItem={(item, index) => (
+            <View style={{padding: 10, marginTop: 10, marginBottom: 20}}>
+              <View style={styles.form_field_view}>
+                <Text style={[styles.form_field_inline_label]}>SL No</Text>
+                <Text
+                  style={[
+                    styles.form_field,
+                    {paddingTop: 15, paddingLeft: 10},
+                  ]}>
+                  1
+                </Text>
+              </View>
+              <View style={styles.form_field_view}>
+                <Text style={[styles.form_field_inline_label]}>BILL No</Text>
+                {/* <Text style={styles.form_field}>{item.billNo}</Text> */}
+                <Input
+                  placeholder="Enter BILL No "
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={item.billNo}
+                  style={styles.form_field}
+                  keyboardType={'default'}
+                  //   editable={employeeId == undefined ? true : false}
+                  onChangeText={(text) => setBillNo(text)}
+                  testID="editBillNo"
+                />
+              </View>
+              <View style={styles.form_field_view}>
+                <View
+                  style={[
+                    styles.form_field_inline_label,
+                    {
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    },
+                  ]}>
+                  <Text style={{fontSize: 12}}>Date of</Text>
+
+                  <Text style={{fontSize: 12}}>hospitalization</Text>
+                </View>
+                <TouchableOpacity
+                  style={[styles.form_field, {flexDirection: 'row'}]}
+                  onPress={openPicker}>
+                  <Icon name="md-calendar" style={styles.calenderStyle} />
+                  <Text
+                    style={
+                      item.dateOfHospitalizationForBill
+                        ? styles.timeplaceHolder
+                        : styles.afterTimePlaceholder
+                    }>
+                    {item.dateOfHospitalizationForBill
+                      ? formatDate(dateOfHospitalizationForBill, 'DD/MM/YYYY')
+                      : new Date()}
+                  </Text>
+                  <DateTimePicker
+                    mode={'date'}
+                    // minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                    // maximumDate={new Date()}
+                    value={item.dateOfHospitalizationForBill}
+                    isVisible={isVisible}
+                    onConfirm={onPressConfirmDateValue}
+                    onCancel={onCancelPicker}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.form_field_view}>
+                <Text style={[styles.form_field_inline_label]}>
+                  Inssured by
+                </Text>
+                <Input
+                  placeholder="Enter Inssured by details "
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={item.issuedBy}
+                  style={styles.form_field}
+                  keyboardType={'default'}
+                  //   editable={employeeId == undefined ? true : false}
+                  onChangeText={(text) => setIssuedBy(text)}
+                  testID="editIssuedBy"
+                />
+              </View>
+              <View style={styles.form_field_view}>
+                <Text style={[styles.form_field_inline_label]}>Towards</Text>
+                <Input
+                  placeholder="Enter Towards details "
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={item.towards}
+                  style={styles.form_field}
+                  keyboardType={'default'}
+                  //   editable={employeeId == undefined ? true : false}
+                  onChangeText={(text) => setTowards(text)}
+                  testID="editTowards"
+                />
+              </View>
+              <View style={styles.form_field_view}>
+                <Text style={[styles.form_field_inline_label]}>AMOUNT(RS)</Text>
+                <Input
+                  placeholder="Enter Amount "
+                  placeholderTextColor={'#CDD0D9'}
+                  returnKeyType={'next'}
+                  value={item.amount}
+                  style={styles.form_field}
+                  keyboardType={'number-pad'}
+                  onChangeText={(text) => setAmount(text)}
+                  testID="editAmount"
+                />
+              </View>
+            </View>
+          )}
         />
-      {/* ) : null} */}
+      ) : null}
       { bilEnclosedList.length ? (
         <View style={styles.form_field_view}>
           <Text style={[styles.form_field_inline_label]}>Action</Text>
