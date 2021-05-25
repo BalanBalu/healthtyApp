@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
-import {Text, View, Container, Content, Card, Item, Input} from 'native-base';
-import {TouchableOpacity, FlatList, PermissionsAndroid} from 'react-native';
+import {Text, View, Container, Content, Card, Item, Input,Toast} from 'native-base';
+import {TouchableOpacity, FlatList, PermissionsAndroid,ScrollView} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
@@ -274,12 +274,13 @@ class SubmitClaimPageTwo extends PureComponent {
       // updateId: '60ab9eed08e9af2db462b620',
       claimSubmissionAttachments: [],
       section1Disable: true,
-      section2Disable: false,
-      section4Disable: false,
-      section5Disable: false,
-      section6Disable: false,
+      section2Disable: true,
+      section4Disable: true,
+      section5Disable: true,
+      section6Disable: true,
       section7Disable: false,
       updateId:this.props.navigation.getParam('dataId') || null,
+      disabled: 0,
     };
     this.submissionDetails=this.props.navigation.getParam('submissionDetails')
   }
@@ -342,30 +343,50 @@ class SubmitClaimPageTwo extends PureComponent {
 
   updateHospitalDetail = async (data) => {
     let hospitalDetail = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (hospitalDetail == true) {
       this.setState({section2Disable: true});
     }
   };
   updateInsuredPersonHospitalizedDetails = async (data) => {
     let personDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (personDetails == true) {
       this.setState({section4Disable: true});
     }
   };
   updateDocumentSubmitted = async (data) => {
     let documentSubmitted = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (documentSubmitted == true) {
       this.setState({section5Disable: true});
     }
   };
   updateNonNetworkHospital = async (data) => {
     let nonNetworkHospital = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (nonNetworkHospital == true) {
       this.setState({section6Disable: true});
     }
   };
   updateDeclarationByHospital = async (data) => {
     let declarationByHospital = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (declarationByHospital == true) {
       this.setState({section7Disable: true});
     }
@@ -494,6 +515,14 @@ class SubmitClaimPageTwo extends PureComponent {
       console.log(err);
     }
   };
+
+  updateDisableCout = () => {
+    const { disabled } = this.state
+    this.setState({ disabled: disabled + 1 })
+  }
+
+
+
   render() {
     const data = [
       {title: 'Details of hospital', id: 1},
@@ -508,10 +537,11 @@ class SubmitClaimPageTwo extends PureComponent {
       {title: 'Declaration by hospital', id: 6},
       {title: 'Attachment Details', id: 7},
     ];
-    const {showCard, show} = this.state;
+    const {showCard, show,disabled} = this.state;
     return (
-      <Container>
-        <Content contentContainerStyle={{padding: 10}}>
+      <ScrollView style={{ padding: 10 }}
+      ref={(c) => { this.scroll = c }}
+    >
           <FlatList
             data={data}
             keyExtractor={(item, index) => index.toString()}
@@ -835,6 +865,7 @@ class SubmitClaimPageTwo extends PureComponent {
                     </View>)}
                   </Card>
                 ) : (
+                  <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
                   <Card>
                     <TouchableOpacity
                       style={{
@@ -864,6 +895,7 @@ class SubmitClaimPageTwo extends PureComponent {
                       </Row>
                     </TouchableOpacity>
                   </Card>
+                  </View>
                 )}
 
                 {/* alignItems: 'center',
@@ -893,8 +925,7 @@ class SubmitClaimPageTwo extends PureComponent {
               </View>
             )}
           />
-        </Content>
-      </Container>
+        </ScrollView>
     );
   }
 }
