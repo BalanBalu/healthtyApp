@@ -32,6 +32,7 @@ import {
   getListByTpaCode,
   updateClaimSubmission,
 } from '../../../providers/corporate/corporate.actions';
+import styles from '../Styles';
 
 const dropdownData = [
   'Select your Item',
@@ -403,6 +404,11 @@ class SubmitClaim extends PureComponent {
               </View>
             )}
           />
+             <View style={styles.ButtonView}>
+               <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() =>{ this.props.navigation.navigate('SubmitClaimPageTwo',{dataId :this.state.updateId})}}>
+                   <Text style={{ color: "#fff" }}>Next</Text>
+                </TouchableOpacity>
+            </View>
         </Content>
       </Container>
     );

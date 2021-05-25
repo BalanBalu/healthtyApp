@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Text, View, Container, Content, Card, } from 'native-base';
+import { Text, View, Container, Content, Card,Toast } from 'native-base';
 import { TouchableOpacity, FlatList, } from 'react-native'
 import { Col, Row } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -12,7 +12,11 @@ import DocumentSubmitted from './DocumentSubmitted'
 import NonNetworkHospital from './NonNetworkHospital'
 import DeclarationByHospital from './DeclarationByHospital'
 import AttachmentDetails from './AttachmentDetails'
-
+import {
+  createClaimSubmission,
+  getListByTpaCode,
+  updateClaimSubmission,
+} from '../../../providers/corporate/corporate.actions';
 const dropdownData = [
   'Select your Item',
   'Emergency',
@@ -20,14 +24,27 @@ const dropdownData = [
   'Day Care',
   'Maternity',
 ];
-const Occupation = [
-  'Select your Item',
-  'Self employee',
-  'Home maker',
-  'student',
-  'Retired',
-  'Service',
+const TimeOfAdmissionHours = [
+  'Select',0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23
+  
 ];
+const TimeOfAdmissionMinute = [
+  'Select',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
+  33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60
+  
+];
+
+const TimeOfDischargeHours = [
+  'Select',0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23
+  
+];
+const TimeOfDischargeMinute = [
+  'Select',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
+  33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60
+  
+];
+
+
 const RoomCategory = [
   'Select your Item',
   'Day Care',
@@ -83,7 +100,8 @@ class SubmitClaimPageTwo extends PureComponent {
       RoomCategory: '',
       Hospitalization: '',
       InjuryCause: '',
-      checkBoxClick: false
+      checkBoxClick: false,
+      updateId:this.props.navigation.getParam('dataId') || null,
     }
   }
 
@@ -115,10 +133,28 @@ openPicker =()=>{
 }
 
 updateSubmissionDetails = async (data) => {
-    try {
-      console.log('data', data);
+  try {
+    console.log('data', data);
+    const {submissionDetails} = this.state;
+    let reqData = {
+      _id: this.state.updateId,
+      submissionDetails: data,
+    };
+    console.log('reqData', reqData);
+    let result = await updateClaimSubmission(reqData);
+    console.log('result', result);
+    console.log('result', result._id);
 
-} catch (error) {
+    if (result) {
+      Toast.show({
+        text: 'Successfully Saved the Details',
+        duration: 3000,
+        type: "success"
+      })
+      this.setState({sectionCDisable: true, updateId: result._id});
+    }
+    console.log('updateId', this.state.updateId);
+  } catch (error) {
     console.error('Error on: ', error);
   }
 };
@@ -177,6 +213,10 @@ updateSubmissionDetails = async (data) => {
                       {item.id === 2 && < PatientAdmittedDetails
                         dropdownData={dropdownData}
                         dischargeTimeStatus={dischargeTimeStatus}
+                        TimeOfAdmissionHours={TimeOfAdmissionHours}
+                        TimeOfAdmissionMinute={TimeOfAdmissionMinute}
+                        TimeOfDischargeHours={TimeOfDischargeHours}
+                        TimeOfDischargeMinute={TimeOfDischargeMinute}
                         updateSubmissionDetails={(data) =>
                           this.updateSubmissionDetails(data)
                         }
@@ -209,6 +249,7 @@ updateSubmissionDetails = async (data) => {
                       }
                     </View>
                   </Card>) : (
+                   
                  <Card>
                  <TouchableOpacity
                    style={{

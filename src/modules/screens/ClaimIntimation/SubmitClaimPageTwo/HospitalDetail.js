@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Text, View, Item, Input, } from 'native-base';
+import { Text, View, Item, Input,Button } from 'native-base';
 import { TouchableOpacity, } from 'react-native'
 import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
@@ -35,12 +35,12 @@ const HospitalDetail = (props) => {
                 hospitalName: hospitalName,
                 hospitalId: hospitalId,
                 hospitalType: hospitalType,
-                doctorFirstName: doctorFirstName,
-                doctorMiddleName: doctorMiddleName,
-                doctorLastName: doctorLastName,
+                treatingDoctorName: doctorFirstName,
+                treatingDoctorMiddleName: doctorMiddleName,
+                treatingDoctorLastName: doctorLastName,
                 qualification: qualification,
-                streetNumber: streetNumber,
-                phoneNumber: phoneNumber,
+                registrationStateCode  : streetNumber,
+                hospitalPhoneNumber: phoneNumber,
             })
         } else {
             if (hospitalName === '') {
@@ -283,9 +283,9 @@ const HospitalDetail = (props) => {
                 </Col>
             </Row>
             <View style={styles.ButtonView}>
-                <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() => submmitData()}>
+                <Button style={styles.submit_ButtonStyle} type="reset" onPress={() => submmitData()}>
                     <Text style={{ color: "#fff" }}>Submit And Continue</Text>
-                </TouchableOpacity>
+                </Button>
             </View>
             <ModalPopup
                 errorMessageText={errorMsg}
