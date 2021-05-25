@@ -2,26 +2,12 @@ import React, {useEffect, useState} from 'react';
 import { Text, View, CheckBox } from 'native-base';
 import { TouchableOpacity, FlatList, } from 'react-native'
 import styles from '../Styles';
+import {toastMeassage} from '../../../common';
 
 
 
-// { text: 'Claim form duly signed', },
-// { text: 'CT/MR/USG/HPE investigation reports' },
-// { text: 'Copy of the Pre-authorization approval letter' },
-// { text: 'Copy of Photo ID Card of patient Verified by hospital' },
-// { text: 'Hospital Discharge summary' },
-// { text: 'Operation Theatre Notes' },
-// { text: 'Hospital main bill' },
-// { text: 'Any other, please specify' },
-// { text: 'Investigation reports' },
-// { text: 'Original Pre-authorization request' },
-// { text: 'Doctor’s reference slip for investigation' },
-// { text: 'ECG' },
-// { text: 'Pharmacy bills' },
-// { text: 'MLC reports & Police FIR' },
-// { text: 'Hospital break-up bill' },
 const DocumentSubmitted = (props) => {
-    const {ListOfData, checkBoxClick, updateClaimDetails} = props;
+    const {updateDocumentSubmitted} = props;
 
     const [claimFormDulySigned, setCheckBox1] = useState(false);
     const [ctInvestigationReports, setCheckBox2] = useState(false);
@@ -288,13 +274,29 @@ const DocumentSubmitted = (props) => {
         <Text style={styles.flatlistText}>Hospital Break-up bill</Text>
       </View>
             <View style={styles.ButtonView}>
-                <TouchableOpacity style={styles.submit_ButtonStyle} >
+                <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() =>
+            updateNonNetworkHospital({
+              claimFormDulySigned : claimFormDulySigned,
+              ctInvestigationReports : ctInvestigationReports,
+              copyOfPreAuthApprovalLetter : copyOfPreAuthApprovalLetter,
+              patientVerifiedByHospital : patientVerifiedByHospital,
+              hospitalDischargeSummary : hospitalDischargeSummary,
+              operationTheatreNotes : operationTheatreNotes,
+              hospitalMainBill : hospitalMainBill,
+              anyOthers : anyOthers,
+              investigationReports : investigationReports,
+              originalPreAuthRequest : originalPreAuthRequest,
+              DoctorReferenceSlipForInvestigation : DoctorReferenceSlipForInvestigation,
+              ecg : ecg,
+              pharmacyBill : pharmacyBill,
+              MLCReportsAndPoliceFIR:MLCReportsAndPoliceFIR,
+              hospitalBreakupBill:hospitalBreakupBill
+                })}>
                     <Text style={{ color: "#fff" }}>Submit And Continue</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 }
-
 
 export default DocumentSubmitted

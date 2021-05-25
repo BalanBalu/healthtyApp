@@ -4,8 +4,10 @@ import {TouchableOpacity} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
 import styles from '../Styles';
 import {primaryColor} from '../../../../setup/config';
+import {toastMeassage} from '../../../common';
 
 const NonNetworkHospital = (props) => {
+  const {updateNonNetworkHospital}=props;
   const [address, setAddress] = useState('');
   const [pinCode, setPinCode] = useState();
   const [noAndStreet, setNoAndStreet] = useState('');
@@ -16,7 +18,7 @@ const NonNetworkHospital = (props) => {
   const [stateCode, setStateCode] = useState();
   const [hospitalPan, setHospitalPan] = useState('');
   const [noOfInpatientBeds, setNoOfInpatientBeds] = useState('');
-  const [hospitalFalitilies, setHospitalFalitilies] = useState();
+  const [ot, setOT] = useState();
   const [icu, setICU] = useState();
   const [others, setOthers] = useState('');
   return (
@@ -227,31 +229,22 @@ const NonNetworkHospital = (props) => {
               color={primaryColor}
               selectedColor={primaryColor}
               standardStyle={true}
-              selected={hospitalFalitilies === 'Male'}
-              onPress={() => setHospitalFalitilies('Male')}
+              selected={ot === true}
+              onPress={() => setOT(true)}
             />
-            <Text style={styles.text}>Male</Text>
+            <Text style={styles.text}>Yes</Text>
 
             <View style={styles.radioButtonStyle}>
               <Radio
                 color={primaryColor}
                 selectedColor={primaryColor}
                 standardStyle={true}
-                selected={hospitalFalitilies === 'Female'}
-                onPress={() => setHospitalFalitilies('Female')}
-              />
-              <Text style={styles.text}>Female</Text>
+                selected={ot === false}
+              onPress={() => setOT(false)}
+            />
+            <Text style={styles.text}>No</Text>
             </View>
-            <View style={styles.radioButtonStyle}>
-              <Radio
-                color={primaryColor}
-                selectedColor={primaryColor}
-                standardStyle={true}
-                selected={hospitalFalitilies === 'Other'}
-                onPress={() => setHospitalFalitilies('Other')}
-              />
-              <Text style={styles.text}>Other</Text>
-            </View>
+           
           </Item>
 
           <Text style={styles.text}>
@@ -263,31 +256,22 @@ const NonNetworkHospital = (props) => {
               color={primaryColor}
               selectedColor={primaryColor}
               standardStyle={true}
-              selected={icu === 'Male'}
-                onPress={() => setICU('Male')}
+              selected={icu === true}
+                onPress={() => setICU(true)}
             />
-            <Text style={styles.text}>Male</Text>
+            <Text style={styles.text}>Yes</Text>
 
             <View style={styles.radioButtonStyle}>
               <Radio
                 color={primaryColor}
                 selectedColor={primaryColor}
                 standardStyle={true}
-                selected={icu === 'Female'}
-                onPress={() => setICU('Female')}
+                selected={icu === false}
+                onPress={() => setICU(false)}
               />
-              <Text style={styles.text}>Female</Text>
+              <Text style={styles.text}>No</Text>
             </View>
-            <View style={styles.radioButtonStyle}>
-              <Radio
-                color={primaryColor}
-                selectedColor={primaryColor}
-                standardStyle={true}
-                selected={icu === 'Other'}
-                onPress={() => setICU('Other')}
-              />
-              <Text style={styles.text}>Other</Text>
-            </View>
+          
           </Item>
         </Col>
       </Row>
@@ -311,7 +295,34 @@ const NonNetworkHospital = (props) => {
         </Col>
       </Row>
       <View style={styles.ButtonView}>
-        <TouchableOpacity style={styles.submit_ButtonStyle}>
+        <TouchableOpacity style={styles.submit_ButtonStyle}  onPress={() =>
+            address &&
+            pinCode &&
+            state &&
+            city &&
+            noAndStreet &&
+            country &&
+            stateCode &&
+            hospitalPan &&
+            phoneNo &&
+            noOfInpatientBeds &&
+            others 
+              ? updateNonNetworkHospital({
+                nonNetworkHospitalAddress : address,
+                nonNetworkHospitalPinCode : pinCode,
+                nonNetworkHospitalState : state,
+                nonNetworkHospitalCity : city,
+                nonNetworkHospitalNoAndStreet : noAndStreet,
+                nonNetworkHospitalCountry : country,
+                nonNetworkHospitalRegistrationStateCode : stateCode,
+                nonNetworkHospitalPlan : hospitalPan,
+                nonNetworkHospitalMobileNumber : phoneNo,
+                nonNetworkHospitalInpatientBeds : noOfInpatientBeds,
+                othersNonNetworkHospital : others,
+                OT : ot,
+                ICU : icu,
+                })
+              : toastMeassage('Unable to Submit Claim, Please fill all details')}>
           <Text style={{color: '#fff'}}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>

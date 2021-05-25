@@ -5,11 +5,11 @@ import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { subTimeUnit, formatDate } from '../../../../setup/helpers';
-
+import {toastMeassage} from '../../../common';
 
 
 const DeclarationByHospital = (props) => {
-    const {updateDeclarationByInsuredDetails} = props;
+    const {updateDeclarationByHospital} = props;
     const [declarationDate, setDeclarationDate] = useState();
     const [isVisible, setIsVisible] = useState(false);
     const [place, setPlace] = useState('');
@@ -103,7 +103,16 @@ const DeclarationByHospital = (props) => {
                 </Col>
             </Row>
             <View style={styles.ButtonView}>
-                <TouchableOpacity style={styles.submit_ButtonStyle} >
+                <TouchableOpacity style={styles.submit_ButtonStyle}onPress={() =>
+            declarationDate &&
+            place &&
+            signatureOfHospitalAuthority 
+              ? updateDeclarationByHospital({
+                declarationDate : declarationDate,
+                declarationPlace : place,
+                authoritySign : signatureOfHospitalAuthority
+                })
+              : toastMeassage('Unable to Submit Claim, Please fill all details')}>
                     <Text style={{ color: "#fff" }}>Submit</Text>
                 </TouchableOpacity>
             </View>

@@ -166,6 +166,11 @@ const submmitData = () => {
             setisModalVisible(true)
             return false
         }
+        if (admissionType === '' || admissionType ===  'Select your Item' ) {
+            seterrorMsg('Please enter admission type')
+            setisModalVisible(true)
+            return false
+        }
     }
 
 

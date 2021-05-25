@@ -32,8 +32,7 @@ import {
   getListByTpaCode,
   updateClaimSubmission,
 } from '../../../providers/corporate/corporate.actions';
-import styles from '../Styles'
-
+import styles from '../Styles';
 
 const dropdownData = [
   'Select your Item',
@@ -105,13 +104,21 @@ class SubmitClaim extends PureComponent {
       claimListData: this.props.navigation.getParam('claimListData') || null,
       sectionADisable: true,
       sectionBDisable: false,
-      sectionCDisable: false,
+      sectionCDisable: true,
       sectionDDisable: false,
       sectionEDisable: false,
       sectionFDisable: true,
       sectionGDisable: false,
       sectionHDisable: false,
       updateId: '',
+      nextButtonEnable: false,
+      isVisible: false,
+      billNo: '',
+      dateOfHospitalizationForBill: null,
+      issuedBy: '',
+      towards: '',
+      amount: '',
+      bilEnclosedList:[]
     };
   }
 
@@ -125,7 +132,7 @@ class SubmitClaim extends PureComponent {
   }
   onPressConfirmDateValue = (date) => {
     try {
-      this.setState({isVisibleDatePicker: false, selectedAdmissionDate: date});
+      this.setState({isVisible: false, dateOfHospitalizationForBill: date});
     } catch (error) {
       console.error('Error on Date Picker: ', error);
     }
@@ -178,10 +185,6 @@ class SubmitClaim extends PureComponent {
     }
   };
 
-
-
-
-
   updateSubmissionDetails = async (data) => {
     try {
       console.log('data', data);
@@ -189,79 +192,371 @@ class SubmitClaim extends PureComponent {
       let reqData = {
         _id: this.state.updateId,
         submissionDetails: {
-          certificateNumber: data.certificateNo?data.certificateNo:submissionDetails.certificateNo?submissionDetails.certificateNo:null,
-          tpaIdNo: data.tpaIdNo?data.tpaIdNo:submissionDetails.tpaIdNo?submissionDetails.tpaIdNo:null,
-          policyHolderFirstName: data.policyHolderFirstName?data.policyHolderFirstName:submissionDetails.policyHolderFirstName?submissionDetails.policyHolderFirstName:null,
-          policyHolderMiddleName: data.policyHolderMiddleName?data.policyHolderMiddleName:submissionDetails.policyHolderMiddleName?submissionDetails.policyHolderMiddleName:null,
-          policyHolderLastName: data.policyHolderLastName?data.policyHolderLastName:submissionDetails.policyHolderLastName?submissionDetails.policyHolderLastName:null,
-          policyHolderPincode: data.policyHolderPincode?data.policyHolderPincode:submissionDetails.policyHolderPincode?submissionDetails.policyHolderPincode:null,
-          noAndStreet: data.noAndStreet?data.noAndStreet:submissionDetails.noAndStreet?submissionDetails.noAndStreet:null,
-          holderAddress: data.holderAddress?data.holderAddress:submissionDetails.holderAddress?submissionDetails.holderAddress:null,
-          policyHolderCity: data.policyHolderCity?data.policyHolderCity:submissionDetails.policyHolderCity?submissionDetails.policyHolderCity:null,
-          policyHolderState: data.policyHolderState?data.policyHolderState:submissionDetails.policyHolderState?submissionDetails.policyHolderState:null,
-          policyHolderCountry: data.policyHolderCountry?data.policyHolderCountry:submissionDetails.policyHolderCountry?submissionDetails.policyHolderCountry:null,
-          phoneNumber: data.phoneNumber?data.phoneNumber:submissionDetails.phoneNumber?submissionDetails.phoneNumber:null,
-          policyHolderMailId: data.policyHolderMailId?data.policyHolderMailId:submissionDetails.policyHolderMailId?submissionDetails.policyHolderMailId:null,
-          currentlyHaveMediClaim: data.currentlyHaveMediClaim?data.currentlyHaveMediClaim:submissionDetails.currentlyHaveMediClaim?submissionDetails.currentlyHaveMediClaim:null,
-          commencementOfFirstInsuranceDate: data.commencementOfFirstInsuranceDate?data.commencementOfFirstInsuranceDate:submissionDetails.commencementOfFirstInsuranceDate?submissionDetails.commencementOfFirstInsuranceDate:null,
-          mediClaimCompanyName: data.mediClaimCompanyName?data.mediClaimCompanyName:submissionDetails.mediClaimCompanyName?submissionDetails.mediClaimCompanyName:null,
-          hospitalized: data.hospitalized?data.hospitalized:submissionDetails.hospitalized?submissionDetails.hospitalized:null,
-          sumInsuresPerPolicy: data.sumInsuresPerPolicy?data.sumInsuresPerPolicy:submissionDetails.sumInsuresPerPolicy?submissionDetails.sumInsuresPerPolicy:null,
-          hospitalizationDate: data.hospitalizationDate?data.hospitalizationDate:submissionDetails.hospitalizationDate?submissionDetails.hospitalizationDate:null,
-          diagnosisDetails: data.diagnosisDetails?data.diagnosisDetails:submissionDetails.diagnosisDetails?submissionDetails.diagnosisDetails:null,
-          hospitalizedCompany: data.hospitalizedCompany?data.hospitalizedCompany:submissionDetails.hospitalizedCompany?submissionDetails.hospitalizedCompany:null,
-          isCoveredByOtherClaim: data.isCoveredByOtherClaim?data.isCoveredByOtherClaim:submissionDetails.isCoveredByOtherClaim?submissionDetails.isCoveredByOtherClaim:null,
-          patientName: data.patientName?data.patientName:submissionDetails.patientName?submissionDetails.patientName:null,
-          patientGender: data.patientGender?data.patientGender:submissionDetails.patientGender?submissionDetails.patientGender:null,
-          patientAge: data.patientAge?data.patientAge:submissionDetails.patientAge?submissionDetails.patientAge:null,
-          patientDob: data.patientDob?data.patientDob:submissionDetails.patientDob?submissionDetails.patientDob:null,
-          relationship: data.relationship?data.relationship:submissionDetails.relationship?submissionDetails.relationship:null,
-          relationshipDetail: data.relationshipDetail?data.relationshipDetail:submissionDetails.relationshipDetail?submissionDetails.relationshipDetail:null,
-          occupation: data.occupation?data.occupation:submissionDetails.occupation?submissionDetails.occupation:null,
-          occupationDetail: data.occupationDetailNo?data.occupationDetailNo:submissionDetails.occupationDetailNo?submissionDetails.occupationDetailNo:null,
-          patientAddress: data.patientAddressNo?data.patientAddressNo:submissionDetails.patientAddressNo?submissionDetails.patientAddressNo:null,
-          patientNoAndStreet: data.patientNoAndStreetNo?data.patientNoAndStreetNo:submissionDetails.patientNoAndStreetNo?submissionDetails.patientNoAndStreetNo:null,
-          patientCity: data.patientCityNo?data.patientCityNo:submissionDetails.patientCityNo?submissionDetails.patientCityNo:null,
-          patientState: data.patientStateNo?data.patientStateNo:submissionDetails.patientStateNo?submissionDetails.patientStateNo:null,
-          patientCountry: data.patientCountryNo?data.patientCountryNo:submissionDetails.patientCountryNo?submissionDetails.patientCountryNo:null,
-          patientPhoneNumber: data.patientPhoneNumberNo?data.patientPhoneNumberNo:submissionDetails.patientPhoneNumberNo?submissionDetails.patientPhoneNumberNo:null,
-          patientEmail: data.patientEmailNo?data.patientEmailNo:submissionDetails.patientEmailNo?submissionDetails.patientEmailNo:null,
-          hospitalName: data.hospitalNameNo?data.hospitalNameNo:submissionDetails.hospitalNameNo?submissionDetails.hospitalNameNo:null,
-          roomCategory: data.roomCategoryNo?data.roomCategoryNo:submissionDetails.roomCategoryNo?submissionDetails.roomCategoryNo:null,
-          hospitalizationDueTo: data.hospitalizationDueToNo?data.hospitalizationDueToNo:submissionDetails.hospitalizationDueToNo?submissionDetails.hospitalizationDueToNo:null,
-          dayOfInjury: data.dayOfInjuryNo?data.dayOfInjuryNo:submissionDetails.dayOfInjuryNo?submissionDetails.dayOfInjuryNo:null,
-          dateOfAdmission: data.dateOfAdmissionNo?data.dateOfAdmissionNo:submissionDetails.dateOfAdmissionNo?submissionDetails.dateOfAdmissionNo:null,
-          dateOfDischarge: data.dateOfDischargeNo?data.dateOfDischargeNo:submissionDetails.dateOfDischargeNo?submissionDetails.dateOfDischargeNo:null,
-          injuryCause: data.injuryCauseNo?data.injuryCauseNo:submissionDetails.injuryCauseNo?submissionDetails.injuryCauseNo:null,
-          medicoLegal: data.medicoLegalNo?data.medicoLegalNo:submissionDetails.medicoLegalNo?submissionDetails.medicoLegalNo:null,
-          reportedTpPolice: data.reportedTpPoliceNo?data.reportedTpPoliceNo:submissionDetails.reportedTpPoliceNo?submissionDetails.reportedTpPoliceNo:null,
-          mlcReport: data.mlcReportNo?data.mlcReportNo:submissionDetails.mlcReportNo?submissionDetails.mlcReportNo:null,
-          systemOfMedicine: data.systemOfMedicineNo?data.systemOfMedicineNo:submissionDetails.systemOfMedicineNo?submissionDetails.systemOfMedicineNo:null,
-          preHospitalizationExpenses: data.preHospitalizationExpensesNo?data.preHospitalizationExpensesNo:submissionDetails.preHospitalizationExpensesNo?submissionDetails.preHospitalizationExpensesNo:null,
-          hospitalizationExpenses: data.hospitalizationExpensesNo?data.hospitalizationExpensesNo:submissionDetails.hospitalizationExpensesNo?submissionDetails.hospitalizationExpensesNo:null,
-          postHospitalizationExpenses: data.postHospitalizationExpensesNo?data.postHospitalizationExpensesNo:submissionDetails.postHospitalizationExpensesNo?submissionDetails.postHospitalizationExpensesNo:null,
-          healthCheckupCost: data.healthCheckupCostNo?data.healthCheckupCostNo:submissionDetails.healthCheckupCostNo?submissionDetails.healthCheckupCostNo:null,
-          ambulanceCharges: data.ambulanceChargesNo?data.ambulanceChargesNo:submissionDetails.ambulanceChargesNo?submissionDetails.ambulanceChargesNo:null,
-          othersCode: data.othersCodeNo?data.othersCodeNo:submissionDetails.othersCodeNo?submissionDetails.othersCodeNo:null,
-          totalClaim: data.totalClaimNo?data.totalClaimNo:submissionDetails.totalClaimNo?submissionDetails.totalClaimNo:null,
-          preHospitalizationPeriod: data.preHospitalizationPeriodNo?data.preHospitalizationPeriodNo:submissionDetails.preHospitalizationPeriodNo?submissionDetails.preHospitalizationPeriodNo:null,
-          postHospitalizationPeriod: data.postHospitalizationPeriodNo?data.postHospitalizationPeriodNo:submissionDetails.postHospitalizationPeriodNo?submissionDetails.postHospitalizationPeriodNo:null,
-          claimForDomiciliaryHospitalization: data.claimForDomiciliaryHospitalizationNo?data.claimForDomiciliaryHospitalizationNo:submissionDetails.claimForDomiciliaryHospitalizationNo?submissionDetails.claimForDomiciliaryHospitalizationNo:null,
-          hospitalDailyCash: data.hospitalDailyCashNo?data.hospitalDailyCashNo:submissionDetails.hospitalDailyCashNo?submissionDetails.hospitalDailyCashNo:null,
-          surgicalCash: data.surgicalCashNo?data.surgicalCashNo:submissionDetails.surgicalCashNo?submissionDetails.surgicalCashNo:null,
-          criticalIllness: data.criticalIllnessNo?data.criticalIllnessNo:submissionDetails.criticalIllnessNo?submissionDetails.criticalIllnessNo:null,
-          convalescence: data.convalescenceNo?data.convalescenceNo:submissionDetails.convalescenceNo?submissionDetails.convalescenceNo:null,
-          lumsumBenefit: data.lumsumBenefitNo?data.lumsumBenefitNo:submissionDetails.lumsumBenefitNo?submissionDetails.lumsumBenefitNo:null,
-          others: data.othersNo?data.othersNo:submissionDetails.othersNo?submissionDetails.othersNo:null,
-          totalClaimValue: data.totalClaimValueNo?data.totalClaimValueNo:submissionDetails.totalClaimValueNo?submissionDetails.totalClaimValueNo:null,
-          PanCardDetail: data.PanCardDetailNo?data.PanCardDetailNo:submissionDetails.PanCardDetailNo?submissionDetails.PanCardDetailNo:null,
-          accountNo: data.accountNoNo?data.accountNoNo:submissionDetails.accountNoNo?submissionDetails.accountNoNo:null,
-          bankName: data.bankNameNo?data.bankNameNo:submissionDetails.bankNameNo?submissionDetails.bankNameNo:null,
-          chequeDetails: data.chequeDetailsNo?data.chequeDetailsNo:submissionDetails.chequeDetailsNo?submissionDetails.chequeDetailsNo:null,
-          ifscCode: data.ifscCodeNo?data.ifscCodeNo:submissionDetails.ifscCodeNo?submissionDetails.ifscCodeNo:null,
-          insuredPlace: data.insuredPlaceNo?data.insuredPlaceNo:submissionDetails.insuredPlaceNo?submissionDetails.insuredPlaceNo:null,
-          dateOfHospitalization: data.dateOfHospitalizationNo?data.dateOfHospitalizationNo:submissionDetails.dateOfHospitalizationNo?submissionDetails.dateOfHospitalizationNo:null,
-          signatureOfInsures: data.signatureOfInsuresNo?data.signatureOfInsuresNo:submissionDetails.signatureOfInsuresNo?submissionDetails.signatureOfInsuresNo:null,
+          certificateNumber: data.certificateNo
+            ? data.certificateNo
+            : submissionDetails.certificateNo
+            ? submissionDetails.certificateNo
+            : null,
+          tpaIdNo: data.tpaIdNo
+            ? data.tpaIdNo
+            : submissionDetails.tpaIdNo
+            ? submissionDetails.tpaIdNo
+            : null,
+          policyHolderFirstName: data.policyHolderFirstName
+            ? data.policyHolderFirstName
+            : submissionDetails.policyHolderFirstName
+            ? submissionDetails.policyHolderFirstName
+            : null,
+          policyHolderMiddleName: data.policyHolderMiddleName
+            ? data.policyHolderMiddleName
+            : submissionDetails.policyHolderMiddleName
+            ? submissionDetails.policyHolderMiddleName
+            : null,
+          policyHolderLastName: data.policyHolderLastName
+            ? data.policyHolderLastName
+            : submissionDetails.policyHolderLastName
+            ? submissionDetails.policyHolderLastName
+            : null,
+          policyHolderPincode: data.policyHolderPincode
+            ? data.policyHolderPincode
+            : submissionDetails.policyHolderPincode
+            ? submissionDetails.policyHolderPincode
+            : null,
+          noAndStreet: data.noAndStreet
+            ? data.noAndStreet
+            : submissionDetails.noAndStreet
+            ? submissionDetails.noAndStreet
+            : null,
+          holderAddress: data.holderAddress
+            ? data.holderAddress
+            : submissionDetails.holderAddress
+            ? submissionDetails.holderAddress
+            : null,
+          policyHolderCity: data.policyHolderCity
+            ? data.policyHolderCity
+            : submissionDetails.policyHolderCity
+            ? submissionDetails.policyHolderCity
+            : null,
+          policyHolderState: data.policyHolderState
+            ? data.policyHolderState
+            : submissionDetails.policyHolderState
+            ? submissionDetails.policyHolderState
+            : null,
+          policyHolderCountry: data.policyHolderCountry
+            ? data.policyHolderCountry
+            : submissionDetails.policyHolderCountry
+            ? submissionDetails.policyHolderCountry
+            : null,
+          phoneNumber: data.phoneNumber
+            ? data.phoneNumber
+            : submissionDetails.phoneNumber
+            ? submissionDetails.phoneNumber
+            : null,
+          policyHolderMailId: data.policyHolderMailId
+            ? data.policyHolderMailId
+            : submissionDetails.policyHolderMailId
+            ? submissionDetails.policyHolderMailId
+            : null,
+          currentlyHaveMediClaim: data.currentlyHaveMediClaim
+            ? data.currentlyHaveMediClaim
+            : submissionDetails.currentlyHaveMediClaim
+            ? submissionDetails.currentlyHaveMediClaim
+            : null,
+          commencementOfFirstInsuranceDate: data.commencementOfFirstInsuranceDate
+            ? data.commencementOfFirstInsuranceDate
+            : submissionDetails.commencementOfFirstInsuranceDate
+            ? submissionDetails.commencementOfFirstInsuranceDate
+            : null,
+          mediClaimCompanyName: data.mediClaimCompanyName
+            ? data.mediClaimCompanyName
+            : submissionDetails.mediClaimCompanyName
+            ? submissionDetails.mediClaimCompanyName
+            : null,
+          hospitalized: data.hospitalized
+            ? data.hospitalized
+            : submissionDetails.hospitalized
+            ? submissionDetails.hospitalized
+            : null,
+          sumInsuresPerPolicy: data.sumInsuresPerPolicy
+            ? data.sumInsuresPerPolicy
+            : submissionDetails.sumInsuresPerPolicy
+            ? submissionDetails.sumInsuresPerPolicy
+            : null,
+          hospitalizationDate: data.hospitalizationDate
+            ? data.hospitalizationDate
+            : submissionDetails.hospitalizationDate
+            ? submissionDetails.hospitalizationDate
+            : null,
+          diagnosisDetails: data.diagnosisDetails
+            ? data.diagnosisDetails
+            : submissionDetails.diagnosisDetails
+            ? submissionDetails.diagnosisDetails
+            : null,
+          hospitalizedCompany: data.hospitalizedCompany
+            ? data.hospitalizedCompany
+            : submissionDetails.hospitalizedCompany
+            ? submissionDetails.hospitalizedCompany
+            : null,
+          isCoveredByOtherClaim: data.isCoveredByOtherClaim
+            ? data.isCoveredByOtherClaim
+            : submissionDetails.isCoveredByOtherClaim
+            ? submissionDetails.isCoveredByOtherClaim
+            : null,
+          patientName: data.patientName
+            ? data.patientName
+            : submissionDetails.patientName
+            ? submissionDetails.patientName
+            : null,
+          patientGender: data.patientGender
+            ? data.patientGender
+            : submissionDetails.patientGender
+            ? submissionDetails.patientGender
+            : null,
+          patientAge: data.patientAge
+            ? data.patientAge
+            : submissionDetails.patientAge
+            ? submissionDetails.patientAge
+            : null,
+          patientDob: data.patientDob
+            ? data.patientDob
+            : submissionDetails.patientDob
+            ? submissionDetails.patientDob
+            : null,
+          relationship: data.relationship
+            ? data.relationship
+            : submissionDetails.relationship
+            ? submissionDetails.relationship
+            : null,
+          relationshipDetail: data.relationshipDetail
+            ? data.relationshipDetail
+            : submissionDetails.relationshipDetail
+            ? submissionDetails.relationshipDetail
+            : null,
+          occupation: data.occupation
+            ? data.occupation
+            : submissionDetails.occupation
+            ? submissionDetails.occupation
+            : null,
+          occupationDetail: data.occupationDetailNo
+            ? data.occupationDetailNo
+            : submissionDetails.occupationDetailNo
+            ? submissionDetails.occupationDetailNo
+            : null,
+          patientAddress: data.patientAddressNo
+            ? data.patientAddressNo
+            : submissionDetails.patientAddressNo
+            ? submissionDetails.patientAddressNo
+            : null,
+          patientNoAndStreet: data.patientNoAndStreetNo
+            ? data.patientNoAndStreetNo
+            : submissionDetails.patientNoAndStreetNo
+            ? submissionDetails.patientNoAndStreetNo
+            : null,
+          patientCity: data.patientCityNo
+            ? data.patientCityNo
+            : submissionDetails.patientCityNo
+            ? submissionDetails.patientCityNo
+            : null,
+          patientState: data.patientStateNo
+            ? data.patientStateNo
+            : submissionDetails.patientStateNo
+            ? submissionDetails.patientStateNo
+            : null,
+          patientCountry: data.patientCountryNo
+            ? data.patientCountryNo
+            : submissionDetails.patientCountryNo
+            ? submissionDetails.patientCountryNo
+            : null,
+          patientPhoneNumber: data.patientPhoneNumberNo
+            ? data.patientPhoneNumberNo
+            : submissionDetails.patientPhoneNumberNo
+            ? submissionDetails.patientPhoneNumberNo
+            : null,
+          patientEmail: data.patientEmailNo
+            ? data.patientEmailNo
+            : submissionDetails.patientEmailNo
+            ? submissionDetails.patientEmailNo
+            : null,
+          hospitalName: data.hospitalNameNo
+            ? data.hospitalNameNo
+            : submissionDetails.hospitalNameNo
+            ? submissionDetails.hospitalNameNo
+            : null,
+          roomCategory: data.roomCategoryNo
+            ? data.roomCategoryNo
+            : submissionDetails.roomCategoryNo
+            ? submissionDetails.roomCategoryNo
+            : null,
+          hospitalizationDueTo: data.hospitalizationDueToNo
+            ? data.hospitalizationDueToNo
+            : submissionDetails.hospitalizationDueToNo
+            ? submissionDetails.hospitalizationDueToNo
+            : null,
+          dayOfInjury: data.dayOfInjuryNo
+            ? data.dayOfInjuryNo
+            : submissionDetails.dayOfInjuryNo
+            ? submissionDetails.dayOfInjuryNo
+            : null,
+          dateOfAdmission: data.dateOfAdmissionNo
+            ? data.dateOfAdmissionNo
+            : submissionDetails.dateOfAdmissionNo
+            ? submissionDetails.dateOfAdmissionNo
+            : null,
+          dateOfDischarge: data.dateOfDischargeNo
+            ? data.dateOfDischargeNo
+            : submissionDetails.dateOfDischargeNo
+            ? submissionDetails.dateOfDischargeNo
+            : null,
+          injuryCause: data.injuryCauseNo
+            ? data.injuryCauseNo
+            : submissionDetails.injuryCauseNo
+            ? submissionDetails.injuryCauseNo
+            : null,
+          medicoLegal: data.medicoLegalNo
+            ? data.medicoLegalNo
+            : submissionDetails.medicoLegalNo
+            ? submissionDetails.medicoLegalNo
+            : null,
+          reportedTpPolice: data.reportedTpPoliceNo
+            ? data.reportedTpPoliceNo
+            : submissionDetails.reportedTpPoliceNo
+            ? submissionDetails.reportedTpPoliceNo
+            : null,
+          mlcReport: data.mlcReportNo
+            ? data.mlcReportNo
+            : submissionDetails.mlcReportNo
+            ? submissionDetails.mlcReportNo
+            : null,
+          systemOfMedicine: data.systemOfMedicineNo
+            ? data.systemOfMedicineNo
+            : submissionDetails.systemOfMedicineNo
+            ? submissionDetails.systemOfMedicineNo
+            : null,
+          preHospitalizationExpenses: data.preHospitalizationExpensesNo
+            ? data.preHospitalizationExpensesNo
+            : submissionDetails.preHospitalizationExpensesNo
+            ? submissionDetails.preHospitalizationExpensesNo
+            : null,
+          hospitalizationExpenses: data.hospitalizationExpensesNo
+            ? data.hospitalizationExpensesNo
+            : submissionDetails.hospitalizationExpensesNo
+            ? submissionDetails.hospitalizationExpensesNo
+            : null,
+          postHospitalizationExpenses: data.postHospitalizationExpensesNo
+            ? data.postHospitalizationExpensesNo
+            : submissionDetails.postHospitalizationExpensesNo
+            ? submissionDetails.postHospitalizationExpensesNo
+            : null,
+          healthCheckupCost: data.healthCheckupCostNo
+            ? data.healthCheckupCostNo
+            : submissionDetails.healthCheckupCostNo
+            ? submissionDetails.healthCheckupCostNo
+            : null,
+          ambulanceCharges: data.ambulanceChargesNo
+            ? data.ambulanceChargesNo
+            : submissionDetails.ambulanceChargesNo
+            ? submissionDetails.ambulanceChargesNo
+            : null,
+          othersCode: data.othersCodeNo
+            ? data.othersCodeNo
+            : submissionDetails.othersCodeNo
+            ? submissionDetails.othersCodeNo
+            : null,
+          totalClaim: data.totalClaimNo
+            ? data.totalClaimNo
+            : submissionDetails.totalClaimNo
+            ? submissionDetails.totalClaimNo
+            : null,
+          preHospitalizationPeriod: data.preHospitalizationPeriodNo
+            ? data.preHospitalizationPeriodNo
+            : submissionDetails.preHospitalizationPeriodNo
+            ? submissionDetails.preHospitalizationPeriodNo
+            : null,
+          postHospitalizationPeriod: data.postHospitalizationPeriodNo
+            ? data.postHospitalizationPeriodNo
+            : submissionDetails.postHospitalizationPeriodNo
+            ? submissionDetails.postHospitalizationPeriodNo
+            : null,
+          claimForDomiciliaryHospitalization: data.claimForDomiciliaryHospitalizationNo
+            ? data.claimForDomiciliaryHospitalizationNo
+            : submissionDetails.claimForDomiciliaryHospitalizationNo
+            ? submissionDetails.claimForDomiciliaryHospitalizationNo
+            : null,
+          hospitalDailyCash: data.hospitalDailyCashNo
+            ? data.hospitalDailyCashNo
+            : submissionDetails.hospitalDailyCashNo
+            ? submissionDetails.hospitalDailyCashNo
+            : null,
+          surgicalCash: data.surgicalCashNo
+            ? data.surgicalCashNo
+            : submissionDetails.surgicalCashNo
+            ? submissionDetails.surgicalCashNo
+            : null,
+          criticalIllness: data.criticalIllnessNo
+            ? data.criticalIllnessNo
+            : submissionDetails.criticalIllnessNo
+            ? submissionDetails.criticalIllnessNo
+            : null,
+          convalescence: data.convalescenceNo
+            ? data.convalescenceNo
+            : submissionDetails.convalescenceNo
+            ? submissionDetails.convalescenceNo
+            : null,
+          lumsumBenefit: data.lumsumBenefitNo
+            ? data.lumsumBenefitNo
+            : submissionDetails.lumsumBenefitNo
+            ? submissionDetails.lumsumBenefitNo
+            : null,
+          others: data.othersNo
+            ? data.othersNo
+            : submissionDetails.othersNo
+            ? submissionDetails.othersNo
+            : null,
+          totalClaimValue: data.totalClaimValueNo
+            ? data.totalClaimValueNo
+            : submissionDetails.totalClaimValueNo
+            ? submissionDetails.totalClaimValueNo
+            : null,
+          PanCardDetail: data.PanCardDetailNo
+            ? data.PanCardDetailNo
+            : submissionDetails.PanCardDetailNo
+            ? submissionDetails.PanCardDetailNo
+            : null,
+          accountNo: data.accountNoNo
+            ? data.accountNoNo
+            : submissionDetails.accountNoNo
+            ? submissionDetails.accountNoNo
+            : null,
+          bankName: data.bankNameNo
+            ? data.bankNameNo
+            : submissionDetails.bankNameNo
+            ? submissionDetails.bankNameNo
+            : null,
+          chequeDetails: data.chequeDetailsNo
+            ? data.chequeDetailsNo
+            : submissionDetails.chequeDetailsNo
+            ? submissionDetails.chequeDetailsNo
+            : null,
+          ifscCode: data.ifscCodeNo
+            ? data.ifscCodeNo
+            : submissionDetails.ifscCodeNo
+            ? submissionDetails.ifscCodeNo
+            : null,
+          insuredPlace: data.insuredPlaceNo
+            ? data.insuredPlaceNo
+            : submissionDetails.insuredPlaceNo
+            ? submissionDetails.insuredPlaceNo
+            : null,
+          dateOfHospitalization: data.dateOfHospitalizationNo
+            ? data.dateOfHospitalizationNo
+            : submissionDetails.dateOfHospitalizationNo
+            ? submissionDetails.dateOfHospitalizationNo
+            : null,
+          signatureOfInsures: data.signatureOfInsuresNo
+            ? data.signatureOfInsuresNo
+            : submissionDetails.signatureOfInsuresNo
+            ? submissionDetails.signatureOfInsuresNo
+            : null,
         },
       };
       console.log('reqData', reqData);
@@ -278,56 +573,105 @@ class SubmitClaim extends PureComponent {
       }
 
       console.log('updateId', this.state.updateId);
-
     } catch (error) {
       console.error('Error on: ', error);
     }
   };
-  updatePrimaryInsuredDetails = async (data) => {
-  }
+  updatePrimaryInsuredDetails = async (data) => {};
   updateInsuranceHistoryDetails = async (data) => {
-    let historyDetails=this.updateSubmissionDetails(data)
-    if(historyDetails==true){
-      this.setState({sectionCDisable:true})
+    let historyDetails = this.updateSubmissionDetails(data);
+    if (historyDetails == true) {
+      this.setState({sectionCDisable: true});
     }
-  }
+  };
   updateInsuredPersonHospitalizedDetails = async (data) => {
-    let personDetails=this.updateSubmissionDetails(data)
-    if(personDetails==true){
-      this.setState({sectionDDisable:true})
+    let personDetails = this.updateSubmissionDetails(data);
+    if (personDetails == true) {
+      this.setState({sectionDDisable: true});
     }
-  }
+  };
   updateHospitalization = async (data) => {
-    let hospitalDetails=this.updateSubmissionDetails(data)
-    if(hospitalDetails==true){
-      this.setState({sectionEDisable:true})
+    let hospitalDetails = this.updateSubmissionDetails(data);
+    if (hospitalDetails == true) {
+      this.setState({sectionEDisable: true});
     }
-  }
+  };
   updateClaimDetails = async (data) => {
-    let claimDetails=this.updateSubmissionDetails(data)
-    if(claimDetails==true){
-      this.setState({sectionFDisable:true})
+    let claimDetails = this.updateSubmissionDetails(data);
+    if (claimDetails == true) {
+      this.setState({sectionFDisable: true});
     }
-  }
+  };
   updateBillsEnclosedDetails = async (data) => {
-    let billEnclosedDetails=this.updateSubmissionDetails(data)
-    if(billEnclosedDetails==true){
-      this.setState({sectionGDisable:true})
+    let billEnclosedDetails = this.updateSubmissionDetails(data);
+    if (billEnclosedDetails == true) {
+      this.setState({sectionGDisable: true});
     }
-  }
+  };
   updatePrimaryInsuredBankAccountDetails = async (data) => {
-    let bankAccDetails=this.updateSubmissionDetails(data)
-    if(personDetails==true){
-      this.setState({sectionHDisable:true})
+    let bankAccDetails = this.updateSubmissionDetails(data);
+    if (personDetails == true) {
+      this.setState({sectionHDisable: true});
     }
-  }
+  };
   updateDeclarationByInsuredDetails = async (data) => {
-    let declarationDetails=this.updateSubmissionDetails(data)
-    // if(declarationDetails==true){
-    //   this.setState({sectionHDisable:true})
-    // }
-  }
+    let declarationDetails = this.updateSubmissionDetails(data);
+    if (declarationDetails == true) {
+      this.setState({nextButtonEnable: true});
+    }
+  };
+  addTable = async () => {
+    let temp = [];
+    temp.push({
+      billNo: this.state.billNo,
+      dateOfHospitalizationForBill: this.state.dateOfHospitalizationForBill,
+      issuedBy: this.state.issuedBy,
+      towards: this.state.towards,
+      amount: this.state.amount,
 
+    });
+    let data=[...this.state.bilEnclosedList,...temp]
+    this.setState({
+      bilEnclosedList: data,
+      billNo: '',
+      issuedBy: '',
+      towards: '',
+      amount: '',
+      dateOfHospitalizationForBill: null,
+    });
+  };
+  submitData = async () => {
+    try {
+      let reqData = {
+        _id: this.state.updateId,
+        bilEnclosedList: this.state.bilEnclosedList,
+      };
+      console.log('reqData', reqData);
+      let result = await updateClaimSubmission(reqData);
+      console.log('result', result);
+      if (result) {
+        this.setState({
+          updateId: result._id,
+          bilEnclosedList: result.bilEnclosedList,
+        });
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+  deleteBillEnclosedDetails = async (item, index) => {
+    let temp=this.state.bilEnclosedList
+    await  temp.splice(index, 1);
+    await this.setState({bilEnclosedList:temp});
+    console.log(this.state.bilEnclosedList);
+  };
+  
+  editBillEnclosedDetails = async (item, index) => {
+    let temp=this.state.bilEnclosedList
+    temp.splice(index, 1);
+    await this.setState({bilEnclosedList:temp});
+    console.log(this.state.bilEnclosedList);
+  };
   render() {
     const data = [
       {title: 'Details of primary insured', id: 1, disable: false},
@@ -351,6 +695,13 @@ class SubmitClaim extends PureComponent {
       sectionFDisable,
       sectionGDisable,
       sectionHDisable,
+      billNo,
+      issuedBy,
+      towards,
+      amount,
+      dateOfHospitalizationForBill,
+      isVisible,
+      bilEnclosedList
     } = this.state;
     return (
       <Container>
@@ -443,16 +794,10 @@ class SubmitClaim extends PureComponent {
                           updateClaimDetails={(data) =>
                             this.updateClaimDetails(data)
                           }
-                          isSelected={this.state.isSelected}
-                          isVisiblePicker={this.state.isVisibleDatePicker}
-                          selectedAdmissionDate={
-                            this.state.selectedAdmissionDate
-                          }
                           ListOfData={ListOfData}
-                          checkBoxClick={this.state.checkBoxClick}
                         />
                       )}
-                      {item.id === 6 && sectionFDisable && (
+                      {/* {item.id === 6 && sectionFDisable && (
                         <BillEnclosedDeatil
                           isSelected={this.state.isSelected}
                           isVisiblePicker={this.state.isVisibleDatePicker}
@@ -464,17 +809,386 @@ class SubmitClaim extends PureComponent {
                           openPicker={this.openPicker}
                           updateBillsEnclosedDetails={(data)=>this.updateBillsEnclosedDetails(data)}
                         />
-                      )}
+                                              )} */}
+
+                      <View>
+                        <Row
+                          size={4}
+                          style={{
+                            marginLeft: 20,
+                            marginRight: 20,
+                            marginTop: 10,
+                          }}>
+                          <Col size={1}>
+                            <Text style={styles.text}>
+                              Bill No<Text style={{color: 'red'}}>*</Text>
+                            </Text>
+
+                            <Item regular style={{borderRadius: 6, height: 35}}>
+                              <Input
+                                placeholder="Enter BILL No "
+                                placeholderTextColor={'#CDD0D9'}
+                                returnKeyType={'next'}
+                                value={billNo}
+                                style={styles.form_field}
+                                keyboardType={'default'}
+                                //   editable={employeeId == undefined ? true : false}
+                                onChangeText={(text) =>
+                                  this.setState({billNo: text})
+                                }
+                                testID="addBillNo"
+                              />
+                            </Item>
+                          </Col>
+                        </Row>
+
+                        <Row
+                          size={4}
+                          style={{
+                            marginLeft: 20,
+                            marginRight: 20,
+                            marginTop: 10,
+                          }}>
+                          <Col size={1}>
+                            <Text style={styles.text}>
+                              Date of hospitalization
+                              <Text style={{color: 'red'}}>*</Text>
+                            </Text>
+
+                            <Item regular style={{borderRadius: 6, height: 35}}>
+                              <TouchableOpacity
+                                style={{flexDirection: 'row'}}
+                                onPress={() =>
+                                  this.setState({
+                                    isVisible: !isVisible,
+                                  })
+                                }
+                                testID="chooseDateOfHospitalizationForBill">
+                                <Icon
+                                  name="md-calendar"
+                                  style={styles.calenderStyle}
+                                />
+                                <Text
+                                  style={
+                                    dateOfHospitalizationForBill
+                                      ? styles.timeplaceHolder
+                                      : styles.afterTimePlaceholder
+                                  }>
+                                  {dateOfHospitalizationForBill
+                                    ? formatDate(
+                                        dateOfHospitalizationForBill,
+                                        'DD/MM/YYYY',
+                                      )
+                                    : 'Date of hospitalization'}
+                                </Text>
+                                <DateTimePicker
+                                  mode={'date'}
+                                  //  minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                                  //  maximumDate={new Date()}
+                                  value={
+                                    dateOfHospitalizationForBill
+                                  }
+                                  isVisible={isVisible}
+                                  onConfirm={this.onPressConfirmDateValue}
+                                  onCancel={() =>
+                                    this.setState({
+                                      isVisible: !isVisible,
+                                    })
+                                  }
+                                />
+                              </TouchableOpacity>
+                            </Item>
+                          </Col>
+                        </Row>
+                        <Row
+                          size={4}
+                          style={{
+                            marginLeft: 20,
+                            marginRight: 20,
+                            marginTop: 10,
+                          }}>
+                          <Col size={1}>
+                            <Text style={styles.text}>
+                              Issued by<Text style={{color: 'red'}}>*</Text>
+                            </Text>
+
+                            <Item regular style={{borderRadius: 6, height: 35}}>
+                              <Input
+                                placeholder="Enter Inssured by details "
+                                placeholderTextColor={'#CDD0D9'}
+                                returnKeyType={'next'}
+                                value={issuedBy}
+                                style={styles.form_field}
+                                keyboardType={'default'}
+                                //   editable={employeeId == undefined ? true : false}
+                                onChangeText={(text) => this.setState({issuedBy:text})}
+                                testID="addIssuedBy"
+                              />
+                            </Item>
+                          </Col>
+                        </Row>
+                        <Row
+                          size={4}
+                          style={{
+                            marginLeft: 20,
+                            marginRight: 20,
+                            marginTop: 10,
+                          }}>
+                          <Col size={1}>
+                            <Text style={styles.text}>
+                              Towards<Text style={{color: 'red'}}>*</Text>
+                            </Text>
+
+                            <Item regular style={{borderRadius: 6, height: 35}}>
+                              <Input
+                                placeholder="Enter Towards details "
+                                placeholderTextColor={'#CDD0D9'}
+                                returnKeyType={'next'}
+                                value={towards}
+                                style={styles.form_field}
+                                keyboardType={'default'}
+                                //   editable={employeeId == undefined ? true : false}
+                                onChangeText={(text) => this.setState({towards:text})}
+                                testID="addTowards"
+                              />
+                            </Item>
+                          </Col>
+                        </Row>
+                        <Row
+                          size={4}
+                          style={{
+                            marginLeft: 20,
+                            marginRight: 20,
+                            marginTop: 10,
+                          }}>
+                          <Col size={1}>
+                            <Text style={styles.text}>
+                              Amount<Text style={{color: 'red'}}>*</Text>
+                            </Text>
+
+                            <Item regular style={{borderRadius: 6, height: 35}}>
+                              <Input
+                                placeholder="Enter Amount "
+                                placeholderTextColor={'#CDD0D9'}
+                                returnKeyType={'next'}
+                                value={amount}
+                                style={styles.form_field}
+                                keyboardType={'number-pad'}
+                                onChangeText={(text) => this.setState({amount:text})}
+                                testID="addAmount"
+                              />
+                            </Item>
+                          </Col>
+                        </Row>
+
+                        <View style={styles.ButtonView}>
+                          <TouchableOpacity
+                            style={styles.submit_ButtonStyle}
+                            onPress={addTable}>
+                            <Text style={{color: '#fff'}}>Save</Text>
+                          </TouchableOpacity>
+                        </View>
+                        {bilEnclosedList&&bilEnclosedList.length != 0 ? (
+                          <FlatList
+                            data={bilEnclosedList}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={(item, index) => (
+                              <View
+                                style={{
+                                  padding: 10,
+                                  marginTop: 10,
+                                  marginBottom: 20,
+                                }}>
+                                <View style={styles.form_field_view}>
+                                  <Text
+                                    style={[styles.form_field_inline_label]}>
+                                    SL No
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      styles.form_field,
+                                      {paddingTop: 15, paddingLeft: 10},
+                                    ]}>{index+1}</Text>
+                                </View>
+                                <View style={styles.form_field_view}>
+                                  <Text
+                                    style={[styles.form_field_inline_label]}>
+                                    BILL No
+                                  </Text>
+                                  {/* <Text style={styles.form_field}>{item.billNo}</Text> */}
+                                  <Input
+                                    placeholder="Enter BILL No "
+                                    placeholderTextColor={'#CDD0D9'}
+                                    returnKeyType={'next'}
+                                    value={item.billNo}
+                                    style={styles.form_field}
+                                    keyboardType={'default'}
+                                    //   editable={employeeId == undefined ? true : false}
+                                    onChangeText={(text) =>
+                                      this.setState({billNo: text})
+                                    }
+                                    testID="editBillNo"
+                                  />
+                                </View>
+                                <View style={styles.form_field_view}>
+                                  <View
+                                    style={[
+                                      styles.form_field_inline_label,
+                                      {
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                      },
+                                    ]}>
+                                    <Text style={{fontSize: 12}}>Date of</Text>
+
+                                    <Text style={{fontSize: 12}}>
+                                      hospitalization
+                                    </Text>
+                                  </View>
+                                  <TouchableOpacity
+                                    style={[
+                                      styles.form_field,
+                                      {flexDirection: 'row'},
+                                    ]}
+                                    onPress={() =>
+                                      this.setState({
+                                        isVisible: !this.state.isVisible,
+                                      })
+                                    }>
+                                    <Icon
+                                      name="md-calendar"
+                                      style={styles.calenderStyle}
+                                    />
+                                    <Text
+                                      style={
+                                        item.dateOfHospitalizationForBill
+                                          ? styles.timeplaceHolder
+                                          : styles.afterTimePlaceholder
+                                      }>
+                                      {item.dateOfHospitalizationForBill
+                                        ? formatDate(
+                                            dateOfHospitalizationForBill,
+                                            'DD/MM/YYYY',
+                                          )
+                                        : new Date()}
+                                    </Text>
+                                    <DateTimePicker
+                                      mode={'date'}
+                                      // minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                                      // maximumDate={new Date()}
+                                      value={item.dateOfHospitalizationForBill}
+                                      isVisible={this.state.isVisible}
+                                      onConfirm={this.onPressConfirmDateValue}
+                                      onCancel={() =>
+                                        this.setState({
+                                          isVisible: !this.state.isVisible,
+                                        })
+                                      }
+                                    />
+                                  </TouchableOpacity>
+                                </View>
+                                <View style={styles.form_field_view}>
+                                  <Text
+                                    style={[styles.form_field_inline_label]}>
+                                    Inssured by
+                                  </Text>
+                                  <Input
+                                    placeholder="Enter Inssured by details "
+                                    placeholderTextColor={'#CDD0D9'}
+                                    returnKeyType={'next'}
+                                    value={item.issuedBy}
+                                    style={styles.form_field}
+                                    keyboardType={'default'}
+                                    //   editable={employeeId == undefined ? true : false}
+                                    onChangeText={(text) => setIssuedBy(text)}
+                                    testID="editIssuedBy"
+                                  />
+                                </View>
+                                <View style={styles.form_field_view}>
+                                  <Text
+                                    style={[styles.form_field_inline_label]}>
+                                    Towards
+                                  </Text>
+                                  <Input
+                                    placeholder="Enter Towards details "
+                                    placeholderTextColor={'#CDD0D9'}
+                                    returnKeyType={'next'}
+                                    value={item.towards}
+                                    style={styles.form_field}
+                                    keyboardType={'default'}
+                                    //   editable={employeeId == undefined ? true : false}
+                                    onChangeText={(text) => setTowards(text)}
+                                    testID="editTowards"
+                                  />
+                                </View>
+                                <View style={styles.form_field_view}>
+                                  <Text
+                                    style={[styles.form_field_inline_label]}>
+                                    AMOUNT(RS)
+                                  </Text>
+                                  <Input
+                                    placeholder="Enter Amount "
+                                    placeholderTextColor={'#CDD0D9'}
+                                    returnKeyType={'next'}
+                                    value={item.amount}
+                                    style={styles.form_field}
+                                    keyboardType={'number-pad'}
+                                    onChangeText={(text) => setAmount(text)}
+                                    testID="editAmount"
+                                  />
+                                </View>
+                              </View>
+                            )}
+                          />
+                        ) : null}
+                        {bilEnclosedList.length ? (
+                          <View style={styles.form_field_view}>
+                            <Text style={[styles.form_field_inline_label]}>
+                              Action
+                            </Text>
+                            <View
+                              style={
+                                (styles.form_field,
+                                {flexDirection: 'row', width: '85%'})
+                              }>
+                              <TouchableOpacity
+                                style={{
+                                  width: '40%',
+                                  backgroundColor: 'gray',
+                                  height: 45,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }} onPress={()=>this.editBillEnclosedDetails(item,index)}>
+                                <Text
+                                  style={{textAlign: 'center', color: '#fff'}}>
+                                  Edit
+                                </Text>
+                              </TouchableOpacity>
+
+                              <TouchableOpacity
+                                style={{
+                                  width: '40%',
+                                  backgroundColor: '#c82333',
+                                  height: 45,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }} onPress={()=>this.deleteBillEnclosedDetails(item,index)}>
+                                <Text
+                                  style={{textAlign: 'center', color: '#fff'}}>
+                                  Delete
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        ) : null}
+                      </View>
+
                       {item.id === 7 && sectionGDisable && (
                         <PrimaryInsuredBank
                           claimListData={claimListData}
                           updatePrimaryInsuredBankAccountDetails={(data) =>
                             this.updatePrimaryInsuredBankAccountDetails(data)
-                          }
-                          isSelected={this.state.isSelected}
-                          isVisiblePicker={this.state.isVisibleDatePicker}
-                          selectedAdmissionDate={
-                            this.state.selectedAdmissionDate
                           }
                         />
                       )}
@@ -484,14 +1198,6 @@ class SubmitClaim extends PureComponent {
                           updateDeclarationByInsuredDetails={(data) =>
                             this.updateDeclarationByInsuredDetails(data)
                           }
-                          isSelected={this.state.isSelected}
-                          isVisiblePicker={this.state.isVisibleDatePicker}
-                          selectedAdmissionDate={
-                            this.state.selectedAdmissionDate
-                          }
-                          onPressConfirmDateValue={this.onPressConfirmDateValue}
-                          oncancelThePicker={this.oncancelThePicker}
-                          openPicker={this.openPicker}
                         />
                       )}
                     </View>
@@ -533,10 +1239,15 @@ class SubmitClaim extends PureComponent {
             )}
           />
           <View style={styles.ButtonView}>
-               <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() =>{ this.props.navigation.navigate('SubmitClaimPageTwo')}}>
-                   <Text style={{ color: "#fff" }}>Next</Text>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.submit_ButtonStyle}
+              onPress={() => {
+                this.props.navigation.navigate('SubmitClaimPageTwo');
+              }}
+              disabled={this.state.nextButtonEnable}>
+              <Text style={{color: '#fff'}}>Next</Text>
+            </TouchableOpacity>
+          </View>
         </Content>
       </Container>
     );
