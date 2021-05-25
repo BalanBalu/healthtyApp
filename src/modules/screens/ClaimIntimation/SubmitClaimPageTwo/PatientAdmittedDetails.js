@@ -12,7 +12,7 @@ import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 
 const PatientAdmittedDetails = (props) => {
-    const { updateSubmissionDetails, TimeOfAdmissionHours, TimeOfAdmissionMinute, dropdownData, OccupationText, TimeOfDischargeMinute, TimeOfDischargeHours, dischargeTimeStatus } = props;
+    const { updateInsuredPersonHospitalizedDetails, TimeOfAdmissionHours, TimeOfAdmissionMinute, dropdownData, OccupationText, TimeOfDischargeMinute, TimeOfDischargeHours, dischargeTimeStatus } = props;
     const [patientFirstName, setpatientFirstName] = useState('')
     const [patientMiddleName, setpatientMiddleName] = useState('')
     const [patientLastName, setpatientLastName] = useState('')
@@ -120,7 +120,7 @@ const PatientAdmittedDetails = (props) => {
     const submmitData = () => {
         if (patientFirstName && patientMiddleName && patientLastName && gravidaStatus && claimAmount && dischargeTime &&
             patientAgeYear1 && patientAgeYear2 && patientAgeMonth1 && patientAgeMonth2 != '') {
-            updateSubmissionDetails({
+                updateInsuredPersonHospitalizedDetails({
                 patientFirstName: patientFirstName,
                 patientMiddleName: patientMiddleName,
                 patientLastName: patientLastName,

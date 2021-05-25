@@ -8,7 +8,7 @@ import ModalPopup from '../../../../components/Shared/ModalPopup';
 import { acceptNumbersOnly } from '../../../common';
 
 const HospitalDetail = (props) => {
-    const { updateSubmissionDetails } = props;
+    const { updateHospitalDetail } = props;
     const [hospitalName, sethospitalName] = useState('')
     const [hospitalId, sethospitalId] = useState('')
     const [hospitalType, sethospitalType] = useState('')
@@ -31,7 +31,7 @@ const HospitalDetail = (props) => {
 
     const submmitData = () => {
         if (hospitalName != '' && hospitalId != '' && hospitalType != '' && doctorFirstName != '' && doctorMiddleName != '' && doctorLastName != '' && qualification != '' && streetNumber != '' && phoneNumber != '') {
-            updateSubmissionDetails({
+            updateHospitalDetail({
                 hospitalName: hospitalName,
                 hospitalId: hospitalId,
                 hospitalType: hospitalType,

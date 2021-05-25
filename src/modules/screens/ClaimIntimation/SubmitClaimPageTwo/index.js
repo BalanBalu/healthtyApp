@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Text, View, Container, Content, Card, Item, Input} from 'native-base';
-import {TouchableOpacity, FlatList,PermissionsAndroid} from 'react-native';
+import {TouchableOpacity, FlatList, PermissionsAndroid} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
@@ -18,7 +18,8 @@ import {toastMeassage} from '../../../common';
 import {uploadImage} from '../../../providers/common/common.action';
 import {
   updateClaimSubmission,
-  getClaimSubmissionById,  createClaimSubmission,
+  getClaimSubmissionById,
+  createClaimSubmission,
   getListByTpaCode,
 } from '../../../providers/corporate/corporate.actions';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -30,25 +31,186 @@ const dropdownData = [
   'Maternity',
 ];
 const TimeOfAdmissionHours = [
-  'Select',0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23
-  
+  'Select',
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
 ];
 const TimeOfAdmissionMinute = [
-  'Select',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
-  33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60
-  
+  'Select',
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  51,
+  52,
+  53,
+  54,
+  55,
+  56,
+  57,
+  58,
+  59,
+  60,
 ];
 
 const TimeOfDischargeHours = [
-  'Select',0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23
-  
+  'Select',
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
 ];
 const TimeOfDischargeMinute = [
-  'Select',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
-  33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60
-  
+  'Select',
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  51,
+  52,
+  53,
+  54,
+  55,
+  56,
+  57,
+  58,
+  59,
+  60,
 ];
-
 
 const RoomCategory = [
   'Select your Item',
@@ -111,9 +273,17 @@ class SubmitClaimPageTwo extends PureComponent {
       fileName: '',
       updateId: '60ab9eed08e9af2db462b620',
       claimSubmissionAttachments: [],
+      section1Disable: true,
+      section2Disable: false,
+      section4Disable: false,
+      section5Disable: false,
+      section6Disable: false,
+      section7Disable: false,
+
     };
-      // updateId:this.props.navigation.getParam('dataId') || null,
-    }
+    // updateId:this.props.navigation.getParam('dataId') || null,
+    this.submissionDetails=this.props.navigation.getParam('submissionDetails')
+  }
 
   toggleData(index, typeOfArrowIcon) {
     const {showCard, show} = this.state;
@@ -141,50 +311,67 @@ class SubmitClaimPageTwo extends PureComponent {
     this.setState({isVisibleDatePicker: !isVisibleDatePicker});
   };
 
-  // updateSubmissionDetails = async (data) => {
-  //   try {
-  //     console.log('data', data);
-  //   } catch (error) {
-  //     console.error('Error on: ', error);
-  //   }
-  // };
+  updateSubmissionDetails = async (data) => {
+    try {
+      console.log('data', data);
+      console.log('this.submissionDetails', this.submissionDetails);
+
+      const {submissionDetails} = this.state;
+      let reqData = {
+        _id: this.state.updateId,
+        submissionDetails: data,
+      };
+      console.log('reqData', reqData);
+      let result = await updateClaimSubmission(reqData);
+      console.log('result', result);
+      console.log('result', result._id);
+
+      if (result) {
+        Toast.show({
+          text: 'Successfully Saved the Details',
+          duration: 3000,
+          type: 'success',
+        });
+        this.setState({updateId: result._id});
+        return true;
+      }
+      console.log('updateId', this.state.updateId);
+    } catch (error) {
+      console.error('Error on: ', error);
+    }
+  };
+
   updateHospitalDetail = async (data) => {
     let hospitalDetail = this.updateSubmissionDetails(data);
     if (hospitalDetail == true) {
-      this.setState({sectionCDisable: true});
+      this.setState({section2Disable: true});
     }
   };
   updateInsuredPersonHospitalizedDetails = async (data) => {
     let personDetails = this.updateSubmissionDetails(data);
     if (personDetails == true) {
-      this.setState({sectionDDisable: true});
+      this.setState({section4Disable: true});
     }
   };
   updateDocumentSubmitted = async (data) => {
     let documentSubmitted = this.updateSubmissionDetails(data);
     if (documentSubmitted == true) {
-      this.setState({sectionEDisable: true});
+      this.setState({section5Disable: true});
     }
   };
   updateNonNetworkHospital = async (data) => {
     let nonNetworkHospital = this.updateSubmissionDetails(data);
     if (nonNetworkHospital == true) {
-      this.setState({sectionFDisable: true});
+      this.setState({section6Disable: true});
     }
   };
   updateDeclarationByHospital = async (data) => {
     let declarationByHospital = this.updateSubmissionDetails(data);
     if (declarationByHospital == true) {
-      this.setState({sectionGDisable: true});
+      this.setState({section7Disable: true});
     }
   };
-  updateAttachmentDetails = async (data) => {
-    let AttachmentDetails = this.updateSubmissionDetails(data);
-    if (AttachmentDetails == true) {
-      this.setState({sectionHDisable: true});
-    }
-  };
-
+  
   imageUpload = async (data) => {
     this.setState({selectOptionPopup: false});
     if (data.image !== null) {
@@ -225,7 +412,7 @@ class SubmitClaimPageTwo extends PureComponent {
       fileName: this.state.fileName,
       fileDetail: this.state.uploadData,
     });
-    let data=[...this.state.claimSubmissionAttachments,...temp]
+    let data = [...this.state.claimSubmissionAttachments, ...temp];
     this.setState({
       claimSubmissionAttachments: data,
       remark: '',
@@ -253,16 +440,17 @@ class SubmitClaimPageTwo extends PureComponent {
     }
   };
   deleteAttachment = async (item, index) => {
-    let temp=this.state.claimSubmissionAttachments
-    await  temp.splice(index, 1);
-    await this.setState({claimSubmissionAttachments:temp});
+    let temp = this.state.claimSubmissionAttachments;
+    await temp.splice(index, 1);
+    await this.setState({claimSubmissionAttachments: temp});
     console.log(this.state.claimSubmissionAttachments);
   };
-  
-  
-  actualDownload = (imageUrl, fileName) => {
 
-    const { dirs } = RNFetchBlob.fs;
+  actualDownload = (imageUrl, fileName) => {
+    console.log('imageUrl2', imageUrl);
+    console.log('fileName2', fileName);
+
+    const {dirs} = RNFetchBlob.fs;
     RNFetchBlob.config({
       fileCache: true,
       addAndroidDownloads: {
@@ -275,16 +463,19 @@ class SubmitClaimPageTwo extends PureComponent {
     })
       .fetch('GET', imageUrl, {})
       .then((res) => {
-        toastMeassage('Your file has been downloaded to downloads folder!')
+        toastMeassage('Your file has been downloaded to downloads folder!');
         console.log('The file saved to ', res.path());
       })
       .catch((e) => {
-        console.log(e)
+        console.log(e);
       });
   };
 
-  downloadAttachment = async (item, index) => {
+  downloadAttachment = async (imageURL, file_name) => {
     try {
+      console.log('imageURL', imageURL);
+      console.log('file_name', file_name);
+  
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         {
@@ -293,7 +484,7 @@ class SubmitClaimPageTwo extends PureComponent {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.actualDownload(item.imageURL, item.file_name);
+        this.actualDownload(imageURL, file_name);
       } else {
         Alert.alert(
           'Permission Denied!',
@@ -303,33 +494,7 @@ class SubmitClaimPageTwo extends PureComponent {
     } catch (err) {
       console.log(err);
     }
-  }
-updateSubmissionDetails = async (data) => {
-  try {
-    console.log('data', data);
-    const {submissionDetails} = this.state;
-    let reqData = {
-      _id: this.state.updateId,
-      submissionDetails: data,
-    };
-    console.log('reqData', reqData);
-    let result = await updateClaimSubmission(reqData);
-    console.log('result', result);
-    console.log('result', result._id);
-
-    if (result) {
-      Toast.show({
-        text: 'Successfully Saved the Details',
-        duration: 3000,
-        type: "success"
-      })
-      this.setState({sectionCDisable: true, updateId: result._id});
-    }
-    console.log('updateId', this.state.updateId);
-  } catch (error) {
-    console.error('Error on: ', error);
-  }
-}
+  };
   render() {
     const data = [
       {title: 'Details of hospital', id: 1},
@@ -393,9 +558,10 @@ updateSubmissionDetails = async (data) => {
                       }}>
                       {item.id === 1 && (
                         <HospitalDetail
-                          updateHospitalDetail={(data) =>
-                            this.updateHospitalDetail(data)
-                          }
+                        updateHospitalDetail={(data) =>
+                          this.updateHospitalDetail(data)
+
+                        }
                         />
                       )}
 
@@ -407,38 +573,39 @@ updateSubmissionDetails = async (data) => {
                             this.updateSubmissionDetails(data)
                           }
                       />} */}
-                     
-                      {item.id === 2 && < PatientAdmittedDetails
-                        dropdownData={dropdownData}
-                        dischargeTimeStatus={dischargeTimeStatus}
-                        TimeOfAdmissionHours={TimeOfAdmissionHours}
-                        TimeOfAdmissionMinute={TimeOfAdmissionMinute}
-                        TimeOfDischargeHours={TimeOfDischargeHours}
-                        TimeOfDischargeMinute={TimeOfDischargeMinute}
-                        updateSubmissionDetails={(data) =>
-                          this.updateSubmissionDetails(data)
-                        }
+
+                      {item.id === 2 && this.state.section2Disable&&(
+                        <PatientAdmittedDetails
+                          dropdownData={dropdownData}
+                          dischargeTimeStatus={dischargeTimeStatus}
+                          TimeOfAdmissionHours={TimeOfAdmissionHours}
+                          TimeOfAdmissionMinute={TimeOfAdmissionMinute}
+                          TimeOfDischargeHours={TimeOfDischargeHours}
+                          TimeOfDischargeMinute={TimeOfDischargeMinute}
+                          updateInsuredPersonHospitalizedDetails={(data) =>
+                            this.updateInsuredPersonHospitalizedDetails(data)
+                          }
                         />
-                      }
+                      )}
                       {/* {item.id === 3 && <ClaimDetails
                         isSelected={this.state.isSelected}
                         />
                       } */}
-                      {item.id === 4 && (
+                      {item.id === 4&& this.state.section4Disable && (
                         <DocumentSubmitted
                           updateDocumentSubmitted={(data) =>
                             this.updateDocumentSubmitted(data)
                           }
                         />
                       )}
-                      {item.id === 5 && (
+                      {item.id === 5&& this.state.section5Disable && (
                         <NonNetworkHospital
                           updateDeclarationByHospital={(data) =>
                             this.updateNonNetworkHospital(data)
                           }
                         />
                       )}
-                      {item.id === 6 && (
+                      {item.id === 6&& this.state.section6Disable && (
                         <DeclarationByHospital
                           updateDeclarationByHospital={(data) =>
                             this.updateDeclarationByHospital(data)
@@ -447,6 +614,7 @@ updateSubmissionDetails = async (data) => {
                       )}
                       {/* {item.id === 7 && <AttachmentDetails />} */}
                     </View>
+                    {this.state.section7Disable&&(
                     <View>
                       <View style={styles.ButtonView}>
                         <Row
@@ -531,8 +699,8 @@ updateSubmissionDetails = async (data) => {
                             <Text style={{color: '#fff'}}>Add</Text>
                           </TouchableOpacity>
                         </View>
-                        {this.state.claimSubmissionAttachments &&
-                        this.state.claimSubmissionAttachments.length ? (
+                        {
+                        this.state.claimSubmissionAttachments ? (
                           <FlatList
                             data={this.state.claimSubmissionAttachments}
                             keyExtractor={(item, index) => index.toString()}
@@ -554,7 +722,7 @@ updateSubmissionDetails = async (data) => {
                                       styles.form_field,
                                       {paddingTop: 15, paddingLeft: 10},
                                     ]}>
-                                    {index+1}
+                                    {index + 1}
                                   </Text>
                                 </View>
                                 <View style={styles.form_field_view}>
@@ -594,31 +762,32 @@ updateSubmissionDetails = async (data) => {
                                       (styles.form_field,
                                       {flexDirection: 'row', width: '80%'})
                                     }>
-                                     {item.fileDetail? 
-                                    <TouchableOpacity
-                                      style={{
-                                        width: '40%',
-                                        backgroundColor: 'gray',
-                                        height: 45,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                      }}
-                                      onPress={() =>
-                                        this.downloadAttachment(item, index)
-                                      }>
-                                      <Text
+                                    {item.fileDetail ? (
+                                      <TouchableOpacity
                                         style={{
-                                          textAlign: 'center',
-                                          color: '#fff',
-                                          fontSize: 10,
-                                        }}>
-                                        Download
-                                      </Text>
-                                      <AntDesign
-                                        name="clouddownload"
-                                        style={{color: '#fff', fontSize: 20}}
-                                      />
-                                    </TouchableOpacity>:null}
+                                          width: '40%',
+                                          backgroundColor: 'gray',
+                                          height: 45,
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                        }}
+                                        onPress={() =>
+                                          this.downloadAttachment(item.fileDetail.imageURL, item.fileDetail.file_name)
+                                        }>
+                                        <Text
+                                          style={{
+                                            textAlign: 'center',
+                                            color: '#fff',
+                                            fontSize: 10,
+                                          }}>
+                                          Download
+                                        </Text>
+                                        <AntDesign
+                                          name="clouddownload"
+                                          style={{color: '#fff', fontSize: 20}}
+                                        />
+                                      </TouchableOpacity>
+                                    ) : null}
 
                                     <TouchableOpacity
                                       style={{
@@ -650,57 +819,55 @@ updateSubmissionDetails = async (data) => {
                             )}
                           />
                         ) : null}
-                        {this.state.claimSubmissionAttachments &&
-                        this.state.claimSubmissionAttachments.length ? (
                           <View style={{marginTop: 20}}>
                             <TouchableOpacity
                               style={styles.submit_ButtonStyle}
-                              onPress={() => this.submitData()}>
+                              onPress={() => this.submitData()}
+                              disabled={this.state.claimSubmissionAttachments.length ?false:true}>
                               <Text style={{color: '#fff'}}>Submit</Text>
                             </TouchableOpacity>
                           </View>
-                        ) : null}
                       </View>
                       {this.state.selectOptionPopup ? (
                         <UploadClaimSubmission
                           popupVisible={(data) => this.imageUpload(data)}
                         />
                       ) : null}
-                    </View>
-                  </Card>) : (
-                   
-                 <Card>
-                 <TouchableOpacity
-                   style={{
-                     justifyContent: 'center',
-                     padding: 10,
-                     
-                     alignItems: 'center',
-                   }}
-                   onPress={() => this.toggleData(index, 'DOWN')}>
-                   <Row>
-                     <Col size={9}>
-                       <Text style={{color: '#000'}}>{item.title}</Text>
-                     </Col>
-                     <Col size={1}>
-                       <TouchableOpacity
-                         onPress={() => this.toggleData(index, 'DOWN')}>
-                         <MaterialIcons
-                           name={
-                             showCard === index && !show
-                               ? 'keyboard-arrow-up'
-                               : 'keyboard-arrow-down'
-                           }
-                           style={{fontSize: 25, color: '#000'}}
-                         />
-                       </TouchableOpacity>
-                     </Col>
-                   </Row>
-                 </TouchableOpacity>
-               </Card>
+                    </View>)}
+                  </Card>
+                ) : (
+                  <Card>
+                    <TouchableOpacity
+                      style={{
+                        justifyContent: 'center',
+                        padding: 10,
+
+                        alignItems: 'center',
+                      }}
+                      onPress={() => this.toggleData(index, 'DOWN')}>
+                      <Row>
+                        <Col size={9}>
+                          <Text style={{color: '#000'}}>{item.title}</Text>
+                        </Col>
+                        <Col size={1}>
+                          <TouchableOpacity
+                            onPress={() => this.toggleData(index, 'DOWN')}>
+                            <MaterialIcons
+                              name={
+                                showCard === index && !show
+                                  ? 'keyboard-arrow-up'
+                                  : 'keyboard-arrow-down'
+                              }
+                              style={{fontSize: 25, color: '#000'}}
+                            />
+                          </TouchableOpacity>
+                        </Col>
+                      </Row>
+                    </TouchableOpacity>
+                  </Card>
                 )}
 
-                        {/* alignItems: 'center',
+                {/* alignItems: 'center',
                       }}
                       onPress={() => this.toggleData(index, 'DOWN')}>
                       <Row>
@@ -730,6 +897,6 @@ updateSubmissionDetails = async (data) => {
         </Content>
       </Container>
     );
-}
+  }
 }
 export default SubmitClaimPageTwo;
