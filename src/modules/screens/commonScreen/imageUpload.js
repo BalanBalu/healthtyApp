@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-
 import {  Modal } from 'react-native';
-import {
-  Container,Right, Body, Button, Row, View, Text} from 'native-base';
-  import ImagePicker from 'react-native-image-crop-picker';
+import {Container,Right, Body, Button, Row, View, Text} from 'native-base';
+import ImagePicker from 'react-native-image-crop-picker';
 
 
 export class ImageUpload extends Component {
@@ -11,14 +9,9 @@ export class ImageUpload extends Component {
         super(props)
         this.state = {
         }
-
     }
-
     async componentDidMount() {
-
     }
-
-
     uploadProfilePicture(type) {
         if (type == "Camera") {
             ImagePicker.openCamera({
@@ -30,23 +23,21 @@ export class ImageUpload extends Component {
                 compressImageMaxHeight: 480,
                 freeStyleCropEnabled: true,
             }).then(image => {
-                this.setState({ selectOptionPoopup: false });
-             
+                this.setState({ selectOptionPoopup: false });        
                 this.props.popupVisible({
                     success:true,
                     image:image
                   });
-            
             }).catch(ex => {
                 this.props.popupVisible({
                     image:null,
                     success:false,
                     error:ex
                   });
-                
             });
         } else {
             ImagePicker.openPicker({
+                mediaType: 'photo',
                 multiple: true,
                 width: 300,
                 height: 400,
@@ -55,7 +46,6 @@ export class ImageUpload extends Component {
                 // freeStyleCropEnabled: true,
                 avoidEmptySpaceAroundImage: true,
             }).then(image => {
-              
                 this.props.popupVisible({
                     success:true,
                     image:image
@@ -66,7 +56,6 @@ export class ImageUpload extends Component {
                     success:false,
                     error:ex
                   });
-                
             });
         }
     }
