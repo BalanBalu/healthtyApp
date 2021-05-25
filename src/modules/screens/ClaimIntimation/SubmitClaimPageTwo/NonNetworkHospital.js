@@ -38,6 +38,7 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setAddress(text)}
+              testID="editAddress"
             />
           </Item>
         </Col>
@@ -57,6 +58,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setPinCode(text)}
+              testID="editPinCode"
+
             />
           </Item>
         </Col>
@@ -76,6 +79,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setNoAndStreet(text)}
+              testID="editNoAndStreet"
+
             />
           </Item>
         </Col>
@@ -95,6 +100,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setCity(text)}
+              testID="editCity"
+
             />
           </Item>
         </Col>
@@ -114,6 +121,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setState(text)}
+              testID="editState"
+
             />
           </Item>
         </Col>
@@ -133,6 +142,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setCountry(text)}
+              testID="editCountry"
+
             />
           </Item>
         </Col>
@@ -152,6 +163,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setPhoneNo(text)}
+              testID="editPhoneNo"
+
             />
           </Item>
         </Col>
@@ -171,6 +184,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setStateCode(text)}
+              testID="editStateCode"
+
             />
           </Item>
         </Col>
@@ -190,6 +205,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setHospitalPan(text)}
+              testID="editHospitalPan"
+
             />
           </Item>
         </Col>
@@ -209,6 +226,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setNoOfInpatientBeds(text)}
+              testID="editNoOfInpatientBeds"
+
             />
           </Item>
         </Col>
@@ -231,6 +250,8 @@ const NonNetworkHospital = (props) => {
               standardStyle={true}
               selected={ot === true}
               onPress={() => setOT(true)}
+              testID="selectOt"
+
             />
             <Text style={styles.text}>Yes</Text>
 
@@ -241,6 +262,8 @@ const NonNetworkHospital = (props) => {
                 standardStyle={true}
                 selected={ot === false}
               onPress={() => setOT(false)}
+              testID="selectNoOt"
+
             />
             <Text style={styles.text}>No</Text>
             </View>
@@ -258,6 +281,8 @@ const NonNetworkHospital = (props) => {
               standardStyle={true}
               selected={icu === true}
                 onPress={() => setICU(true)}
+                testID="selectICU"
+
             />
             <Text style={styles.text}>Yes</Text>
 
@@ -268,6 +293,8 @@ const NonNetworkHospital = (props) => {
                 standardStyle={true}
                 selected={icu === false}
                 onPress={() => setICU(false)}
+                testID="selectNOICU"
+
               />
               <Text style={styles.text}>No</Text>
             </View>
@@ -290,6 +317,8 @@ const NonNetworkHospital = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
                 onChangeText={(text) =>setOthers(text)}
+                testID="editOthers"
+
             />
           </Item>
         </Col>
@@ -322,7 +351,8 @@ const NonNetworkHospital = (props) => {
                 OT : ot,
                 ICU : icu,
                 })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')}>
+              : toastMeassage('Unable to Submit Claim, Please fill all details')}
+              testID="submitSection5">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>

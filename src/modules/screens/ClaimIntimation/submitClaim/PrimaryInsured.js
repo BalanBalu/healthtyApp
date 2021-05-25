@@ -6,7 +6,7 @@ import styles from '../Styles';
 import {toastMeassage} from '../../../common';
 
 const PrimaryInsured = (props) => {
-  const {claimListData, submissionDetails} = props;
+  const {claimListData, updatePrimaryInsuredDetails} = props;
   const [policyNo, setPolicyNo] = useState(claimListData.policyNo);
   const [certificateNo, setCertificateNo] = useState('');
   const [tpaID, setTPAID] = useState('');
@@ -312,21 +312,7 @@ const PrimaryInsured = (props) => {
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-            policyNo &&
-            certificateNo &&
-            tpaID &&
-            firstName &&
-            middleName &&
-            lastName &&
-            pinCode &&
-            noAndStreet &&
-            address &&
-            city &&
-            state &&
-            country &&
-            phoneNo &&
-            emailId
-              ? submissionDetails({
+            updatePrimaryInsuredDetails({
                   certificateNumber: certificateNo,
                   tpaIdNo: tpaID,
                   policyHolderFirstName: firstName,
@@ -341,7 +327,6 @@ const PrimaryInsured = (props) => {
                   phoneNumber: phoneNo,
                   policyHolderMailId: emailId,
                 })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')
           }testID="submitDetails1">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>
         </TouchableOpacity>

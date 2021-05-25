@@ -278,8 +278,10 @@ class SubmitClaimPageTwo extends PureComponent {
       section5Disable: true,
       section6Disable: true,
       section7Disable: false,
-      updateId:this.props.navigation.getParam('dataId') || null,
+      // updateId:this.props.navigation.getParam('dataId') || null,
+      updateId:'60ad3dfd9d68d1114c9be951',
       disabled: 0,
+      submitButton:true
     };
     this.submissionDetails = this.props.navigation.getParam(
       'submissionDetails',
@@ -322,309 +324,310 @@ class SubmitClaimPageTwo extends PureComponent {
         _id: this.state.updateId,
         submissionDetails: {
           ...this.submissionDetails,
-          hospitalName: data.hospitalName
-            ? data.hospitalName
-            : submissionDetails.hospitalName
-            ? submissionDetails.hospitalName
-            : null,
-          hospitalId: data.hospitalId
-            ? data.hospitalId
-            : submissionDetails.hospitalId
-            ? submissionDetails.hospitalId
-            : null,
-          hospitalType: data.hospitalType
-            ? data.hospitalType
-            : submissionDetails.hospitalType
-            ? submissionDetails.hospitalType
-            : null,
-          treatingDoctorName: data.treatingDoctorName
-            ? data.treatingDoctorName
-            : submissionDetails.treatingDoctorName
-            ? submissionDetails.treatingDoctorName
-            : null,
-          treatingDoctorMiddleName: data.treatingDoctorMiddleName
-            ? data.treatingDoctorMiddleName
-            : submissionDetails.treatingDoctorMiddleName
-            ? submissionDetails.treatingDoctorMiddleName
-            : null,
-          treatingDoctorLastName: data.treatingDoctorLastName
-            ? data.treatingDoctorLastName
-            : submissionDetails.treatingDoctorLastName
-            ? submissionDetails.treatingDoctorLastName
-            : null,
-          qualification: data.qualification
-            ? data.qualification
-            : submissionDetails.qualification
-            ? submissionDetails.qualification
-            : null,
-          registrationStateCode: data.registrationStateCode
-            ? data.registrationStateCode
-            : submissionDetails.registrationStateCode
-            ? submissionDetails.registrationStateCode
-            : null,
-          hospitalPhoneNumber: data.hospitalPhoneNumber
-            ? data.hospitalPhoneNumber
-            : submissionDetails.hospitalPhoneNumber
-            ? submissionDetails.hospitalPhoneNumber
-            : null,
-          patientFirstName: data.patientFirstName
-            ? data.patientFirstName
-            : submissionDetails.patientFirstName
-            ? submissionDetails.patientFirstName
-            : null,
-          patientMiddleName: data.patientMiddleName
-            ? data.patientMiddleName
-            : submissionDetails.patientMiddleName
-            ? submissionDetails.patientMiddleName
-            : null,
-          patientLastName: data.patientLastName
-            ? data.patientLastName
-            : submissionDetails.patientLastName
-            ? submissionDetails.patientLastName
-            : null,
-          patientGender: data.patientGender
-            ? data.patientGender
-            : submissionDetails.patientGender
-            ? submissionDetails.patientGender
-            : null,
-          patientAgeYear1: data.patientAgeYear1
-            ? data.patientAgeYear1
-            : submissionDetails.patientAgeYear1
-            ? submissionDetails.patientAgeYear1
-            : null,
-          patientAgeYear2: data.patientAgeYear2
-            ? data.patientAgeYear2
-            : submissionDetails.patientAgeYear2
-            ? submissionDetails.patientAgeYear2
-            : null,
-          patientAgeMonth1: data.patientAgeMonth1
-            ? data.patientAgeMonth1
-            : submissionDetails.patientAgeMonth1
-            ? submissionDetails.patientAgeMonth1
-            : null,
-          patientAgeMonth2: data.patientAgeMonth2
-            ? data.patientAgeMonth2
-            : submissionDetails.patientAgeMonth2
-            ? submissionDetails.patientAgeMonth2
-            : null,
-          ipRegistrationNo: data.ipRegistrationNo
-            ? data.ipRegistrationNo
-            : submissionDetails.ipRegistrationNo
-            ? submissionDetails.ipRegistrationNo
-            : null,
-          patientDOB: data.patientDOB
-            ? data.patientDOB
-            : submissionDetails.patientDOB
-            ? submissionDetails.patientDOB
-            : null,
-          submissionDateOfAdmission: data.patientDOB
-            ? data.submissionDateOfAdmission
-            : submissionDetails.submissionDateOfAdmission
-            ? submissionDetails.submissionDateOfAdmission
-            : null,
-          admissionTimeInHour: data.admissionTimeInHour
-            ? data.admissionTimeInHour
-            : submissionDetails.admissionTimeInHour
-            ? submissionDetails.admissionTimeInHour
-            : null,
-          admissionTimeInMin: data.admissionTimeInMin
-            ? data.admissionTimeInMin
-            : submissionDetails.admissionTimeInMin
-            ? submissionDetails.admissionTimeInMin
-            : null,
-          dischargeTimeInHour: data.dischargeTimeInHour
-            ? data.dischargeTimeInHour
-            : submissionDetails.dischargeTimeInHour
-            ? submissionDetails.dischargeTimeInHour
-            : null,
-          dischargeTimeInMin: data.dischargeTimeInMin
-            ? data.dischargeTimeInMin
-            : submissionDetails.dischargeTimeInMin
-            ? submissionDetails.dischargeTimeInMin
-            : null,
-          submissionDischargeStatus: data.submissionDischargeStatus
-            ? data.submissionDischargeStatus
-            : submissionDetails.submissionDischargeStatus
-            ? submissionDetails.submissionDischargeStatus
-            : null,
-          submissionDeliveryDate: data.submissionDeliveryDate
-            ? data.submissionDeliveryDate
-            : submissionDetails.submissionDeliveryDate
-            ? submissionDetails.submissionDeliveryDate
-            : null,
-          typeOfAdmission: data.typeOfAdmission
-            ? data.typeOfAdmission
-            : submissionDetails.typeOfAdmission
-            ? submissionDetails.typeOfAdmission
-            : null,
-          totalOfClaimAmount: data.totalOfClaimAmount
-            ? data.totalOfClaimAmount
-            : submissionDetails.totalOfClaimAmount
-            ? submissionDetails.totalOfClaimAmount
-            : null,
-          submissionDateOfDischarge: data.submissionDateOfDischarge
-            ? data.submissionDateOfDischarge
-            : submissionDetails.submissionDateOfDischarge
-            ? submissionDetails.submissionDateOfDischarge
-            : null,
-          gravidaStatus: data.gravidaStatus
-            ? data.gravidaStatus
-            : submissionDetails.gravidaStatus
-            ? submissionDetails.gravidaStatus
-            : null,
-          claimFormDulySigned: data.claimFormDulySigned
-            ? data.claimFormDulySigned
-            : submissionDetails.claimFormDulySigned
-            ? submissionDetails.claimFormDulySigned
-            : null,
-          ctInvestigationReports: data.ctInvestigationReports
-            ? data.ctInvestigationReports
-            : submissionDetails.ctInvestigationReports
-            ? submissionDetails.ctInvestigationReports
-            : null,
-          copyOfPreAuthApprovalLetter: data.copyOfPreAuthApprovalLetter
-            ? data.copyOfPreAuthApprovalLetter
-            : submissionDetails.copyOfPreAuthApprovalLetter
-            ? submissionDetails.copyOfPreAuthApprovalLetter
-            : null,
-          patientVerifiedByHospital: data.patientVerifiedByHospital
-            ? data.patientVerifiedByHospital
-            : submissionDetails.patientVerifiedByHospital
-            ? submissionDetails.patientVerifiedByHospital
-            : null,
-          hospitalDischargeSummary: data.hospitalDischargeSummary
-            ? data.hospitalDischargeSummary
-            : submissionDetails.hospitalDischargeSummary
-            ? submissionDetails.hospitalDischargeSummary
-            : null,
-          operationTheatreNotes: data.operationTheatreNotes
-            ? data.operationTheatreNotes
-            : submissionDetails.operationTheatreNotes
-            ? submissionDetails.operationTheatreNotes
-            : null,
-          hospitalMainBill: data.hospitalMainBill
-            ? data.hospitalMainBill
-            : submissionDetails.hospitalMainBill
-            ? submissionDetails.hospitalMainBill
-            : null,
-          anyOthers: data.anyOthers
-            ? data.anyOthers
-            : submissionDetails.anyOthers
-            ? submissionDetails.anyOthers
-            : null,
-          investigationReports: data.investigationReports
-            ? data.investigationReports
-            : submissionDetails.investigationReports
-            ? submissionDetails.investigationReports
-            : null,
-          originalPreAuthRequest: data.originalPreAuthRequest
-            ? data.originalPreAuthRequest
-            : submissionDetails.originalPreAuthRequest
-            ? submissionDetails.originalPreAuthRequest
-            : null,
-          DoctorReferenceSlipForInvestigation: data.DoctorReferenceSlipForInvestigation
-            ? data.DoctorReferenceSlipForInvestigation
-            : submissionDetails.DoctorReferenceSlipForInvestigation
-            ? submissionDetails.DoctorReferenceSlipForInvestigation
-            : null,
-          ecg: ecg,
-          pharmacyBill: data.pharmacyBill
-            ? data.pharmacyBill
-            : submissionDetails.pharmacyBill
-            ? submissionDetails.pharmacyBill
-            : null,
-          MLCReportsAndPoliceFIR: data.MLCReportsAndPoliceFIR
-            ? data.MLCReportsAndPoliceFIR
-            : submissionDetails.MLCReportsAndPoliceFIR
-            ? submissionDetails.MLCReportsAndPoliceFIR
-            : null,
-          hospitalBreakupBill: data.hospitalBreakupBill
-            ? data.hospitalBreakupBill
-            : submissionDetails.hospitalBreakupBill
-            ? submissionDetails.hospitalBreakupBill
-            : null,
-          nonNetworkHospitalAddress: data.nonNetworkHospitalAddress
-            ? data.nonNetworkHospitalAddress
-            : submissionDetails.nonNetworkHospitalAddress
-            ? submissionDetails.nonNetworkHospitalAddress
-            : null,
-          nonNetworkHospitalPinCode: data.nonNetworkHospitalPinCode
-            ? data.nonNetworkHospitalPinCode
-            : submissionDetails.nonNetworkHospitalPinCode
-            ? submissionDetails.nonNetworkHospitalPinCode
-            : null,
-          nonNetworkHospitalState: data.nonNetworkHospitalState
-            ? data.nonNetworkHospitalState
-            : submissionDetails.nonNetworkHospitalState
-            ? submissionDetails.nonNetworkHospitalState
-            : null,
-          nonNetworkHospitalCity: data.nonNetworkHospitalCity
-            ? data.nonNetworkHospitalCity
-            : submissionDetails.nonNetworkHospitalCity
-            ? submissionDetails.nonNetworkHospitalCity
-            : null,
-          nonNetworkHospitalNoAndStreet: data.nonNetworkHospitalNoAndStreet
-            ? data.nonNetworkHospitalNoAndStreet
-            : submissionDetails.nonNetworkHospitalNoAndStreet
-            ? submissionDetails.nonNetworkHospitalNoAndStreet
-            : null,
-          nonNetworkHospitalCountry: data.nonNetworkHospitalCountry
-            ? data.nonNetworkHospitalCountry
-            : submissionDetails.nonNetworkHospitalCountry
-            ? submissionDetails.nonNetworkHospitalCountry
-            : null,
-          nonNetworkHospitalRegistrationStateCode: data.nonNetworkHospitalRegistrationStateCode
-            ? data.nonNetworkHospitalRegistrationStateCode
-            : submissionDetails.nonNetworkHospitalRegistrationStateCode
-            ? submissionDetails.nonNetworkHospitalRegistrationStateCode
-            : null,
-          nonNetworkHospitalPlan: data.nonNetworkHospitalPlan
-            ? data.nonNetworkHospitalPlan
-            : submissionDetails.nonNetworkHospitalPlan
-            ? submissionDetails.nonNetworkHospitalPlan
-            : null,
-          nonNetworkHospitalMobileNumber: data.nonNetworkHospitalMobileNumber
-            ? data.nonNetworkHospitalMobileNumber
-            : submissionDetails.nonNetworkHospitalMobileNumber
-            ? submissionDetails.nonNetworkHospitalMobileNumber
-            : null,
-          nonNetworkHospitalInpatientBeds: data.nonNetworkHospitalInpatientBeds
-            ? data.nonNetworkHospitalInpatientBeds
-            : submissionDetails.nonNetworkHospitalInpatientBeds
-            ? submissionDetails.nonNetworkHospitalInpatientBeds
-            : null,
-          othersNonNetworkHospital: data.othersNonNetworkHospital
-            ? data.othersNonNetworkHospital
-            : submissionDetails.othersNonNetworkHospital
-            ? submissionDetails.othersNonNetworkHospital
-            : null,
-          OT: data.OT
-            ? data.OT
-            : submissionDetails.OT
-            ? submissionDetails.OT
-            : null,
-          ICU: data.ICU
-            ? data.ICU
-            : submissionDetails.ICU
-            ? submissionDetails.ICU
-            : null,
-          declarationDate: data. declarationDate
-            ? data. declarationDate
-            : submissionDetails. declarationDate
-            ? submissionDetails. declarationDate
-            : null,
-          declarationPlace: data. declarationPlace
-            ? data. declarationPlace
-            : submissionDetails. declarationPlace
-            ? submissionDetails. declarationPlace
-            : null,
-          authoritySign: data. authoritySign
-            ? data. authoritySign
-            : submissionDetails. authoritySign
-            ? submissionDetails. authoritySign
-            : null,
+          ...data
+          // hospitalName: data.hospitalName
+          //   ? data.hospitalName
+          //   :  this.submissionDetails.hospitalName
+          //   ?  this.submissionDetails.hospitalName
+          //   : null,
+          // hospitalId: data.hospitalId
+          //   ? data.hospitalId
+          //   :  this.submissionDetails.hospitalId
+          //   ?  this.submissionDetails.hospitalId
+          //   : null,
+          // hospitalType: data.hospitalType
+          //   ? data.hospitalType
+          //   :  this.submissionDetails.hospitalType
+          //   ?  this.submissionDetails.hospitalType
+          //   : null,
+          // treatingDoctorName: data.treatingDoctorName
+          //   ? data.treatingDoctorName
+          //   :  this.submissionDetails.treatingDoctorName
+          //   ?  this.submissionDetails.treatingDoctorName
+          //   : null,
+          // treatingDoctorMiddleName: data.treatingDoctorMiddleName
+          //   ? data.treatingDoctorMiddleName
+          //   :  this.submissionDetails.treatingDoctorMiddleName
+          //   ?  this.submissionDetails.treatingDoctorMiddleName
+          //   : null,
+          // treatingDoctorLastName: data.treatingDoctorLastName
+          //   ? data.treatingDoctorLastName
+          //   :  this.submissionDetails.treatingDoctorLastName
+          //   ?  this.submissionDetails.treatingDoctorLastName
+          //   : null,
+          // qualification: data.qualification
+          //   ? data.qualification
+          //   :  this.submissionDetails.qualification
+          //   ?  this.submissionDetails.qualification
+          //   : null,
+          // registrationStateCode: data.registrationStateCode
+          //   ? data.registrationStateCode
+          //   :  this.submissionDetails.registrationStateCode
+          //   ?  this.submissionDetails.registrationStateCode
+          //   : null,
+          // hospitalPhoneNumber: data.hospitalPhoneNumber
+          //   ? data.hospitalPhoneNumber
+          //   :  this.submissionDetails.hospitalPhoneNumber
+          //   ?  this.submissionDetails.hospitalPhoneNumber
+          //   : null,
+          // patientFirstName: data.patientFirstName
+          //   ? data.patientFirstName
+          //   : this. this.submissionDetails.patientFirstName
+          //   ? this. this.submissionDetails.patientFirstName
+          //   : null,
+          // patientMiddleName: data.patientMiddleName
+          //   ? data.patientMiddleName
+          //   :  this.submissionDetails.patientMiddleName
+          //   ?  this.submissionDetails.patientMiddleName
+          //   : null,
+          // patientLastName: data.patientLastName
+          //   ? data.patientLastName
+          //   :  this.submissionDetails.patientLastName
+          //   ?  this.submissionDetails.patientLastName
+          //   : null,
+          // patientGender: data.patientGender
+          //   ? data.patientGender
+          //   :  this.submissionDetails.patientGender
+          //   ?  this.submissionDetails.patientGender
+          //   : null,
+          // patientAgeYear1: data.patientAgeYear1
+          //   ? data.patientAgeYear1
+          //   :  this.submissionDetails.patientAgeYear1
+          //   ?  this.submissionDetails.patientAgeYear1
+          //   : null,
+          // patientAgeYear2: data.patientAgeYear2
+          //   ? data.patientAgeYear2
+          //   :  this.submissionDetails.patientAgeYear2
+          //   ?  this.submissionDetails.patientAgeYear2
+          //   : null,
+          // patientAgeMonth1: data.patientAgeMonth1
+          //   ? data.patientAgeMonth1
+          //   :  this.submissionDetails.patientAgeMonth1
+          //   ?  this.submissionDetails.patientAgeMonth1
+          //   : null,
+          // patientAgeMonth2: data.patientAgeMonth2
+          //   ? data.patientAgeMonth2
+          //   :  this.submissionDetails.patientAgeMonth2
+          //   ?  this.submissionDetails.patientAgeMonth2
+          //   : null,
+          // ipRegistrationNo: data.ipRegistrationNo
+          //   ? data.ipRegistrationNo
+          //   :  this.submissionDetails.ipRegistrationNo
+          //   ?  this.submissionDetails.ipRegistrationNo
+          //   : null,
+          // patientDOB: data.patientDOB
+          //   ? data.patientDOB
+          //   :  this.submissionDetails.patientDOB
+          //   ?  this.submissionDetails.patientDOB
+          //   : null,
+          // submissionDateOfAdmission: data.patientDOB
+          //   ? data.submissionDateOfAdmission
+          //   :  this.submissionDetails.submissionDateOfAdmission
+          //   ?  this.submissionDetails.submissionDateOfAdmission
+          //   : null,
+          // admissionTimeInHour: data.admissionTimeInHour
+          //   ? data.admissionTimeInHour
+          //   :  this.submissionDetails.admissionTimeInHour
+          //   ?  this.submissionDetails.admissionTimeInHour
+          //   : null,
+          // admissionTimeInMin: data.admissionTimeInMin
+          //   ? data.admissionTimeInMin
+          //   :  this.submissionDetails.admissionTimeInMin
+          //   ?  this.submissionDetails.admissionTimeInMin
+          //   : null,
+          // dischargeTimeInHour: data.dischargeTimeInHour
+          //   ? data.dischargeTimeInHour
+          //   :  this.submissionDetails.dischargeTimeInHour
+          //   ?  this.submissionDetails.dischargeTimeInHour
+          //   : null,
+          // dischargeTimeInMin: data.dischargeTimeInMin
+          //   ? data.dischargeTimeInMin
+          //   :  this.submissionDetails.dischargeTimeInMin
+          //   ?  this.submissionDetails.dischargeTimeInMin
+          //   : null,
+          // submissionDischargeStatus: data.submissionDischargeStatus
+          //   ? data.submissionDischargeStatus
+          //   :  this.submissionDetails.submissionDischargeStatus
+          //   ?  this.submissionDetails.submissionDischargeStatus
+          //   : null,
+          // submissionDeliveryDate: data.submissionDeliveryDate
+          //   ? data.submissionDeliveryDate
+          //   :  this.submissionDetails.submissionDeliveryDate
+          //   ?  this.submissionDetails.submissionDeliveryDate
+          //   : null,
+          // typeOfAdmission: data.typeOfAdmission
+          //   ? data.typeOfAdmission
+          //   :  this.submissionDetails.typeOfAdmission
+          //   ?  this.submissionDetails.typeOfAdmission
+          //   : null,
+          // totalOfClaimAmount: data.totalOfClaimAmount
+          //   ? data.totalOfClaimAmount
+          //   :  this.submissionDetails.totalOfClaimAmount
+          //   ?  this.submissionDetails.totalOfClaimAmount
+          //   : null,
+          // submissionDateOfDischarge: data.submissionDateOfDischarge
+          //   ? data.submissionDateOfDischarge
+          //   :  this.submissionDetails.submissionDateOfDischarge
+          //   ?  this.submissionDetails.submissionDateOfDischarge
+          //   : null,
+          // gravidaStatus: data.gravidaStatus
+          //   ? data.gravidaStatus
+          //   :  this.submissionDetails.gravidaStatus
+          //   ?  this.submissionDetails.gravidaStatus
+          //   : null,
+          // claimFormDulySigned: data.claimFormDulySigned
+          //   ? data.claimFormDulySigned
+          //   :  this.submissionDetails.claimFormDulySigned
+          //   ?  this.submissionDetails.claimFormDulySigned
+          //   : null,
+          // ctInvestigationReports: data.ctInvestigationReports
+          //   ? data.ctInvestigationReports
+          //   :  this.submissionDetails.ctInvestigationReports
+          //   ?  this.submissionDetails.ctInvestigationReports
+          //   : null,
+          // copyOfPreAuthApprovalLetter: data.copyOfPreAuthApprovalLetter
+          //   ? data.copyOfPreAuthApprovalLetter
+          //   :  this.submissionDetails.copyOfPreAuthApprovalLetter
+          //   ?  this.submissionDetails.copyOfPreAuthApprovalLetter
+          //   : null,
+          // patientVerifiedByHospital: data.patientVerifiedByHospital
+          //   ? data.patientVerifiedByHospital
+          //   :  this.submissionDetails.patientVerifiedByHospital
+          //   ?  this.submissionDetails.patientVerifiedByHospital
+          //   : null,
+          // hospitalDischargeSummary: data.hospitalDischargeSummary
+          //   ? data.hospitalDischargeSummary
+          //   :  this.submissionDetails.hospitalDischargeSummary
+          //   ?  this.submissionDetails.hospitalDischargeSummary
+          //   : null,
+          // operationTheatreNotes: data.operationTheatreNotes
+          //   ? data.operationTheatreNotes
+          //   :  this.submissionDetails.operationTheatreNotes
+          //   ?  this.submissionDetails.operationTheatreNotes
+          //   : null,
+          // hospitalMainBill: data.hospitalMainBill
+          //   ? data.hospitalMainBill
+          //   :  this.submissionDetails.hospitalMainBill
+          //   ?  this.submissionDetails.hospitalMainBill
+          //   : null,
+          // anyOthers: data.anyOthers
+          //   ? data.anyOthers
+          //   :  this.submissionDetails.anyOthers
+          //   ?  this.submissionDetails.anyOthers
+          //   : null,
+          // investigationReports: data.investigationReports
+          //   ? data.investigationReports
+          //   :  this.submissionDetails.investigationReports
+          //   ?  this.submissionDetails.investigationReports
+          //   : null,
+          // originalPreAuthRequest: data.originalPreAuthRequest
+          //   ? data.originalPreAuthRequest
+          //   :  this.submissionDetails.originalPreAuthRequest
+          //   ?  this.submissionDetails.originalPreAuthRequest
+          //   : null,
+          // DoctorReferenceSlipForInvestigation: data.DoctorReferenceSlipForInvestigation
+          //   ? data.DoctorReferenceSlipForInvestigation
+          //   :  this.submissionDetails.DoctorReferenceSlipForInvestigation
+          //   ?  this.submissionDetails.DoctorReferenceSlipForInvestigation
+          //   : null,
+          // ecg: ecg,
+          // pharmacyBill: data.pharmacyBill
+          //   ? data.pharmacyBill
+          //   :  this.submissionDetails.pharmacyBill
+          //   ?  this.submissionDetails.pharmacyBill
+          //   : null,
+          // MLCReportsAndPoliceFIR: data.MLCReportsAndPoliceFIR
+          //   ? data.MLCReportsAndPoliceFIR
+          //   :  this.submissionDetails.MLCReportsAndPoliceFIR
+          //   ?  this.submissionDetails.MLCReportsAndPoliceFIR
+          //   : null,
+          // hospitalBreakupBill: data.hospitalBreakupBill
+          //   ? data.hospitalBreakupBill
+          //   :  this.submissionDetails.hospitalBreakupBill
+          //   ?  this.submissionDetails.hospitalBreakupBill
+          //   : null,
+          // nonNetworkHospitalAddress: data.nonNetworkHospitalAddress
+          //   ? data.nonNetworkHospitalAddress
+          //   :  this.submissionDetails.nonNetworkHospitalAddress
+          //   ?  this.submissionDetails.nonNetworkHospitalAddress
+          //   : null,
+          // nonNetworkHospitalPinCode: data.nonNetworkHospitalPinCode
+          //   ? data.nonNetworkHospitalPinCode
+          //   :  this.submissionDetails.nonNetworkHospitalPinCode
+          //   ?  this.submissionDetails.nonNetworkHospitalPinCode
+          //   : null,
+          // nonNetworkHospitalState: data.nonNetworkHospitalState
+          //   ? data.nonNetworkHospitalState
+          //   :  this.submissionDetails.nonNetworkHospitalState
+          //   ?  this.submissionDetails.nonNetworkHospitalState
+          //   : null,
+          // nonNetworkHospitalCity: data.nonNetworkHospitalCity
+          //   ? data.nonNetworkHospitalCity
+          //   :  this.submissionDetails.nonNetworkHospitalCity
+          //   ?  this.submissionDetails.nonNetworkHospitalCity
+          //   : null,
+          // nonNetworkHospitalNoAndStreet: data.nonNetworkHospitalNoAndStreet
+          //   ? data.nonNetworkHospitalNoAndStreet
+          //   :  this.submissionDetails.nonNetworkHospitalNoAndStreet
+          //   ?  this.submissionDetails.nonNetworkHospitalNoAndStreet
+          //   : null,
+          // nonNetworkHospitalCountry: data.nonNetworkHospitalCountry
+          //   ? data.nonNetworkHospitalCountry
+          //   :  this.submissionDetails.nonNetworkHospitalCountry
+          //   ?  this.submissionDetails.nonNetworkHospitalCountry
+          //   : null,
+          // nonNetworkHospitalRegistrationStateCode: data.nonNetworkHospitalRegistrationStateCode
+          //   ? data.nonNetworkHospitalRegistrationStateCode
+          //   :  this.submissionDetails.nonNetworkHospitalRegistrationStateCode
+          //   ?  this.submissionDetails.nonNetworkHospitalRegistrationStateCode
+          //   : null,
+          // nonNetworkHospitalPlan: data.nonNetworkHospitalPlan
+          //   ? data.nonNetworkHospitalPlan
+          //   :  this.submissionDetails.nonNetworkHospitalPlan
+          //   ?  this.submissionDetails.nonNetworkHospitalPlan
+          //   : null,
+          // nonNetworkHospitalMobileNumber: data.nonNetworkHospitalMobileNumber
+          //   ? data.nonNetworkHospitalMobileNumber
+          //   :  this.submissionDetails.nonNetworkHospitalMobileNumber
+          //   ?  this.submissionDetails.nonNetworkHospitalMobileNumber
+          //   : null,
+          // nonNetworkHospitalInpatientBeds: data.nonNetworkHospitalInpatientBeds
+          //   ? data.nonNetworkHospitalInpatientBeds
+          //   :  this.submissionDetails.nonNetworkHospitalInpatientBeds
+          //   ?  this.submissionDetails.nonNetworkHospitalInpatientBeds
+          //   : null,
+          // othersNonNetworkHospital: data.othersNonNetworkHospital
+          //   ? data.othersNonNetworkHospital
+          //   :  this.submissionDetails.othersNonNetworkHospital
+          //   ?  this.submissionDetails.othersNonNetworkHospital
+          //   : null,
+          // OT: data.OT
+          //   ? data.OT
+          //   :  this.submissionDetails.OT
+          //   ?  this.submissionDetails.OT
+          //   : null,
+          // ICU: data.ICU
+          //   ? data.ICU
+          //   :  this.submissionDetails.ICU
+          //   ?  this.submissionDetails.ICU
+          //   : null,
+          // declarationDate: data. declarationDate
+          //   ? data. declarationDate
+          //   :  this.submissionDetails. declarationDate
+          //   ?  this.submissionDetails. declarationDate
+          //   : null,
+          // declarationPlace: data. declarationPlace
+          //   ? data. declarationPlace
+          //   :  this.submissionDetails. declarationPlace
+          //   ?  this.submissionDetails. declarationPlace
+          //   : null,
+          // authoritySign: data. authoritySign
+          //   ? data. authoritySign
+          //   :  this.submissionDetails. authoritySign
+          //   ?  this.submissionDetails. authoritySign
+          //   : null,
         },
-      };
+      }
       console.log('reqData', reqData);
       let result = await updateClaimSubmission(reqData);
 
@@ -634,9 +637,10 @@ class SubmitClaimPageTwo extends PureComponent {
           duration: 3000,
           type: 'success',
         });
+        this.submissionDetails=result.submissionDetails
         this.setState({updateId: result._id});
         return true;
-      }
+}
       console.log('updateId', this.state.updateId);
     } catch (error) {
       console.error('Error on: ', error);
@@ -704,7 +708,7 @@ submitAllDetails=async()=>{
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (declarationByHospital == true) {
-      this.setState({section7Disable: true});
+      this.setState({submitButton: false});
     }
   };
   updateAttachment = async (data) => {
@@ -1269,12 +1273,8 @@ submitAllDetails=async()=>{
            <View style={{marginTop: 20}}>
                             <TouchableOpacity
                               style={styles.submit_ButtonStyle}
-                              onPress={() => this.submitData()}
-                              disabled={
-                                this.state.claimSubmissionAttachments.length
-                                  ? false
-                                  : true
-                              }>
+                              onPress={() => this.submitAllDetails()}
+                              disabled={this.state.submitButton }>
                               <Text style={{color: '#fff'}}>Submit</Text>
                             </TouchableOpacity>
                           </View>

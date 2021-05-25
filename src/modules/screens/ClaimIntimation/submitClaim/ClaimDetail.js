@@ -616,24 +616,7 @@ const ClaimDetail = (props) => {
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-            preHospitalizationExpenses &&
-            hospitalizationExpenses &&
-            postHospitalizationExpenses &&
-            healthCheckupCost &&
-            ambulanceCharges &&
-            othersCode &&
-            totalClaim &&
-            preHospitalizationPeriod &&
-            postHospitalizationPeriod &&
-            claimForDomiciliaryHospitalization &&
-            hospitalDailyCash &&
-            surgicalCash &&
-            criticalIllness &&
-            convalescence &&
-            lumsumBenefit &&
-            others &&
-            totalClaimValue
-              ? updateClaimDetails({
+           updateClaimDetails({
                   preHospitalizationExpenses: preHospitalizationExpenses,
                   hospitalizationExpenses: hospitalizationExpenses,
                   postHospitalizationExpenses: postHospitalizationExpenses,
@@ -664,7 +647,6 @@ const ClaimDetail = (props) => {
                   OthersClaim:OthersClaim,
                   investigationReports:investigationReports
                 })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')
           }
           testID="submitDetails4">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>

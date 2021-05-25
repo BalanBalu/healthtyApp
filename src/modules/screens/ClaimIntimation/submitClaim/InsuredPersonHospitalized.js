@@ -6,15 +6,15 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
 import {primaryColor} from '../../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {subTimeUnit, formatDate} from '../../../../setup/helpers';
+import {subTimeUnit, formatDate,dateDiff} from '../../../../setup/helpers';
 import {toastMeassage} from '../../../common';
 
 const InsuredPersonHospitalized = (props) => {
   const {dropdownData, Occupation,updateInsuredPersonHospitalizedDetails} = props;
   const [patientName, setPatientName] = useState('');
   const [patientGender, setPatientGender] = useState();
-  const [patientAge, setPatientAge] = useState('');
   const [patientDob, setPatientDob] = useState();
+  const [patientAge, setPatientAge] = useState(dateDiff(patientDob, new Date(), 'years'));
   const [isVisible, setIsVisible] = useState(false);
   const [relationship, setRelationship] = useState('');
   const [relationshipDetail, setRelationshipDetail] = useState('');
@@ -104,6 +104,42 @@ const InsuredPersonHospitalized = (props) => {
           </Item>
         </Col>
       </Row>
+
+      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Col size={1}>
+          <Text style={styles.text}>
+            Date Of Birth<Text style={{color: 'red'}}>*</Text>
+          </Text>
+
+          <Item regular style={{borderRadius: 6, height: 35}}>
+            <TouchableOpacity
+              style={{flexDirection: 'row'}}
+              onPress={openPicker}
+              testID="editDOB">
+              <Icon name="md-calendar" style={styles.calenderStyle} />
+              <Text
+                style={
+                  patientDob
+                    ? styles.timeplaceHolder
+                    : styles.afterTimePlaceholder
+                }>
+                {patientDob
+                  ? formatDate(patientDob, 'DD/MM/YYYY')
+                  : 'Enter Date of birth of patient'}
+              </Text>
+              <DateTimePicker
+                mode={'date'}
+                // minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                maximumDate={new Date()}
+                value={patientDob}
+                isVisible={isVisible}
+                onConfirm={onPressConfirmDateValue}
+                onCancel={onCancelPicker}
+              />
+            </TouchableOpacity>
+          </Item>
+        </Col>
+      </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
           <Text style={styles.text}>
@@ -116,6 +152,7 @@ const InsuredPersonHospitalized = (props) => {
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
               value={patientAge}
+              editable={false}
               keyboardType={'number-pad'}
               onChangeText={(text) => setPatientAge(text)}
               testID="editAge"
@@ -436,22 +473,7 @@ const InsuredPersonHospitalized = (props) => {
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-            patientName &&
-            patientGender &&
-            patientAge &&
-            patientDob &&
-            relationship &&
-            relationshipDetail &&
-            occupation &&
-            occupationDetail &&
-            patientAddress &&
-            patientNoAndStreet &&
-            patientCity &&
-            patientState &&
-            patientCountry &&
-            patientPhoneNumber &&
-            patientEmail
-              ? updateInsuredPersonHospitalizedDetails({
+            updateInsuredPersonHospitalizedDetails({
                   patientName: patientName,
                   patientGender: patientGender,
                   patientAge: patientAge,
@@ -468,7 +490,6 @@ const InsuredPersonHospitalized = (props) => {
                   patientPhoneNumber: patientPhoneNumber,
                   patientEmail: patientEmail,
                 })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')
           }
           testID="submitDetails3">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>

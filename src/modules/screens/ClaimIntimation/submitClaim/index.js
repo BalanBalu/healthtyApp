@@ -12,7 +12,7 @@ import {
   Icon,
   CheckBox,
 } from 'native-base';
-import {TouchableOpacity, FlatList} from 'react-native';
+import {TouchableOpacity, FlatList, ScrollView} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -103,22 +103,23 @@ class SubmitClaim extends PureComponent {
       checkBoxClick: false,
       claimListData: this.props.navigation.getParam('claimListData') || null,
       sectionADisable: true,
-      sectionBDisable: false,
-      sectionCDisable: false,
-      sectionDDisable: false,
-      sectionEDisable: false,
+      sectionBDisable: true,
+      sectionCDisable: true,
+      sectionDDisable: true,
+      sectionEDisable: true,
       sectionFDisable: true,
-      sectionGDisable: false,
-      sectionHDisable: false,
+      sectionGDisable: true,
+      sectionHDisable: true,
       updateId: '',
-      nextButtonEnable: false,
+      nextButtonEnable: true,
       isVisible: false,
       billNo: '',
       dateOfHospitalizationForBill: null,
       issuedBy: '',
       towards: '',
       amount: '',
-      bilEnclosedList:[]
+      bilEnclosedList: [],
+      disabled: 0,
     };
   }
 
@@ -173,16 +174,22 @@ class SubmitClaim extends PureComponent {
         payerCode: claimListData.payerCode,
       };
       let result = await createClaimSubmission(reqData);
+      console.log;
       if (result) {
-        this.setState({
-          sectionBDisable: true,
+        await this.setState({
+          // sectionBDisable: true,
           updateId: result._id,
           submissionDetails: result.submissionDetails,
         });
+        return true;
       }
     } catch (error) {
       console.error('Error on: ', error);
     }
+  };
+  updateDisableCout = () => {
+    const {disabled} = this.state;
+    this.setState({disabled: disabled + 1});
   };
 
   updateSubmissionDetails = async (data) => {
@@ -577,47 +584,89 @@ class SubmitClaim extends PureComponent {
       console.error('Error on: ', error);
     }
   };
-  updatePrimaryInsuredDetails = async (data) => {};
+  updatePrimaryInsuredDetails = async (data) => {
+    let primaryDetails = this.submissionDetails(data);
+
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    if (primaryDetails == true) {
+      this.setState({sectionBDisable: true});
+    }
+  };
   updateInsuranceHistoryDetails = async (data) => {
     let historyDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (historyDetails == true) {
       this.setState({sectionCDisable: true});
     }
   };
   updateInsuredPersonHospitalizedDetails = async (data) => {
     let personDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (personDetails == true) {
       this.setState({sectionDDisable: true});
     }
   };
   updateHospitalization = async (data) => {
     let hospitalDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (hospitalDetails == true) {
       this.setState({sectionEDisable: true});
     }
   };
   updateClaimDetails = async (data) => {
     let claimDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+
     if (claimDetails == true) {
-      this.setState({sectionFDisable: true});
+      this.setState({sectionGDisable: true});
     }
   };
   updateBillsEnclosedDetails = async (data) => {
     let billEnclosedDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+
     if (billEnclosedDetails == true) {
-      this.setState({sectionGDisable: true});
+      // this.setState({sectionGDisable: true});
     }
   };
   updatePrimaryInsuredBankAccountDetails = async (data) => {
     let bankAccDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+
     if (bankAccDetails == true) {
       this.setState({sectionHDisable: true});
     }
   };
   updateDeclarationByInsuredDetails = async (data) => {
     let declarationDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+
     if (declarationDetails == true) {
-      this.setState({nextButtonEnable: true});
+      this.setState({nextButtonEnable: false});
     }
   };
   addTable = async () => {
@@ -628,9 +677,8 @@ class SubmitClaim extends PureComponent {
       issuedBy: this.state.issuedBy,
       towards: this.state.towards,
       amount: this.state.amount,
-
     });
-    let data=[...this.state.bilEnclosedList,...temp]
+    let data = [...this.state.bilEnclosedList, ...temp];
     this.setState({
       bilEnclosedList: data,
       billNo: '',
@@ -660,16 +708,16 @@ class SubmitClaim extends PureComponent {
     }
   };
   deleteBillEnclosedDetails = async (item, index) => {
-    let temp=this.state.bilEnclosedList
-    await  temp.splice(index, 1);
-    await this.setState({bilEnclosedList:temp});
+    let temp = this.state.bilEnclosedList;
+    await temp.splice(index, 1);
+    await this.setState({bilEnclosedList: temp});
     console.log(this.state.bilEnclosedList);
   };
-  
+
   editBillEnclosedDetails = async (item, index) => {
-    let temp=this.state.bilEnclosedList
+    let temp = this.state.bilEnclosedList;
     temp.splice(index, 1);
-    await this.setState({bilEnclosedList:temp});
+    await this.setState({bilEnclosedList: temp});
     console.log(this.state.bilEnclosedList);
   };
   render() {
@@ -679,7 +727,7 @@ class SubmitClaim extends PureComponent {
       {title: 'Details of insured person hospitalized', id: 3, disable: false},
       {title: 'Details of hospitalization', id: 4, disable: false},
       {title: 'Details of claim', id: 5, disable: false},
-      {title: 'Details of bills enclosed', id: 6, disable: false},
+      // {title: 'Details of bills enclosed', id: 6, disable: false},
       {title: 'Details of primary insured bank account', id: 7, disable: false},
       {title: 'Declaration by insured', id: 8, disable: false},
     ];
@@ -701,137 +749,139 @@ class SubmitClaim extends PureComponent {
       amount,
       dateOfHospitalizationForBill,
       isVisible,
-      bilEnclosedList
+      bilEnclosedList,
+      disabled,
     } = this.state;
     return (
-      <Container>
-        <Content contentContainerStyle={{padding: 10}}>
-          <FlatList
-            data={data}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => (
-              <View>
-                {this.state.showCard === index && !this.state.show ? (
-                  <Card>
-                    <TouchableOpacity
-                      style={{
-                        justifyContent: 'center',
-                        padding: 10,
-                        backgroundColor: primaryColor,
-                      }}
-                      onPress={() => {
-                        this.setState({showCard: true});
-                      }}>
-                      <Row>
-                        <Col size={9}>
-                          <Text style={{color: '#fff'}}>{item.title}</Text>
-                        </Col>
-                        <Col size={1}>
-                          <TouchableOpacity
-                            onPress={() => this.toggleData(index, 'UP')}>
-                            <MaterialIcons
-                              name={
-                                showCard === index && !show
-                                  ? 'keyboard-arrow-up'
-                                  : 'keyboard-arrow-down'
-                              }
-                              style={{fontSize: 25, color: '#fff'}}
-                            />
-                          </TouchableOpacity>
-                        </Col>
-                      </Row>
-                    </TouchableOpacity>
-                    <View
-                      style={{
-                        borderBottomWidth: 1,
-                        borderLeftWidth: 1,
-                        borderRightWidth: 1,
-                        borderBottomColor: '#909090',
-                        borderLeftColor: '#909090',
-                        borderRightColor: '#909090',
-                        paddingBottom: 10,
-                      }}>
-                      {item.id === 1 && (
-                        <PrimaryInsured
-                          claimListData={claimListData}
-                          submissionDetails={(data) =>
-                            this.submissionDetails(data)
-                          }
-                        />
-                      )}
-                      {item.id === 2 && sectionBDisable && (
-                        <InsuranceHistory
-                          claimListData={claimListData}
-                          updateInsuranceHistoryDetails={(data) =>
-                            this.updateInsuranceHistoryDetails(data)
-                          }
-                        />
-                      )}
-                      {item.id === 3 && sectionCDisable && (
-                        <InsuredPersonHospitalized
-                          dropdownData={dropdownData}
-                          Occupation={Occupation}
-                          claimListData={claimListData}
-                          updateInsuredPersonHospitalizedDetails={(data) =>
-                            this.updateInsuredPersonHospitalizedDetails(data)
-                          }
-                        />
-                      )}
-                      {item.id === 4 && sectionDDisable && (
-                        <HospitalizationDetails
-                          RoomCategory={RoomCategory}
-                          Hospitalization={Hospitalization}
-                          InjuryCause={InjuryCause}
-                          claimListData={claimListData}
-                          updateHospitalization={(data) =>
-                            this.updateHospitalization(data)
-                          }
-                        />
-                      )}
-                      {item.id === 5 && sectionEDisable && (
-                        <ClaimDetail
-                          claimListData={claimListData}
-                          updateClaimDetails={(data) =>
-                            this.updateClaimDetails(data)
-                          }
-                          ListOfData={ListOfData}
-                        />
-                      )}
-                      {item.id === 6 && sectionFDisable && (
+      <ScrollView
+        style={{padding: 10}}
+        ref={(c) => {
+          this.scroll = c;
+        }}>
+        <FlatList
+          data={data}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => (
+            <View>
+              {this.state.showCard === index && !this.state.show ? (
+                <Card>
+                  <TouchableOpacity
+                    style={{
+                      justifyContent: 'center',
+                      padding: 10,
+                      backgroundColor: primaryColor,
+                    }}
+                    onPress={() => this.toggleData(index, 'UP')}>
+                    <Row>
+                      <Col size={9}>
+                        <Text style={{color: '#fff'}}>{item.title}</Text>
+                      </Col>
+                      <Col size={1}>
+                        <TouchableOpacity
+                          onPress={() => this.toggleData(index, 'UP')}>
+                          <MaterialIcons
+                            name={
+                              showCard === index && !show
+                                ? 'keyboard-arrow-up'
+                                : 'keyboard-arrow-down'
+                            }
+                            style={{fontSize: 25, color: '#fff'}}
+                          />
+                        </TouchableOpacity>
+                      </Col>
+                    </Row>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      borderBottomWidth: 1,
+                      borderLeftWidth: 1,
+                      borderRightWidth: 1,
+                      borderBottomColor: '#909090',
+                      borderLeftColor: '#909090',
+                      borderRightColor: '#909090',
+                      paddingBottom: 10,
+                    }}>
+                    {item.id === 1 && (
+                      <PrimaryInsured
+                        claimListData={claimListData}
+                        updatePrimaryInsuredDetails={(data) =>
+                          this.updatePrimaryInsuredDetails(data)
+                        }
+                      />
+                    )}
+                    {item.id === 2 && sectionBDisable && (
+                      <InsuranceHistory
+                        claimListData={claimListData}
+                        updateInsuranceHistoryDetails={(data) =>
+                          this.updateInsuranceHistoryDetails(data)
+                        }
+                      />
+                    )}
+                    {item.id === 3 && sectionCDisable && (
+                      <InsuredPersonHospitalized
+                        dropdownData={dropdownData}
+                        Occupation={Occupation}
+                        claimListData={claimListData}
+                        updateInsuredPersonHospitalizedDetails={(data) =>
+                          this.updateInsuredPersonHospitalizedDetails(data)
+                        }
+                      />
+                    )}
+                    {item.id === 4 && sectionDDisable && (
+                      <HospitalizationDetails
+                        RoomCategory={RoomCategory}
+                        Hospitalization={Hospitalization}
+                        InjuryCause={InjuryCause}
+                        claimListData={claimListData}
+                        updateHospitalization={(data) =>
+                          this.updateHospitalization(data)
+                        }
+                      />
+                    )}
+                    {item.id === 5 && sectionEDisable && (
+                      <ClaimDetail
+                        claimListData={claimListData}
+                        updateClaimDetails={(data) =>
+                          this.updateClaimDetails(data)
+                        }
+                        ListOfData={ListOfData}
+                      />
+                    )}
+                    {/* {item.id === 6 && sectionFDisable && (
                         <BillEnclosedDeatil
                           isSelected={this.state.isSelected}
                           isVisiblePicker={this.state.isVisibleDatePicker}
                           selectedAdmissionDate={
                             this.state.selectedAdmissionDate
                           }
+                          TimeOfAdmissionHours={TimeOfAdmissionHours}
                           onPressConfirmDateValue={this.onPressConfirmDateValue}
                           oncancelThePicker={this.oncancelThePicker}
                           openPicker={this.openPicker}
                           updateBillsEnclosedDetails={(data)=>this.updateBillsEnclosedDetails(data)}
                         />
-                                              )}
+                                              )} */}
 
-                     
-
-                      {item.id === 7 && sectionGDisable && (
-                        <PrimaryInsuredBank
-                          claimListData={claimListData}
-                          updatePrimaryInsuredBankAccountDetails={(data) =>
-                            this.updatePrimaryInsuredBankAccountDetails(data)
-                          }
-                        />
-                      )}
-                      {item.id === 8 && sectionHDisable && (
-                        <DeclarationByInsured
-                          claimListData={claimListData}
-                          updateDeclarationByInsuredDetails={(data) =>
-                            this.updateDeclarationByInsuredDetails(data)
-                          }
-                        />
-                      )}
-                    </View>
-                  </Card>
-                ) : (
+                    {item.id === 7 && sectionGDisable && (
+                      <PrimaryInsuredBank
+                        claimListData={claimListData}
+                        updatePrimaryInsuredBankAccountDetails={(data) =>
+                          this.updatePrimaryInsuredBankAccountDetails(data)
+                        }
+                      />
+                    )}
+                    {item.id === 8 && sectionHDisable && (
+                      <DeclarationByInsured
+                        claimListData={claimListData}
+                        updateDeclarationByInsuredDetails={(data) =>
+                          this.updateDeclarationByInsuredDetails(data)
+                        }
+                      />
+                    )}
+                  </View>
+                </Card>
+              ) : (
+                <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
                   <Card>
                     <TouchableOpacity
                       style={{
@@ -840,9 +890,7 @@ class SubmitClaim extends PureComponent {
                         height: 60,
                         alignItems: 'center',
                       }}
-                      onPress={() => {
-                        this.setState({showCard: false});
-                      }}>
+                      onPress={() => this.toggleData(index, 'DOWN')}>
                       <Row>
                         <Col size={9}>
                           <Text style={{color: '#000'}}>{item.title}</Text>
@@ -863,18 +911,25 @@ class SubmitClaim extends PureComponent {
                       </Row>
                     </TouchableOpacity>
                   </Card>
-                )}
-              </View>
-            )}
-          />
-             <View style={styles.ButtonView}>
-               <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() =>{ this.props.navigation.navigate('SubmitClaimPageTwo',{dataId :this.state.updateId,submissionDetails:this.state.submissionDetails})}}
-               disabled={this.state.nextButtonEnable}>
-                   <Text style={{ color: "#fff" }}>Next</Text>
-                </TouchableOpacity>
+                </View>
+              )}
             </View>
-        </Content>
-      </Container>
+          )}
+        />
+        <View style={styles.ButtonView}>
+          <TouchableOpacity
+            style={styles.submit_ButtonStyle}
+            onPress={() => {
+              this.props.navigation.navigate('SubmitClaimPageTwo', {
+                dataId: this.state.updateId,
+                submissionDetails: this.state.submissionDetails,
+              });
+            }}
+            disabled={this.state.nextButtonEnable}>
+            <Text style={{color: '#fff'}}>Next</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     );
   }
 }

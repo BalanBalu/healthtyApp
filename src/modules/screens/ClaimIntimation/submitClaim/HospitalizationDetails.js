@@ -478,18 +478,8 @@ const HospitalizationDetails = (props) => {
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-            hospitalName &&
-            roomCategory &&
-            hospitalizationDueTo &&
-            dayOfInjury &&
-            dateOfAdmission &&
-            dateOfDischarge &&
-            injuryCause &&
-            medicoLegal &&
-            reportedTpPolice &&
-            mlcReport &&
-            systemOfMedicine
-              ? updateHospitalization({
+            
+               updateHospitalization({
                 hospitalName: hospitalName,
                 roomCategory: roomCategory,
                 hospitalizationDueTo: hospitalizationDueTo,
@@ -502,7 +492,6 @@ const HospitalizationDetails = (props) => {
                 mlcReport: mlcReport,
                 systemOfMedicine: systemOfMedicine
                 })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')
           }
           testID="submitDetails4">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>

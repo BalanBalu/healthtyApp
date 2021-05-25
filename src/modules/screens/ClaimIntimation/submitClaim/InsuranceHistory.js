@@ -261,7 +261,7 @@ const InsuranceHistory = (props) => {
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
               value={hospitalizedCompany}
-              keyboardType={'number-pad'}
+              keyboardType={'default'}
               onChangeText={(text) => setHospitalizedCompany(text)}
               testID="editHospitalizedCompany"
             />
@@ -305,16 +305,7 @@ const InsuranceHistory = (props) => {
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-            currentlyHaveMediClaim &&
-            commencementOfFirstInsuranceDate &&
-            mediClaimCompanyName &&
-            hospitalized &&
-            sumInsuresPerPolicy &&
-            hospitalizationDate &&
-            diagnosisDetails &&
-            hospitalizedCompany &&
-            isCoveredByOtherClaim
-              ? updateInsuranceHistoryDetails({
+           updateInsuranceHistoryDetails({
                   currentlyHaveMediClaim: currentlyHaveMediClaim,
                   commencementOfFirstInsuranceDate: commencementOfFirstInsuranceDate,
                   mediClaimCompanyName: mediClaimCompanyName,
@@ -325,7 +316,6 @@ const InsuranceHistory = (props) => {
                   hospitalizedCompany: hospitalizedCompany,
                   isCoveredByOtherClaim: isCoveredByOtherClaim,
                 })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')
           }
           testID="submitDetails2">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>
