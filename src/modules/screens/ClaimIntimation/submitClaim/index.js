@@ -1238,16 +1238,12 @@ class SubmitClaim extends PureComponent {
               </View>
             )}
           />
-          <View style={styles.ButtonView}>
-            <TouchableOpacity
-              style={styles.submit_ButtonStyle}
-              onPress={() => {
-                this.props.navigation.navigate('SubmitClaimPageTwo');
-              }}
-              disabled={this.state.nextButtonEnable}>
-              <Text style={{color: '#fff'}}>Next</Text>
-            </TouchableOpacity>
-          </View>
+             <View style={styles.ButtonView}>
+               <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() =>{ this.props.navigation.navigate('SubmitClaimPageTwo',{dataId :this.state.updateId})}}
+               disabled={this.state.nextButtonEnable}>
+                   <Text style={{ color: "#fff" }}>Next</Text>
+                </TouchableOpacity>
+            </View>
         </Content>
       </Container>
     );

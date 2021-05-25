@@ -12,170 +12,205 @@ import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 
 const PatientAdmittedDetails = (props) => {
-    const { updateSubmissionDetails,isSelected, dropdownList, dropdownData, OccupationText, Occupation,openPicker ,dischargeTimeStatus} = props;
+    const { updateSubmissionDetails, TimeOfAdmissionHours, TimeOfAdmissionMinute, dropdownData, OccupationText, TimeOfDischargeMinute, TimeOfDischargeHours, dischargeTimeStatus } = props;
     const [patientFirstName, setpatientFirstName] = useState('')
     const [patientMiddleName, setpatientMiddleName] = useState('')
     const [patientLastName, setpatientLastName] = useState('')
     const [registrationNo, setregistrationNo] = useState('')
-    const[gender,setgender] = useState('Male')
-    const [selectedAdmissionDate,setselectedAdmissionDate] =useState('')
-    const [isVisiblePicker,setisVisiblePicker]= useState(false)
-    const [selectedDateOfBirth,setselectedDateOfBirth] =useState('')
-    const [dateofBirthPickerOpen,setdateofBirthPickerOpen] = useState(false)
-    const [timeOfAdmission,settimeOfAdmission]= useState('')
-    const [selectDischargeDate,setselectDischargeDate]=useState('')
-    const [isVisibleDischargeDatePicker,setisVisibleDischargeDatePicker]= useState(false)
-    const [timeOfDischarge,settimeOfDischarge]= useState('')
-    const [admissionType,setadmissionType] = useState('')
-    const [selectdeliveryDate,setselectdeliveryDate] = useState('')
-    const [isVisibledeliveryDatePicker,setisVisibledeliveryDatePicker]= useState(false)
-    const [gravidaStatus,setgravidaStatus] = useState('')
-    const [claimAmount,setclaimAmount] = useState('')
-    const [dischargeTime,setdischargeTime]= useState('')
+    const [gender, setgender] = useState('Male')
+    const [selectedAdmissionDate, setselectedAdmissionDate] = useState('')
+    const [isVisiblePicker, setisVisiblePicker] = useState(false)
+    const [selectedDateOfBirth, setselectedDateOfBirth] = useState('')
+    const [dateofBirthPickerOpen, setdateofBirthPickerOpen] = useState(false)
+    const [timeOfAdmission, settimeOfAdmission] = useState('')
+    const [selectDischargeDate, setselectDischargeDate] = useState('')
+    const [isVisibleDischargeDatePicker, setisVisibleDischargeDatePicker] = useState(false)
+    const [timeOfDischarge, settimeOfDischarge] = useState('')
+    const [admissionType, setadmissionType] = useState('')
+    const [selectdeliveryDate, setselectdeliveryDate] = useState('')
+    const [isVisibledeliveryDatePicker, setisVisibledeliveryDatePicker] = useState(false)
+    const [gravidaStatus, setgravidaStatus] = useState('')
+    const [claimAmount, setclaimAmount] = useState('')
+    const [dischargeTime, setdischargeTime] = useState('')
     const [errorMsg, seterrorMsg] = useState('')
     const [isModalVisible, setisModalVisible] = useState(false)
-    const [age,setage] = useState('')
+    const [age, setage] = useState('')
+    const [patientAgeYear1, setpatientAgeYear1] = useState('')
+    const [patientAgeYear2, setpatientAgeYear2] = useState('')
+    const [patientAgeMonth1, setpatientAgeMonth1] = useState('')
+    const [patientAgeMonth2, setpatientAgeMonth2] = useState('')
+    const [timeOfAdmissionHours, settimeOfAdmissionHours] = useState()
+    const [timeOfAdmissionMinute, settimeOfAdmissionMinute] = useState()
+    const [timeOfDischargeHours, settimeOfDischargeHours] = useState('')
+    const [timeOfDischargeMinute, settimeOfDischargeMinute] = useState('')
+
     const inputEl1 = useRef(null);
     const inputEl2 = useRef(null);
     const inputEl3 = useRef(null);
+    const inputEl4 = useRef(null);
+    const inputEl5 = useRef(null);
+    const inputEl6 = useRef(null);
 
-   const  onPressConfirmDateValue = (date) => {
+
+    const onPressConfirmDateValue = (date) => {
         try {
             setdateofBirthPickerOpen(false)
             setselectedDateOfBirth(date)
         } catch (error) {
-          console.error('Error on Date Picker: ', error);
+            console.error('Error on Date Picker: ', error);
         }
-      };
-      const oncancelDateOfBirthPiscker =()=>{ 
+    };
+    const oncancelDateOfBirthPiscker = () => {
         setdateofBirthPickerOpen(!dateofBirthPickerOpen)
-      }
+    }
 
-      const openDateOfBirthPiscker =()=>{
+    const openDateOfBirthPiscker = () => {
         setdateofBirthPickerOpen(!dateofBirthPickerOpen)
 
-      }
+    }
 
-      const  oncancelThePicker =()=>{ 
+    const oncancelThePicker = () => {
         setisVisiblePicker(!isVisiblePicker)
-      }
-const onPressConfirmAdmissionDateValue= (date) => {
-    try {
-        setisVisiblePicker(false)
-        setselectedAdmissionDate(date)
-    } catch (error) {
-      console.error('Error on Date Picker: ', error);
     }
-  };
+    const onPressConfirmAdmissionDateValue = (date) => {
+        try {
+            setisVisiblePicker(false)
+            setselectedAdmissionDate(date)
+        } catch (error) {
+            console.error('Error on Date Picker: ', error);
+        }
+    };
 
- const openAdmissionDatePicker =()=>{
-    setisVisiblePicker(!isVisiblePicker)
-  }
-  const  oncancelTheDischargeDatePicker =()=>{ 
-    setisVisibleDischargeDatePicker(!isVisibleDischargeDatePicker)
-  }
-
-  const  openTheDischargeDatePicker=()=>{ 
-    setisVisibleDischargeDatePicker(!isVisibleDischargeDatePicker)
-  }
-
-  const onPressConfirmDischargeDatePicker =(date) => {
-    try {
-        setisVisibleDischargeDatePicker(false)
-        setselectDischargeDate(date)
-    } catch (error) {
-      console.error('Error on Date Picker: ', error);
+    const openAdmissionDatePicker = () => {
+        setisVisiblePicker(!isVisiblePicker)
     }
-  };
-
-  const opendeliveryDatePicker=()=>{ 
-    setisVisibledeliveryDatePicker(!isVisibledeliveryDatePicker)
-  }
-
-  const  oncanceldeliveryDatePicker =()=>{ 
-    setisVisibledeliveryDatePicker(!isVisibledeliveryDatePicker)
-  }
-  const onPressConfirmdeliveryDatePicker =(date) => {
-    try {
-        setisVisibledeliveryDatePicker(false)
-        setselectdeliveryDate(date)
-    } catch (error) {
-      console.error('Error on Date Picker: ', error);
-    }
-  };
-
-const submmitData = () => {
-    if (patientFirstName != '' && patientMiddleName != '' && patientLastName != ''  && timeOfAdmission != '' && timeOfDischarge != '' && gravidaStatus != '' && claimAmount != '' && age != '' && dischargeTime != '') {
-        updateSubmissionDetails({
-            patientFirstName: patientFirstName,
-            patientMiddleName: patientMiddleName,
-            patientLastName: patientLastName,
-            timeOfAdmission: timeOfAdmission,
-            timeOfDischarge: timeOfDischarge,
-            gravidaStatus: gravidaStatus,
-            claimAmount: claimAmount,
-            age: age,
-            dischargeTime: dischargeTime,
-            gender:gender,
-            selectedAdmissionDate:selectedAdmissionDate,
-            selectedDateOfBirth:selectedDateOfBirth,
-            admissionType:admissionType,
-            selectdeliveryDate:selectdeliveryDate,
-            registrationNo:registrationNo,
-            selectDischargeDate:selectDischargeDate
-        })
-
-    }else{
-        if (patientFirstName === '') {
-            seterrorMsg('Please enter patient first name')
-            setisModalVisible(true)
-            return false
-        }
-        if (patientMiddleName === '') {
-            seterrorMsg('Please enter patient middle name')
-            setisModalVisible(true)
-            return false
-        }
-        if (patientLastName === '') {
-            seterrorMsg('Please enter patient Last name')
-            setisModalVisible(true)
-            return false
-        }
-        if (registrationNo === '') {
-            seterrorMsg('Please enter registration number')
-            setisModalVisible(true)
-            return false
-        }
-        if (timeOfAdmission === '') {
-            seterrorMsg('Please enter time Of admission')
-            setisModalVisible(true)
-            return false
-        }
-        if (claimAmount === '') {
-            seterrorMsg('Please enter claimAmount')
-            setisModalVisible(true)
-            return false
-        }
-        if (age === '') {
-            seterrorMsg('Please enter age')
-            setisModalVisible(true)
-            return false
-        }
-        if (dischargeTime === '' || dischargeTime ===  'Select your Status' ) {
-            seterrorMsg('Please enter time Of discharge')
-            setisModalVisible(true)
-            return false
-        }
-        if (admissionType === '' || admissionType ===  'Select your Item' ) {
-            seterrorMsg('Please enter admission type')
-            setisModalVisible(true)
-            return false
-        }
+    const oncancelTheDischargeDatePicker = () => {
+        setisVisibleDischargeDatePicker(!isVisibleDischargeDatePicker)
     }
 
+    const openTheDischargeDatePicker = () => {
+        setisVisibleDischargeDatePicker(!isVisibleDischargeDatePicker)
+    }
+
+    const onPressConfirmDischargeDatePicker = (date) => {
+        try {
+            setisVisibleDischargeDatePicker(false)
+            setselectDischargeDate(date)
+        } catch (error) {
+            console.error('Error on Date Picker: ', error);
+        }
+    };
+
+    const opendeliveryDatePicker = () => {
+        setisVisibledeliveryDatePicker(!isVisibledeliveryDatePicker)
+    }
+
+    const oncanceldeliveryDatePicker = () => {
+        setisVisibledeliveryDatePicker(!isVisibledeliveryDatePicker)
+    }
+    const onPressConfirmdeliveryDatePicker = (date) => {
+        try {
+            setisVisibledeliveryDatePicker(false)
+            setselectdeliveryDate(date)
+        } catch (error) {
+            console.error('Error on Date Picker: ', error);
+        }
+    };
+
+    const submmitData = () => {
+        if (patientFirstName && patientMiddleName && patientLastName && gravidaStatus && claimAmount && dischargeTime &&
+            patientAgeYear1 && patientAgeYear2 && patientAgeMonth1 && patientAgeMonth2 != '') {
+            updateSubmissionDetails({
+                patientFirstName: patientFirstName,
+                patientMiddleName: patientMiddleName,
+                patientLastName: patientLastName,
+                patientGender: gender,
+                patientAgeYear1: patientAgeYear1,
+                patientAgeYear2: patientAgeYear2,
+                patientAgeMonth1: patientAgeMonth1,
+                patientAgeMonth2: patientAgeMonth2,
+                ipRegistrationNo: registrationNo,
+                patientDOB: selectedDateOfBirth,
+                submissionDateOfAdmission: selectedAdmissionDate,
+                admissionTimeInHour:timeOfAdmissionHours,
+                admissionTimeInMin:timeOfAdmissionMinute,
+                dischargeTimeInHour:timeOfDischargeHours,
+                dischargeTimeInMin:timeOfDischargeMinute,
+                submissionDischargeStatus: dischargeTime,
+                submissionDeliveryDate: selectdeliveryDate,
+                typeOfAdmission: admissionType,
+                totalOfClaimAmount: claimAmount,
+                submissionDateOfDischarge: selectDischargeDate,
+                gravidaStatus: gravidaStatus,   
+            })
+            
+
+        } else {
+            if (patientFirstName === '') {
+                seterrorMsg('Please enter patient first name')
+                setisModalVisible(true)
+                return false
+            }
+            if (patientMiddleName === '') {
+                seterrorMsg('Please enter patient middle name')
+                setisModalVisible(true)
+                return false
+            }
+            if (patientLastName === '') {
+                seterrorMsg('Please enter patient Last name')
+                setisModalVisible(true)
+                return false
+            }
+            if (registrationNo === '') {
+                seterrorMsg('Please enter registration number')
+                setisModalVisible(true)
+                return false
+            }
+            if (claimAmount === '') {
+                seterrorMsg('Please enter claimAmount')
+                setisModalVisible(true)
+                return false
+            }
+            if (age === '') {
+                seterrorMsg('Please enter age')
+                setisModalVisible(true)
+                return false
+            }
+            if (dischargeTime === '' || dischargeTime === 'Select your Status') {
+                seterrorMsg('Please enter time Of discharge')
+                setisModalVisible(true)
+                return false
+            }
+            if (admissionType === '' || admissionType === 'Select your Item') {
+                seterrorMsg('Please enter admission type')
+                setisModalVisible(true)
+                return false
+            }
+            if (timeOfAdmissionHours === '' || timeOfAdmissionHours === 'Select') {
+                seterrorMsg('Please enter admission type')
+                setisModalVisible(true)
+                return false
+            }
+            if (timeOfAdmissionMinute === '' || timeOfAdmissionMinute === 'Select') {
+                seterrorMsg('Please enter admission type')
+                setisModalVisible(true)
+                return false
+            }
+            if (timeOfDischargeHours === '' || timeOfDischargeHours === 'Select') {
+                seterrorMsg('Please enter admission type')
+                setisModalVisible(true)
+                return false
+            }
+            if (timeOfDischargeMinute === '' || timeOfDischargeMinute === 'Select') {
+                seterrorMsg('Please enter admission type')
+                setisModalVisible(true)
+                return false
+            }
+        }
 
 
-}
+
+    }
     return (
         <View>
             <Row
@@ -185,8 +220,8 @@ const submmitData = () => {
                     <Text style={styles.text}>Patient first name<Text style={{ color: 'red' }}>*</Text></Text>
 
                     <Item regular style={{ borderRadius: 6, height: 35 }}>
-                       
-                         <Input
+
+                        <Input
                             placeholder="Enter Patient first name"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
@@ -277,7 +312,7 @@ const submmitData = () => {
                             color={primaryColor}
                             selectedColor={primaryColor}
                             standardStyle={true}
-                            selected={gender=== 'Male'}
+                            selected={gender === 'Male'}
                             onPress={() => setgender('Male')}
                         />
                         <Text style={styles.text}>Male</Text>
@@ -287,7 +322,7 @@ const submmitData = () => {
                                 color={primaryColor}
                                 selectedColor={primaryColor}
                                 standardStyle={true}
-                                selected={gender=== 'Female'}
+                                selected={gender === 'Female'}
                                 onPress={() => setgender('Female')}
                             />
                             <Text style={styles.text}>Female</Text>
@@ -298,7 +333,7 @@ const submmitData = () => {
                                 color={primaryColor}
                                 selectedColor={primaryColor}
                                 standardStyle={true}
-                                selected={gender=== 'Other'}
+                                selected={gender === 'Other'}
                                 onPress={() => setgender('Other')}
                             />
                             <Text style={styles.text}>Other</Text>
@@ -314,18 +349,65 @@ const submmitData = () => {
                 style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
                 <Col size={1}>
                     <Text style={styles.text}>Age<Text style={{ color: 'red' }}>*</Text></Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Item regular style={{ borderRadius: 6, height: 35, width: 50 }}>
+                            <Input
+                                placeholder="Y"
+                                placeholderTextColor={'#CDD0D9'}
+                                returnKeyType={'next'}
+                                value={patientAgeYear1}
+                                maxLength={1}
+                                keyboardType={'number-pad'}
+                                onChangeText={(text) => setpatientAgeYear1(text)}
+                                onSubmitEditing={() => inputEl4.current._root.focus()}
+                                testID="editpatientAge"
+                            />
+                        </Item>
+                        <Item regular style={{ borderRadius: 6, height: 35, width: 50 }}>
+                            <Input
+                                placeholder="Y"
+                                placeholderTextColor={'#CDD0D9'}
+                                returnKeyType={'next'}
+                                value={patientAgeYear2}
+                                maxLength={1}
+                                ref={inputEl4}
+                                keyboardType={'number-pad'}
+                                onChangeText={(text) => setpatientAgeYear2(text)}
+                                onSubmitEditing={() => inputEl5.current._root.focus()}
 
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="YY/MM"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            value={age}
-                            keyboardType={'number-pad'}
-                            onChangeText={(text) => setage(text)}
-                            testID="editpatientAge"
-                        />
-                    </Item>
+                                testID="editpatientAge"
+                            />
+                        </Item>
+                        <Item regular style={{ borderRadius: 6, height: 35, width: 50 }}>
+                            <Input
+                                placeholder="M"
+                                placeholderTextColor={'#CDD0D9'}
+                                returnKeyType={'next'}
+                                value={patientAgeMonth1}
+                                maxLength={1}
+                                ref={inputEl5}
+                                keyboardType={'number-pad'}
+                                onChangeText={(text) => setpatientAgeMonth1(text)}
+                                testID="editpatientAge"
+                                onSubmitEditing={() => inputEl6.current._root.focus()}
+
+                            />
+                        </Item>
+                        <Item regular style={{ borderRadius: 6, height: 35, width: 50 }}>
+                            <Input
+                                placeholder="M"
+                                placeholderTextColor={'#CDD0D9'}
+                                returnKeyType={'next'}
+                                value={patientAgeMonth2}
+                                maxLength={1}
+                                ref={inputEl6}
+                                keyboardType={'number-pad'}
+                                onChangeText={(text) => setpatientAgeMonth2(text)}
+                                testID="editpatientAge"
+                            />
+                        </Item>
+                    </View>
+
                 </Col>
             </Row>
 
@@ -354,7 +436,6 @@ const submmitData = () => {
                             </Text>
                             <DateTimePicker
                                 mode={'date'}
-                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
                                 maximumDate={new Date()}
                                 value={selectedDateOfBirth}
                                 isVisible={dateofBirthPickerOpen}
@@ -392,7 +473,6 @@ const submmitData = () => {
                             </Text>
                             <DateTimePicker
                                 mode={'date'}
-                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
                                 maximumDate={new Date()}
                                 value={selectedAdmissionDate}
                                 isVisible={isVisiblePicker}
@@ -410,7 +490,7 @@ const submmitData = () => {
                 <Col size={1}>
                     <Text style={styles.text}>Time of admission<Text style={{ color: 'red' }}>*</Text></Text>
 
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
+                    {/* <Item regular style={{ borderRadius: 6, height: 35 }}>
                         <Input
                             placeholder="HH/MH"
                             placeholderTextColor={'#CDD0D9'}
@@ -420,7 +500,65 @@ const submmitData = () => {
                             onChangeText={(text) => settimeOfAdmission(text)}
                             testID="editTimeOfAdmission"
                         />
-                    </Item>
+                    </Item> */}
+                    <View style={{ flexDirection: 'row' }}>
+                        <Item regular style={{ borderRadius: 6, height: 35, width: 140 }}>
+                            <Picker
+                                mode="dropdown"
+                                placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
+                                iosIcon={<MaterialIcons name="keyboard-arrow-down" style={Platform.OS === "ios" ? { color: '#fff', fontSize: 20, marginRight: 15 } : { color: '#fff', fontSize: 20 }} />}
+                                textStyle={{ color: "#fff", left: 0, marginLeft: 5 }}
+                                note={false}
+                                itemStyle={{
+                                    paddingLeft: 10,
+                                    fontSize: 16,
+                                    fontFamily: 'Helvetica-Light',
+                                    color: "#fff",
+                                }}
+                                itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
+                                style={{ width: "100%", color: "#000", }}
+                                onValueChange={(sample) => { settimeOfAdmissionHours(sample) }}
+                                selectedValue={timeOfAdmissionHours}
+                                testID="editadmissionType"
+                            >
+
+                                {TimeOfAdmissionHours.map((value, key) => {
+
+                                    return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                    />
+                                })
+                                }
+                            </Picker>
+                        </Item>
+                        <Item regular style={{ borderRadius: 6, height: 35, width: 140 }}>
+                            <Picker
+                                mode="dropdown"
+                                placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
+                                iosIcon={<MaterialIcons name="keyboard-arrow-down" style={Platform.OS === "ios" ? { color: '#fff', fontSize: 20, marginRight: 15 } : { color: '#fff', fontSize: 20 }} />}
+                                textStyle={{ color: "#fff", left: 0, marginLeft: 5 }}
+                                note={false}
+                                itemStyle={{
+                                    paddingLeft: 10,
+                                    fontSize: 16,
+                                    fontFamily: 'Helvetica-Light',
+                                    color: "#fff",
+                                }}
+                                itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
+                                style={{ width: "100%", color: "#000", }}
+                                onValueChange={(sample) => { settimeOfAdmissionMinute(sample) }}
+                                selectedValue={timeOfAdmissionMinute}
+                                testID="editadmissionType"
+                            >
+
+                                {TimeOfAdmissionMinute.map((value, key) => {
+
+                                    return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                    />
+                                })
+                                }
+                            </Picker>
+                        </Item>
+                    </View>
                 </Col>
             </Row>
             <Row
@@ -448,7 +586,6 @@ const submmitData = () => {
                             </Text>
                             <DateTimePicker
                                 mode={'date'}
-                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
                                 maximumDate={new Date()}
                                 value={selectDischargeDate}
                                 isVisible={isVisibleDischargeDatePicker}
@@ -466,17 +603,64 @@ const submmitData = () => {
                 <Col size={1}>
                     <Text style={styles.text}>Time of discharge<Text style={{ color: 'red' }}>*</Text></Text>
 
-                    <Item regular style={{ borderRadius: 6, height: 35 }}>
-                        <Input
-                            placeholder="HH/MH"
-                            placeholderTextColor={'#CDD0D9'}
-                            returnKeyType={'next'}
-                            value={timeOfDischarge}
-                            keyboardType={'default'}
-                            onChangeText={(text) => settimeOfDischarge(text)}
-                            testID="editTimeOfDischarge"
-                        />
-                    </Item>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Item regular style={{ borderRadius: 6, height: 35, width: 140 }}>
+                            <Picker
+                                mode="dropdown"
+                                placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
+                                iosIcon={<MaterialIcons name="keyboard-arrow-down" style={Platform.OS === "ios" ? { color: '#fff', fontSize: 20, marginRight: 15 } : { color: '#fff', fontSize: 20 }} />}
+                                textStyle={{ color: "#fff", left: 0, marginLeft: 5 }}
+                                note={false}
+                                itemStyle={{
+                                    paddingLeft: 10,
+                                    fontSize: 16,
+                                    fontFamily: 'Helvetica-Light',
+                                    color: "#fff",
+                                }}
+                                itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
+                                style={{ width: "100%", color: "#000", }}
+                                onValueChange={(sample) => { settimeOfDischargeHours(sample) }}
+                                selectedValue={timeOfDischargeHours}
+                                testID="editadmissionType"
+                            >
+
+                                {TimeOfDischargeHours.map((value, key) => {
+
+                                    return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                    />
+                                })
+                                }
+                            </Picker>
+                        </Item>
+                        <Item regular style={{ borderRadius: 6, height: 35, width: 140 }}>
+                            <Picker
+                                mode="dropdown"
+                                placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
+                                iosIcon={<MaterialIcons name="keyboard-arrow-down" style={Platform.OS === "ios" ? { color: '#fff', fontSize: 20, marginRight: 15 } : { color: '#fff', fontSize: 20 }} />}
+                                textStyle={{ color: "#fff", left: 0, marginLeft: 5 }}
+                                note={false}
+                                itemStyle={{
+                                    paddingLeft: 10,
+                                    fontSize: 16,
+                                    fontFamily: 'Helvetica-Light',
+                                    color: "#fff",
+                                }}
+                                itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
+                                style={{ width: "100%", color: "#000", }}
+                                onValueChange={(sample) => { settimeOfDischargeMinute(sample) }}
+                                selectedValue={timeOfDischargeMinute}
+                                testID="editadmissionType"
+                            >
+
+                                {TimeOfDischargeMinute.map((value, key) => {
+
+                                    return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                    />
+                                })
+                                }
+                            </Picker>
+                        </Item>
+                    </View>
                 </Col>
             </Row>
 
@@ -503,7 +687,7 @@ const submmitData = () => {
                             }}
                             itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
                             style={{ width: "100%", color: "#000", }}
-                            onValueChange={(sample) => { setadmissionType(sample)}}
+                            onValueChange={(sample) => { setadmissionType(sample) }}
                             selectedValue={admissionType}
                             testID="editadmissionType"
                         >
@@ -546,7 +730,6 @@ const submmitData = () => {
                             </Text>
                             <DateTimePicker
                                 mode={'date'}
-                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
                                 maximumDate={new Date()}
                                 value={selectdeliveryDate}
                                 isVisible={isVisibledeliveryDatePicker}
@@ -598,7 +781,7 @@ const submmitData = () => {
                             }}
                             itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light', }}
                             style={{ width: "100%", color: "#000", }}
-                            onValueChange={(sample) => { setdischargeTime(sample)}}
+                            onValueChange={(sample) => { setdischargeTime(sample) }}
                             selectedValue={dischargeTime}
                             testID="editdischargeTime"
                         >

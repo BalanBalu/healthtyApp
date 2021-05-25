@@ -18,10 +18,10 @@ import {toastMeassage} from '../../../common';
 import {uploadImage} from '../../../providers/common/common.action';
 import {
   updateClaimSubmission,
-  getClaimSubmissionById,
+  getClaimSubmissionById,  createClaimSubmission,
+  getListByTpaCode,
 } from '../../../providers/corporate/corporate.actions';
 import RNFetchBlob from 'rn-fetch-blob';
-
 const dropdownData = [
   'Select your Item',
   'Emergency',
@@ -29,14 +29,27 @@ const dropdownData = [
   'Day Care',
   'Maternity',
 ];
-const Occupation = [
-  'Select your Item',
-  'Self employee',
-  'Home maker',
-  'student',
-  'Retired',
-  'Service',
+const TimeOfAdmissionHours = [
+  'Select',0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23
+  
 ];
+const TimeOfAdmissionMinute = [
+  'Select',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
+  33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60
+  
+];
+
+const TimeOfDischargeHours = [
+  'Select',0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23
+  
+];
+const TimeOfDischargeMinute = [
+  'Select',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
+  33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60
+  
+];
+
+
 const RoomCategory = [
   'Select your Item',
   'Day Care',
@@ -99,7 +112,8 @@ class SubmitClaimPageTwo extends PureComponent {
       updateId: '60ab9eed08e9af2db462b620',
       claimSubmissionAttachments: [],
     };
-  }
+      // updateId:this.props.navigation.getParam('dataId') || null,
+    }
 
   toggleData(index, typeOfArrowIcon) {
     const {showCard, show} = this.state;
@@ -127,13 +141,13 @@ class SubmitClaimPageTwo extends PureComponent {
     this.setState({isVisibleDatePicker: !isVisibleDatePicker});
   };
 
-  updateSubmissionDetails = async (data) => {
-    try {
-      console.log('data', data);
-    } catch (error) {
-      console.error('Error on: ', error);
-    }
-  };
+  // updateSubmissionDetails = async (data) => {
+  //   try {
+  //     console.log('data', data);
+  //   } catch (error) {
+  //     console.error('Error on: ', error);
+  //   }
+  // };
   updateHospitalDetail = async (data) => {
     let hospitalDetail = this.updateSubmissionDetails(data);
     if (hospitalDetail == true) {
@@ -290,7 +304,32 @@ class SubmitClaimPageTwo extends PureComponent {
       console.log(err);
     }
   }
+updateSubmissionDetails = async (data) => {
+  try {
+    console.log('data', data);
+    const {submissionDetails} = this.state;
+    let reqData = {
+      _id: this.state.updateId,
+      submissionDetails: data,
+    };
+    console.log('reqData', reqData);
+    let result = await updateClaimSubmission(reqData);
+    console.log('result', result);
+    console.log('result', result._id);
 
+    if (result) {
+      Toast.show({
+        text: 'Successfully Saved the Details',
+        duration: 3000,
+        type: "success"
+      })
+      this.setState({sectionCDisable: true, updateId: result._id});
+    }
+    console.log('updateId', this.state.updateId);
+  } catch (error) {
+    console.error('Error on: ', error);
+  }
+}
   render() {
     const data = [
       {title: 'Details of hospital', id: 1},
@@ -360,15 +399,27 @@ class SubmitClaimPageTwo extends PureComponent {
                         />
                       )}
 
-                      {item.id === 2 && (
+                      {/* {item.id === 2 && (
                         <PatientAdmittedDetails
                           dropdownData={dropdownData}
                           dischargeTimeStatus={dischargeTimeStatus}
                           updateSubmissionDetails={(data) =>
                             this.updateSubmissionDetails(data)
                           }
+                      />} */}
+                     
+                      {item.id === 2 && < PatientAdmittedDetails
+                        dropdownData={dropdownData}
+                        dischargeTimeStatus={dischargeTimeStatus}
+                        TimeOfAdmissionHours={TimeOfAdmissionHours}
+                        TimeOfAdmissionMinute={TimeOfAdmissionMinute}
+                        TimeOfDischargeHours={TimeOfDischargeHours}
+                        TimeOfDischargeMinute={TimeOfDischargeMinute}
+                        updateSubmissionDetails={(data) =>
+                          this.updateSubmissionDetails(data)
+                        }
                         />
-                      )}
+                      }
                       {/* {item.id === 3 && <ClaimDetails
                         isSelected={this.state.isSelected}
                         />
@@ -616,15 +667,40 @@ class SubmitClaimPageTwo extends PureComponent {
                         />
                       ) : null}
                     </View>
-                  </Card>
-                ) : (
-                  <Card>
-                    <TouchableOpacity
-                      style={{
-                        justifyContent: 'center',
-                        padding: 10,
+                  </Card>) : (
+                   
+                 <Card>
+                 <TouchableOpacity
+                   style={{
+                     justifyContent: 'center',
+                     padding: 10,
+                     
+                     alignItems: 'center',
+                   }}
+                   onPress={() => this.toggleData(index, 'DOWN')}>
+                   <Row>
+                     <Col size={9}>
+                       <Text style={{color: '#000'}}>{item.title}</Text>
+                     </Col>
+                     <Col size={1}>
+                       <TouchableOpacity
+                         onPress={() => this.toggleData(index, 'DOWN')}>
+                         <MaterialIcons
+                           name={
+                             showCard === index && !show
+                               ? 'keyboard-arrow-up'
+                               : 'keyboard-arrow-down'
+                           }
+                           style={{fontSize: 25, color: '#000'}}
+                         />
+                       </TouchableOpacity>
+                     </Col>
+                   </Row>
+                 </TouchableOpacity>
+               </Card>
+                )}
 
-                        alignItems: 'center',
+                        {/* alignItems: 'center',
                       }}
                       onPress={() => this.toggleData(index, 'DOWN')}>
                       <Row>
@@ -647,14 +723,13 @@ class SubmitClaimPageTwo extends PureComponent {
                       </Row>
                     </TouchableOpacity>
                   </Card>
-                )}
+                )} */}
               </View>
             )}
           />
         </Content>
       </Container>
     );
-  }
 }
-
+}
 export default SubmitClaimPageTwo;
