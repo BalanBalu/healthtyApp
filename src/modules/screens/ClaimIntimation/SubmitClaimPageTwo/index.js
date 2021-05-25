@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
-import {Text, View, Container, Content, Card, Item, Input} from 'native-base';
-import {TouchableOpacity, FlatList, PermissionsAndroid} from 'react-native';
+import {Text, View, Container, Content, Card, Item, Input,Toast} from 'native-base';
+import {TouchableOpacity, FlatList, PermissionsAndroid,ScrollView} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
@@ -273,12 +273,13 @@ class SubmitClaimPageTwo extends PureComponent {
       fileName: '',
       claimSubmissionAttachments: [],
       section1Disable: true,
-      section2Disable: false,
-      section4Disable: false,
-      section5Disable: false,
-      section6Disable: false,
-      section7Disable: true,
-      updateId: this.props.navigation.getParam('dataId') || null,
+      section2Disable: true,
+      section4Disable: true,
+      section5Disable: true,
+      section6Disable: true,
+      section7Disable: false,
+      updateId:this.props.navigation.getParam('dataId') || null,
+      disabled: 0,
     };
     this.submissionDetails = this.props.navigation.getParam(
       'submissionDetails',
@@ -286,11 +287,11 @@ class SubmitClaimPageTwo extends PureComponent {
   }
 
   toggleData(index, typeOfArrowIcon) {
-    const {showCard, show} = this.state;
+    const { showCard, show } = this.state;
     if (typeOfArrowIcon === 'DOWN') {
-      this.setState({showCard: index, show: !this.state.show});
+      this.setState({ showCard: index, show: !this.state.show });
     } else {
-      this.setState({showCard: -1, show: null});
+      this.setState({ showCard: -1, show: null });
     }
   }
   onPressConfirmDateValue = (date) => {
@@ -658,30 +659,50 @@ submitAllDetails=async()=>{
 }
   updateHospitalDetail = async (data) => {
     let hospitalDetail = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (hospitalDetail == true) {
       this.setState({section2Disable: true});
     }
   };
   updateInsuredPersonHospitalizedDetails = async (data) => {
     let personDetails = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (personDetails == true) {
       this.setState({section4Disable: true});
     }
   };
   updateDocumentSubmitted = async (data) => {
     let documentSubmitted = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (documentSubmitted == true) {
       this.setState({section5Disable: true});
     }
   };
   updateNonNetworkHospital = async (data) => {
     let nonNetworkHospital = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (nonNetworkHospital == true) {
       this.setState({section6Disable: true});
     }
   };
   updateDeclarationByHospital = async (data) => {
     let declarationByHospital = this.updateSubmissionDetails(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (declarationByHospital == true) {
       this.setState({section7Disable: true});
     }
@@ -817,6 +838,14 @@ submitAllDetails=async()=>{
       console.log(err);
     }
   };
+
+  updateDisableCout = () => {
+    const { disabled } = this.state
+    this.setState({ disabled: disabled + 1 })
+  }
+
+
+
   render() {
     const data = [
       {title: 'Details of hospital', id: 1},
@@ -831,10 +860,11 @@ submitAllDetails=async()=>{
       {title: 'Declaration by hospital', id: 6},
       {title: 'Attachment Details', id: 7},
     ];
-    const {showCard, show} = this.state;
+    const {showCard, show,disabled} = this.state;
     return (
-      <Container>
-        <Content contentContainerStyle={{padding: 10}}>
+      <ScrollView style={{ padding: 10 }}
+      ref={(c) => { this.scroll = c }}
+    >
           <FlatList
             data={data}
             keyExtractor={(item, index) => index.toString()}
@@ -855,7 +885,7 @@ submitAllDetails=async()=>{
                         </Col>
                         <Col size={1}>
                           <TouchableOpacity
-                            onPress={() => this.toggleData(index, 'UP')}>
+                            onPress={() => this.toggleData(index, 'DOWN')}>
                             <MaterialIcons
                               name={
                                 showCard === index && !show
@@ -1176,6 +1206,7 @@ submitAllDetails=async()=>{
                     )} */}
                   </Card>
                 ) : (
+                  <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
                   <Card>
                     <TouchableOpacity
                       style={{
@@ -1205,6 +1236,7 @@ submitAllDetails=async()=>{
                       </Row>
                     </TouchableOpacity>
                   </Card>
+                  </View>
                 )}
 
                 {/* alignItems: 'center',
@@ -1246,8 +1278,7 @@ submitAllDetails=async()=>{
                               <Text style={{color: '#fff'}}>Submit</Text>
                             </TouchableOpacity>
                           </View>
-        </Content>
-      </Container>
+        </ScrollView>
     );
   }
 }
