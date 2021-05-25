@@ -6,8 +6,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
-import {primaryColor} from '../../setup/config'
-
+import { primaryColor } from '../../setup/config'
+import MedicineRecords from '../../modules/screens/medicalRecords/index'
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import Updateheightweight from "../../modules/screens/userprofile/Updateheightweight";
 import UpdateFamilyMembers from "../../modules/screens/userprofile/UpdateFamilyMembers";
@@ -16,7 +16,7 @@ import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetai
 import { Icon, View, Thumbnail, Item, Input, Left, Right } from 'native-base';
 import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
-import InsuranceHistory from"../../modules/screens/Insurance/InsuranceHistory"
+import InsuranceHistory from "../../modules/screens/Insurance/InsuranceHistory"
 
 import UserAddress from "../../modules/screens/auth/UserAddress";
 import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
@@ -123,13 +123,13 @@ import BuyInsurance from '../../modules/screens/Insurance/buyInsurance'
 import PreAuthSubmission from '../../modules/screens/PreAuth/PreAuthSubmission/preAuthSubmission';
 import PreAuthList from '../../modules/screens/PreAuth/PreAuthList/preAuthList';
 
-export const smartHealthStack=createStackNavigator({
+export const smartHealthStack = createStackNavigator({
   CorporateHome: {
     screen: CorporateHome,
 
     navigationOptions: ({ navigation }) => ({
       title: 'CorporateHome',
-      headerTitleStyle: { fontFamily: "Roboto",},
+      headerTitleStyle: { fontFamily: "Roboto", },
 
       header: (
 
@@ -156,7 +156,7 @@ export const smartHealthStack=createStackNavigator({
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Locations')}>
                   <Icon name="location-sharp" style={{ color: '#fff', fontSize: 25, paddingLeft: 10, }} />
                   <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginRight: 15 }}>
-                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'opensans-bold',  }} duration={10000}
+                    <TextTicker style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'opensans-bold', }} duration={10000}
                       loop
                       bounce
                       repeatSpacer={50}
@@ -180,9 +180,9 @@ export const smartHealthStack=createStackNavigator({
               <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end', marginLeft: 10 }}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
                   <View>
-                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'Roboto',fontSize:25 }}></Icon>
+                    <Icon name="notifications" style={{ color: '#fff', marginRight: 5, fontFamily: 'Roboto', fontSize: 25 }}></Icon>
                     {navigation.getParam('notificationBadgeCount') ?
-                      <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center',fontFamily: 'Roboto', }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
+                      <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center', fontFamily: 'Roboto', }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text> : null}
                   </View>
                 </TouchableOpacity>
               </Col>
@@ -205,7 +205,7 @@ export const smartHealthStack=createStackNavigator({
     screen: EarnReward,
     navigationOptions: {
       title: 'Refer and Earn',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -213,7 +213,7 @@ export const smartHealthStack=createStackNavigator({
     screen: NextAppoinmentPreparation,
     navigationOptions: {
       title: 'Next Appoinment Preparation',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -222,7 +222,7 @@ export const smartHealthStack=createStackNavigator({
     screen: Locations,
     navigationOptions: ({ navigation }) => ({
       title: 'Locations',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     })
   },
@@ -230,7 +230,7 @@ export const smartHealthStack=createStackNavigator({
     screen: LocationDetail,
     navigationOptions: ({ navigation }) => ({
       title: navigation.getParam('cityData') ? navigation.getParam('cityData').city_name : 'Areas',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     })
   },
@@ -238,7 +238,7 @@ export const smartHealthStack=createStackNavigator({
     screen: Categories,
     navigationOptions: ({ navigation }) => ({
       title: 'Specialty',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     })
   },
@@ -252,17 +252,17 @@ export const smartHealthStack=createStackNavigator({
     screen: Notification,
     navigationOptions: ({ navigation }) => ({
       title: 'Notification',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
     })
   },
 
- 
+
   ///  =============Appointments Stack ==================
   "My Appointments": {
     screen: MyAppoinmentList,
     navigationOptions: {
       title: 'Appointments',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -270,7 +270,7 @@ export const smartHealthStack=createStackNavigator({
     screen: AppointmentDetails,
     navigationOptions: {
       title: "Appointment info",
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -279,7 +279,7 @@ export const smartHealthStack=createStackNavigator({
     screen: EmrDetails,
     navigationOptions: {
       title: "EMR Details",
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -287,7 +287,7 @@ export const smartHealthStack=createStackNavigator({
     screen: ReportIssue,
     navigationOptions: {
       title: 'Report issue',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -295,7 +295,7 @@ export const smartHealthStack=createStackNavigator({
     screen: ReportDetails,
     navigationOptions: {
       title: 'Report details',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -303,7 +303,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PreAuthSubmission,
     navigationOptions: {
       title: 'Pre Authorization',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -311,7 +311,7 @@ export const smartHealthStack=createStackNavigator({
     screen: CancelAppointment,
     navigationOptions: {
       title: 'Cancel Appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -319,7 +319,7 @@ export const smartHealthStack=createStackNavigator({
     screen: InsertReview,
     navigationOptions: {
       title: 'Rate and Review',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -327,7 +327,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PrepareAppointmentWizard,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -335,7 +335,7 @@ export const smartHealthStack=createStackNavigator({
     screen: BasicInfo,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -343,7 +343,7 @@ export const smartHealthStack=createStackNavigator({
     screen: MedicalHistory,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -351,7 +351,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PhysicianInfo,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -359,7 +359,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PastMedicalConditions,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -367,7 +367,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PatientInfo,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -375,7 +375,7 @@ export const smartHealthStack=createStackNavigator({
     screen: AllergiesAndMedications,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -383,7 +383,7 @@ export const smartHealthStack=createStackNavigator({
     screen: FamilyMedicalConditions,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -391,7 +391,7 @@ export const smartHealthStack=createStackNavigator({
     screen: AllergicDisease,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -399,7 +399,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HospitalizationAndSurgeries,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -407,7 +407,7 @@ export const smartHealthStack=createStackNavigator({
     screen: SocialHistory,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -415,7 +415,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PrepareAppointmentLastStep,
     navigationOptions: {
       title: 'Prepare for the appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -424,7 +424,7 @@ export const smartHealthStack=createStackNavigator({
     screen: CancelService,
     navigationOptions: ({ navigation }) => ({
       title: navigation.getParam("tittle"),
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }),
   },
@@ -433,7 +433,7 @@ export const smartHealthStack=createStackNavigator({
     screen: Profile,
     navigationOptions: {
       title: 'Profile',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -441,7 +441,7 @@ export const smartHealthStack=createStackNavigator({
     screen: UpdateEmail,
     navigationOptions: {
       title: 'Update Email',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -449,7 +449,7 @@ export const smartHealthStack=createStackNavigator({
     screen: UpdateContact,
     navigationOptions: {
       title: 'Update Contact',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -457,7 +457,7 @@ export const smartHealthStack=createStackNavigator({
     screen: UpdatePassword,
     navigationOptions: {
       title: 'Update Password',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -466,7 +466,7 @@ export const smartHealthStack=createStackNavigator({
     screen: Updateheightweight,
     navigationOptions: {
       title: 'Update height and weight',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -474,7 +474,7 @@ export const smartHealthStack=createStackNavigator({
     screen: UpdateFamilyMembers,
     navigationOptions: {
       title: 'Update family details',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -483,7 +483,7 @@ export const smartHealthStack=createStackNavigator({
     screen: UpdateInsurance,
     navigationOptions: {
       title: 'Update Insurance',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -491,7 +491,7 @@ export const smartHealthStack=createStackNavigator({
     screen: UpdateUserDetails,
     navigationOptions: {
       title: 'Update User Details',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -499,7 +499,7 @@ export const smartHealthStack=createStackNavigator({
     screen: UserAddress,
     navigationOptions: {
       title: 'Search Location',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -507,7 +507,7 @@ export const smartHealthStack=createStackNavigator({
     screen: MapBox,
     navigationOptions: {
       title: 'Search Location',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -516,7 +516,7 @@ export const smartHealthStack=createStackNavigator({
     navigationOptions: {
       headerLeft: null,
       title: 'Success',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -526,7 +526,7 @@ export const smartHealthStack=createStackNavigator({
     screen: LabAppointmentInfo,
     navigationOptions: {
       title: 'Lab Test Appointment Details',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -534,7 +534,7 @@ export const smartHealthStack=createStackNavigator({
     screen: LabAppointmentList,
     navigationOptions: {
       title: 'My Lab Test Appointments',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -542,27 +542,34 @@ export const smartHealthStack=createStackNavigator({
     screen: LabCancelAppointment,
     navigationOptions: {
       title: 'Lab Test Cancel Appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
- 
+
   //================  Ecard  ===============
   "E Card": {
     screen: Ecard,
     navigationOptions: {
       title: 'Ecard Details',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
   //================  MedicineRecords ===============
+  MedicineRecords: {
+    screen: MedicineRecords,
+    navigationOptions: {
+      title: 'Health Records',
+      headerTitleStyle: { fontFamily: "Roboto", }
 
+    }
+  },
   EmrInfo: {
     screen: EmrInfo,
     navigationOptions: {
       title: 'EmrInfo',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -571,16 +578,16 @@ export const smartHealthStack=createStackNavigator({
     screen: UploadEmr,
     navigationOptions: {
       title: 'Upload Emr',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
-   ///  =============Contact Us ==================
-   ContactUs: {
+  ///  =============Contact Us ==================
+  ContactUs: {
     screen: ContactUs,
     navigationOptions: {
       title: 'ContactUs',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -589,7 +596,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HospitalList,
     navigationOptions: {
       title: 'Hospital List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -597,7 +604,7 @@ export const smartHealthStack=createStackNavigator({
     screen: TpaList,
     navigationOptions: {
       title: 'Tpa List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -605,7 +612,7 @@ export const smartHealthStack=createStackNavigator({
     screen: NetworkHospitals,
     navigationOptions: {
       title: 'Network Hospitals',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -613,7 +620,7 @@ export const smartHealthStack=createStackNavigator({
     screen: ClaimIntimationSubmission,
     navigationOptions: {
       title: 'Claim Intimation',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -621,7 +628,7 @@ export const smartHealthStack=createStackNavigator({
     screen: FamilyInfoList,
     navigationOptions: {
       title: 'Family List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -629,7 +636,7 @@ export const smartHealthStack=createStackNavigator({
     screen: ClaimIntimationSuccess,
     navigationOptions: {
       title: 'Success page',
-      headerTitleStyle: { fontFamily: "Roboto"},
+      headerTitleStyle: { fontFamily: "Roboto" },
       headerLeft: null
     }
   },
@@ -637,7 +644,7 @@ export const smartHealthStack=createStackNavigator({
     screen: ClaimIntimationList,
     navigationOptions: {
       title: 'ClaimIntimation List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -645,7 +652,7 @@ export const smartHealthStack=createStackNavigator({
     screen: DocumentList,
     navigationOptions: {
       title: 'Document List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -654,7 +661,7 @@ export const smartHealthStack=createStackNavigator({
     screen: doctorSearchList,
     navigationOptions: {
       title: 'Doctor List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -662,7 +669,7 @@ export const smartHealthStack=createStackNavigator({
     screen: doctorList,
     navigationOptions: {
       title: 'Doctor List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -670,7 +677,7 @@ export const smartHealthStack=createStackNavigator({
     screen: doctorDetailsPreview,
     navigationOptions: {
       title: 'Book Appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -679,7 +686,7 @@ export const smartHealthStack=createStackNavigator({
     screen: filterDocInfo,
     navigationOptions: {
       title: 'Filter Page',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -687,7 +694,7 @@ export const smartHealthStack=createStackNavigator({
     screen: FilterList,
     navigationOptions: {
       title: 'Filters',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -695,7 +702,7 @@ export const smartHealthStack=createStackNavigator({
     screen: BookAppoinment,
     navigationOptions: {
       title: 'Book Appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -703,7 +710,7 @@ export const smartHealthStack=createStackNavigator({
     screen: Mapbox,
     navigationOptions: {
       title: 'Mapbox',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -711,7 +718,7 @@ export const smartHealthStack=createStackNavigator({
     screen: Reviews,
     navigationOptions: {
       title: 'Reviews',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -720,7 +727,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PaymentReview,
     navigationOptions: {
       title: 'Payment Review',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -728,7 +735,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PaymentPage,
     navigationOptions: {
       title: 'Payment Page',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -737,7 +744,7 @@ export const smartHealthStack=createStackNavigator({
     screen: PromoCode,
     navigationOptions: {
       title: 'Promo  codes',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -746,7 +753,7 @@ export const smartHealthStack=createStackNavigator({
     navigationOptions: {
       headerLeft: null,
       title: 'Success',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -755,7 +762,7 @@ export const smartHealthStack=createStackNavigator({
     screen: labConfirmation,
     navigationOptions: {
       title: 'Lab Confirmation',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -763,17 +770,17 @@ export const smartHealthStack=createStackNavigator({
     screen: PolicyCoverage,
     navigationOptions: {
       title: 'Policy Coverage',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
-  
-  
+
+
   PreAuthList: {
     screen: PreAuthList,
     navigationOptions: {
       title: 'Pre Auth List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -782,11 +789,10 @@ export const smartHealthStack=createStackNavigator({
     screen: PolicyStatus,
     navigationOptions: {
       title: 'Claim Status',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
-
 
   // ============Zoom image ========================
   ImageView: {
@@ -808,7 +814,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HomeHealthcareDoctorList,
     navigationOptions: {
       title: 'Home Care DoctorList',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -816,7 +822,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HomeHealthcareFilterPage,
     navigationOptions: {
       title: ' Home Filter Page',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -825,7 +831,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HomeHealthcareConfirmation,
     navigationOptions: {
       title: 'Home Care Confirmation',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -833,7 +839,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HomeHealthcareAppointmentList,
     navigationOptions: {
       title: 'My Home Care Appointments',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -841,7 +847,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HomeHealthcareAppointmentDetail,
     navigationOptions: {
       title: 'Home Care Appointment info',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -849,7 +855,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HomeHealthcareCancelAppointment,
     navigationOptions: {
       title: 'Home Care Cancel Appointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -857,7 +863,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HomeHealthcareDoctorDetailsPreview,
     navigationOptions: {
       title: 'Doctor Details Preview',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -865,7 +871,7 @@ export const smartHealthStack=createStackNavigator({
     screen: HomeHealthcareAddressList,
     navigationOptions: {
       title: 'Home Care Address List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -876,7 +882,7 @@ export const smartHealthStack=createStackNavigator({
     screen: AvailableDoctors4Chat,
     navigationOptions: {
       title: 'Available Doctors',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -884,7 +890,7 @@ export const smartHealthStack=createStackNavigator({
     screen: MyChats,
     navigationOptions: ({ navigation }) => ({
       title: 'Chats',
-      headerTitleStyle: { fontFamily: "Roboto",},
+      headerTitleStyle: { fontFamily: "Roboto", },
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.navigate('CorporateHome')}>
           <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -898,7 +904,7 @@ export const smartHealthStack=createStackNavigator({
               name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
             />
             {Platform.OS === "ios" ?
-              <Text style={{ fontFamily: 'Roboto', fontSize: 16, color: '#FFF', marginLeft: 5,  }}>Back</Text> : null}
+              <Text style={{ fontFamily: 'Roboto', fontSize: 16, color: '#FFF', marginLeft: 5, }}>Back</Text> : null}
           </Row>
         </TouchableOpacity>
       ),
@@ -908,7 +914,7 @@ export const smartHealthStack=createStackNavigator({
     screen: SuccessChatPaymentPage,
     navigationOptions: {
       title: 'Success',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -946,7 +952,7 @@ export const smartHealthStack=createStackNavigator({
     })
   },
 
-  
+
   /* Video Consultation */
   VideoScreen: {
     screen: VideoScreen,
@@ -960,7 +966,7 @@ export const smartHealthStack=createStackNavigator({
     screen: AvailableDoctors4Video,
     navigationOptions: {
       title: 'Tele consult services ',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -968,7 +974,7 @@ export const smartHealthStack=createStackNavigator({
     screen: VideoConsultaions,
     navigationOptions: {
       title: 'My Video Consultations',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -977,18 +983,18 @@ export const smartHealthStack=createStackNavigator({
     screen: RenderSuggestionList,
     navigationOptions: ({ navigation }) => ({
       title: 'Find & Book',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
 
     })
   },
-  
+
   /* ========>  Lab Test  <========== */
   'Lab Test': {
     screen: LabCategory,
     navigationOptions: {
       title: 'Lab Category',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -996,7 +1002,7 @@ export const smartHealthStack=createStackNavigator({
     screen: LabSearchList,
     navigationOptions: {
       title: 'Lab List',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -1004,7 +1010,7 @@ export const smartHealthStack=createStackNavigator({
     screen: LabBookAppointment,
     navigationOptions: {
       title: 'Lab BookAppointment',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -1012,7 +1018,7 @@ export const smartHealthStack=createStackNavigator({
     screen: Insurance,
     navigationOptions: {
       title: 'My Insurance Policies',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -1020,7 +1026,7 @@ export const smartHealthStack=createStackNavigator({
     screen: InsuranceHistory,
     navigationOptions: {
       title: 'Insurance History',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -1028,7 +1034,7 @@ export const smartHealthStack=createStackNavigator({
     screen: AddInsurance,
     navigationOptions: {
       title: 'Add Insurance',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
@@ -1036,7 +1042,7 @@ export const smartHealthStack=createStackNavigator({
     screen: BuyInsurance,
     navigationOptions: {
       title: 'Buy Insurance',
-      headerTitleStyle: { fontFamily: "Roboto",}
+      headerTitleStyle: { fontFamily: "Roboto", }
 
     }
   },
