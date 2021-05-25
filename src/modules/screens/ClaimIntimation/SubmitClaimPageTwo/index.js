@@ -271,17 +271,18 @@ class SubmitClaimPageTwo extends PureComponent {
       isLoadingUploadDocs: false,
       remark: '',
       fileName: '',
-      // updateId: '60ab9eed08e9af2db462b620',
       claimSubmissionAttachments: [],
       section1Disable: true,
       section2Disable: false,
       section4Disable: false,
       section5Disable: false,
       section6Disable: false,
-      section7Disable: false,
-      updateId:this.props.navigation.getParam('dataId') || null,
+      section7Disable: true,
+      updateId: this.props.navigation.getParam('dataId') || null,
     };
-    this.submissionDetails=this.props.navigation.getParam('submissionDetails')
+    this.submissionDetails = this.props.navigation.getParam(
+      'submissionDetails',
+    );
   }
 
   toggleData(index, typeOfArrowIcon) {
@@ -318,12 +319,313 @@ class SubmitClaimPageTwo extends PureComponent {
       const {submissionDetails} = this.state;
       let reqData = {
         _id: this.state.updateId,
-        submissionDetails: data,
+        submissionDetails: {
+          ...this.submissionDetails,
+          hospitalName: data.hospitalName
+            ? data.hospitalName
+            : submissionDetails.hospitalName
+            ? submissionDetails.hospitalName
+            : null,
+          hospitalId: data.hospitalId
+            ? data.hospitalId
+            : submissionDetails.hospitalId
+            ? submissionDetails.hospitalId
+            : null,
+          hospitalType: data.hospitalType
+            ? data.hospitalType
+            : submissionDetails.hospitalType
+            ? submissionDetails.hospitalType
+            : null,
+          treatingDoctorName: data.treatingDoctorName
+            ? data.treatingDoctorName
+            : submissionDetails.treatingDoctorName
+            ? submissionDetails.treatingDoctorName
+            : null,
+          treatingDoctorMiddleName: data.treatingDoctorMiddleName
+            ? data.treatingDoctorMiddleName
+            : submissionDetails.treatingDoctorMiddleName
+            ? submissionDetails.treatingDoctorMiddleName
+            : null,
+          treatingDoctorLastName: data.treatingDoctorLastName
+            ? data.treatingDoctorLastName
+            : submissionDetails.treatingDoctorLastName
+            ? submissionDetails.treatingDoctorLastName
+            : null,
+          qualification: data.qualification
+            ? data.qualification
+            : submissionDetails.qualification
+            ? submissionDetails.qualification
+            : null,
+          registrationStateCode: data.registrationStateCode
+            ? data.registrationStateCode
+            : submissionDetails.registrationStateCode
+            ? submissionDetails.registrationStateCode
+            : null,
+          hospitalPhoneNumber: data.hospitalPhoneNumber
+            ? data.hospitalPhoneNumber
+            : submissionDetails.hospitalPhoneNumber
+            ? submissionDetails.hospitalPhoneNumber
+            : null,
+          patientFirstName: data.patientFirstName
+            ? data.patientFirstName
+            : submissionDetails.patientFirstName
+            ? submissionDetails.patientFirstName
+            : null,
+          patientMiddleName: data.patientMiddleName
+            ? data.patientMiddleName
+            : submissionDetails.patientMiddleName
+            ? submissionDetails.patientMiddleName
+            : null,
+          patientLastName: data.patientLastName
+            ? data.patientLastName
+            : submissionDetails.patientLastName
+            ? submissionDetails.patientLastName
+            : null,
+          patientGender: data.patientGender
+            ? data.patientGender
+            : submissionDetails.patientGender
+            ? submissionDetails.patientGender
+            : null,
+          patientAgeYear1: data.patientAgeYear1
+            ? data.patientAgeYear1
+            : submissionDetails.patientAgeYear1
+            ? submissionDetails.patientAgeYear1
+            : null,
+          patientAgeYear2: data.patientAgeYear2
+            ? data.patientAgeYear2
+            : submissionDetails.patientAgeYear2
+            ? submissionDetails.patientAgeYear2
+            : null,
+          patientAgeMonth1: data.patientAgeMonth1
+            ? data.patientAgeMonth1
+            : submissionDetails.patientAgeMonth1
+            ? submissionDetails.patientAgeMonth1
+            : null,
+          patientAgeMonth2: data.patientAgeMonth2
+            ? data.patientAgeMonth2
+            : submissionDetails.patientAgeMonth2
+            ? submissionDetails.patientAgeMonth2
+            : null,
+          ipRegistrationNo: data.ipRegistrationNo
+            ? data.ipRegistrationNo
+            : submissionDetails.ipRegistrationNo
+            ? submissionDetails.ipRegistrationNo
+            : null,
+          patientDOB: data.patientDOB
+            ? data.patientDOB
+            : submissionDetails.patientDOB
+            ? submissionDetails.patientDOB
+            : null,
+          submissionDateOfAdmission: data.patientDOB
+            ? data.submissionDateOfAdmission
+            : submissionDetails.submissionDateOfAdmission
+            ? submissionDetails.submissionDateOfAdmission
+            : null,
+          admissionTimeInHour: data.admissionTimeInHour
+            ? data.admissionTimeInHour
+            : submissionDetails.admissionTimeInHour
+            ? submissionDetails.admissionTimeInHour
+            : null,
+          admissionTimeInMin: data.admissionTimeInMin
+            ? data.admissionTimeInMin
+            : submissionDetails.admissionTimeInMin
+            ? submissionDetails.admissionTimeInMin
+            : null,
+          dischargeTimeInHour: data.dischargeTimeInHour
+            ? data.dischargeTimeInHour
+            : submissionDetails.dischargeTimeInHour
+            ? submissionDetails.dischargeTimeInHour
+            : null,
+          dischargeTimeInMin: data.dischargeTimeInMin
+            ? data.dischargeTimeInMin
+            : submissionDetails.dischargeTimeInMin
+            ? submissionDetails.dischargeTimeInMin
+            : null,
+          submissionDischargeStatus: data.submissionDischargeStatus
+            ? data.submissionDischargeStatus
+            : submissionDetails.submissionDischargeStatus
+            ? submissionDetails.submissionDischargeStatus
+            : null,
+          submissionDeliveryDate: data.submissionDeliveryDate
+            ? data.submissionDeliveryDate
+            : submissionDetails.submissionDeliveryDate
+            ? submissionDetails.submissionDeliveryDate
+            : null,
+          typeOfAdmission: data.typeOfAdmission
+            ? data.typeOfAdmission
+            : submissionDetails.typeOfAdmission
+            ? submissionDetails.typeOfAdmission
+            : null,
+          totalOfClaimAmount: data.totalOfClaimAmount
+            ? data.totalOfClaimAmount
+            : submissionDetails.totalOfClaimAmount
+            ? submissionDetails.totalOfClaimAmount
+            : null,
+          submissionDateOfDischarge: data.submissionDateOfDischarge
+            ? data.submissionDateOfDischarge
+            : submissionDetails.submissionDateOfDischarge
+            ? submissionDetails.submissionDateOfDischarge
+            : null,
+          gravidaStatus: data.gravidaStatus
+            ? data.gravidaStatus
+            : submissionDetails.gravidaStatus
+            ? submissionDetails.gravidaStatus
+            : null,
+          claimFormDulySigned: data.claimFormDulySigned
+            ? data.claimFormDulySigned
+            : submissionDetails.claimFormDulySigned
+            ? submissionDetails.claimFormDulySigned
+            : null,
+          ctInvestigationReports: data.ctInvestigationReports
+            ? data.ctInvestigationReports
+            : submissionDetails.ctInvestigationReports
+            ? submissionDetails.ctInvestigationReports
+            : null,
+          copyOfPreAuthApprovalLetter: data.copyOfPreAuthApprovalLetter
+            ? data.copyOfPreAuthApprovalLetter
+            : submissionDetails.copyOfPreAuthApprovalLetter
+            ? submissionDetails.copyOfPreAuthApprovalLetter
+            : null,
+          patientVerifiedByHospital: data.patientVerifiedByHospital
+            ? data.patientVerifiedByHospital
+            : submissionDetails.patientVerifiedByHospital
+            ? submissionDetails.patientVerifiedByHospital
+            : null,
+          hospitalDischargeSummary: data.hospitalDischargeSummary
+            ? data.hospitalDischargeSummary
+            : submissionDetails.hospitalDischargeSummary
+            ? submissionDetails.hospitalDischargeSummary
+            : null,
+          operationTheatreNotes: data.operationTheatreNotes
+            ? data.operationTheatreNotes
+            : submissionDetails.operationTheatreNotes
+            ? submissionDetails.operationTheatreNotes
+            : null,
+          hospitalMainBill: data.hospitalMainBill
+            ? data.hospitalMainBill
+            : submissionDetails.hospitalMainBill
+            ? submissionDetails.hospitalMainBill
+            : null,
+          anyOthers: data.anyOthers
+            ? data.anyOthers
+            : submissionDetails.anyOthers
+            ? submissionDetails.anyOthers
+            : null,
+          investigationReports: data.investigationReports
+            ? data.investigationReports
+            : submissionDetails.investigationReports
+            ? submissionDetails.investigationReports
+            : null,
+          originalPreAuthRequest: data.originalPreAuthRequest
+            ? data.originalPreAuthRequest
+            : submissionDetails.originalPreAuthRequest
+            ? submissionDetails.originalPreAuthRequest
+            : null,
+          DoctorReferenceSlipForInvestigation: data.DoctorReferenceSlipForInvestigation
+            ? data.DoctorReferenceSlipForInvestigation
+            : submissionDetails.DoctorReferenceSlipForInvestigation
+            ? submissionDetails.DoctorReferenceSlipForInvestigation
+            : null,
+          ecg: ecg,
+          pharmacyBill: data.pharmacyBill
+            ? data.pharmacyBill
+            : submissionDetails.pharmacyBill
+            ? submissionDetails.pharmacyBill
+            : null,
+          MLCReportsAndPoliceFIR: data.MLCReportsAndPoliceFIR
+            ? data.MLCReportsAndPoliceFIR
+            : submissionDetails.MLCReportsAndPoliceFIR
+            ? submissionDetails.MLCReportsAndPoliceFIR
+            : null,
+          hospitalBreakupBill: data.hospitalBreakupBill
+            ? data.hospitalBreakupBill
+            : submissionDetails.hospitalBreakupBill
+            ? submissionDetails.hospitalBreakupBill
+            : null,
+          nonNetworkHospitalAddress: data.nonNetworkHospitalAddress
+            ? data.nonNetworkHospitalAddress
+            : submissionDetails.nonNetworkHospitalAddress
+            ? submissionDetails.nonNetworkHospitalAddress
+            : null,
+          nonNetworkHospitalPinCode: data.nonNetworkHospitalPinCode
+            ? data.nonNetworkHospitalPinCode
+            : submissionDetails.nonNetworkHospitalPinCode
+            ? submissionDetails.nonNetworkHospitalPinCode
+            : null,
+          nonNetworkHospitalState: data.nonNetworkHospitalState
+            ? data.nonNetworkHospitalState
+            : submissionDetails.nonNetworkHospitalState
+            ? submissionDetails.nonNetworkHospitalState
+            : null,
+          nonNetworkHospitalCity: data.nonNetworkHospitalCity
+            ? data.nonNetworkHospitalCity
+            : submissionDetails.nonNetworkHospitalCity
+            ? submissionDetails.nonNetworkHospitalCity
+            : null,
+          nonNetworkHospitalNoAndStreet: data.nonNetworkHospitalNoAndStreet
+            ? data.nonNetworkHospitalNoAndStreet
+            : submissionDetails.nonNetworkHospitalNoAndStreet
+            ? submissionDetails.nonNetworkHospitalNoAndStreet
+            : null,
+          nonNetworkHospitalCountry: data.nonNetworkHospitalCountry
+            ? data.nonNetworkHospitalCountry
+            : submissionDetails.nonNetworkHospitalCountry
+            ? submissionDetails.nonNetworkHospitalCountry
+            : null,
+          nonNetworkHospitalRegistrationStateCode: data.nonNetworkHospitalRegistrationStateCode
+            ? data.nonNetworkHospitalRegistrationStateCode
+            : submissionDetails.nonNetworkHospitalRegistrationStateCode
+            ? submissionDetails.nonNetworkHospitalRegistrationStateCode
+            : null,
+          nonNetworkHospitalPlan: data.nonNetworkHospitalPlan
+            ? data.nonNetworkHospitalPlan
+            : submissionDetails.nonNetworkHospitalPlan
+            ? submissionDetails.nonNetworkHospitalPlan
+            : null,
+          nonNetworkHospitalMobileNumber: data.nonNetworkHospitalMobileNumber
+            ? data.nonNetworkHospitalMobileNumber
+            : submissionDetails.nonNetworkHospitalMobileNumber
+            ? submissionDetails.nonNetworkHospitalMobileNumber
+            : null,
+          nonNetworkHospitalInpatientBeds: data.nonNetworkHospitalInpatientBeds
+            ? data.nonNetworkHospitalInpatientBeds
+            : submissionDetails.nonNetworkHospitalInpatientBeds
+            ? submissionDetails.nonNetworkHospitalInpatientBeds
+            : null,
+          othersNonNetworkHospital: data.othersNonNetworkHospital
+            ? data.othersNonNetworkHospital
+            : submissionDetails.othersNonNetworkHospital
+            ? submissionDetails.othersNonNetworkHospital
+            : null,
+          OT: data.OT
+            ? data.OT
+            : submissionDetails.OT
+            ? submissionDetails.OT
+            : null,
+          ICU: data.ICU
+            ? data.ICU
+            : submissionDetails.ICU
+            ? submissionDetails.ICU
+            : null,
+          declarationDate: data. declarationDate
+            ? data. declarationDate
+            : submissionDetails. declarationDate
+            ? submissionDetails. declarationDate
+            : null,
+          declarationPlace: data. declarationPlace
+            ? data. declarationPlace
+            : submissionDetails. declarationPlace
+            ? submissionDetails. declarationPlace
+            : null,
+          authoritySign: data. authoritySign
+            ? data. authoritySign
+            : submissionDetails. authoritySign
+            ? submissionDetails. authoritySign
+            : null,
+        },
       };
       console.log('reqData', reqData);
       let result = await updateClaimSubmission(reqData);
-      console.log('result', result);
-      console.log('result', result._id);
 
       if (result) {
         Toast.show({
@@ -339,7 +641,21 @@ class SubmitClaimPageTwo extends PureComponent {
       console.error('Error on: ', error);
     }
   };
+submitAllDetails=async()=>{
+  let reqData={
+    isSubmission: true,
+  }
+  let result = await updateClaimSubmission(reqData);
 
+  if (result) {
+    Toast.show({
+      text: 'Successfully Saved the All Details',
+      duration: 3000,
+      type: 'success',
+    });
+    this.props.navigation.navigate('ClaimIntimationList')
+  }
+}
   updateHospitalDetail = async (data) => {
     let hospitalDetail = this.updateSubmissionDetails(data);
     if (hospitalDetail == true) {
@@ -370,7 +686,13 @@ class SubmitClaimPageTwo extends PureComponent {
       this.setState({section7Disable: true});
     }
   };
-  
+  updateAttachment = async (data) => {
+    let attachmentDetails = this.submitData(data);
+    if (attachmentDetails == true) {
+      this.setState({section7Disable: true});
+    }
+  };
+
   imageUpload = async (data) => {
     this.setState({selectOptionPopup: false});
     if (data.image !== null) {
@@ -419,7 +741,8 @@ class SubmitClaimPageTwo extends PureComponent {
       uploadData: null,
     });
   };
-  submitData = async () => {
+  submitData = async (data) => {
+    console.log("data",data)
     try {
       let reqData = {
         _id: this.state.updateId,
@@ -474,7 +797,7 @@ class SubmitClaimPageTwo extends PureComponent {
     try {
       console.log('imageURL', imageURL);
       console.log('file_name', file_name);
-  
+
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         {
@@ -557,10 +880,9 @@ class SubmitClaimPageTwo extends PureComponent {
                       }}>
                       {item.id === 1 && (
                         <HospitalDetail
-                        updateHospitalDetail={(data) =>
-                          this.updateHospitalDetail(data)
-
-                        }
+                          updateHospitalDetail={(data) =>
+                            this.updateHospitalDetail(data)
+                          }
                         />
                       )}
 
@@ -573,7 +895,7 @@ class SubmitClaimPageTwo extends PureComponent {
                           }
                       />} */}
 
-                      {item.id === 2 && this.state.section2Disable&&(
+                      {item.id === 2 && this.state.section2Disable && (
                         <PatientAdmittedDetails
                           dropdownData={dropdownData}
                           dischargeTimeStatus={dischargeTimeStatus}
@@ -590,188 +912,228 @@ class SubmitClaimPageTwo extends PureComponent {
                         isSelected={this.state.isSelected}
                         />
                       } */}
-                      {item.id === 4&& this.state.section4Disable && (
+                      {item.id === 4 && this.state.section4Disable && (
                         <DocumentSubmitted
                           updateDocumentSubmitted={(data) =>
                             this.updateDocumentSubmitted(data)
                           }
                         />
                       )}
-                      {item.id === 5&& this.state.section5Disable && (
+                      {item.id === 5 && this.state.section5Disable && (
                         <NonNetworkHospital
-                          updateDeclarationByHospital={(data) =>
+                        updateNonNetworkHospital={(data) =>
                             this.updateNonNetworkHospital(data)
                           }
                         />
                       )}
-                      {item.id === 6&& this.state.section6Disable && (
+                      {item.id === 6 && this.state.section6Disable && (
                         <DeclarationByHospital
                           updateDeclarationByHospital={(data) =>
                             this.updateDeclarationByHospital(data)
                           }
                         />
                       )}
-                      {/* {item.id === 7 && <AttachmentDetails />} */}
+                      {/* {item.id === 7 && <AttachmentDetails 
+                      updateAttachment={(data) =>
+                        this.updateAttachment(data)
+                      }
+                      />} */}
+
                     </View>
-                    {this.state.section7Disable&&(
-                    <View>
-                      <View style={styles.ButtonView}>
-                        <Row
-                          size={4}
-                          style={{
-                            marginLeft: 20,
-                            marginRight: 20,
-                            marginTop: 10,
-                          }}>
-                          <Col size={1}>
-                            <Text style={styles.text}>
-                              File Name<Text style={{color: 'red'}}>*</Text>
-                            </Text>
-
-                            <Item regular style={{borderRadius: 6, height: 35}}>
-                              <Input
-                                placeholder="Enter File Name"
-                                placeholderTextColor={'#CDD0D9'}
-                                returnKeyType={'next'}
-                                value={this.state.fileName}
-                                keyboardType={'default'}
-                                onChangeText={(text) =>
-                                  this.setState({fileName: text})
-                                }
-                              />
-                            </Item>
-                          </Col>
-                        </Row>
-                        <Row
-                          size={4}
-                          style={{
-                            marginLeft: 20,
-                            marginRight: 20,
-                            marginTop: 10,
-                          }}>
-                          <Col size={1}>
-                            <Text style={styles.text}>
-                              Remarks<Text style={{color: 'red'}}>*</Text>
-                            </Text>
-
-                            <Item regular style={{borderRadius: 6, height: 35}}>
-                              <Input
-                                placeholder="Enter Remarks"
-                                placeholderTextColor={'#CDD0D9'}
-                                returnKeyType={'next'}
-                                value={this.state.remark}
-                                keyboardType={'default'}
-                                onChangeText={(text) =>
-                                  this.setState({remark: text})
-                                }
-                              />
-                            </Item>
-                          </Col>
-                        </Row>
-                        <View>
-                          <Text
+                    {/* {this.state.section7Disable && (
+                      <View>
+                        <View style={styles.ButtonView}>
+                          <Row
+                            size={4}
                             style={{
-                              marginLeft: 15,
-                              fontSize: 16,
+                              marginLeft: 20,
+                              marginRight: 20,
                               marginTop: 10,
                             }}>
-                            Upload Files/Reports/ID Details(Scanned PDF and JPG
-                            files) (Max Upload Size: 7168K)
-                          </Text>
-                        </View>
-                        <TouchableOpacity
-                          style={{
-                            backgroundColor: '#E5E5E5',
-                            paddingHorizontal: 10,
-                            paddingVertical: 5,
-                            borderRadius: 5,
-                          }}
-                          onPress={() =>
-                            this.setState({selectOptionPopup: true})
-                          }>
-                          <Text>Choose File</Text>
-                        </TouchableOpacity>
-                        <View style={{marginTop: 20}}>
-                          <TouchableOpacity
-                            style={styles.submit_ButtonStyle}
-                            onPress={() => this.addTable()}>
-                            <Text style={{color: '#fff'}}>Add</Text>
-                          </TouchableOpacity>
-                        </View>
-                        {
-                        this.state.claimSubmissionAttachments ? (
-                          <FlatList
-                            data={this.state.claimSubmissionAttachments}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({item, index}) => (
-                              <View
-                                style={{
-                                  padding: 10,
-                                  marginTop: 10,
-                                  marginBottom: 20,
-                                  width: '90%',
-                                }}>
-                                <View style={styles.form_field_view}>
-                                  <Text
-                                    style={[styles.form_field_inline_label]}>
-                                    SL No
-                                  </Text>
-                                  <Text
-                                    style={[
-                                      styles.form_field,
-                                      {paddingTop: 15, paddingLeft: 10},
-                                    ]}>
-                                    {index + 1}
-                                  </Text>
-                                </View>
-                                <View style={styles.form_field_view}>
-                                  <Text
-                                    style={[styles.form_field_inline_label]}>
-                                    File Name
-                                  </Text>
-                                  <Text
-                                    style={[
-                                      styles.form_field,
-                                      {paddingTop: 15, paddingLeft: 10},
-                                    ]}>
-                                    {item.fileName}
-                                  </Text>
-                                </View>
-                                <View style={styles.form_field_view}>
-                                  <Text
-                                    style={[styles.form_field_inline_label]}>
-                                    Remarks
-                                  </Text>
-                                  <Text
-                                    style={[
-                                      styles.form_field,
-                                      {paddingTop: 15, paddingLeft: 10},
-                                    ]}>
-                                    {item.remark}
-                                  </Text>
-                                </View>
+                            <Col size={1}>
+                              <Text style={styles.text}>
+                                File Name<Text style={{color: 'red'}}>*</Text>
+                              </Text>
 
-                                <View style={styles.form_field_view}>
-                                  <Text
-                                    style={[styles.form_field_inline_label]}>
-                                    Action
-                                  </Text>
-                                  <View
-                                    style={
-                                      (styles.form_field,
-                                      {flexDirection: 'row', width: '80%'})
-                                    }>
-                                    {item.fileDetail ? (
+                              <Item
+                                regular
+                                style={{borderRadius: 6, height: 35}}>
+                                <Input
+                                  placeholder="Enter File Name"
+                                  placeholderTextColor={'#CDD0D9'}
+                                  returnKeyType={'next'}
+                                  value={this.state.fileName}
+                                  keyboardType={'default'}
+                                  onChangeText={(text) =>
+                                    this.setState({fileName: text})
+                                  }
+                                />
+                              </Item>
+                            </Col>
+                          </Row>
+                          <Row
+                            size={4}
+                            style={{
+                              marginLeft: 20,
+                              marginRight: 20,
+                              marginTop: 10,
+                            }}>
+                            <Col size={1}>
+                              <Text style={styles.text}>
+                                Remarks<Text style={{color: 'red'}}>*</Text>
+                              </Text>
+
+                              <Item
+                                regular
+                                style={{borderRadius: 6, height: 35}}>
+                                <Input
+                                  placeholder="Enter Remarks"
+                                  placeholderTextColor={'#CDD0D9'}
+                                  returnKeyType={'next'}
+                                  value={this.state.remark}
+                                  keyboardType={'default'}
+                                  onChangeText={(text) =>
+                                    this.setState({remark: text})
+                                  }
+                                />
+                              </Item>
+                            </Col>
+                          </Row>
+                          <View>
+                            <Text
+                              style={{
+                                marginLeft: 15,
+                                fontSize: 16,
+                                marginTop: 10,
+                              }}>
+                              Upload Files/Reports/ID Details(Scanned PDF and
+                              JPG files) (Max Upload Size: 7168K)
+                            </Text>
+                          </View>
+                          <TouchableOpacity
+                            style={{
+                              backgroundColor: '#E5E5E5',
+                              paddingHorizontal: 10,
+                              paddingVertical: 5,
+                              borderRadius: 5,
+                            }}
+                            onPress={() =>
+                              this.setState({selectOptionPopup: true})
+                            }>
+                            <Text>Choose File</Text>
+                          </TouchableOpacity>
+                          <View style={{marginTop: 20}}>
+                            <TouchableOpacity
+                              style={styles.submit_ButtonStyle}
+                              onPress={() => this.addTable()}>
+                              <Text style={{color: '#fff'}}>Add</Text>
+                            </TouchableOpacity>
+                          </View>
+                          {this.state.claimSubmissionAttachments ? (
+                            <FlatList
+                              data={this.state.claimSubmissionAttachments}
+                              keyExtractor={(item, index) => index.toString()}
+                              renderItem={({item, index}) => (
+                                <View
+                                  style={{
+                                    padding: 10,
+                                    marginTop: 10,
+                                    marginBottom: 20,
+                                    width: '90%',
+                                  }}>
+                                  <View style={styles.form_field_view}>
+                                    <Text
+                                      style={[styles.form_field_inline_label]}>
+                                      SL No
+                                    </Text>
+                                    <Text
+                                      style={[
+                                        styles.form_field,
+                                        {paddingTop: 15, paddingLeft: 10},
+                                      ]}>
+                                      {index + 1}
+                                    </Text>
+                                  </View>
+                                  <View style={styles.form_field_view}>
+                                    <Text
+                                      style={[styles.form_field_inline_label]}>
+                                      File Name
+                                    </Text>
+                                    <Text
+                                      style={[
+                                        styles.form_field,
+                                        {paddingTop: 15, paddingLeft: 10},
+                                      ]}>
+                                      {item.fileName}
+                                    </Text>
+                                  </View>
+                                  <View style={styles.form_field_view}>
+                                    <Text
+                                      style={[styles.form_field_inline_label]}>
+                                      Remarks
+                                    </Text>
+                                    <Text
+                                      style={[
+                                        styles.form_field,
+                                        {paddingTop: 15, paddingLeft: 10},
+                                      ]}>
+                                      {item.remark}
+                                    </Text>
+                                  </View>
+
+                                  <View style={styles.form_field_view}>
+                                    <Text
+                                      style={[styles.form_field_inline_label]}>
+                                      Action
+                                    </Text>
+                                    <View
+                                      style={
+                                        (styles.form_field,
+                                        {flexDirection: 'row', width: '80%'})
+                                      }>
+                                      {item.fileDetail ? (
+                                        <TouchableOpacity
+                                          style={{
+                                            width: '40%',
+                                            backgroundColor: 'gray',
+                                            height: 45,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                          }}
+                                          onPress={() =>
+                                            this.downloadAttachment(
+                                              item.fileDetail.imageURL,
+                                              item.fileDetail.file_name,
+                                            )
+                                          }>
+                                          <Text
+                                            style={{
+                                              textAlign: 'center',
+                                              color: '#fff',
+                                              fontSize: 10,
+                                            }}>
+                                            Download
+                                          </Text>
+                                          <AntDesign
+                                            name="clouddownload"
+                                            style={{
+                                              color: '#fff',
+                                              fontSize: 20,
+                                            }}
+                                          />
+                                        </TouchableOpacity>
+                                      ) : null}
+
                                       <TouchableOpacity
                                         style={{
                                           width: '40%',
-                                          backgroundColor: 'gray',
+                                          backgroundColor: '#c82333',
                                           height: 45,
                                           alignItems: 'center',
                                           justifyContent: 'center',
                                         }}
                                         onPress={() =>
-                                          this.downloadAttachment(item.fileDetail.imageURL, item.fileDetail.file_name)
+                                          this.deleteAttachment(item, index)
                                         }>
                                         <Text
                                           style={{
@@ -779,60 +1141,39 @@ class SubmitClaimPageTwo extends PureComponent {
                                             color: '#fff',
                                             fontSize: 10,
                                           }}>
-                                          Download
+                                          Delete
                                         </Text>
                                         <AntDesign
-                                          name="clouddownload"
-                                          style={{color: '#fff', fontSize: 20}}
+                                          name="delete"
+                                          style={{color: '#fff', fontSize: 15}}
                                         />
                                       </TouchableOpacity>
-                                    ) : null}
-
-                                    <TouchableOpacity
-                                      style={{
-                                        width: '40%',
-                                        backgroundColor: '#c82333',
-                                        height: 45,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                      }}
-                                      onPress={() =>
-                                        this.deleteAttachment(item, index)
-                                      }>
-                                      <Text
-                                        style={{
-                                          textAlign: 'center',
-                                          color: '#fff',
-                                          fontSize: 10,
-                                        }}>
-                                        Delete
-                                      </Text>
-                                      <AntDesign
-                                        name="delete"
-                                        style={{color: '#fff', fontSize: 15}}
-                                      />
-                                    </TouchableOpacity>
+                                    </View>
                                   </View>
                                 </View>
-                              </View>
-                            )}
-                          />
-                        ) : null}
+                              )}
+                            />
+                          ) : null}
                           <View style={{marginTop: 20}}>
                             <TouchableOpacity
                               style={styles.submit_ButtonStyle}
                               onPress={() => this.submitData()}
-                              disabled={this.state.claimSubmissionAttachments.length ?false:true}>
+                              disabled={
+                                this.state.claimSubmissionAttachments.length
+                                  ? false
+                                  : true
+                              }>
                               <Text style={{color: '#fff'}}>Submit</Text>
                             </TouchableOpacity>
                           </View>
+                        </View>
+                        {this.state.selectOptionPopup ? (
+                          <UploadClaimSubmission
+                            popupVisible={(data) => this.imageUpload(data)}
+                          />
+                        ) : null}
                       </View>
-                      {this.state.selectOptionPopup ? (
-                        <UploadClaimSubmission
-                          popupVisible={(data) => this.imageUpload(data)}
-                        />
-                      ) : null}
-                    </View>)}
+                    )} */}
                   </Card>
                 ) : (
                   <Card>
@@ -893,6 +1234,18 @@ class SubmitClaimPageTwo extends PureComponent {
               </View>
             )}
           />
+           <View style={{marginTop: 20}}>
+                            <TouchableOpacity
+                              style={styles.submit_ButtonStyle}
+                              onPress={() => this.submitData()}
+                              disabled={
+                                this.state.claimSubmissionAttachments.length
+                                  ? false
+                                  : true
+                              }>
+                              <Text style={{color: '#fff'}}>Submit</Text>
+                            </TouchableOpacity>
+                          </View>
         </Content>
       </Container>
     );
