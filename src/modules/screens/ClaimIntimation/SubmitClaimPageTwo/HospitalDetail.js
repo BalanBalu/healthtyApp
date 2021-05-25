@@ -42,6 +42,15 @@ const HospitalDetail = (props) => {
                 registrationStateCode  : streetNumber,
                 hospitalPhoneNumber: phoneNumber,
             })
+            sethospitalName('')
+            sethospitalId('')
+            sethospitalType('')
+            setdoctorFirstName('')
+            setdoctorMiddleName('')
+            setdoctorLastName('')
+            setqualification('')
+            setstreetNumber('')
+            setphoneNumber('')
         } else {
             if (hospitalName === '') {
                 seterrorMsg('Please enter hospital name')

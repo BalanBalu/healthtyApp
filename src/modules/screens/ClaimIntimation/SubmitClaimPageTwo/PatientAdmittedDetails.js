@@ -41,8 +41,8 @@ const PatientAdmittedDetails = (props) => {
     const [patientAgeMonth2, setpatientAgeMonth2] = useState('')
     const [timeOfAdmissionHours, settimeOfAdmissionHours] = useState()
     const [timeOfAdmissionMinute, settimeOfAdmissionMinute] = useState()
-    const [timeOfDischargeHours, settimeOfDischargeHours] = useState('')
-    const [timeOfDischargeMinute, settimeOfDischargeMinute] = useState('')
+    const [timeOfDischargeHours, settimeOfDischargeHours] = useState()
+    const [timeOfDischargeMinute, settimeOfDischargeMinute] = useState()
 
     const inputEl1 = useRef(null);
     const inputEl2 = useRef(null);
@@ -143,7 +143,26 @@ const PatientAdmittedDetails = (props) => {
                 submissionDateOfDischarge: selectDischargeDate,
                 gravidaStatus: gravidaStatus,   
             })
-            
+            setpatientFirstName('')
+            setpatientMiddleName('')
+            setpatientLastName('')
+            setregistrationNo('')
+            setselectedAdmissionDate('')
+            setselectedDateOfBirth('')
+            setselectDischargeDate('')
+            setadmissionType('')
+            setselectdeliveryDate('')
+            setgravidaStatus('')
+            setclaimAmount('')
+            setdischargeTime('')
+            setpatientAgeYear1('')
+            setpatientAgeYear2('')
+            setpatientAgeMonth1('')
+            setpatientAgeMonth2('')
+            settimeOfAdmissionHours()
+            settimeOfAdmissionMinute()
+            settimeOfDischargeHours()
+            settimeOfDischargeMinute()
 
         } else {
             if (patientFirstName === '') {
