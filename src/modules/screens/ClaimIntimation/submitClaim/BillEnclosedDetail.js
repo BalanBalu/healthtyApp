@@ -47,7 +47,6 @@ const BillEnclosedDeatil = (props) => {
 
   };
 
-  renderItem = ({ item }) => (<View key={item.key}><Text>{item.title}</Text></View>);
 
   console.log('bilEnclosedList', bilEnclosedList.length);
 

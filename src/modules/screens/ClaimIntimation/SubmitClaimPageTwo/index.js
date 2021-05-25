@@ -271,7 +271,7 @@ class SubmitClaimPageTwo extends PureComponent {
       isLoadingUploadDocs: false,
       remark: '',
       fileName: '',
-      updateId: '60ab9eed08e9af2db462b620',
+      // updateId: '60ab9eed08e9af2db462b620',
       claimSubmissionAttachments: [],
       section1Disable: true,
       section2Disable: false,
@@ -279,9 +279,8 @@ class SubmitClaimPageTwo extends PureComponent {
       section5Disable: false,
       section6Disable: false,
       section7Disable: false,
-
+      updateId:this.props.navigation.getParam('dataId') || null,
     };
-    // updateId:this.props.navigation.getParam('dataId') || null,
     this.submissionDetails=this.props.navigation.getParam('submissionDetails')
   }
 
