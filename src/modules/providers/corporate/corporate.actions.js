@@ -458,6 +458,22 @@ export async function updateClaimSubmission(reqBodyData) {
     }
   }
 }
+
+export async function getClaimSubmissionById(id) {
+  try {
+    const endpoint = 'claim-submission/by-id?'+id;
+    const resp = await smartHealthGetService(endpoint, reqBodyData)
+    return resp.data
+  } catch (Ex) {
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex.message,
+    }
+  }
+}
+
+
 export async function getListByTpaCode(tpaCode) {
   try {
     const endpoint = 'tpa/code'+tpaCode;

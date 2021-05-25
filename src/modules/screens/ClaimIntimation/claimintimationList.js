@@ -48,7 +48,6 @@ class ClaimIntimationList extends PureComponent {
       );
       if (result) {
         await this.setState({ claimList: result.docs });
-        console.log("claimList",this.state.claimList)
       }
     } catch (ex) {
       console.log(ex);
@@ -220,7 +219,7 @@ class ClaimIntimationList extends PureComponent {
           </View> */}
           {isLoading ? (
             <Loader style="newList" />
-          ) : claimList.length ? (
+          ) : claimList&&claimList.length ? (
             <FlatList
               data={claimList}
               keyExtractor={(item, index) => index.toString()}

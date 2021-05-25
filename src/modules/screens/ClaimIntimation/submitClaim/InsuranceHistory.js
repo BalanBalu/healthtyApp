@@ -9,7 +9,7 @@ import {subTimeUnit, formatDate} from '../../../../setup/helpers';
 import {toastMeassage} from '../../../common';
 
 const InsuranceHistory = (props) => {
-  const {claimListData, updateSubmissionDetails} = props;
+  const {claimListData, updateInsuranceHistoryDetails} = props;
 
   const [currentlyHaveMediClaim, setCurrentlyHaveMediClaim] = useState(true);
   const [
@@ -45,13 +45,12 @@ const InsuranceHistory = (props) => {
   };
 
   const openPicker = () => {
-    setIsVisible(true)
+    setIsVisible(true);
   };
   const openHospitalizationPicker = () => {
     setIsVisibleHospitalizationDate(true);
   };
 
-  
   return (
     <View>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
@@ -67,6 +66,7 @@ const InsuranceHistory = (props) => {
               standardStyle={true}
               selected={currentlyHaveMediClaim}
               onPress={() => setCurrentlyHaveMediClaim(true)}
+              testID="selectCurrentlyHaveMediClaim"
             />
             <Text style={styles.text}>Yes</Text>
 
@@ -77,6 +77,7 @@ const InsuranceHistory = (props) => {
                 standardStyle={true}
                 selected={!currentlyHaveMediClaim}
                 onPress={() => setCurrentlyHaveMediClaim(false)}
+                testID="selectNoCurrentlyHaveMediClaim"
               />
               <Text style={styles.text}>No</Text>
             </View>
@@ -93,7 +94,8 @@ const InsuranceHistory = (props) => {
           <Item regular style={{borderRadius: 6, height: 35}}>
             <TouchableOpacity
               style={{flexDirection: 'row'}}
-              onPress={openPicker}>
+              onPress={openPicker}
+              testID="selectCommencementOfFirstInsuranceDate">
               <Icon name="md-calendar" style={styles.calenderStyle} />
               <Text
                 style={
@@ -133,6 +135,7 @@ const InsuranceHistory = (props) => {
               value={mediClaimCompanyName}
               keyboardType={'default'}
               onChangeText={(text) => setMediClaimCompanyName(text)}
+              testID="editMediClaimCompanyName"
             />
           </Item>
         </Col>
@@ -152,6 +155,7 @@ const InsuranceHistory = (props) => {
               standardStyle={true}
               selected={hospitalized}
               onPress={() => setHospitalized(true)}
+              testID="selectHospitalized"
             />
             <Text style={styles.text}>Yes</Text>
 
@@ -162,6 +166,7 @@ const InsuranceHistory = (props) => {
                 standardStyle={true}
                 selected={!hospitalized}
                 onPress={() => setHospitalized(false)}
+                testID="selectNoHospitalized"
               />
               <Text style={styles.text}>No</Text>
             </View>
@@ -183,6 +188,7 @@ const InsuranceHistory = (props) => {
               value={sumInsuresPerPolicy}
               keyboardType={'number-pad'}
               onChangeText={(text) => setSumInsuresPerPolicy(text)}
+              testID="editSumInsuresPerPolicy"
             />
           </Item>
         </Col>
@@ -197,7 +203,8 @@ const InsuranceHistory = (props) => {
           <Item regular style={{borderRadius: 6, height: 35}}>
             <TouchableOpacity
               style={{flexDirection: 'row'}}
-              onPress={openHospitalizationPicker}>
+              onPress={openHospitalizationPicker}
+              testID="selectHospitalizationDate">
               <Icon name="md-calendar" style={styles.calenderStyle} />
               <Text
                 style={
@@ -237,6 +244,7 @@ const InsuranceHistory = (props) => {
               value={diagnosisDetails}
               keyboardType={'default'}
               onChangeText={(text) => setDiagnosisDetails(text)}
+              testID="editDiagnosisDetails"
             />
           </Item>
         </Col>
@@ -252,9 +260,10 @@ const InsuranceHistory = (props) => {
               placeholder="Enter the full name of Insurance company"
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
-                value={hospitalizedCompany}
+              value={hospitalizedCompany}
               keyboardType={'number-pad'}
               onChangeText={(text) => setHospitalizedCompany(text)}
+              testID="editHospitalizedCompany"
             />
           </Item>
         </Col>
@@ -274,6 +283,7 @@ const InsuranceHistory = (props) => {
               standardStyle={true}
               selected={isCoveredByOtherClaim}
               onPress={() => setIsCoveredByOtherClaim(true)}
+              testID="selectIsCoveredByOtherClaim"
             />
             <Text style={styles.text}>Yes</Text>
 
@@ -284,6 +294,7 @@ const InsuranceHistory = (props) => {
                 standardStyle={true}
                 selected={!isCoveredByOtherClaim}
                 onPress={() => setIsCoveredByOtherClaim(false)}
+                testID="selectNoIsCoveredByOtherClaim"
               />
               <Text style={styles.text}>No</Text>
             </View>
@@ -302,19 +313,21 @@ const InsuranceHistory = (props) => {
             hospitalizationDate &&
             diagnosisDetails &&
             hospitalizedCompany &&
-            isCoveredByOtherClaim 
-              ? updateSubmissionDetails({
-                currentlyHaveMediClaim: currentlyHaveMediClaim,
-                commencementOfFirstInsuranceDate: commencementOfFirstInsuranceDate,
-                mediClaimCompanyName: mediClaimCompanyName,
-                hospitalized: hospitalized,
-                sumInsuresPerPolicy:  sumInsuresPerPolicy,
-                hospitalizationDate: hospitalizationDate,
-                diagnosisDetails: diagnosisDetails,
-                hospitalizedCompany: hospitalizedCompany,
-                isCoveredByOtherClaim:isCoveredByOtherClaim 
+            isCoveredByOtherClaim
+              ? updateInsuranceHistoryDetails({
+                  currentlyHaveMediClaim: currentlyHaveMediClaim,
+                  commencementOfFirstInsuranceDate: commencementOfFirstInsuranceDate,
+                  mediClaimCompanyName: mediClaimCompanyName,
+                  hospitalized: hospitalized,
+                  sumInsuresPerPolicy: sumInsuresPerPolicy,
+                  hospitalizationDate: hospitalizationDate,
+                  diagnosisDetails: diagnosisDetails,
+                  hospitalizedCompany: hospitalizedCompany,
+                  isCoveredByOtherClaim: isCoveredByOtherClaim,
                 })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')}>
+              : toastMeassage('Unable to Submit Claim, Please fill all details')
+          }
+          testID="submitDetails2">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>

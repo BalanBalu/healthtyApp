@@ -1,15 +1,31 @@
-import React, { PureComponent } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Text, View, Item, Input, Icon, } from 'native-base';
 import { TouchableOpacity, } from 'react-native'
 import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { subTimeUnit, formatDate } from '../../../../setup/helpers';
+import {toastMeassage} from '../../../common';
 
 
-
-const DeclarationByHospital = ({ isSelected, isVisiblePicker, selectedAdmissionDate, onPressConfirmDateValue, oncancelThePicker, openPicker }) => {
-
+const DeclarationByHospital = (props) => {
+    const {updateDeclarationByHospital} = props;
+    const [declarationDate, setDeclarationDate] = useState();
+    const [isVisible, setIsVisible] = useState(false);
+    const [place, setPlace] = useState('');
+    const [signatureOfHospitalAuthority, setSignatureOfHospitalAuthority] = useState('');
+    const onPressConfirmDateValue = (date) => {
+        setDeclarationDate(date);
+      setIsVisible(false);
+    };
+    const onCancelPicker = () => {
+      setIsVisible(false);
+    };
+  
+    const openPicker = () => {
+      setIsVisible(true);
+    };
+  
     return (
         <View>
             <Row
@@ -27,22 +43,22 @@ const DeclarationByHospital = ({ isSelected, isVisiblePicker, selectedAdmissionD
                             />
                             <Text
                                 style={
-                                    selectedAdmissionDate
+                                    declarationDate
                                         ? styles.timeplaceHolder
                                         : styles.afterTimePlaceholder
                                 }>
-                                {selectedAdmissionDate
-                                    ? formatDate(selectedAdmissionDate, 'DD/MM/YYYY')
+                                {declarationDate
+                                    ? formatDate(declarationDate, 'DD/MM/YYYY')
                                     : 'Admission Date'}
                             </Text>
                             <DateTimePicker
                                 mode={'date'}
-                                minimumDate={subTimeUnit(new Date(), 7, 'days')}
-                                maximumDate={new Date()}
-                                value={selectedAdmissionDate}
-                                isVisible={isVisiblePicker}
+                                // minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                                // maximumDate={new Date()}
+                                value={declarationDate}
+                                isVisible={isVisible}
                                 onConfirm={onPressConfirmDateValue}
-                                onCancel={oncancelThePicker}
+                                onCancel={onCancelPicker}
                             />
                         </TouchableOpacity>
                     </Item>
@@ -59,12 +75,10 @@ const DeclarationByHospital = ({ isSelected, isVisiblePicker, selectedAdmissionD
                             placeholder="Enter Place"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={place}
                              keyboardType={'default'}
                         //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                          onChangeText={(text) =>setPlace(text)}
                         />
                     </Item>
                 </Col>
@@ -80,18 +94,25 @@ const DeclarationByHospital = ({ isSelected, isVisiblePicker, selectedAdmissionD
                             placeholder="Enter Signature of hospital authority"
                             placeholderTextColor={'#CDD0D9'}
                             returnKeyType={'next'}
-                            //   value={employeeId}
+                              value={signatureOfHospitalAuthority}
                              keyboardType={'default'}
                         //   editable={employeeId == undefined ? true : false}
-                        //   onChangeText={(enteredEmployeeIdText) =>
-                        //     this.setState({employeeId: enteredEmployeeIdText})
-                        //   }
+                        onChangeText={(text) =>setSignatureOfHospitalAuthority(text)}
                         />
                     </Item>
                 </Col>
             </Row>
             <View style={styles.ButtonView}>
-                <TouchableOpacity style={styles.submit_ButtonStyle} >
+                <TouchableOpacity style={styles.submit_ButtonStyle}onPress={() =>
+            declarationDate &&
+            place &&
+            signatureOfHospitalAuthority 
+              ? updateDeclarationByHospital({
+                declarationDate : declarationDate,
+                declarationPlace : place,
+                authoritySign : signatureOfHospitalAuthority
+                })
+              : toastMeassage('Unable to Submit Claim, Please fill all details')}>
                     <Text style={{ color: "#fff" }}>Submit</Text>
                 </TouchableOpacity>
             </View>
