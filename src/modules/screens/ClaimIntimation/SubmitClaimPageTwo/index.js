@@ -278,8 +278,7 @@ class SubmitClaimPageTwo extends PureComponent {
       section5Disable: true,
       section6Disable: true,
       section7Disable: false,
-      // updateId:this.props.navigation.getParam('dataId') || null,
-      updateId:'60ad3dfd9d68d1114c9be951',
+      updateId:this.props.navigation.getParam('dataId') || null,
       disabled: 0,
       submitButton:true
     };
