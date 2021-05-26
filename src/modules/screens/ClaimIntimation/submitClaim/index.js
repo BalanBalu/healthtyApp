@@ -633,7 +633,7 @@ class SubmitClaim extends PureComponent {
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
 
     if (claimDetails == true) {
-      this.setState({sectionGDisable: true});
+      this.setState({sectionFDisable: true});
     }
   };
   updateBillsEnclosedDetails = async (data) => {
@@ -644,7 +644,7 @@ class SubmitClaim extends PureComponent {
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
 
     if (billEnclosedDetails == true) {
-      // this.setState({sectionGDisable: true});
+      this.setState({sectionGDisable: true});
     }
   };
   updatePrimaryInsuredBankAccountDetails = async (data) => {
@@ -662,9 +662,8 @@ class SubmitClaim extends PureComponent {
     let declarationDetails = this.updateSubmissionDetails(data);
     this.updateDisableCout();
     const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
+    this.setState({showCard: showCard + 1,nextButtonEnable: false});
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
-
     if (declarationDetails == true) {
       this.setState({nextButtonEnable: false});
     }
@@ -707,19 +706,7 @@ class SubmitClaim extends PureComponent {
       console.log(ex);
     }
   };
-  deleteBillEnclosedDetails = async (item, index) => {
-    let temp = this.state.bilEnclosedList;
-    await temp.splice(index, 1);
-    await this.setState({bilEnclosedList: temp});
-    console.log(this.state.bilEnclosedList);
-  };
-
-  editBillEnclosedDetails = async (item, index) => {
-    let temp = this.state.bilEnclosedList;
-    temp.splice(index, 1);
-    await this.setState({bilEnclosedList: temp});
-    console.log(this.state.bilEnclosedList);
-  };
+  
   render() {
     const data = [
       {title: 'Details of primary insured', id: 1, disable: false},
@@ -727,7 +714,7 @@ class SubmitClaim extends PureComponent {
       {title: 'Details of insured person hospitalized', id: 3, disable: false},
       {title: 'Details of hospitalization', id: 4, disable: false},
       {title: 'Details of claim', id: 5, disable: false},
-      // {title: 'Details of bills enclosed', id: 6, disable: false},
+      {title: 'Details of bills enclosed', id: 6, disable: false},
       {title: 'Details of primary insured bank account', id: 7, disable: false},
       {title: 'Declaration by insured', id: 8, disable: false},
     ];
@@ -847,20 +834,11 @@ class SubmitClaim extends PureComponent {
                         ListOfData={ListOfData}
                       />
                     )}
-                    {/* {item.id === 6 && sectionFDisable && (
+                    {item.id === 6 && sectionFDisable && (
                         <BillEnclosedDeatil
-                          isSelected={this.state.isSelected}
-                          isVisiblePicker={this.state.isVisibleDatePicker}
-                          selectedAdmissionDate={
-                            this.state.selectedAdmissionDate
-                          }
-                          TimeOfAdmissionHours={TimeOfAdmissionHours}
-                          onPressConfirmDateValue={this.onPressConfirmDateValue}
-                          oncancelThePicker={this.oncancelThePicker}
-                          openPicker={this.openPicker}
                           updateBillsEnclosedDetails={(data)=>this.updateBillsEnclosedDetails(data)}
                         />
-                                              )} */}
+                                              )}
 
                     {item.id === 7 && sectionGDisable && (
                       <PrimaryInsuredBank
@@ -881,7 +859,7 @@ class SubmitClaim extends PureComponent {
                   </View>
                 </Card>
               ) : (
-                <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
+                // <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
                   <Card>
                     <TouchableOpacity
                       style={{
@@ -911,7 +889,7 @@ class SubmitClaim extends PureComponent {
                       </Row>
                     </TouchableOpacity>
                   </Card>
-                </View>
+                //  </View>
               )}
             </View>
           )}
@@ -925,7 +903,7 @@ class SubmitClaim extends PureComponent {
                 submissionDetails: this.state.submissionDetails,
               });
             }}
-            disabled={this.state.nextButtonEnable}>
+            disabled={this.state.nextButtonEnable==true?true:false}>
             <Text style={{color: '#fff'}}>Next</Text>
           </TouchableOpacity>
         </View>
