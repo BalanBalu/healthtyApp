@@ -6,10 +6,10 @@ import {Container, Content, Text, Left, Item, View, Card} from 'native-base';
 import {Col, Row} from 'react-native-easy-grid';
 import RNFetchBlob from 'rn-fetch-blob';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {getClaimIntimationWithPagination} from '../../providers/corporate/corporate.actions';
-import {log} from 'react-native-reanimated';
-import {primaryColor} from '../../../setup/config';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { getClaimIntimationWithPagination } from '../../providers/corporate/corporate.actions';
+import { log } from 'react-native-reanimated';
+import { primaryColor } from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
 import {translate} from '../../../setup/translator.helper'
 import {ClaimInitiationDrawing} from '../../screens/Home/corporateHome/svgDrawings';
@@ -24,7 +24,7 @@ class ClaimIntimationList extends PureComponent {
       showCard: -1,
       show: true,
       claimList: [],
-      isLoading:false
+      isLoading: false
     };
     this.pagination = 1;
     this.memberTpaCode = props.profile && props.profile.memberTpaInfo && props.profile.memberTpaInfo.tpaCode || null;
@@ -35,7 +35,7 @@ class ClaimIntimationList extends PureComponent {
   }
   getClaimIntimationDetails = async () => {
     try {
-      this.setState({isLoading:true});
+      this.setState({ isLoading: true });
       let searchText = null;
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeId = await AsyncStorage.getItem('employeeCode');
@@ -47,22 +47,22 @@ class ClaimIntimationList extends PureComponent {
         LIMIT,
       );
       if (result) {
-        await this.setState({claimList: result.docs});
+        await this.setState({ claimList: result.docs });
       }
     } catch (ex) {
       console.log(ex);
     }
     finally {
       this.setState({ isLoading: false });
-  }
+    }
   };
 
   toggleData(index, typeOfArrowIcon) {
-    const {showCard, show} = this.state;
+    const { showCard, show } = this.state;
     if (typeOfArrowIcon === 'DOWN') {
-      this.setState({showCard: index, show: !this.state.show});
+      this.setState({ showCard: index, show: !this.state.show });
     } else {
-      this.setState({showCard: -1, show: null});
+      this.setState({ showCard: -1, show: null });
     }
   }
 
@@ -137,7 +137,7 @@ class ClaimIntimationList extends PureComponent {
   // };
 
   render() {
-    const {showCard, show, claimList, isLoading} = this.state;
+    const { showCard, show, claimList, isLoading } = this.state;
 
     return (
       <Container>
@@ -219,18 +219,18 @@ class ClaimIntimationList extends PureComponent {
           </View> */}
           {isLoading ? (
             <Loader style="newList" />
-          ) : claimList.length  ? (
+          ) : claimList&&claimList.length ? (
             <FlatList
               data={claimList}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => (
+              renderItem={({ item, index }) => (
                 <View>
                   {this.state.showCard === index && !this.state.show ? (
                     <View>
                       <Card style={styles.cardStyles}>
                         <Row style={styles.gradientStyle}>
                           <Col size={9}>
-                            <Text style={{fontSize: 18, color: '#fff'}}>
+                            <Text style={{ fontSize: 18, color: '#fff' }}>
                               {item.employeeName}
                             </Text>
                           </Col>
@@ -243,20 +243,20 @@ class ClaimIntimationList extends PureComponent {
                                     ? 'keyboard-arrow-up'
                                     : 'keyboard-arrow-down'
                                 }
-                                style={{fontSize: 25, color: '#fff'}}
+                                style={{ fontSize: 25, color: '#fff' }}
                               />
                             </TouchableOpacity>
                           </Col>
                         </Row>
                         <View style={styles.mainView}>
-                          <Row style={{marginTop: 5}}>
+                          <Row style={{ marginTop: 5 }}>
                             <Col size={4}>
                               <Text style={styles.subHeadingStyle}>
-                               {translate("Member Code")} 
+                                {translate("Member Code")}
                               </Text>
                             </Col>
                             <Col size={0.5}>
-                              <Text style={{marginTop: 2}}>:</Text>
+                              <Text style={{ marginTop: 2 }}>:</Text>
                             </Col>
                             <Col size={6.5}>
                               <Text style={styles.subHeadingData}>
@@ -272,14 +272,14 @@ class ClaimIntimationList extends PureComponent {
                           </Col>
 
                         </Row> */}
-                          <Row style={{marginTop: 5}}>
+                          <Row style={{ marginTop: 5 }}>
                             <Col size={4}>
                               <Text style={styles.subHeadingStyle}>
-                             { translate("Claim By") } 
+                                {translate("Claim By")}
                               </Text>
                             </Col>
                             <Col size={0.5}>
-                              <Text style={{marginTop: 2}}>:</Text>
+                              <Text style={{ marginTop: 2 }}>:</Text>
                             </Col>
                             <Col size={6.5}>
                               <Text style={styles.subHeadingData}>
@@ -287,12 +287,12 @@ class ClaimIntimationList extends PureComponent {
                               </Text>
                             </Col>
                           </Row>
-                          <Row style={{marginTop: 5}}>
+                          <Row style={{ marginTop: 5 }}>
                             <Col size={4}>
                               <Text style={styles.subHeadingStyle}>{translate("Status")}</Text>
                             </Col>
                             <Col size={0.5}>
-                              <Text style={{marginTop: 2}}>:</Text>
+                              <Text style={{ marginTop: 2 }}>:</Text>
                             </Col>
                             <Col size={6.5}>
                               <Text style={styles.subHeadingData}>
@@ -307,14 +307,14 @@ class ClaimIntimationList extends PureComponent {
                             <Text style={styles.subHeadingData}>{item.ClaimAmount}</Text>
                           </Col>
                         </Row> */}
-                          <Row style={{marginTop: 5}}>
+                          <Row style={{ marginTop: 5 }}>
                             <Col size={4}>
                               <Text style={styles.subHeadingStyle}>
-                              {translate("Hospital")}
+                                {translate("Hospital")}
                               </Text>
                             </Col>
                             <Col size={0.5}>
-                              <Text style={{marginTop: 2}}>:</Text>
+                              <Text style={{ marginTop: 2 }}>:</Text>
                             </Col>
                             <Col size={6.5}>
                               <Text style={styles.subHeadingData}>
@@ -322,6 +322,11 @@ class ClaimIntimationList extends PureComponent {
                               </Text>
                             </Col>
                           </Row>
+                          <View style={{ justifyContent: "flex-end", alignItems: 'flex-end', marginTop: 10, marginBottom: 5 }}>
+                            <TouchableOpacity style={{ backgroundColor: primaryColor, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }} onPress={() => { this.props.navigation.navigate('SubmitClaim',{claimListData:item}) }}>
+                              <Text style={{ color: "#fff" }}>Submit Claim</Text>
+                            </TouchableOpacity>
+                          </View>
                           {/* <Row style={{ marginTop: 5 }}>
                           <Col size={4}><Text style={styles.subHeadingStyle}>Hospital Address</Text></Col>
                           <Col size={0.5}><Text style={{ marginTop: 2 }}>:</Text></Col>
@@ -353,12 +358,12 @@ class ClaimIntimationList extends PureComponent {
                                 </Text>
                               </TouchableOpacity>
                             </Left> */}
-                            {/* <Right>
+                        {/* <Right>
                             <TouchableOpacity style={styles.ecardButton} onPress={() => this.props.navigation.navigate("DocumentList", { docsUpload: true,data: item })}>
                               <Text style={styles.linkHeader}>Upload Document</Text>
                             </TouchableOpacity>
                           </Right> */}
-                          {/* </Row>
+                        {/* </Row>
                         </View> */}
                       </Card>
                     </View>
@@ -389,11 +394,11 @@ class ClaimIntimationList extends PureComponent {
                                       marginTop: 5,
                                     }}
                                     ellipsizeMode="tail">
-                                   {translate("Member Code")} 
+                                    {translate("Member Code")}
                                   </Text>
                                 </Col>
                                 <Col size={0.5}>
-                                  <Text style={{marginTop: 5}}>:</Text>
+                                  <Text style={{ marginTop: 5 }}>:</Text>
                                 </Col>
                                 <Col size={6}>
                                   <Text
@@ -409,7 +414,7 @@ class ClaimIntimationList extends PureComponent {
                               ellipsizeMode="tail">{item.address}</Text> */}
                             </Col>
 
-                            <Col size={0.8} style={{justifyContent: 'center'}}>
+                            <Col size={0.8} style={{ justifyContent: 'center' }}>
                               <TouchableOpacity
                                 onPress={() => this.toggleData(index, 'DOWN')}>
                                 <MaterialIcons
@@ -418,7 +423,7 @@ class ClaimIntimationList extends PureComponent {
                                       ? 'keyboard-arrow-up'
                                       : 'keyboard-arrow-down'
                                   }
-                                  style={{fontSize: 25, color: '#000'}}
+                                  style={{ fontSize: 25, color: '#000' }}
                                 />
                               </TouchableOpacity>
                             </Col>
@@ -435,20 +440,21 @@ class ClaimIntimationList extends PureComponent {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                marginTop:250
+                marginTop: 250
               }}>
-                <ClaimInitiationDrawing/>
+              <ClaimInitiationDrawing />
               <Text
-                style={{fontFamily: "Roboto",
-                fontSize: 15,
-                marginTop: "10%",
-                justifyContent: 'center',
-                alignItems: 'center',
-                textAlign: 'center',
+                style={{
+                  fontFamily: "Roboto",
+                  fontSize: 15,
+                  marginTop: "10%",
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
                 }}>
                 No claim intimation list found!
               </Text>
-              <View style={{borderTopWidth:3,width:55,transform:[{rotate: '120 deg'}],position: 'absolute',borderTopColor: primaryColor,bottom:85}}/>
+              <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, bottom: 85 }} />
             </View>
           )}
         </Content>

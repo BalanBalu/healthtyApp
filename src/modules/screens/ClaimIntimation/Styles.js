@@ -159,5 +159,120 @@ export default  styles = StyleSheet.create({
     fontSize: 15,
     color: '#4765FF'
   },
+  flatlistText: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    marginLeft: 20
+},
+form_field_view: {
+    alignItems: 'center',
+    backgroundColor: '#F7F6F2',
+    borderRadius: 8,
+    flexDirection: 'row',
+    height: 45,
+    paddingHorizontal: 1,
+},
+form_field_inline_label: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: '400',
+    lineHeight: 20,
+    width: 100,
+    borderColor:'#C6C6C4',
+    borderWidth:1,
+    height: 45,
+    textAlign: 'center',
+    paddingVertical:12,
+    borderBottomRightRadius:0,borderTopRightRadius:0
+  
+
+},
+Heading_form_field_inline_label: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: '400',
+    lineHeight: 20,
+    width: 100,
+    height: 45,
+    textAlign: 'center',
+    paddingVertical:12,
+    borderBottomRightRadius:0,
+    borderTopRightRadius:0,
+    backgroundColor: primaryColor
+  
+
+},
+
+
+form_field: {
+    color: '#000',
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRightColor:'#C6C6C4',
+    borderTopColor:'#C6C6C4',
+    borderBottomColor:'#C6C6C4',
+    borderTopWidth:1,
+    borderBottomWidth:1,
+    borderRightWidth:1,
+    width:'100%',
+    borderBottomLeftRadius:0,
+    borderTopLeftRadius:0,
+    height: 45,
+    fontSize:12
+},
+Heading_form_field: {
+    color: '#000',
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRightColor:'#C6C6C4',
+    borderTopColor:'#C6C6C4',
+    backgroundColor:primaryColor,
+    borderBottomWidth:1,
+    borderRightWidth:1,
+    width:'100%',
+    borderBottomLeftRadius:0,
+    borderTopLeftRadius:0,
+    height: 45,
+    fontSize:12
+},
+submit_ButtonStyle:{
+    backgroundColor: primaryColor, 
+    paddingHorizontal: 30, 
+    paddingVertical: 6, 
+    borderRadius: 10
+},
+ButtonView: {
+    justifyContent: "center", 
+    alignItems: 'center', 
+    marginTop: 15, 
+    marginBottom: 5
+},
+calenderStyle:{
+    padding: 5,
+    fontSize: 20,
+    marginTop: 1,
+    color: primaryColor,
+},
+timeplaceHolder:{
+    marginLeft: 5,
+    fontFamily: 'Roboto',
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: 8,
+    color: '#000',
+},
+afterTimePlaceholder: {
+    color: '#909090',
+    fontFamily: 'Roboto',
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: 8,
+},
+radioButtonStyle: {
+    marginLeft: 20, 
+    flexDirection: 'row',
+     alignItems: 'center', 
+     justifyContent: 'center' 
+}
 
   })
