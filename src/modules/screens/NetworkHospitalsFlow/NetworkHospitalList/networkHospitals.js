@@ -142,9 +142,9 @@ class NetworkHospitals extends Component {
         try {
             const hospitalName = item.hospitalName ? item.hospitalName : 'Un known hospital';
             const destinationCoOrdinates = item.geoLocation && item.geoLocation.coordinates;
-            if (!destinationCoOrdinates && !destinationCoOrdinates.length) {
+            if (!destinationCoOrdinates || destinationCoOrdinates.length<=0) {
                 Toast.show({
-                    text: 'coordinates getting Invalid! ',
+                    text: 'Hospital coordinates not found! ',
                     type: 'warning',
                     duration: 3000,
                 });
@@ -301,7 +301,7 @@ class NetworkHospitals extends Component {
                         </Col>
                     </Row>
                 </View> */}
-                <View>
+                {/* <View>
                     <TouchableOpacity onPress={() => this.navigateToLocationMap()}>
                         <Row style={{ padding: 5, height: 30, marginHorizontal: 15, marginVertical: 5, backgroundColor: '#EFEFF0', borderRadius: 5 }}>
                             <Col size={1} style={{ justifyContent: 'center' }}>
@@ -329,7 +329,7 @@ class NetworkHospitals extends Component {
                             </Col>
                         </Row>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 {isLoadingOnChangeHospitalList ?
                     <View style={{ marginTop: 60 }}>
                         <ActivityIndicator

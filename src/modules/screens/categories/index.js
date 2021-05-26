@@ -217,13 +217,13 @@ class Categories extends Component {
         let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null;
         const city = userAddressInfo && userAddressInfo.address && userAddressInfo.address.city ? userAddressInfo && userAddressInfo.address && userAddressInfo.address.city : '';
         const state = userAddressInfo && userAddressInfo.address && userAddressInfo.address.state ? userAddressInfo && userAddressInfo.address && userAddressInfo.address.state : '';
-        message = `${this.userName} needs ${this.state.selectedSpecialist} Home health consultation at ${city ? city + ',' : ''} ${state}. please contact Him/Her to this mobile number of ${this.mobile}`;
+        message = `${this.userName} needs ${this.state.selectedSpecialist} Home health consultation at ${city ? city + ', ' : ''} ${state?state:''}. please contact them. Mobile Number : ${this.mobile}`;
       }
       else {
-        message = `${this.userName} needs ${this.state.selectedSpecialist} specialist consultation. please contact Him/Her to this mobile number of ${this.mobile}`;
+        message = `${this.userName} needs ${this.state.selectedSpecialist} consultation. please contact them. Phone Number: ${this.mobile}`;
       }
       Alert.alert(
-        'Send message to SMS / WhatsApp / G-Mail',
+        'Send request by SMS / WhatsApp / Mail',
         '',
         [
           {
@@ -231,7 +231,7 @@ class Categories extends Component {
             onPress: () => this.onPressGotoMessageApp(message)
           },
           { text: 'WhatsApp', onPress: () => this.onPressGotoWhatsApp(message) },
-          { text: 'G-Mail', onPress: () => this.onPressGotoMailApp(message) },
+          { text: 'Mail', onPress: () => this.onPressGotoMailApp(message) },
         ]
       );
     } catch (error) {
@@ -273,43 +273,61 @@ class Categories extends Component {
                   </Text>
                 </Row>
 
-                <Row
+                {/* <Row
                   style={{
                     marginTop: 15,
                     justifyContent: 'flex-end',
                     marginBottom: 5,
                   }}>
-                  <Col size={5}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton1}
-                      onPress={() => {
-                        this.callToBookAppointment();
-                        this.onPressCloseToConsultPop();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText1}>
-                        {' '}
-                        {'Call to Book Appointment'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                  <Col size={5} style={{ marginLeft: 10 }}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton}
-                      onPress={() => {
-                        this.onPressArrangeCallBack();
-                        this.onPressCloseToConsultPop();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText}>
-                        {' '}
-                        {'Arrange Callback'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                </Row>
+                  <Col size={5}> */}
+                <View >
+                  <TouchableOpacity
+                    danger
+                    style={styles.backToHomeButton1}
+                    onPress={() => {
+                      this.callToBookAppointment();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Row>
+                      <Col size={1} ></Col>
+                      <Col size={1} style={{ marginTop: 7, marginLeft: 40 }}>
+                        <MaterialIcons name="call" style={{ fontSize: 25, color: '#FFF' }} />
+                      </Col>
+                      <Col size={8}>
+
+                        <Text style={styles.backToHomeButtonText1}>
+                          {'Call to Book Appointment'}
+                        </Text>
+                      </Col>
+                    </Row>
+
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    danger
+                    style={styles.backToHomeButton}
+                    onPress={() => {
+                      this.onPressArrangeCallBack();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Row>
+                      <Col size={1} ></Col>
+                      <Col size={1} style={{ marginTop: 7, marginLeft: 40 }}>
+                        <MaterialIcons name="reply" style={{ fontSize: 25, color: '#FFF' }} />
+                      </Col>
+                      <Col size={8}>
+                        <Text style={styles.backToHomeButtonText1}>
+                          {'Arrange Callback'}
+                        </Text>
+                      </Col>
+                    </Row>
+                  </TouchableOpacity>
+                </View>
+                {/* </Col>
+                </Row> */}
               </View>
             </View>
           </Modal>
@@ -474,13 +492,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#128283',
     height: 38,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 15
   },
   backToHomeButtonText1: {
     fontFamily: 'opensans-bold',
     fontSize: 15,
-    textAlign: 'center',
+    // textAlign: 'center',
     color: '#fff',
+    marginTop: 10
   },
   backToHomeButton: {
     paddingLeft: 10,
@@ -489,7 +509,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#59a7a8',
     height: 38,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 20,
   },
   backToHomeButtonText: {
     fontFamily: 'opensans-bold',

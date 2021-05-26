@@ -130,9 +130,9 @@ export default class RenderNetworkHospitalInfo extends Component {
                     ellipsizeMode="tail">{item.hospitalName ? item.hospitalName : 'Un known Hospital'}</Text>
                   <Text style={Styles.subHeadingData}
                     numberOfLines={1}
-                    ellipsizeMode="tail"> {address && Object.values(address).length ?
-                      `${address.address}, ${address.city}, ${address.state}`
-                      : null}</Text>
+                    ellipsizeMode="tail"> 
+                    {address && Object.values(address).length ? getNetworkHospitalAddress(address) : null}
+                      </Text>
                 </Col>
 
                 <Col size={0.8} style={{ justifyContent: 'center' }}>
