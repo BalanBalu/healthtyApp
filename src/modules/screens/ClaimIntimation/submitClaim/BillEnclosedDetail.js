@@ -443,8 +443,8 @@ class BillEnclosedDeatil extends PureComponent {
           />
         </View>
         {this.state.bilEnclosedList&&this.state.bilEnclosedList.length?
-          <View style={{marginTop: 20}}>
-            <TouchableOpacity
+        <View style={styles.ButtonView}>
+        <TouchableOpacity
               style={styles.submit_ButtonStyle}
               onPress={() => updateBillsEnclosedDetails(this.state.bilEnclosedList)}
               disabled={

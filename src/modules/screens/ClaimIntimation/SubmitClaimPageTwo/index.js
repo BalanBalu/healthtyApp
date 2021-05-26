@@ -930,7 +930,7 @@ submitAllDetails=async()=>{
               </View>
             )}
           />
-           <View style={{marginTop: 20}}>
+        <View style={styles.ButtonView}>
                             <TouchableOpacity
                               style={styles.submit_ButtonStyle}
                               onPress={() => this.submitAllDetails()}
