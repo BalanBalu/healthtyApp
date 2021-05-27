@@ -871,7 +871,7 @@ submitAllDetails=async()=>{
                                      </Card>
                 ) : (
                   <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
-                  <Card>
+                  <Card style={disabled >= index ? { backgroundColor: '#fff' } : { backgroundColor: '#E0E0E0' }}>
                     <TouchableOpacity
                       style={{
                         justifyContent: 'center',

@@ -1,13 +1,13 @@
-import React,  {useEffect, useState} from 'react';
-import {Text, View, Item, Input, Picker, Radio, Icon} from 'native-base';
-import {TouchableOpacity, FlatList} from 'react-native';
-import {Col, Row} from 'react-native-easy-grid';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Item, Input, Picker, Radio, Icon } from 'native-base';
+import { TouchableOpacity, FlatList } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
-import {primaryColor} from '../../../../setup/config';
+import { primaryColor } from '../../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {subTimeUnit, formatDate} from '../../../../setup/helpers';
-import {toastMeassage} from '../../../common';
+import { subTimeUnit, formatDate } from '../../../../setup/helpers';
+import { toastMeassage } from '../../../common';
 
 const HospitalizationDetails = (props) => {
   const {
@@ -42,16 +42,17 @@ const HospitalizationDetails = (props) => {
   };
   return (
     <View>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Name of Hospital<Text style={{color: 'red'}}>*</Text>
+            Name of Hospital<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Name of Hospital"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={hospitalName}
               keyboardType={'default'}
@@ -62,27 +63,27 @@ const HospitalizationDetails = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            indicate occupation of patient<Text style={{color: 'red'}}>*</Text>
+            indicate occupation of patient<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Picker
               mode="dropdown"
-              placeholderStyle={{fontSize: 12, marginLeft: -5}}
+              placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
               iosIcon={
                 <MaterialIcons
                   name="keyboard-arrow-down"
                   style={
                     Platform.OS === 'ios'
-                      ? {color: '#fff', fontSize: 20, marginRight: 15}
-                      : {color: '#fff', fontSize: 20}
+                      ? { color: '#fff', fontSize: 20, marginRight: 15 }
+                      : { color: '#fff', fontSize: 20 }
                   }
                 />
               }
-              textStyle={{color: '#fff', left: 0, marginLeft: 5}}
+              textStyle={{ color: '#fff', left: 0, marginLeft: 5 }}
               note={false}
               itemStyle={{
                 paddingLeft: 10,
@@ -90,8 +91,8 @@ const HospitalizationDetails = (props) => {
                 fontFamily: 'Helvetica-Light',
                 color: '#fff',
               }}
-              itemTextStyle={{color: '#fff', fontFamily: 'Helvetica-Light'}}
-              style={{width: '100%', color: '#000'}}
+              itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light' }}
+              style={{ width: '100%', color: '#000' }}
               onValueChange={(sample) => {
                 setRoomCategory(sample);
               }}
@@ -110,27 +111,27 @@ const HospitalizationDetails = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Hospitalization due to<Text style={{color: 'red'}}>*</Text>
+            Hospitalization due to<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Picker
               mode="dropdown"
-              placeholderStyle={{fontSize: 12, marginLeft: -5}}
+              placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
               iosIcon={
                 <MaterialIcons
                   name="keyboard-arrow-down"
                   style={
                     Platform.OS === 'ios'
-                      ? {color: '#fff', fontSize: 20, marginRight: 15}
-                      : {color: '#fff', fontSize: 20}
+                      ? { color: '#fff', fontSize: 20, marginRight: 15 }
+                      : { color: '#fff', fontSize: 20 }
                   }
                 />
               }
-              textStyle={{color: '#fff', left: 0, marginLeft: 5}}
+              textStyle={{ color: '#fff', left: 0, marginLeft: 5 }}
               note={false}
               itemStyle={{
                 paddingLeft: 10,
@@ -138,8 +139,8 @@ const HospitalizationDetails = (props) => {
                 fontFamily: 'Helvetica-Light',
                 color: '#fff',
               }}
-              itemTextStyle={{color: '#fff', fontFamily: 'Helvetica-Light'}}
-              style={{width: '100%', color: '#000'}}
+              itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light' }}
+              style={{ width: '100%', color: '#000' }}
               onValueChange={(sample) => {
                 setHospitalizationDueTo(sample);
               }}
@@ -159,20 +160,20 @@ const HospitalizationDetails = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Date Of injury<Text style={{color: 'red'}}>*</Text>
+            Date Of injury<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <TouchableOpacity
-              style={{flexDirection: 'row'}}
-              onPress={openPicker}  testID="selectDateOfInjury">
+              style={{ flexDirection: 'row' }}
+              onPress={openPicker} testID="selectDateOfInjury">
               <Icon name="md-calendar" style={styles.calenderStyle} />
               <Text
                 style={
-                    dayOfInjury
+                  dayOfInjury
                     ? styles.timeplaceHolder
                     : styles.afterTimePlaceholder
                 }>
@@ -194,15 +195,15 @@ const HospitalizationDetails = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Date Of Admission<Text style={{color: 'red'}}>*</Text>
+            Date Of Admission<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <TouchableOpacity
-              style={{flexDirection: 'row'}}
+              style={{ flexDirection: 'row' }}
               testID="selectDateOfAdmission">
               {/* onPress={openPicker}> */}
               <Icon name="md-calendar" style={styles.calenderStyle} />
@@ -221,9 +222,9 @@ const HospitalizationDetails = (props) => {
                 // minimumDate={subTimeUnit(new Date(), 7, 'days')}
                 // maximumDate={new Date()}
                 value={dateOfAdmission}
-                // isVisible={isVisiblePicker}
-                // onConfirm={onPressConfirmDateValue}
-                // onCancel={oncancelThePicker}
+              // isVisible={isVisiblePicker}
+              // onConfirm={onPressConfirmDateValue}
+              // onCancel={oncancelThePicker}
               />
             </TouchableOpacity>
           </Item>
@@ -239,7 +240,8 @@ const HospitalizationDetails = (props) => {
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
               placeholder="hh/mm"
-              placeholderTextColor={'#CDD0D9'}
+               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               //   value={employeeId}
               keyboardType={'number-pad'}
@@ -252,15 +254,15 @@ const HospitalizationDetails = (props) => {
         </Col>
       </Row> */}
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Date Of Discharge<Text style={{color: 'red'}}>*</Text>
+            Date Of Discharge<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <TouchableOpacity
-              style={{flexDirection: 'row'}}
+              style={{ flexDirection: 'row' }}
               testID="selectDateOfDischarge">
               {/* onPress={openPicker}> */}
               <Icon name="md-calendar" style={styles.calenderStyle} />
@@ -279,9 +281,9 @@ const HospitalizationDetails = (props) => {
                 // minimumDate={subTimeUnit(new Date(), 7, 'days')}
                 // maximumDate={new Date()}
                 value={dateOfDischarge}
-                // isVisible={isVisiblePicker}
-                // onConfirm={onPressConfirmDateValue}
-                // onCancel={oncancelThePicker}
+              // isVisible={isVisiblePicker}
+              // onConfirm={onPressConfirmDateValue}
+              // onCancel={oncancelThePicker}
               />
             </TouchableOpacity>
           </Item>
@@ -297,7 +299,8 @@ const HospitalizationDetails = (props) => {
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
               placeholder="hh/mm"
-              placeholderTextColor={'#CDD0D9'}
+               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               //   value={employeeId}
               keyboardType={'number-pad'}
@@ -310,27 +313,27 @@ const HospitalizationDetails = (props) => {
         </Col>
       </Row> */}
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            If injury, give cause<Text style={{color: 'red'}}>*</Text>
+            If injury, give cause<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Picker
               mode="dropdown"
-              placeholderStyle={{fontSize: 12, marginLeft: -5}}
+              placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
               iosIcon={
                 <MaterialIcons
                   name="keyboard-arrow-down"
                   style={
                     Platform.OS === 'ios'
-                      ? {color: '#fff', fontSize: 20, marginRight: 15}
-                      : {color: '#fff', fontSize: 20}
+                      ? { color: '#fff', fontSize: 20, marginRight: 15 }
+                      : { color: '#fff', fontSize: 20 }
                   }
                 />
               }
-              textStyle={{color: '#fff', left: 0, marginLeft: 5}}
+              textStyle={{ color: '#fff', left: 0, marginLeft: 5 }}
               note={false}
               itemStyle={{
                 paddingLeft: 10,
@@ -338,8 +341,8 @@ const HospitalizationDetails = (props) => {
                 fontFamily: 'Helvetica-Light',
                 color: '#fff',
               }}
-              itemTextStyle={{color: '#fff', fontFamily: 'Helvetica-Light'}}
-              style={{width: '100%', color: '#000'}}
+              itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light' }}
+              style={{ width: '100%', color: '#000' }}
               onValueChange={(sample) => setInjuryCause(sample)}
               selectedValue={injuryCause}
               testID="selectInjuryCause">
@@ -357,13 +360,13 @@ const HospitalizationDetails = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            If Medico legal<Text style={{color: 'red'}}>*</Text>
+            If Medico legal<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
@@ -389,13 +392,13 @@ const HospitalizationDetails = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Reported to police<Text style={{color: 'red'}}>*</Text>
+            Reported to police<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
@@ -421,13 +424,13 @@ const HospitalizationDetails = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            MLC Report police FIR attached<Text style={{color: 'red'}}>*</Text>
+            MLC Report police FIR attached<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
@@ -453,16 +456,17 @@ const HospitalizationDetails = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Enter system of medicine<Text style={{color: 'red'}}>*</Text>
+            Enter system of medicine<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter system of medicine"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={systemOfMedicine}
               keyboardType={'default'}
@@ -478,23 +482,23 @@ const HospitalizationDetails = (props) => {
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-            
-               updateHospitalization({
-                hospitalName: hospitalName,
-                roomCategory: roomCategory,
-                hospitalizationDueTo: hospitalizationDueTo,
-                dayOfInjury: dayOfInjury,
-                dateOfAdmission: dateOfAdmission,
-                dateOfDischarge: dateOfDischarge,
-                injuryCause: injuryCause,
-                medicoLegal: medicoLegal,
-                reportedTpPolice: reportedTpPolice,
-                mlcReport: mlcReport,
-                systemOfMedicine: systemOfMedicine
-                })
+
+            updateHospitalization({
+              hospitalName: hospitalName,
+              roomCategory: roomCategory,
+              hospitalizationDueTo: hospitalizationDueTo,
+              dayOfInjury: dayOfInjury,
+              dateOfAdmission: dateOfAdmission,
+              dateOfDischarge: dateOfDischarge,
+              injuryCause: injuryCause,
+              medicoLegal: medicoLegal,
+              reportedTpPolice: reportedTpPolice,
+              mlcReport: mlcReport,
+              systemOfMedicine: systemOfMedicine
+            })
           }
           testID="submitDetails4">
-          <Text style={{color: '#fff'}}>Submit And Continue</Text>
+          <Text style={{ color: '#fff' }}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>
     </View>

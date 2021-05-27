@@ -256,15 +256,15 @@ calenderStyle:{
 timeplaceHolder:{
     marginLeft: 5,
     fontFamily: 'Roboto',
-    fontSize: 13,
+    fontSize: 15,
     textAlign: 'center',
     marginTop: 8,
     color: '#000',
 },
 afterTimePlaceholder: {
-    color: '#909090',
+    color: '#CDD0D9',
     fontFamily: 'Roboto',
-    fontSize: 13,
+    fontSize: 15,
     textAlign: 'center',
     marginTop: 8,
 },
@@ -273,6 +273,9 @@ radioButtonStyle: {
     flexDirection: 'row',
      alignItems: 'center', 
      justifyContent: 'center' 
+},
+fontColorOfInput:{
+    fontSize:15
 }
 
   })

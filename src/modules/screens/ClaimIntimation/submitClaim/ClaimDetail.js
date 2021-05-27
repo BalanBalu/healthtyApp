@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, Item, Input, Radio, CheckBox} from 'native-base';
-import {TouchableOpacity, FlatList} from 'react-native';
-import {Col, Row} from 'react-native-easy-grid';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Item, Input, Radio, CheckBox } from 'native-base';
+import { TouchableOpacity, FlatList } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
-import {primaryColor} from '../../../../setup/config';
-import {toastMeassage, acceptNumbersOnly} from '../../../common';
+import { primaryColor } from '../../../../setup/config';
+import { toastMeassage, acceptNumbersOnly } from '../../../common';
 
 const ClaimDetail = (props) => {
-  const {ListOfData, checkBoxClick, updateClaimDetails} = props;
+  const { ListOfData, checkBoxClick, updateClaimDetails } = props;
   const [
     preHospitalizationExpenses,
     setPreHospitalizationExpenses,
@@ -54,20 +54,21 @@ const ClaimDetail = (props) => {
   console.log('totalClaimValue', totalClaimValue);
   return (
     <View>
-      <Text style={{marginLeft: 15, fontSize: 16, marginTop: 10}}>
+      <Text style={{ marginLeft: 15, fontSize: 16, marginTop: 10 }}>
         Details of treatment expenses claimed
       </Text>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
             Enter Pre hospitalization Expense
-            <Text style={{color: 'red'}}>*</Text>
+            <Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Pre hospitalization Expense"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={preHospitalizationExpenses}
               keyboardType={'number-pad'}
@@ -82,16 +83,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Enter Hospitalization Expenses<Text style={{color: 'red'}}>*</Text>
+            Enter Hospitalization Expenses<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Hospitalization Expenses"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={hospitalizationExpenses}
               keyboardType={'default'}
@@ -109,17 +111,18 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
             Enter Post hospitalization Expense
-            <Text style={{color: 'red'}}>*</Text>
+            <Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Post hospitalization Expense"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={postHospitalizationExpenses}
               keyboardType={'number-pad'}
@@ -129,8 +132,8 @@ const ClaimDetail = (props) => {
                   ? (setPostHospitalizationExpenses(text),
                     setTotalClaim(
                       parseInt(text) +
-                        parseInt(preHospitalizationExpenses) +
-                        parseInt(hospitalizationExpenses),
+                      parseInt(preHospitalizationExpenses) +
+                      parseInt(hospitalizationExpenses),
                     ))
                   : null
               }
@@ -139,16 +142,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Enter Health checkup costs<Text style={{color: 'red'}}>*</Text>
+            Enter Health checkup costs<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Health checkup costs in Rs"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={healthCheckupCost}
               keyboardType={'number-pad'}
@@ -158,9 +162,9 @@ const ClaimDetail = (props) => {
                   ? (setHealthCheckupCost(text),
                     setTotalClaim(
                       parseInt(text) +
-                        parseInt(preHospitalizationExpenses) +
-                        parseInt(hospitalizationExpenses) +
-                        parseInt(postHospitalizationExpenses),
+                      parseInt(preHospitalizationExpenses) +
+                      parseInt(hospitalizationExpenses) +
+                      parseInt(postHospitalizationExpenses),
                     ))
                   : null
               }
@@ -169,16 +173,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Enter Ambulance charges<Text style={{color: 'red'}}>*</Text>
+            Enter Ambulance charges<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Ambulance charges"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={ambulanceCharges}
               keyboardType={'number-pad'}
@@ -188,10 +193,10 @@ const ClaimDetail = (props) => {
                   ? (setAmbulanceCharges(text),
                     setTotalClaim(
                       parseInt(text) +
-                        parseInt(preHospitalizationExpenses) +
-                        parseInt(hospitalizationExpenses) +
-                        parseInt(postHospitalizationExpenses) +
-                        parseInt(healthCheckupCost),
+                      parseInt(preHospitalizationExpenses) +
+                      parseInt(hospitalizationExpenses) +
+                      parseInt(postHospitalizationExpenses) +
+                      parseInt(healthCheckupCost),
                     ))
                   : null
               }
@@ -200,16 +205,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Others code<Text style={{color: 'red'}}>*</Text>
+            Others code<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Others code"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={othersCode}
               keyboardType={'number-pad'}
@@ -219,11 +225,11 @@ const ClaimDetail = (props) => {
                   ? (setOthersCode(text),
                     setTotalClaim(
                       parseInt(text) +
-                        parseInt(preHospitalizationExpenses) +
-                        parseInt(hospitalizationExpenses) +
-                        parseInt(postHospitalizationExpenses) +
-                        parseInt(healthCheckupCost) +
-                        parseInt(ambulanceCharges),
+                      parseInt(preHospitalizationExpenses) +
+                      parseInt(hospitalizationExpenses) +
+                      parseInt(postHospitalizationExpenses) +
+                      parseInt(healthCheckupCost) +
+                      parseInt(ambulanceCharges),
                     ))
                   : null
               }
@@ -232,16 +238,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            TOTAL<Text style={{color: 'red'}}>*</Text>
+            TOTAL<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter TOTAL"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={String(totalClaim)}
               editable={false}
@@ -252,16 +259,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Pre Hospitalization period<Text style={{color: 'red'}}>*</Text>
+            Pre Hospitalization period<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Pre Hospitalization period"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={preHospitalizationPeriod}
               keyboardType={'number-pad'}
@@ -275,16 +283,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Post Hospitalization period<Text style={{color: 'red'}}>*</Text>
+            Post Hospitalization period<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Post Hospitalization period"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={postHospitalizationPeriod}
               keyboardType={'number-pad'}
@@ -298,14 +307,14 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
             Claim for domiciliary hospitalization
-            <Text style={{color: 'red'}}>*</Text>
+            <Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
@@ -326,7 +335,7 @@ const ClaimDetail = (props) => {
                 testID="selectNoClaimForDomiciliaryHospitalization"
               />
               <Text style={styles.text}>No</Text>
-              <Text style={{width: '80%', marginTop: 10}}>
+              <Text style={{ width: '80%', marginTop: 10 }}>
                 {' '}
                 If yes, provide details in annexure
               </Text>
@@ -334,19 +343,20 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Text style={{marginLeft: 15, fontSize: 16, marginTop: 10}}>
+      <Text style={{ marginLeft: 15, fontSize: 16, marginTop: 10 }}>
         Details of lump sum cash claimed
       </Text>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Hospital daily cash<Text style={{color: 'red'}}>*</Text>
+            Hospital daily cash<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter health ceckup cost in Rs"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={hospitalDailyCash}
               keyboardType={'number-pad'}
@@ -361,16 +371,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Surgical cash<Text style={{color: 'red'}}>*</Text>
+            Surgical cash<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Surgical cash"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={surgicalCash}
               keyboardType={'number-pad'}
@@ -378,7 +389,7 @@ const ClaimDetail = (props) => {
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setSurgicalCash(text), setTotalClaimValue(
                     parseInt(text) +
-                      parseInt(hospitalDailyCash) 
+                    parseInt(hospitalDailyCash)
                   ))
                   : null
               }
@@ -387,16 +398,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Critical illness benefit<Text style={{color: 'red'}}>*</Text>
+            Critical illness benefit<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter in Rs"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={criticalIllness}
               keyboardType={'number-pad'}
@@ -404,8 +416,8 @@ const ClaimDetail = (props) => {
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setCriticalIllness(text), setTotalClaimValue(
                     parseInt(text) +
-                      parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)
+                    parseInt(hospitalDailyCash) +
+                    parseInt(surgicalCash)
                   ))
                   : null
               }
@@ -414,16 +426,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            CONVALESCENCE<Text style={{color: 'red'}}>*</Text>
+            CONVALESCENCE<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter in Rs"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={convalescence}
               keyboardType={'number-pad'}
@@ -431,8 +444,8 @@ const ClaimDetail = (props) => {
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setConvalescence(text), setTotalClaimValue(
                     parseInt(text) +
-                      parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)+parseInt(criticalIllness)))
+                    parseInt(hospitalDailyCash) +
+                    parseInt(surgicalCash) + parseInt(criticalIllness)))
                   : null
               }
               testID="editConvalescence"
@@ -440,16 +453,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Pre post Lump sum benefit<Text style={{color: 'red'}}>*</Text>
+            Pre post Lump sum benefit<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter in Rs"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={lumsumBenefit}
               keyboardType={'number-pad'}
@@ -457,8 +471,8 @@ const ClaimDetail = (props) => {
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setLumsumBenefit(text), setTotalClaimValue(
                     parseInt(text) +
-                      parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)+parseInt(criticalIllness)+parseInt(convalescence)))
+                    parseInt(hospitalDailyCash) +
+                    parseInt(surgicalCash) + parseInt(criticalIllness) + parseInt(convalescence)))
                   : null
               }
               testID="editLumsumBenefit"
@@ -466,16 +480,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Others<Text style={{color: 'red'}}>*</Text>
+            Others<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter in Rs"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={others}
               keyboardType={'number-pad'}
@@ -483,8 +498,8 @@ const ClaimDetail = (props) => {
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setOthers(text), setTotalClaimValue(
                     parseInt(text) +
-                      parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)+parseInt(criticalIllness)+parseInt(convalescence)+parseInt(lumsumBenefit10)))
+                    parseInt(hospitalDailyCash) +
+                    parseInt(surgicalCash) + parseInt(criticalIllness) + parseInt(convalescence) + parseInt(lumsumBenefit10)))
                   : null
               }
               testID="editOthers"
@@ -492,16 +507,17 @@ const ClaimDetail = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            TOTAL<Text style={{color: 'red'}}>*</Text>
+            TOTAL<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter in Rs"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={String(totalClaimValue)}
               editable={false}
@@ -521,7 +537,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={claimFormDulySigned ? true : false}
           checked={claimFormDulySigned == true}
           onPress={() => setCheckBox1(true)}
@@ -537,7 +553,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={copyOfClaimIntimation ? true : false}
           checked={copyOfClaimIntimation == true}
           onPress={() => setCheckBox2(true)}
@@ -555,7 +571,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={hospitalMainBill ? true : false}
           checked={hospitalMainBill == true}
           onPress={() => setCheckBox3(true)}
@@ -571,7 +587,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={hospitalBreakupBill ? true : false}
           checked={hospitalBreakupBill == true}
           onPress={() => setCheckBox4(true)}
@@ -587,7 +603,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={hospitalBillPaymentReceipt ? true : false}
           checked={hospitalBillPaymentReceipt == true}
           onPress={() => setCheckBox5(true)}
@@ -603,7 +619,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={hospitalDischargeSummary ? true : false}
           checked={hospitalDischargeSummary == true}
           onPress={() => setCheckBox6(true)}
@@ -619,7 +635,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={ecg ? true : false}
           checked={ecg == true}
           onPress={() => setCheckBox7(true)}
@@ -635,7 +651,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={requestForInvestigation ? true : false}
           checked={requestForInvestigation == true}
           onPress={() => setCheckBox8(true)}
@@ -653,7 +669,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={doctorPrescription ? true : false}
           checked={doctorPrescription == true}
           onPress={() => setCheckBox9(true)}
@@ -669,7 +685,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={pharmacyBill ? true : false}
           checked={pharmacyBill == true}
           onPress={() => setCheckBox10(true)}
@@ -685,7 +701,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={OthersClaim ? true : false}
           checked={OthersClaim == true}
           onPress={() => setCheckBox11(true)}
@@ -701,7 +717,7 @@ const ClaimDetail = (props) => {
           marginLeft: 10,
         }}>
         <CheckBox
-          style={{borderRadius: 5}}
+          style={{ borderRadius: 5 }}
           status={investigationReports ? true : false}
           checked={investigationReports == true}
           onPress={() => setCheckBox12(true)}
@@ -749,7 +765,7 @@ const ClaimDetail = (props) => {
             })
           }
           testID="submitDetails4">
-          <Text style={{color: '#fff'}}>Submit And Continue</Text>
+          <Text style={{ color: '#fff' }}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>
     </View>

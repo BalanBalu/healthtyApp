@@ -120,7 +120,7 @@ const PatientAdmittedDetails = (props) => {
     const submmitData = () => {
         if (patientFirstName && patientMiddleName && patientLastName && gravidaStatus && claimAmount && dischargeTime &&
             patientAgeYear1 && patientAgeYear2 && patientAgeMonth1 && patientAgeMonth2 != '') {
-                updateInsuredPersonHospitalizedDetails({
+            updateInsuredPersonHospitalizedDetails({
                 patientFirstName: patientFirstName,
                 patientMiddleName: patientMiddleName,
                 patientLastName: patientLastName,
@@ -132,16 +132,16 @@ const PatientAdmittedDetails = (props) => {
                 ipRegistrationNo: registrationNo,
                 patientDOB: selectedDateOfBirth,
                 submissionDateOfAdmission: selectedAdmissionDate,
-                admissionTimeInHour:timeOfAdmissionHours,
-                admissionTimeInMin:timeOfAdmissionMinute,
-                dischargeTimeInHour:timeOfDischargeHours,
-                dischargeTimeInMin:timeOfDischargeMinute,
+                admissionTimeInHour: timeOfAdmissionHours,
+                admissionTimeInMin: timeOfAdmissionMinute,
+                dischargeTimeInHour: timeOfDischargeHours,
+                dischargeTimeInMin: timeOfDischargeMinute,
                 submissionDischargeStatus: dischargeTime,
                 submissionDeliveryDate: selectdeliveryDate,
                 typeOfAdmission: admissionType,
                 totalOfClaimAmount: claimAmount,
                 submissionDateOfDischarge: selectDischargeDate,
-                gravidaStatus: gravidaStatus,   
+                gravidaStatus: gravidaStatus,
             })
             setpatientFirstName('')
             setpatientMiddleName('')
@@ -243,6 +243,7 @@ const PatientAdmittedDetails = (props) => {
                         <Input
                             placeholder="Enter Patient first name"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={patientFirstName}
                             keyboardType={'default'}
@@ -264,6 +265,7 @@ const PatientAdmittedDetails = (props) => {
                         <Input
                             placeholder="Enter Patient middle name"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={patientMiddleName}
                             ref={inputEl1}
@@ -285,6 +287,7 @@ const PatientAdmittedDetails = (props) => {
                         <Input
                             placeholder="Enter Patient last name"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={patientLastName}
                             ref={inputEl2}
@@ -307,6 +310,7 @@ const PatientAdmittedDetails = (props) => {
                         <Input
                             placeholder="Action"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={registrationNo}
                             ref={inputEl3}
@@ -373,6 +377,7 @@ const PatientAdmittedDetails = (props) => {
                             <Input
                                 placeholder="Y"
                                 placeholderTextColor={'#CDD0D9'}
+                                style={styles.fontColorOfInput}
                                 returnKeyType={'next'}
                                 value={patientAgeYear1}
                                 maxLength={1}
@@ -386,6 +391,7 @@ const PatientAdmittedDetails = (props) => {
                             <Input
                                 placeholder="Y"
                                 placeholderTextColor={'#CDD0D9'}
+                                style={styles.fontColorOfInput}
                                 returnKeyType={'next'}
                                 value={patientAgeYear2}
                                 maxLength={1}
@@ -401,6 +407,7 @@ const PatientAdmittedDetails = (props) => {
                             <Input
                                 placeholder="M"
                                 placeholderTextColor={'#CDD0D9'}
+                                style={styles.fontColorOfInput}
                                 returnKeyType={'next'}
                                 value={patientAgeMonth1}
                                 maxLength={1}
@@ -416,6 +423,7 @@ const PatientAdmittedDetails = (props) => {
                             <Input
                                 placeholder="M"
                                 placeholderTextColor={'#CDD0D9'}
+                                style={styles.fontColorOfInput}
                                 returnKeyType={'next'}
                                 value={patientAgeMonth2}
                                 maxLength={1}
@@ -512,7 +520,8 @@ const PatientAdmittedDetails = (props) => {
                     {/* <Item regular style={{ borderRadius: 6, height: 35 }}>
                         <Input
                             placeholder="HH/MH"
-                            placeholderTextColor={'#CDD0D9'}
+                             placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={timeOfAdmission}
                             keyboardType={'default'}
@@ -770,6 +779,7 @@ const PatientAdmittedDetails = (props) => {
                         <Input
                             placeholder="Enter Gravida status"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={gravidaStatus}
                             keyboardType={'default'}
@@ -826,6 +836,7 @@ const PatientAdmittedDetails = (props) => {
                         <Input
                             placeholder="Enter Total claimed amount"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             keyboardType={'number-pad'}
                             value={claimAmount}

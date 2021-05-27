@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, Item, Input, Radio} from 'native-base';
-import {TouchableOpacity} from 'react-native';
-import {Col, Row} from 'react-native-easy-grid';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Item, Input, Radio } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
-import {primaryColor} from '../../../../setup/config';
-import {toastMeassage} from '../../../common';
+import { primaryColor } from '../../../../setup/config';
+import { toastMeassage } from '../../../common';
 
 const NonNetworkHospital = (props) => {
-  const {updateNonNetworkHospital}=props;
+  const { updateNonNetworkHospital } = props;
   const [address, setAddress] = useState('');
   const [pinCode, setPinCode] = useState();
   const [noAndStreet, setNoAndStreet] = useState('');
@@ -23,16 +23,17 @@ const NonNetworkHospital = (props) => {
   const [others, setOthers] = useState('');
   return (
     <View>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Address.<Text style={{color: 'red'}}>*</Text>
+            Address.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Address"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={address}
               keyboardType={'default'}
@@ -43,16 +44,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            PinCode.<Text style={{color: 'red'}}>*</Text>
+            PinCode.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter PinCode."
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={pinCode}
               keyboardType={'default'}
@@ -64,16 +66,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            No and Street.<Text style={{color: 'red'}}>*</Text>
+            No and Street.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter No and Street"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={noAndStreet}
               keyboardType={'default'}
@@ -85,16 +88,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            City.<Text style={{color: 'red'}}>*</Text>
+            City.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter City"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={city}
               keyboardType={'default'}
@@ -106,16 +110,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            State.<Text style={{color: 'red'}}>*</Text>
+            State.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter State"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={state}
               keyboardType={'default'}
@@ -127,16 +132,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Country<Text style={{color: 'red'}}>*</Text>
+            Country<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Country"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={country}
               keyboardType={'default'}
@@ -148,16 +154,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Phone Number.<Text style={{color: 'red'}}>*</Text>
+            Phone Number.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Phone Number"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={phoneNo}
               keyboardType={'default'}
@@ -169,16 +176,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Registration with state code.<Text style={{color: 'red'}}>*</Text>
+            Registration with state code.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Registration with state code"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={stateCode}
               keyboardType={'default'}
@@ -190,16 +198,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Hospital PAN.<Text style={{color: 'red'}}>*</Text>
+            Hospital PAN.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Hospital PAN"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={hospitalPan}
               keyboardType={'default'}
@@ -211,16 +220,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Number of inpatient beds .<Text style={{color: 'red'}}>*</Text>
+            Number of inpatient beds .<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Number of inpatient beds "
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={noOfInpatientBeds}
               keyboardType={'default'}
@@ -232,18 +242,18 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
             Facilities available in hospital{' '}
-            <Text style={{color: 'red'}}>*</Text>
+            <Text style={{ color: 'red' }}>*</Text>
           </Text>
 
           <Text style={styles.text}>
-            OT<Text style={{color: 'red'}}>*</Text>
+            OT<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
@@ -261,27 +271,27 @@ const NonNetworkHospital = (props) => {
                 selectedColor={primaryColor}
                 standardStyle={true}
                 selected={ot === false}
-              onPress={() => setOT(false)}
-              testID="selectNoOt"
+                onPress={() => setOT(false)}
+                testID="selectNoOt"
 
-            />
-            <Text style={styles.text}>No</Text>
+              />
+              <Text style={styles.text}>No</Text>
             </View>
-           
+
           </Item>
 
           <Text style={styles.text}>
-            ICU<Text style={{color: 'red'}}>*</Text>
+            ICU<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
               standardStyle={true}
               selected={icu === true}
-                onPress={() => setICU(true)}
-                testID="selectICU"
+              onPress={() => setICU(true)}
+              testID="selectICU"
 
             />
             <Text style={styles.text}>Yes</Text>
@@ -298,34 +308,35 @@ const NonNetworkHospital = (props) => {
               />
               <Text style={styles.text}>No</Text>
             </View>
-          
+
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Others.<Text style={{color: 'red'}}>*</Text>
+            Others.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Others"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
-                value={others}
+              value={others}
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
-                onChangeText={(text) =>setOthers(text)}
-                testID="editOthers"
+              onChangeText={(text) => setOthers(text)}
+              testID="editOthers"
 
             />
           </Item>
         </Col>
       </Row>
       <View style={styles.ButtonView}>
-        <TouchableOpacity style={styles.submit_ButtonStyle}  onPress={() =>
-            address &&
+        <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() =>
+          address &&
             pinCode &&
             state &&
             city &&
@@ -335,25 +346,25 @@ const NonNetworkHospital = (props) => {
             hospitalPan &&
             phoneNo &&
             noOfInpatientBeds &&
-            others 
-              ? updateNonNetworkHospital({
-                nonNetworkHospitalAddress : address,
-                nonNetworkHospitalPinCode : pinCode,
-                nonNetworkHospitalState : state,
-                nonNetworkHospitalCity : city,
-                nonNetworkHospitalNoAndStreet : noAndStreet,
-                nonNetworkHospitalCountry : country,
-                nonNetworkHospitalRegistrationStateCode : stateCode,
-                nonNetworkHospitalPlan : hospitalPan,
-                nonNetworkHospitalMobileNumber : phoneNo,
-                nonNetworkHospitalInpatientBeds : noOfInpatientBeds,
-                othersNonNetworkHospital : others,
-                OT : ot,
-                ICU : icu,
-                })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')}
-              testID="submitSection5">
-          <Text style={{color: '#fff'}}>Submit And Continue</Text>
+            others
+            ? updateNonNetworkHospital({
+              nonNetworkHospitalAddress: address,
+              nonNetworkHospitalPinCode: pinCode,
+              nonNetworkHospitalState: state,
+              nonNetworkHospitalCity: city,
+              nonNetworkHospitalNoAndStreet: noAndStreet,
+              nonNetworkHospitalCountry: country,
+              nonNetworkHospitalRegistrationStateCode: stateCode,
+              nonNetworkHospitalPlan: hospitalPan,
+              nonNetworkHospitalMobileNumber: phoneNo,
+              nonNetworkHospitalInpatientBeds: noOfInpatientBeds,
+              othersNonNetworkHospital: others,
+              OT: ot,
+              ICU: icu,
+            })
+            : toastMeassage('Unable to Submit Claim, Please fill all details')}
+          testID="submitSection5">
+          <Text style={{ color: '#fff' }}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>
     </View>

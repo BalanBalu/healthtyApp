@@ -1,12 +1,12 @@
-import React, {PureComponent} from 'react';
-import {Text, View, Item, Input, Icon} from 'native-base';
-import {TouchableOpacity,FlatList,PermissionsAndroid} from 'react-native';
-import {Col, Row} from 'react-native-easy-grid';
+import React, { PureComponent } from 'react';
+import { Text, View, Item, Input, Icon } from 'native-base';
+import { TouchableOpacity, FlatList, PermissionsAndroid } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {UploadClaimSubmission} from './uploadClaimSubmission';
-import {toastMeassage,acceptNumbersOnly} from '../../../common';
-import {uploadImage} from '../../../providers/common/common.action';
+import { UploadClaimSubmission } from './uploadClaimSubmission';
+import { toastMeassage, acceptNumbersOnly } from '../../../common';
+import { uploadImage } from '../../../providers/common/common.action';
 import {
   updateClaimSubmission,
   getClaimSubmissionById,
@@ -31,14 +31,14 @@ class AttachmentDetails extends PureComponent {
       refreshCount: 1,
       isModalVisible: false,
       errorMsg: '',
-      updateId:this.props.updateId || null,
+      updateId: this.props.updateId || null,
       isModalVisible: false,
 
     };
   }
 
   imageUpload = async (data) => {
-    this.setState({selectOptionPopup: false});
+    this.setState({ selectOptionPopup: false });
     if (data.image !== null) {
       await this.uploadImageToServer(data.image);
     }
@@ -47,12 +47,12 @@ class AttachmentDetails extends PureComponent {
   uploadImageToServer = async (imagePath) => {
     try {
 
-      this.setState({isLoadingUploadDocs: true});
+      this.setState({ isLoadingUploadDocs: true });
       let appendForm = 'action';
       let endPoint = 'images/upload?path=action';
       const response = await uploadImage(imagePath, endPoint, appendForm);
       if (response.success) {
-        await this.setState({uploadData: response.data[0]});
+        await this.setState({ uploadData: response.data[0] });
         toastMeassage('Image upload successfully', 'success', 1000);
       } else {
         toastMeassage(
@@ -64,7 +64,7 @@ class AttachmentDetails extends PureComponent {
     } catch (e) {
       toastMeassage('Problem Uploading Picture' + e, 'danger', 3000);
     } finally {
-      this.setState({isLoadingUploadDocs: false});
+      this.setState({ isLoadingUploadDocs: false });
     }
   };
 
@@ -74,7 +74,7 @@ class AttachmentDetails extends PureComponent {
       fileName,
       fileDetail,
     } = this.state;
-    
+
     if (fileName === '') {
       this.setState({
         errorMsg: 'Please enter fileName',
@@ -89,14 +89,14 @@ class AttachmentDetails extends PureComponent {
       });
       return false;
     }
-    if (fileDetail&&fileDetail.length==0) {
+    if (fileDetail && fileDetail.length == 0) {
       this.setState({
         errorMsg: 'Please choose file',
         isModalVisible: true,
       });
       return false;
     }
-   
+
     let temp = [];
     temp.push({
       remark: this.state.remark,
@@ -112,15 +112,15 @@ class AttachmentDetails extends PureComponent {
       uploadData: null,
     });
   };
-  
+
   deleteAttachment = async (item, index) => {
     let temp = this.state.claimSubmissionAttachments;
     await temp.splice(index, 1);
-    await this.setState({claimSubmissionAttachments: temp, refreshCount: this.state.refreshCount + 1,});
+    await this.setState({ claimSubmissionAttachments: temp, refreshCount: this.state.refreshCount + 1, });
   };
 
   actualDownload = (imageUrl, fileName) => {
-    const {dirs} = RNFetchBlob.fs;
+    const { dirs } = RNFetchBlob.fs;
     RNFetchBlob.config({
       fileCache: true,
       addAndroidDownloads: {
@@ -164,7 +164,7 @@ class AttachmentDetails extends PureComponent {
   };
 
   render() {
-    const{updateAttachment}=this.props
+    const { updateAttachment } = this.props
     return (
       <View>
         <View style={styles.ButtonView}>
@@ -177,17 +177,18 @@ class AttachmentDetails extends PureComponent {
             }}>
             <Col size={1}>
               <Text style={styles.text}>
-                File Name<Text style={{color: 'red'}}>*</Text>
+                File Name<Text style={{ color: 'red' }}>*</Text>
               </Text>
 
-              <Item regular style={{borderRadius: 6, height: 35}}>
+              <Item regular style={{ borderRadius: 6, height: 35 }}>
                 <Input
                   placeholder="Enter File Name"
                   placeholderTextColor={'#CDD0D9'}
+                  style={styles.fontColorOfInput}
                   returnKeyType={'next'}
                   value={this.state.fileName}
                   keyboardType={'default'}
-                  onChangeText={(text) => this.setState({fileName: text})}
+                  onChangeText={(text) => this.setState({ fileName: text })}
                 />
               </Item>
             </Col>
@@ -201,17 +202,18 @@ class AttachmentDetails extends PureComponent {
             }}>
             <Col size={1}>
               <Text style={styles.text}>
-                Remarks<Text style={{color: 'red'}}>*</Text>
+                Remarks<Text style={{ color: 'red' }}>*</Text>
               </Text>
 
-              <Item regular style={{borderRadius: 6, height: 35}}>
+              <Item regular style={{ borderRadius: 6, height: 35 }}>
                 <Input
                   placeholder="Enter Remarks"
                   placeholderTextColor={'#CDD0D9'}
+                  style={styles.fontColorOfInput}
                   returnKeyType={'next'}
                   value={this.state.remark}
                   keyboardType={'default'}
-                  onChangeText={(text) => this.setState({remark: text})}
+                  onChangeText={(text) => this.setState({ remark: text })}
                 />
               </Item>
             </Col>
@@ -234,21 +236,21 @@ class AttachmentDetails extends PureComponent {
               paddingVertical: 5,
               borderRadius: 5,
             }}
-            onPress={() => this.setState({selectOptionPopup: true})}>
+            onPress={() => this.setState({ selectOptionPopup: true })}>
             <Text>Choose File</Text>
           </TouchableOpacity>
-          <View style={{marginTop: 20}}>
+          <View style={{ marginTop: 20 }}>
             <TouchableOpacity
               style={styles.submit_ButtonStyle}
               onPress={() => this.addTable()}>
-              <Text style={{color: '#fff'}}>Add</Text>
+              <Text style={{ color: '#fff' }}>Add</Text>
             </TouchableOpacity>
           </View>
           {this.state.claimSubmissionAttachments ? (
             <FlatList
               data={this.state.claimSubmissionAttachments}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => (
+              renderItem={({ item, index }) => (
                 <View
                   style={{
                     padding: 10,
@@ -261,7 +263,7 @@ class AttachmentDetails extends PureComponent {
                     <Text
                       style={[
                         styles.form_field,
-                        {paddingTop: 15, paddingLeft: 10},
+                        { paddingTop: 15, paddingLeft: 10 },
                       ]}>
                       {index + 1}
                     </Text>
@@ -273,7 +275,7 @@ class AttachmentDetails extends PureComponent {
                     <Text
                       style={[
                         styles.form_field,
-                        {paddingTop: 15, paddingLeft: 10},
+                        { paddingTop: 15, paddingLeft: 10 },
                       ]}>
                       {item.fileName}
                     </Text>
@@ -285,7 +287,7 @@ class AttachmentDetails extends PureComponent {
                     <Text
                       style={[
                         styles.form_field,
-                        {paddingTop: 15, paddingLeft: 10},
+                        { paddingTop: 15, paddingLeft: 10 },
                       ]}>
                       {item.remark}
                     </Text>
@@ -296,7 +298,7 @@ class AttachmentDetails extends PureComponent {
                     <View
                       style={
                         (styles.form_field,
-                        {flexDirection: 'row', width: '80%'})
+                          { flexDirection: 'row', width: '80%' })
                       }>
                       {item.fileDetail ? (
                         <TouchableOpacity
@@ -350,7 +352,7 @@ class AttachmentDetails extends PureComponent {
                         </Text>
                         <AntDesign
                           name="delete"
-                          style={{color: '#fff', fontSize: 15}}
+                          style={{ color: '#fff', fontSize: 15 }}
                         />
                       </TouchableOpacity>
                     </View>
@@ -358,29 +360,29 @@ class AttachmentDetails extends PureComponent {
                 </View>
               )}
             />
-            
+
           ) : null}
-          <View style={{flex: 1}}>
-          <ModalPopup
-            errorMessageText={this.state.errorMsg}
-            closeButtonText={'CLOSE'}
-            closeButtonAction={() =>
-              this.setState({isModalVisible: !this.state.isModalVisible})
-            }
-            visible={this.state.isModalVisible}
-          />
-        </View>
-          {this.state.claimSubmissionAttachments&&this.state.claimSubmissionAttachments.length?
-          <View style={{marginTop: 20}}>
-            <TouchableOpacity
-              style={styles.submit_ButtonStyle}
-              onPress={() => updateAttachment(this.state.claimSubmissionAttachments)}
-              disabled={
-                this.state.claimSubmissionAttachments.length ? false : true
-              }>
-              <Text style={{color: '#fff'}}>Submit</Text>
-            </TouchableOpacity>
-          </View>:null}
+          <View style={{ flex: 1 }}>
+            <ModalPopup
+              errorMessageText={this.state.errorMsg}
+              closeButtonText={'CLOSE'}
+              closeButtonAction={() =>
+                this.setState({ isModalVisible: !this.state.isModalVisible })
+              }
+              visible={this.state.isModalVisible}
+            />
+          </View>
+          {this.state.claimSubmissionAttachments && this.state.claimSubmissionAttachments.length ?
+            <View style={{ marginTop: 20 }}>
+              <TouchableOpacity
+                style={styles.submit_ButtonStyle}
+                onPress={() => updateAttachment(this.state.claimSubmissionAttachments)}
+                disabled={
+                  this.state.claimSubmissionAttachments.length ? false : true
+                }>
+                <Text style={{ color: '#fff' }}>Submit</Text>
+              </TouchableOpacity>
+            </View> : null}
         </View>
         {this.state.selectOptionPopup ? (
           <UploadClaimSubmission

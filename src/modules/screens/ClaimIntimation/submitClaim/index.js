@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import {
   Text,
   View,
@@ -12,13 +12,13 @@ import {
   Icon,
   CheckBox,
 } from 'native-base';
-import {TouchableOpacity, FlatList, ScrollView} from 'react-native';
-import {Col, Row} from 'react-native-easy-grid';
+import { TouchableOpacity, FlatList, ScrollView } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {primaryColor} from '../../../../setup/config';
+import { primaryColor } from '../../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {subTimeUnit, addTimeUnit, formatDate} from '../../../../setup/helpers';
+import { subTimeUnit, addTimeUnit, formatDate } from '../../../../setup/helpers';
 import PrimaryInsured from './PrimaryInsured';
 import InsuranceHistory from './InsuranceHistory';
 import InsuredPersonHospitalized from './InsuredPersonHospitalized';
@@ -72,18 +72,18 @@ const InjuryCause = [
 ];
 
 const ListOfData = [
-  {text: 'Claim form duly signed'},
-  {text: 'Copy of the claim intimation, if any'},
-  {text: 'Hospital main bill'},
-  {text: 'Hospital Break-up bill'},
-  {text: 'Hospital bill payment receipt'},
-  {text: 'Hospital Discharge Summary'},
-  {text: 'ECH'},
-  {text: 'Doctor request for investigation'},
-  {text: 'Doctor Prescription'},
-  {text: 'Pharmacy Bill'},
-  {text: 'Others'},
-  {text: 'Investigation reports including(including CT/MRI/USG/HPE)'},
+  { text: 'Claim form duly signed' },
+  { text: 'Copy of the claim intimation, if any' },
+  { text: 'Hospital main bill' },
+  { text: 'Hospital Break-up bill' },
+  { text: 'Hospital bill payment receipt' },
+  { text: 'Hospital Discharge Summary' },
+  { text: 'ECH' },
+  { text: 'Doctor request for investigation' },
+  { text: 'Doctor Prescription' },
+  { text: 'Pharmacy Bill' },
+  { text: 'Others' },
+  { text: 'Investigation reports including(including CT/MRI/USG/HPE)' },
 ];
 
 class SubmitClaim extends PureComponent {
@@ -124,34 +124,34 @@ class SubmitClaim extends PureComponent {
   }
 
   toggleData(index, typeOfArrowIcon) {
-    const {showCard, show} = this.state;
+    const { showCard, show } = this.state;
     if (typeOfArrowIcon === 'DOWN') {
-      this.setState({showCard: index, show: !this.state.show});
+      this.setState({ showCard: index, show: !this.state.show });
     } else {
-      this.setState({showCard: -1, show: null});
+      this.setState({ showCard: -1, show: null });
     }
   }
   onPressConfirmDateValue = (date) => {
     try {
-      this.setState({isVisible: false, dateOfHospitalizationForBill: date});
+      this.setState({ isVisible: false, dateOfHospitalizationForBill: date });
     } catch (error) {
       console.error('Error on Date Picker: ', error);
     }
   };
 
   oncancelThePicker = () => {
-    const {isVisibleDatePicker} = this.state;
-    this.setState({isVisibleDatePicker: !isVisibleDatePicker});
+    const { isVisibleDatePicker } = this.state;
+    this.setState({ isVisibleDatePicker: !isVisibleDatePicker });
   };
 
   openPicker = () => {
-    const {isVisibleDatePicker} = this.state;
-    this.setState({isVisibleDatePicker: !isVisibleDatePicker});
+    const { isVisibleDatePicker } = this.state;
+    this.setState({ isVisibleDatePicker: !isVisibleDatePicker });
   };
 
   submissionDetails = async (data) => {
     try {
-      const {claimListData} = this.state;
+      const { claimListData } = this.state;
       let memberId = await AsyncStorage.getItem('memberId');
       let tpaRes = await getListByTpaCode(claimListData.payerCode);
       let reqData = {
@@ -188,382 +188,382 @@ class SubmitClaim extends PureComponent {
     }
   };
   updateDisableCout = () => {
-    const {disabled} = this.state;
-    this.setState({disabled: disabled + 1});
+    const { disabled } = this.state;
+    this.setState({ disabled: disabled + 1 });
   };
 
   updateSubmissionDetails = async (data) => {
     try {
       console.log('data', data);
-      const {submissionDetails} = this.state;
+      const { submissionDetails } = this.state;
       let reqData = {
         _id: this.state.updateId,
         submissionDetails: {
           certificateNumber: data.certificateNo
             ? data.certificateNo
             : submissionDetails.certificateNo
-            ? submissionDetails.certificateNo
-            : null,
+              ? submissionDetails.certificateNo
+              : null,
           tpaIdNo: data.tpaIdNo
             ? data.tpaIdNo
             : submissionDetails.tpaIdNo
-            ? submissionDetails.tpaIdNo
-            : null,
+              ? submissionDetails.tpaIdNo
+              : null,
           policyHolderFirstName: data.policyHolderFirstName
             ? data.policyHolderFirstName
             : submissionDetails.policyHolderFirstName
-            ? submissionDetails.policyHolderFirstName
-            : null,
+              ? submissionDetails.policyHolderFirstName
+              : null,
           policyHolderMiddleName: data.policyHolderMiddleName
             ? data.policyHolderMiddleName
             : submissionDetails.policyHolderMiddleName
-            ? submissionDetails.policyHolderMiddleName
-            : null,
+              ? submissionDetails.policyHolderMiddleName
+              : null,
           policyHolderLastName: data.policyHolderLastName
             ? data.policyHolderLastName
             : submissionDetails.policyHolderLastName
-            ? submissionDetails.policyHolderLastName
-            : null,
+              ? submissionDetails.policyHolderLastName
+              : null,
           policyHolderPincode: data.policyHolderPincode
             ? data.policyHolderPincode
             : submissionDetails.policyHolderPincode
-            ? submissionDetails.policyHolderPincode
-            : null,
+              ? submissionDetails.policyHolderPincode
+              : null,
           noAndStreet: data.noAndStreet
             ? data.noAndStreet
             : submissionDetails.noAndStreet
-            ? submissionDetails.noAndStreet
-            : null,
+              ? submissionDetails.noAndStreet
+              : null,
           holderAddress: data.holderAddress
             ? data.holderAddress
             : submissionDetails.holderAddress
-            ? submissionDetails.holderAddress
-            : null,
+              ? submissionDetails.holderAddress
+              : null,
           policyHolderCity: data.policyHolderCity
             ? data.policyHolderCity
             : submissionDetails.policyHolderCity
-            ? submissionDetails.policyHolderCity
-            : null,
+              ? submissionDetails.policyHolderCity
+              : null,
           policyHolderState: data.policyHolderState
             ? data.policyHolderState
             : submissionDetails.policyHolderState
-            ? submissionDetails.policyHolderState
-            : null,
+              ? submissionDetails.policyHolderState
+              : null,
           policyHolderCountry: data.policyHolderCountry
             ? data.policyHolderCountry
             : submissionDetails.policyHolderCountry
-            ? submissionDetails.policyHolderCountry
-            : null,
+              ? submissionDetails.policyHolderCountry
+              : null,
           phoneNumber: data.phoneNumber
             ? data.phoneNumber
             : submissionDetails.phoneNumber
-            ? submissionDetails.phoneNumber
-            : null,
+              ? submissionDetails.phoneNumber
+              : null,
           policyHolderMailId: data.policyHolderMailId
             ? data.policyHolderMailId
             : submissionDetails.policyHolderMailId
-            ? submissionDetails.policyHolderMailId
-            : null,
+              ? submissionDetails.policyHolderMailId
+              : null,
           currentlyHaveMediClaim: data.currentlyHaveMediClaim
             ? data.currentlyHaveMediClaim
             : submissionDetails.currentlyHaveMediClaim
-            ? submissionDetails.currentlyHaveMediClaim
-            : null,
+              ? submissionDetails.currentlyHaveMediClaim
+              : null,
           commencementOfFirstInsuranceDate: data.commencementOfFirstInsuranceDate
             ? data.commencementOfFirstInsuranceDate
             : submissionDetails.commencementOfFirstInsuranceDate
-            ? submissionDetails.commencementOfFirstInsuranceDate
-            : null,
+              ? submissionDetails.commencementOfFirstInsuranceDate
+              : null,
           mediClaimCompanyName: data.mediClaimCompanyName
             ? data.mediClaimCompanyName
             : submissionDetails.mediClaimCompanyName
-            ? submissionDetails.mediClaimCompanyName
-            : null,
+              ? submissionDetails.mediClaimCompanyName
+              : null,
           hospitalized: data.hospitalized
             ? data.hospitalized
             : submissionDetails.hospitalized
-            ? submissionDetails.hospitalized
-            : null,
+              ? submissionDetails.hospitalized
+              : null,
           sumInsuresPerPolicy: data.sumInsuresPerPolicy
             ? data.sumInsuresPerPolicy
             : submissionDetails.sumInsuresPerPolicy
-            ? submissionDetails.sumInsuresPerPolicy
-            : null,
+              ? submissionDetails.sumInsuresPerPolicy
+              : null,
           hospitalizationDate: data.hospitalizationDate
             ? data.hospitalizationDate
             : submissionDetails.hospitalizationDate
-            ? submissionDetails.hospitalizationDate
-            : null,
+              ? submissionDetails.hospitalizationDate
+              : null,
           diagnosisDetails: data.diagnosisDetails
             ? data.diagnosisDetails
             : submissionDetails.diagnosisDetails
-            ? submissionDetails.diagnosisDetails
-            : null,
+              ? submissionDetails.diagnosisDetails
+              : null,
           hospitalizedCompany: data.hospitalizedCompany
             ? data.hospitalizedCompany
             : submissionDetails.hospitalizedCompany
-            ? submissionDetails.hospitalizedCompany
-            : null,
+              ? submissionDetails.hospitalizedCompany
+              : null,
           isCoveredByOtherClaim: data.isCoveredByOtherClaim
             ? data.isCoveredByOtherClaim
             : submissionDetails.isCoveredByOtherClaim
-            ? submissionDetails.isCoveredByOtherClaim
-            : null,
+              ? submissionDetails.isCoveredByOtherClaim
+              : null,
           patientName: data.patientName
             ? data.patientName
             : submissionDetails.patientName
-            ? submissionDetails.patientName
-            : null,
+              ? submissionDetails.patientName
+              : null,
           patientGender: data.patientGender
             ? data.patientGender
             : submissionDetails.patientGender
-            ? submissionDetails.patientGender
-            : null,
+              ? submissionDetails.patientGender
+              : null,
           patientAge: data.patientAge
             ? data.patientAge
             : submissionDetails.patientAge
-            ? submissionDetails.patientAge
-            : null,
+              ? submissionDetails.patientAge
+              : null,
           patientDob: data.patientDob
             ? data.patientDob
             : submissionDetails.patientDob
-            ? submissionDetails.patientDob
-            : null,
+              ? submissionDetails.patientDob
+              : null,
           relationship: data.relationship
             ? data.relationship
             : submissionDetails.relationship
-            ? submissionDetails.relationship
-            : null,
+              ? submissionDetails.relationship
+              : null,
           relationshipDetail: data.relationshipDetail
             ? data.relationshipDetail
             : submissionDetails.relationshipDetail
-            ? submissionDetails.relationshipDetail
-            : null,
+              ? submissionDetails.relationshipDetail
+              : null,
           occupation: data.occupation
             ? data.occupation
             : submissionDetails.occupation
-            ? submissionDetails.occupation
-            : null,
+              ? submissionDetails.occupation
+              : null,
           occupationDetail: data.occupationDetailNo
             ? data.occupationDetailNo
             : submissionDetails.occupationDetailNo
-            ? submissionDetails.occupationDetailNo
-            : null,
+              ? submissionDetails.occupationDetailNo
+              : null,
           patientAddress: data.patientAddressNo
             ? data.patientAddressNo
             : submissionDetails.patientAddressNo
-            ? submissionDetails.patientAddressNo
-            : null,
+              ? submissionDetails.patientAddressNo
+              : null,
           patientNoAndStreet: data.patientNoAndStreetNo
             ? data.patientNoAndStreetNo
             : submissionDetails.patientNoAndStreetNo
-            ? submissionDetails.patientNoAndStreetNo
-            : null,
+              ? submissionDetails.patientNoAndStreetNo
+              : null,
           patientCity: data.patientCityNo
             ? data.patientCityNo
             : submissionDetails.patientCityNo
-            ? submissionDetails.patientCityNo
-            : null,
+              ? submissionDetails.patientCityNo
+              : null,
           patientState: data.patientStateNo
             ? data.patientStateNo
             : submissionDetails.patientStateNo
-            ? submissionDetails.patientStateNo
-            : null,
+              ? submissionDetails.patientStateNo
+              : null,
           patientCountry: data.patientCountryNo
             ? data.patientCountryNo
             : submissionDetails.patientCountryNo
-            ? submissionDetails.patientCountryNo
-            : null,
+              ? submissionDetails.patientCountryNo
+              : null,
           patientPhoneNumber: data.patientPhoneNumberNo
             ? data.patientPhoneNumberNo
             : submissionDetails.patientPhoneNumberNo
-            ? submissionDetails.patientPhoneNumberNo
-            : null,
+              ? submissionDetails.patientPhoneNumberNo
+              : null,
           patientEmail: data.patientEmailNo
             ? data.patientEmailNo
             : submissionDetails.patientEmailNo
-            ? submissionDetails.patientEmailNo
-            : null,
+              ? submissionDetails.patientEmailNo
+              : null,
           hospitalName: data.hospitalNameNo
             ? data.hospitalNameNo
             : submissionDetails.hospitalNameNo
-            ? submissionDetails.hospitalNameNo
-            : null,
+              ? submissionDetails.hospitalNameNo
+              : null,
           roomCategory: data.roomCategoryNo
             ? data.roomCategoryNo
             : submissionDetails.roomCategoryNo
-            ? submissionDetails.roomCategoryNo
-            : null,
+              ? submissionDetails.roomCategoryNo
+              : null,
           hospitalizationDueTo: data.hospitalizationDueToNo
             ? data.hospitalizationDueToNo
             : submissionDetails.hospitalizationDueToNo
-            ? submissionDetails.hospitalizationDueToNo
-            : null,
+              ? submissionDetails.hospitalizationDueToNo
+              : null,
           dayOfInjury: data.dayOfInjuryNo
             ? data.dayOfInjuryNo
             : submissionDetails.dayOfInjuryNo
-            ? submissionDetails.dayOfInjuryNo
-            : null,
+              ? submissionDetails.dayOfInjuryNo
+              : null,
           dateOfAdmission: data.dateOfAdmissionNo
             ? data.dateOfAdmissionNo
             : submissionDetails.dateOfAdmissionNo
-            ? submissionDetails.dateOfAdmissionNo
-            : null,
+              ? submissionDetails.dateOfAdmissionNo
+              : null,
           dateOfDischarge: data.dateOfDischargeNo
             ? data.dateOfDischargeNo
             : submissionDetails.dateOfDischargeNo
-            ? submissionDetails.dateOfDischargeNo
-            : null,
+              ? submissionDetails.dateOfDischargeNo
+              : null,
           injuryCause: data.injuryCauseNo
             ? data.injuryCauseNo
             : submissionDetails.injuryCauseNo
-            ? submissionDetails.injuryCauseNo
-            : null,
+              ? submissionDetails.injuryCauseNo
+              : null,
           medicoLegal: data.medicoLegalNo
             ? data.medicoLegalNo
             : submissionDetails.medicoLegalNo
-            ? submissionDetails.medicoLegalNo
-            : null,
+              ? submissionDetails.medicoLegalNo
+              : null,
           reportedTpPolice: data.reportedTpPoliceNo
             ? data.reportedTpPoliceNo
             : submissionDetails.reportedTpPoliceNo
-            ? submissionDetails.reportedTpPoliceNo
-            : null,
+              ? submissionDetails.reportedTpPoliceNo
+              : null,
           mlcReport: data.mlcReportNo
             ? data.mlcReportNo
             : submissionDetails.mlcReportNo
-            ? submissionDetails.mlcReportNo
-            : null,
+              ? submissionDetails.mlcReportNo
+              : null,
           systemOfMedicine: data.systemOfMedicineNo
             ? data.systemOfMedicineNo
             : submissionDetails.systemOfMedicineNo
-            ? submissionDetails.systemOfMedicineNo
-            : null,
+              ? submissionDetails.systemOfMedicineNo
+              : null,
           preHospitalizationExpenses: data.preHospitalizationExpensesNo
             ? data.preHospitalizationExpensesNo
             : submissionDetails.preHospitalizationExpensesNo
-            ? submissionDetails.preHospitalizationExpensesNo
-            : null,
+              ? submissionDetails.preHospitalizationExpensesNo
+              : null,
           hospitalizationExpenses: data.hospitalizationExpensesNo
             ? data.hospitalizationExpensesNo
             : submissionDetails.hospitalizationExpensesNo
-            ? submissionDetails.hospitalizationExpensesNo
-            : null,
+              ? submissionDetails.hospitalizationExpensesNo
+              : null,
           postHospitalizationExpenses: data.postHospitalizationExpensesNo
             ? data.postHospitalizationExpensesNo
             : submissionDetails.postHospitalizationExpensesNo
-            ? submissionDetails.postHospitalizationExpensesNo
-            : null,
+              ? submissionDetails.postHospitalizationExpensesNo
+              : null,
           healthCheckupCost: data.healthCheckupCostNo
             ? data.healthCheckupCostNo
             : submissionDetails.healthCheckupCostNo
-            ? submissionDetails.healthCheckupCostNo
-            : null,
+              ? submissionDetails.healthCheckupCostNo
+              : null,
           ambulanceCharges: data.ambulanceChargesNo
             ? data.ambulanceChargesNo
             : submissionDetails.ambulanceChargesNo
-            ? submissionDetails.ambulanceChargesNo
-            : null,
+              ? submissionDetails.ambulanceChargesNo
+              : null,
           othersCode: data.othersCodeNo
             ? data.othersCodeNo
             : submissionDetails.othersCodeNo
-            ? submissionDetails.othersCodeNo
-            : null,
+              ? submissionDetails.othersCodeNo
+              : null,
           totalClaim: data.totalClaimNo
             ? data.totalClaimNo
             : submissionDetails.totalClaimNo
-            ? submissionDetails.totalClaimNo
-            : null,
+              ? submissionDetails.totalClaimNo
+              : null,
           preHospitalizationPeriod: data.preHospitalizationPeriodNo
             ? data.preHospitalizationPeriodNo
             : submissionDetails.preHospitalizationPeriodNo
-            ? submissionDetails.preHospitalizationPeriodNo
-            : null,
+              ? submissionDetails.preHospitalizationPeriodNo
+              : null,
           postHospitalizationPeriod: data.postHospitalizationPeriodNo
             ? data.postHospitalizationPeriodNo
             : submissionDetails.postHospitalizationPeriodNo
-            ? submissionDetails.postHospitalizationPeriodNo
-            : null,
+              ? submissionDetails.postHospitalizationPeriodNo
+              : null,
           claimForDomiciliaryHospitalization: data.claimForDomiciliaryHospitalizationNo
             ? data.claimForDomiciliaryHospitalizationNo
             : submissionDetails.claimForDomiciliaryHospitalizationNo
-            ? submissionDetails.claimForDomiciliaryHospitalizationNo
-            : null,
+              ? submissionDetails.claimForDomiciliaryHospitalizationNo
+              : null,
           hospitalDailyCash: data.hospitalDailyCashNo
             ? data.hospitalDailyCashNo
             : submissionDetails.hospitalDailyCashNo
-            ? submissionDetails.hospitalDailyCashNo
-            : null,
+              ? submissionDetails.hospitalDailyCashNo
+              : null,
           surgicalCash: data.surgicalCashNo
             ? data.surgicalCashNo
             : submissionDetails.surgicalCashNo
-            ? submissionDetails.surgicalCashNo
-            : null,
+              ? submissionDetails.surgicalCashNo
+              : null,
           criticalIllness: data.criticalIllnessNo
             ? data.criticalIllnessNo
             : submissionDetails.criticalIllnessNo
-            ? submissionDetails.criticalIllnessNo
-            : null,
+              ? submissionDetails.criticalIllnessNo
+              : null,
           convalescence: data.convalescenceNo
             ? data.convalescenceNo
             : submissionDetails.convalescenceNo
-            ? submissionDetails.convalescenceNo
-            : null,
+              ? submissionDetails.convalescenceNo
+              : null,
           lumsumBenefit: data.lumsumBenefitNo
             ? data.lumsumBenefitNo
             : submissionDetails.lumsumBenefitNo
-            ? submissionDetails.lumsumBenefitNo
-            : null,
+              ? submissionDetails.lumsumBenefitNo
+              : null,
           others: data.othersNo
             ? data.othersNo
             : submissionDetails.othersNo
-            ? submissionDetails.othersNo
-            : null,
+              ? submissionDetails.othersNo
+              : null,
           totalClaimValue: data.totalClaimValueNo
             ? data.totalClaimValueNo
             : submissionDetails.totalClaimValueNo
-            ? submissionDetails.totalClaimValueNo
-            : null,
+              ? submissionDetails.totalClaimValueNo
+              : null,
           PanCardDetail: data.PanCardDetailNo
             ? data.PanCardDetailNo
             : submissionDetails.PanCardDetailNo
-            ? submissionDetails.PanCardDetailNo
-            : null,
+              ? submissionDetails.PanCardDetailNo
+              : null,
           accountNo: data.accountNoNo
             ? data.accountNoNo
             : submissionDetails.accountNoNo
-            ? submissionDetails.accountNoNo
-            : null,
+              ? submissionDetails.accountNoNo
+              : null,
           bankName: data.bankNameNo
             ? data.bankNameNo
             : submissionDetails.bankNameNo
-            ? submissionDetails.bankNameNo
-            : null,
+              ? submissionDetails.bankNameNo
+              : null,
           chequeDetails: data.chequeDetailsNo
             ? data.chequeDetailsNo
             : submissionDetails.chequeDetailsNo
-            ? submissionDetails.chequeDetailsNo
-            : null,
+              ? submissionDetails.chequeDetailsNo
+              : null,
           ifscCode: data.ifscCodeNo
             ? data.ifscCodeNo
             : submissionDetails.ifscCodeNo
-            ? submissionDetails.ifscCodeNo
-            : null,
+              ? submissionDetails.ifscCodeNo
+              : null,
           insuredPlace: data.insuredPlaceNo
             ? data.insuredPlaceNo
             : submissionDetails.insuredPlaceNo
-            ? submissionDetails.insuredPlaceNo
-            : null,
+              ? submissionDetails.insuredPlaceNo
+              : null,
           dateOfHospitalization: data.dateOfHospitalizationNo
             ? data.dateOfHospitalizationNo
             : submissionDetails.dateOfHospitalizationNo
-            ? submissionDetails.dateOfHospitalizationNo
-            : null,
+              ? submissionDetails.dateOfHospitalizationNo
+              : null,
           signatureOfInsures: data.signatureOfInsuresNo
             ? data.signatureOfInsuresNo
             : submissionDetails.signatureOfInsuresNo
-            ? submissionDetails.signatureOfInsuresNo
-            : null,
+              ? submissionDetails.signatureOfInsuresNo
+              : null,
         },
       };
       console.log('reqData', reqData);
@@ -588,84 +588,84 @@ class SubmitClaim extends PureComponent {
     let primaryDetails = this.submissionDetails(data);
 
     this.updateDisableCout();
-    const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
-    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    const { showCard } = this.state;
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (primaryDetails == true) {
-      this.setState({sectionBDisable: true});
+      this.setState({ sectionBDisable: true });
     }
   };
   updateInsuranceHistoryDetails = async (data) => {
     let historyDetails = this.updateSubmissionDetails(data);
     this.updateDisableCout();
-    const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
-    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    const { showCard } = this.state;
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 200, animated: true });
     if (historyDetails == true) {
-      this.setState({sectionCDisable: true});
+      this.setState({ sectionCDisable: true });
     }
   };
   updateInsuredPersonHospitalizedDetails = async (data) => {
     let personDetails = this.updateSubmissionDetails(data);
     this.updateDisableCout();
-    const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
-    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    const { showCard } = this.state;
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (personDetails == true) {
-      this.setState({sectionDDisable: true});
+      this.setState({ sectionDDisable: true });
     }
   };
   updateHospitalization = async (data) => {
     let hospitalDetails = this.updateSubmissionDetails(data);
     this.updateDisableCout();
-    const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
-    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    const { showCard } = this.state;
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (hospitalDetails == true) {
-      this.setState({sectionEDisable: true});
+      this.setState({ sectionEDisable: true });
     }
   };
   updateClaimDetails = async (data) => {
     let claimDetails = this.updateSubmissionDetails(data);
     this.updateDisableCout();
-    const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
-    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    const { showCard } = this.state;
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
 
     if (claimDetails == true) {
-      this.setState({sectionFDisable: true});
+      this.setState({ sectionFDisable: true });
     }
   };
   updateBillsEnclosedDetails = async (data) => {
     let billEnclosedDetails = this.updateSubmissionDetails(data);
     this.updateDisableCout();
-    const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
-    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    const { showCard } = this.state;
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
 
     if (billEnclosedDetails == true) {
-      this.setState({sectionGDisable: true});
+      this.setState({ sectionGDisable: true });
     }
   };
   updatePrimaryInsuredBankAccountDetails = async (data) => {
     let bankAccDetails = this.updateSubmissionDetails(data);
     this.updateDisableCout();
-    const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
-    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    const { showCard } = this.state;
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
 
     if (bankAccDetails == true) {
-      this.setState({sectionHDisable: true});
+      this.setState({ sectionHDisable: true });
     }
   };
   updateDeclarationByInsuredDetails = async (data) => {
     let declarationDetails = this.updateSubmissionDetails(data);
     this.updateDisableCout();
-    const {showCard} = this.state;
-    this.setState({showCard: showCard + 1,nextButtonEnable: false});
-    this.scroll.scrollTo({x: 0, y: 0, animated: true});
+    const { showCard } = this.state;
+    this.setState({ showCard: showCard + 1, nextButtonEnable: false });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (declarationDetails == true) {
-      this.setState({nextButtonEnable: false});
+      this.setState({ nextButtonEnable: false });
     }
   };
   addTable = async () => {
@@ -706,17 +706,17 @@ class SubmitClaim extends PureComponent {
       console.log(ex);
     }
   };
-  
+
   render() {
     const data = [
-      {title: 'Details of primary insured', id: 1, disable: false},
-      {title: 'Details of insurance history', id: 2, disable: false},
-      {title: 'Details of insured person hospitalized', id: 3, disable: false},
-      {title: 'Details of hospitalization', id: 4, disable: false},
-      {title: 'Details of claim', id: 5, disable: false},
-      {title: 'Details of bills enclosed', id: 6, disable: false},
-      {title: 'Details of primary insured bank account', id: 7, disable: false},
-      {title: 'Declaration by insured', id: 8, disable: false},
+      { title: 'Details of primary insured', id: 1, disable: false },
+      { title: 'Details of insurance history', id: 2, disable: false },
+      { title: 'Details of insured person hospitalized', id: 3, disable: false },
+      { title: 'Details of hospitalization', id: 4, disable: false },
+      { title: 'Details of claim', id: 5, disable: false },
+      { title: 'Details of bills enclosed', id: 6, disable: false },
+      { title: 'Details of primary insured bank account', id: 7, disable: false },
+      { title: 'Declaration by insured', id: 8, disable: false },
     ];
     const {
       showCard,
@@ -741,14 +741,14 @@ class SubmitClaim extends PureComponent {
     } = this.state;
     return (
       <ScrollView
-        style={{padding: 10}}
+        style={{ padding: 10 }}
         ref={(c) => {
           this.scroll = c;
         }}>
         <FlatList
           data={data}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({item, index}) => (
+          renderItem={({ item, index }) => (
             <View>
               {this.state.showCard === index && !this.state.show ? (
                 <Card>
@@ -761,7 +761,7 @@ class SubmitClaim extends PureComponent {
                     onPress={() => this.toggleData(index, 'UP')}>
                     <Row>
                       <Col size={9}>
-                        <Text style={{color: '#fff'}}>{item.title}</Text>
+                        <Text style={{ color: '#fff' }}>{item.title}</Text>
                       </Col>
                       <Col size={1}>
                         <TouchableOpacity
@@ -772,7 +772,7 @@ class SubmitClaim extends PureComponent {
                                 ? 'keyboard-arrow-up'
                                 : 'keyboard-arrow-down'
                             }
-                            style={{fontSize: 25, color: '#fff'}}
+                            style={{ fontSize: 25, color: '#fff' }}
                           />
                         </TouchableOpacity>
                       </Col>
@@ -835,10 +835,10 @@ class SubmitClaim extends PureComponent {
                       />
                     )}
                     {item.id === 6 && sectionFDisable && (
-                        <BillEnclosedDeatil
-                          updateBillsEnclosedDetails={(data)=>this.updateBillsEnclosedDetails(data)}
-                        />
-                                              )}
+                      <BillEnclosedDeatil
+                        updateBillsEnclosedDetails={(data) => this.updateBillsEnclosedDetails(data)}
+                      />
+                    )}
 
                     {item.id === 7 && sectionGDisable && (
                       <PrimaryInsuredBank
@@ -860,7 +860,7 @@ class SubmitClaim extends PureComponent {
                 </Card>
               ) : (
                 <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
-                  <Card>
+                  <Card style={disabled >= index ? { backgroundColor: '#fff' } : { backgroundColor: '#E0E0E0' }}>
                     <TouchableOpacity
                       style={{
                         justifyContent: 'center',
@@ -871,7 +871,7 @@ class SubmitClaim extends PureComponent {
                       onPress={() => this.toggleData(index, 'DOWN')}>
                       <Row>
                         <Col size={9}>
-                          <Text style={{color: '#000'}}>{item.title}</Text>
+                          <Text style={{ color: '#000' }}>{item.title}</Text>
                         </Col>
                         <Col size={1}>
                           <TouchableOpacity
@@ -882,14 +882,14 @@ class SubmitClaim extends PureComponent {
                                   ? 'keyboard-arrow-up'
                                   : 'keyboard-arrow-down'
                               }
-                              style={{fontSize: 25, color: '#000'}}
+                              style={{ fontSize: 25, color: '#000' }}
                             />
                           </TouchableOpacity>
                         </Col>
                       </Row>
                     </TouchableOpacity>
                   </Card>
-                 </View>
+                </View>
               )}
             </View>
           )}
@@ -903,8 +903,8 @@ class SubmitClaim extends PureComponent {
                 submissionDetails: this.state.submissionDetails,
               });
             }}
-            disabled={this.state.nextButtonEnable==true?true:false}>
-            <Text style={{color: '#fff'}}>Next</Text>
+            disabled={this.state.nextButtonEnable == true ? true : false}>
+            <Text style={{ color: '#fff' }}>Next</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

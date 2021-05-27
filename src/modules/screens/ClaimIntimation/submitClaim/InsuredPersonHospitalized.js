@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, Item, Input, Picker, Radio, Icon} from 'native-base';
-import {TouchableOpacity} from 'react-native';
-import {Col, Row} from 'react-native-easy-grid';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Item, Input, Picker, Radio, Icon } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
-import {primaryColor} from '../../../../setup/config';
+import { primaryColor } from '../../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {subTimeUnit, formatDate,dateDiff} from '../../../../setup/helpers';
-import {toastMeassage} from '../../../common';
+import { subTimeUnit, formatDate, dateDiff } from '../../../../setup/helpers';
+import { toastMeassage } from '../../../common';
 
 const InsuredPersonHospitalized = (props) => {
-  const {dropdownData, Occupation,updateInsuredPersonHospitalizedDetails} = props;
+  const { dropdownData, Occupation, updateInsuredPersonHospitalizedDetails } = props;
   const [patientName, setPatientName] = useState('');
   const [patientGender, setPatientGender] = useState();
   const [patientDob, setPatientDob] = useState();
@@ -42,16 +42,17 @@ const InsuredPersonHospitalized = (props) => {
 
   return (
     <View>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Name<Text style={{color: 'red'}}>*</Text>
+            Name<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Name"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientName}
               keyboardType={'default'}
@@ -62,13 +63,13 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Gender<Text style={{color: 'red'}}>*</Text>
+            Gender<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
@@ -105,15 +106,15 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Date Of Birth<Text style={{color: 'red'}}>*</Text>
+            Date Of Birth<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <TouchableOpacity
-              style={{flexDirection: 'row'}}
+              style={{ flexDirection: 'row' }}
               onPress={openPicker}
               testID="editDOB">
               <Icon name="md-calendar" style={styles.calenderStyle} />
@@ -140,16 +141,17 @@ const InsuredPersonHospitalized = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            AGE(MA_ID)NO<Text style={{color: 'red'}}>*</Text>
+            AGE(MA_ID)NO<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter age of the patient"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientAge}
               editable={false}
@@ -161,15 +163,15 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Date Of Birth<Text style={{color: 'red'}}>*</Text>
+            Date Of Birth<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <TouchableOpacity
-              style={{flexDirection: 'row'}}
+              style={{ flexDirection: 'row' }}
               onPress={openPicker}
               testID="editDOB">
               <Icon name="md-calendar" style={styles.calenderStyle} />
@@ -197,27 +199,27 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Relation to primary Insured<Text style={{color: 'red'}}>*</Text>
+            Relation to primary Insured<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Picker
               mode="dropdown"
-              placeholderStyle={{fontSize: 12, marginLeft: -5}}
+              placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
               iosIcon={
                 <MaterialIcons
                   name="keyboard-arrow-down"
                   style={
                     Platform.OS === 'ios'
-                      ? {color: '#fff', fontSize: 20, marginRight: 15}
-                      : {color: '#fff', fontSize: 20}
+                      ? { color: '#fff', fontSize: 20, marginRight: 15 }
+                      : { color: '#fff', fontSize: 20 }
                   }
                 />
               }
-              textStyle={{color: '#fff', left: 0, marginLeft: 5}}
+              textStyle={{ color: '#fff', left: 0, marginLeft: 5 }}
               note={false}
               itemStyle={{
                 paddingLeft: 10,
@@ -225,8 +227,8 @@ const InsuredPersonHospitalized = (props) => {
                 fontFamily: 'Helvetica-Light',
                 color: '#fff',
               }}
-              itemTextStyle={{color: '#fff', fontFamily: 'Helvetica-Light'}}
-              style={{width: '100%', color: '#000'}}
+              itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light' }}
+              style={{ width: '100%', color: '#000' }}
               onValueChange={(sample) => {
                 setRelationship(sample);
               }}
@@ -246,16 +248,17 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            If other, details<Text style={{color: 'red'}}>*</Text>
+            If other, details<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Specify your Relation"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={relationshipDetail}
               keyboardType={'default'}
@@ -266,27 +269,27 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            indicate occupation of patient<Text style={{color: 'red'}}>*</Text>
+            indicate occupation of patient<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Picker
               mode="dropdown"
-              placeholderStyle={{fontSize: 12, marginLeft: -5}}
+              placeholderStyle={{ fontSize: 12, marginLeft: -5 }}
               iosIcon={
                 <MaterialIcons
                   name="keyboard-arrow-down"
                   style={
                     Platform.OS === 'ios'
-                      ? {color: '#fff', fontSize: 20, marginRight: 15}
-                      : {color: '#fff', fontSize: 20}
+                      ? { color: '#fff', fontSize: 20, marginRight: 15 }
+                      : { color: '#fff', fontSize: 20 }
                   }
                 />
               }
-              textStyle={{color: '#fff', left: 0, marginLeft: 5}}
+              textStyle={{ color: '#fff', left: 0, marginLeft: 5 }}
               note={false}
               itemStyle={{
                 paddingLeft: 10,
@@ -294,14 +297,14 @@ const InsuredPersonHospitalized = (props) => {
                 fontFamily: 'Helvetica-Light',
                 color: '#fff',
               }}
-              itemTextStyle={{color: '#fff', fontFamily: 'Helvetica-Light'}}
-              style={{width: '100%', color: '#000'}}
+              itemTextStyle={{ color: '#fff', fontFamily: 'Helvetica-Light' }}
+              style={{ width: '100%', color: '#000' }}
               onValueChange={(sample) => {
                 setOccupation(sample);
               }}
               selectedValue={occupation}
               testID="editOccupation"
-              >
+            >
               {Occupation.map((value, key) => {
                 return (
                   <Picker.Item
@@ -315,16 +318,17 @@ const InsuredPersonHospitalized = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            If other, details<Text style={{color: 'red'}}>*</Text>
+            If other, details<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Specify your ocupation"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={occupationDetail}
               keyboardType={'default'}
@@ -334,16 +338,17 @@ const InsuredPersonHospitalized = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Address<Text style={{color: 'red'}}>*</Text>
+            Address<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Address Details"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientAddress}
               keyboardType={'default'}
@@ -353,16 +358,17 @@ const InsuredPersonHospitalized = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            No and Street<Text style={{color: 'red'}}>*</Text>
+            No and Street<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter No and Street"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientNoAndStreet}
               keyboardType={'default'}
@@ -373,16 +379,17 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            City<Text style={{color: 'red'}}>*</Text>
+            City<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter City"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientCity}
               keyboardType={'default'}
@@ -392,16 +399,17 @@ const InsuredPersonHospitalized = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            State<Text style={{color: 'red'}}>*</Text>
+            State<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter State"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientState}
               keyboardType={'default'}
@@ -411,16 +419,17 @@ const InsuredPersonHospitalized = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Country<Text style={{color: 'red'}}>*</Text>
+            Country<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Country"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientCountry}
               keyboardType={'default'}
@@ -431,16 +440,17 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Phone Number<Text style={{color: 'red'}}>*</Text>
+            Phone Number<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Phone Number"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientPhoneNumber}
               keyboardType={'number-pad'}
@@ -450,16 +460,17 @@ const InsuredPersonHospitalized = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Email ID<Text style={{color: 'red'}}>*</Text>
+            Email ID<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Email ID"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={patientEmail}
               keyboardType={'default'}
@@ -474,25 +485,25 @@ const InsuredPersonHospitalized = (props) => {
           style={styles.submit_ButtonStyle}
           onPress={() =>
             updateInsuredPersonHospitalizedDetails({
-                  patientName: patientName,
-                  patientGender: patientGender,
-                  patientAge: patientAge,
-                  patientDob: patientDob,
-                  relationship: relationship,
-                  relationshipDetail: relationshipDetail,
-                  occupation: occupation,
-                  occupationDetail: occupationDetail,
-                  patientAddress: patientAddress,
-                  patientNoAndStreet: patientNoAndStreet,
-                  patientCity: patientCity,
-                  patientState: patientState,
-                  patientCountry: patientCountry,
-                  patientPhoneNumber: patientPhoneNumber,
-                  patientEmail: patientEmail,
-                })
+              patientName: patientName,
+              patientGender: patientGender,
+              patientAge: patientAge,
+              patientDob: patientDob,
+              relationship: relationship,
+              relationshipDetail: relationshipDetail,
+              occupation: occupation,
+              occupationDetail: occupationDetail,
+              patientAddress: patientAddress,
+              patientNoAndStreet: patientNoAndStreet,
+              patientCity: patientCity,
+              patientState: patientState,
+              patientCountry: patientCountry,
+              patientPhoneNumber: patientPhoneNumber,
+              patientEmail: patientEmail,
+            })
           }
           testID="submitDetails3">
-          <Text style={{color: '#fff'}}>Submit And Continue</Text>
+          <Text style={{ color: '#fff' }}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>
     </View>
