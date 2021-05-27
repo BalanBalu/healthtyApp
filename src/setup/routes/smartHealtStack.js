@@ -122,7 +122,8 @@ import BuyInsurance from '../../modules/screens/Insurance/buyInsurance'
 
 import PreAuthSubmission from '../../modules/screens/PreAuth/PreAuthSubmission/preAuthSubmission';
 import PreAuthList from '../../modules/screens/PreAuth/PreAuthList/preAuthList';
-
+import SubmitClaim from '../../modules/screens/ClaimIntimation/submitClaim';
+import SubmitClaimPageTwo from '../../modules/screens/ClaimIntimation/SubmitClaimPageTwo'
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
     screen: CorporateHome,
@@ -617,6 +618,22 @@ export const smartHealthStack=createStackNavigator({
 
     }
   },
+  SubmitClaim:{
+    screen: SubmitClaim,
+    navigationOptions: {
+      title: 'Submit Claim',
+      headerTitleStyle: { fontFamily: "Roboto",}
+
+    }
+  },
+  SubmitClaimPageTwo:{
+        screen: SubmitClaimPageTwo,
+        navigationOptions: {
+          title: 'Submit Claim',
+          headerTitleStyle: { fontFamily: "Roboto",}
+       }
+   },
+
   FamilyInfoList: {
     screen: FamilyInfoList,
     navigationOptions: {
