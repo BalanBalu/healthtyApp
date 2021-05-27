@@ -269,15 +269,13 @@ class SubmitClaimPageTwo extends PureComponent {
       selectOptionPopup: false,
       uploadData: null,
       isLoadingUploadDocs: false,
-      remark: '',
-      fileName: '',
       claimSubmissionAttachments: [],
       section1Disable: true,
       section2Disable: true,
       section4Disable: true,
       section5Disable: true,
       section6Disable: true,
-      section7Disable: false,
+      section7Disable: true,
       updateId:this.props.navigation.getParam('dataId') || null,
       disabled: 0,
       submitButton:true
@@ -707,72 +705,32 @@ submitAllDetails=async()=>{
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (declarationByHospital == true) {
-      this.setState({submitButton: false});
+      this.setState({section7Disable: true});
     }
   };
   updateAttachment = async (data) => {
     let attachmentDetails = this.submitData(data);
+    this.updateDisableCout()
+    const { showCard } = this.state
+    this.setState({ showCard: showCard + 1 });
+    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
     if (attachmentDetails == true) {
-      this.setState({section7Disable: true});
+      this.setState({submitButton: false});
+
     }
   };
+ 
+  updateDisableCout = () => {
+    const { disabled } = this.state
+    this.setState({ disabled: disabled + 1 })
+  }
 
-  imageUpload = async (data) => {
-    this.setState({selectOptionPopup: false});
-    if (data.image !== null) {
-      await this.uploadImageToServer(data.image);
-    }
-  };
-
-  uploadImageToServer = async (imagePath) => {
-    try {
-      console.log('imagePath', imagePath);
-
-      this.setState({isLoadingUploadDocs: true});
-      let appendForm = 'action';
-      let endPoint = 'images/upload?path=action';
-      const response = await uploadImage(imagePath, endPoint, appendForm);
-      console.log('response.success', response);
-      if (response.success) {
-        await this.setState({uploadData: response.data[0]});
-        toastMeassage('Image upload successfully', 'success', 1000);
-      } else {
-        toastMeassage(
-          'Problem Uploading Picture' + response.error,
-          'danger',
-          3000,
-        );
-      }
-    } catch (e) {
-      toastMeassage('Problem Uploading Picture' + e, 'danger', 3000);
-    } finally {
-      this.setState({isLoadingUploadDocs: false});
-    }
-  };
-
-  addTable = async () => {
-    let temp = [];
-    temp.push({
-      remark: this.state.remark,
-      fileName: this.state.fileName,
-      fileDetail: this.state.uploadData,
-    });
-    let data = [...this.state.claimSubmissionAttachments, ...temp];
-    this.setState({
-      claimSubmissionAttachments: data,
-      remark: '',
-      fileName: '',
-      uploadData: null,
-    });
-  };
   submitData = async (data) => {
-    console.log("data",data)
     try {
       let reqData = {
         _id: this.state.updateId,
         claimSubmissionAttachments: this.state.claimSubmissionAttachments,
       };
-      console.log('reqData', reqData);
       let result = await updateClaimSubmission(reqData);
       console.log('result', result);
       if (result) {
@@ -780,74 +738,12 @@ submitAllDetails=async()=>{
           updateId: result._id,
           claimSubmissionAttachments: result.claimSubmissionAttachments,
         });
+        return true
       }
     } catch (ex) {
       console.log(ex);
     }
   };
-  deleteAttachment = async (item, index) => {
-    let temp = this.state.claimSubmissionAttachments;
-    await temp.splice(index, 1);
-    await this.setState({claimSubmissionAttachments: temp});
-    console.log(this.state.claimSubmissionAttachments);
-  };
-
-  actualDownload = (imageUrl, fileName) => {
-    console.log('imageUrl2', imageUrl);
-    console.log('fileName2', fileName);
-
-    const {dirs} = RNFetchBlob.fs;
-    RNFetchBlob.config({
-      fileCache: true,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        mediaScannable: true,
-        title: fileName,
-        path: `${dirs.DownloadDir}` + `/` + fileName,
-      },
-    })
-      .fetch('GET', imageUrl, {})
-      .then((res) => {
-        toastMeassage('Your file has been downloaded to downloads folder!');
-        console.log('The file saved to ', res.path());
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  downloadAttachment = async (imageURL, file_name) => {
-    try {
-      console.log('imageURL', imageURL);
-      console.log('file_name', file_name);
-
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission',
-          message: 'App needs access to memory to download the file ',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.actualDownload(imageURL, file_name);
-      } else {
-        Alert.alert(
-          'Permission Denied!',
-          'You need to give storage permission to download the file',
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  updateDisableCout = () => {
-    const { disabled } = this.state
-    this.setState({ disabled: disabled + 1 })
-  }
-
-
 
   render() {
     const data = [
@@ -966,248 +862,13 @@ submitAllDetails=async()=>{
                           }
                         />
                       )}
-                      {/* {item.id === 7 && <AttachmentDetails 
-                      updateAttachment={(data) =>
-                        this.updateAttachment(data)
-                      }
-                      />} */}
+                      {item.id === 7 && <AttachmentDetails
+                      updateAttachment={(data)=>this.updateAttachment(data)} 
+                     
+                      />}
 
                     </View>
-                    {/* {this.state.section7Disable && (
-                      <View>
-                        <View style={styles.ButtonView}>
-                          <Row
-                            size={4}
-                            style={{
-                              marginLeft: 20,
-                              marginRight: 20,
-                              marginTop: 10,
-                            }}>
-                            <Col size={1}>
-                              <Text style={styles.text}>
-                                File Name<Text style={{color: 'red'}}>*</Text>
-                              </Text>
-
-                              <Item
-                                regular
-                                style={{borderRadius: 6, height: 35}}>
-                                <Input
-                                  placeholder="Enter File Name"
-                                  placeholderTextColor={'#CDD0D9'}
-                                  returnKeyType={'next'}
-                                  value={this.state.fileName}
-                                  keyboardType={'default'}
-                                  onChangeText={(text) =>
-                                    this.setState({fileName: text})
-                                  }
-                                />
-                              </Item>
-                            </Col>
-                          </Row>
-                          <Row
-                            size={4}
-                            style={{
-                              marginLeft: 20,
-                              marginRight: 20,
-                              marginTop: 10,
-                            }}>
-                            <Col size={1}>
-                              <Text style={styles.text}>
-                                Remarks<Text style={{color: 'red'}}>*</Text>
-                              </Text>
-
-                              <Item
-                                regular
-                                style={{borderRadius: 6, height: 35}}>
-                                <Input
-                                  placeholder="Enter Remarks"
-                                  placeholderTextColor={'#CDD0D9'}
-                                  returnKeyType={'next'}
-                                  value={this.state.remark}
-                                  keyboardType={'default'}
-                                  onChangeText={(text) =>
-                                    this.setState({remark: text})
-                                  }
-                                />
-                              </Item>
-                            </Col>
-                          </Row>
-                          <View>
-                            <Text
-                              style={{
-                                marginLeft: 15,
-                                fontSize: 16,
-                                marginTop: 10,
-                              }}>
-                              Upload Files/Reports/ID Details(Scanned PDF and
-                              JPG files) (Max Upload Size: 7168K)
-                            </Text>
-                          </View>
-                          <TouchableOpacity
-                            style={{
-                              backgroundColor: '#E5E5E5',
-                              paddingHorizontal: 10,
-                              paddingVertical: 5,
-                              borderRadius: 5,
-                            }}
-                            onPress={() =>
-                              this.setState({selectOptionPopup: true})
-                            }>
-                            <Text>Choose File</Text>
-                          </TouchableOpacity>
-                          <View style={{marginTop: 20}}>
-                            <TouchableOpacity
-                              style={styles.submit_ButtonStyle}
-                              onPress={() => this.addTable()}>
-                              <Text style={{color: '#fff'}}>Add</Text>
-                            </TouchableOpacity>
-                          </View>
-                          {this.state.claimSubmissionAttachments ? (
-                            <FlatList
-                              data={this.state.claimSubmissionAttachments}
-                              keyExtractor={(item, index) => index.toString()}
-                              renderItem={({item, index}) => (
-                                <View
-                                  style={{
-                                    padding: 10,
-                                    marginTop: 10,
-                                    marginBottom: 20,
-                                    width: '90%',
-                                  }}>
-                                  <View style={styles.form_field_view}>
-                                    <Text
-                                      style={[styles.form_field_inline_label]}>
-                                      SL No
-                                    </Text>
-                                    <Text
-                                      style={[
-                                        styles.form_field,
-                                        {paddingTop: 15, paddingLeft: 10},
-                                      ]}>
-                                      {index + 1}
-                                    </Text>
-                                  </View>
-                                  <View style={styles.form_field_view}>
-                                    <Text
-                                      style={[styles.form_field_inline_label]}>
-                                      File Name
-                                    </Text>
-                                    <Text
-                                      style={[
-                                        styles.form_field,
-                                        {paddingTop: 15, paddingLeft: 10},
-                                      ]}>
-                                      {item.fileName}
-                                    </Text>
-                                  </View>
-                                  <View style={styles.form_field_view}>
-                                    <Text
-                                      style={[styles.form_field_inline_label]}>
-                                      Remarks
-                                    </Text>
-                                    <Text
-                                      style={[
-                                        styles.form_field,
-                                        {paddingTop: 15, paddingLeft: 10},
-                                      ]}>
-                                      {item.remark}
-                                    </Text>
-                                  </View>
-
-                                  <View style={styles.form_field_view}>
-                                    <Text
-                                      style={[styles.form_field_inline_label]}>
-                                      Action
-                                    </Text>
-                                    <View
-                                      style={
-                                        (styles.form_field,
-                                        {flexDirection: 'row', width: '80%'})
-                                      }>
-                                      {item.fileDetail ? (
-                                        <TouchableOpacity
-                                          style={{
-                                            width: '40%',
-                                            backgroundColor: 'gray',
-                                            height: 45,
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                          }}
-                                          onPress={() =>
-                                            this.downloadAttachment(
-                                              item.fileDetail.imageURL,
-                                              item.fileDetail.file_name,
-                                            )
-                                          }>
-                                          <Text
-                                            style={{
-                                              textAlign: 'center',
-                                              color: '#fff',
-                                              fontSize: 10,
-                                            }}>
-                                            Download
-                                          </Text>
-                                          <AntDesign
-                                            name="clouddownload"
-                                            style={{
-                                              color: '#fff',
-                                              fontSize: 20,
-                                            }}
-                                          />
-                                        </TouchableOpacity>
-                                      ) : null}
-
-                                      <TouchableOpacity
-                                        style={{
-                                          width: '40%',
-                                          backgroundColor: '#c82333',
-                                          height: 45,
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                        }}
-                                        onPress={() =>
-                                          this.deleteAttachment(item, index)
-                                        }>
-                                        <Text
-                                          style={{
-                                            textAlign: 'center',
-                                            color: '#fff',
-                                            fontSize: 10,
-                                          }}>
-                                          Delete
-                                        </Text>
-                                        <AntDesign
-                                          name="delete"
-                                          style={{color: '#fff', fontSize: 15}}
-                                        />
-                                      </TouchableOpacity>
-                                    </View>
-                                  </View>
-                                </View>
-                              )}
-                            />
-                          ) : null}
-                          <View style={{marginTop: 20}}>
-                            <TouchableOpacity
-                              style={styles.submit_ButtonStyle}
-                              onPress={() => this.submitData()}
-                              disabled={
-                                this.state.claimSubmissionAttachments.length
-                                  ? false
-                                  : true
-                              }>
-                              <Text style={{color: '#fff'}}>Submit</Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                        {this.state.selectOptionPopup ? (
-                          <UploadClaimSubmission
-                            popupVisible={(data) => this.imageUpload(data)}
-                          />
-                        ) : null}
-                      </View>
-                    )} */}
-                  </Card>
+                                     </Card>
                 ) : (
                   <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
                   <Card>
@@ -1269,11 +930,11 @@ submitAllDetails=async()=>{
               </View>
             )}
           />
-           <View style={{marginTop: 20}}>
+        <View style={styles.ButtonView}>
                             <TouchableOpacity
                               style={styles.submit_ButtonStyle}
                               onPress={() => this.submitAllDetails()}
-                              disabled={this.state.submitButton }>
+                              disabled={this.state.submitButton==true?true:false}>
                               <Text style={{color: '#fff'}}>Submit</Text>
                             </TouchableOpacity>
                           </View>
