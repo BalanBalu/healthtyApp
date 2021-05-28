@@ -11,9 +11,9 @@ import Styles from '../styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { NavigationEvents } from 'react-navigation';
 import { primaryColor } from '../../../../setup/config'
-import { HospitalDrawing } from '../../Home/corporateHome/svgDrawings';
+import { NegativeHospitalDrawing } from '../../Home/corporateHome/svgDrawings';
 import { debounce } from '../../../common';
-import {translate} from '../../../../setup/translator.helper';
+import { translate } from '../../../../setup/translator.helper';
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
@@ -35,7 +35,7 @@ class NetworkHospitals extends Component {
         }
         this.onChangeCallByNetworkHospList = debounce(this.onChangeCallByNetworkHospList, 300);
         this.isEnabledLoadMoreData = true;
-        this.incrementPaginationCount = 0;
+        this.incrementPaginationCount = 1;
         this.hospitalInfoListArray = [];
         this.navigationPage = props.navigation.getParam('navigationPage') || null;
         this.selectedTpaInfoObj = props.profile && props.profile.memberTpaInfo || null;
@@ -73,9 +73,10 @@ class NetworkHospitals extends Component {
             // }
             if (this.selectedTpaCode) reqData4ServiceCall.tpaCode = this.selectedTpaCode;
             if (this.state.visibleClearIcon) reqData4ServiceCall.enteredText = this.state.visibleClearIcon;
-            const getHospitalList = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
+            const getHospitalResp = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
+            const getHospitalList = getHospitalResp && getHospitalResp.docs;
             if (getHospitalList && getHospitalList.length) {
-                this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
+                this.incrementPaginationCount = this.incrementPaginationCount + 1;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...getHospitalList];
                 this.setState({ hospitalInfoList: this.hospitalInfoListArray })
             }
@@ -178,7 +179,7 @@ class NetworkHospitals extends Component {
     onChangeCallByNetworkHospList = async () => {
         try {
             this.isEnabledLoadMoreData = true;
-            this.incrementPaginationCount = 0;
+            this.incrementPaginationCount = 1;
             this.hospitalInfoListArray = [];
             this.setState({ isLoadingOnChangeHospitalList: true, hospitalInfoList: [] });
             await this.searchByNetworkHospitalDetails()
@@ -206,7 +207,7 @@ class NetworkHospitals extends Component {
                 const selectedCityName = navigation.getParam('selectedCityName') || '';
                 const selectedLocCoOrdinates = navigation.getParam('coordinates') || null;
                 this.isEnabledLoadMoreData = true;
-                this.incrementPaginationCount = 0;
+                this.incrementPaginationCount = 1;
                 this.hospitalInfoListArray = [];
                 await this.setState({ isFromMapBox, selectedLocCoOrdinates, selectedCityName, isLoadingOnChangeHospitalList: true, hospitalInfoList: [], selectedHospitalData: null, showFullInfoCard: -1, })
                 await this.searchByNetworkHospitalDetails();
@@ -267,40 +268,7 @@ class NetworkHospitals extends Component {
                         </Col>
                     </Grid>
                 </View>
-                {/* 
-
-                <View style={{ paddingBottom: 5, height: 45, marginHorizontal: 15, }}>
-                    <NavigationEvents
-                        onWillFocus={payload => { this.backNavigation(payload) }} />
-                    <Row style={{
-                        backgroundColor: 'white',
-                        borderColor: '#000',
-                        borderWidth: 0.5,
-                        height: 32,
-                        marginTop: 5, borderRadius: 5
-                    }}>
-                        <Col size={8.1} style={{ justifyContent: 'center', }}>
-                            <Input
-                                placeholder="Search by name, pinCode, city State, Country etc..."
-                                style={{
-                                    color: '#7B7776',
-                                    fontFamily: 'Roboto',
-                                    fontSize: 12,
-                                    padding: 5,
-                                    paddingLeft: 10
-                                }}
-                                onChangeText={enteredText => enteredText || !enteredText ? !enteredText ? this.setState({ enteredText, enableSearchIcon: false }) : this.setState({ enteredText, enableSearchIcon: true }) : ths.setState({ enableSearchIcon: false })}
-                                placeholderTextColor="#e2e2e2"
-                                underlineColorAndroid="transparent"
-                            />
-                        </Col>
-                        <Col size={0.9} style={enableSearchIcon ? Styles.enableSearchIcon4Hospital : Styles.disableSearchIcon4Hospital}>
-                            <TouchableOpacity onPress={() => enableSearchIcon ? this.onPressSearchByNetworkHospitalName() : null}>
-                                <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-                            </TouchableOpacity>
-                        </Col>
-                    </Row>
-                </View> */}
+                
                 {/* <View>
                     <TouchableOpacity onPress={() => this.navigateToLocationMap()}>
                         <Row style={{ padding: 5, height: 30, marginHorizontal: 15, marginVertical: 5, backgroundColor: '#EFEFF0', borderRadius: 5 }}>
@@ -329,7 +297,7 @@ class NetworkHospitals extends Component {
                             </Col>
                         </Row>
                     </TouchableOpacity>
-                </View> */}
+                </View>  */}
                 {isLoadingOnChangeHospitalList ?
                     <View style={{ marginTop: 60 }}>
                         <ActivityIndicator
@@ -352,14 +320,12 @@ class NetworkHospitals extends Component {
                             renderItem={({ item, index }) => this.renderHospitalInformationCard(item, index)
                             } />
                         : <View style={{ borderBottomWidth: 0, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <HospitalDrawing />
+                            <NegativeHospitalDrawing />
                             <Text style={{
                                 fontFamily: "Roboto",
                                 fontSize: 15,
                                 marginTop: "10%"
                             }} >{translate('No Hospitals list found!')}</Text>
-                            <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, top: 297 }} />
-
                         </View>
                 }
                 {isLoadingMoreHospitalList ?

@@ -6,7 +6,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from './styles'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getCorporateHelpLineEmail, postContactDetails } from '../../providers/corporate/corporate.actions'
-import { toastMeassage,validateEmailAddress } from '../../common'
+import { toastMeassage,validateEmailAddress ,arrangeFullName} from '../../common'
 import {translate} from '../../../setup/translator.helper'
 const issueTypeList = ["Choose Issue type", "payment", "consultation", "insurance", "others"]
 
@@ -41,7 +41,7 @@ class ContactUs extends Component {
         const basicData = JSON.parse(basicProfileData);
         const data = { basicData }
         await this.setState({
-            userName: `${data.basicData&&data.basicData.first_name? data.basicData.first_name:''+ " " + data.basicData&&data.basicData.last_name? data.basicData.last_name:''}`,
+            userName:arrangeFullName(data.basicData&&data.basicData.first_name,data.basicData&&data.basicData.last_name),
             email: data.basicData.email,
             userNameError: null,
             emailErrorMsg: null,

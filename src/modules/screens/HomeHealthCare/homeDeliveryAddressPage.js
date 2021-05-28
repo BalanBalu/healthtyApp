@@ -16,6 +16,7 @@ import {translate} from '../../../setup/translator.helper';
 import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
 
 import RenderUserAddressList from './RenderUserAddressList';
+import {arrangeFullName} from '../../common';
 const USER_FIELDS = "first_name,last_name,mobile_no,email,address,delivery_address,home_healthcare_address"
 
 export default class HomeHealthCareAddressChange extends Component {
@@ -52,7 +53,7 @@ export default class HomeHealthCareAddressChange extends Component {
             const userInfoResp = await fetchUserProfile(userId, USER_FIELDS);
            
             if (userInfoResp && Object.keys(userInfoResp).length) {
-                const fullName = userInfoResp.first_name + " " + userInfoResp.last_name;
+                const fullName =arrangeFullName(userInfoResp&&userInfoResp.first_name,userInfoResp&&userInfoResp.last_name) ;
                 const mobileNo = userInfoResp.mobile_no;
                 const userAddress = userInfoResp.address && userInfoResp.address;
                 const homeHealthCareAddress = userInfoResp.home_healthcare_address && userInfoResp.home_healthcare_address.length ? userInfoResp.home_healthcare_address : [];

@@ -66,9 +66,9 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
 
 export function storeBasicProfile(result) {
   AsyncStorage.setItem('basicProfileData', JSON.stringify({
-    first_name: result.firstName,
-    last_name: result.lastName,
-    middle_name:result.middle_name||' ',
+    first_name: result.firstName?result.firstName:'',
+    last_name: result.lastName?result.lastName:'',
+    middle_name:result.middleName?result.middleName:'',
     dob: result.dob,
     profileImage: result.profileImage ,
     gender: result.gender,
@@ -79,9 +79,9 @@ export function storeBasicProfile(result) {
 
 export function storeBasicProfileUserLogin(result) {
   AsyncStorage.setItem('basicProfileData', JSON.stringify({
-    first_name: result.first_name,
-    last_name: result.last_name,
-    middle_name:result.middle_name||' ',
+    first_name: result.first_name?result.first_name:'',
+    last_name: result.last_name?result.last_name:'',
+    middle_name:result.middle_name?result.middle_name:'',
     dob: result.dob,
     profileImage: result.profileImage ,
     gender: result.gender,

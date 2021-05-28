@@ -16,7 +16,7 @@ import {translate} from '../../../setup/translator.helper'
 
 
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
-import { getRandomInt } from '../../common';
+import { getRandomInt,arrangeFullName } from '../../common';
 const POSSIBLE_FAMILY_MEMBERS = {
     SELF: 'SELF',
     FAMILY_WITH_PAY: 'FAMILY_WITH_PAY',
@@ -60,7 +60,7 @@ class TestDetails extends PureComponent {
 
             this.defaultPatDetails = {
                 type: 'self',
-                full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+                full_name:arrangeFullName(patInfoResp&&patInfoResp.first_name,patInfoResp&&patInfoResp.last_name) ,
                 gender: patInfoResp.gender,
                 age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years')),
                 phone_no: patInfoResp.mobile_no
@@ -75,7 +75,7 @@ class TestDetails extends PureComponent {
                     result.forEach(element => {
                         let obj = {
                             type: 'familymembers',
-                            full_name: (element.firstName ? element.firstName + ' ' : '') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ' : ''),
+                            full_name:arrangeFullName(element.firstName,element.middleName,element.lastName),
                             gender: element.gender,
                             // age: element.ageInYrs,
                             phone_no: element.mobile,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
 import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions';
 import { getPolicyByPolicyNo } from '../../../providers/policy/policy.action';
+import {arrangeFullName} from '../../../common';
 class PolicyCoverageCard extends React.Component {
   constructor(props) {
     super(props);
@@ -31,6 +32,9 @@ class PolicyCoverageCard extends React.Component {
   }
   componentDidMount() {
     this.getMemberDetailsByEmail();
+    const {memberDetails}= this.state
+    this.percentageCalculation(memberDetails.sumInsured ? memberDetails.sumInsured : 0,memberDetails.balSumInsured ? memberDetails.balSumInsured : 0);
+
     setInterval(this.getMemberDetailsByEmail, 5000);
   }
   getMemberDetailsByEmail = async () => {
@@ -39,9 +43,9 @@ class PolicyCoverageCard extends React.Component {
       let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        let policyData = await getPolicyByPolicyNo(result[0].policyNo);
+        let policyData = await getPolicyByPolicyNo(result&&result[0].policyNo);
         await this.setState({
-          memberDetails: result[0],
+          memberDetails:result&& result[0],
           policyDetails: policyData,
         });
         // await this.termsAndConditionListDetails();
@@ -79,17 +83,7 @@ class PolicyCoverageCard extends React.Component {
             marginTop: 6,
             flex: 1,
           }}>
-          <View
-            style={{
-              backgroundColor: primaryColor,
-              minHeight: 135,
-              borderRadius: 22,
-              marginTop: 0,
-              marginBottom: 20,
-              marginHorizontal: 10,
-              position: 'relative',
-              flex: 1,
-            }}>
+          <View style={styles.commonCardDesignment}>
             {Object.keys(memberDetails).length === 0 ? (
               <ActivityIndicator
                 style={{ marginBottom: 0, marginRight: 100, marginTop: 50 }}
@@ -111,7 +105,7 @@ class PolicyCoverageCard extends React.Component {
                     fontFamily: 'opensans-bold',
                     fontSize: 18,
                   }}>
-                    {`${memberDetails.firstName ? memberDetails.firstName + ' ' : ''}${memberDetails.middleName ? memberDetails.middleName + ' ' : ''}${memberDetails.lastName ? memberDetails.lastName : ''}`}
+                    {arrangeFullName(memberDetails&&memberDetails.firstName,memberDetails&&memberDetails.middleName,memberDetails&&memberDetails.lastName)}
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <Text

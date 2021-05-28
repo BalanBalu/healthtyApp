@@ -33,7 +33,7 @@ import Communications from 'react-native-communications';
 import { translate } from '../../../../setup/translator.helper';
 import { MAX_DISTANCE_TO_COVER, CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2, primaryColor } from '../../../../setup/config';
 import { getCorporateFullName } from '../../../common';
-
+import { NegativeLabTestDrawing } from '../../Home/corporateHome/svgDrawings';
 class LabCategories extends PureComponent {
   constructor(props) {
     super(props);
@@ -181,7 +181,7 @@ class LabCategories extends PureComponent {
               keyboardType={'email-address'}
               onChangeText={(searchValue) => this.filterCategories(searchValue)}
               underlineColorAndroid="transparent"
-              blurOnSubmit={false}
+              returnKeyType={'done'}
             />
           </Col>
           <Col size={0.9} style={styles.SearchStyle}>
@@ -399,7 +399,23 @@ class LabCategories extends PureComponent {
                   }
                   keyExtractor={(item, index) => index.toString()}
                 />
-              </View> : null}
+              </View> : Object.keys(labData).length === 0 ?
+                <View style={{ marginBottom: 10 }}>
+                  <FlatList horizontal={false} numColumns={3}
+                    ListHeaderComponent={this.renderStickeyHeader()}
+                  />
+                  <View style={{ marginTop: "70%", flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <NegativeLabTestDrawing />
+                    <Text style={{
+                      fontFamily: "Roboto",
+                      fontSize: 15,
+                      marginTop: "10%",
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                    }} >Your Search Is Not Found</Text></View>
+                </View>
+                : null}
         </Content>
       </Container>
     );

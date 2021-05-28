@@ -13,7 +13,8 @@ import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
 import { formatDate } from '../../../setup/helpers';
 import { primaryColor } from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
-import { translate } from '../../../setup/translator.helper'
+import { translate } from '../../../setup/translator.helper';
+import {arrangeFullName} from '../../common';
 class PolicyCoverage extends React.Component {
   constructor(props) {
     super(props);
@@ -36,9 +37,9 @@ class PolicyCoverage extends React.Component {
       let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        let policyData = await getPolicyByPolicyNo(result[0].policyNo);
+        let policyData = await getPolicyByPolicyNo(result&&result[0].policyNo);
         await this.setState({
-          memberDetails: result[0],
+          memberDetails:result&& result[0],
           policyDetails: policyData,
         });
         await this.termsAndConditionListDetails();
@@ -767,9 +768,7 @@ class PolicyCoverage extends React.Component {
                         fontSize: 16,
                         marginTop: 10,
                       }}>
-                      {memberDetails.firstName
-                        ? memberDetails.firstName + ' ' + memberDetails.middleName + ' ' + memberDetails.lastName
-                        : '-'}
+                        {arrangeFullName(memberDetails&&memberDetails.firstName,memberDetails&&memberDetails.middleName,memberDetails&&memberDetails.lastName)}
                     </Text>
                   </Col>
                   <Col size={2.5}>
