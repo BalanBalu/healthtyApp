@@ -31,7 +31,7 @@ const DeclarationByInsured = (props) => {
   };
 
   const submitData = () => {
-    if (insuredPlace != '' && dateOfHospitalization != '') {
+    if (insuredPlace != '' && dateOfHospitalization != undefined) {
       updateDeclarationByInsuredDetails({
         insuredPlace: insuredPlace,
         dateOfHospitalization: dateOfHospitalization,
@@ -43,7 +43,7 @@ const DeclarationByInsured = (props) => {
         setisModalVisible(true);
         return false;
       }
-      if (dateOfHospitalization === '') {
+      if (dateOfHospitalization === undefined) {
         seterrorMsg('Please choose date Of hospitalization');
         setisModalVisible(true);
         return false;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useRef} from 'react';
 import {Text, View, Item, Input} from 'native-base';
 import {TouchableOpacity} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
@@ -162,7 +162,6 @@ const PrimaryInsuredBank = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setIfscCode(text)}
-              onSubmitEditing={() => inputEl5.current._root.focus()}
               testID="editIfscCode"
             />
           </Item>

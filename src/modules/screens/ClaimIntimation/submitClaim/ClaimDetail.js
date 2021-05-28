@@ -54,16 +54,16 @@ const ClaimDetail = (props) => {
 
   const submmitData = () => {
     if (
-      preHospitalizationExpenses != '' &&
-      hospitalizationExpenses != '' &&
-      postHospitalizationExpenses != '' &&
-      ambulanceCharges != '' &&
-      hospitalDailyCash != '' &&
-      surgicalCash != '' &&
-      criticalIllness != '' &&
-      convalescence != '' &&
-      lumsumBenefit != '' &&
-      others != ''
+      preHospitalizationExpenses != undefined &&
+      hospitalizationExpenses != undefined &&
+      postHospitalizationExpenses != undefined &&
+      ambulanceCharges != undefined &&
+      hospitalDailyCash != undefined &&
+      surgicalCash != undefined &&
+      criticalIllness != undefined &&
+      convalescence != undefined &&
+      lumsumBenefit != undefined &&
+      others != undefined
     ) {
       updateClaimDetails({
         preHospitalizationExpenses: preHospitalizationExpenses,
@@ -97,43 +97,43 @@ const ClaimDetail = (props) => {
         investigationReports: investigationReports,
       });
     } else {
-      if (preHospitalizationExpenses === '') {
+      if (preHospitalizationExpenses === undefined) {
         seterrorMsg('Please enter pre hospitalization expenses');
         setisModalVisible(true);
         return false;
       }
-      if (hospitalizationExpenses === '') {
+      if (hospitalizationExpenses === undefined) {
         seterrorMsg('Please enter hospitalization expenses');
         setisModalVisible(true);
         return false;
       }
-      if (postHospitalizationExpenses === '') {
+      if (postHospitalizationExpenses === undefined) {
         seterrorMsg('Please enter post hospitalization expenses');
         setisModalVisible(true);
         return false;
       }
-      if (ambulanceCharges === '') {
+      if (ambulanceCharges ===undefined) {
         seterrorMsg('Please enter ambulance charges');
         setisModalVisible(true);
         return false;
       }
-      if (hospitalDailyCash === '') {
+      if (hospitalDailyCash === undefined) {
         seterrorMsg('Please enter hospital daily cash');
         setisModalVisible(true);
         return false;
       }
-      if (surgicalCash === '' ) {
+      if (surgicalCash === undefined ) {
         seterrorMsg('Please enter surgical cash');
         setisModalVisible(true);
         return false;
       }
 
-      if (criticalIllness === '' ) {
+      if (criticalIllness === undefined ) {
         seterrorMsg('Please enter critical illness');
         setisModalVisible(true);
         return false;
       }
-      if (convalescence === '') {
+      if (convalescence === undefined) {
         seterrorMsg('Please enter convalescence');
         setisModalVisible(true);
         return false;
