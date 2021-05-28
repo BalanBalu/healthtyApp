@@ -147,12 +147,12 @@ class Login extends Component {
         </View>
       </View>
       </ImageBackground>
-      <View style={{borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', minHeight: '100%', marginTop: -25, display: 'flex', alignItems: "flex-start"}}>
+      <View style={{borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', minHeight: '100%', marginTop: -30, display: 'flex', alignItems: "flex-start"}}>
 <Text style={{fontFamily: 'opensans-bold', marginLeft: 28, marginTop: 55, fontSize: 20, color: '#333333'}}>Welcome</Text>
 
 <Form>
 <Item style={{marginTop: 40, borderBottomColor: '#DDDDDD', borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
-                      <Input placeholderTextColor={'#DDDDDD'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                      <Input placeholderTextColor={'##A1A1A1'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                         ref={(input) => { this.userEntry = input; }}
                         secureTextEntry={true}
                         returnKeyType={'done'}
@@ -170,7 +170,7 @@ class Login extends Component {
                       } */}
                     </Item>
             <Item style={{borderBottomColor: '#DDDDDD', borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30, marginTop: 35}}>
-                      <Input placeholderTextColor={'#DDDDDD'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                      <Input placeholderTextColor={'#A1A1A1'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                         ref={(input) => { this.userEntry = input; }}
                         secureTextEntry={true}
                         returnKeyType={'done'}
