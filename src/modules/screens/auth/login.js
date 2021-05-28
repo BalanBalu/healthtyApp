@@ -95,11 +95,11 @@ class Login extends Component {
   onFocus(item) {
     if(item === 1) {
       this.setState({
-        backgroundColor1: '#128283'
+        backgroundColor1: '#48b4a5'
       })
     } else {
       this.setState({
-        backgroundColor2: '#128283'
+        backgroundColor2: '#48b4a5'
       })
     }
   }
@@ -175,6 +175,12 @@ class Login extends Component {
 <Text style={{fontFamily: 'opensans-bold', marginLeft: 28, marginTop: 55, fontSize: 20, color: '#333333'}}>Welcome</Text>
 
 <Form>
+               {isLoading ?
+                      <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                         <Spinner
+                         visible={isLoading}
+                       />
+                      </View> : null}
 <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                       <Input
                        onBlur={ () => this.onBlur(1) }
@@ -224,9 +230,9 @@ class Login extends Component {
                               
                                color={'#AAAAAA'}
                              selectedColor={'#AAAAAA'}
-                               standardStyle={true}
-                               selected={ isSelected === 'corporate_user'}
-                               onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                             standardStyle={true}
+                             selected={ isSelected === 'corporate_user'}
+                             onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
                              />
                              <Text style={{marginLeft: 8}}>Corporate</Text>
                      </View>
@@ -235,15 +241,15 @@ class Login extends Component {
                               
                                color={'#AAAAAA'}
                              selectedColor={'#AAAAAA'}
-                               standardStyle={true}
+                                           standardStyle={true}
                                selected={ isSelected === 'user'}
-                               onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                               onPress={() => this.setState({  isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
                              />
                              <Text style={{marginLeft: 8}}>User</Text>
                      </View>
                     </View>
                    <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, marginRight: 24}}>
-                   <Pressable style={{ elevation: 2,
+                   <Pressable onPress={() => this.doLogin()} style={{ elevation: 2,
     backgroundColor: "#fff",
     borderColor: '#48b4a5',
     borderWidth: 2,
@@ -256,19 +262,21 @@ class Login extends Component {
     alignSelf: "center",
 }}>Sign in</Text>
                 </Pressable>
-                <Text style={{marginTop: 20, color: '#AAAAAA'}}>Forgot Password?</Text>
+                <Text onPress={() => this.props.navigation.navigate('forgotpassword')} style={{marginTop: 20, color: '#AAAAAA'}}>Forgot Password?</Text>
                    </View>
                    
 </Form>
 
 <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={{display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
-    backgroundColor: "#128283",
-    borderColor: '#128283',
+    backgroundColor: "#48b4a5",
+    borderColor: '#48b4a5',
     borderWidth: 0,
     borderRadius: 30,
     paddingVertical: 15,
     paddingHorizontal: 67}}>
-                   <Pressable style={{ }}>
+                   <Pressable onPress={() => {
+                         this.props.navigation.navigate('signup')
+                       }} style={{ }}>
                         <Text style={{  fontSize: 18,
     color: "#fff",
     fontFamily: 'opensans-bold',
@@ -343,9 +351,9 @@ class Login extends Component {
                     //         <Radio
                     //           color={primaryColor}
                     //         selectedColor={primaryColor}
-                    //           standardStyle={true}
-                    //           selected={ isSelected === 'corporate_user'}
-                    //           onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                              // standardStyle={true}
+                              // selected={ isSelected === 'corporate_user'}
+                              // onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
                     //         />
                     //         <Text style={styles.firstCheckBox}>Corporate</Text>
                     //       </Row>
