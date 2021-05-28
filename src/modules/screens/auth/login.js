@@ -116,13 +116,11 @@ class Login extends Component {
   render() {
     const { user: { isLoading } } = this.props;
 
-    const image = { uri: "https://images.unsplash.com/photo-1486911278844-a81c5267e227?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" };
-
     
     const { userEntry, password, showPassword, loginErrorMsg, isModalVisible, isSelected } = this.state;
     return (
       <Container style={{backgroundColor: '#fff'}}>
-             <ImageBackground source={image} style={{ minHeight: 270}}>
+             <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270}}>
 
       <View>
       <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', alignContent: 'center', marginTop: 30, marginLeft: 30, alignSelf: 'baseline'}}>
@@ -154,22 +152,19 @@ class Login extends Component {
 
 <Form>
 <Item style={{marginTop: 40, borderBottomColor: '#DDDDDD', borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
-                      <Input placeholderTextColor={'##A1A1A1'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
-                        ref={(input) => { this.userEntry = input; }}
-                        secureTextEntry={true}
-                        returnKeyType={'done'}
-                        value={password}
-                        secureTextEntry={showPassword}
-                        autoCapitalize='none'
-                        onChangeText={password => this.setState({ password })}
-                        // blurOnSubmit={false}
-                        onSubmitEditing={() => { (userEntry && password) != '' ? this.doLogin() : this.enterTextInputEmail._root.focus() }}
+                      <Input placeholderTextColor={'##A1A1A1'} placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                 ref={(input) => { this.enterTextInputEmail = input; }}
+                                    returnKeyType={'next'}
+                                    value={userEntry}
+                                    keyboardType={"default"}
+                                    onChangeText={userEntry => this.setState({ userEntry })/*acceptNumbersOnly(userEntry) == true || userEntry === '' ? this.setState({ userEntry }) : null */}
+                                    autoCapitalize='none'
+                                    blurOnSubmit={false}
+                                    onSubmitEditing={() => { this.userEntry._root.focus(); }}
                       />
 
 
-                      {/* {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
-                        : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
-                      } */}
+                     
                     </Item>
             <Item style={{borderBottomColor: '#DDDDDD', borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30, marginTop: 35}}>
                       <Input placeholderTextColor={'#A1A1A1'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
@@ -184,10 +179,11 @@ class Login extends Component {
                         onSubmitEditing={() => { (userEntry && password) != '' ? this.doLogin() : this.enterTextInputEmail._root.focus() }}
                       />
 
+{this.state.password !== '' && showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} /> 
+      : this.state.password !== '' && showPassword == false ? <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} /> 
+      : null}
 
-                      {/* {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
-                        : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
-                      } */}
+                      
                     </Item>
 
                    
@@ -218,13 +214,13 @@ class Login extends Component {
                    <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, marginRight: 24}}>
                    <Pressable style={{ elevation: 2,
     backgroundColor: "#fff",
-    borderColor: '#128283',
+    borderColor: '#48b4a5',
     borderWidth: 2,
     borderRadius: 30,
     paddingVertical: 15,
     paddingHorizontal: 102}}>
                         <Text style={{  fontSize: 18,
-    color: "#128283",
+    color: "#48b4a5",
     fontFamily: 'opensans-bold',
     alignSelf: "center",
 }}>Sign in</Text>
