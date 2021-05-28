@@ -14,6 +14,12 @@ const PrimaryInsuredBank = (props) => {
   const [ifscCode, setIfscCode] = useState('');
   const [errorMsg, seterrorMsg] = useState('');
   const [isModalVisible, setisModalVisible] = useState(false);
+  const inputEl1 = useRef(null);
+  const inputEl2 = useRef(null);
+  const inputEl3 = useRef(null);
+  const inputEl4 = useRef(null);
+  const inputEl5 = useRef(null);
+
 
   const submitData = () => {
     if (
@@ -31,7 +37,7 @@ const PrimaryInsuredBank = (props) => {
       });
     } else {
       if (PanCardDetail === '') {
-        seterrorMsg('Please enter pan card details');
+        seterrorMsg('Please enter pan number');
         setisModalVisible(true);
         return false;
       }
@@ -70,6 +76,7 @@ const PrimaryInsuredBank = (props) => {
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setPanCardDetail(text)}
+              onSubmitEditing={() => inputEl1.current._root.focus()}
               testID="editPanCardDetail"
             />
           </Item>
@@ -87,9 +94,11 @@ const PrimaryInsuredBank = (props) => {
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
               value={accountNo}
+              ref={inputEl1}
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setAccountNo(text)}
+              onSubmitEditing={() => inputEl2.current._root.focus()}
               testID="editAccountNo"
             />
           </Item>
@@ -107,9 +116,11 @@ const PrimaryInsuredBank = (props) => {
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
               value={bankName}
+              ref={inputEl2}
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setBankName(text)}
+              onSubmitEditing={() => inputEl3.current._root.focus()}
               testID="editBankName"
             />
           </Item>
@@ -117,9 +128,7 @@ const PrimaryInsuredBank = (props) => {
       </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Cheque dd payable details<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>Cheque dd payable details</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -127,9 +136,11 @@ const PrimaryInsuredBank = (props) => {
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
               value={chequeDetails}
+              ref={inputEl3}
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setChequeDetails(text)}
+              onSubmitEditing={() => inputEl4.current._root.focus()}
               testID="editChequeDetails"
             />
           </Item>
@@ -147,9 +158,11 @@ const PrimaryInsuredBank = (props) => {
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
               value={ifscCode}
+              ref={inputEl4}
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setIfscCode(text)}
+              onSubmitEditing={() => inputEl5.current._root.focus()}
               testID="editIfscCode"
             />
           </Item>

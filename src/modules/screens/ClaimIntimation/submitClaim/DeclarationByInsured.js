@@ -123,9 +123,7 @@ const DeclarationByInsured = (props) => {
       </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Signature of insured<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>Signature of insured</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
