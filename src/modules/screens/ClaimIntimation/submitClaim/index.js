@@ -865,7 +865,7 @@ class SubmitClaim extends PureComponent {
                   </View>
                 </Card>
               ) : (
-                // <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
+                <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
                   <Card>
                     <TouchableOpacity
                       style={{
@@ -895,7 +895,7 @@ class SubmitClaim extends PureComponent {
                       </Row>
                     </TouchableOpacity>
                   </Card>
-                //  </View>
+                 </View>
               )}
             </View>
           )}
