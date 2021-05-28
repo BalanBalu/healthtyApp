@@ -231,13 +231,27 @@ class Login extends Component {
                    </View>
                    
 </Form>
+<View style={{display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30}}>
+                   <Pressable style={{ elevation: 8,
+    backgroundColor: "#128283",
+    borderColor: '#128283',
+    borderWidth: 2,
+    borderRadius: 30,
+    paddingVertical: 15,
+    paddingHorizontal: 67}}>
+                        <Text style={{  fontSize: 18,
+    color: "#fff",
+    fontFamily: 'opensans-bold',
+    alignSelf: "center",
+}}>Create Account</Text>
+                </Pressable>
+                </View>
       </View>
+     
+     
+      
 
-        {/* <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 30}}>
-          <Text style={{ fontFamily:'opensans-bold' }}>Welcome to </Text>
-          <Text style={{ fontFamily:'opensans-regular' }}>Login to your account</Text>
-        </View> */}
-        
+      
        
       </Container>
       // <Container style={styles.container}>
