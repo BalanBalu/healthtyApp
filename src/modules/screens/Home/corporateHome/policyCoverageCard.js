@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -32,6 +32,9 @@ class PolicyCoverageCard extends React.Component {
   }
   componentDidMount() {
     this.getMemberDetailsByEmail();
+    const {memberDetails}= this.state
+    this.percentageCalculation(memberDetails.sumInsured ? memberDetails.sumInsured : 0,memberDetails.balSumInsured ? memberDetails.balSumInsured : 0);
+
     setInterval(this.getMemberDetailsByEmail, 5000);
   }
   getMemberDetailsByEmail = async () => {
@@ -80,17 +83,7 @@ class PolicyCoverageCard extends React.Component {
             marginTop: 6,
             flex: 1,
           }}>
-          <View
-            style={{
-              backgroundColor: primaryColor,
-              minHeight: 135,
-              borderRadius: 22,
-              marginTop: 0,
-              marginBottom: 20,
-              marginHorizontal: 10,
-              position: 'relative',
-              flex: 1,
-            }}>
+          <View style={styles.commonCardDesignment}>
             {Object.keys(memberDetails).length === 0 ? (
               <ActivityIndicator
                 style={{ marginBottom: 0, marginRight: 100, marginTop: 50 }}
