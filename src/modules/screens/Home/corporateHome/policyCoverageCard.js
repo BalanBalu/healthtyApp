@@ -44,7 +44,7 @@ class PolicyCoverageCard extends React.Component {
           memberDetails: result[0],
           policyDetails: policyData,
         });
-        await this.termsAndConditionListDetails();
+        // await this.termsAndConditionListDetails();
       }
     } catch (ex) {
       console.log(ex);
