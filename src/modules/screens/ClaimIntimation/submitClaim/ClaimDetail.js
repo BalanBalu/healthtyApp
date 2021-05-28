@@ -4,22 +4,23 @@ import {TouchableOpacity, FlatList} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
 import styles from '../Styles';
 import {primaryColor} from '../../../../setup/config';
-import {toastMeassage} from '../../../common';
+import {toastMeassage, acceptNumbersOnly} from '../../../common';
 
 const ClaimDetail = (props) => {
   const {ListOfData, checkBoxClick, updateClaimDetails} = props;
-  const [preHospitalizationExpenses, setPreHospitalizationExpenses] = useState(
-    '',
-  );
-  const [hospitalizationExpenses, setHospitalizationExpenses] = useState('');
+  const [
+    preHospitalizationExpenses,
+    setPreHospitalizationExpenses,
+  ] = useState();
+  const [hospitalizationExpenses, setHospitalizationExpenses] = useState();
   const [
     postHospitalizationExpenses,
     setPostHospitalizationExpenses,
-  ] = useState('');
-  const [healthCheckupCost, setHealthCheckupCost] = useState('');
-  const [ambulanceCharges, setAmbulanceCharges] = useState('');
-  const [othersCode, setOthersCode] = useState('');
-  const [totalClaim, setTotalClaim] = useState('');
+  ] = useState();
+  const [healthCheckupCost, setHealthCheckupCost] = useState();
+  const [ambulanceCharges, setAmbulanceCharges] = useState();
+  const [othersCode, setOthersCode] = useState();
+  const [totalClaim, setTotalClaim] = useState();
   const [preHospitalizationPeriod, setPreHospitalizationPeriod] = useState('');
   const [postHospitalizationPeriod, setPostHospitalizationPeriod] = useState(
     '',
@@ -34,7 +35,7 @@ const ClaimDetail = (props) => {
   const [convalescence, setConvalescence] = useState('');
   const [lumsumBenefit, setLumsumBenefit] = useState('');
   const [others, setOthers] = useState('');
-  const [totalClaimValue, setTotalClaimValue] = useState('');
+  const [totalClaimValue, setTotalClaimValue] = useState();
   const [claimFormDulySigned, setCheckBox1] = useState(false);
   const [copyOfClaimIntimation, setCheckBox2] = useState(false);
   const [hospitalMainBill, setCheckBox3] = useState(false);
@@ -47,20 +48,10 @@ const ClaimDetail = (props) => {
   const [pharmacyBill, setCheckBox10] = useState(false);
   const [OthersClaim, setCheckBox11] = useState(false);
   const [investigationReports, setCheckBox12] = useState(false);
-      {/* //   {text: 'Claim form duly signed'}, */}
-{/* //   {text: 'Copy of the claim intimation, if any'},
-//   {text: 'Hospital main bill'},
-//   {text: 'Hospital Break-up bill'},
-//   {text: 'Hospital bill payment receipt'},
-//   {text: 'Hospital Discharge Summary'},
-//   {text: 'ECH'},
-//   {text: 'Doctor request for investigation'},
-//   {text: 'Doctor Prescription'},
-//   {text: 'Pharmacy Bill'},
-//   {text: 'Others'},
-//   {text: 'Investigation reports including(including CT/MRI/USG/HPE)'}, */}
+  // const [calculation, setCalculation] = useState(0);
 
-
+  console.log('total', totalClaim);
+  console.log('totalClaimValue', totalClaimValue);
   return (
     <View>
       <Text style={{marginLeft: 15, fontSize: 16, marginTop: 10}}>
@@ -79,9 +70,13 @@ const ClaimDetail = (props) => {
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
               value={preHospitalizationExpenses}
-              keyboardType={'default'}
+              keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
-              onChangeText={(text) => setPreHospitalizationExpenses(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setPreHospitalizationExpenses(text), setTotalClaim(text))
+                  : null
+              }
               testID="editPreHospitalizationExpenses"
             />
           </Item>
@@ -101,7 +96,14 @@ const ClaimDetail = (props) => {
               value={hospitalizationExpenses}
               keyboardType={'default'}
               //   editable={employeeId == undefined ? true : false}
-              onChangeText={(text) => setHospitalizationExpenses(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setHospitalizationExpenses(text),
+                    setTotalClaim(
+                      parseInt(text) + parseInt(preHospitalizationExpenses),
+                    ))
+                  : null
+              }
               testID="editHospitalizationExpenses"
             />
           </Item>
@@ -122,7 +124,16 @@ const ClaimDetail = (props) => {
               value={postHospitalizationExpenses}
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
-              onChangeText={(text) => setPostHospitalizationExpenses(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setPostHospitalizationExpenses(text),
+                    setTotalClaim(
+                      parseInt(text) +
+                        parseInt(preHospitalizationExpenses) +
+                        parseInt(hospitalizationExpenses),
+                    ))
+                  : null
+              }
               testID="editPostHospitalizationExpenses"
             />
           </Item>
@@ -142,7 +153,17 @@ const ClaimDetail = (props) => {
               value={healthCheckupCost}
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
-              onChangeText={(cost) => setHealthCheckupCost(cost)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setHealthCheckupCost(text),
+                    setTotalClaim(
+                      parseInt(text) +
+                        parseInt(preHospitalizationExpenses) +
+                        parseInt(hospitalizationExpenses) +
+                        parseInt(postHospitalizationExpenses),
+                    ))
+                  : null
+              }
               testID="editHealthCheckupCost"
             />
           </Item>
@@ -162,7 +183,18 @@ const ClaimDetail = (props) => {
               value={ambulanceCharges}
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
-              onChangeText={(charges) => setAmbulanceCharges(charges)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setAmbulanceCharges(text),
+                    setTotalClaim(
+                      parseInt(text) +
+                        parseInt(preHospitalizationExpenses) +
+                        parseInt(hospitalizationExpenses) +
+                        parseInt(postHospitalizationExpenses) +
+                        parseInt(healthCheckupCost),
+                    ))
+                  : null
+              }
               testID="editAmbulanceCharges"
             />
           </Item>
@@ -182,7 +214,19 @@ const ClaimDetail = (props) => {
               value={othersCode}
               keyboardType={'number-pad'}
               //   editable={employeeId == undefined ? true : false}
-              onChangeText={(text) => setOthersCode(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setOthersCode(text),
+                    setTotalClaim(
+                      parseInt(text) +
+                        parseInt(preHospitalizationExpenses) +
+                        parseInt(hospitalizationExpenses) +
+                        parseInt(postHospitalizationExpenses) +
+                        parseInt(healthCheckupCost) +
+                        parseInt(ambulanceCharges),
+                    ))
+                  : null
+              }
               testID="editOthersCode"
             />
           </Item>
@@ -199,9 +243,10 @@ const ClaimDetail = (props) => {
               placeholder="Enter TOTAL"
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
-              value={totalClaim}
+              value={String(totalClaim)}
+              editable={false}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setTotalClaim(text)}
+              onChangeText={(test) => setTotalClaim(test)}
               testID="editTotalClaim"
             />
           </Item>
@@ -220,7 +265,11 @@ const ClaimDetail = (props) => {
               returnKeyType={'next'}
               value={preHospitalizationPeriod}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setPreHospitalizationPeriod(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? setPreHospitalizationPeriod(text)
+                  : null
+              }
               testID="editPreHospitalizationPeriod"
             />
           </Item>
@@ -239,7 +288,11 @@ const ClaimDetail = (props) => {
               returnKeyType={'next'}
               value={postHospitalizationPeriod}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setPostHospitalizationPeriod(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? setPostHospitalizationPeriod(text)
+                  : null
+              }
               testID="editPostHospitalizationPeriod"
             />
           </Item>
@@ -297,7 +350,12 @@ const ClaimDetail = (props) => {
               returnKeyType={'next'}
               value={hospitalDailyCash}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setHospitalDailyCash(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setHospitalDailyCash(text),
+                    setTotalClaimValue(parseInt(text)))
+                  : null
+              }
               testID="editHospitalDailyCash"
             />
           </Item>
@@ -316,7 +374,14 @@ const ClaimDetail = (props) => {
               returnKeyType={'next'}
               value={surgicalCash}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setSurgicalCash(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setSurgicalCash(text), setTotalClaimValue(
+                    parseInt(text) +
+                      parseInt(hospitalDailyCash) 
+                  ))
+                  : null
+              }
               testID="editSurgicalCash"
             />
           </Item>
@@ -335,7 +400,15 @@ const ClaimDetail = (props) => {
               returnKeyType={'next'}
               value={criticalIllness}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setCriticalIllness(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setCriticalIllness(text), setTotalClaimValue(
+                    parseInt(text) +
+                      parseInt(hospitalDailyCash) +
+                      parseInt(surgicalCash)
+                  ))
+                  : null
+              }
               testID="editCriticalIllness"
             />
           </Item>
@@ -354,7 +427,14 @@ const ClaimDetail = (props) => {
               returnKeyType={'next'}
               value={convalescence}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setConvalescence(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setConvalescence(text), setTotalClaimValue(
+                    parseInt(text) +
+                      parseInt(hospitalDailyCash) +
+                      parseInt(surgicalCash)+parseInt(criticalIllness)))
+                  : null
+              }
               testID="editConvalescence"
             />
           </Item>
@@ -373,7 +453,14 @@ const ClaimDetail = (props) => {
               returnKeyType={'next'}
               value={lumsumBenefit}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setLumsumBenefit(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setLumsumBenefit(text), setTotalClaimValue(
+                    parseInt(text) +
+                      parseInt(hospitalDailyCash) +
+                      parseInt(surgicalCash)+parseInt(criticalIllness)+parseInt(convalescence)))
+                  : null
+              }
               testID="editLumsumBenefit"
             />
           </Item>
@@ -392,7 +479,14 @@ const ClaimDetail = (props) => {
               returnKeyType={'next'}
               value={others}
               keyboardType={'number-pad'}
-              onChangeText={(text) => setOthers(text)}
+              onChangeText={(text) =>
+                acceptNumbersOnly(text) == true || text === ''
+                  ? (setOthers(text), setTotalClaimValue(
+                    parseInt(text) +
+                      parseInt(hospitalDailyCash) +
+                      parseInt(surgicalCash)+parseInt(criticalIllness)+parseInt(convalescence)+parseInt(lumsumBenefit10)))
+                  : null
+              }
               testID="editOthers"
             />
           </Item>
@@ -409,7 +503,8 @@ const ClaimDetail = (props) => {
               placeholder="Enter in Rs"
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
-              value={totalClaimValue}
+              value={String(totalClaimValue)}
+              editable={false}
               keyboardType={'number-pad'}
               onChangeText={(text) => setTotalClaimValue(text)}
               testID="editTotalClaimValue"
@@ -428,7 +523,7 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={claimFormDulySigned ? true : false}
-          checked={claimFormDulySigned==true}
+          checked={claimFormDulySigned == true}
           onPress={() => setCheckBox1(true)}
           testID="selectCheckBox1"
         />
@@ -444,11 +539,13 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={copyOfClaimIntimation ? true : false}
-          checked={copyOfClaimIntimation==true}
+          checked={copyOfClaimIntimation == true}
           onPress={() => setCheckBox2(true)}
           testID="selectCheckBox2"
         />
-        <Text style={styles.flatlistText}>Copy of the claim intimation, if any</Text>
+        <Text style={styles.flatlistText}>
+          Copy of the claim intimation, if any
+        </Text>
       </View>
       <View
         style={{
@@ -460,7 +557,7 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={hospitalMainBill ? true : false}
-          checked={hospitalMainBill==true}
+          checked={hospitalMainBill == true}
           onPress={() => setCheckBox3(true)}
           testID="selectCheckBox3"
         />
@@ -476,7 +573,7 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={hospitalBreakupBill ? true : false}
-          checked={hospitalBreakupBill==true}
+          checked={hospitalBreakupBill == true}
           onPress={() => setCheckBox4(true)}
           testID="selectCheckBox4"
         />
@@ -492,7 +589,7 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={hospitalBillPaymentReceipt ? true : false}
-          checked={hospitalBillPaymentReceipt==true}
+          checked={hospitalBillPaymentReceipt == true}
           onPress={() => setCheckBox5(true)}
           testID="selectCheckBox5"
         />
@@ -508,10 +605,9 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={hospitalDischargeSummary ? true : false}
-          checked={hospitalDischargeSummary==true}
+          checked={hospitalDischargeSummary == true}
           onPress={() => setCheckBox6(true)}
           testID="selectCheckBox6"
-
         />
         <Text style={styles.flatlistText}>Hospital Discharge Summary</Text>
       </View>
@@ -525,7 +621,7 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={ecg ? true : false}
-          checked={ecg==true}
+          checked={ecg == true}
           onPress={() => setCheckBox7(true)}
           testID="selectCheckBox7"
         />
@@ -541,11 +637,13 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={requestForInvestigation ? true : false}
-          checked={requestForInvestigation==true}
+          checked={requestForInvestigation == true}
           onPress={() => setCheckBox8(true)}
           testID="selectCheckBox8"
         />
-        <Text style={styles.flatlistText}>Doctor request for investigation</Text>
+        <Text style={styles.flatlistText}>
+          Doctor request for investigation
+        </Text>
       </View>
       <View
         style={{
@@ -557,7 +655,7 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={doctorPrescription ? true : false}
-          checked={doctorPrescription==true}
+          checked={doctorPrescription == true}
           onPress={() => setCheckBox9(true)}
           testID="selectCheckBox9"
         />
@@ -573,7 +671,7 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={pharmacyBill ? true : false}
-          checked={pharmacyBill==true}
+          checked={pharmacyBill == true}
           onPress={() => setCheckBox10(true)}
           testID="selectCheckBox10"
         />
@@ -589,7 +687,7 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={OthersClaim ? true : false}
-          checked={OthersClaim==true}
+          checked={OthersClaim == true}
           onPress={() => setCheckBox11(true)}
           testID="selectCheckBox11"
         />
@@ -605,48 +703,50 @@ const ClaimDetail = (props) => {
         <CheckBox
           style={{borderRadius: 5}}
           status={investigationReports ? true : false}
-          checked={investigationReports==true}
+          checked={investigationReports == true}
           onPress={() => setCheckBox12(true)}
           testID="selectCheckBox12"
         />
-        <Text style={styles.flatlistText}>Investigation reports including(including CT/MRI/USG/HPE)</Text>
+        <Text style={styles.flatlistText}>
+          Investigation reports including(including CT/MRI/USG/HPE)
+        </Text>
       </View>
 
       <View style={styles.ButtonView}>
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-           updateClaimDetails({
-                  preHospitalizationExpenses: preHospitalizationExpenses,
-                  hospitalizationExpenses: hospitalizationExpenses,
-                  postHospitalizationExpenses: postHospitalizationExpenses,
-                  healthCheckupCost: healthCheckupCost,
-                  ambulanceCharges: ambulanceCharges,
-                  othersCode: othersCode,
-                  totalClaim: totalClaim,
-                  preHospitalizationPeriod: preHospitalizationPeriod,
-                  postHospitalizationPeriod: postHospitalizationPeriod,
-                  claimForDomiciliaryHospitalization: claimForDomiciliaryHospitalization,
-                  hospitalDailyCash: hospitalDailyCash,
-                  surgicalCash: surgicalCash,
-                  criticalIllness: criticalIllness,
-                  convalescence: convalescence,
-                  lumsumBenefit: lumsumBenefit,
-                  others: others,
-                  totalClaimValue: totalClaimValue,
-                  claimFormDulySigned:claimFormDulySigned,
-                  copyOfClaimIntimation:copyOfClaimIntimation,
-                  hospitalMainBill:hospitalMainBill,
-                  hospitalBreakupBill:hospitalBreakupBill,
-                  hospitalBillPaymentReceipt:hospitalBillPaymentReceipt,
-                  hospitalDischargeSummary:hospitalDischargeSummary,
-                  ecg:ecg,
-                  requestForInvestigation:requestForInvestigation,
-                  doctorPrescription:doctorPrescription,
-                  pharmacyBill:pharmacyBill,
-                  OthersClaim:OthersClaim,
-                  investigationReports:investigationReports
-                })
+            updateClaimDetails({
+              preHospitalizationExpenses: preHospitalizationExpenses,
+              hospitalizationExpenses: hospitalizationExpenses,
+              postHospitalizationExpenses: postHospitalizationExpenses,
+              healthCheckupCost: healthCheckupCost,
+              ambulanceCharges: ambulanceCharges,
+              othersCode: othersCode,
+              totalClaim: totalClaim,
+              preHospitalizationPeriod: preHospitalizationPeriod,
+              postHospitalizationPeriod: postHospitalizationPeriod,
+              claimForDomiciliaryHospitalization: claimForDomiciliaryHospitalization,
+              hospitalDailyCash: hospitalDailyCash,
+              surgicalCash: surgicalCash,
+              criticalIllness: criticalIllness,
+              convalescence: convalescence,
+              lumsumBenefit: lumsumBenefit,
+              others: others,
+              totalClaimValue: totalClaimValue,
+              claimFormDulySigned: claimFormDulySigned,
+              copyOfClaimIntimation: copyOfClaimIntimation,
+              hospitalMainBill: hospitalMainBill,
+              hospitalBreakupBill: hospitalBreakupBill,
+              hospitalBillPaymentReceipt: hospitalBillPaymentReceipt,
+              hospitalDischargeSummary: hospitalDischargeSummary,
+              ecg: ecg,
+              requestForInvestigation: requestForInvestigation,
+              doctorPrescription: doctorPrescription,
+              pharmacyBill: pharmacyBill,
+              OthersClaim: OthersClaim,
+              investigationReports: investigationReports,
+            })
           }
           testID="submitDetails4">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>

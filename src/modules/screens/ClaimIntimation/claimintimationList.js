@@ -324,7 +324,7 @@ class ClaimIntimationList extends PureComponent {
                           </Row>
                           <View style={{ justifyContent: "flex-end", alignItems: 'flex-end', marginTop: 10, marginBottom: 5 }}>
                             <TouchableOpacity style={{ backgroundColor: primaryColor, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }} onPress={() => { this.props.navigation.navigate('SubmitClaim',{claimListData:item}) }}>
-                              <Text style={{ color: "#fff" }}>Submit Claim</Text>
+                              <Text style={{ color: "#fff" }}>Create Claim</Text>
                             </TouchableOpacity>
                           </View>
                           {/* <Row style={{ marginTop: 5 }}>
@@ -452,7 +452,7 @@ class ClaimIntimationList extends PureComponent {
                   alignItems: 'center',
                   textAlign: 'center',
                 }}>
-                No claim intimation list found!
+               {translate('No claim intimation list found!')} 
               </Text>
               <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, bottom: 85 }} />
             </View>

@@ -1099,7 +1099,7 @@ export const corporateUserSideBarMenuList = [
           },
           {
             name: 'Tele Consultation',
-            routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+            routeName: drawerNavigatorRoutes["Categories"].routeName,
             icon: require('../../../assets/images/drawerIcons/Chat.png'),
             largeIcon: { height: 20, width: 20, }
           },

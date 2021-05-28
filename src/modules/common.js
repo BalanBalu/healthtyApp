@@ -235,9 +235,7 @@ export function getName(data) {
 export function getMemberName(data) {
     let temp = '';
     if (data) {
-      temp = `${data.familyMemberName || ' '} ${data.middleName || ''} ${
-        data.familyMemberLastName || ''
-      }`;
+      temp = `${data.familyMemberName || ' '}`;
     }
 
     return temp;

@@ -29,6 +29,7 @@ import Spinner from '../../../components/Spinner';
 import { validateEmailAddress } from '../../common';
 import { memberEmailValidation } from '../../providers/corporate/corporate.actions';
 import ModalPopup from '../../../components/Shared/ModalPopup';
+import {translate} from '../../../setup/translator.helper';
 
 let loginData;
 class UpdateEmail extends Component {
@@ -64,7 +65,7 @@ class UpdateEmail extends Component {
     try {
       if (validateEmailAddress(this.state.emailId) == false) {
         this.setState({
-          errorMsg: 'Kindly enter valid mail id', isModalVisible: true,
+          errorMsg: translate('Kindly enter valid mail id'), isModalVisible: true,
         });
         return false;
       }
@@ -95,8 +96,8 @@ class UpdateEmail extends Component {
       <Container style={styles.container}>
         <Content contentContainerStyle={styles.bodyContent}>
           <ScrollView>
-            <View style={{ marginTop: 30 }}>
-              <Text style={styles.headerText}>Update Email</Text>
+            <View style={{marginTop: 30}}>
+              <Text style={styles.headerText}>{translate("Update Email")}</Text>
 
               <Card style={styles.cardEmail}>
                 <Item
@@ -109,14 +110,14 @@ class UpdateEmail extends Component {
                       marginTop: 5,
                       marginLeft: 7,
                     }}>
-                    Email
+                    {translate("Email")}
                   </Text>
                 </Item>
 
                 <Item style={{ borderBottomWidth: 0 }}>
                   <Icon name="mail" style={styles.centeredIcons}></Icon>
                   <Input
-                    placeholder="Edit Your Email"
+                    placeholder={translate("Edit Your Email")}
                     style={styles.transparentLabel}
                     keyboardType="email-address"
                     onChangeText={(emailId) => this.setState({ emailId, updateButton: false })}
@@ -151,7 +152,7 @@ class UpdateEmail extends Component {
                         style={styles.button2}
                         onPress={() => this.memberEmailValidation()}
                         testID="clickUpdateEmail">
-                        <Text style={styles.buttonText}>Update</Text>
+                        <Text style={styles.buttonText}>{translate("Update")}</Text>
                       </Button>
                     </Right>
                   </Row>
@@ -160,7 +161,7 @@ class UpdateEmail extends Component {
               <View style={{ flex: 1 }}>
                 <ModalPopup
                   errorMessageText={this.state.errorMsg}
-                  closeButtonText={'CLOSE'}
+                  closeButtonText={translate('CLOSE')}
                   closeButtonAction={() =>
                     this.setState({ isModalVisible: !this.state.isModalVisible })
                   }

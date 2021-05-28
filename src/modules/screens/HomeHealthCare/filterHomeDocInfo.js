@@ -5,8 +5,9 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER } from '../../providers/BookAppointmentFlow/action'
 import { connect } from 'react-redux';
 import { store } from '../../../setup/store';
-import {primaryColor} from '../../../setup/config'
-import IconName from 'react-native-vector-icons/MaterialIcons'
+import {primaryColor} from '../../../setup/config';
+import IconName from 'react-native-vector-icons/MaterialIcons';
+import {translate} from '../../../setup/translator.helper'
 
 let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
 let selectedCount = 0
@@ -211,7 +212,7 @@ class FilterDocInfo extends Component {
             <Container style={styles.container}>
                 <Content>
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Gender </Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Gender")} </Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
                             <Col size={3.33} >
@@ -225,7 +226,7 @@ class FilterDocInfo extends Component {
                                         onPress={() => this.clickGenderInButton(1, "M", true)} />
 
                                     <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
-                                    <Text style={styles.genderTextStyles}>Male</Text>
+                                    <Text style={styles.genderTextStyles}>{translate("Male")}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.33} >
@@ -238,7 +239,7 @@ class FilterDocInfo extends Component {
                                         selected={genderIndex === 2 ? true : false}
                                         onPress={() => this.clickGenderInButton(2, "F", true)} />
                                     <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
-                                    <Text style={styles.genderTextStyles}>Female</Text>
+                                    <Text style={styles.genderTextStyles}>{translate("Female")}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.33} >
@@ -250,14 +251,14 @@ class FilterDocInfo extends Component {
                                         standardStyle={true}
                                         selected={genderIndex === 3 ? true : false}
                                         onPress={() => this.clickGenderInButton(3, "O", true)} />
-                                    <Text style={styles.genderTextStyles}>Others</Text>
+                                    <Text style={styles.genderTextStyles}>{translate("Others")}</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Availability Date & Time </Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Availability Date & Time")}</Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
                             <Col size={3}>
                                 <TouchableOpacity
@@ -288,7 +289,7 @@ class FilterDocInfo extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Work Experience</Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Work Experience")}</Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
                             <Col size={2.5}>
                                 <TouchableOpacity
@@ -326,7 +327,7 @@ class FilterDocInfo extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Choose Spoken Languages</Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Choose Spoken Languages")}</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -340,26 +341,28 @@ class FilterDocInfo extends Component {
                                 items={languageList}
                                 uniqueKey='value'
                                 displayKey='value'
-                                selectText='Choose Languages you know'
-                                searchPlaceholderText='Search Your Languages'
+                                selectText={translate('Choose Languages you know')}
+                                searchPlaceholderText={translate('Search Your Languages')}
                                 modalWithTouchable={true}
                                 showDropDowns={true}
                                 hideSearch={false}
                                 showRemoveAll={true}
                                 showChips={false}
                                 readOnlyHeadings={false}
+                                confirmText={translate("Confirm")}
                                 onSelectedItemsChange={this.onSelectedLanguagesChange}
                                 selectedItems={languages}
                                 colors={{ primary: '#18c971' }}
                                 showCancelButton={true}
                                 animateDropDowns={true}
                                 testID='languageSelected'
+                                
                             />
                         </TouchableOpacity>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={styles.headingLabelStyle}>Selected your Specialist</Text>
+                        <Text style={styles.headingLabelStyle}>{translate("Select your Specialist")}</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -373,8 +376,8 @@ class FilterDocInfo extends Component {
                                 items={specialistInfoList}
                                 uniqueKey='value'
                                 displayKey='value'
-                                selectText='Choose your Specialist  '
-                                searchPlaceholderText='Search Your Specialist'
+                                selectText={translate('Choose your Specialist')}
+                                searchPlaceholderText={translate('Search Your Specialist')}
                                 modalWithTouchable={true}
                                 showDropDowns={true}
                                 hideSearch={false}
@@ -388,6 +391,7 @@ class FilterDocInfo extends Component {
                                 showCancelButton={true}
                                 animateDropDowns={true}
                                 testID='languagesSelected'
+                                confirmText={translate("Confirm")}
                             />
                         </TouchableOpacity>
                     </View>
@@ -398,7 +402,7 @@ class FilterDocInfo extends Component {
                                     onPress={this.clearSelectedData}
                                     style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: primaryColor, borderWidth: 0.5 }}>
 
-                                    <Text style={{ color: primaryColor, fontFamily: 'Roboto', fontSize: 13, textAlign: 'center',  }}>Clear Filters</Text>
+                                    <Text style={{ color: primaryColor, fontFamily: 'Roboto', fontSize: 13, textAlign: 'center',  }}>{translate("Clear Filters")}</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 20 }}>
@@ -408,7 +412,7 @@ class FilterDocInfo extends Component {
                                     style={languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.viewDocButtonBgGreeen : styles.viewDocButtonBgGray}
                                     onPress={this.sendFilteredData}
                                 >
-                                    <Text style={languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.enabledApplyTextColor : styles.defaultApplyTextColor}>Apply</Text>
+                                    <Text style={languages.length != 0 || genderSelected || selectedSpecialist.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.enabledApplyTextColor : styles.defaultApplyTextColor}>{translate("Apply")}</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>

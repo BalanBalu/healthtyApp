@@ -8,8 +8,9 @@ import StarRating from "react-native-star-rating";
 import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { renderDoctorImage, getName, getHomeHealthCareUserAddress } from '../../../common';
 import { formatDate, statusValue } from "../../../../setup/helpers";
-import styles from '../Styles'
-import {primaryColor} from '../../../../setup/config'
+import styles from '../Styles';
+import {primaryColor} from '../../../../setup/config';
+import {translate} from '../../../../setup/translator.helper';
 
 export default class RenderAppointmentList extends Component {
     constructor(props) {
@@ -71,17 +72,17 @@ export default class RenderAppointmentList extends Component {
                             <Text style={styles.mainText}>{item.degree}</Text>
                             {item.appointmentResult && item.appointmentResult.patient_location && item.appointmentResult.patient_location.address ?
                                 <View>
-                                    <Text style={[styles.mainText, { color: primaryColor }]}>Visit home address :</Text>
+                                    <Text style={[styles.mainText, { color: primaryColor }]}>{translate("Visit home address :")}</Text>
                                     <Text style={styles.subinnerText} note>{getHomeHealthCareUserAddress(item.appointmentResult.patient_location.address)}
                                     </Text>
                                 </View>
                                 : null}
-                            <Text style={[styles.mainText, { color: primaryColor }]}>Visited On :</Text>
+                            <Text style={[styles.mainText, { color: primaryColor }]}>{translate("Visited On :")}</Text>
                             <Text style={styles.subinnerText} note>
                                 {formatDate(item.appointmentResult.appointment_date, "dddd,MMMM DD-YYYY")} </Text>
                             <Row>
                                 <Col size={4} style={{ justifyContent: 'center' }}>
-                                    <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color,  }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>
+                                    <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color,  }} note>{translate(statusValue[item.appointmentResult.appointment_status].text)}</Text>
                                 </Col>
 
                             </Row>
@@ -92,13 +93,13 @@ export default class RenderAppointmentList extends Component {
                                             <Button style={styles.shareButton}
                                                 onPress={() => onPressNavigateToInsertReviewPage(item, index)}
                                                 testID='navigateInsertReview'>
-                                                <Text style={styles.bookAgain1}>Add Review</Text>
+                                                <Text style={styles.bookAgain1}>{translate("Add Review")}</Text>
                                             </Button>
                                         </Right>
 
                                         <Right style={(styles.marginRight = 5)}>
                                             <Button style={styles.bookingButton} onPress={() => onPressGoToBookAppointmentPage(item)}>
-                                                <Text style={styles.bookAgain1} testID='navigateBookAppointment'>Book Again</Text>
+                                                <Text style={styles.bookAgain1} testID='navigateBookAppointment'>{translate("Book Again")}</Text>
                                             </Button>
                                         </Right>
                                     </Row>
@@ -109,7 +110,7 @@ export default class RenderAppointmentList extends Component {
                                             <Right style={(styles.marginRight = 10)}>
                                                 <Button style={styles.bookingButton} onPress={() => onPressGoToBookAppointmentPage(item)} testID='navigateBookingPage'>
                                                     <Text style={styles.bookAgain1}>
-                                                        Book Again
+                                                        {translate("Book Again")}
 											       </Text>
                                                 </Button>
                                             </Right>

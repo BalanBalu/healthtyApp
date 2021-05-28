@@ -48,6 +48,10 @@ class Forgotpassword extends Component {
         const { userEntry, employeeId, corporateName } = this.state;
         try {
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
+                if (!corporateName) {
+                    this.setState({ errorMessage: "kindly enter your Corporate Name" });
+                    return false
+                }
                 if (!userEntry) {
                     this.setState({ errorMessage: 'Enter your Email' });
                     return false;
@@ -58,10 +62,6 @@ class Forgotpassword extends Component {
                 }
                 if (!employeeId) {
                     this.setState({ errorMessage: "kindly enter your EmployeeId" });
-                    return false
-                }
-                if (!corporateName) {
-                    this.setState({ errorMessage: "kindly enter your Corporate Name" });
                     return false
                 }
             } else {
@@ -95,7 +95,7 @@ class Forgotpassword extends Component {
                         })
                     }
                 } else {
-                    this.setState({ errorMessage: smartHealthReqOtpResponse.message === 'INVALID_CORPORATE' ? 'Entered corporate name is incorrect' : smartHealthReqOtpResponse.message === 'INVALID_USERID' ? 'Entered Email name is incorrect' : smartHealthReqOtpResponse.message === 'INVALID_EMPLOYEEID' ? 'Entered Employee id is incorrect' : 'Invalid credentials' });
+                    this.setState({ errorMessage: smartHealthReqOtpResponse.message === 'INVALID_CORPORATE' ? 'Entered corporate name is incorrect' : smartHealthReqOtpResponse.message === 'INVALID_USERID' ? 'Entered Email ID Is Incorrect' : smartHealthReqOtpResponse.message === 'INVALID_EMPLOYEEID' ? 'Entered Employee id is incorrect' : 'Invalid credentials' });
                 }
             } else {
                 let reqData = {
