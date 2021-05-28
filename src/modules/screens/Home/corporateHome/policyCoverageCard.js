@@ -111,7 +111,7 @@ class PolicyCoverageCard extends React.Component {
                     fontFamily: 'opensans-bold',
                     fontSize: 18,
                   }}>
-                  {memberDetails.firstName ? memberDetails.firstName + ' ' + memberDetails.middleName + ' ' + memberDetails.lastName : ''}
+                    {`${memberDetails.firstName ? memberDetails.firstName + ' ' : ''}${memberDetails.middleName ? memberDetails.middleName + ' ' : ''}${memberDetails.lastName ? memberDetails.lastName : ''}`}
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <Text
