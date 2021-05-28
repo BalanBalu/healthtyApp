@@ -279,7 +279,7 @@ class BookAppoinment extends Component {
     return (
       <Row style={{ justifyContent: 'center', marginTop: 20 }}>
         <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: primaryColor }}>
-          <Text>No Slots Available</Text>
+          <Text>{translate("No Slots Available")}</Text>
           {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'Roboto', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
         </Button>
       </Row>
@@ -413,7 +413,7 @@ class BookAppoinment extends Component {
     if (currentHostpitalId !== previouslyShowedHospitalId && (item.fee != this.showedFee)) {
       if (this.showedFee != null) {
         Toast.show({
-          text: 'Appointment Fee and Hospital Location Updated',
+          text: translate('Appointment Fee and Hospital Location Updated'),
           type: 'warning',
           duration: 3000
         });
@@ -422,7 +422,7 @@ class BookAppoinment extends Component {
     } else if ((item.fee != this.showedFee)) {
       if (this.showedFee != null) {
         Toast.show({
-          text: 'Appointment Fee Updated',
+          text: translate('Appointment Fee Updated'),
           type: 'warning',
           duration: 3000
         });
@@ -430,7 +430,7 @@ class BookAppoinment extends Component {
       this.showedFee = item.fee
     } else if (currentHostpitalId !== previouslyShowedHospitalId) {
       Toast.show({
-        text: 'Hospital Location Changed',
+        text: translate('Hospital Location Changed'),
         type: 'warning',
         duration: 3000
       });
@@ -440,7 +440,7 @@ class BookAppoinment extends Component {
   
     if (!selectedSlotItem) {
       Toast.show({
-        text: 'Please select a slot to continue booking',
+        text: translate('Please select a slot to continue booking'),
         type: 'warning',
         duration: 3000
       })
@@ -913,7 +913,7 @@ getMinVideoChatConsultFee(item) {
             <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: primaryColor, alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
               onPress={() => this.onDateChanged(item)}>
               <Text style={[{ textAlign: 'center', fontSize: 12, fontFamily: 'Roboto' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
-              <Text style={[{ textAlign: 'center', fontSize: 10, fontFamily: 'Roboto', lineHeight: 11 }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
+              <Text style={[{ textAlign: 'center', fontSize: 10, fontFamily: 'Roboto', lineHeight: 11 }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + translate(' Slots Available'): translate('No Slots Available')}</Text>
             </TouchableOpacity>
           </Col>
         } keyExtractor={(item, index) => index.toString()} />

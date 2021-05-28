@@ -15,7 +15,8 @@ import { getHomeTestappointmentByID, updateDocHomeTestappointment } from '../../
 import Spinner from "../../../../components/Spinner";
 import InsertReview from '../Reviews/insertReviews';
 import { RenderProposeNewPopPage } from '../../CommonAll/components';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {translate} from '../../../../setup/translator.helper';
 const DOCTOR_FIELDS = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
 
 class AppointmentDetails extends PureComponent {
@@ -277,24 +278,24 @@ class AppointmentDetails extends PureComponent {
                                     <Row>
                                         <Col size={6}>
                                             <Row style={{ marginTop: 10, marginLeft: 5 }} >
-                                                <Text style={styles.subText1}>Experience</Text>
+                                                <Text style={styles.subText1}>{translate("Experience")}</Text>
                                                 <Text style={styles.subText2}>-</Text>
                                                 <Text note style={styles.subText2}>{getDoctorExperience(doctorData.calulatedExperience)}</Text>
                                             </Row>
                                             <Row style={{ marginTop: 10, marginLeft: 5 }} >
-                                                <Text style={styles.subText1}>Consultation Fee</Text>
+                                                <Text style={styles.subText1}>{translate("Consultation Fee")}</Text>
                                                 <Text style={styles.subText2}>-</Text>
                                                 <Text note style={styles.subText2}>{"Rs." + (paymentDetailsObj.amount ? paymentDetailsObj.amount : 0) + "/-"}</Text>
                                             </Row>
                                             <Row style={{ marginTop: 10, marginLeft: 5 }}>
-                                                <Text style={styles.subText1}>Payment Method</Text>
+                                                <Text style={styles.subText1}>{translate("Payment Method")}</Text>
                                                 <Text style={styles.subText2}>-</Text>
                                                 <Text note style={styles.subText2}>{paymentDetailsObj.payment_method || 0}</Text>
                                             </Row>
                                         </Col>
                                         {data.appointment_status == 'APPROVED' && data.onGoingAppointment === true ?
                                             <Col size={3}>
-                                                <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>ONGOING</Text>
+                                                <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>{translate("ONGOING")}</Text>
                                             </Col>
                                             :
                                             data.appointment_status != undefined &&
@@ -316,13 +317,13 @@ class AppointmentDetails extends PureComponent {
                                         <Row>
                                             <Col size={7}>
                                                 <Row style={{ marginTop: 10 }}>
-                                                    <Text note style={styles.subText3}>Do you need to cancel this appointment ?</Text>
+                                                    <Text note style={styles.subText3}>{translate("Do you need to cancel this appointment ?")}</Text>
                                                 </Row>
                                             </Col>
                                             <Col size={3}>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Button danger style={[styles.postponeButton]} onPress={() => this.onPressNavigateToCancelAppointment()}>
-                                                        <Text style={styles.ButtonText}>CANCEL</Text>
+                                                        <Text style={styles.ButtonText}>{translate("CANCEL")}</Text>
                                                     </Button>
                                                 </Row>
                                             </Col>
@@ -331,20 +332,20 @@ class AppointmentDetails extends PureComponent {
                                             <Row>
                                                 <Col size={4}>
                                                     <Row style={{ marginTop: 10 }}>
-                                                        <Text note style={styles.subText3}>Do you want to accept ?</Text>
+                                                        <Text note style={styles.subText3}>{translate("Do you want to accept ?")}</Text>
                                                     </Row>
                                                 </Col>
                                                 <Col size={3}>
                                                     <Row style={{ marginTop: 10 }}>
                                                         <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressUpdateAppointmentStatus(data, 'APPROVED')}>
-                                                            <Text style={styles.ButtonText}>ACCEPT</Text>
+                                                            <Text style={styles.ButtonText}>{translate("ACCEPT")}</Text>
                                                         </Button>
                                                     </Row>
                                                 </Col>
                                                 <Col size={3}>
                                                     <Row style={{ marginTop: 10 }}>
                                                         <Button danger style={[styles.postponeButton]} onPress={() => this.onPressNavigateToCancelAppointment()}>
-                                                            <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
+                                                            <Text capitalise={true} style={styles.ButtonText}>{translate("CANCEL")}</Text>
                                                         </Button>
                                                     </Row>
                                                 </Col></Row> : null : null}
@@ -381,7 +382,7 @@ class AppointmentDetails extends PureComponent {
                                             <Icon name="ios-medkit" style={{ fontSize: 20, }} />
                                         </Col>
                                         <Col style={{ width: '92%', paddingTop: 5 }}>
-                                            <Text style={styles.innerSubText}>Disease</Text>
+                                            <Text style={styles.innerSubText}>{translate("Disease")}</Text>
                                             <Text note style={styles.subTextInner1}>{data.disease_description || ''}</Text>
                                         </Col>
                                     </Row>
@@ -391,7 +392,7 @@ class AppointmentDetails extends PureComponent {
                                                 <Icon name="location-sharp" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
-                                                <Text style={styles.innerSubText}>Patient Address</Text>
+                                                <Text style={styles.innerSubText}>{translate("Patient Address")}</Text>
                                                 <Text note style={styles.subTextInner1}>{getHomeHealthCareUserAddress(data.patient_location.address)}</Text>
                                             </Col>
                                         </Row>
@@ -402,7 +403,7 @@ class AppointmentDetails extends PureComponent {
                                                 <Icon name="location-sharp" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
-                                                <Text style={styles.innerSubText}>Patient Details</Text>
+                                                <Text style={styles.innerSubText}>{translate("Patient Details")}</Text>
                                                 <FlatList
                                                     data={data.patient_data}
                                                     renderItem={({ item, index }) =>
@@ -411,7 +412,7 @@ class AppointmentDetails extends PureComponent {
                                                                 <Col size={8}>
                                                                     <Row>
                                                                         <Col size={2}>
-                                                                            <Text style={styles.commonText}>Name</Text>
+                                                                            <Text style={styles.commonText}>{translate("Name")}</Text>
                                                                         </Col>
                                                                         <Col size={.5}>
                                                                             <Text style={styles.commonText}>-</Text>
@@ -426,7 +427,7 @@ class AppointmentDetails extends PureComponent {
                                                                 <Col size={10}>
                                                                     <Row>
                                                                         <Col size={2}>
-                                                                            <Text style={styles.commonText}>Age</Text>
+                                                                            <Text style={styles.commonText}>{translate("Age")}</Text>
                                                                         </Col>
                                                                         <Col size={.5}>
                                                                             <Text style={styles.commonText}>-</Text>
@@ -446,11 +447,11 @@ class AppointmentDetails extends PureComponent {
                                             <Icon name="ios-document" style={{ fontSize: 20, }} />
                                         </Col>
                                         <Col style={{ width: '92%', paddingTop: 5 }}>
-                                            <Text style={styles.innerSubText}>Payment Report</Text>
+                                            <Text style={styles.innerSubText}>{translate("Payment Report")}</Text>
                                             {reportData != null ?
                                                 <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
                                                     <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'HOME_HEALTHCARE' }) }}>
-                                                        <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
+                                                        <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>{translate("You have raised Report for this appointment")}</Text>
                                                         <Row>
                                                             <Col size={9}>
                                                                 <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
@@ -470,7 +471,7 @@ class AppointmentDetails extends PureComponent {
                                                                 prevState: this.props.navigation.state
                                                             })
                                                         }}>
-                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'opensans-bold',textAlign: 'center', marginTop: 5 }}>Report Issue</Text>
+                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'opensans-bold',textAlign: 'center', marginTop: 5 }}>{translate("Report Issue")}</Text>
                                                     </TouchableOpacity>
                                                 </View>}
                                         </Col>
@@ -481,7 +482,7 @@ class AppointmentDetails extends PureComponent {
                                                 <Icon name="ios-medkit" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
-                                                <Text style={styles.innerSubText}>Review</Text>
+                                                <Text style={styles.innerSubText}>{translate("Review")}</Text>
                                                 <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                                     disabled={false}
                                                     maxStars={5}
@@ -495,11 +496,11 @@ class AppointmentDetails extends PureComponent {
                                                 <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
                                             </Col>
                                             <Col style={{ width: '92%', paddingTop: 5 }}>
-                                                <Text style={styles.innerSubText}>Add Feedback</Text>
+                                                <Text style={styles.innerSubText}>{translate("Add Feedback")}</Text>
                                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                                     <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.setState({ isVisibleAddReviewPop: true })}
                                                         testID='addFeedBack'>
-                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 5 }}>Add Feedback</Text>
+                                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'opensans-bold', textAlign: 'center', marginTop: 5 }}>{translate("Add Feedback")}</Text>
                                                         <MaterialIcons name="create" style={{ fontSize: 15, marginTop: 3, marginLeft: 5, color: '#fff' }}></MaterialIcons>
                                                     </TouchableOpacity>
                                                 </View>
@@ -511,10 +512,10 @@ class AppointmentDetails extends PureComponent {
                                             <Icon name="ios-cash" style={{ fontSize: 20, }} />
                                         </Col>
                                         <Col style={{ width: '92%', paddingTop: 5 }}>
-                                            <Text style={styles.innerSubText}>Payment Info</Text>
+                                            <Text style={styles.innerSubText}>{translate("Payment Info")}</Text>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col style={{ width: '60%' }}>
-                                                    <Text style={styles.downText}>Total Fee
+                                                    <Text style={styles.downText}>{translate("Total Fee")}
                                                  </Text>
                                                 </Col>
                                                 <Col style={{ width: '15%' }}>
@@ -528,7 +529,7 @@ class AppointmentDetails extends PureComponent {
                                                 paymentDetailsObj.coupon_code_discount_amount ?
                                                     <Row style={{ marginTop: 10 }}>
                                                         <Col style={{ width: '60%' }}>
-                                                            <Text style={styles.downText}>coupon code discount amount
+                                                            <Text style={styles.downText}>{translate("coupon code discount amount")}
                 </Text>
                                                         </Col>
                                                         <Col style={{ width: '15%' }}>
@@ -543,7 +544,7 @@ class AppointmentDetails extends PureComponent {
                                                 paymentDetailsObj.credit_point_discount_amount ?
                                                     <Row style={{ marginTop: 10 }}>
                                                         <Col style={{ width: '60%' }}>
-                                                            <Text style={styles.downText}>credit point discount amount
+                                                            <Text style={styles.downText}>{translate("credit point discount amount")}
                 </Text>
                                                         </Col>
                                                         <Col style={{ width: '15%' }}>
@@ -556,7 +557,7 @@ class AppointmentDetails extends PureComponent {
                                             }
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col style={{ width: '60%' }}>
-                                                    <Text style={styles.downText}>Payment Made
+                                                    <Text style={styles.downText}>{translate("Payment Made")}
                                              </Text>
                                                 </Col>
                                                 <Col style={{ width: '15%' }}>
@@ -568,7 +569,7 @@ class AppointmentDetails extends PureComponent {
                                             </Row>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col style={{ width: '60%' }}>
-                                                    <Text style={styles.downText}>Payment Due
+                                                    <Text style={styles.downText}>{translate("Payment Due")}
                                               </Text>
                                                 </Col>
                                                 <Col style={{ width: '15%' }}>
@@ -580,7 +581,7 @@ class AppointmentDetails extends PureComponent {
                                             </Row>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col style={{ width: '60%' }}>
-                                                    <Text style={styles.downText}>Payment Method
+                                                    <Text style={styles.downText}>{translate("Payment Method")}
                                             </Text></Col>
                                                 <Col style={{ width: '15%' }}>
                                                     <Text style={styles.downText}>-</Text>

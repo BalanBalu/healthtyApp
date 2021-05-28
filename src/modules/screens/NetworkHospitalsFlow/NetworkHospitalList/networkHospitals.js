@@ -13,6 +13,7 @@ import { NavigationEvents } from 'react-navigation';
 import { primaryColor } from '../../../../setup/config'
 import { HospitalDrawing } from '../../Home/corporateHome/svgDrawings';
 import { debounce } from '../../../common';
+import {translate} from '../../../../setup/translator.helper';
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
@@ -207,7 +208,7 @@ class NetworkHospitals extends Component {
                 this.isEnabledLoadMoreData = true;
                 this.incrementPaginationCount = 0;
                 this.hospitalInfoListArray = [];
-                await this.setState({ isFromMapBox, selectedLocCoOrdinates, selectedCityName, isLoadingOnChangeHospitalList: true, hospitalInfoList: [] , selectedHospitalData: null, showFullInfoCard: -1,})
+                await this.setState({ isFromMapBox, selectedLocCoOrdinates, selectedCityName, isLoadingOnChangeHospitalList: true, hospitalInfoList: [], selectedHospitalData: null, showFullInfoCard: -1, })
                 await this.searchByNetworkHospitalDetails();
             }
         }
@@ -232,7 +233,7 @@ class NetworkHospitals extends Component {
     render() {
         const { visibleClearIcon, hospitalInfoList, isLoadingMoreHospitalList, enableSearchIcon, isLoading, isLoadingOnChangeHospitalList, selectedCityName, isFromMapBox } = this.state;
         const { bookappointment: { isLocationSelected, patientSearchLocationName, isSearchByCurrentLocation } } = this.props;
-        const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'Showing Hospitals in Near Current Location' : 'Showing Hospitals in ' + patientSearchLocationName + ' City' : 'Please Choose your Location in Map';
+        const locationText = isLocationSelected ? isSearchByCurrentLocation ? 'Showing Hospitals By Current Location' : 'Showing Hospitals In ' + patientSearchLocationName + ' City' : 'Please Choose your Location In Map';
         if (isLoading) return <Loader style='newList' />;
         return (
             <Container>
@@ -356,7 +357,7 @@ class NetworkHospitals extends Component {
                                 fontFamily: "Roboto",
                                 fontSize: 15,
                                 marginTop: "10%"
-                            }} > No Hospitals list found!</Text>
+                            }} >{translate('No Hospitals list found!')}</Text>
                             <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, top: 297 }} />
 
                         </View>

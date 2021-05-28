@@ -452,7 +452,7 @@ class ClaimIntimationList extends PureComponent {
                   alignItems: 'center',
                   textAlign: 'center',
                 }}>
-                No claim intimation list found!
+               {translate('No claim intimation list found!')} 
               </Text>
               <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, bottom: 85 }} />
             </View>

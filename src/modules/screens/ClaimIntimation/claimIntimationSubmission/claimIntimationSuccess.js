@@ -3,6 +3,7 @@ import { Container, Content, Text, Button, Card, Icon } from 'native-base';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import styles from '../Styles';
+import {translate} from '../../../../setup/translator.helper';
 
 export default class ClaimPaymentSuccess extends PureComponent {
     constructor(props) {
@@ -18,7 +19,7 @@ export default class ClaimPaymentSuccess extends PureComponent {
                             <View style={{ alignItems: 'center', marginTop: 15 }}>
                                 <Icon name="checkmark-circle" style={styles.circleIcon} />
                             </View>
-                            <Text style={styles.successHeading}>SUCCESS</Text>
+                            <Text style={styles.successHeading}>{translate("SUCCESS")}</Text>
                             <Text style={styles.subText}>{ this.props.navigation.getParam('successMsg') ? this.props.navigation.getParam('successMsg') : null}  <Text style={{
                                     textAlign: 'center',
                                     fontFamily: 'Roboto',
@@ -33,7 +34,7 @@ export default class ClaimPaymentSuccess extends PureComponent {
                         </Card>
                         <Button onPress={() => this.props.navigation.navigate('CorporateHome')}
                             block style={{ marginTop: 5, borderRadius: 10, marginBottom: 10, backgroundColor: '#5bb85d' }}>
-                            <Text style={styles.customizedText}> Home </Text>
+                            <Text style={styles.customizedText}> {translate("Home")} </Text>
                         </Button>
                     </Content>
                 </ScrollView>
