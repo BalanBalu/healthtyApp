@@ -3,7 +3,9 @@ import {
   Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
   Grid, Toast, KeyboardAvoidingView, Icon, Row, Card, Label, Left, Col, Radio
 } from 'native-base';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import LinearGradient from 'react-native-linear-gradient';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image, TouchableOpacity, View, ScrollView, ImageBackground, Pressable } from 'react-native';
 import { login, RESET_REDIRECT_NOTICE,SmartHealthlogin } from '../../providers/auth/auth.actions';
@@ -231,21 +233,22 @@ class Login extends Component {
                    </View>
                    
 </Form>
-<View style={{display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30}}>
-                   <Pressable style={{ elevation: 8,
+
+<LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={{display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
     backgroundColor: "#128283",
     borderColor: '#128283',
-    borderWidth: 2,
+    borderWidth: 0,
     borderRadius: 30,
     paddingVertical: 15,
     paddingHorizontal: 67}}>
+                   <Pressable style={{ }}>
                         <Text style={{  fontSize: 18,
     color: "#fff",
     fontFamily: 'opensans-bold',
     alignSelf: "center",
 }}>Create Account</Text>
                 </Pressable>
-                </View>
+                </LinearGradient>
       </View>
      
      
