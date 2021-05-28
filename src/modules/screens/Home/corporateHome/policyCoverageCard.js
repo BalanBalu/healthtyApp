@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
 import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions';
 import { getPolicyByPolicyNo } from '../../../providers/policy/policy.action';
+import {arrangeFullName} from '../../../common';
 class PolicyCoverageCard extends React.Component {
   constructor(props) {
     super(props);
@@ -111,7 +112,7 @@ class PolicyCoverageCard extends React.Component {
                     fontFamily: 'opensans-bold',
                     fontSize: 18,
                   }}>
-                    {`${memberDetails.firstName ? memberDetails.firstName + ' ' : ''}${memberDetails.middleName ? memberDetails.middleName + ' ' : ''}${memberDetails.lastName ? memberDetails.lastName : ''}`}
+                    {arrangeFullName(memberDetails&&memberDetails.firstName,memberDetails&&memberDetails.middleName,memberDetails&&memberDetails.lastName)}
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <Text

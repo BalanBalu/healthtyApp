@@ -9,7 +9,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff, formatDate, subTimeUnit } from '../../../../setup/helpers';
-import { getAddress } from '../../../common'
+import { getAddress,arrangeFullName } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import {primaryColor} from '../../../../setup/config'
 
@@ -85,7 +85,7 @@ class LabConfirmation extends Component {
 
             this.defaultPatientDetails = {
                 type: 'self',
-                full_name: result.first_name + " " + result.last_name,
+                full_name:arrangeFullName(result&&result.first_name,result&&result.last_name) ,
                 gender: result.gender,
                 age: parseInt(dateDiff(result.dob, new Date(), 'years'))
             }

@@ -35,7 +35,7 @@ class NetworkHospitals extends Component {
         }
         this.onChangeCallByNetworkHospList = debounce(this.onChangeCallByNetworkHospList, 300);
         this.isEnabledLoadMoreData = true;
-        this.incrementPaginationCount = 0;
+        this.incrementPaginationCount = 1;
         this.hospitalInfoListArray = [];
         this.navigationPage = props.navigation.getParam('navigationPage') || null;
         this.selectedTpaInfoObj = props.profile && props.profile.memberTpaInfo || null;
@@ -73,9 +73,10 @@ class NetworkHospitals extends Component {
             // }
             if (this.selectedTpaCode) reqData4ServiceCall.tpaCode = this.selectedTpaCode;
             if (this.state.visibleClearIcon) reqData4ServiceCall.enteredText = this.state.visibleClearIcon;
-            const getHospitalList = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
+            const getHospitalResp = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
+            const getHospitalList = getHospitalResp && getHospitalResp.docs;
             if (getHospitalList && getHospitalList.length) {
-                this.incrementPaginationCount = this.incrementPaginationCount + PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST;
+                this.incrementPaginationCount = this.incrementPaginationCount + 1;
                 this.hospitalInfoListArray = [...this.hospitalInfoListArray, ...getHospitalList];
                 this.setState({ hospitalInfoList: this.hospitalInfoListArray })
             }
@@ -178,7 +179,7 @@ class NetworkHospitals extends Component {
     onChangeCallByNetworkHospList = async () => {
         try {
             this.isEnabledLoadMoreData = true;
-            this.incrementPaginationCount = 0;
+            this.incrementPaginationCount = 1;
             this.hospitalInfoListArray = [];
             this.setState({ isLoadingOnChangeHospitalList: true, hospitalInfoList: [] });
             await this.searchByNetworkHospitalDetails()
@@ -206,7 +207,7 @@ class NetworkHospitals extends Component {
                 const selectedCityName = navigation.getParam('selectedCityName') || '';
                 const selectedLocCoOrdinates = navigation.getParam('coordinates') || null;
                 this.isEnabledLoadMoreData = true;
-                this.incrementPaginationCount = 0;
+                this.incrementPaginationCount = 1;
                 this.hospitalInfoListArray = [];
                 await this.setState({ isFromMapBox, selectedLocCoOrdinates, selectedCityName, isLoadingOnChangeHospitalList: true, hospitalInfoList: [], selectedHospitalData: null, showFullInfoCard: -1, })
                 await this.searchByNetworkHospitalDetails();
