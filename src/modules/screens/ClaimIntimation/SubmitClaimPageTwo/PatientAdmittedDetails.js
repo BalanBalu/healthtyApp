@@ -206,22 +206,22 @@ const PatientAdmittedDetails = (props) => {
                 return false
             }
             if (timeOfAdmissionHours === '' || timeOfAdmissionHours === 'Select') {
-                seterrorMsg('Please enter admission type')
+                seterrorMsg('Please enter time of admission hours')
                 setisModalVisible(true)
                 return false
             }
             if (timeOfAdmissionMinute === '' || timeOfAdmissionMinute === 'Select') {
-                seterrorMsg('Please enter admission type')
+                seterrorMsg('Please enter time of admission minutes')
                 setisModalVisible(true)
                 return false
             }
             if (timeOfDischargeHours === '' || timeOfDischargeHours === 'Select') {
-                seterrorMsg('Please enter admission type')
+                seterrorMsg('Please enter time of discharge hours')
                 setisModalVisible(true)
                 return false
             }
             if (timeOfDischargeMinute === '' || timeOfDischargeMinute === 'Select') {
-                seterrorMsg('Please enter admission type')
+                seterrorMsg('Please enter time of discharge minutes')
                 setisModalVisible(true)
                 return false
             }

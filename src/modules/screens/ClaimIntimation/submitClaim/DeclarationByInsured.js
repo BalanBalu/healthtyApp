@@ -5,7 +5,7 @@ import {Col, Row} from 'react-native-easy-grid';
 import styles from '../Styles';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {subTimeUnit, formatDate} from '../../../../setup/helpers';
-import {toastMeassage} from '../../../common';
+import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 const DeclarationByInsured = (props) => {
   const {updateDeclarationByInsuredDetails} = props;
@@ -24,6 +24,28 @@ const DeclarationByInsured = (props) => {
   const openPicker = () => {
     setIsVisible(true);
   };
+
+  const submitData = () => {
+    if (insuredPlace != '' && dateOfHospitalization != '') {
+      updateDeclarationByInsuredDetails({
+        insuredPlace: insuredPlace,
+        dateOfHospitalization: dateOfHospitalization,
+        signatureOfInsures: signatureOfInsures,
+      });
+    } else {
+      if (insuredPlace === '') {
+        seterrorMsg('Please enter insured place');
+        setisModalVisible(true);
+        return false;
+      }
+      if (dateOfHospitalization === '') {
+        seterrorMsg('Please choose date Of hospitalization');
+        setisModalVisible(true);
+        return false;
+      }
+    }
+  };
+
   return (
     <View>
       <Text style={{padding: 8, fontSize: 14}}>
@@ -55,7 +77,6 @@ const DeclarationByInsured = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setInsuredPlace(text)}
               testID="editInsuredPlace"
-
             />
           </Item>
         </Col>
@@ -69,9 +90,8 @@ const DeclarationByInsured = (props) => {
           <Item regular style={{borderRadius: 6, height: 35}}>
             <TouchableOpacity
               style={{flexDirection: 'row'}}
-              onPress={openPicker}         
-               testID="chooseDateOfHospitalization"
-              >
+              onPress={openPicker}
+              testID="chooseDateOfHospitalization">
               <Icon name="md-calendar" style={styles.calenderStyle} />
               <Text
                 style={
@@ -112,7 +132,6 @@ const DeclarationByInsured = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setSignatureOfInsures(text)}
               testID="editSignatureOfInsures"
-
             />
           </Item>
         </Col>
@@ -120,19 +139,17 @@ const DeclarationByInsured = (props) => {
       <View style={styles.ButtonView}>
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
-          onPress={() =>
-            insuredPlace && dateOfHospitalization && signatureOfInsures
-              ? updateDeclarationByInsuredDetails({
-                  insuredPlace: insuredPlace,
-                  dateOfHospitalization: dateOfHospitalization,
-                  signatureOfInsures: signatureOfInsures,
-                })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')
-          }
+          onPress={() => submitData()}
           testID="submitDetails7">
           <Text style={{color: '#fff'}}>Submit</Text>
         </TouchableOpacity>
       </View>
+      <ModalPopup
+        errorMessageText={errorMsg}
+        closeButtonText={'CLOSE'}
+        closeButtonAction={() => setisModalVisible(false)}
+        visible={isModalVisible}
+      />
     </View>
   );
 };

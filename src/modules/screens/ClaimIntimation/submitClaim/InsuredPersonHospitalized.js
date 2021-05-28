@@ -8,13 +8,14 @@ import {primaryColor} from '../../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {subTimeUnit, formatDate,dateDiff} from '../../../../setup/helpers';
 import {toastMeassage} from '../../../common';
+import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 const InsuredPersonHospitalized = (props) => {
   const {dropdownData, Occupation,updateInsuredPersonHospitalizedDetails} = props;
   const [patientName, setPatientName] = useState('');
   const [patientGender, setPatientGender] = useState();
   const [patientDob, setPatientDob] = useState();
-  const [patientAge, setPatientAge] = useState(dateDiff(patientDob, new Date(), 'years'));
+  const [patientAge, setPatientAge] = useState();
   const [isVisible, setIsVisible] = useState(false);
   const [relationship, setRelationship] = useState('');
   const [relationshipDetail, setRelationshipDetail] = useState('');
@@ -27,7 +28,8 @@ const InsuredPersonHospitalized = (props) => {
   const [patientCountry, setPatientCountry] = useState('');
   const [patientPhoneNumber, setPatientPhoneNumber] = useState('');
   const [patientEmail, setPatientEmail] = useState('');
-
+  const [errorMsg, seterrorMsg] = useState('');
+  const [isModalVisible, setisModalVisible] = useState(false);
   const onPressConfirmDateValue = (date) => {
     setPatientDob(date);
     setIsVisible(false);
@@ -38,6 +40,59 @@ const InsuredPersonHospitalized = (props) => {
 
   const openPicker = () => {
     setIsVisible(true);
+  };
+  const submitData = () => {
+    if (
+      patientName != '' &&
+      patientGender!= ''&&
+      patientAge != '' &&
+      patientDob!= ''&&
+      relationship != '' 
+    ) {
+      updateInsuredPersonHospitalizedDetails({
+        patientName: patientName,
+        patientGender: patientGender,
+        patientAge: patientAge,
+        patientDob: patientDob,
+        relationship: relationship,
+        relationshipDetail: relationshipDetail,
+        occupation: occupation,
+        occupationDetail: occupationDetail,
+        patientAddress: patientAddress,
+        patientNoAndStreet: patientNoAndStreet,
+        patientCity: patientCity,
+        patientState: patientState,
+        patientCountry: patientCountry,
+        patientPhoneNumber: patientPhoneNumber,
+        patientEmail: patientEmail,
+      });
+    } else {
+      if (patientName === '') {
+        seterrorMsg('Please enter patient name');
+        setisModalVisible(true);
+        return false;
+      }
+      if (!patientGender) {
+        seterrorMsg('Please choose patient gender');
+        setisModalVisible(true);
+        return false;
+      }
+      if (!patientDob) {
+        seterrorMsg('Please choose patient dob');
+        setisModalVisible(true);
+        return false;
+      }
+      if (patientAge === '') {
+        seterrorMsg('Please enter patient age');
+        setisModalVisible(true);
+        return false;
+      }
+      if (relationship === '') {
+        seterrorMsg('Please enter relationship');
+        setisModalVisible(true);
+        return false;
+      }
+    }
   };
 
   return (
@@ -105,41 +160,7 @@ const InsuredPersonHospitalized = (props) => {
         </Col>
       </Row>
 
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
-        <Col size={1}>
-          <Text style={styles.text}>
-            Date Of Birth<Text style={{color: 'red'}}>*</Text>
-          </Text>
-
-          <Item regular style={{borderRadius: 6, height: 35}}>
-            <TouchableOpacity
-              style={{flexDirection: 'row'}}
-              onPress={openPicker}
-              testID="editDOB">
-              <Icon name="md-calendar" style={styles.calenderStyle} />
-              <Text
-                style={
-                  patientDob
-                    ? styles.timeplaceHolder
-                    : styles.afterTimePlaceholder
-                }>
-                {patientDob
-                  ? formatDate(patientDob, 'DD/MM/YYYY')
-                  : 'Enter Date of birth of patient'}
-              </Text>
-              <DateTimePicker
-                mode={'date'}
-                // minimumDate={subTimeUnit(new Date(), 7, 'days')}
-                maximumDate={new Date()}
-                value={patientDob}
-                isVisible={isVisible}
-                onConfirm={onPressConfirmDateValue}
-                onCancel={onCancelPicker}
-              />
-            </TouchableOpacity>
-          </Item>
-        </Col>
-      </Row>
+     
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
           <Text style={styles.text}>
@@ -152,7 +173,6 @@ const InsuredPersonHospitalized = (props) => {
               placeholderTextColor={'#CDD0D9'}
               returnKeyType={'next'}
               value={patientAge}
-              editable={false}
               keyboardType={'number-pad'}
               onChangeText={(text) => setPatientAge(text)}
               testID="editAge"
@@ -248,9 +268,7 @@ const InsuredPersonHospitalized = (props) => {
 
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            If other, details<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>If other, details</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -268,9 +286,7 @@ const InsuredPersonHospitalized = (props) => {
 
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            indicate occupation of patient<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>Indicate occupation of patient</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Picker
@@ -317,9 +333,7 @@ const InsuredPersonHospitalized = (props) => {
       </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            If other, details<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>If other, details</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -336,9 +350,7 @@ const InsuredPersonHospitalized = (props) => {
       </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Address<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>Address</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -355,9 +367,7 @@ const InsuredPersonHospitalized = (props) => {
       </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            No and Street<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>No and Street</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -375,9 +385,7 @@ const InsuredPersonHospitalized = (props) => {
 
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            City<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>City</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -394,9 +402,7 @@ const InsuredPersonHospitalized = (props) => {
       </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            State<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>State</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -413,9 +419,7 @@ const InsuredPersonHospitalized = (props) => {
       </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Country<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>Country</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -433,9 +437,7 @@ const InsuredPersonHospitalized = (props) => {
 
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Phone Number<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>Phone Number</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -452,9 +454,7 @@ const InsuredPersonHospitalized = (props) => {
       </Row>
       <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Email ID<Text style={{color: 'red'}}>*</Text>
-          </Text>
+          <Text style={styles.text}>Email ID</Text>
 
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
@@ -472,29 +472,17 @@ const InsuredPersonHospitalized = (props) => {
       <View style={styles.ButtonView}>
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
-          onPress={() =>
-            updateInsuredPersonHospitalizedDetails({
-                  patientName: patientName,
-                  patientGender: patientGender,
-                  patientAge: patientAge,
-                  patientDob: patientDob,
-                  relationship: relationship,
-                  relationshipDetail: relationshipDetail,
-                  occupation: occupation,
-                  occupationDetail: occupationDetail,
-                  patientAddress: patientAddress,
-                  patientNoAndStreet: patientNoAndStreet,
-                  patientCity: patientCity,
-                  patientState: patientState,
-                  patientCountry: patientCountry,
-                  patientPhoneNumber: patientPhoneNumber,
-                  patientEmail: patientEmail,
-                })
-          }
+          onPress={() => submitData()}
           testID="submitDetails3">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>
+      <ModalPopup
+        errorMessageText={errorMsg}
+        closeButtonText={'CLOSE'}
+        closeButtonAction={() => setisModalVisible(false)}
+        visible={isModalVisible}
+      />
     </View>
   );
 };

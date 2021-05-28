@@ -5,6 +5,7 @@ import {Col, Row} from 'react-native-easy-grid';
 import styles from '../Styles';
 import {primaryColor} from '../../../../setup/config';
 import {toastMeassage, acceptNumbersOnly} from '../../../common';
+import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 const ClaimDetail = (props) => {
   const {ListOfData, checkBoxClick, updateClaimDetails} = props;
@@ -20,7 +21,7 @@ const ClaimDetail = (props) => {
   const [healthCheckupCost, setHealthCheckupCost] = useState();
   const [ambulanceCharges, setAmbulanceCharges] = useState();
   const [othersCode, setOthersCode] = useState();
-  const [totalClaim, setTotalClaim] = useState();
+  const [totalClaim, setTotalClaim] = useState(0);
   const [preHospitalizationPeriod, setPreHospitalizationPeriod] = useState('');
   const [postHospitalizationPeriod, setPostHospitalizationPeriod] = useState(
     '',
@@ -29,13 +30,13 @@ const ClaimDetail = (props) => {
     claimForDomiciliaryHospitalization,
     setClaimForDomiciliaryHospitalization,
   ] = useState('');
-  const [hospitalDailyCash, setHospitalDailyCash] = useState('');
-  const [surgicalCash, setSurgicalCash] = useState('');
-  const [criticalIllness, setCriticalIllness] = useState('');
-  const [convalescence, setConvalescence] = useState('');
-  const [lumsumBenefit, setLumsumBenefit] = useState('');
-  const [others, setOthers] = useState('');
-  const [totalClaimValue, setTotalClaimValue] = useState();
+  const [hospitalDailyCash, setHospitalDailyCash] = useState();
+  const [surgicalCash, setSurgicalCash] = useState();
+  const [criticalIllness, setCriticalIllness] = useState();
+  const [convalescence, setConvalescence] = useState();
+  const [lumsumBenefit, setLumsumBenefit] = useState();
+  const [others, setOthers] = useState();
+  const [totalClaimValue, setTotalClaimValue] = useState(0);
   const [claimFormDulySigned, setCheckBox1] = useState(false);
   const [copyOfClaimIntimation, setCheckBox2] = useState(false);
   const [hospitalMainBill, setCheckBox3] = useState(false);
@@ -48,10 +49,96 @@ const ClaimDetail = (props) => {
   const [pharmacyBill, setCheckBox10] = useState(false);
   const [OthersClaim, setCheckBox11] = useState(false);
   const [investigationReports, setCheckBox12] = useState(false);
-  // const [calculation, setCalculation] = useState(0);
+  const [errorMsg, seterrorMsg] = useState('');
+  const [isModalVisible, setisModalVisible] = useState(false);
 
-  console.log('total', totalClaim);
-  console.log('totalClaimValue', totalClaimValue);
+  
+  const submmitData = () => {
+    if (
+      hospitalName != '' &&
+      hospitalizationDueTo != '' &&
+      dateOfAdmission != '' &&
+      timeOfAdmissionHours != '' &&
+      timeOfAdmissionMinute != '' &&
+      dateOfDischarge != '' &&
+      timeOfDischargeHours != '' &&
+      timeOfDischargeMinute != ''
+    ) {
+      updateClaimDetails({
+        preHospitalizationExpenses: preHospitalizationExpenses,
+        hospitalizationExpenses: hospitalizationExpenses,
+        postHospitalizationExpenses: postHospitalizationExpenses,
+        healthCheckupCost: healthCheckupCost,
+        ambulanceCharges: ambulanceCharges,
+        othersCode: othersCode,
+        totalClaim: totalClaim,
+        preHospitalizationPeriod: preHospitalizationPeriod,
+        postHospitalizationPeriod: postHospitalizationPeriod,
+        claimForDomiciliaryHospitalization: claimForDomiciliaryHospitalization,
+        hospitalDailyCash: hospitalDailyCash,
+        surgicalCash: surgicalCash,
+        criticalIllness: criticalIllness,
+        convalescence: convalescence,
+        lumsumBenefit: lumsumBenefit,
+        others: others,
+        totalClaimValue: totalClaimValue,
+        claimFormDulySigned: claimFormDulySigned,
+        copyOfClaimIntimation: copyOfClaimIntimation,
+        hospitalMainBill: hospitalMainBill,
+        hospitalBreakupBill: hospitalBreakupBill,
+        hospitalBillPaymentReceipt: hospitalBillPaymentReceipt,
+        hospitalDischargeSummary: hospitalDischargeSummary,
+        ecg: ecg,
+        requestForInvestigation: requestForInvestigation,
+        doctorPrescription: doctorPrescription,
+        pharmacyBill: pharmacyBill,
+        OthersClaim: OthersClaim,
+        investigationReports: investigationReports,
+      });
+    } else {
+      if (hospitalName === '') {
+        seterrorMsg('Please enter hospital name');
+        setisModalVisible(true);
+        return false;
+      }
+      if (hospitalizationDueTo === '') {
+        seterrorMsg('Please enter hospitalization due');
+        setisModalVisible(true);
+        return false;
+      }
+      if (dateOfAdmission === '') {
+        seterrorMsg('Please enter admission date');
+        setisModalVisible(true);
+        return false;
+      }
+      if (timeOfAdmissionHours === '' || timeOfAdmissionHours === 'Select') {
+        seterrorMsg('Please enter time of admission hours')
+        setisModalVisible(true);
+        return false;
+      }
+      if (timeOfAdmissionMinute === '' || timeOfAdmissionMinute === 'Select') {
+        seterrorMsg('Please enter time of admission minutes')
+        setisModalVisible(true);
+        return false;
+      }
+      if (dateOfDischarge === '' || dateOfDischarge === 'Select') {
+        seterrorMsg('Please enter discharge date');
+        setisModalVisible(true);
+        return false;
+      }
+
+      if (timeOfDischargeHours === '' || timeOfDischargeHours === 'Select') {
+        seterrorMsg('Please enter time of discharge hours')
+        setisModalVisible(true);
+        return false;
+      }
+      if (timeOfDischargeMinute === '' || timeOfDischargeMinute === 'Select') {
+        seterrorMsg('Please enter time of discharge minutes')
+        setisModalVisible(true);
+        return false;
+      }
+    }
+  }
   return (
     <View>
       <Text style={{marginLeft: 15, fontSize: 16, marginTop: 10}}>
@@ -481,10 +568,10 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setOthers(text), setTotalClaimValue(
+                  ? (setOthers(parseInt(text)), setTotalClaimValue(
                     parseInt(text) +
                       parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)+parseInt(criticalIllness)+parseInt(convalescence)+parseInt(lumsumBenefit10)))
+                      parseInt(surgicalCash)+parseInt(criticalIllness)+parseInt(convalescence)+parseInt(lumsumBenefit)))
                   : null
               }
               testID="editOthers"
@@ -715,43 +802,18 @@ const ClaimDetail = (props) => {
       <View style={styles.ButtonView}>
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
-          onPress={() =>
-            updateClaimDetails({
-              preHospitalizationExpenses: preHospitalizationExpenses,
-              hospitalizationExpenses: hospitalizationExpenses,
-              postHospitalizationExpenses: postHospitalizationExpenses,
-              healthCheckupCost: healthCheckupCost,
-              ambulanceCharges: ambulanceCharges,
-              othersCode: othersCode,
-              totalClaim: totalClaim,
-              preHospitalizationPeriod: preHospitalizationPeriod,
-              postHospitalizationPeriod: postHospitalizationPeriod,
-              claimForDomiciliaryHospitalization: claimForDomiciliaryHospitalization,
-              hospitalDailyCash: hospitalDailyCash,
-              surgicalCash: surgicalCash,
-              criticalIllness: criticalIllness,
-              convalescence: convalescence,
-              lumsumBenefit: lumsumBenefit,
-              others: others,
-              totalClaimValue: totalClaimValue,
-              claimFormDulySigned: claimFormDulySigned,
-              copyOfClaimIntimation: copyOfClaimIntimation,
-              hospitalMainBill: hospitalMainBill,
-              hospitalBreakupBill: hospitalBreakupBill,
-              hospitalBillPaymentReceipt: hospitalBillPaymentReceipt,
-              hospitalDischargeSummary: hospitalDischargeSummary,
-              ecg: ecg,
-              requestForInvestigation: requestForInvestigation,
-              doctorPrescription: doctorPrescription,
-              pharmacyBill: pharmacyBill,
-              OthersClaim: OthersClaim,
-              investigationReports: investigationReports,
-            })
-          }
+          onPress={() => submmitData()}
           testID="submitDetails4">
           <Text style={{color: '#fff'}}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>
+
+      <ModalPopup
+        errorMessageText={errorMsg}
+        closeButtonText={'CLOSE'}
+        closeButtonAction={() => setisModalVisible(false)}
+        visible={isModalVisible}
+      />
     </View>
   );
 };

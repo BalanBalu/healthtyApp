@@ -33,6 +33,7 @@ import {
   updateClaimSubmission,
 } from '../../../providers/corporate/corporate.actions';
 import styles from '../Styles';
+import {TimeOfAdmissionHours,TimeOfAdmissionMinute,TimeOfDischargeHours,TimeOfDischargeMinute} from '../../../common';
 
 const dropdownData = [
   'Select your Item',
@@ -150,6 +151,7 @@ class SubmitClaim extends PureComponent {
   };
 
   submissionDetails = async (data) => {
+    console.log("data",data)
     try {
       const {claimListData} = this.state;
       let memberId = await AsyncStorage.getItem('memberId');
@@ -194,7 +196,7 @@ class SubmitClaim extends PureComponent {
 
   updateSubmissionDetails = async (data) => {
     try {
-      console.log('data', data);
+      console.log('data>>>>>>>>', data);
       const {submissionDetails} = this.state;
       let reqData = {
         _id: this.state.updateId,
@@ -820,6 +822,10 @@ class SubmitClaim extends PureComponent {
                         Hospitalization={Hospitalization}
                         InjuryCause={InjuryCause}
                         claimListData={claimListData}
+                        TimeOfAdmissionHours={TimeOfAdmissionHours}
+                        TimeOfAdmissionMinute={TimeOfAdmissionMinute}
+                        TimeOfDischargeHours={TimeOfDischargeHours}
+                        TimeOfDischargeMinute={TimeOfDischargeMinute}
                         updateHospitalization={(data) =>
                           this.updateHospitalization(data)
                         }
@@ -859,7 +865,7 @@ class SubmitClaim extends PureComponent {
                   </View>
                 </Card>
               ) : (
-                <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
+                // <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
                   <Card>
                     <TouchableOpacity
                       style={{
@@ -889,7 +895,7 @@ class SubmitClaim extends PureComponent {
                       </Row>
                     </TouchableOpacity>
                   </Card>
-                 </View>
+                //  </View>
               )}
             </View>
           )}
