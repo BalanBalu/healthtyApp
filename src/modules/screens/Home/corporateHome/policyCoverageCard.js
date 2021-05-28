@@ -40,9 +40,9 @@ class PolicyCoverageCard extends React.Component {
       let memberEmailId = await AsyncStorage.getItem('memberEmailId') || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        let policyData = await getPolicyByPolicyNo(result[0].policyNo);
+        let policyData = await getPolicyByPolicyNo(result&&result[0].policyNo);
         await this.setState({
-          memberDetails: result[0],
+          memberDetails:result&& result[0],
           policyDetails: policyData,
         });
         // await this.termsAndConditionListDetails();
