@@ -52,17 +52,18 @@ const ClaimDetail = (props) => {
   const [errorMsg, seterrorMsg] = useState('');
   const [isModalVisible, setisModalVisible] = useState(false);
 
-  
   const submmitData = () => {
     if (
-      hospitalName != '' &&
-      hospitalizationDueTo != '' &&
-      dateOfAdmission != '' &&
-      timeOfAdmissionHours != '' &&
-      timeOfAdmissionMinute != '' &&
-      dateOfDischarge != '' &&
-      timeOfDischargeHours != '' &&
-      timeOfDischargeMinute != ''
+      preHospitalizationExpenses != '' &&
+      hospitalizationExpenses != '' &&
+      postHospitalizationExpenses != '' &&
+      ambulanceCharges != '' &&
+      hospitalDailyCash != '' &&
+      surgicalCash != '' &&
+      criticalIllness != '' &&
+      convalescence != '' &&
+      lumsumBenefit != '' &&
+      others != ''
     ) {
       updateClaimDetails({
         preHospitalizationExpenses: preHospitalizationExpenses,
@@ -96,49 +97,49 @@ const ClaimDetail = (props) => {
         investigationReports: investigationReports,
       });
     } else {
-      if (hospitalName === '') {
-        seterrorMsg('Please enter hospital name');
+      if (preHospitalizationExpenses === '') {
+        seterrorMsg('Please enter pre hospitalization expenses');
         setisModalVisible(true);
         return false;
       }
-      if (hospitalizationDueTo === '') {
-        seterrorMsg('Please enter hospitalization due');
+      if (hospitalizationExpenses === '') {
+        seterrorMsg('Please enter hospitalization expenses');
         setisModalVisible(true);
         return false;
       }
-      if (dateOfAdmission === '') {
-        seterrorMsg('Please enter admission date');
+      if (postHospitalizationExpenses === '') {
+        seterrorMsg('Please enter post hospitalization expenses');
         setisModalVisible(true);
         return false;
       }
-      if (timeOfAdmissionHours === '' || timeOfAdmissionHours === 'Select') {
-        seterrorMsg('Please enter time of admission hours')
+      if (ambulanceCharges === '') {
+        seterrorMsg('Please enter ambulance charges');
         setisModalVisible(true);
         return false;
       }
-      if (timeOfAdmissionMinute === '' || timeOfAdmissionMinute === 'Select') {
-        seterrorMsg('Please enter time of admission minutes')
+      if (hospitalDailyCash === '') {
+        seterrorMsg('Please enter hospital daily cash');
         setisModalVisible(true);
         return false;
       }
-      if (dateOfDischarge === '' || dateOfDischarge === 'Select') {
-        seterrorMsg('Please enter discharge date');
+      if (surgicalCash === '' ) {
+        seterrorMsg('Please enter surgical cash');
         setisModalVisible(true);
         return false;
       }
 
-      if (timeOfDischargeHours === '' || timeOfDischargeHours === 'Select') {
-        seterrorMsg('Please enter time of discharge hours')
+      if (criticalIllness === '' ) {
+        seterrorMsg('Please enter critical illness');
         setisModalVisible(true);
         return false;
       }
-      if (timeOfDischargeMinute === '' || timeOfDischargeMinute === 'Select') {
-        seterrorMsg('Please enter time of discharge minutes')
+      if (convalescence === '') {
+        seterrorMsg('Please enter convalescence');
         setisModalVisible(true);
         return false;
       }
     }
-  }
+  };
   return (
     <View>
       <Text style={{marginLeft: 15, fontSize: 16, marginTop: 10}}>
@@ -463,10 +464,10 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setSurgicalCash(text), setTotalClaimValue(
-                    parseInt(text) +
-                      parseInt(hospitalDailyCash) 
-                  ))
+                  ? (setSurgicalCash(text),
+                    setTotalClaimValue(
+                      parseInt(text) + parseInt(hospitalDailyCash),
+                    ))
                   : null
               }
               testID="editSurgicalCash"
@@ -489,11 +490,12 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setCriticalIllness(text), setTotalClaimValue(
-                    parseInt(text) +
-                      parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)
-                  ))
+                  ? (setCriticalIllness(text),
+                    setTotalClaimValue(
+                      parseInt(text) +
+                        parseInt(hospitalDailyCash) +
+                        parseInt(surgicalCash),
+                    ))
                   : null
               }
               testID="editCriticalIllness"
@@ -516,10 +518,13 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setConvalescence(text), setTotalClaimValue(
-                    parseInt(text) +
-                      parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)+parseInt(criticalIllness)))
+                  ? (setConvalescence(text),
+                    setTotalClaimValue(
+                      parseInt(text) +
+                        parseInt(hospitalDailyCash) +
+                        parseInt(surgicalCash) +
+                        parseInt(criticalIllness),
+                    ))
                   : null
               }
               testID="editConvalescence"
@@ -542,10 +547,14 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setLumsumBenefit(text), setTotalClaimValue(
-                    parseInt(text) +
-                      parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)+parseInt(criticalIllness)+parseInt(convalescence)))
+                  ? (setLumsumBenefit(text),
+                    setTotalClaimValue(
+                      parseInt(text) +
+                        parseInt(hospitalDailyCash) +
+                        parseInt(surgicalCash) +
+                        parseInt(criticalIllness) +
+                        parseInt(convalescence),
+                    ))
                   : null
               }
               testID="editLumsumBenefit"
@@ -568,10 +577,15 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setOthers(parseInt(text)), setTotalClaimValue(
-                    parseInt(text) +
-                      parseInt(hospitalDailyCash) +
-                      parseInt(surgicalCash)+parseInt(criticalIllness)+parseInt(convalescence)+parseInt(lumsumBenefit)))
+                  ? (setOthers(parseInt(text)),
+                    setTotalClaimValue(
+                      parseInt(text) +
+                        parseInt(hospitalDailyCash) +
+                        parseInt(surgicalCash) +
+                        parseInt(criticalIllness) +
+                        parseInt(convalescence) +
+                        parseInt(lumsumBenefit),
+                    ))
                   : null
               }
               testID="editOthers"

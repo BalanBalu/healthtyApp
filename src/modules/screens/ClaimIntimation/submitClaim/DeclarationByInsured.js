@@ -13,6 +13,11 @@ const DeclarationByInsured = (props) => {
   const [dateOfHospitalization, setDateOfHospitalization] = useState();
   const [isVisible, setIsVisible] = useState(false);
   const [signatureOfInsures, setSignatureOfInsures] = useState('');
+  const [errorMsg, seterrorMsg] = useState('');
+  const [isModalVisible, setisModalVisible] = useState(false);
+
+
+
   const onPressConfirmDateValue = (date) => {
     setDateOfHospitalization(date);
     setIsVisible(false);
