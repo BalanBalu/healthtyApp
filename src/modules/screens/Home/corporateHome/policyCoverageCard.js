@@ -44,7 +44,7 @@ class PolicyCoverageCard extends React.Component {
           memberDetails: result[0],
           policyDetails: policyData,
         });
-        await this.termsAndConditionListDetails();
+        // await this.termsAndConditionListDetails();
       }
     } catch (ex) {
       console.log(ex);
@@ -111,7 +111,7 @@ class PolicyCoverageCard extends React.Component {
                     fontFamily: 'opensans-bold',
                     fontSize: 18,
                   }}>
-                  {memberDetails.firstName ? memberDetails.firstName + ' ' + memberDetails.middleName + ' ' + memberDetails.lastName : ''}
+                    {`${memberDetails.firstName ? memberDetails.firstName + ' ' : ''}${memberDetails.middleName ? memberDetails.middleName + ' ' : ''}${memberDetails.lastName ? memberDetails.lastName : ''}`}
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <Text
