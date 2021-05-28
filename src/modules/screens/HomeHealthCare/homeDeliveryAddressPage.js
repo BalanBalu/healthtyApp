@@ -12,6 +12,7 @@ import { Loader } from '../../../components/ContentLoader';
 import { SERVICE_TYPES } from '../../../setup/config'
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import ConfirmPopup from '../../../components/Shared/ConfirmPopup';
+import {translate} from '../../../setup/translator.helper';
 import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
 
 import RenderUserAddressList from './RenderUserAddressList';
@@ -160,7 +161,7 @@ export default class HomeHealthCareAddressChange extends Component {
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
                     <View style={{ marginTop: 10, marginBottom: 10 }} >
-                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, color: primaryColor, alignSelf: 'center', }}>MY ADDRESS</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, color: primaryColor, alignSelf: 'center', }}>{translate('MY ADDRESS')}</Text>
                     </View>
                     <View>
                         <FlatList
@@ -172,17 +173,17 @@ export default class HomeHealthCareAddressChange extends Component {
                     <Row style={{alignItems:'center',justifyContent:'center',marginTop:10}}>
                     <TouchableOpacity transparent onPress={() => this.onPressGoToLocPage()} style={{marginBottom:25,alignItems:'center',justifyContent:'center',flexDirection:'row',marginTop:10}}>
                         <Icon name='add' style={{ color: primaryColor,fontSize:35,}} />
-                        <Text uppercase={false} style={styles.customText}>ADD NEW ADDRESS</Text>
+                            <Text uppercase={false} style={styles.customText}>{translate("ADD NEW ADDRESS")}</Text>
                     </TouchableOpacity>
                     </Row>
                    
                 </Content>
                 <ConfirmPopup
-                    warningMessageText={'Are you sure you want to delete this Address !'}
-                    confirmButtonText={'Confirm'}
+                    warningMessageText={translate('Are you sure you want to delete this Address !')}
+                    confirmButtonText={translate('Confirm')}
                     confirmButtonStyle={styles.confirmButton}
                     cancelButtonStyle={styles.cancelButton}
-                    cancelButtonText={'Cancel'}
+                    cancelButtonText={translate('Cancel')}
                     confirmButtonAction={() => {
                         this.removeSelectedUserAddress();
                         this.setState({ isVisibleDeletePop: false })
@@ -196,7 +197,7 @@ export default class HomeHealthCareAddressChange extends Component {
                                 onPress={() => selectedAddressIndex !== -1 ? this.onPressGoToCategoriesPage() : null}
                                 testID='clickButtonToPaymentReviewPage'>
                                 <Row style={{ justifyContent: 'center', }}>
-                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>{selectedAddressIndex !== -1 ? 'NEXT' : 'SELECT ADDRESS'}</Text>
+                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>{selectedAddressIndex !== -1 ? translate('NEXT') : translate('SELECT ADDRESS')}</Text>
                                 </Row>
                             </Button>
                         </Col>

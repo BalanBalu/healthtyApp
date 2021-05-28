@@ -95,7 +95,7 @@ class Forgotpassword extends Component {
                         })
                     }
                 } else {
-                    this.setState({ errorMessage: smartHealthReqOtpResponse.message === 'INVALID_CORPORATE' ? 'Entered corporate name is incorrect' : smartHealthReqOtpResponse.message === 'INVALID_USERID' ? 'Entered Email name is incorrect' : smartHealthReqOtpResponse.message === 'INVALID_EMPLOYEEID' ? 'Entered Employee id is incorrect' : 'Invalid credentials' });
+                    this.setState({ errorMessage: smartHealthReqOtpResponse.message === 'INVALID_CORPORATE' ? 'Entered corporate name is incorrect' : smartHealthReqOtpResponse.message === 'INVALID_USERID' ? 'Entered Email ID Is Incorrect' : smartHealthReqOtpResponse.message === 'INVALID_EMPLOYEEID' ? 'Entered Employee id is incorrect' : 'Invalid credentials' });
                 }
             } else {
                 let reqData = {

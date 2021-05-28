@@ -6,6 +6,7 @@ import { formatDate } from '../../../../setup/helpers';
 import styles from '../../CommonAll/styles'
 import moment from 'moment';
 import {primaryColor, secondaryColor} from '../../../../setup/config'
+import { translate } from '../../../../setup/translator.helper';
 
 
 export default class RenderDatesList extends Component {
@@ -42,7 +43,7 @@ export default class RenderDatesList extends Component {
                                 <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: primaryColor, alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
                                     onPress={() => onDateChanged(item, doctor_id, indexOfItem, slotData[item])}>
                                     <Text style={[{ fontSize: 12, fontFamily: 'Roboto' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
-                                    <Text style={[{ fontSize: 10, fontFamily: 'Roboto' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? 'Available' : 'Not Available'}</Text>
+                                    <Text style={[{ fontSize: 10, fontFamily: 'Roboto' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? translate('Available') : translate('Not Available')}</Text>
                                 </TouchableOpacity>
                             </Col>
                         </View>

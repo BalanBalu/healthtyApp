@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import {
   Text,
   Container,
@@ -13,16 +13,16 @@ import {
   ScrollView,
   Linking,
   Alert
-  } from 'react-native';
-  import {
-    arrangeCallbackActionForBuyInsurance,
-  } from '../../providers/insurance/insurance.action';  
+} from 'react-native';
+import {
+  arrangeCallbackActionForBuyInsurance,
+} from '../../providers/insurance/insurance.action';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {primaryColor} from '../../../setup/config';
+import { primaryColor } from '../../../setup/config';
 import styles from './styles';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import InsuranceRenewalPopup from '../../shared/insuranceRenewalPopup';
-import {getFullName} from '../../common';
+import { getFullName } from '../../common';
 
 const PolicyTypeList = [
   'Choose Policy Type',
@@ -62,8 +62,8 @@ class BuyInsurance extends PureComponent {
       policyType: '',
       healthInsuranceType: '',
       motorInsuranceType: '',
-      personalAccidentInsuranceType:'',
-      lifeInsuranceType:'',
+      personalAccidentInsuranceType: '',
+      lifeInsuranceType: '',
       isModalVisible: false,
       errorMsg: '',
       descriptionVisible: false,
@@ -88,12 +88,12 @@ class BuyInsurance extends PureComponent {
       ],
     );
   };
- 
- 
- 
- 
+
+
+
+
   popUpClose() {
-    this.setState({descriptionVisible: false});
+    this.setState({ descriptionVisible: false });
   }
 
   render() {
@@ -110,7 +110,7 @@ class BuyInsurance extends PureComponent {
       <Container>
         <Content>
           <View>
-            <ScrollView style={{padding: 20, marginBottom: 20}}>
+            <ScrollView style={{ padding: 20, marginBottom: 20 }}>
               <Form>
                 <Text style={styles.subHeadingText}>Select Policy Type</Text>
 
@@ -118,23 +118,23 @@ class BuyInsurance extends PureComponent {
                   <Picker
                     style={styles.userDetailLabel}
                     mode="dropdown"
-                    placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                    placeholderStyle={{ fontSize: 16, marginLeft: -5 }}
                     iosIcon={
                       <Icon
                         name="ios-arrow-down"
-                        style={{color: 'gray', fontSize: 20, marginLeft: 170}}
+                        style={{ color: 'gray', fontSize: 20, marginLeft: 170 }}
                       />
                     }
-                    textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                    textStyle={{ color: 'gray', left: 0, marginLeft: -5 }}
                     note={false}
                     itemStyle={{
                       paddingLeft: 10,
                       fontSize: 16,
                     }}
-                    itemTextStyle={{color: '#5cb85c'}}
-                    style={{width: undefined, color: '#000'}}
+                    itemTextStyle={{ color: '#5cb85c' }}
+                    style={{ width: undefined, color: '#000' }}
                     onValueChange={(sample) => {
-                      this.setState({policyType: sample});
+                      this.setState({ policyType: sample });
                     }}
                     selectedValue={policyType}
                     testID="editPolicyTypeList">
@@ -156,7 +156,7 @@ class BuyInsurance extends PureComponent {
                       <Picker
                         style={styles.userDetailLabel}
                         mode="dropdown"
-                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                        placeholderStyle={{ fontSize: 16, marginLeft: -5 }}
                         iosIcon={
                           <Icon
                             name="ios-arrow-down"
@@ -167,16 +167,16 @@ class BuyInsurance extends PureComponent {
                             }}
                           />
                         }
-                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                        textStyle={{ color: 'gray', left: 0, marginLeft: -5 }}
                         note={false}
                         itemStyle={{
                           paddingLeft: 10,
                           fontSize: 16,
                         }}
-                        itemTextStyle={{color: '#5cb85c'}}
-                        style={{width: undefined, color: '#000'}}
+                        itemTextStyle={{ color: '#5cb85c' }}
+                        style={{ width: undefined, color: '#000' }}
                         onValueChange={(sample) => {
-                          this.setState({healthInsuranceType: sample, descriptionVisible: true,});
+                          this.setState({ healthInsuranceType: sample, descriptionVisible: true, });
                         }}
                         selectedValue={healthInsuranceType}
                         testID="editHealthInsurance">
@@ -200,7 +200,7 @@ class BuyInsurance extends PureComponent {
                       <Picker
                         style={styles.userDetailLabel}
                         mode="dropdown"
-                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                        placeholderStyle={{ fontSize: 16, marginLeft: -5 }}
                         iosIcon={
                           <Icon
                             name="ios-arrow-down"
@@ -211,16 +211,16 @@ class BuyInsurance extends PureComponent {
                             }}
                           />
                         }
-                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                        textStyle={{ color: 'gray', left: 0, marginLeft: -5 }}
                         note={false}
                         itemStyle={{
                           paddingLeft: 10,
                           fontSize: 16,
                         }}
-                        itemTextStyle={{color: '#5cb85c'}}
-                        style={{width: undefined, color: '#000'}}
+                        itemTextStyle={{ color: '#5cb85c' }}
+                        style={{ width: undefined, color: '#000' }}
                         onValueChange={(sample) => {
-                          this.setState({motorInsuranceType: sample, descriptionVisible: true,});
+                          this.setState({ motorInsuranceType: sample, descriptionVisible: true, });
                         }}
                         selectedValue={motorInsuranceType}
                         testID="editMotorInsurance">
@@ -244,7 +244,7 @@ class BuyInsurance extends PureComponent {
                       <Picker
                         style={styles.userDetailLabel}
                         mode="dropdown"
-                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                        placeholderStyle={{ fontSize: 16, marginLeft: -5 }}
                         iosIcon={
                           <Icon
                             name="ios-arrow-down"
@@ -255,16 +255,16 @@ class BuyInsurance extends PureComponent {
                             }}
                           />
                         }
-                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                        textStyle={{ color: 'gray', left: 0, marginLeft: -5 }}
                         note={false}
                         itemStyle={{
                           paddingLeft: 10,
                           fontSize: 16,
                         }}
-                        itemTextStyle={{color: '#5cb85c'}}
-                        style={{width: undefined, color: '#000'}}
+                        itemTextStyle={{ color: '#5cb85c' }}
+                        style={{ width: undefined, color: '#000' }}
                         onValueChange={(sample) => {
-                          this.setState({personalAccidentInsuranceType: sample, descriptionVisible: true,});
+                          this.setState({ personalAccidentInsuranceType: sample, descriptionVisible: true, });
                         }}
                         selectedValue={personalAccidentInsuranceType}
                         testID="editPersonalAccidentInsurance">
@@ -281,14 +281,14 @@ class BuyInsurance extends PureComponent {
                     </View>
                   </View>
                 ) : null}
-                 {policyType === 'Life Insurance' ? (
+                {policyType === 'Life Insurance' ? (
                   <View>
                     <Text style={styles.subHeadingText}>Life Insurance</Text>
                     <View style={styles.formStyle6}>
                       <Picker
                         style={styles.userDetailLabel}
                         mode="dropdown"
-                        placeholderStyle={{fontSize: 16, marginLeft: -5}}
+                        placeholderStyle={{ fontSize: 16, marginLeft: -5 }}
                         iosIcon={
                           <Icon
                             name="ios-arrow-down"
@@ -299,16 +299,16 @@ class BuyInsurance extends PureComponent {
                             }}
                           />
                         }
-                        textStyle={{color: 'gray', left: 0, marginLeft: -5}}
+                        textStyle={{ color: 'gray', left: 0, marginLeft: -5 }}
                         note={false}
                         itemStyle={{
                           paddingLeft: 10,
                           fontSize: 16,
                         }}
-                        itemTextStyle={{color: '#5cb85c'}}
-                        style={{width: undefined, color: '#000'}}
+                        itemTextStyle={{ color: '#5cb85c' }}
+                        style={{ width: undefined, color: '#000' }}
                         onValueChange={(sample) => {
-                          this.setState({lifeInsuranceType: sample, descriptionVisible: true,});
+                          this.setState({ lifeInsuranceType: sample, descriptionVisible: true, });
                         }}
                         selectedValue={lifeInsuranceType}
                         testID="editLifeInsurance">
@@ -328,12 +328,12 @@ class BuyInsurance extends PureComponent {
               </Form>
             </ScrollView>
           </View>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <ModalPopup
               errorMessageText={errorMsg}
               closeButtonText={'CLOSE'}
               closeButtonAction={() =>
-                this.setState({isModalVisible: !isModalVisible})
+                this.setState({ isModalVisible: !isModalVisible })
               }
               visible={isModalVisible}
             />
@@ -358,22 +358,22 @@ class BuyInsurance extends PureComponent {
           </Text>
         </TouchableOpacity>
         <InsuranceRenewalPopup
-                messageText={'You can Renew your Insurance Policy by!'}
-                callbackButtonText={'Arrange Callback'}
-                renewOnlineButtonText={'Renew Online'}
-                callbackButtonAction={() => {
-                    this.arrangeCallback();
-                    this.popUpClose();
-                }}
-                renewOnlineButtonAction={() =>{
-                    Linking.openURL('http://www.readypolicy.com/');
-                    this.popUpClose();
-                }}
-                popUpClose={() =>{
-                    this.popUpClose();
-                }}
-                visible={this.state.descriptionVisible}
-              />
+          messageText={'You Can Renew Your Insurance Policy By!'}
+          callbackButtonText={'Arrange Callback'}
+          renewOnlineButtonText={'Renewal Online'}
+          callbackButtonAction={() => {
+            this.arrangeCallback();
+            this.popUpClose();
+          }}
+          renewOnlineButtonAction={() => {
+            Linking.openURL('http://www.readypolicy.com/');
+            this.popUpClose();
+          }}
+          popUpClose={() => {
+            this.popUpClose();
+          }}
+          visible={this.state.descriptionVisible}
+        />
       </Container>
     );
   }
