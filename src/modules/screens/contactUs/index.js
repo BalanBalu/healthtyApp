@@ -6,7 +6,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from './styles'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getCorporateHelpLineEmail, postContactDetails } from '../../providers/corporate/corporate.actions'
-import { toastMeassage,validateEmailAddress } from '../../common'
+import { toastMeassage,validateEmailAddress ,arrangeFullName} from '../../common'
 import {translate} from '../../../setup/translator.helper'
 const issueTypeList = ["Choose Issue type", "payment", "consultation", "insurance", "others"]
 
@@ -41,7 +41,7 @@ class ContactUs extends Component {
         const basicData = JSON.parse(basicProfileData);
         const data = { basicData }
         await this.setState({
-            userName: `${data.basicData&&data.basicData.first_name? data.basicData.first_name:''+ " " + data.basicData&&data.basicData.last_name? data.basicData.last_name:''}`,
+            userName:arrangeFullName(data.basicData&&data.basicData.first_name,data.basicData&&data.basicData.last_name),
             email: data.basicData.email,
             userNameError: null,
             emailErrorMsg: null,
@@ -61,7 +61,7 @@ class ContactUs extends Component {
             //     });
             // }
             if (this.state.userName === '') {
-                this.setState({ userNameError: 'Kindly enter your name' });
+                this.setState({ userNameError: translate('Kindly enter your name') });
                 this.scrollViewRef.scrollTo({
                     y: this.userNameText.y,
                     animated: true
@@ -69,7 +69,7 @@ class ContactUs extends Component {
                 return false;
             }
             if (this.state.email==='') {   
-                this.setState({ emailErrorMsg: 'Kindly enter your email' });
+                this.setState({ emailErrorMsg: translate('Kindly enter your email') });
                 this.scrollViewRef.scrollTo({
                     y: this.emailText.y,
                     animated: true
@@ -77,7 +77,7 @@ class ContactUs extends Component {
                 return false;
             }
             if (validateEmailAddress(this.state.email)===false) {   
-                this.setState({ emailErrorMsg: 'Please enter a valid email address' });
+                this.setState({ emailErrorMsg: translate('Please enter a valid email address') });
                 this.scrollViewRef.scrollTo({
                     y: this.emailText.y,
                     animated: true
@@ -86,7 +86,7 @@ class ContactUs extends Component {
             }
 
             if (this.state.issueType === '' || this.state.issueType === 'Choose Issue type') {
-                this.setState({ issueTypeErrorMsg: 'Kindly select issue type' });
+                this.setState({ issueTypeErrorMsg: translate('Kindly select issue type') });
                 this.scrollViewRef.scrollTo({
                     y: this.issueType.y,
                     animated: true
@@ -94,7 +94,7 @@ class ContactUs extends Component {
                 return false;
             }
             if (this.state.messageText === '') {
-                this.setState({ messageErrorMsg: 'Kindly enter message' });
+                this.setState({ messageErrorMsg: translate('Kindly enter message') });
                 this.scrollViewRef.scrollTo({
                     y: this.messageText.y,
                     animated: true
@@ -115,7 +115,7 @@ class ContactUs extends Component {
                 this.setState({ descriptionVisible: true, messageText: null })
             }
             else {
-                toastMeassage('Unable to Submit Helpline information', 'danger', 3000)
+                toastMeassage(translate('Unable to Submit Helpline information'), 'danger', 3000)
             }
         } catch (ex) {
             console.log(ex)
@@ -152,7 +152,7 @@ class ContactUs extends Component {
                                             onLayout={event =>
                                                 (this.userNameText = event.nativeEvent.layout)
                                             }>{translate("Name")}</Text>
-                                        <TextInput placeholder="Enter Name"
+                                        <TextInput placeholder={translate("Enter Name")}
                                             placeholderTextColor={"#909090"}
                                             onChangeText={text => this.setState({ userName: text, userNameError: null })}
                                             value={this.state.userName}
@@ -166,7 +166,7 @@ class ContactUs extends Component {
                                             }>{translate("Email")}</Text>
         
                                              <Input
-                                                  placeholder="Enter Email"
+                                                  placeholder={translate("Enter Email")}
                                                   style={this.state.emailErrorMsg !== null ? styles.textInputWithBorderStyle : styles.textInputStyle} 
                                                   placeholderTextColor={"#909090"}
                                                   keyboardType={'email-address'}
@@ -215,7 +215,7 @@ class ContactUs extends Component {
                                             onLayout={event =>
                                                 (this.messageText = event.nativeEvent.layout)
                                             }>{translate("Message")}</Text>
-                                        <TextInput placeholder="Enter Message"
+                                        <TextInput placeholder={translate("Enter Message")}
                                             textAlignVertical={'top'} placeholderTextColor={"#909090"}
                                             onChangeText={text => this.setState({ messageText: text, messageErrorMsg: null })}
                                             value={this.state.messageText}

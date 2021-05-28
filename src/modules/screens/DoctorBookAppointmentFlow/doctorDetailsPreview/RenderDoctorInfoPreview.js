@@ -7,7 +7,8 @@ import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../../common';
-import {primaryColor} from '../../../../setup/config'
+import {primaryColor} from '../../../../setup/config';
+import {translate} from '../../../../setup/translator.helper';
 
 export default class RenderDoctorInfoPreview extends Component {
     constructor(props) {
@@ -46,11 +47,11 @@ export default class RenderDoctorInfoPreview extends Component {
                 </Row>
                 <Row style={{ borderBottomWidth: 0.3, borderBottomColor: 'gray', paddingBottom: 10, marginLeft: 10, marginRight: 10 }}>
                     <Col style={{ width: "25%", marginTop: 15, }}>
-                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> Experience</Text>
+                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> {translate("Experience")}</Text>
                         <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, textAlign: 'center' }}> {getDoctorExperience(doctorData.calculatedExperience || doctorData.calulatedExperience)}</Text>
                     </Col>
                     <Col style={{ width: "25%", marginTop: 15, }}>
-                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> Rating</Text>
+                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> {translate("Rating")}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                             <StarRating
                                 fullStarColor='#FF9500'
@@ -64,11 +65,11 @@ export default class RenderDoctorInfoPreview extends Component {
                     </Col>
                     <Col style={{ width: "25%", marginTop: 15, }}>
 
-                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> Favourite</Text>
+                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> {translate("Favourite")}</Text>
                         <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, textAlign: 'center' }}> {docFavoriteListCountOfDoctorIDs[doctorData.doctor_id] ? docFavoriteListCountOfDoctorIDs[doctorData.doctor_id] : 0}</Text>
                     </Col>
                     <Col style={{ width: "25%", marginTop: 15, }}>
-                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> Fees</Text>
+                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> {translate("Fees")}</Text>
                         <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee}{' '}
 
                             {fee !== feeWithoutOffer ?
@@ -84,7 +85,7 @@ export default class RenderDoctorInfoPreview extends Component {
                         <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
                             <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate("Video and Chat Service")}>
                                 <Icon name="ios-videocam" style={{ fontSize: 25, color: primaryColor }} />
-                                <Text style={{ marginLeft: 5, fontFamily: 'Roboto', fontSize: 13, color: primaryColor, marginTop: 3 }}>Video</Text>
+                                <Text style={{ marginLeft: 5, fontFamily: 'Roboto', fontSize: 13, color: primaryColor, marginTop: 3 }}>{translate("Video")}</Text>
                             </TouchableOpacity>
                         </Col>
                         : null}
@@ -99,7 +100,7 @@ export default class RenderDoctorInfoPreview extends Component {
                     <Col size={3.3} style={{ justifyContent: 'center', alignItems: "center" }}>
                         <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center" }} onPress={() => shareDocInfo(doctorData)}>
                             <Icon name="share-social" style={{ fontSize: 20, color: primaryColor }} />
-                            <Text style={{ marginLeft: 5, fontFamily: 'Roboto', fontSize: 13, color: primaryColor, }}>Share</Text>
+                            <Text style={{ marginLeft: 5, fontFamily: 'Roboto', fontSize: 13, color: primaryColor, }}>{translate("Share")}</Text>
                         </TouchableOpacity>
                     </Col>
                 </Row>

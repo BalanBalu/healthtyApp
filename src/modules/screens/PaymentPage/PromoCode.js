@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPromodataList,getPromodataListByFilter } from '../../providers/PromoCode/promo.action'
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate } from "../../../setup/helpers";
+import {translate} from '../../../setup/translator.helper';
 
 class PromoCode extends Component {
     constructor(props) {
@@ -133,11 +134,11 @@ class PromoCode extends Component {
                     <View style={{ backgroundColor: '#fff', }}>
                         <View style={{ backgroundColor: '#f2f2f2' }}>
                             <Row style={{ marginTop: 20, paddingBottom: 20 }}>
-                                <Text style={{ marginRight: 20, marginLeft: 20, fontFamily: 'OpenSans', fontSize: 16, }}>Available Coupons</Text>
+                                <Text style={{ marginRight: 20, marginLeft: 20, fontFamily: 'OpenSans', fontSize: 16, }}>{translate("Available Coupons")}</Text>
                             </Row>
                         </View>
                         {this.state.data.length === 0 ?
-                            <Text style={{ marginLeft: 100,marginTop: 290, fontFamily: 'OpenSans', fontSize: 16, }}>No promo code Available</Text> :
+                            <Text style={{ marginLeft: 100,marginTop: 290, fontFamily: 'OpenSans', fontSize: 16, }}>{translate("No promo code Available")}</Text> :
                             <FlatList
                                 data={this.state.data}
                                 keyExtractor={(item, index) => index.toString()}
@@ -156,7 +157,7 @@ class PromoCode extends Component {
                                             </Col>
                                             <Col size={6}>
                                                 <TouchableOpacity onPress={() => this.navigateToPaymentPage(item)}>
-                                                    <Text style={{ color: '#128283', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> APPLY</Text>
+                                                    <Text style={{ color: '#128283', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> {translate("APPLY")}</Text>
                                                 </TouchableOpacity>
                                             </Col>
                                         </Row>
@@ -170,34 +171,34 @@ class PromoCode extends Component {
                                         </Row>
                                         <Row style={{ marginTop: 5, marginBottom: 5 }}>
                                             <TouchableOpacity onPress={() => this.displayMoreData(index)}>
-                                                <Text style={{ color: '#378DDF', fontSize: 12, fontWeight: 'bold' }}>{this.state.selectedIndex !==index ? "+ MORE" : "-LESS"}</Text>
+                                                <Text style={{ color: '#378DDF', fontSize: 12, fontWeight: 'bold' }}>{this.state.selectedIndex !==index ? translate("+ MORE") : translate("-LESS")}</Text>
                                             </TouchableOpacity>
                                         </Row>
                                         {this.state.selectedIndex === index ?
                                             <View>
                                                 <Row style={{ marginTop: 10 }}>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333' }}>Terms & Conditions Apply</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333' }}>{translate("Terms & Conditions Apply")}</Text>
                                                 </Row>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}> Valid in select cities only</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}> {translate("Valid in select cities only")}</Text>
 
                                                 </Row>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid on all modes of payments</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>{translate("Offer is Valid on all modes of payments")}</Text>
                                                 </Row>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid only on select {this.getPromocodeDiscription(item)}</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>{translate("Offer is Valid only on select")} {this.getPromocodeDiscription(item)}</Text>
                                                 </Row>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Other T&Cs may apply</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>{translate("Other T&Cs may apply")}</Text>
                                                 </Row>
                                                 <Row style={{ marginTop: 10 }}>
                                                     <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer valid till {formatDate(item.expiration_date, 'MMM DD,YYYY HH:MM  A')}</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>{translate("Offer valid till")} {formatDate(item.expiration_date, 'MMM DD,YYYY HH:MM  A')}</Text>
                                                 </Row>
                                             </View> : null}
                                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, }} />

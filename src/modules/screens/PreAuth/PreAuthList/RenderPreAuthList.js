@@ -94,7 +94,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                 </Row>
                 <Row style={{marginTop: 5}}>
                   <Col size={4}>
-                    <Text style={styles.subHeadingStyle}>Status</Text>
+                    <Text style={styles.subHeadingStyle}>{translate('Status')}</Text>
                   </Col>
                   <Col size={0.5}>
                     <Text style={{marginTop: 2}}>:</Text>
@@ -171,7 +171,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                           }}
                           numberOfLines={1}
                           ellipsizeMode="tail">
-                          Status
+                          {translate('Status')}
                         </Text>
                       </Col>
                       <Col size={0.5}>

@@ -38,6 +38,7 @@ import { RenderNoSlotsAvailable } from '../../CommonAll/components'
 import RenderDatesList from '../RenderDateList';
 import RenderSlots from '../RenderSlots'
 import RenderDoctorInfoPreview from './RenderDoctorInfoPreview';
+import {translate} from '../../../../setup/translator.helper';
 
 class DoctorDetailsPreview extends Component {
     weekWiseDatesList = [];
@@ -353,7 +354,7 @@ class DoctorDetailsPreview extends Component {
         if (currentHostpitalId !== previouslyShowedHospitalId && (item.fee != this.showedFee)) {
             if (this.showedFee != null) {
                 Toast.show({
-                    text: 'Appointment Fee and Hospital Location Updated',
+                    text: translate('Appointment Fee and Hospital Location Updated'),
                     type: 'warning',
                     duration: 3000
                 });
@@ -362,7 +363,7 @@ class DoctorDetailsPreview extends Component {
         } else if ((item.fee != this.showedFee)) {
             if (this.showedFee != null) {
                 Toast.show({
-                    text: 'Appointment Fee Updated',
+                    text: translate('Appointment Fee Updated'),
                     type: 'warning',
                     duration: 3000
                 });
@@ -370,7 +371,7 @@ class DoctorDetailsPreview extends Component {
             this.showedFee = item.fee
         } else if (currentHostpitalId !== previouslyShowedHospitalId) {
             Toast.show({
-                text: 'Hospital Location Changed',
+                text: translate('Hospital Location Changed'),
                 type: 'warning',
                 duration: 3000
             });
@@ -380,7 +381,7 @@ class DoctorDetailsPreview extends Component {
     onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
         if (!selectedSlotItem) {
             Toast.show({
-                text: 'Please select a slot to continue booking',
+                text: translate('Please select a slot to continue booking'),
                 type: 'warning',
                 duration: 3000
             })
@@ -444,7 +445,7 @@ class DoctorDetailsPreview extends Component {
                     <Row style={{ marginLeft: 5, marginRight: 5, marginTop: 10 }}>
                         <Segment>
                             <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 5, alignItems: 'center', justifyContent: 'center' }, onPressTabView === 1 ? { borderBottomColor: primaryColor } : { borderBottomColor: '#000' }]} onPress={() => { this.setState({ onPressTabView: 1 }) }}>
-                                <Text style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', textAlign: 'center' }}>About</Text>
+                                <Text style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', textAlign: 'center' }}>{translate("About")}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 5, alignContent: 'center', justifyContent: 'center' }, onPressTabView === 2 ? { borderBottomColor: primaryColor } : { borderBottomColor: '#000' }]} onPress={() => {
                                 if (!isLoadedUserReview) {
@@ -452,7 +453,7 @@ class DoctorDetailsPreview extends Component {
                                 }
                                 this.setState({ onPressTabView: 2 });
                             }}>
-                                <Text style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', textAlign: 'center' }}>Reviews</Text>
+                                <Text style={{ color: '#000', fontSize: 12, fontFamily: 'Roboto', textAlign: 'center' }}>{translate("Reviews")}</Text>
                             </TouchableOpacity>
 
                         </Segment>
@@ -463,10 +464,10 @@ class DoctorDetailsPreview extends Component {
                             {doctorData.professional_statement ?
                                 <View>
                                     <View style={{ marginLeft: 5, marginRight: 5, marginTop: 10 }}>
-                                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, }}>Description</Text>
+                                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, }}>{translate("Description")}</Text>
                                         {this.state.showMoreOption === false ?
-                                            <Text style={styles.customText}>{(doctorData.professional_statement).slice(0, 100)} <Text style={{ fontFamily: 'Roboto', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: true })}>{doctorData.professional_statement.length > 100 ? '...View more' : ''}</Text></Text> :
-                                            <Text style={{ fontFamily: 'Roboto', fontSize: 12 }}>{doctorData.professional_statement} <Text style={{ fontFamily: 'Roboto', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: false })}>...Hide</Text></Text>}
+                                            <Text style={styles.customText}>{(doctorData.professional_statement).slice(0, 100)} <Text style={{ fontFamily: 'Roboto', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: true })}>{doctorData.professional_statement.length > 100 ? translate('View more') : ''}</Text></Text> :
+                                            <Text style={{ fontFamily: 'Roboto', fontSize: 12 }}>{doctorData.professional_statement} <Text style={{ fontFamily: 'Roboto', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: false })}>{translate("Hide")}</Text></Text>}
                                     </View>
                                     <Row style={{ marginLeft: 5, marginRight: 5, paddingBottom: 5 }}>
                                         <Right><Text style={{ fontFamily: 'Roboto', fontSize: 15, color: primaryColor }}></Text></Right>
@@ -477,19 +478,19 @@ class DoctorDetailsPreview extends Component {
 
                             <View>
                                 <Row style={{ marginTop: 10 }}>
-                                    <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>Choose appointment date and time</Text>
+                                    <Text style={{ fontSize: 13, fontFamily: 'Roboto' }}>{translate("Choose appointment date and time")}</Text>
                                 </Row>
                                 {this.renderDatesOnFlatList(doctorData.slotData, selectedDate)}
                                 {
                                     doctorData.slotData && doctorData.slotData[selectedDate] !== undefined ?
                                         this.renderAvailableSlots(doctorData.slotData[selectedDate])
                                         : <RenderNoSlotsAvailable
-                                            text={'No Slots Available'}
+                                            text={translate('No Slots Available')}
                                         />
                                 }
                                 <View style={{ borderTopColor: '#000', borderTopWidth: 0.3, marginTop: 10 }}>
                                     <Row style={{ marginTop: 10, paddingTop: 10 }}>
-                                        <Text style={{ fontSize: 12, fontFamily: 'Roboto' }}>Selected Appointment on</Text>
+                                        <Text style={{ fontSize: 12, fontFamily: 'Roboto' }}>{translate("Selected Appointment on")}</Text>
                                     </Row>
                                     <Row style={{ marginTop: 5 }}>
                                         <Col style={{ width: '40%' }}>
@@ -505,7 +506,7 @@ class DoctorDetailsPreview extends Component {
                                 <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3, marginBottom: 5, marginTop: 10 }}>
                                     <Row style={{ marginTop: 10, paddingTop: 10 }}>
                                         <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
-                                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 13, marginLeft: 10, marginTop: 1 }}>Awards</Text>
+                                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 13, marginLeft: 10, marginTop: 1 }}>{translate("Awards")}</Text>
                                     </Row>
                                     <FlatList
                                         data={doctorData.awards || []}
@@ -518,7 +519,7 @@ class DoctorDetailsPreview extends Component {
                             <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3, marginTop: 10 }}>
                                 <Row style={{ marginTop: 10, paddingTop: 10 }}>
                                     <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
-                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13, marginLeft: 10, marginTop: 1 }}>Language Spoken</Text>
+                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13, marginLeft: 10, marginTop: 1 }}>{translate("Language Spoken")}</Text>
                                 </Row>
 
                                 <Row style={{ marginLeft: 20 }}>
@@ -539,7 +540,7 @@ class DoctorDetailsPreview extends Component {
                             <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3, marginTop: 10 }}>
                                 <Row style={{ marginTop: 10, paddingTop: 10 }}>
                                     <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
-                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13, marginLeft: 10, marginTop: 1 }}>Services</Text>
+                                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13, marginLeft: 10, marginTop: 1 }}>{translate("Services")}</Text>
                                 </Row>
                                 <FlatList
                                     data={specialistWithServicesList}
@@ -559,7 +560,7 @@ class DoctorDetailsPreview extends Component {
                                                     </Col>
                                                     <Col style={{ width: '83%', marginTop: 10, paddingTop: 10 }}>
                                                         <Text style={{ fontFamily: 'opensans-bold', fontSize: 13, width: '90%' }}>{item.category_name}</Text>
-                                                        <Text style={{ fontFamily: 'Roboto', fontSize: 12, fontStyle: 'italic' }}>{item.services.length} {item.services.length === 1 ? 'Service' : 'Services'}</Text>
+                                                        <Text style={{ fontFamily: 'Roboto', fontSize: 12, fontStyle: 'italic' }}>{item.services.length} {item.services.length === 1 ? translate('Service') :translate('Services')}</Text>
                                                     </Col>
                                                 </Row>
                                             </TouchableOpacity>
@@ -586,7 +587,7 @@ class DoctorDetailsPreview extends Component {
                             {isLoadingReviews === true ? <Spinner color='blue' /> :
                                 reviewsData.length === 0 ?
                                     <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 300 }}>
-                                        <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No reviews yet</Text>
+                                        <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>{translate("No reviews yet")}</Text>
                                     </Item> :
                                     <FlatList
                                         data={reviewsData}
@@ -613,7 +614,7 @@ class DoctorDetailsPreview extends Component {
                                 onPress={() => this.onPressContinueForPaymentReview(doctorData, selectedSlotItem)}
                                 testID='clickButtonToPaymentReviewPage'>
                                 <Row style={{ justifyContent: 'center', }}>
-                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>BOOK APPOINTMENT</Text>
+                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>{translate("BOOK APPOINTMENT")}</Text>
                                 </Row>
                             </Button>
                         </Col>

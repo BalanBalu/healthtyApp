@@ -3,6 +3,7 @@ import { Container, Content, Text, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, Image } from 'react-native';
 import styles from '../CommonAll/styles';
+import {translate} from '../../../setup/translator.helper';
 
 export default class RenderLabCategories extends PureComponent {
     constructor(props) {
@@ -20,7 +21,7 @@ export default class RenderLabCategories extends PureComponent {
             <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
                 <Row style={{ marginTop: 10 }}>
                     <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
-                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13,marginLeft: 10, marginTop: 1 }}>Related Categories</Text>
+                    <Text style={{ fontFamily: 'opensans-bold', fontSize: 13,marginLeft: 10, marginTop: 1 }}>{translate("Related Categories")}</Text>
                 </Row>
                 <View style={{ marginBottom: 10, marginTop: 10 }}>
                     <FlatList
@@ -39,8 +40,8 @@ export default class RenderLabCategories extends PureComponent {
                                         />
                                         <Text style={styles.mainText}>{item.checkup}</Text>
                                         <View style={{ flexDirection: 'row' }}>
-                                            <Text style={styles.rsText}>₹ {item.initalprice}</Text>
-                                            <Text style={styles.finalRs}>₹ {item.finalprice}</Text>
+                                            <Text style={styles.rsText}>? {item.initalprice}</Text>
+                                            <Text style={styles.finalRs}>? {item.finalprice}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 </View>

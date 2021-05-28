@@ -11,6 +11,7 @@ import { renderProfileImage } from '../../common';
 import { formatDate, dateDiff, getMoment, subString } from '../../../setup/helpers';
 import { userReviews, insertLikesDataForReviews } from '../../providers/profile/profile.action';
 import { CURRENT_APP_NAME } from "../../../setup/config";
+import {translate} from '../../../setup/translator.helper';
 currentLikedRewiedIds = {};
 function relativeTimeView(review_date) {
     try {
@@ -123,7 +124,7 @@ export const RenderReviewData = (props) => {
                         maxStars={5}
                         rating={item.cleanness_rating}
                     />
-                    <Text style={styles.ratingText}>Service quality</Text>
+                    <Text style={styles.ratingText}>{translate("Service quality")}</Text>
                 </Col>
                 <Col style={{ alignItems: 'center', borderRightColor: 'gray', borderRightWidth: 0.5 }}>
                     <StarRating
@@ -134,7 +135,7 @@ export const RenderReviewData = (props) => {
                         maxStars={5}
                         rating={item.staff_rating}
                     />
-                    <Text style={styles.ratingText}>Staff</Text>
+                    <Text style={styles.ratingText}>{translate("Staff")}</Text>
                 </Col>
                 <Col style={{ alignItems: 'center' }}>
                     <StarRating
@@ -145,7 +146,7 @@ export const RenderReviewData = (props) => {
                         maxStars={5}
                         rating={item.overall_rating}
                     />
-                    <Text style={styles.ratingText}>Wait Time</Text>
+                    <Text style={styles.ratingText}>{translate("Wait Time")}</Text>
                 </Col>
             </Row>
             <Row style={{ marginLeft: 70, marginTop: 10, }}>
@@ -163,7 +164,7 @@ export const RenderReviewData = (props) => {
                                 : null}
 
                         </TouchableOpacity>
-                        <Text style={styles.textContent}>{getLikesCount(item)}{' '}Likes</Text>
+                        <Text style={styles.textContent}>{getLikesCount(item)}{' '}{translate("Likes")}</Text>
                         {/* <Icon name="ios-undo" style={{fontSize:20,color:'green',marginLeft:20}}/>
                         <Text style={styles.textContent}>Reply</Text> */}
                     </Row>
