@@ -1,6 +1,5 @@
 // Helpers
 import moment from 'moment';
-import {translate} from '../setup/translator.helper';
 // Render element or component by provided condition
 export function renderIf(condition, renderFn) {
   return condition ? renderFn() : null
@@ -219,49 +218,50 @@ export function toDataUrl(url) {
 export const statusValue = {
   "PAYMENT_IN_PROGRESS":
   {
-    text: translate('Waiting for  Payment process'),
+    text: 'Waiting for  Payment process',
     color: '#3d70ff',
     icon: 'md-timer',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_IN_PROGRESS'
   },
   "PENDING":
   {
-    text: translate('Waiting for confirmation'),
+    text: 'Waiting for confirmation',
     color: 'red',
     icon: 'checkmark-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PENDING',
   },
   "APPROVED":
   {
-    text: translate('Appointment confirmed'),
+    text: 'Appointment confirmed',
     color: 'green',
     icon: 'checkmark-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_APPROVED',
   },
   "COMPLETED":
   {
-    text: translate('Appointment completed'),
+    text:'Appointment completed',
     color: 'green',
     icon: 'checkmark-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_COMPLETED'
   },
   "PENDING_REVIEW":
   {
-    text: translate('Appointment completed'),
+    text: 'Appointment completed',
     color: 'green',
     icon: 'checkmark-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PENDING_REVIEW'
   },
   "PROPOSED_NEW_TIME":
   {
-    text: translate('PROPOSED NEW TIME'),
+    text: 
+    'PROPOSED NEW TIME',
     color: '#3d70ff',
     icon: 'md-timer',
     type: 'REPORT_ISSUE_APPOINTMENT_PROPOSED_NEW_TIME'
   },
   "CLOSED":
   {
-    text: translate('No Response'),
+    text: 'No Response',
     color: 'red',
     icon: 'ios-close-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_CANCELED'
@@ -269,28 +269,28 @@ export const statusValue = {
   },
   "CANCELED":
   {
-    text: translate('Appointment cancelled'),
+    text: 'Appointment cancelled',
     color: 'red',
     icon: 'ios-close-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_CANCELED'
   },
   "REJECTED":
   {
-    text: translate('Appointment rejected'),
+    text: 'Appointment rejected',
     color: 'red',
     icon: 'ios-close-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_REJECTED'
   },
   "PAYMENT_FAILED":
   {
-    text: translate('Payment process failed'),
+    text:'Payment process failed',
     color: 'red',
     icon: 'ios-close-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_FAILED'
   },
   "DRAFT":
   {
-    text: translate('DRAFT'),
+    text:'DRAFT',
     color: '#3d70ff',
     icon: 'md-timer',
     type: 'REPORT_ISSUE_APPOINTMENT_DRAFT'

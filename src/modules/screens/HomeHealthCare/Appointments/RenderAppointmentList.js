@@ -82,7 +82,7 @@ export default class RenderAppointmentList extends Component {
                                 {formatDate(item.appointmentResult.appointment_date, "dddd,MMMM DD-YYYY")} </Text>
                             <Row>
                                 <Col size={4} style={{ justifyContent: 'center' }}>
-                                    <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color,  }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>
+                                    <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status].color,  }} note>{translate(statusValue[item.appointmentResult.appointment_status].text)}</Text>
                                 </Col>
 
                             </Row>

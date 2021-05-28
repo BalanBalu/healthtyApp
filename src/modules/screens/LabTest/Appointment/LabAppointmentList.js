@@ -306,7 +306,7 @@ class LabAppointmentList extends Component {
 
                                                         <Row style={{ borderBottomWidth: 0 }}>
 
-                                                            <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointment_status].color,  }} note>{statusValue[item.appointment_status].text}</Text>
+                                                            <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointment_status].color,  }} note>{translate(statusValue[item.appointment_status].text)}</Text>
                                                         </Row>
 
                                                         <Text style={{ fontFamily: "Roboto", fontSize: 11 }} note>

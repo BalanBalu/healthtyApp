@@ -48,7 +48,9 @@ class LabCategories extends PureComponent {
     this.emailId = '',
       this.mobile = '',
       this.userName = '',
-      this.city = ''
+      this.city = '',
+      this.stateAddress = ''
+
   }
   async componentDidMount() {
     const loggedMemberInfo = this.props && this.props.profile && this.props.profile.corporateData;
@@ -58,6 +60,8 @@ class LabCategories extends PureComponent {
       if (memInfo.mobile) this.mobile = memInfo.mobile;
       this.userName = getCorporateFullName(memInfo);
       if (memInfo.city) this.city = memInfo.city;
+      if (memInfo.state) this.stateAddress = memInfo.state;
+
     }
     const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
     this.setState({ isCorporateUser: isCorporateUser });
@@ -238,9 +242,9 @@ class LabCategories extends PureComponent {
   }
   onPressArrangeCallBack() {
     try {
-      const message = `${this.userName} needs ${this.state.selectedSpecialist} Test at ${this.city}. please contact Him/Her to this mobile number of ${this.mobile}`;
+      const message = `${this.userName} needs ${this.state.selectedSpecialist} Test at ${this.city ? this.city + ',' : ''} ${this.stateAddress?this.stateAddress:''}. please contact them. Mobile Number : ${this.mobile}`;
       Alert.alert(
-        'Send message to SMS / WhatsApp / G-Mail',
+        'Send request by SMS / WhatsApp / Mail',
         '',
         [
           {
@@ -248,7 +252,7 @@ class LabCategories extends PureComponent {
             onPress: () => this.onPressGotoMessageApp(message)
           },
           { text: 'WhatsApp', onPress: () => this.onPressGotoWhatsApp(message) },
-          { text: 'G-Mail', onPress: () => this.onPressGotoMailApp(message) },
+          { text: 'Mail', onPress: () => this.onPressGotoMailApp(message) },
         ]
       );
     } catch (error) {
@@ -289,44 +293,74 @@ class LabCategories extends PureComponent {
                     {`You can Test ${this.state.selectedSpecialist || ''} by `}
                   </Text>
                 </Row>
+                <View >
+                  <TouchableOpacity
+                    danger
+                    style={{   paddingLeft: 10,
+                      paddingRight: 10,
+                      borderRadius: 5,
+                      backgroundColor: '#128283',
+                      height: 38,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 15}}
+                    onPress={() => {
+                      this.callToBookAppointment();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Row>
+                      <Col size={1} ></Col>
+                      <Col size={1} style={{ marginTop: 7, marginLeft: 40 }}>
+                        <MaterialIcons name="call" style={{ fontSize: 25, color: '#FFF' }} />
+                      </Col>
+                      <Col size={8}>
 
-                <Row
-                  style={{
-                    marginTop: 15,
-                    justifyContent: 'flex-end',
-                    marginBottom: 5,
-                  }}>
-                  <Col size={5}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton1}
-                      onPress={() => {
-                        this.callToBookAppointment();
-                        this.onPressCloseToConsultPop();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText1}>
-                        {' '}
-                        {'Call to Book Appointment'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                  <Col size={5} style={{ marginLeft: 10 }}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton}
-                      onPress={() => {
-                        this.onPressArrangeCallBack();
-                        this.onPressCloseToConsultPop();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText}>
-                        {' '}
-                        {'Arrange Callback'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                </Row>
+                        <Text style={{ fontFamily: 'opensans-bold',
+    fontSize: 15,
+    // textAlign: 'center',
+    color: '#fff',
+    marginTop: 10}}>
+                          {'Call to Book Appointment'}
+                        </Text>
+                      </Col>
+                    </Row>
+
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    danger
+                    style={{  paddingLeft: 10,
+                      paddingRight: 10,
+                      borderRadius: 5,
+                      backgroundColor: '#59a7a8',
+                      height: 38,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 20,}}
+                    onPress={() => {
+                      this.onPressArrangeCallBack();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Row>
+                      <Col size={1} ></Col>
+                      <Col size={1} style={{ marginTop: 7, marginLeft: 40 }}>
+                        <MaterialIcons name="reply" style={{ fontSize: 25, color: '#FFF' }} />
+                      </Col>
+                      <Col size={8}>
+                        <Text style={{  fontFamily: 'opensans-bold',
+    fontSize: 15,
+    // textAlign: 'center',
+    color: '#fff',
+    marginTop: 10}}>
+                          {'Arrange Callback'}
+                        </Text>
+                      </Col>
+                    </Row>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </Modal>
@@ -355,11 +389,11 @@ class LabCategories extends PureComponent {
                           resizeMode={FastImage.resizeMode.contain}
                         />
                         <Text style={styles.mainText}>{item.lab_test_category_info.category_name}</Text>
-                        <Text style={styles.subText}>Package starts from</Text>
+                        {/* <Text style={styles.subText}>Package starts from</Text>
                         <Row>
                           <Text style={styles.rsText}> {item.minPriceWithoutOffer != item.minPriceWithOffer ? ('₹' + item.minPriceWithoutOffer) : null}</Text>
                           <Text style={styles.finalRs}>₹ {Math.round(item.minPriceWithOffer)}</Text>
-                        </Row>
+                        </Row> */}
                       </TouchableOpacity>
                     </Col>
                   }
@@ -471,7 +505,7 @@ const styles = StyleSheet.create({
     minHeight: 100
   },
   mainText: {
-    fontSize: 10,
+    fontSize: 11,
     textAlign: 'center',
     fontFamily: 'Roboto',
     marginTop: 5,

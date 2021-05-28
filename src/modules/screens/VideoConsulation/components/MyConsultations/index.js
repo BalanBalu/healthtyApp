@@ -196,7 +196,7 @@ class VideoConsultaions extends Component {
 							<Icon name={STATUS_VALUE_DATA[item.status].icon}
 								style={{ color: STATUS_VALUE_DATA[item.status].color, fontSize: 35, alignItems: 'center', justifyContent: 'center' }}
 							/>
-							<Text style={[styles.buttonText1, { color: STATUS_VALUE_DATA[item.status].color }]}>{STATUS_VALUE_DATA[item.status].statusText}</Text>
+							<Text style={[styles.buttonText1, { color: STATUS_VALUE_DATA[item.status].color }]}>{translate(STATUS_VALUE_DATA[item.status].statusText)}</Text>
 
 						</Col>
 					</Row>
@@ -220,7 +220,7 @@ class VideoConsultaions extends Component {
 	</Row>
 				
 					<Row style={{ alignItems: 'center', marginBottom: 5, justifyContent: 'center' }}>
-						<Text style={[styles.statusText, { color: STATUS_VALUE_DATA[item.status].color }]}>{STATUS_VALUE_DATA[item.status].text}</Text>
+						<Text style={[styles.statusText, { color: STATUS_VALUE_DATA[item.status].color }]}>{translate(STATUS_VALUE_DATA[item.status].text)}</Text>
 					</Row>
 					</View> :null}
 

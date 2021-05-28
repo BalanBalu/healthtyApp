@@ -90,9 +90,9 @@ class Login extends Component {
   getUserProfile = async (isSelected) => {
     try {
       if(isSelected === 'corporate_user') {
-        let userId = await AsyncStorage.getItem('userId');
-        let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
-        let result = await fetchUserProfile(userId, fields);
+        // let userId = await AsyncStorage.getItem('userId');
+        // let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image,middle_name"
+        // let result = await fetchUserProfile(userId, fields);
         let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
         let coorporateSideresult = await getMemberDetailsByEmail(memberEmailId);
         if (!coorporateSideresult.error) storeBasicProfile(coorporateSideresult[0])
