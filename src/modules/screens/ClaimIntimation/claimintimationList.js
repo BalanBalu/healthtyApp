@@ -324,7 +324,7 @@ class ClaimIntimationList extends PureComponent {
                           </Row>
                           <View style={{ justifyContent: "flex-end", alignItems: 'flex-end', marginTop: 10, marginBottom: 5 }}>
                             <TouchableOpacity style={{ backgroundColor: primaryColor, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }} onPress={() => { this.props.navigation.navigate('SubmitClaim',{claimListData:item}) }}>
-                              <Text style={{ color: "#fff" }}>Submit Claim</Text>
+                              <Text style={{ color: "#fff" }}>Create Claim</Text>
                             </TouchableOpacity>
                           </View>
                           {/* <Row style={{ marginTop: 5 }}>

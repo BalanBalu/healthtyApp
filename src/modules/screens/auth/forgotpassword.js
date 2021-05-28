@@ -48,6 +48,10 @@ class Forgotpassword extends Component {
         const { userEntry, employeeId, corporateName } = this.state;
         try {
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
+                if (!corporateName) {
+                    this.setState({ errorMessage: "kindly enter your Corporate Name" });
+                    return false
+                }
                 if (!userEntry) {
                     this.setState({ errorMessage: 'Enter your Email' });
                     return false;
@@ -58,10 +62,6 @@ class Forgotpassword extends Component {
                 }
                 if (!employeeId) {
                     this.setState({ errorMessage: "kindly enter your EmployeeId" });
-                    return false
-                }
-                if (!corporateName) {
-                    this.setState({ errorMessage: "kindly enter your Corporate Name" });
                     return false
                 }
             } else {
