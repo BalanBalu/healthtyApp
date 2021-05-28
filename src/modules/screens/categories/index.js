@@ -151,9 +151,9 @@ class Categories extends Component {
               style={styles.inputfield}
               placeholderTextColor="#e2e2e2"
               keyboardType={'email-address'}
+              returnKeyType={'done'}
               onChangeText={searchValue => this.filterCategories(searchValue)}
               underlineColorAndroid="transparent"
-              blurOnSubmit={false}
             />
           </Col>
           <Col size={0.9} style={styles.SearchStyle}>

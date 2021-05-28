@@ -181,7 +181,7 @@ class LabCategories extends PureComponent {
               keyboardType={'email-address'}
               onChangeText={(searchValue) => this.filterCategories(searchValue)}
               underlineColorAndroid="transparent"
-              blurOnSubmit={false}
+              returnKeyType={'done'}
             />
           </Col>
           <Col size={0.9} style={styles.SearchStyle}>
