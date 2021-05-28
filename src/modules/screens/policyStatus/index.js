@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Container,
   Text,
@@ -10,7 +10,7 @@ import {
   Toast,
   Thumbnail,
 } from 'native-base';
-import {Col, Row, Grid} from 'react-native-easy-grid';
+import { Col, Row, Grid } from 'react-native-easy-grid';
 import {
   StyleSheet,
   TouchableOpacity,
@@ -20,23 +20,23 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Styles from './styles';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {
   getMemberDetailsByEmail,
   getClaimsDataByPayerCode,
 } from '../../providers/corporate/corporate.actions';
 ('');
-import {getPolicyByPolicyNo} from '../../providers/policy/policy.action';
-import {formatDate} from '../../../setup/helpers';
+import { getPolicyByPolicyNo } from '../../providers/policy/policy.action';
+import { formatDate } from '../../../setup/helpers';
 import {
   primaryColor,
   secondaryColor,
   secondaryColorTouch,
 } from '../../../setup/config';
-import {translate} from '../../../setup/translator.helper';
+import { translate } from '../../../setup/translator.helper';
 import RenderClaimStatus from './renderClaimStatus';
 import { Loader } from '../../../components/ContentLoader';
-import {ClaimStatusDrawing} from '../../../modules/screens/Home/corporateHome/svgDrawings';
+import { NegativeClaimStatusDrawing } from '../../../modules/screens/Home/corporateHome/svgDrawings';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const LIMIT = 10;
 
@@ -77,13 +77,13 @@ class PolicyStatus extends Component {
     } catch (ex) {
       console.log(ex);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
   getClaimDetails = async () => {
     try {
       let employeeCode = (await AsyncStorage.getItem('employeeCode')) || null;
-      const {memberDetails, policyDetails} = this.state;
+      const { memberDetails, policyDetails } = this.state;
       let result = await getClaimsDataByPayerCode(
         policyDetails.TPA,
         memberDetails.policyNo,
@@ -94,7 +94,7 @@ class PolicyStatus extends Component {
       if (result && result.docs && result.docs.length) {
         this.pagination = this.pagination + 1;
         this.claimsDataArray = [...this.claimsDataArray, ...result.docs];
-        this.setState({claimsData: this.claimsDataArray});
+        this.setState({ claimsData: this.claimsDataArray });
       } else {
         if (this.claimsDataArray.length > 4) {
           Toast.show({
@@ -108,25 +108,25 @@ class PolicyStatus extends Component {
     } catch (ex) {
       console.log(ex);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
   toggleData(data) {
-    const {showCard, show} = this.state;
+    const { showCard, show } = this.state;
     if (data === showCard) {
-      this.setState({showCard: data, show: !this.state.show});
+      this.setState({ showCard: data, show: !this.state.show });
     } else {
-      this.setState({showCard: data, show: false});
+      this.setState({ showCard: data, show: false });
     }
   }
   loadMoreData = async () => {
     try {
-      this.setState({isLoadingMoreData: true});
+      this.setState({ isLoadingMoreData: true });
       await this.getClaimDetails();
     } catch (error) {
       console.log('Ex is getting on load more data', error.message);
     } finally {
-      this.setState({isLoadingMoreData: false});
+      this.setState({ isLoadingMoreData: false });
     }
   };
   percentageCalculation = (total, balance) => {
@@ -155,7 +155,7 @@ class PolicyStatus extends Component {
   }
 
   headerComponent() {
-    const {memberDetails, policyDetails, isLoading} = this.state;
+    const { memberDetails, policyDetails, isLoading } = this.state;
     return (
       <View>
         <Card
@@ -165,7 +165,7 @@ class PolicyStatus extends Component {
             padding: 10,
             borderRadius: 5,
           }}>
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <AnimatedCircularProgress
               size={140}
               width={10}
@@ -191,7 +191,7 @@ class PolicyStatus extends Component {
               )}
             </AnimatedCircularProgress>
 
-            <View style={{marginTop: 10}}>
+            <View style={{ marginTop: 10 }}>
               <Text style={styles.nameText}>
                 {memberDetails.firstName
                   ? memberDetails.firstName : '-'}
@@ -207,11 +207,11 @@ class PolicyStatus extends Component {
                 <Text style={styles.commonText}>
                   {policyDetails.policyEffectiveFrom
                     ? formatDate(
-                        policyDetails.policyEffectiveFrom,
-                        'DD-MM-YY',
-                      ) +
-                      ' - ' +
-                      formatDate(policyDetails.policyEffectiveTo, 'DD-MM-YY')
+                      policyDetails.policyEffectiveFrom,
+                      'DD-MM-YY',
+                    ) +
+                    ' - ' +
+                    formatDate(policyDetails.policyEffectiveTo, 'DD-MM-YY')
                     : 'N/A'}
                 </Text>
               </Text>
@@ -239,14 +239,14 @@ class PolicyStatus extends Component {
       isLoading,
       isLoadingMoreData,
     } = this.state;
-    const {showCard, show} = this.state;
+    const { showCard, show } = this.state;
 
     return (
       <Container>
         {isLoading ? (
           <Loader style="newList" />
         ) : claimsData && claimsData.length ? (
-          <View style={{padding: 10}}>
+          <View style={{ padding: 10 }}>
             <FlatList
               data={claimsData}
               ListHeaderComponent={() => this.headerComponent()}
@@ -261,22 +261,20 @@ class PolicyStatus extends Component {
                   this.loadMoreData();
                 }
               }}
-              renderItem={({item, index}) =>
+              renderItem={({ item, index }) =>
                 this.renderClaimStatus(item, index)
               }
             />
           </View>
         ) : (
           <View
-           style={{
-            alignItems: "center",
-            justifyContent: "center",
-            flex:1
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1
             }}>
-              <ClaimStatusDrawing/>
-              <View style={{borderTopWidth:3,width:55,transform:[{rotate: '120 deg'}],position: 'absolute',borderTopColor: primaryColor,top:344}}/>
-
-           <Text
+            <NegativeClaimStatusDrawing />
+            <Text
               style={{
                 fontFamily: "Roboto",
                 fontSize: 15,
@@ -291,9 +289,9 @@ class PolicyStatus extends Component {
         )}
 
         {isLoadingMoreData ? (
-          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
             <ActivityIndicator
-              style={{marginBottom: 17}}
+              style={{ marginBottom: 17 }}
               animating={isLoadingMoreData}
               size="large"
               color="blue"

@@ -11,9 +11,9 @@ import Styles from '../styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { NavigationEvents } from 'react-navigation';
 import { primaryColor } from '../../../../setup/config'
-import { HospitalDrawing } from '../../Home/corporateHome/svgDrawings';
+import { NegativeHospitalDrawing } from '../../Home/corporateHome/svgDrawings';
 import { debounce } from '../../../common';
-import {translate} from '../../../../setup/translator.helper';
+import { translate } from '../../../../setup/translator.helper';
 
 const PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST = 10;
 
@@ -353,14 +353,12 @@ class NetworkHospitals extends Component {
                             renderItem={({ item, index }) => this.renderHospitalInformationCard(item, index)
                             } />
                         : <View style={{ borderBottomWidth: 0, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <HospitalDrawing />
+                            <NegativeHospitalDrawing />
                             <Text style={{
                                 fontFamily: "Roboto",
                                 fontSize: 15,
                                 marginTop: "10%"
                             }} >{translate('No Hospitals list found!')}</Text>
-                            <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, top: 297 }} />
-
                         </View>
                 }
                 {isLoadingMoreHospitalList ?

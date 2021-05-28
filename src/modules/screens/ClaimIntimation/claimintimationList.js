@@ -11,10 +11,9 @@ import { getClaimIntimationWithPagination } from '../../providers/corporate/corp
 import { log } from 'react-native-reanimated';
 import { primaryColor } from '../../../setup/config';
 import { Loader } from '../../../components/ContentLoader';
-import {translate} from '../../../setup/translator.helper'
-import {ClaimInitiationDrawing} from '../../screens/Home/corporateHome/svgDrawings';
-// import { toastMeassage } from '../../common'
-// import { REIMBURSEMENT_FORMS } from '../../screens/VideoConsulation/constants';
+import { translate } from '../../../setup/translator.helper'
+import { NegativeClaimInitiationDrawing } from '../../screens/Home/corporateHome/svgDrawings';
+
 const LIMIT = 10;
 
 class ClaimIntimationList extends PureComponent {
@@ -442,7 +441,7 @@ class ClaimIntimationList extends PureComponent {
                 justifyContent: "center",
                 marginTop: 250
               }}>
-              <ClaimInitiationDrawing />
+              <NegativeClaimInitiationDrawing />
               <Text
                 style={{
                   fontFamily: "Roboto",
@@ -452,9 +451,8 @@ class ClaimIntimationList extends PureComponent {
                   alignItems: 'center',
                   textAlign: 'center',
                 }}>
-               {translate('No claim intimation list found!')} 
+                {translate('No claim intimation list found!')}
               </Text>
-              <View style={{ borderTopWidth: 3, width: 55, transform: [{ rotate: '120 deg' }], position: 'absolute', borderTopColor: primaryColor, bottom: 85 }} />
             </View>
           )}
         </Content>

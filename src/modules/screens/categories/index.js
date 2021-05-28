@@ -12,13 +12,13 @@ import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 import { Loader } from '../../../components/ContentLoader';
-import {translate} from '../../../setup/translator.helper';
+import { translate } from '../../../setup/translator.helper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Communications from 'react-native-communications';
 import { CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2 } from '../../../setup/config';
 import { getCorporateFullName } from '../../common';
-
+import { NegativeConsultationDrawing } from '../../screens/Home/corporateHome/svgDrawings';
 class Categories extends Component {
   constructor(props) {
     super(props)
@@ -27,7 +27,7 @@ class Categories extends Component {
       categoriesMain: [],
       consultPopVisible: false,
       selectedSpecialist: null,
-      isLoading: false,
+      isLoading: true,
       isCorporateUser: false
     }
 
@@ -58,10 +58,10 @@ class Categories extends Component {
         this.setState({ data: result.data, categoriesMain: result.data })
         for (let i = 0; i < result.data.length; i++) {
           const item = result.data[i];
-          imageURL = item.imageBaseURL + item.category_id + '.png';
-          base64ImageDataRes = await toDataUrl(imageURL)
-          result.data[i].base64ImageData = base64ImageDataRes;
-          this.setState({ categoriesMain: result.data })
+          // imageURL = item.imageBaseURL + item.category_id + '.png';
+          // base64ImageDataRes = await toDataUrl(imageURL)
+          // result.data[i].base64ImageData = base64ImageDataRes;
+          // this.setState({ categoriesMain: result.data })
         }
       }
     } catch (e) {
@@ -363,7 +363,23 @@ class Categories extends Component {
                   }
                   keyExtractor={(item, index) => index.toString()}
                 />
-              </View> : null}
+              </View> : Object.keys(data).length === 0 ?
+                <View style={{ marginBottom: 10 }}>
+                  <FlatList horizontal={false} numColumns={3}
+                    ListHeaderComponent={this.renderStickeyHeader()}
+                  />
+                  <View style={{ marginTop: "70%", flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <NegativeConsultationDrawing />
+                    <Text style={{
+                      fontFamily: "Roboto",
+                      fontSize: 15,
+                      marginTop: "10%",
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                    }} >Your Search Is Not Found</Text></View>
+                </View>
+                : null}
         </Content>
       </Container>
 
