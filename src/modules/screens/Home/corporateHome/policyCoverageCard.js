@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -18,6 +18,11 @@ import {AnimatedCircularProgress} from 'react-native-circular-progress';
 
 export const PolicyCoverageCard = (props) => {
   const {navigation, data, policyData, TPAdata} = props;
+
+  useEffect(() => {
+    percentageCalculation(data.sumInsured ? data.sumInsured : 0,data.balSumInsured ? data.balSumInsured : 0);
+  }, []);
+
   const percentageCalculation = (total, balance) => {
     if (total != 0) {
       let percentage = (balance / total) * 100;
@@ -37,20 +42,10 @@ export const PolicyCoverageCard = (props) => {
     <TouchableHighlight activeOpacity={0.6} underlayColor="#fff">
       <View
         style={{
-          marginTop: 6,
           flex: 1,
         }}>
         <View
-          style={{
-            backgroundColor: primaryColor,
-            minHeight: 135,
-            borderRadius: 22,
-            marginTop: 0,
-            marginBottom: 20,
-            marginHorizontal: 10,
-            position: 'relative',
-            flex: 1,
-          }}>
+        style={styles.commonCardDesignment}>
           {Object.keys(data).length === 0 ? (
             <ActivityIndicator
               style={{marginBottom: 0, marginRight: 100, marginTop: 50}}
@@ -72,7 +67,7 @@ export const PolicyCoverageCard = (props) => {
                   fontFamily: 'opensans-bold',
                   fontSize: 18,
                 }}>
-                {data.firstName ? data.firstName + ' ' + data.lastName : ''}
+                {data.firstName ? data.firstName : ' ' + ' ' + data.lastName? data.lastName : ''}
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <Text
