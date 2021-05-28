@@ -113,14 +113,18 @@ class Login extends Component {
 
   render() {
     const { user: { isLoading } } = this.props;
+
+    const image = { uri: "https://images.unsplash.com/photo-1486911278844-a81c5267e227?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" };
+
+    
     const { userEntry, password, showPassword, loginErrorMsg, isModalVisible, isSelected } = this.state;
     return (
       <Container style={{backgroundColor: '#fff'}}>
-       
+             <ImageBackground source={image} style={{ minHeight: 270}}>
+
       <View>
-      <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', alignContent: 'center', marginTop: 35, marginLeft: 30, alignSelf: 'baseline'}}>
-        <View>
-        <Svg xmlns="http://www.w3.org/2000/Svgg" width="80" height="80" viewBox="0 0 299.83 282.06">
+      <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', alignContent: 'center', marginTop: 30, marginLeft: 30, alignSelf: 'baseline'}}>
+        <Svg xmlns="http://www.w3.org/2000/Svgg" width="55" height="55" viewBox="0 0 299.83 282.06">
   <G id="Layer_2" data-name="Layer 2" transform="translate(-0.021 0.007)">
     <G id="Layer_1" data-name="Layer 1">
       <Path id="Path_5445" data-name="Path 5445" d="M299.8,86c-.47,31.58-12.75,55.27-33.72,74.94a44.569,44.569,0,0,1-3.31,3c-7,5.39-9.58,11.55-6.8,20.79s-1.93,17.1-11.19,20.59c-6.74,2.54-9.29,6.55-9.53,13.83-.27,7.86-5.91,15.72-16.94,16.54-5.42.4-7.36,2.3-7.61,7.85-.49,10.59-10.87,18.78-21.57,17.19-4.88-.73-6.75.66-7.79,5.38-2.78,12.47-13.93,18.62-25.78,14.38a12.61,12.61,0,0,0-9.15.14C133.34,285.39,121,277.8,119.8,264c-.43-5-1.75-6.79-7.12-6.73-9.19.12-17.19-8.94-17.55-19.63-.14-4-2-4.72-5.06-5.17-13.26-2-17.69-6.35-19.16-19.3-.4-3.49-1.55-5.27-5.46-5.57-14.93-1.15-21.87-10.47-19.2-25.23,1-5.55-1-10.2-4.76-14.05C33.13,159.72,23.93,152,17,142.07c-32.1-46-17.23-107.59,32.34-132,32.43-16,63.72-12.37,93.11,8.58,6,4.25,9,4,14.78-.48C195.95-11.65,250.16-3.65,280.41,33.9,291.18,47.29,300.64,73.19,299.8,86Z" fill="#078282"/>
@@ -134,13 +138,17 @@ class Login extends Component {
     </G>
   </G>
 </Svg>
-        </View>
+       
         <View>
-        <Text><Text style={{ fontFamily:'opensans-bold' }}>MySmath</Text><Text style={{ fontFamily:'opensans-regular' }}>Health</Text></Text>
+        <Text><Text style={{ fontFamily:'opensans-bold', color: '#fff' }}>MySmart</Text><Text style={{ fontFamily:'opensans-regular', color: '#fff' }}>Health</Text></Text>
 
         </View>
 
         </View>
+      </View>
+      </ImageBackground>
+      <View style={{borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', minHeight: '100%', marginTop: -25, display: 'flex', alignItems: "flex-start"}}>
+<Text style={{fontFamily: 'opensans-bold', marginLeft: 30, marginTop: 55, fontSize: 20, color: '#333333'}}>Welcome</Text>
       </View>
 
         {/* <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 30}}>
