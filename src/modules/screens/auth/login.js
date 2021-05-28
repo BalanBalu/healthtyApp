@@ -216,7 +216,7 @@ class Login extends Component {
                      </View>
                     </View>
                    <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, marginRight: 24}}>
-                   <Pressable style={{ elevation: 8,
+                   <Pressable style={{ elevation: 2,
     backgroundColor: "#fff",
     borderColor: '#128283',
     borderWidth: 2,
