@@ -7,7 +7,7 @@ import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import { primaryColor } from '../../setup/config'
-
+import MedicineRecords from '../../modules/screens/medicalRecords/index'
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import Updateheightweight from "../../modules/screens/userprofile/Updateheightweight";
 import UpdateFamilyMembers from "../../modules/screens/userprofile/UpdateFamilyMembers";
@@ -558,7 +558,14 @@ export const smartHealthStack=createStackNavigator({
     })
   },
   //================  MedicineRecords ===============
+  MedicineRecords: {
+    screen: MedicineRecords,
+    navigationOptions: {
+      title: translate('Health Records'),
+      headerTitleStyle: { fontFamily: "Roboto", }
 
+    }
+  },
   EmrInfo: {
     screen: EmrInfo,
     navigationOptions: ({ navigation }) => ({
@@ -661,7 +668,7 @@ export const smartHealthStack=createStackNavigator({
   DocumentList: {
     screen: DocumentList,
     navigationOptions: ({ navigation }) => ({
-      title: 'Document List',
+      title: translate('Document List'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
     })
@@ -803,7 +810,6 @@ export const smartHealthStack=createStackNavigator({
 
     })
   },
-
 
   // ============Zoom image ========================
   ImageView: {
