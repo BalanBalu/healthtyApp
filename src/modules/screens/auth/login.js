@@ -33,6 +33,7 @@ class Login extends Component {
       loginErrorMsg: '',
       checked: false,
       isModalVisible: false,
+      backgroundColor: '#dddddd',
       showPassword: true,
       isSelected:CURRENT_APP_NAME=== MY_SMART_HEALTH_CARE?'corporate_user':'user' ,
       CorporateUser: false
@@ -89,6 +90,29 @@ class Login extends Component {
       // }, 4000);
     } catch (e) {
       this.setState({ loginErrorMsg: 'Something Went Wrong' + e, isModalVisible: true })
+    }
+  }
+  onFocus(item) {
+    if(item === 1) {
+      this.setState({
+        backgroundColor1: '#128283'
+      })
+    } else {
+      this.setState({
+        backgroundColor2: '#128283'
+      })
+    }
+  }
+
+  onBlur(item) {
+    if(item === 1) {
+      this.setState({
+        backgroundColor1: '#dddddd'
+      })
+    } else {
+      this.setState({
+        backgroundColor2: '#dddddd'
+      })
     }
   }
   getUserProfile = async (isSelected) => {
@@ -151,8 +175,11 @@ class Login extends Component {
 <Text style={{fontFamily: 'opensans-bold', marginLeft: 28, marginTop: 55, fontSize: 20, color: '#333333'}}>Welcome</Text>
 
 <Form>
-<Item style={{marginTop: 40, borderBottomColor: '#DDDDDD', borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
-                      <Input placeholderTextColor={'##A1A1A1'} placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+<Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
+                      <Input
+                       onBlur={ () => this.onBlur(1) }
+                       onFocus={ () => this.onFocus(1) }
+                      placeholderTextColor={'##A1A1A1'} placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                  ref={(input) => { this.enterTextInputEmail = input; }}
                                     returnKeyType={'next'}
                                     value={userEntry}
@@ -166,8 +193,12 @@ class Login extends Component {
 
                      
                     </Item>
-            <Item style={{borderBottomColor: '#DDDDDD', borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30, marginTop: 35}}>
-                      <Input placeholderTextColor={'#A1A1A1'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                    
+            <Item style={{borderBottomColor: this.state.backgroundColor2, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30, marginTop: 35}}>
+                      <Input 
+                      onBlur={ () => this.onBlur(2) }
+                      onFocus={ () => this.onFocus(2) }
+                      placeholderTextColor={'#A1A1A1'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                         ref={(input) => { this.userEntry = input; }}
                         secureTextEntry={true}
                         returnKeyType={'done'}
