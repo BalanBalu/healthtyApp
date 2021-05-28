@@ -5,7 +5,7 @@ import {
 } from 'native-base';
 import { connect } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Image, TouchableOpacity, View, ScrollView, ImageBackground } from 'react-native';
+import { Image, TouchableOpacity, View, ScrollView, ImageBackground, Pressable } from 'react-native';
 import { login, RESET_REDIRECT_NOTICE,SmartHealthlogin } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
@@ -148,7 +148,89 @@ class Login extends Component {
       </View>
       </ImageBackground>
       <View style={{borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', minHeight: '100%', marginTop: -25, display: 'flex', alignItems: "flex-start"}}>
-<Text style={{fontFamily: 'opensans-bold', marginLeft: 30, marginTop: 55, fontSize: 20, color: '#333333'}}>Welcome</Text>
+<Text style={{fontFamily: 'opensans-bold', marginLeft: 28, marginTop: 55, fontSize: 20, color: '#333333'}}>Welcome</Text>
+
+<Form>
+<Item style={{marginTop: 40, borderBottomColor: '#DDDDDD', borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
+                      <Input placeholderTextColor={'#DDDDDD'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                        ref={(input) => { this.userEntry = input; }}
+                        secureTextEntry={true}
+                        returnKeyType={'done'}
+                        value={password}
+                        secureTextEntry={showPassword}
+                        autoCapitalize='none'
+                        onChangeText={password => this.setState({ password })}
+                        // blurOnSubmit={false}
+                        onSubmitEditing={() => { (userEntry && password) != '' ? this.doLogin() : this.enterTextInputEmail._root.focus() }}
+                      />
+
+
+                      {/* {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                        : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                      } */}
+                    </Item>
+            <Item style={{borderBottomColor: '#DDDDDD', borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30, marginTop: 35}}>
+                      <Input placeholderTextColor={'#DDDDDD'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                        ref={(input) => { this.userEntry = input; }}
+                        secureTextEntry={true}
+                        returnKeyType={'done'}
+                        value={password}
+                        secureTextEntry={showPassword}
+                        autoCapitalize='none'
+                        onChangeText={password => this.setState({ password })}
+                        // blurOnSubmit={false}
+                        onSubmitEditing={() => { (userEntry && password) != '' ? this.doLogin() : this.enterTextInputEmail._root.focus() }}
+                      />
+
+
+                      {/* {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                        : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                      } */}
+                    </Item>
+
+                   
+                    <View style={{display: 'flex', flexDirection: 'row', marginTop: 10}}>
+                    <View style={{display: 'flex', marginTop: 25, marginLeft: 25, flexDirection: 'row'}}>
+                              <Radio
+                              
+                               color={'#AAAAAA'}
+                             selectedColor={'#AAAAAA'}
+                               standardStyle={true}
+                               selected={ isSelected === 'corporate_user'}
+                               onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                             />
+                             <Text style={{marginLeft: 8}}>Corporate</Text>
+                     </View>
+                     <View style={{display: 'flex', marginTop: 25, marginLeft: 25, flexDirection: 'row'}}>
+                              <Radio
+                              
+                               color={'#AAAAAA'}
+                             selectedColor={'#AAAAAA'}
+                               standardStyle={true}
+                               selected={ isSelected === 'user'}
+                               onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                             />
+                             <Text style={{marginLeft: 8}}>User</Text>
+                     </View>
+                    </View>
+                   <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, marginRight: 24}}>
+                   <Pressable style={{ elevation: 8,
+    backgroundColor: "#fff",
+    borderColor: '#128283',
+    borderWidth: 2,
+    borderRadius: 30,
+    paddingVertical: 15,
+    paddingHorizontal: 102}}>
+                        <Text style={{  fontSize: 18,
+    color: "#128283",
+    fontFamily: 'opensans-bold',
+    alignSelf: "center",
+}}>Sign in</Text>
+                </Pressable>
+                <Text style={{marginTop: 20, color: '#AAAAAA'}}>Forgot Password?</Text>
+                   </View>
+                   
+</Form>
       </View>
 
         {/* <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 30}}>
@@ -210,37 +292,37 @@ class Login extends Component {
       //                   : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
       //                 }
       //               </Item>
-      //               {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
-      //                 <Row style={{ marginTop: 10 }}>
-      //                    <Col size={4}>
-      //                     <Row style={{ alignItems: 'center' }}>
-      //                       <Radio
-      //                         color={primaryColor}
-      //                       selectedColor={primaryColor}
-      //                         standardStyle={true}
-      //                         selected={ isSelected === 'corporate_user'}
-      //                         onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
-      //                       />
-      //                       <Text style={styles.firstCheckBox}>Corporate</Text>
-      //                     </Row>
-      //                   </Col>
-      //                   <Col size={3}>
-      //                     <Row style={{ alignItems: 'center' }}>
-      //                       <Radio
-      //                         color={primaryColor}
-      //                        selectedColor={primaryColor}
-      //                         standardStyle={true}
-      //                         selected={ isSelected === 'user'}
-      //                         onPress={() => this.setState({  isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
-      //                       />
-      //                       <Text style={styles.firstCheckBox}>User</Text>
-      //                     </Row>
-      //                   </Col>
+                    // {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
+                    //   <Row style={{ marginTop: 10 }}>
+                    //      <Col size={4}>
+                    //       <Row style={{ alignItems: 'center' }}>
+                    //         <Radio
+                    //           color={primaryColor}
+                    //         selectedColor={primaryColor}
+                    //           standardStyle={true}
+                    //           selected={ isSelected === 'corporate_user'}
+                    //           onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
+                    //         />
+                    //         <Text style={styles.firstCheckBox}>Corporate</Text>
+                    //       </Row>
+                    //     </Col>
+                    //     <Col size={3}>
+                    //       <Row style={{ alignItems: 'center' }}>
+                    //         <Radio
+                    //           color={primaryColor}
+                    //          selectedColor={primaryColor}
+                    //           standardStyle={true}
+                    //           selected={ isSelected === 'user'}
+                    //           onPress={() => this.setState({  isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
+                    //         />
+                    //         <Text style={styles.firstCheckBox}>User</Text>
+                    //       </Row>
+                    //     </Col>
                        
-      //                   <Col size={3}>
-      //                   </Col>
-      //                 </Row>
-      //                 : null}
+                    //     <Col size={3}>
+                    //     </Col>
+                    //   </Row>
+                    //   : null}
       //               <Row style={{ marginTop: 20, }}>
       //                 <Right>
       //                   <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
