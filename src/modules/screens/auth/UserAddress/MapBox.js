@@ -613,7 +613,7 @@ export default class MapBox extends Component {
                         marginTop: 5,
                         borderRadius: 5,
                         color: '#000',
-                        fontFamily: 'OpenSans',
+                        fontFamily: 'Roboto',
                       }}
                       value={this.state.full_name}
                       onChangeText={(value) =>
@@ -638,7 +638,7 @@ export default class MapBox extends Component {
                 </View>
               ) : null} */}
               <Item floatingLabel>
-                <Label>{translate("Address 1")}</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("Address 1")}</Label>
                 <Input
                   style={styles.transparentLabel}
                   returnKeyType={'next'}
@@ -653,7 +653,7 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>{translate("Address 2")}</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("Address 2")}</Label>
                 <Input
                   placeholder={translate("Address Line")}
                   style={styles.transparentLabel}
@@ -672,7 +672,7 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>{translate("Pincode")}</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("Pincode")}</Label>
                 <Input
                   placeholder={translate("Pincode")}
                   style={styles.transparentLabel}
@@ -695,14 +695,14 @@ export default class MapBox extends Component {
               <Item style={[styles.transparentLabel1]}>
                 <Picker
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     fontSize: 14,
                     backgroundColor: '#F1F1F1',
                   }}
                   mode="dropdown"
                   iosIcon={<Icon name="arrow-down" />}
                   placeholder={translate("Select your Post Office Name")}
-                  textStyle={{ color: 'gray', fontFamily: 'OpenSans' }}
+                  textStyle={{ color: 'gray', fontFamily: 'Roboto' }}
                   itemStyle={{
                     backgroundColor: 'gray',
                     marginLeft: 0,
@@ -729,7 +729,7 @@ export default class MapBox extends Component {
                 </Picker>
               </Item>
               <Item floatingLabel>
-                <Label>{translate("City Or Area")}</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("City Or Area")}</Label>
                 <Input
                   placeholder={translate("City")}
                   style={styles.transparentLabel}
@@ -748,7 +748,7 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>{translate("District")}</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("District")}</Label>
                 <Input
                   placeholder={translate("District")}
                   style={styles.transparentLabel}
@@ -768,7 +768,7 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>{translate("State")}</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("State")}</Label>
                 <Input
                   placeholder={translate("State")}
                   style={styles.transparentLabel}
@@ -788,7 +788,7 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>{translate("Country")}</Label>
+                <Label style={{fontFamily: 'Roboto'}}>{translate("Country")}</Label>
                 <Input
                   placeholder={translate("Country")}
                   style={styles.transparentLabel}
@@ -883,7 +883,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#f6f8fa',
     textAlign: 'center',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   map: {
     height: 400,
@@ -891,7 +891,7 @@ const styles = StyleSheet.create({
   },
   customText: {
     marginLeft: 10,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   transparentLabel: {
     borderBottomColor: 'transparent',
@@ -899,7 +899,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 5,
     color: '#000',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   transparentLabel1: {
     borderBottomColor: 'transparent',
@@ -908,8 +908,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 5,
     paddingLeft: 20,
-    color: '#000',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
+    fontSize: 15
+    
   },
 
   annotationContainer: {
@@ -935,7 +936,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     backgroundColor: primaryColor,
     borderRadius: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginLeft: 15,
     marginBottom: 10,
     borderRadius: 15,
@@ -962,7 +963,7 @@ const styles = StyleSheet.create({
   },
   inputfield: {
     color: 'black',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     padding: 5,
     paddingLeft: 10,

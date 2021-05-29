@@ -106,17 +106,17 @@ export const RenderHospitalAddress = (props) => {
         <Grid style={gridStyle}>
             <Row>
                 <Col style={{ width: '8%' }}>
-                    <Icon name='medkit' style={{ fontSize: 16, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
+                    <Icon name='medkit' style={{ fontSize: 16, fontFamily: 'Roboto', color: 'gray' }}></Icon>
                 </Col>
                 <Col style={{ width: '90%' }}>
                     {props.hospitalAddress.location ?
-                        <Text note style={hospotalNameTextStyle || { fontFamily: 'OpenSans' }}>{props.hospitalAddress.name}</Text>
+                        <Text note style={hospotalNameTextStyle || { fontFamily: 'Roboto' }}>{props.hospitalAddress.name}</Text>
                         : null}
                 </Col>
             </Row>
             <Row>
                 <Col style={{ width: '8%' }}>
-                    <Icon name='pin' style={{ fontSize: 18, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
+                    <Icon name='pin' style={{ fontSize: 18, fontFamily: 'Roboto', color: 'gray' }}></Icon>
                 </Col>
                 <Col style={{ width: '90%' }}>
                     {props.hospitalAddress.location ?

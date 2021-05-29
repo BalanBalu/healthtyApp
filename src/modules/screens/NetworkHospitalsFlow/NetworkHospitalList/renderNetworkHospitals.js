@@ -82,7 +82,7 @@ export default class RenderNetworkHospitalInfo extends Component {
                     <Icon name="directions" type="MaterialIcons" style={{ color: primaryColor, fontSize: 20, marginLeft: 45, marginTop: 5 }} />
                     <Text style={{
                       fontSize: 12,
-                      fontFamily: 'OpenSans', color: primaryColor, fontWeight: 'bold', marginLeft: 2, marginTop: 8,
+                      fontFamily: 'opensans-bold', color: primaryColor,marginLeft: 2, marginTop: 8,
                     }}>View Distance</Text>
                   </TouchableOpacity>
                 </Col>

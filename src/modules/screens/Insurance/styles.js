@@ -254,6 +254,7 @@ export default  styles = StyleSheet.create({
         height: 35,
         marginTop: 8,
         borderRadius: 5,
+        fontFamily: 'Roboto'
       },
       searchSection: {
         flex: 1,

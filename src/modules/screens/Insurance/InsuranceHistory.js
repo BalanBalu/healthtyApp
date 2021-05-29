@@ -32,6 +32,7 @@ export default class InsuranceHistory extends Component {
                   marginLeft: 'auto',
                   marginRight: 'auto',
                   marginTop: 'auto',
+                  fontFamily: 'Roboto'
                 }}
                 values={['Insurance Renewal', 'Buy Insurance']}
                 selectedIndex={selectedIndex}
@@ -39,8 +40,9 @@ export default class InsuranceHistory extends Component {
                 activeTabStyle={{
                   backgroundColor: primaryColor,
                   borderColor: primaryColor,
+                  fontFamily: 'Roboto'
                 }}
-                tabStyle={{borderColor: primaryColor}}
+                tabStyle={{borderColor: primaryColor,fontFamily: 'Roboto'}}
               />
             </Card>
             {selectedIndex === 0 ? (
@@ -50,8 +52,8 @@ export default class InsuranceHistory extends Component {
                     <Row>
                       <Text
                         style={{
-                          fontWeight: 'bold',
-                          fontSize: 15,
+                          fontFamily: 'opensans-bold',
+                          fontSize: 14,
                           color: 'primaryColor',
                           marginLeft: 5,
                         }}>
@@ -63,7 +65,7 @@ export default class InsuranceHistory extends Component {
 
                   <Col>
                     <Row>
-                      <Text style={{fontSize: 15, marginLeft: 5}}>
+                      <Text style={{fontSize: 15, marginLeft: 5,fontFamily: 'Roboto'}}>
                         PolicyType
                       </Text>
                       <Text style={{marginLeft: 50}}>:</Text>
@@ -72,7 +74,7 @@ export default class InsuranceHistory extends Component {
 
                   <Col>
                     <Row>
-                      <Text style={{fontSize: 15, marginLeft: 5}}>
+                      <Text style={{fontSize: 15, marginLeft: 5,fontFamily: 'Roboto'}}>
                         TransactionType
                       </Text>
                       <Text style={{marginLeft: 11}}>:</Text>
@@ -86,10 +88,10 @@ export default class InsuranceHistory extends Component {
                   <Row>
                     <Text
                       style={{
-                        fontWeight: 'bold',
-                        fontSize: 15,
+                        fontSize: 14,
                         color: 'primaryColor',
                         marginLeft: 5,
+                        fontFamily: 'opensans-bold'
                       }}>
                       Request Date
                     </Text>
@@ -99,7 +101,7 @@ export default class InsuranceHistory extends Component {
 
                 <Col>
                   <Row>
-                    <Text style={{fontSize: 15, marginLeft: 5}}>
+                    <Text style={{fontSize: 15, marginLeft: 5,fontFamily: 'Roboto'}}>
                       PolicyType
                     </Text>
                     <Text style={{marginLeft: 50}}>:</Text>
@@ -108,7 +110,7 @@ export default class InsuranceHistory extends Component {
 
                 <Col>
                   <Row>
-                    <Text style={{fontSize: 15, marginLeft: 5}}>
+                    <Text style={{fontSize: 15, marginLeft: 5,fontFamily: 'Roboto'}}>
                       TransactionType
                     </Text>
                     <Text style={{marginLeft: 11}}>:</Text>
