@@ -147,7 +147,7 @@ class Login extends Component {
              <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270}}>
 
       <View>
-      <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', alignContent: 'center', marginTop: 30, marginLeft: 30, alignSelf: 'baseline'}}>
+      <View style={styles.imageContainer}>
         <Svg xmlns="http://www.w3.org/2000/Svgg" width="55" height="55" viewBox="0 0 299.83 282.06">
   <G id="Layer_2" data-name="Layer 2" transform="translate(-0.021 0.007)">
     <G id="Layer_1" data-name="Layer 1">
@@ -164,15 +164,15 @@ class Login extends Component {
 </Svg>
        
         <View>
-        <Text><Text style={{ fontFamily:'opensans-bold', color: '#fff' }}>MySmart</Text><Text style={{ fontFamily:'opensans-regular', color: '#fff' }}>Health</Text></Text>
+        <Text><Text style={styles.textBold}>MySmart</Text><Text style={{ fontFamily:'opensans-regular', color: '#fff' }}>Health</Text></Text>
 
         </View>
 
         </View>
       </View>
       </ImageBackground>
-      <View style={{borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', minHeight: '100%', marginTop: -30, display: 'flex', alignItems: "flex-start"}}>
-<Text style={{fontFamily: 'opensans-bold', marginLeft: 28, marginTop: 55, fontSize: 20, color: '#333333'}}>Welcome</Text>
+      <View style={styles.inputContainer}>
+<Text style={styles.welcomeText}>Welcome</Text>
 
 <Form>
                {isLoading ?
@@ -249,39 +249,19 @@ class Login extends Component {
                      </View>
                     </View>
                    <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, marginRight: 24}}>
-                   <Pressable onPress={() => this.doLogin()} style={{ elevation: 2,
-    backgroundColor: "#fff",
-    borderColor: '#48b4a5',
-    borderWidth: 2,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 102}}>
-                        <Text style={{  fontSize: 18,
-    color: "#48b4a5",
-    fontFamily: 'opensans-bold',
-    alignSelf: "center",
-}}>Sign in</Text>
+                   <Pressable onPress={() => this.doLogin()} style={styles.signinButton}>
+                        <Text style={styles.signinText}>Sign in</Text>
                 </Pressable>
                 <Text onPress={() => this.props.navigation.navigate('forgotpassword')} style={{marginTop: 20, color: '#AAAAAA'}}>Forgot Password?</Text>
                    </View>
                    
 </Form>
 
-<LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={{display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
-    backgroundColor: "#48b4a5",
-    borderColor: '#48b4a5',
-    borderWidth: 0,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 67}}>
+<LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
                    <Pressable onPress={() => {
                          this.props.navigation.navigate('signup')
                        }} style={{ }}>
-                        <Text style={{  fontSize: 18,
-    color: "#fff",
-    fontFamily: 'opensans-bold',
-    alignSelf: "center",
-}}>Create Account</Text>
+                        <Text style={styles.createAccountText}>Create Account</Text>
                 </Pressable>
                 </LinearGradient>
       </View>
