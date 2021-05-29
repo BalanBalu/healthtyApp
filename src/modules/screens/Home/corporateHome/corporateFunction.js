@@ -1,4 +1,5 @@
 import { CURRENT_APP_NAME } from "../../../../setup/config";
+import {arrangeFullName} from '../../../common'
 export function getMemberNameWithStatus(data) {
 
     let name = CURRENT_APP_NAME + " user"
@@ -11,7 +12,7 @@ export function getMemberNameWithStatus(data) {
                 status = 'Mrs'
             }
         }
-        name = `${status} ${data.firstName || ''}${data.middleName ? ' ' + data.middleName + ' ' : ''} ${data.lastName || ''}`
+        name = `${status} ${arrangeFullName(data&&data.firstName,data&&data.middleName,data&&data.lastName)}`
     }
 
     return name

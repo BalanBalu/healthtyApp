@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import StarRating from 'react-native-star-rating';
 import {FlatList} from 'react-native-gesture-handler';
+import{translate} from '../../../../setup/translator.helper';
 import {
   formatDate,
   addTimeUnit,
@@ -333,14 +334,14 @@ class LabAppointmentInfo extends Component {
                 <Row>
                   <Col size={6}>
                     <Row style={{marginLeft: 5}}>
-                      <Text style={styles.subText1}>Consultation Fee</Text>
+                      <Text style={styles.subText1}>{translate("Consultation Fee")}</Text>
                       <Text style={styles.subText2}>-</Text>
                       <Text note style={styles.subText2}>
                         {data.fee}
                       </Text>
                     </Row>
                     <Row style={{marginTop: 10, marginLeft: 5}}>
-                      <Text style={styles.subText1}>Payment Method</Text>
+                      <Text style={styles.subText1}>{translate("Payment Method")}</Text>
                       <Text style={styles.subText2}>-</Text>
                       <Text note style={styles.subText2}>
                         {paymentData ? paymentData.payment_method : 0}
@@ -385,7 +386,7 @@ class LabAppointmentInfo extends Component {
                       <Col size={7}>
                         <Row style={{marginTop: 10}}>
                           <Text note style={styles.subText3}>
-                            Do you need to cancel this appointment ?
+                            {translate("Do you need to cancel this appointment ?")}
                           </Text>
                         </Row>
                       </Col>
@@ -396,7 +397,7 @@ class LabAppointmentInfo extends Component {
                             style={[styles.postponeButton]}
                             onPress={() => this.navigateCancelAppoointment()}>
                             <Text capitalise={true} style={styles.ButtonText}>
-                              CANCEL
+                              {translate("CANCEL")}
                             </Text>
                           </Button>
                         </Row>
@@ -408,7 +409,7 @@ class LabAppointmentInfo extends Component {
                       <Col size={7}>
                         <Row style={{marginTop: 10}}>
                           <Text note style={styles.subText3}>
-                            Do you need to retry this appointment ?
+                            {translate("Do you need to retry this appointment ?")}
                           </Text>
                         </Row>
                       </Col>
@@ -421,7 +422,7 @@ class LabAppointmentInfo extends Component {
                             ]}
                             onPress={() => this.navigateLabConfirmation()}>
                             <Text capitalise={true} style={styles.ButtonText}>
-                              RETRY
+                              {translate("RETRY")}
                             </Text>
                           </Button>
                         </Row>
@@ -432,7 +433,7 @@ class LabAppointmentInfo extends Component {
                       <Col size={4}>
                         <Row style={{marginTop: 10}}>
                           <Text note style={styles.subText3}>
-                            Do you want to accept ?
+                            {translate("Do you want to accept ?")}
                           </Text>
                         </Row>
                       </Col>
@@ -446,7 +447,7 @@ class LabAppointmentInfo extends Component {
                             onPress={() =>
                               this.updateLabAppointmentStatus(data, 'APPROVED')
                             }>
-                            <Text style={styles.ButtonText}>ACCEPT</Text>
+                            <Text style={styles.ButtonText}>{translate("ACCEPT")}</Text>
                           </Button>
                         </Row>
                       </Col>
@@ -457,7 +458,7 @@ class LabAppointmentInfo extends Component {
                             style={[styles.postponeButton, {marginLeft: 20}]}
                             onPress={() => this.navigateCancelAppoointment()}>
                             <Text capitalise={true} style={styles.ButtonText}>
-                              CANCEL
+                              {translate("CANCEL")}
                             </Text>
                           </Button>
                         </Row>
@@ -551,7 +552,7 @@ class LabAppointmentInfo extends Component {
                               </Col>
                               <Col style={{width: '92%', paddingTop: 5}}>
                                 <Text style={styles.innerSubText1}>
-                                  Previous Time
+                                  {translate("Previous Time")}
                                 </Text>
 
                                 <Text note style={styles.subTextInner1}>
@@ -577,7 +578,7 @@ class LabAppointmentInfo extends Component {
                     <Icon name="ios-flask" style={{fontSize: 18}} />
                   </Col>
                   <Col style={{width: '92%', paddingTop: 5}}>
-                    <Text style={styles.innerSubText}>Patient Details</Text>
+                    <Text style={styles.innerSubText}>{translate("Patient Details")}</Text>
                   </Col>
                 </Row>
                 <FlatList
@@ -587,7 +588,7 @@ class LabAppointmentInfo extends Component {
                     <View style={styles.commonView}>
                       <Row>
                         <Col size={1.5}>
-                          <Text style={styles.commonText}>Name </Text>
+                          <Text style={styles.commonText}>{translate("Name")} </Text>
                         </Col>
                         <Col size={0.5}>
                           <Text style={styles.commonText}>-</Text>
@@ -600,14 +601,14 @@ class LabAppointmentInfo extends Component {
                       </Row>
                       <Row>
                         <Col size={1.5}>
-                          <Text style={styles.commonText}>Age</Text>
+                          <Text style={styles.commonText}>{translate("Age")}</Text>
                         </Col>
                         <Col size={0.5}>
                           <Text style={styles.commonText}>-</Text>
                         </Col>
                         <Col size={8}>
                           <Text note style={styles.commonText}>
-                            {item.patient_age} years
+                            {item.patient_age} {translate("years")}
                           </Text>
                         </Col>
                       </Row>
@@ -627,7 +628,7 @@ class LabAppointmentInfo extends Component {
                     <Icon name="ios-flask" style={{fontSize: 18}} />
                   </Col>
                   <Col style={{width: '92%', paddingTop: 5}}>
-                    <Text style={styles.innerSubText}>Lab Test</Text>
+                    <Text style={styles.innerSubText}>{translate("Lab Test")}</Text>
                     <Text note style={styles.subTextInner1}>
                       {data.labCategoryInfo &&
                         data.labCategoryInfo.category_name}
@@ -648,7 +649,7 @@ class LabAppointmentInfo extends Component {
                     <Icon name="location-sharp" style={{fontSize: 18}} />
                   </Col>
                   <Col style={{width: '92%', paddingTop: 5}}>
-                    <Text style={styles.innerSubText}>Pick Up at Lab</Text>
+                    <Text style={styles.innerSubText}>{translate("Pick Up at Lab")}</Text>
                     <Text
                       style={[
                         styles.commonText,
@@ -693,7 +694,7 @@ class LabAppointmentInfo extends Component {
                     <Icon name="ios-document" style={{fontSize: 20}} />
                   </Col>
                   <Col style={{width: '92%', paddingTop: 5}}>
-                    <Text style={styles.innerSubText}>Payment Report</Text>
+                    <Text style={styles.innerSubText}>{translate("Payment Report")}</Text>
                     {reportData != null ? (
                       <View
                         style={{
@@ -712,7 +713,7 @@ class LabAppointmentInfo extends Component {
                           <Text
                             note
                             style={[styles.subTextInner2, {marginLeft: 10}]}>
-                            "You have raised Report for this appointment"
+                            {translate("You have raised Report for this appointment")}
                           </Text>
                           <Row>
                             <Col size={9}>
@@ -764,7 +765,7 @@ class LabAppointmentInfo extends Component {
                               textAlign: 'center',
                               marginTop: 5,
                             }}>
-                            Report Issue
+                            {translate("Report Issue")}
                           </Text>
                         </TouchableOpacity>
                       </View>
@@ -778,7 +779,7 @@ class LabAppointmentInfo extends Component {
                       <Icon name="ios-medkit" style={{fontSize: 20}} />
                     </Col>
                     <Col style={{width: '92%', paddingTop: 5}}>
-                      <Text style={styles.innerSubText}>Review</Text>
+                      <Text style={styles.innerSubText}>{translate("Review")}</Text>
 
                       <StarRating
                         fullStarColor="#FF9500"
@@ -800,7 +801,7 @@ class LabAppointmentInfo extends Component {
                       <Icon name="ios-add-circle" style={{fontSize: 20}} />
                     </Col>
                     <Col style={{width: '92%', paddingTop: 5}}>
-                      <Text style={styles.innerSubText}>Add Feedback</Text>
+                      <Text style={styles.innerSubText}>{translate("Add Feedback")}</Text>
                       <View
                         style={{
                           justifyContent: 'center',
@@ -821,7 +822,7 @@ class LabAppointmentInfo extends Component {
                               marginTop: 5,
                             }}>
                             {' '}
-                            ADD FEEDBACK{' '}
+                            {translate("ADD FEEDBACK")}{' '}
                           </Text>
                           <MaterialIcons
                             name="create"
@@ -843,10 +844,10 @@ class LabAppointmentInfo extends Component {
                     <Icon name="ios-cash" style={{fontSize: 18}} />
                   </Col>
                   <Col style={{width: '92%', paddingTop: 5}}>
-                    <Text style={styles.innerSubText}>Payment Info</Text>
+                    <Text style={styles.innerSubText}>{translate("Payment Info")}</Text>
                     <Row style={{marginTop: 10}}>
                       <Col style={{width: '60%'}}>
-                        <Text style={styles.downText}>Total Fee</Text>
+                        <Text style={styles.downText}>{translate("Total Fee")}</Text>
                       </Col>
                       <Col style={{width: '15%'}}>
                         <Text style={styles.downText}>-</Text>
@@ -864,7 +865,7 @@ class LabAppointmentInfo extends Component {
                       <Row style={{marginTop: 10}}>
                         <Col style={{width: '60%'}}>
                           <Text style={styles.downText}>
-                            coupon code discount amount
+                            {translate("coupon code discount amount")}
                           </Text>
                         </Col>
                         <Col style={{width: '15%'}}>
@@ -881,7 +882,7 @@ class LabAppointmentInfo extends Component {
                       <Row style={{marginTop: 10}}>
                         <Col style={{width: '60%'}}>
                           <Text style={styles.downText}>
-                            credit point discount amount
+                            {translate("credit point discount amount")}
                           </Text>
                         </Col>
                         <Col style={{width: '15%'}}>
@@ -896,7 +897,7 @@ class LabAppointmentInfo extends Component {
                     ) : null}
                     <Row style={{marginTop: 10}}>
                       <Col style={{width: '60%'}}>
-                        <Text style={styles.downText}>Payment Made</Text>
+                        <Text style={styles.downText}>{translate("Payment Made")}</Text>
                       </Col>
                       <Col style={{width: '15%'}}>
                         <Text style={styles.downText}>-</Text>
@@ -912,7 +913,7 @@ class LabAppointmentInfo extends Component {
                     </Row>
                     <Row style={{marginTop: 10}}>
                       <Col style={{width: '60%'}}>
-                        <Text style={styles.downText}>Payment Due</Text>
+                        <Text style={styles.downText}>{translate("Payment Due")}</Text>
                       </Col>
                       <Col style={{width: '15%'}}>
                         <Text style={styles.downText}>-</Text>
@@ -928,7 +929,7 @@ class LabAppointmentInfo extends Component {
                     </Row>
                     <Row style={{marginTop: 10}}>
                       <Col style={{width: '60%'}}>
-                        <Text style={styles.downText}>Payment Method</Text>
+                        <Text style={styles.downText}>{translate("Payment Method")}</Text>
                       </Col>
                       <Col style={{width: '15%'}}>
                         <Text style={styles.downText}>-</Text>
@@ -980,7 +981,7 @@ class LabAppointmentInfo extends Component {
                             color: '#FFF',
                             marginLeft: -5,
                           }}>
-                          {'Lab has Rescheduled the appointment !'}
+                          {translate('Lab has Rescheduled the appointment !')}
                         </Text>
                       </CardItem>
                       <Row style={{justifyContent: 'center'}}>
@@ -1137,7 +1138,7 @@ class LabAppointmentInfo extends Component {
                                     color: '#fff',
                                   }}>
                                   {' '}
-                                  {'CANCEL'}
+                                  {translate('CANCEL')}
                                 </Text>
                               </TouchableOpacity>
                             </Col>

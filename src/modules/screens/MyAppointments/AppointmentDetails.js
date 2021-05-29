@@ -393,19 +393,19 @@ class AppointmentDetails extends Component {
                   <Row>
                     <Col size={6}>
                       <Row style={{ marginTop: 10, marginLeft: 5 }} >
-                        <Text style={styles.subText1}>Experience</Text>
+                        <Text style={styles.subText1}>{translate("Experience")}</Text>
                         <Text style={styles.subText2}>-</Text>
                         <Text note style={styles.subText2}>{getDoctorExperience(doctorData.calulatedExperience)}</Text>
                       </Row>
                       <Row style={{ marginTop: 10, marginLeft: 5 }}>
-                        <Text style={styles.subText1}>Payment Method</Text>
+                        <Text style={styles.subText1}>{translate("Payment Method")}</Text>
                         <Text style={styles.subText2}>-</Text>
                         <Text note style={styles.subText2}>{paymentDetails.payment_method || 0}</Text>
                       </Row>
                     </Col>
                     {data.appointment_status == 'APPROVED' && data.onGoingAppointment === true ?
                       <Col size={3}>
-                        <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>ONGOING</Text>
+                        <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>{translate("ONGOING")}</Text>
                       </Col>
                       :
                       data.appointment_status != undefined &&
@@ -429,14 +429,14 @@ class AppointmentDetails extends Component {
                       <Col size={7}>
                         <Row style={{ marginTop: 10 }}>
 
-                          <Text note style={styles.subText3}>Do you want to cancel this appointment ?</Text>
+                          <Text note style={styles.subText3}>{translate("Do you want to cancel this appointment ?")}</Text>
 
                         </Row>
                       </Col>
                       <Col size={3}>
                         <Row style={{ marginTop: 10 }}>
                           <Button danger style={[styles.postponeButton]} onPress={() => this.navigateCancelAppoointment()}>
-                            <Text style={styles.ButtonText}>CANCEL</Text>
+                            <Text style={styles.ButtonText}>{translate("CANCEL")}</Text>
                           </Button>
                         </Row>
                       </Col>
@@ -446,21 +446,21 @@ class AppointmentDetails extends Component {
                         <Col size={4}>
                           <Row style={{ marginTop: 10 }}>
 
-                            <Text note style={styles.subText3}>Do you want to accept ?</Text>
+                            <Text note style={styles.subText3}>{translate("Do you want to accept ?")}</Text>
 
                           </Row>
                         </Col>
                         <Col size={3}>
                           <Row style={{ marginTop: 10 }}>
                             <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
-                              <Text style={styles.ButtonText}>ACCEPT</Text>
+                              <Text style={styles.ButtonText}>{translate("ACCEPT")}</Text>
                             </Button>
                           </Row>
                         </Col>
                         <Col size={3}>
                           <Row style={{ marginTop: 10 }}>
                             <Button danger style={[styles.postponeButton]} onPress={() => this.navigateCancelAppoointment()}>
-                              <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
+                              <Text capitalise={true} style={styles.ButtonText}>{translate("CANCEL")}</Text>
                             </Button>
                           </Row>
                         </Col></Row> : null : data.appointment_status == 'APPROVED' && isTimeAfter(new Date().toISOString(), data.appointment_starttime) ?
@@ -468,13 +468,13 @@ class AppointmentDetails extends Component {
                       <Row>
                         <Col size={5}>
                           <Row style={{ marginTop: 10 }}>
-                            <Text note style={styles.subText3}>Do you need to get code ?</Text>
+                            <Text note style={styles.subText3}>{translate("Do you need to get code ?")}</Text>
                           </Row>
                         </Col>
                         <Col size={5}>
                           <Row style={{ marginTop: 10 }}>
                             <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode()}>
-                              <Text style={styles.ButtonText}>Get appointment Code</Text>
+                              <Text style={styles.ButtonText}>{translate("Get appointment Code")}</Text>
                             </Button>
                           </Row>
                         </Col>
@@ -545,11 +545,11 @@ class AppointmentDetails extends Component {
                         <Col style={{ width: '92%', paddingTop: 5 }}>
                           {data.appointment_status == 'PROPOSED_NEW_TIME' ?
                             <Text style={styles.innerSubText1}>
-                              {data.status_updated_by.toLowerCase() === 'user' ? 'Proposed a new time by You' : 'Rescheudled a new Time by doctor'}</Text>
+                              {data.status_updated_by.toLowerCase() === 'user' ? translate('Proposed a new time by You') : translate('Rescheudled a new Time by doctor')}</Text>
                             : null}
                           {data.appointment_status == 'CANCELED' ?
                             <Text style={styles.innerSubText1}>
-                              {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by You' : ' Canceled by doctor'}</Text>
+                              {data.status_updated_by.toLowerCase() === 'user' ? translate('Canceled by You') : translate(' Canceled by doctor')}</Text>
                             : null}
                           {/* <Text style={styles.innerSubText1}>{data.appointment_status=='PROPOSED_NEW_TIME'?'Reschedule by '+data.status_updated_by.toLowerCase():'Canceled by '+data.status_updated_by.toLowerCase()}</Text> */}
                           <Text note style={styles.subTextInner1}>{data.status_update_reason}</Text>
@@ -561,7 +561,7 @@ class AppointmentDetails extends Component {
                           <AntDesign name='clockcircleo' style={{ fontSize: 20, }} />
                           </Col>
                           <Col style={{ width: '92%', paddingTop: 5 }}>
-                            <Text style={styles.innerSubText1}>Previous Time</Text>
+                            <Text style={styles.innerSubText1}>{translate("Previous Time")}</Text>
 
                             <Text note style={styles.subTextInner1}>{formatDate(data.previous_data.startDateTime, 'DD/MM/YYYY')}</Text>
                             <Text note style={styles.subTextInner1}>{formatDate(data.previous_data.startDateTime, 'hh:mm a') + formatDate(data.previous_data.endDateTime, '-hh:mm a')}</Text>
@@ -575,7 +575,7 @@ class AppointmentDetails extends Component {
                         <Icon name="ios-home" style={{ fontSize: 20, }} />
                       </Col>
                       <Col style={{ width: '92%', paddingTop: 5 }}>
-                        <Text style={styles.innerSubText}>Patient  Details</Text>
+                        <Text style={styles.innerSubText}>{translate("Patient  Details")}</Text>
                         <View >
                           <Row style={{ marginTop: 8, }}>
                             <Col size={8}>
@@ -584,7 +584,7 @@ class AppointmentDetails extends Component {
                                   <Text style={styles.commonText}>1.</Text>
                                 </Col>
                                 <Col size={2}>
-                                  <Text style={styles.commonText}>Name</Text>
+                                  <Text style={styles.commonText}>{translate("Name")}</Text>
                                 </Col>
                                 <Col size={.5}>
                                   <Text style={styles.commonText}>-</Text>
@@ -601,7 +601,7 @@ class AppointmentDetails extends Component {
                                 <Col size={.5}>
                                 </Col>
                                 <Col size={2}>
-                                  <Text style={styles.commonText}>Age</Text>
+                                  <Text style={styles.commonText}>{translate("Age")}</Text>
                                 </Col>
                                 <Col size={.5}>
                                   <Text style={styles.commonText}>-</Text>
@@ -724,7 +724,7 @@ class AppointmentDetails extends Component {
                       {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
                           <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'appointment' }) }}>
-                            <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
+                            <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>{translate("You have raised Report for this appointment")}</Text>
                             <Row>
                               <Col size={9}>
                                 <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
@@ -814,7 +814,7 @@ class AppointmentDetails extends Component {
                       paymentDetails.coupon_code_discount_amount ?
                         <Row style={{ marginTop: 10 }}>
                           <Col style={{ width: '60%' }}>
-                            <Text style={styles.downText}>coupon code discount amount
+                            <Text style={styles.downText}>{translate("coupon code discount amount")}
                 </Text>
                           </Col>
                           <Col style={{ width: '15%' }}>
@@ -829,7 +829,7 @@ class AppointmentDetails extends Component {
                       paymentDetails.credit_point_discount_amount ?
                         <Row style={{ marginTop: 10 }}>
                           <Col style={{ width: '60%' }}>
-                            <Text style={styles.downText}>credit point discount amount
+                            <Text style={styles.downText}>{translate("credit point discount amount")}
                 </Text>
                           </Col>
                           <Col style={{ width: '15%' }}>
@@ -912,7 +912,7 @@ class AppointmentDetails extends Component {
               }}>
 
                 <CardItem header style={styles.cardItem3}>
-                  <Text style={{ fontSize: 13, fontFamily: 'opensans-bold', marginTop: -5, color: '#FFF', marginLeft: -5 }}>{'Doctor has Rescheduled the appointment !'}</Text></CardItem>
+                  <Text style={{ fontSize: 13, fontFamily: 'opensans-bold', marginTop: -5, color: '#FFF', marginLeft: -5 }}>{translate('Doctor has Rescheduled the appointment !')}</Text></CardItem>
                 <Row style={{ justifyContent: 'center' }}>
                   <Col style={{ width: '25%' }}>
                     <Text style={{ fontSize: 12, fontFamily: 'Roboto', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "DD/MM/YYYY") : null}</Text>

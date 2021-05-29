@@ -78,6 +78,18 @@ export function getCorporateFullName(data) {
     return name
 }
 
+
+
+export function arrangeFullName(firstName,middleName,lastName) {
+    let name = 'unKnown'
+    if (firstName ||middleName||lastName) {
+        name = `${firstName ? firstName + ' ' : ''}${middleName? middleName + ' ' : ''}${lastName ? lastName : ''}`;
+        name = name ? name : 'unKnown';
+    }
+    return name
+}
+
+
 export function hospitalProfileImages(data) {
     let source = null;
     if (data && data.profile_image) {
@@ -235,9 +247,7 @@ export function getName(data) {
 export function getMemberName(data) {
     let temp = '';
     if (data) {
-      temp = `${data.familyMemberName || ' '} ${data.middleName || ''} ${
-        data.familyMemberLastName || ''
-      }`;
+      temp = `${data.familyMemberName || ' '}`;
     }
 
     return temp;

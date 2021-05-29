@@ -9,6 +9,7 @@ import styles from './style.js'
 import Spinner from '../../../components/Spinner';
 import { Col } from 'react-native-easy-grid';
 import { validatePassword } from '../../common'
+import {translate} from '../../../setup/translator.helper'
 
 
 
@@ -28,23 +29,23 @@ class UpdatePassword extends Component {
     handlePasswordUpdate = async () => {
         try {
             if (this.state.oldPassword == '') {
-                this.setState({ errorMsg: 'Kindly enter the old password' })
+                this.setState({ errorMsg: translate('Kindly enter the old password') })
                 return false;
             }
             if (this.state.newPassword == '') {
-                this.setState({ errorMsg: 'Kindly enter the new password' })
+                this.setState({ errorMsg: translate('Kindly enter the new password') })
                 return false;
             }
             if ((this.state.oldPassword && this.state.newPassword).length < 6) {
-                this.setState({ errorMsg: "Password is required Min 6 Characters" });
+                this.setState({ errorMsg: translate("Password is required Min 6 Characters") });
                 return false;
             }
             if ((this.state.oldPassword && this.state.newPassword).length > 16) {
-                this.setState({ errorMsg: "Password Accepted Max 16 Characters only" });
+                this.setState({ errorMsg: translate("Password Accepted Max 16 Characters only") });
                 return false
             }
             if (this.state.oldPassword == this.state.newPassword) {
-                this.setState({ errorMsg: 'Cannot have the same password. Kindly enter a new Password' })
+                this.setState({ errorMsg: translate('Cannot have the same password. Kindly enter a new Password') })
                 return false;
             }
             this.setState({ errorMsg: '', isLoading: true });
@@ -65,7 +66,7 @@ class UpdatePassword extends Component {
                 if (smartHealthResult && smartHealthResult.userId) {
                     await AsyncStorage.removeItem('forceToChangePassword')
                     await Toast.show({
-                        text: 'Your Password is changed Successfully',
+                        text: translate('Your Password is changed Successfully'),
                         type: "success",
                         duration: 3000,
 
@@ -73,7 +74,7 @@ class UpdatePassword extends Component {
                     this.props.navigation.pop();
                 } else {
                     await Toast.show({
-                        text: smartHealthResult&&smartHealthResult.message==="INVALID_CREDENTIAL"?"Old password doesn't match":'Failed to change password',
+                        text: smartHealthResult&&smartHealthResult.message==="INVALID_CREDENTIAL"? translate("Old password doesn't match"):translate('Failed to change password'),
                         type: "danger",
                         duration: 3000
                     })
@@ -89,7 +90,7 @@ class UpdatePassword extends Component {
                 let result = await updateNewPassword(data);
                 if (result.success) {
                     await Toast.show({
-                        text: 'Your Password is changed Successfully',
+                        text: translate('Your Password is changed Successfully'),
                         type: "success",
                         duration: 3000,
 
@@ -136,7 +137,7 @@ class UpdatePassword extends Component {
                         />
 
 
-                        <Text style={styles.headerText}>Update Your Password</Text>
+                        <Text style={styles.headerText}>{translate("Update Your Password")}</Text>
                         {/* <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'Roboto', marginTop: 10, marginLeft: 7 }}>Update your Password</Text> */}
                         <View style={styles.cardEmail}>
 
@@ -146,7 +147,7 @@ class UpdatePassword extends Component {
 
                                 <Col style={styles.transparentLabel1}>
                                     <Row>
-                                        <Input placeholder="Enter old password"
+                                        <Input placeholder={translate("Enter old password")}
                                             secureTextEntry={true} style={{ fontSize: 13, fontFamily: 'Roboto', marginTop: -5 }}
                                             keyboardType="default"
                                             value={this.state.oldPassword}
@@ -166,7 +167,7 @@ class UpdatePassword extends Component {
                                 <Icon name="briefcase" style={styles.centeredIcons}></Icon>
                                 <Col style={styles.transparentLabel1}>
                                     <Row>
-                                        <Input placeholder="Enter new password"
+                                        <Input placeholder={translate("Enter new password")}
                                             secureTextEntry={true} style={{ fontSize: 13, fontFamily: 'Roboto', marginTop: -5 }}
                                             keyboardType="default"
                                             value={this.state.newPassword}
@@ -186,7 +187,7 @@ class UpdatePassword extends Component {
                             <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>
                                     <Button success style={styles.button2} onPress={() => this.handlePasswordUpdate()} testID='clickUpdatePassword'>
-                                        <Text uppercase={false} note style={styles.buttonText}>Update</Text>
+                                        <Text uppercase={false} note style={styles.buttonText}>{translate("Update")}</Text>
                                     </Button>
                                 </Right>
                             </Item>

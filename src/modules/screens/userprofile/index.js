@@ -65,6 +65,7 @@ import {
   deleteFamilyMembersDetails,
 } from '../../providers/corporate/corporate.actions';
 import ConfirmPopup from '../../shared/confirmPopup';
+import {translate} from '../../../setup/translator.helper';
 
 class Profile extends Component {
   navigation = this.props.navigation;
@@ -355,21 +356,21 @@ class Profile extends Component {
           });
           storeBasicProfile(result);
           Toast.show({
-            text: 'Profile picture uploaded successfully',
+            text: translate('Profile picture uploaded successfully'),
             type: 'success',
             duration: 3000,
           });
         }
       } else {
         Toast.show({
-          text: 'Problem Uploading Profile Picture',
+          text: translate('Problem Uploading Profile Picture'),
           duration: 3000,
           type: 'danger',
         });
       }
     } catch (e) {
       Toast.show({
-        text: 'Problem Uploading Profile Picture' + e,
+        text: translate('Problem Uploading Profile Picture') + e,
         duration: 3000,
         type: 'danger',
       });
@@ -392,7 +393,7 @@ class Profile extends Component {
     );
     if (deleteFamilyMembers) {
       Toast.show({
-        text: 'Deleted your family member details',
+        text: translate('Deleted your family member details'),
         type: 'success',
         duration: 3000,
       });
@@ -543,7 +544,7 @@ class Profile extends Component {
                       textAlign: 'center',
                     }}>
                     {' '}
-                    Select a Photo{' '}
+                    {translate("Select a Photo")}{' '}
                   </Text>
                   {/* </Item> */}
                   <Row style={{marginTop: 10}}>
@@ -558,7 +559,7 @@ class Profile extends Component {
                             marginLeft: 10,
                             marginTop: 10,
                           }}>
-                          Take Photo
+                          {translate("Take Photo")}
                         </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -571,7 +572,7 @@ class Profile extends Component {
                             marginLeft: 10,
                             marginTop: 10,
                           }}>
-                          Choose from Library
+                          {translate("Choose from Library")}
                         </Text>
                       </TouchableOpacity>
                     </Col>
@@ -587,7 +588,7 @@ class Profile extends Component {
                         testID="cancleButton">
                         <Text style={{fontFamily: 'Roboto', fontSize: 20}}>
                           {' '}
-                          Cancel
+                          {translate("Cancel")}
                         </Text>
                       </Button>
                     </Right>
@@ -606,7 +607,7 @@ class Profile extends Component {
                     marginLeft: 'auto',
                     marginRight: 'auto',
                   }}>
-                  <Text style={styles.topValue}> Age </Text>
+                  <Text style={styles.topValue}> {translate("Age")} </Text>
                   <Text note style={styles.bottomValue}>
                     {' '}
                     {dateDiff(data?.dob, new Date(), 'years')}{' '}
@@ -623,7 +624,7 @@ class Profile extends Component {
                     justifyContent: 'center',
                   }}>
                   <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.topValue}>Gender </Text>
+                    <Text style={styles.topValue}>{translate("Gender")} </Text>
                   </View>
                   <Text note style={styles.bottomValue}>
                     {data?.gender ? data?.gender : '-'}{' '}
@@ -637,7 +638,7 @@ class Profile extends Component {
                     marginLeft: 'auto',
                     marginRight: 'auto',
                   }}>
-                  <Text style={styles.topValue}>Blood</Text>
+                  <Text style={styles.topValue}>{translate("Blood")}</Text>
                   <Text note style={styles.bottomValue}>
                     {' '}
                     {data?.bloodGroup ? data?.bloodGroup : '-'}{' '}
@@ -646,14 +647,14 @@ class Profile extends Component {
               </Grid>
             </Card>
             <List>
-              <Text style={styles.titleText}>Personal details..</Text>
+              <Text style={styles.titleText}>{translate("Personal details")}</Text>
 
               <ListItem avatar>
                 <Left>
                   <Icon name="ios-home" style={{color: primaryColor}} />
                 </Left>
                 <Body>
-                  <Text style={styles.customText}>Family details</Text>
+                  <Text style={styles.customText}>{translate("Family details")}</Text>
 
                   <FlatList
                     data={family_members}
@@ -674,7 +675,7 @@ class Profile extends Component {
                             <Row>
                               <Col size={4}>
                                 <Text note style={styles.customText1}>
-                                  Name
+                                  {translate("Name")}
                                 </Text>
                               </Col>
                               <Col size={0.5}>
@@ -736,7 +737,7 @@ class Profile extends Component {
                             <Row>
                               <Col size={3}>
                                 <Text note style={styles.customText1}>
-                                  Member Code
+                                  {translate("Member Code")}
                                 </Text>
                               </Col>
                               <Col size={0.5}>
@@ -757,7 +758,7 @@ class Profile extends Component {
                             <Row>
                               <Col size={3}>
                                 <Text note style={styles.customText1}>
-                                  Age
+                                  {translate("Age")}
                                 </Text>
                               </Col>
                               <Col size={0.5}>
@@ -778,7 +779,7 @@ class Profile extends Component {
                             <Row>
                               <Col size={3}>
                                 <Text note style={styles.customText1}>
-                                  Gender
+                                  {translate("Gender")}
                                 </Text>
                               </Col>
                               <Col size={0.5}>
@@ -801,7 +802,7 @@ class Profile extends Component {
                             <Row>
                               <Col size={3}>
                                 <Text note style={styles.customText1}>
-                                  Relation
+                                  {translate("Relation")}
                                 </Text>
                               </Col>
                               <Col size={0.5}>
@@ -839,7 +840,7 @@ class Profile extends Component {
                                     )
                                   }>
                                   <Text style={styles.linkHeader}>
-                                    View Document
+                                    {translate("View Document")}
                                   </Text>
                                 </TouchableOpacity>
                               </Left>
@@ -866,7 +867,7 @@ class Profile extends Component {
                           )
                         }
                         testID="onPressAddFamilyMembers">
-                        Add your family details
+                        {translate("Add your family details")}
                       </Text>
                     </Button>
                   ) : null}
@@ -874,11 +875,11 @@ class Profile extends Component {
               </ListItem>
 
               <ConfirmPopup
-                warningMessageText={'Are you sure you want to delete !'}
-                confirmButtonText={'Confirm'}
+                warningMessageText={translate('Are you sure you want to delete !')}
+                confirmButtonText={translate('Confirm')}
                 confirmButtonStyle={styles.confirmButton}
                 cancelButtonStyle={styles.cancelButton}
-                cancelButtonText={'Cancel'}
+                cancelButtonText={translate('Cancel')}
                 confirmButtonAction={() => {
                   this.removeSelected();
                   this.setState({deletePopupVisible: false});
@@ -900,7 +901,7 @@ class Profile extends Component {
                   <TouchableOpacity
                     onPress={() => this.editProfile('UpdateEmail')}
                     testID="onPressEmail">
-                    <Text style={styles.customText}>Email</Text>
+                    <Text style={styles.customText}>{translate("Email")}</Text>
                     {data?.emailId != undefined ? (
                       <Text note style={styles.customText1}>
                         {data?.emailId}
@@ -915,7 +916,7 @@ class Profile extends Component {
                           style={styles.customText}
                           onPress={() => this.editProfile('UpdateEmail')}
                           testID="onPressAddSecondaryEmail">
-                          Add your email
+                          {translate("Add your email")}
                         </Text>
                       </Button>
                     )}
@@ -943,7 +944,7 @@ class Profile extends Component {
                   <TouchableOpacity
                     onPress={() => this.editAddress(data)}
                     testID="onPressAddress">
-                    <Text style={styles.customText}>Address</Text>
+                    <Text style={styles.customText}>{translate("Address")}</Text>
                     {data?.address1 ? (
                       <View>
                         <Text note style={styles.customText1}>
@@ -975,7 +976,7 @@ class Profile extends Component {
                         onPress={() => this.editProfile('MapBox')}>
                         <Icon name="add" style={{color: 'gray'}} />
                         <Text uppercase={false} style={styles.customText}>
-                          Add Address
+                          {translate("Add Address")}
                         </Text>
                       </Button>
                     )}
@@ -1001,7 +1002,7 @@ class Profile extends Component {
                   <TouchableOpacity
                     onPress={() => this.editProfile('UpdateContact')}
                     testID="onPressUpdateContact">
-                    <Text style={styles.customText}>Contact</Text>
+                    <Text style={styles.customText}>{translate("Contact")}</Text>
                     {data?.mobile != undefined ? (
                       <Text note style={styles.customText1}>
                         {data?.mobile}
@@ -1020,7 +1021,7 @@ class Profile extends Component {
                             })
                           }
                           testID="clickAddContactNo">
-                          Add Contact Number
+                          {translate("Add Contact Number")}
                         </Text>
                       </Button>
                     )}
@@ -1047,7 +1048,7 @@ class Profile extends Component {
                   <TouchableOpacity
                     onPress={() => this.editProfile('UpdatePassword')}
                     testID="onPressUpdatePassword">
-                    <Text style={styles.customText}>Change Password</Text>
+                    <Text style={styles.customText}>{translate("Change Password")}</Text>
                     <Text note style={styles.customText1}>
                       *********
                     </Text>
@@ -1067,7 +1068,7 @@ class Profile extends Component {
             {this.state.favouriteList.length === 0 ? null : (
               <Card style={{padding: 10}}>
                 <List>
-                  <Text style={styles.titleText}>Your Doctors</Text>
+                  <Text style={styles.titleText}>{translate("Your Doctors")}</Text>
 
                   <FlatList
                     data={this.state.favouriteList}
@@ -1128,7 +1129,7 @@ class Profile extends Component {
                               }
                               testID="navigateBookAppointment">
                               {' '}
-                              Book Again
+                              {translate("Book Again")}
                             </Text>
                           </TouchableOpacity>
                         </Right>
