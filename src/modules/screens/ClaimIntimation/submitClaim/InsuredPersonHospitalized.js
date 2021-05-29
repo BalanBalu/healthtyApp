@@ -15,7 +15,7 @@ const InsuredPersonHospitalized = (props) => {
   const [patientName, setPatientName] = useState('');
   const [patientGender, setPatientGender] = useState();
   const [patientDob, setPatientDob] = useState();
-  const [patientAge, setPatientAge] = useState();
+  const [patientAge, setPatientAge] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [relationship, setRelationship] = useState('');
   const [relationshipDetail, setRelationshipDetail] = useState('');

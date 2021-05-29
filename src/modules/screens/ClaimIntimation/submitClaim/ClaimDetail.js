@@ -12,15 +12,15 @@ const ClaimDetail = (props) => {
   const [
     preHospitalizationExpenses,
     setPreHospitalizationExpenses,
-  ] = useState();
-  const [hospitalizationExpenses, setHospitalizationExpenses] = useState();
+  ] = useState(0);
+  const [hospitalizationExpenses, setHospitalizationExpenses] = useState(0);
   const [
     postHospitalizationExpenses,
     setPostHospitalizationExpenses,
-  ] = useState();
-  const [healthCheckupCost, setHealthCheckupCost] = useState();
-  const [ambulanceCharges, setAmbulanceCharges] = useState();
-  const [othersCode, setOthersCode] = useState();
+  ] = useState(0);
+  const [healthCheckupCost, setHealthCheckupCost] = useState(0);
+  const [ambulanceCharges, setAmbulanceCharges] = useState(0);
+  const [othersCode, setOthersCode] = useState(0);
   const [totalClaim, setTotalClaim] = useState(0);
   const [preHospitalizationPeriod, setPreHospitalizationPeriod] = useState('');
   const [postHospitalizationPeriod, setPostHospitalizationPeriod] = useState(
@@ -30,12 +30,12 @@ const ClaimDetail = (props) => {
     claimForDomiciliaryHospitalization,
     setClaimForDomiciliaryHospitalization,
   ] = useState('');
-  const [hospitalDailyCash, setHospitalDailyCash] = useState();
-  const [surgicalCash, setSurgicalCash] = useState();
-  const [criticalIllness, setCriticalIllness] = useState();
-  const [convalescence, setConvalescence] = useState();
-  const [lumsumBenefit, setLumsumBenefit] = useState();
-  const [others, setOthers] = useState();
+  const [hospitalDailyCash, setHospitalDailyCash] = useState(0);
+  const [surgicalCash, setSurgicalCash] = useState(0);
+  const [criticalIllness, setCriticalIllness] = useState(0);
+  const [convalescence, setConvalescence] = useState(0);
+  const [lumsumBenefit, setLumsumBenefit] = useState(0);
+  const [others, setOthers] = useState(0);
   const [totalClaimValue, setTotalClaimValue] = useState(0);
   const [claimFormDulySigned, setCheckBox1] = useState(false);
   const [copyOfClaimIntimation, setCheckBox2] = useState(false);
@@ -162,7 +162,11 @@ const ClaimDetail = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setPreHospitalizationExpenses(text), setTotalClaim(text))
+                  ? (setPreHospitalizationExpenses(text), setTotalClaim(parseInt(text) +
+                  parseInt(hospitalizationExpenses) +
+                  parseInt(postHospitalizationExpenses) +
+                  parseInt(healthCheckupCost) +
+                  parseInt(ambulanceCharges)+parseInt(othersCode)))
                   : null
               }
               testID="editPreHospitalizationExpenses"
@@ -188,7 +192,10 @@ const ClaimDetail = (props) => {
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setHospitalizationExpenses(text),
                     setTotalClaim(
-                      parseInt(text) + parseInt(preHospitalizationExpenses),
+                      parseInt(text) + parseInt(preHospitalizationExpenses)+
+                      parseInt(postHospitalizationExpenses) +
+                      parseInt(healthCheckupCost) +
+                      parseInt(ambulanceCharges)+parseInt(othersCode),
                     ))
                   : null
               }
@@ -217,8 +224,11 @@ const ClaimDetail = (props) => {
                   ? (setPostHospitalizationExpenses(text),
                     setTotalClaim(
                       parseInt(text) +
-                        parseInt(preHospitalizationExpenses) +
-                        parseInt(hospitalizationExpenses),
+                      parseInt(preHospitalizationExpenses)+
+                      parseInt(hospitalizationExpenses) +
+                      
+                      parseInt(healthCheckupCost) +
+                      parseInt(ambulanceCharges)+parseInt(othersCode),
                     ))
                   : null
               }
@@ -246,9 +256,10 @@ const ClaimDetail = (props) => {
                   ? (setHealthCheckupCost(text),
                     setTotalClaim(
                       parseInt(text) +
-                        parseInt(preHospitalizationExpenses) +
-                        parseInt(hospitalizationExpenses) +
-                        parseInt(postHospitalizationExpenses),
+                      parseInt(preHospitalizationExpenses) +
+                      parseInt(hospitalizationExpenses) +
+                      parseInt(postHospitalizationExpenses) +
+                      parseInt(ambulanceCharges)+parseInt(othersCode),
                     ))
                   : null
               }
@@ -276,10 +287,11 @@ const ClaimDetail = (props) => {
                   ? (setAmbulanceCharges(text),
                     setTotalClaim(
                       parseInt(text) +
-                        parseInt(preHospitalizationExpenses) +
-                        parseInt(hospitalizationExpenses) +
-                        parseInt(postHospitalizationExpenses) +
-                        parseInt(healthCheckupCost),
+                      parseInt(preHospitalizationExpenses) +
+                      parseInt(hospitalizationExpenses) +
+                      parseInt(postHospitalizationExpenses) +
+                      parseInt(healthCheckupCost) +
+                      parseInt(othersCode)
                     ))
                   : null
               }
@@ -441,7 +453,11 @@ const ClaimDetail = (props) => {
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setHospitalDailyCash(text),
-                    setTotalClaimValue(parseInt(text)))
+                    setTotalClaimValue(parseInt(text)+
+                    parseInt(surgicalCash) +
+                    parseInt(criticalIllness) +
+                    parseInt(convalescence) +
+                    parseInt(lumsumBenefit)+parseInt(others)))
                   : null
               }
               testID="editHospitalDailyCash"
@@ -466,7 +482,11 @@ const ClaimDetail = (props) => {
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setSurgicalCash(text),
                     setTotalClaimValue(
-                      parseInt(text) + parseInt(hospitalDailyCash),
+                      parseInt(text) + parseInt(hospitalDailyCash)+
+                     
+                      parseInt(criticalIllness) +
+                      parseInt(convalescence) +
+                      parseInt(lumsumBenefit)+parseInt(others),
                     ))
                   : null
               }
@@ -493,8 +513,11 @@ const ClaimDetail = (props) => {
                   ? (setCriticalIllness(text),
                     setTotalClaimValue(
                       parseInt(text) +
-                        parseInt(hospitalDailyCash) +
-                        parseInt(surgicalCash),
+                      parseInt(hospitalDailyCash)+
+                      parseInt(surgicalCash) +
+                      
+                      parseInt(convalescence) +
+                      parseInt(lumsumBenefit)+parseInt(others)
                     ))
                   : null
               }
@@ -521,9 +544,11 @@ const ClaimDetail = (props) => {
                   ? (setConvalescence(text),
                     setTotalClaimValue(
                       parseInt(text) +
-                        parseInt(hospitalDailyCash) +
-                        parseInt(surgicalCash) +
-                        parseInt(criticalIllness),
+                      parseInt(hospitalDailyCash)+
+                      parseInt(surgicalCash) +
+                      parseInt(criticalIllness) +
+                      
+                      parseInt(lumsumBenefit)+parseInt(others),
                     ))
                   : null
               }
@@ -550,10 +575,11 @@ const ClaimDetail = (props) => {
                   ? (setLumsumBenefit(text),
                     setTotalClaimValue(
                       parseInt(text) +
-                        parseInt(hospitalDailyCash) +
-                        parseInt(surgicalCash) +
-                        parseInt(criticalIllness) +
-                        parseInt(convalescence),
+                      parseInt(hospitalDailyCash)+
+                      parseInt(surgicalCash) +
+                      parseInt(criticalIllness) +
+                      parseInt(convalescence) +
+                      parseInt(others)
                     ))
                   : null
               }
