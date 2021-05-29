@@ -283,6 +283,15 @@ export default StyleSheet.create({
             fontFamily: 'opensans-bold',
             alignSelf: "center",
         },
+        signinButtonDisabled: {
+            backgroundColor: "#fff",
+            borderColor: 'rgba(72,180,165,0.5)',
+            borderWidth: 2,
+            borderRadius: 30,
+            paddingVertical: 15,
+            paddingHorizontal: 102,
+           
+        },
         createAccount: {display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
         backgroundColor: "#48b4a5",
         borderColor: '#48b4a5',
@@ -292,6 +301,16 @@ export default StyleSheet.create({
         paddingHorizontal: 67},
         createAccountText: {  fontSize: 18,
             color: "#fff",
+            fontFamily: 'opensans-bold',
+            alignSelf: "center",
+        },
+        signinText: {  fontSize: 18,
+            color: "#48b4a5",
+            fontFamily: 'opensans-bold',
+            alignSelf: "center",
+        },
+        signinTextDisabled: {
+            color: "rgba(72,180,165,0.5)",
             fontFamily: 'opensans-bold',
             alignSelf: "center",
         }

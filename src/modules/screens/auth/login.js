@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
   Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
-  Grid, Toast, KeyboardAvoidingView, Icon, Row, Card, Label, Left, Col, Radio
+  Grid, Toast, KeyboardAvoidingView, View, Icon, Row, Card, Label, Left, Col, Radio
 } from 'native-base';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Image, TouchableOpacity, View, ScrollView, ImageBackground, Pressable } from 'react-native';
+import { Image, TouchableOpacity, ScrollView, ImageBackground, Pressable } from 'react-native';
 import { login, RESET_REDIRECT_NOTICE,SmartHealthlogin } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
@@ -249,8 +249,8 @@ class Login extends Component {
                      </View>
                     </View>
                    <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, marginRight: 24}}>
-                   <Pressable onPress={() => this.doLogin()} style={styles.signinButton}>
-                        <Text style={styles.signinText}>Sign in</Text>
+                   <Pressable onPress={() => this.doLogin()}  style={(userEntry && password) == '' ? styles.signinButtonDisabled : styles.signinButton}>
+                        <Text style={(userEntry && password) == '' ? styles.signinTextDisabled : styles.signinText}>Sign in</Text>
                 </Pressable>
                 <Text onPress={() => this.props.navigation.navigate('forgotpassword')} style={{marginTop: 20, color: '#AAAAAA'}}>Forgot Password?</Text>
                    </View>
