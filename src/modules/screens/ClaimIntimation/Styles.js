@@ -273,6 +273,10 @@ radioButtonStyle: {
     flexDirection: 'row',
      alignItems: 'center', 
      justifyContent: 'center' 
+},
+inputTextBoxStyleColor:{
+   fontFamily:  'Roboto',
+   fontSize:15
 }
 
   })

@@ -246,7 +246,7 @@ class NetworkHospitals extends Component {
                             <Item style={Styles.inputItem}>
                                 <Input
                                     placeholder="Search by name, pincode, city, state, country etc..."
-                                    style={{ fontSize: 14, width: '300%' }}
+                                    style={{ fontSize: 14, width: '300%',fontFamily: 'Roboto'}}
                                     placeholderTextColor="#909894"
                                     keyboardType={'default'}
                                     onChangeText={enteredText => this.getSuggestionListFunction(enteredText)}

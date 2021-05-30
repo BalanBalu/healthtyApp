@@ -118,8 +118,8 @@ const PatientAdmittedDetails = (props) => {
     };
 
     const submmitData = () => {
-        if (patientFirstName && patientMiddleName && patientLastName && gravidaStatus && claimAmount && dischargeTime &&
-            patientAgeYear1 && patientAgeYear2 && patientAgeMonth1 && patientAgeMonth2 != '') {
+        if (patientFirstName  && patientLastName && gender && registrationNo && selectedAdmissionDate &&
+            selectDischargeDate && claimAmount != '') {
                 updateInsuredPersonHospitalizedDetails({
                 patientFirstName: patientFirstName,
                 patientMiddleName: patientMiddleName,
@@ -170,13 +170,14 @@ const PatientAdmittedDetails = (props) => {
                 setisModalVisible(true)
                 return false
             }
-            if (patientMiddleName === '') {
-                seterrorMsg('Please enter patient middle name')
+            
+            if (patientLastName === '') {
+                seterrorMsg('Please enter patient Last name')
                 setisModalVisible(true)
                 return false
             }
-            if (patientLastName === '') {
-                seterrorMsg('Please enter patient Last name')
+            if (gender === '') {
+                seterrorMsg('Please enter patient gender')
                 setisModalVisible(true)
                 return false
             }
@@ -185,51 +186,26 @@ const PatientAdmittedDetails = (props) => {
                 setisModalVisible(true)
                 return false
             }
+           
+            if (selectedAdmissionDate === '') {
+                seterrorMsg('Please selecte admission date')
+                setisModalVisible(true)
+                return false
+            }
+            if (selectDischargeDate === '') {
+                seterrorMsg('Please select discharge date')
+                setisModalVisible(true)
+                return false
+            }
             if (claimAmount === '') {
                 seterrorMsg('Please enter claimAmount')
                 setisModalVisible(true)
                 return false
             }
-            if (age === '') {
-                seterrorMsg('Please enter age')
-                setisModalVisible(true)
-                return false
-            }
-            if (dischargeTime === '' || dischargeTime === 'Select your Status') {
-                seterrorMsg('Please enter time Of discharge')
-                setisModalVisible(true)
-                return false
-            }
-            if (admissionType === '' || admissionType === 'Select your Item') {
-                seterrorMsg('Please enter admission type')
-                setisModalVisible(true)
-                return false
-            }
-            if (timeOfAdmissionHours === '' || timeOfAdmissionHours === 'Select') {
-                seterrorMsg('Please enter admission type')
-                setisModalVisible(true)
-                return false
-            }
-            if (timeOfAdmissionMinute === '' || timeOfAdmissionMinute === 'Select') {
-                seterrorMsg('Please enter admission type')
-                setisModalVisible(true)
-                return false
-            }
-            if (timeOfDischargeHours === '' || timeOfDischargeHours === 'Select') {
-                seterrorMsg('Please enter admission type')
-                setisModalVisible(true)
-                return false
-            }
-            if (timeOfDischargeMinute === '' || timeOfDischargeMinute === 'Select') {
-                seterrorMsg('Please enter admission type')
-                setisModalVisible(true)
-                return false
-            }
         }
-
-
-
     }
+
+
     return (
         <View>
             <Row

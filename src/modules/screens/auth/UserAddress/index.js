@@ -62,7 +62,7 @@ export default class UserAddress extends Component {
                     onChangeText={(enteredText) => this.setState({ enteredText })}
                     style={{
                         backgroundColor: 'white', borderRadius: 5, marginLeft: 30,
-                        marginRight: 30, fontfamily: 'OpenSans', fontSize: 18
+                        marginRight: 30, fontfamily: 'Roboto', fontSize: 18
                     }}
                 />
             </View>
@@ -75,7 +75,7 @@ const style = StyleSheet.create({
         fontSize: 22,
         textAlign: 'center',
         marginTop: -10,
-        fontFamily: 'opensans-semibold',
+        fontFamily: 'Roboto-semibold',
     },
     slide: {
         borderBottomWidth: 0,
@@ -83,12 +83,12 @@ const style = StyleSheet.create({
         marginTop: 30,
         paddingLeft: 30,
         paddingRight: 40,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     iosSlide: {
         borderBottomWidth: 0,
         justifyContent: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         flexDirection: 'row',
         marginTop: 30
     },
