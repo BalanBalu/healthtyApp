@@ -19,6 +19,7 @@ import Communications from 'react-native-communications';
 import { CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2 } from '../../../setup/config';
 import { getCorporateFullName } from '../../common';
 import { NegativeConsultationDrawing } from '../../screens/Home/corporateHome/svgDrawings';
+import { primaryColor } from '../../../setup/config';
 class Categories extends Component {
   constructor(props) {
     super(props)
@@ -28,7 +29,9 @@ class Categories extends Component {
       consultPopVisible: false,
       selectedSpecialist: null,
       isLoading: true,
-      isCorporateUser: false
+      isCorporateUser: false,
+      textInputStatus: 'clear',
+      textInputValue: '',
     }
 
     this.emailId = '',
@@ -126,6 +129,7 @@ class Categories extends Component {
   }
 
   filterCategories(searchValue) {
+    this.setState({ textInputStatus: 'unClear', textInputValue: searchValue });
 
     const { categoriesMain } = this.state;
     if (!searchValue) {
@@ -136,6 +140,10 @@ class Categories extends Component {
       );
       this.setState({ searchValue, data: filteredCategories })
     }
+  }
+  clearText = async () => {
+    this.setState({ textInputStatus: 'clear', textInputValue: '' });
+    await this.getCatagries();
   }
 
 
@@ -153,13 +161,15 @@ class Categories extends Component {
               keyboardType={'email-address'}
               returnKeyType={'done'}
               onChangeText={searchValue => this.filterCategories(searchValue)}
+              value={this.state.textInputValue}
               underlineColorAndroid="transparent"
             />
           </Col>
           <Col size={0.9} style={styles.SearchStyle}>
-            <TouchableOpacity style={{ justifyContent: 'center' }}>
-              <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
-            </TouchableOpacity>
+            {this.state.textInputStatus == 'unClear' ? <TouchableOpacity onPress={() => this.clearText()} style={{ justifyContent: 'center' }}>
+              <Icon name="ios-close" style={{ color: 'gray', fontSize: 25 }} />
+            </TouchableOpacity> :
+              <TouchableOpacity style={{ justifyContent: 'center' }}><Icon name='ios-search' style={{ color: primaryColor, fontSize: 22 }} /></TouchableOpacity>}
           </Col>
 
         </Row>
@@ -217,7 +227,7 @@ class Categories extends Component {
         let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null;
         const city = userAddressInfo && userAddressInfo.address && userAddressInfo.address.city ? userAddressInfo && userAddressInfo.address && userAddressInfo.address.city : '';
         const state = userAddressInfo && userAddressInfo.address && userAddressInfo.address.state ? userAddressInfo && userAddressInfo.address && userAddressInfo.address.state : '';
-        message = `${this.userName} needs ${this.state.selectedSpecialist} Home health consultation at ${city ? city + ', ' : ''} ${state?state:''}. please contact them. Mobile Number : ${this.mobile}`;
+        message = `${this.userName} needs ${this.state.selectedSpecialist} Home health consultation at ${city ? city + ', ' : ''} ${state ? state : ''}. please contact them. Mobile Number : ${this.mobile}`;
       }
       else {
         message = `${this.userName} needs ${this.state.selectedSpecialist} consultation. please contact them. Phone Number: ${this.mobile}`;
