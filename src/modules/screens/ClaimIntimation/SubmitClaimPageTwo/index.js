@@ -1,6 +1,20 @@
 import React, {PureComponent} from 'react';
-import {Text, View, Container, Content, Card, Item, Input,Toast} from 'native-base';
-import {TouchableOpacity, FlatList, PermissionsAndroid,ScrollView} from 'react-native';
+import {
+  Text,
+  View,
+  Container,
+  Content,
+  Card,
+  Item,
+  Input,
+  Toast,
+} from 'native-base';
+import {
+  TouchableOpacity,
+  FlatList,
+  PermissionsAndroid,
+  ScrollView,
+} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
@@ -14,7 +28,12 @@ import DeclarationByHospital from './DeclarationByHospital';
 import AttachmentDetails from './AttachmentDetails';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {UploadClaimSubmission} from './uploadClaimSubmission';
-import {toastMeassage} from '../../../common';
+import {
+  TimeOfAdmissionHours,
+  TimeOfAdmissionMinute,
+  TimeOfDischargeHours,
+  TimeOfDischargeMinute,
+} from '../../../common';
 import {uploadImage} from '../../../providers/common/common.action';
 import {
   updateClaimSubmission,
@@ -29,187 +48,6 @@ const dropdownData = [
   'Planned',
   'Day Care',
   'Maternity',
-];
-const TimeOfAdmissionHours = [
-  'Select',
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  19,
-  20,
-  21,
-  22,
-  23,
-];
-const TimeOfAdmissionMinute = [
-  'Select',
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  19,
-  20,
-  21,
-  22,
-  23,
-  24,
-  25,
-  26,
-  27,
-  28,
-  29,
-  30,
-  31,
-  32,
-  33,
-  34,
-  35,
-  36,
-  37,
-  38,
-  39,
-  40,
-  41,
-  42,
-  43,
-  44,
-  45,
-  46,
-  47,
-  48,
-  49,
-  50,
-  51,
-  52,
-  53,
-  54,
-  55,
-  56,
-  57,
-  58,
-  59,
-  60,
-];
-
-const TimeOfDischargeHours = [
-  'Select',
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  19,
-  20,
-  21,
-  22,
-  23,
-];
-const TimeOfDischargeMinute = [
-  'Select',
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  19,
-  20,
-  21,
-  22,
-  23,
-  24,
-  25,
-  26,
-  27,
-  28,
-  29,
-  30,
-  31,
-  32,
-  33,
-  34,
-  35,
-  36,
-  37,
-  38,
-  39,
-  40,
-  41,
-  42,
-  43,
-  44,
-  45,
-  46,
-  47,
-  48,
-  49,
-  50,
-  51,
-  52,
-  53,
-  54,
-  55,
-  56,
-  57,
-  58,
-  59,
-  60,
 ];
 
 const RoomCategory = [
@@ -257,9 +95,6 @@ class SubmitClaimPageTwo extends PureComponent {
     this.state = {
       showCard: -1,
       show: true,
-      selectedAdmissionDate: '',
-      isSelected: true,
-      isVisibleDatePicker: false,
       dropdownList: '',
       Occupation: '',
       RoomCategory: '',
@@ -276,9 +111,9 @@ class SubmitClaimPageTwo extends PureComponent {
       section5Disable: true,
       section6Disable: true,
       section7Disable: true,
-      updateId:this.props.navigation.getParam('dataId') || null,
+      updateId: this.props.navigation.getParam('dataId') || null,
       disabled: 0,
-      submitButton:true
+      submitButton: true,
     };
     this.submissionDetails = this.props.navigation.getParam(
       'submissionDetails',
@@ -286,42 +121,22 @@ class SubmitClaimPageTwo extends PureComponent {
   }
 
   toggleData(index, typeOfArrowIcon) {
-    const { showCard, show } = this.state;
+    const {showCard, show} = this.state;
     if (typeOfArrowIcon === 'DOWN') {
-      this.setState({ showCard: index, show: !this.state.show });
+      this.setState({showCard: index, show: !this.state.show});
     } else {
-      this.setState({ showCard: -1, show: null });
+      this.setState({showCard: -1, show: null});
     }
   }
-  onPressConfirmDateValue = (date) => {
-    try {
-      this.setState({isVisibleDatePicker: false, selectedAdmissionDate: date});
-    } catch (error) {
-      console.error('Error on Date Picker: ', error);
-    }
-  };
-
-  oncancelThePicker = () => {
-    const {isVisibleDatePicker} = this.state;
-    this.setState({isVisibleDatePicker: !isVisibleDatePicker});
-  };
-
-  openPicker = () => {
-    const {isVisibleDatePicker} = this.state;
-    this.setState({isVisibleDatePicker: !isVisibleDatePicker});
-  };
 
   updateSubmissionDetails = async (data) => {
     try {
-      console.log('data', data);
-      console.log('this.submissionDetails', this.submissionDetails);
-
       const {submissionDetails} = this.state;
       let reqData = {
         _id: this.state.updateId,
         submissionDetails: {
           ...this.submissionDetails,
-          ...data
+          ...data,
           // hospitalName: data.hospitalName
           //   ? data.hospitalName
           //   :  this.submissionDetails.hospitalName
@@ -624,8 +439,7 @@ class SubmitClaimPageTwo extends PureComponent {
           //   ?  this.submissionDetails. authoritySign
           //   : null,
         },
-      }
-      console.log('reqData', reqData);
+      };
       let result = await updateClaimSubmission(reqData);
 
       if (result) {
@@ -634,96 +448,94 @@ class SubmitClaimPageTwo extends PureComponent {
           duration: 3000,
           type: 'success',
         });
-        this.submissionDetails=result.submissionDetails
+        this.submissionDetails = result.submissionDetails;
         this.setState({updateId: result._id});
         return true;
-}
-      console.log('updateId', this.state.updateId);
+      }
     } catch (error) {
       console.error('Error on: ', error);
     }
   };
-submitAllDetails=async()=>{
-  let reqData={
-    isSubmission: true,
-  }
-  let result = await updateClaimSubmission(reqData);
+  submitAllDetails = async () => {
+    let reqData = {
+      isSubmission: true,
+    };
+    let result = await updateClaimSubmission(reqData);
 
-  if (result) {
-    Toast.show({
-      text: 'Successfully Saved the All Details',
-      duration: 3000,
-      type: 'success',
-    });
-    this.props.navigation.navigate('ClaimIntimationList')
-  }
-}
+    if (result) {
+      Toast.show({
+        text: 'Successfully Saved the All Details',
+        duration: 3000,
+        type: 'success',
+      });
+      this.props.navigation.navigate('ClaimIntimationList');
+    }
+  };
   updateHospitalDetail = async (data) => {
     let hospitalDetail = this.updateSubmissionDetails(data);
-    this.updateDisableCout()
-    const { showCard } = this.state
-    this.setState({ showCard: showCard + 1 });
-    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (hospitalDetail == true) {
       this.setState({section2Disable: true});
     }
   };
   updateInsuredPersonHospitalizedDetails = async (data) => {
     let personDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout()
-    const { showCard } = this.state
-    this.setState({ showCard: showCard + 1 });
-    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (personDetails == true) {
       this.setState({section4Disable: true});
     }
   };
   updateDocumentSubmitted = async (data) => {
     let documentSubmitted = this.updateSubmissionDetails(data);
-    this.updateDisableCout()
-    const { showCard } = this.state
-    this.setState({ showCard: showCard + 1 });
-    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (documentSubmitted == true) {
       this.setState({section5Disable: true});
     }
   };
   updateNonNetworkHospital = async (data) => {
     let nonNetworkHospital = this.updateSubmissionDetails(data);
-    this.updateDisableCout()
-    const { showCard } = this.state
-    this.setState({ showCard: showCard + 1 });
-    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (nonNetworkHospital == true) {
       this.setState({section6Disable: true});
     }
   };
   updateDeclarationByHospital = async (data) => {
     let declarationByHospital = this.updateSubmissionDetails(data);
-    this.updateDisableCout()
-    const { showCard } = this.state
-    this.setState({ showCard: showCard + 1 });
-    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (declarationByHospital == true) {
       this.setState({section7Disable: true});
     }
   };
   updateAttachment = async (data) => {
     let attachmentDetails = this.submitData(data);
-    this.updateDisableCout()
-    const { showCard } = this.state
-    this.setState({ showCard: showCard + 1 });
-    this.scroll.scrollTo({ x: 0, y: 0, animated: true });
+    this.updateDisableCout();
+    const {showCard} = this.state;
+    this.setState({showCard: showCard + 1});
+    this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (attachmentDetails == true) {
       this.setState({submitButton: false});
-
     }
   };
- 
+
   updateDisableCout = () => {
-    const { disabled } = this.state
-    this.setState({ disabled: disabled + 1 })
-  }
+    const {disabled} = this.state;
+    this.setState({disabled: disabled + 1});
+  };
 
   submitData = async (data) => {
     try {
@@ -732,13 +544,12 @@ submitAllDetails=async()=>{
         claimSubmissionAttachments: this.state.claimSubmissionAttachments,
       };
       let result = await updateClaimSubmission(reqData);
-      console.log('result', result);
       if (result) {
         this.setState({
           updateId: result._id,
           claimSubmissionAttachments: result.claimSubmissionAttachments,
         });
-        return true
+        return true;
       }
     } catch (ex) {
       console.log(ex);
@@ -759,118 +570,111 @@ submitAllDetails=async()=>{
       {title: 'Declaration by hospital', id: 6},
       {title: 'Attachment Details', id: 7},
     ];
-    const {showCard, show,disabled} = this.state;
+    const {showCard, show, disabled} = this.state;
     return (
-      <ScrollView style={{ padding: 10 }}
-      ref={(c) => { this.scroll = c }}
-    >
-          <FlatList
-            data={data}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => (
-              <View>
-                {this.state.showCard === index && !this.state.show ? (
-                  <Card>
-                    <TouchableOpacity
-                      style={{
-                        justifyContent: 'center',
-                        padding: 10,
-                        backgroundColor: primaryColor,
-                      }}
-                      onPress={() => this.toggleData(index, 'UP')}>
-                      <Row>
-                        <Col size={9}>
-                          <Text style={{color: '#fff'}}>{item.title}</Text>
-                        </Col>
-                        <Col size={1}>
-                          <TouchableOpacity
-                            onPress={() => this.toggleData(index, 'DOWN')}>
-                            <MaterialIcons
-                              name={
-                                showCard === index && !show
-                                  ? 'keyboard-arrow-up'
-                                  : 'keyboard-arrow-down'
-                              }
-                              style={{fontSize: 25, color: '#fff'}}
-                            />
-                          </TouchableOpacity>
-                        </Col>
-                      </Row>
-                    </TouchableOpacity>
-                    <View
-                      style={{
-                        borderBottomWidth: 1,
-                        borderLeftWidth: 1,
-                        borderRightWidth: 1,
-                        borderBottomColor: '#909090',
-                        borderLeftColor: '#909090',
-                        borderRightColor: '#909090',
-                        paddingBottom: 10,
-                      }}>
-                      {item.id === 1 && (
-                        <HospitalDetail
-                          updateHospitalDetail={(data) =>
-                            this.updateHospitalDetail(data)
-                          }
-                        />
-                      )}
+      <ScrollView
+        style={{padding: 10}}
+        ref={(c) => {
+          this.scroll = c;
+        }}>
+        <FlatList
+          data={data}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => (
+            <View>
+              {this.state.showCard === index && !this.state.show ? (
+                <Card>
+                  <TouchableOpacity
+                    style={{
+                      justifyContent: 'center',
+                      padding: 10,
+                      backgroundColor: primaryColor,
+                    }}
+                    onPress={() => this.toggleData(index, 'UP')}>
+                    <Row>
+                      <Col size={9}>
+                        <Text style={{color: '#fff'}}>{item.title}</Text>
+                      </Col>
+                      <Col size={1}>
+                        <TouchableOpacity
+                          onPress={() => this.toggleData(index, 'DOWN')}>
+                          <MaterialIcons
+                            name={
+                              showCard === index && !show
+                                ? 'keyboard-arrow-up'
+                                : 'keyboard-arrow-down'
+                            }
+                            style={{fontSize: 25, color: '#fff'}}
+                          />
+                        </TouchableOpacity>
+                      </Col>
+                    </Row>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      borderBottomWidth: 1,
+                      borderLeftWidth: 1,
+                      borderRightWidth: 1,
+                      borderBottomColor: '#909090',
+                      borderLeftColor: '#909090',
+                      borderRightColor: '#909090',
+                      paddingBottom: 10,
+                    }}>
+                    {item.id === 1 && (
+                      <HospitalDetail
+                        updateHospitalDetail={(data) =>
+                          this.updateHospitalDetail(data)
+                        }
+                      />
+                    )}
 
-                      {/* {item.id === 2 && (
-                        <PatientAdmittedDetails
-                          dropdownData={dropdownData}
-                          dischargeTimeStatus={dischargeTimeStatus}
-                          updateSubmissionDetails={(data) =>
-                            this.updateSubmissionDetails(data)
-                          }
-                      />} */}
-
-                      {item.id === 2 && this.state.section2Disable && (
-                        <PatientAdmittedDetails
-                          dropdownData={dropdownData}
-                          dischargeTimeStatus={dischargeTimeStatus}
-                          TimeOfAdmissionHours={TimeOfAdmissionHours}
-                          TimeOfAdmissionMinute={TimeOfAdmissionMinute}
-                          TimeOfDischargeHours={TimeOfDischargeHours}
-                          TimeOfDischargeMinute={TimeOfDischargeMinute}
-                          updateInsuredPersonHospitalizedDetails={(data) =>
-                            this.updateInsuredPersonHospitalizedDetails(data)
-                          }
-                        />
-                      )}
-                      {/* {item.id === 3 && <ClaimDetails
+                    {item.id === 2 && this.state.section2Disable && (
+                      <PatientAdmittedDetails
+                        dropdownData={dropdownData}
+                        dischargeTimeStatus={dischargeTimeStatus}
+                        TimeOfAdmissionHours={TimeOfAdmissionHours}
+                        TimeOfAdmissionMinute={TimeOfAdmissionMinute}
+                        TimeOfDischargeHours={TimeOfDischargeHours}
+                        TimeOfDischargeMinute={TimeOfDischargeMinute}
+                        updateInsuredPersonHospitalizedDetails={(data) =>
+                          this.updateInsuredPersonHospitalizedDetails(data)
+                        }
+                      />
+                    )}
+                    {/* {item.id === 3 && <ClaimDetails
                         isSelected={this.state.isSelected}
                         />
                       } */}
-                      {item.id === 4 && this.state.section4Disable && (
-                        <DocumentSubmitted
-                          updateDocumentSubmitted={(data) =>
-                            this.updateDocumentSubmitted(data)
-                          }
-                        />
-                      )}
-                      {item.id === 5 && this.state.section5Disable && (
-                        <NonNetworkHospital
+                    {item.id === 4 && this.state.section4Disable && (
+                      <DocumentSubmitted
+                        updateDocumentSubmitted={(data) =>
+                          this.updateDocumentSubmitted(data)
+                        }
+                      />
+                    )}
+                    {item.id === 5 && this.state.section5Disable && (
+                      <NonNetworkHospital
                         updateNonNetworkHospital={(data) =>
-                            this.updateNonNetworkHospital(data)
-                          }
-                        />
-                      )}
-                      {item.id === 6 && this.state.section6Disable && (
-                        <DeclarationByHospital
-                          updateDeclarationByHospital={(data) =>
-                            this.updateDeclarationByHospital(data)
-                          }
-                        />
-                      )}
-                      {item.id === 7 && <AttachmentDetails
-                      updateAttachment={(data)=>this.updateAttachment(data)} 
-                     
-                      />}
-
-                    </View>
-                                     </Card>
-                ) : (
-                  <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
+                          this.updateNonNetworkHospital(data)
+                        }
+                      />
+                    )}
+                    {item.id === 6 && this.state.section6Disable && (
+                      <DeclarationByHospital
+                        updateDeclarationByHospital={(data) =>
+                          this.updateDeclarationByHospital(data)
+                        }
+                      />
+                    )}
+                    {item.id === 7 && (
+                      <AttachmentDetails
+                        updateAttachment={(data) => this.updateAttachment(data)}
+                      />
+                    )}
+                  </View>
+                </Card>
+              ) : (
+                <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
                   <Card>
                     <TouchableOpacity
                       style={{
@@ -900,45 +704,20 @@ submitAllDetails=async()=>{
                       </Row>
                     </TouchableOpacity>
                   </Card>
-                  </View>
-                )}
-
-                {/* alignItems: 'center',
-                      }}
-                      onPress={() => this.toggleData(index, 'DOWN')}>
-                      <Row>
-                        <Col size={9}>
-                          <Text style={{color: '#000'}}>{item.title}</Text>
-                        </Col>
-                        <Col size={1}>
-                          <TouchableOpacity
-                            onPress={() => this.toggleData(index, 'DOWN')}>
-                            <MaterialIcons
-                              name={
-                                showCard === index && !show
-                                  ? 'keyboard-arrow-up'
-                                  : 'keyboard-arrow-down'
-                              }
-                              style={{fontSize: 25, color: '#000'}}
-                            />
-                          </TouchableOpacity>
-                        </Col>
-                      </Row>
-                    </TouchableOpacity>
-                  </Card>
-                )} */}
-              </View>
-            )}
-          />
+                </View>
+              )}
+            </View>
+          )}
+        />
         <View style={styles.ButtonView}>
-                            <TouchableOpacity
-                              style={styles.submit_ButtonStyle}
-                              onPress={() => this.submitAllDetails()}
-                              disabled={this.state.submitButton==true?true:false}>
-                              <Text style={{color: '#fff'}}>Submit</Text>
-                            </TouchableOpacity>
-                          </View>
-        </ScrollView>
+          <TouchableOpacity
+            style={styles.submit_ButtonStyle}
+            onPress={() => this.submitAllDetails()}
+            disabled={this.state.submitButton == true ? true : false}>
+            <Text style={{color: '#fff'}}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     );
   }
 }
