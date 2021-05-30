@@ -113,6 +113,7 @@ export default StyleSheet.create({
         height: 35,
         marginTop: 8,
         borderRadius: 5,
+        fontFamily: 'Roboto',
       },
     transparentLabel2:
     {

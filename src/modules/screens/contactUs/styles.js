@@ -18,7 +18,8 @@ textInputStyle:{
     height: 35, 
     marginTop: 5,
     borderRadius:5,
-    fontSize:14
+    fontSize:14,
+    fontFamily: 'Roboto'
 },
 messageTextInputStyle:{
     borderColor: '#909090', 
@@ -99,14 +100,16 @@ textInputWithBorderStyle:{
     height: 35, 
     marginTop: 5,
     borderRadius:5,
-    fontSize:14
+    fontSize:14,
+    fontFamily: 'Roboto'
 },
 messageTextErrorInputStyle:{
     borderColor: 'red', 
     borderWidth: 1, 
     height: 200, 
     marginTop: 5,
-    borderRadius:5  
+    borderRadius:5 ,
+    fontFamily: 'Roboto' 
 },
 formStyle6ErrorMsg: {
     borderColor: 'red',
@@ -114,6 +117,7 @@ formStyle6ErrorMsg: {
     height: 35,
     marginTop: 10,
     justifyContent: 'center',
-    borderRadius: 5
+    borderRadius: 5,
+    fontFamily: 'Roboto'
 },
 })

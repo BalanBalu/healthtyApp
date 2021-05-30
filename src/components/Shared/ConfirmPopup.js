@@ -30,7 +30,7 @@ const confirmPopup = (props) => {
                   borderRadius: 10
                 }}>
 
-                  <Text style={{ fontSize: 18, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 10 }}>{warningMessageText}</Text>
+                  <Text style={{ fontSize: 18, fontFamily: 'Roboto', fontWeight: 'bold', textAlign: 'center', marginTop: 10 }}>{warningMessageText}</Text>
                   <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 15 }}>
 
                     <Button danger style={cancelButtonStyle || {
@@ -39,7 +39,7 @@ const confirmPopup = (props) => {
                         marginRight: 25,
                         height: 30
                     }} onPress={() => cancelButtonAction()} testID='cancelButton'>
-                      <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', }}> {cancelButtonText || 'Cancel' }</Text>
+                      <Text style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center', }}> {cancelButtonText || 'Cancel' }</Text>
                     </Button>
                     <Button success style={confirmButtonStyle || {
                          marginTop: 15,
@@ -48,7 +48,7 @@ const confirmPopup = (props) => {
                          height: 30,
                          padding: 5
                     }} onPress={() => confirmButtonAction()} testID='confirmButton'>
-                      <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', }}>{confirmButtonText || 'Confirm'}</Text>
+                      <Text style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center', }}>{confirmButtonText || 'Confirm'}</Text>
                     </Button>
 
                   </Row>
