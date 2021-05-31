@@ -23,6 +23,7 @@ class BillEnclosedDeatil extends PureComponent {
       billNo: '',
       isModalVisible: false,
       errorMsg: '',
+      editDetails: false,
     };
   }
   onPressConfirmDateValue = (date) => {
@@ -45,6 +46,7 @@ class BillEnclosedDeatil extends PureComponent {
       towards,
       amount,
       bilEnclosedList,
+      refreshCount,
     } = this.state;
     if (billNo === '') {
       this.setState({
@@ -88,7 +90,6 @@ class BillEnclosedDeatil extends PureComponent {
       towards: towards,
       amount: amount,
     });
-    const { refreshCount } = this.state;
     this.setState({
       bilEnclosedList: bilEnclosedList,
       refreshCount: refreshCount + 1,
@@ -98,27 +99,62 @@ class BillEnclosedDeatil extends PureComponent {
       towards: '',
       amount: '',
     });
-    console.log('bilEnclosedList', bilEnclosedList);
   };
 
   deleteBillEnclosedDetails = async (item, index) => {
     let temp = this.state.bilEnclosedList;
     await temp.splice(index, 1);
-    await this.setState({ bilEnclosedList: temp, refreshCount: this.state.refreshCount + 1, });
-    console.log(this.state.bilEnclosedList);
+    await this.setState({
+      bilEnclosedList: temp,
+      refreshCount: this.state.refreshCount + 1,
+    });
   };
 
-  // editBillEnclosedDetails = async (item, index) => {
-  //   console.log('index', index);
+  editBillEnclosedDetails = async (item, index) => {
+    this.setState({
+      refreshCount: this.state.refreshCount + 1,
+      billNo: item.billNo,
+      dateOfHospitalizationForBill: item.dateOfHospitalizationForBill,
+      issuedBy: item.issuedBy,
+      towards: item.towards,
+      amount: item.amount,
+      editDetails: true,
+      index: index,
+    });
+  };
+  editTable = async () => {
+    const {
+      billNo,
+      dateOfHospitalizationForBill,
+      issuedBy,
+      towards,
+      amount,
+      bilEnclosedList,
+      refreshCount,
+      index,
+    } = this.state;
+    bilEnclosedList.map((ele, i) => {
+      if (index == i) {
+        (ele.billNo = billNo),
+          (ele.dateOfHospitalizationForBill = dateOfHospitalizationForBill),
+          (ele.issuedBy = issuedBy),
+          (ele.towards = towards),
+          (ele.amount = amount);
+      }
+    });
 
-  //   console.log('item', item);
-  //  this.setState()
-  //   // let temp = this.state.bilEnclosedList;
-  //   // temp.splice(index, 1);
-  //   // await this.setState({bilEnclosedList: temp});
-  //   // console.log(this.state.bilEnclosedList);
-  // };
-  //   console.log('bilEnclosedList', bilEnclosedList.length);
+    this.setState({
+      bilEnclosedList: bilEnclosedList,
+      refreshCount: refreshCount + 1,
+      billNo: '',
+      dateOfHospitalizationForBill: null,
+      issuedBy: '',
+      towards: '',
+      amount: '',
+      editDetails: false,
+    });
+  };
+
   render() {
     const {
       billNo,
@@ -130,8 +166,9 @@ class BillEnclosedDeatil extends PureComponent {
       bilEnclosedList,
       isModalVisible,
       errorMsg,
+      editDetails,
     } = this.state;
-    const { updateBillsEnclosedDetails } = this.props
+    const {updateBillsEnclosedDetails} = this.props;
 
     return (
       <View>
@@ -261,8 +298,10 @@ class BillEnclosedDeatil extends PureComponent {
         <View style={styles.ButtonView}>
           <TouchableOpacity
             style={styles.submit_ButtonStyle}
-            onPress={this.addTable}>
-            <Text style={{ color: '#fff' }}>Save</Text>
+            onPress={editDetails ? this.editTable : this.addTable}>
+            <Text style={{color: '#fff'}}>
+              {editDetails ? 'Upadte' : 'Save'}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -399,7 +438,7 @@ class BillEnclosedDeatil extends PureComponent {
                         (styles.form_field,
                           { flexDirection: 'row', width: '85%' })
                       }>
-                      {/* <TouchableOpacity
+                      <TouchableOpacity
                         style={{
                           width: '40%',
                           backgroundColor: 'gray',
@@ -413,7 +452,7 @@ class BillEnclosedDeatil extends PureComponent {
                         <Text style={{textAlign: 'center', color: '#fff'}}>
                           Edit
                         </Text>
-                      </TouchableOpacity> */}
+                      </TouchableOpacity>
 
                       <TouchableOpacity
                         style={{
@@ -438,7 +477,7 @@ class BillEnclosedDeatil extends PureComponent {
           />
         ) : null}
 
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <ModalPopup
             errorMessageText={errorMsg}
             closeButtonText={'CLOSE'}
@@ -448,17 +487,18 @@ class BillEnclosedDeatil extends PureComponent {
             visible={isModalVisible}
           />
         </View>
-        {this.state.bilEnclosedList && this.state.bilEnclosedList.length ?
+        {this.state.bilEnclosedList && this.state.bilEnclosedList.length ? (
           <View style={styles.ButtonView}>
             <TouchableOpacity
               style={styles.submit_ButtonStyle}
-              onPress={() => updateBillsEnclosedDetails(this.state.bilEnclosedList)}
-              disabled={
-                this.state.bilEnclosedList.length ? false : true
-              }>
-              <Text style={{ color: '#fff' }}>Submit</Text>
+              onPress={() =>
+                updateBillsEnclosedDetails(this.state.bilEnclosedList)
+              }
+              disabled={this.state.bilEnclosedList.length ? false : true}>
+              <Text style={{color: '#fff'}}>Submit</Text>
             </TouchableOpacity>
-          </View> : null}
+          </View>
+        ) : null}
       </View>
     );
   }

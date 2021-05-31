@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,7 +7,8 @@ import {
 } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Row} from 'react-native-easy-grid';
+import { Row } from 'react-native-easy-grid';
+import { translate } from '../../../../setup/translator.helper';
 import {
   IS_ANDROID,
   validateFirstNameLastName,
@@ -29,7 +30,7 @@ import {
   Content,
   Picker,
 } from 'native-base';
-import {MAP_BOX_TOKEN, SERVICE_TYPES} from '../../../../setup/config';
+import { MAP_BOX_TOKEN, SERVICE_TYPES } from '../../../../setup/config';
 import axios from 'axios';
 import {
   updateMemberDetails,
@@ -39,9 +40,9 @@ import {
 import Geolocation from 'react-native-geolocation-service';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 // import Qs from 'qs';
-import {primaryColor} from '../../../../setup/config';
+import { primaryColor } from '../../../../setup/config';
 
-import {NavigationEvents} from 'react-navigation';
+import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../../components/Spinner';
 import locationIcon from '../../../../../assets/marker.png';
 
@@ -61,7 +62,7 @@ export default class MapBox extends Component {
       full_name: '',
       mobile_no: null,
       addressType: null,
-      postOfficeData: [{Name: 'Select Post Name'}],
+      postOfficeData: [{ Name: translate('Select Post Name') }],
       editable: true,
       address: {
         address1: null,
@@ -73,7 +74,7 @@ export default class MapBox extends Component {
         country: null,
         pinCode: '',
       },
-      updateId:this.props.navigation.getParam('id') || null
+      updateId: this.props.navigation.getParam('id') || null
     };
     this.onRegionDidChange = this.onRegionDidChange.bind(this);
     this.onRegionIsChanging = this.onRegionIsChanging.bind(this);
@@ -95,19 +96,19 @@ export default class MapBox extends Component {
             message: 'App needs location permission to find your position.',
           },
         )
-          .then((granted) => {})
+          .then((granted) => { })
           .catch((err) => {
             console.warn(err);
           });
       }
-      const {navigation} = this.props;
+      const { navigation } = this.props;
       const fromProfile = navigation.getParam('fromProfile') || false;
       let showAllAddressFields = navigation.getParam('mapEdit') || false;
       this.navigationOption = navigation.getParam('navigationOption') || null;
       let locationData = this.props.navigation.getParam('locationData');
 
       if (fromProfile) {
-        await this.setState({fromProfile: true});
+        await this.setState({ fromProfile: true });
         if (locationData) {
           this.setAndAutoFillAddressFields(locationData);
           await this.setState({
@@ -144,7 +145,7 @@ export default class MapBox extends Component {
       const searchLocationData = this.props.navigation.getParam('locationData');
       if (searchLocationData) {
         this.setAndAutoFillAddressFields(searchLocationData);
-        this.setState({coordinates: searchLocationData.center});
+        this.setState({ coordinates: searchLocationData.center });
       }
     }
   }
@@ -167,7 +168,7 @@ export default class MapBox extends Component {
         (error) => {
           console.log(error);
         },
-        {enableHighAccuracy: true, timeout: 50000, maximumAge: 1000};
+        { enableHighAccuracy: true, timeout: 50000, maximumAge: 1000 };
     } catch (Ex) {
       console.log('Ex is getting on Gte Current Location  ' + Ex.message);
     }
@@ -195,9 +196,8 @@ export default class MapBox extends Component {
     if (locDataContextLength) {
       for (let i = 0; i < locDataContextLength; i++) {
         const locValue = locDataContext[i].text;
-        searchBoxLocFullText += `${locValue}${
-          i + 1 !== locDataContextLength ? ', ' : '.'
-        }`; //  auto fill Location text content in Search Box
+        searchBoxLocFullText += `${locValue}${i + 1 !== locDataContextLength ? ', ' : '.'
+          }`; //  auto fill Location text content in Search Box
         const contextType = locDataContext[i].id.split('.')[0];
         switch (contextType) {
           case 'address1':
@@ -233,7 +233,7 @@ export default class MapBox extends Component {
       searchBoxLocFullText = locationData.place_name;
     }
     this.setState({
-      address: {...this.state.address},
+      address: { ...this.state.address },
       searchBoxLocFullText,
       center: locationData.center,
     });
@@ -246,7 +246,7 @@ export default class MapBox extends Component {
       this.getPostOfficeNameByPinCode(pinCode);
       return true;
     } else {
-      this.setState({postOfficeData: [{Name: 'Select Post Name'}]});
+      this.setState({ postOfficeData: [{ Name: translate('Select Post Name') }] });
     }
   };
 
@@ -254,10 +254,10 @@ export default class MapBox extends Component {
     const postOffResp = await getPostOffNameAndDetails(pinCode);
     if (postOffResp.Status == 'Success') {
       const postOfficeData = postOffResp.PostOffice;
-      this.setState({postOfficeData});
+      this.setState({ postOfficeData });
       this.postOfficeAddress(postOfficeData[0]);
     } else {
-      this.setState({postOfficeData: [{Name: 'Select Post Name'}]});
+      this.setState({ postOfficeData: [{ Name: translate('Select Post Name') }] });
       Toast.show({
         text: postOffResp.Message,
         type: 'danger',
@@ -269,7 +269,7 @@ export default class MapBox extends Component {
   postOfficeAddress = async (value) => {
     this.onChangeUpdateAddressData('postOfficeName', value.Name);
     const {
-      address: {address1, address2, pinCode, city, postOfficeName},
+      address: { address1, address2, pinCode, city, postOfficeName },
     } = this.state;
     await this.setState({
       editable: false,
@@ -289,7 +289,7 @@ export default class MapBox extends Component {
   onChangeUpdateAddressData(addressNode, value) {
     let baCupOfAddressObjInState = this.state.address;
     baCupOfAddressObjInState[addressNode] = value;
-    this.setState({address: baCupOfAddressObjInState});
+    this.setState({ address: baCupOfAddressObjInState });
   }
   async onPressUpdateLocInfo() {
     try {
@@ -312,44 +312,44 @@ export default class MapBox extends Component {
       const reqData4displayToastMsg = {
         type: 'warning',
         duration: 3000,
-        buttonText: 'Okay',
+        buttonText: translate('Okay'),
         buttonTextStyle: {
           color: '#008000',
         },
-        buttonStyle: {backgroundColor: '#5cb85c'},
+        buttonStyle: { backgroundColor: '#5cb85c' },
       };
       if (!address1) {
-        (reqData4displayToastMsg.text = 'Enter address1 in above'),
+        (reqData4displayToastMsg.text = translate('Enter address1 in above')),
           Toast.show(reqData4displayToastMsg);
         return;
       }
       if (!address2) {
-        (reqData4displayToastMsg.text = 'Enter address2 in above'),
+        (reqData4displayToastMsg.text = translate('Enter address2 in above')),
           Toast.show(reqData4displayToastMsg);
         return;
       }
       if (!pinCode) {
-        (reqData4displayToastMsg.text = 'Enter Valid Pin Code'),
+        (reqData4displayToastMsg.text = translate('Enter Valid Pin Code')),
           Toast.show(reqData4displayToastMsg);
         return;
       }
       if (!city) {
-        (reqData4displayToastMsg.text = 'Enter city Or area'),
+        (reqData4displayToastMsg.text = translate('Enter city Or area')),
           Toast.show(reqData4displayToastMsg);
         return;
       }
       if (!district) {
-        (reqData4displayToastMsg.text = 'Enter district'),
+        (reqData4displayToastMsg.text = translate('Enter district')),
           Toast.show(reqData4displayToastMsg);
         return;
       }
       if (!state) {
-        (reqData4displayToastMsg.text = 'Enter state'),
+        (reqData4displayToastMsg.text = translate('Enter state')),
           Toast.show(reqData4displayToastMsg);
         return;
       }
       if (!country) {
-        (reqData4displayToastMsg.text = 'Enter country'),
+        (reqData4displayToastMsg.text = translate('Enter country')),
           Toast.show(reqData4displayToastMsg);
         return;
       }
@@ -390,12 +390,12 @@ export default class MapBox extends Component {
       //     reqUserAddressData.home_healthcare_address.active = true;
       //     delete reqUserAddressData.address;
       //   }
-      this.setState({isLoading: true});
+      this.setState({ isLoading: true });
       const updateResp = await updateMemberDetails(reqUserAddressData);
       if (updateResp) {
         if (fromProfile) {
           Toast.show({
-            text: "Address updated successfully",
+            text: translate("Address updated successfully"),
             type: 'success',
             duration: 3000,
           });
@@ -415,7 +415,7 @@ export default class MapBox extends Component {
         else {
           logout();
           Toast.show({
-            text: 'Click Here Login to continue',
+            text: translate('Click Here Login to continue'),
             type: 'success',
             duration: 3000,
           });
@@ -436,13 +436,13 @@ export default class MapBox extends Component {
           duration: 5000,
         });
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   }
   async onRegionDidChange() {
     if (this.state.isLoadingFinished) {
       const zoom = await this._map.getZoom();
-      this.setState({zoom});
+      this.setState({ zoom });
       await this.serviceOfUpdateLocInfoByCoOrdinates(this.state.center);
     }
   }
@@ -450,11 +450,11 @@ export default class MapBox extends Component {
   async onRegionIsChanging() {
     if (this.state.isLoadingFinished) {
       const center = await this._map.getCenter();
-      this.setState({center: center});
+      this.setState({ center: center });
     }
   }
   async onDidFinishLoadingMap() {
-    await this.setState({isLoadingFinished: true});
+    await this.setState({ isLoadingFinished: true });
   }
 
   // _abortRequests = () => {
@@ -493,7 +493,7 @@ export default class MapBox extends Component {
 
   confirmLocation() {
     if (this.isFromNetworkHospital === true) {
-      const {address, center} = this.state;
+      const { address, center } = this.state;
       const coordinates = [center[1], center[0]];
       const reqData4NetworkHosp = {
         coordinates,
@@ -504,7 +504,7 @@ export default class MapBox extends Component {
       }
       this.props.navigation.navigate('NetworkHospitals', reqData4NetworkHosp);
     } else {
-      this.setState({showAllAddressFields: true});
+      this.setState({ showAllAddressFields: true });
     }
   }
 
@@ -539,14 +539,14 @@ export default class MapBox extends Component {
           <Spinner
             color="blue"
             visible={isLoading}
-            textContent={'Please wait Loading...'}
+            textContent={translate('Please wait Loading')}
           />
         ) : null}
-        <View style={{flex: 1}}>
-          {coordinates&&coordinates !== null ? (
+        <View style={{ flex: 1 }}>
+          {coordinates && coordinates !== null ? (
             <MapboxGL.MapView
               ref={(c) => (this._map = c)}
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               compassEnabled={false}
               showUserLocation={true}
               styleURL={MapboxGL.StyleURL.Street}
@@ -560,7 +560,7 @@ export default class MapBox extends Component {
                 centerCoordinate={coordinates}
                 animationDuration={2000}
               />
-              <MapboxGL.Images images={{location: locationIcon}} />
+              <MapboxGL.Images images={{ location: locationIcon }} />
               {searchBoxLocFullText !== null ? (
                 <MapboxGL.PointAnnotation
                   id={'Map Center Pin'}
@@ -569,7 +569,7 @@ export default class MapBox extends Component {
               ) : null}
             </MapboxGL.MapView>
           ) : null}
-          <View style={[styles.containerForBubble, {bottom: 0}]}>
+          <View style={[styles.containerForBubble, { bottom: 0 }]}>
             <TouchableOpacity
               style={styles.fab}
               onPress={() => this.getCurrentLocation()}>
@@ -582,13 +582,13 @@ export default class MapBox extends Component {
             <CardItem bordered>
               <Body>
                 <Button
-                  style={{borderRadius: 15}}
+                  style={{ borderRadius: 15 }}
                   iconLeft
                   block
                   success
                   onPress={() => this.confirmLocation()}>
                   <Icon name="paper-plane"></Icon>
-                  <Text>Confirm Location</Text>
+                  <Text>{translate("Confirm Location")}</Text>
                 </Button>
               </Body>
             </CardItem>
@@ -613,7 +613,7 @@ export default class MapBox extends Component {
                         marginTop: 5,
                         borderRadius: 5,
                         color: '#000',
-                        fontFamily: 'OpenSans',
+                        fontFamily: 'Roboto',
                       }}
                       value={this.state.full_name}
                       onChangeText={(value) =>
@@ -638,7 +638,7 @@ export default class MapBox extends Component {
                 </View>
               ) : null} */}
               <Item floatingLabel>
-                <Label>Address1</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("Address 1")}</Label>
                 <Input
                   style={styles.transparentLabel}
                   returnKeyType={'next'}
@@ -653,9 +653,9 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>Address2</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("Address 2")}</Label>
                 <Input
-                  placeholder="Address Line 1"
+                  placeholder={translate("Address Line")}
                   style={styles.transparentLabel}
                   getRef={(ref) => {
                     this.enterNoAndStreet = ref.wrappedInstance; // <-- notice
@@ -672,9 +672,9 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>Pin Code</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("Pincode")}</Label>
                 <Input
-                  placeholder="Pin Code"
+                  placeholder={translate("Pincode")}
                   style={styles.transparentLabel}
                   getRef={(ref) => {
                     this.enterAddressLine1 = ref.wrappedInstance; // <-- notice
@@ -695,14 +695,14 @@ export default class MapBox extends Component {
               <Item style={[styles.transparentLabel1]}>
                 <Picker
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     fontSize: 14,
                     backgroundColor: '#F1F1F1',
                   }}
                   mode="dropdown"
                   iosIcon={<Icon name="arrow-down" />}
-                  placeholder="Select your Post Office Name"
-                  textStyle={{color: 'gray', fontFamily: 'OpenSans'}}
+                  placeholder={translate("Select your Post Office Name")}
+                  textStyle={{ color: 'gray', fontFamily: 'Roboto' }}
                   itemStyle={{
                     backgroundColor: 'gray',
                     marginLeft: 0,
@@ -713,8 +713,8 @@ export default class MapBox extends Component {
                       ? this.postOfficeAddress(value)
                       : null;
                   }}
-                  itemTextStyle={{color: '#788ad2'}}
-                  style={{width: undefined}}
+                  itemTextStyle={{ color: '#788ad2' }}
+                  style={{ width: undefined }}
                   selectedValue={postOfficeName}>
                   {this.state.postOfficeData.map((ele, index) => {
                     return (
@@ -729,9 +729,9 @@ export default class MapBox extends Component {
                 </Picker>
               </Item>
               <Item floatingLabel>
-                <Label>City Or Area</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("City Or Area")}</Label>
                 <Input
-                  placeholder="City"
+                  placeholder={translate("City")}
                   style={styles.transparentLabel}
                   value={city}
                   onChangeText={(value) =>
@@ -748,9 +748,9 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>District</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("District")}</Label>
                 <Input
-                  placeholder="District"
+                  placeholder={translate("District")}
                   style={styles.transparentLabel}
                   value={district}
                   editable={editable}
@@ -768,9 +768,9 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>State</Label>
+              <Label style={{fontFamily: 'Roboto'}}>{translate("State")}</Label>
                 <Input
-                  placeholder="State"
+                  placeholder={translate("State")}
                   style={styles.transparentLabel}
                   value={state}
                   editable={editable}
@@ -788,9 +788,9 @@ export default class MapBox extends Component {
                 />
               </Item>
               <Item floatingLabel>
-                <Label>Country</Label>
+                <Label style={{fontFamily: 'Roboto'}}>{translate("Country")}</Label>
                 <Input
-                  placeholder="Country"
+                  placeholder={translate("Country")}
                   style={styles.transparentLabel}
                   value={country}
                   editable={editable}
@@ -809,40 +809,40 @@ export default class MapBox extends Component {
                 block
                 onPress={() => this.onPressUpdateLocInfo()}>
                 <Icon name="paper-plane"></Icon>
-                <Text>Update</Text>
+                <Text>{translate("Update")}</Text>
               </Button>
             </Form>
           </Content>
         )}
-        <View style={{position: 'absolute'}}>
+        <View style={{ position: 'absolute' }}>
           <Row style={styles.SearchRow1}>
             <View style={styles.SearchStyle}>
-              <TouchableOpacity style={{justifyContent: 'center'}}>
+              <TouchableOpacity style={{ justifyContent: 'center' }}>
                 <Icon
                   name="ios-search"
-                  style={{color: '#fff', fontSize: 20, padding: 2}}
+                  style={{ color: '#fff', fontSize: 20, padding: 2 }}
                 />
               </TouchableOpacity>
             </View>
-            <View style={{justifyContent: 'center', width: '90%'}}>
+            <View style={{ justifyContent: 'center', width: '90%' }}>
               <Input
-                placeholder=" Search Location"
+                placeholder={translate("Search Location")}
                 value={searchBoxLocFullText}
                 style={styles.inputfield}
                 placeholderTextColor="black"
                 onFocus={() => {
                   this.state.fromProfile
                     ? this.props.navigation.navigate('UserAddress', {
-                        fromProfile: true,
-                      })
+                      fromProfile: true,
+                    })
                     : this.navigationOption
-                    ? this.props.navigation.navigate('UserAddress', {
+                      ? this.props.navigation.navigate('UserAddress', {
                         navigationOption: this.navigationOption,
                       })
-                    : this.props.navigation.navigate('UserAddress');
+                      : this.props.navigation.navigate('UserAddress');
                 }}
                 onChangeText={(searchBoxLocFullText) =>
-                  this.setState({searchBoxLocFullText})
+                  this.setState({ searchBoxLocFullText })
                 }
               />
             </View>
@@ -883,7 +883,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#f6f8fa',
     textAlign: 'center',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   map: {
     height: 400,
@@ -891,7 +891,7 @@ const styles = StyleSheet.create({
   },
   customText: {
     marginLeft: 10,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   transparentLabel: {
     borderBottomColor: 'transparent',
@@ -899,7 +899,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 5,
     color: '#000',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
   },
   transparentLabel1: {
     borderBottomColor: 'transparent',
@@ -908,8 +908,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 5,
     paddingLeft: 20,
-    color: '#000',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
+    fontSize: 15
+    
   },
 
   annotationContainer: {
@@ -925,7 +926,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     backgroundColor: 'blue',
-    transform: [{scale: 0.6}],
+    transform: [{ scale: 0.6 }],
   },
   bodyContent: {
     paddingLeft: 10,
@@ -935,7 +936,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     backgroundColor: primaryColor,
     borderRadius: 5,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     marginLeft: 15,
     marginBottom: 10,
     borderRadius: 15,
@@ -962,7 +963,7 @@ const styles = StyleSheet.create({
   },
   inputfield: {
     color: 'black',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     fontSize: 12,
     padding: 5,
     paddingLeft: 10,

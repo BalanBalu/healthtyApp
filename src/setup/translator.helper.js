@@ -7,11 +7,14 @@ const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
   en: () => require("./translations/en.json"),
   ta: () => require("./translations/ta.json"),
-  ma: ()=> require("./translations/ma.json")
+  ma: () => require("./translations/ma.json"),
+  hi: () => require("./translations/hi.json"),
+  ka: () => require("./translations/ka.json")
+
 };
 
 const translate = memoize(
-  (key, config) => { 
+  (key, config) => {
     return i18n.t(key, config) // {defaultValue: key }
   },
   (key, config) => (config ? key + JSON.stringify(config) : key)
@@ -19,7 +22,7 @@ const translate = memoize(
 
 const setI18nConfig = (languageShortForm) => {
   // fallback if no available language fits
-  const fallback = { languageTag:  languageShortForm || 'en', isRTL: false };
+  const fallback = { languageTag: languageShortForm || 'en', isRTL: false };
 
   const { languageTag, isRTL } = /* RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) || */ fallback;
   // clear translation cache

@@ -33,7 +33,7 @@ export default  styles = StyleSheet.create({
       justifyContent: 'center'
     },
     companyName: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'Roboto',
       fontSize: 15
     },
     continueButton: {
@@ -59,7 +59,7 @@ export default  styles = StyleSheet.create({
       marginBottom: 10,
     },
     continueText: {
-      fontFamily: 'OpenSans',
+      fontFamily: 'Roboto',
       fontSize: 15,
       fontWeight: '700',
       color: '#fff'
@@ -75,13 +75,13 @@ export default  styles = StyleSheet.create({
     subHeadingStyle: {
       fontSize: 13,
       marginTop: 5,
-      fontFamily: 'OpenSans'
+      fontFamily: 'Roboto'
     },
     subHeadingData: {
       fontSize: 12,
       color: 'gray',
       marginTop: 5,
-      fontFamily: 'OpenSans'
+      fontFamily: 'Roboto'
     },
     cardStyle: {
       marginTop: 15,

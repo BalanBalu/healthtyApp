@@ -6,6 +6,7 @@ import {
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {translate} from '../../../../setup/translator.helper';
 
 import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
@@ -206,7 +207,7 @@ class LabAppointmentList extends Component {
                                 marginRight: "auto",
                                 marginTop: "auto"
                             }}
-                            values={["Upcoming", "Past"]}
+                            values={[translate("Upcoming"), translate("Past")]}
                             selectedIndex={this.state.selectedIndex}
                             onTabPress={this.handleIndexChange}
                             activeTabStyle={{
@@ -243,12 +244,12 @@ class LabAppointmentList extends Component {
                                         fontFamily: "Roboto",
                                         fontSize: 15,
                                         marginTop: "10%"
-                                    }}>No appointments scheduled !
+                                    }}>{translate("No appointments scheduled !")}
 								</Text>
                                     <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                                         <Button style={[styles.bookingButton, styles.customButton]} onPress={() =>this.navigateToHomeOrCorporate() 
                                         } testID='navigateToHome'>
-                                            <Text style={{ fontFamily: 'opensans-bold', fontSize: 15,  }}>Book Now</Text>
+                                            <Text style={{ fontFamily: 'opensans-bold', fontSize: 15,  }}>{translate("Book Now")}</Text>
                                         </Button>
                                     </Item>
                                 </Card>
@@ -305,7 +306,7 @@ class LabAppointmentList extends Component {
 
                                                         <Row style={{ borderBottomWidth: 0 }}>
 
-                                                            <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointment_status].color,  }} note>{statusValue[item.appointment_status].text}</Text>
+                                                            <Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointment_status].color,  }} note>{translate(statusValue[item.appointment_status].text)}</Text>
                                                         </Row>
 
                                                         <Text style={{ fontFamily: "Roboto", fontSize: 11 }} note>
@@ -320,14 +321,14 @@ class LabAppointmentList extends Component {
                                                                     >
                                                                         <Text style={styles.bookAgain1}>
 
-                                                                            Add Review
+                                                                            {translate("Add Review")}
 																</Text>
                                                                     </Button></Right>
 
                                                                 <Right style={(styles.marginRight = 5)}>
 
                                                                     <Button style={styles.bookingButton} onPress={() => this.onPressBookAgain(item)} testID='navigateBookingPage'>
-                                                                        <Text style={styles.bookAgain1}>Book Again</Text>
+                                                                        <Text style={styles.bookAgain1}>{translate("Book Again")}</Text>
                                                                     </Button>
                                                                 </Right>
                                                             </Row>)
@@ -336,7 +337,7 @@ class LabAppointmentList extends Component {
                                                                     <Row style={{ borderBottomWidth: 0 }}>
                                                                         <Right style={(styles.marginRight = 10)}>
                                                                             <Button style={styles.bookingButton} onPress={() => this.onPressBookAgain(item)} testID='navigateBookingPage'>
-                                                                                <Text style={styles.bookAgain1}>Book Again</Text>
+                                                                                <Text style={styles.bookAgain1}>{translate("Book Again")}</Text>
                                                                             </Button>
                                                                         </Right>
                                                                     </Row>)

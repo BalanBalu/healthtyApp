@@ -432,14 +432,14 @@ class MyAppoinmentList extends Component {
 										}}
 										note
 									>
-										No appointments are scheduled
+										{translate("No appointments scheduled !")}
 								</Text>
 									<Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
 										<Button style={[styles.bookingButton, styles.customButton]}
 											onPress={() =>
 												this.navigateToHomeOrCorporate()
 											} testID='navigateToHome'>
-											<Text style={{ fontFamily: 'opensans-bold', fontSize: 15,  }}>Book Now</Text>
+											<Text style={{ fontFamily: 'opensans-bold', fontSize: 15,  }}>{translate("Book Now")}</Text>
 										</Button>
 									</Item>
 								</Card>
@@ -519,7 +519,7 @@ class MyAppoinmentList extends Component {
 																{item.appointmentResult.appointment_status == "APPROVED" && item.appointmentResult.onGoingAppointment ?
 																	<Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: 'green', }} note>{'Appointment Ongoing'}</Text>
 																	:
-																	<Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].color : 'red',  }} note>{statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].text : item.appointmentResult.appointment_status}</Text>
+																	<Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].color : 'red',  }} note>{statusValue[item.appointmentResult.appointment_status] ? translate(statusValue[item.appointmentResult.appointment_status].text) : item.appointmentResult.appointment_status}</Text>
 																}
 
 
@@ -540,7 +540,7 @@ class MyAppoinmentList extends Component {
 																			>
 																				<Text style={styles.bookAgain1}>
 
-																					Add Review
+																					{translate("Add Review")}
                                                                                 </Text>
 																			</Button>
 																		</Col>
@@ -550,7 +550,7 @@ class MyAppoinmentList extends Component {
 
 																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
 																				<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
-																					Book Again
+																					{translate("Book Again")}
                                                                                </Text>
 																			</Button>
 																		</Col>
@@ -571,7 +571,7 @@ class MyAppoinmentList extends Component {
 																			<Col size={4} style={(styles.marginRight = 10)}>
 																				<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																					<Text style={styles.bookAgain1}>
-																						Book Again
+																						{translate("Book Again")}
 																			   </Text>
 																				</Button>
 																			</Col>

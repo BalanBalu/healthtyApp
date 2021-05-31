@@ -323,9 +323,9 @@ class Insurance extends Component {
           )}
         </View>
         <InsuranceRenewalPopup
-                messageText={'You can Renew your Insurance Policy by!'}
-                callbackButtonText={'Arrange Callback'}
-                renewOnlineButtonText={'Renew Online'}
+                messageText={'Your request for buying Insurance!'}
+                callbackButtonText={'Arrange call back'}
+                renewOnlineButtonText={'Buy online'}
                 callbackButtonAction={() => {
                     this.arrangeCallback();
                     this.popUpClose();

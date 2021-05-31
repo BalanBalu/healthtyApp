@@ -4,7 +4,8 @@ import Mapbox from '../../screens/bookappoinment/Mapbox';
 
 import { Text, Card, List, ListItem, Left, Body, Icon, Right } from 'native-base';
 import { Row, Grid } from 'react-native-easy-grid';
-import {primaryColor} from '../../../setup/config'
+import {primaryColor} from '../../../setup/config';
+import {translate} from '../../../setup/translator.helper';
 
 
 export default class RenderLabLocation extends Component {
@@ -57,7 +58,7 @@ export default class RenderLabLocation extends Component {
                                         style={{ fontFamily: 'Roboto',
                                                  fontSize:13,
                                                  marginLeft: 2,
-                                                }}>{'View Directions'}
+                                                }}>{translate('View Directions')}
                                     </Text>
                              </TouchableOpacity>
                                 </Right>

@@ -8,6 +8,7 @@ import {
 import { insertReviews } from '../../../providers/homeHelthCare/action'
 import { formatDate } from '../../../../setup/helpers';
 import { getName } from '../../../common';
+import {translate} from '../../../../setup/translator.helper'
 
 
 export class InsertReview extends Component {
@@ -141,7 +142,7 @@ export class InsertReview extends Component {
 
                                 <Row style={{ marginTop: 20 }}>
                                     <Left style={{ marginLeft: 20 }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Service quality</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>{translate("Service quality")}</Text>
                                     </Left>
                                     <Right style={{ marginRight: 20 }}>
                                         <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 50 }}
@@ -155,7 +156,7 @@ export class InsertReview extends Component {
                                 </Row>
                                 <Row style={{ marginTop: 20 }}>
                                     <Left style={{ marginLeft: 20 }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Staff</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>{translate("Staff")}</Text>
                                     </Left>
                                     <Right style={{ marginRight: 20 }}>
                                         <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 97 }}
@@ -169,7 +170,7 @@ export class InsertReview extends Component {
                                 </Row>
                                 <Row style={{ marginTop: 20 }}>
                                     <Left style={{ marginLeft: 20 }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Wait Time</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>{translate("Wait Time")}</Text>
                                     </Left>
                                     <Right style={{ marginRight: 20 }}>
                                         <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 60 }}
@@ -196,16 +197,16 @@ export class InsertReview extends Component {
                                             checked={this.state.isDoctorRecommended}
                                             onPress={() => { this.setState({ isDoctorRecommended: !isDoctorRecommended }); }}
                                         />
-                                        <Text style={{ color: '#3C98EC', fontSize: 12, marginLeft: 20 }}>Recommend this Doctor</Text>
+                                        <Text style={{ color: '#3C98EC', fontSize: 12, marginLeft: 20 }}>{translate("Recommend this Doctor")}</Text>
                                     </Col>
 
                                 </Row>
-                                {ratingIndicatePopUp == true ? <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>Add Rating to Continue</Text> : null}
+                                {ratingIndicatePopUp == true ? <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>{translate("Add Rating to Continue")}</Text> : null}
                                 <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
                                     <TextInput
                                         style={{ height: 80, borderWidth: 1, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
                                         returnKeyType={'next'}
-                                        placeholder="Write your reviews"
+                                        placeholder={translate("Write your reviews")}
                                         multiline={true}
                                         keyboardType={'default'}
                                         textAlignVertical={'top'}
@@ -221,8 +222,8 @@ export class InsertReview extends Component {
                                 <Col style={{ width: '50%' }}>
                                 </Col>
                                 <Col style={{ width: '50%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                    <TouchableOpacity style={{ backgroundColor: '#959595', paddingLeft: 20, paddingRight: 20, paddingTop: 1, paddingBottom: 3, borderRadius: 2 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12, }} onPress={() => this.submitReview('SKIP')} >Cancel</Text></TouchableOpacity>
-                                    <TouchableOpacity style={{ backgroundColor: '#349631', paddingLeft: 20, paddingRight: 20, paddingTop: 1, paddingBottom: 3, borderRadius: 2, marginLeft: 10 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12 }} onPress={() => this.submitReview('ADD')}>Submit</Text></TouchableOpacity>
+                                    <TouchableOpacity style={{ backgroundColor: '#959595', paddingLeft: 20, paddingRight: 20, paddingTop: 1, paddingBottom: 3, borderRadius: 2 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12, }} onPress={() => this.submitReview('SKIP')} >{translate("Cancel")}</Text></TouchableOpacity>
+                                    <TouchableOpacity style={{ backgroundColor: '#349631', paddingLeft: 20, paddingRight: 20, paddingTop: 1, paddingBottom: 3, borderRadius: 2, marginLeft: 10 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12 }} onPress={() => this.submitReview('ADD')}>{translate("Submit")}</Text></TouchableOpacity>
                                 </Col>
 
 

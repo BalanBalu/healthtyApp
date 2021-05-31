@@ -7,7 +7,8 @@ import { NavigationEvents } from 'react-navigation';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from 'moment';
 import { getAddress } from '../../common';
-import {primaryColor} from '../../../setup/config'
+import {primaryColor} from '../../../setup/config';
+import {translate} from '../../../setup/translator.helper'
 
 // import { fetchUserProfile } from '../../../providers/profile/profile.action';
 // import { dateDiff, formatDate, subTimeUnit } from '../../../../setup/helpers';
@@ -27,11 +28,11 @@ const PatientAddress = (props) => {
             {patientAddress.length != 0 ?
                 <Row style={{ marginTop: 8,marginBottom:8 }}>
                     <Col size={5}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor,marginLeft:10 }}>Saved Address</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: primaryColor,marginLeft:10 }}>{translate("Saved Address")}</Text>
                     </Col>
                     <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                         <TouchableOpacity onPress={() => onPressAddNewAddress()}>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>Add new Address</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>{translate("Add new Address")}</Text>
                         </TouchableOpacity>
                     </Col>
                 </Row> 
@@ -47,7 +48,7 @@ const PatientAddress = (props) => {
 
                             <Col size={10}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(item)}</Text>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{translate('Mobile') + (item.mobile_no || translate('Nil'))}</Text>
                             </Col>
                             <Col size={1} style={{ justifyContent: 'center' }}>
                                 <Radio
@@ -61,7 +62,7 @@ const PatientAddress = (props) => {
                 } /> : 
                 <Button transparent onPress={() => onPressAddNewAddress()}>
                     <Icon name='add' style={{ color: 'gray' }} />
-                    <Text uppercase={false} style={styles.customText}>Add Address</Text>
+                    <Text uppercase={false} style={styles.customText}>{translate("Add Address")}</Text>
                 </Button>
             }
         </View>

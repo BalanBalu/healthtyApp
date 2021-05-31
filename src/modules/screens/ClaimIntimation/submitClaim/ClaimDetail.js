@@ -3,24 +3,25 @@ import { Text, View, Item, Input, Radio, CheckBox } from 'native-base';
 import { TouchableOpacity, FlatList } from 'react-native';
 import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
-import { primaryColor } from '../../../../setup/config';
-import { toastMeassage, acceptNumbersOnly } from '../../../common';
+import {primaryColor} from '../../../../setup/config';
+import {toastMeassage, acceptNumbersOnly} from '../../../common';
+import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 const ClaimDetail = (props) => {
   const { ListOfData, checkBoxClick, updateClaimDetails } = props;
   const [
     preHospitalizationExpenses,
     setPreHospitalizationExpenses,
-  ] = useState();
-  const [hospitalizationExpenses, setHospitalizationExpenses] = useState();
+  ] = useState(0);
+  const [hospitalizationExpenses, setHospitalizationExpenses] = useState(0);
   const [
     postHospitalizationExpenses,
     setPostHospitalizationExpenses,
-  ] = useState();
-  const [healthCheckupCost, setHealthCheckupCost] = useState();
-  const [ambulanceCharges, setAmbulanceCharges] = useState();
-  const [othersCode, setOthersCode] = useState();
-  const [totalClaim, setTotalClaim] = useState();
+  ] = useState(0);
+  const [healthCheckupCost, setHealthCheckupCost] = useState(0);
+  const [ambulanceCharges, setAmbulanceCharges] = useState(0);
+  const [othersCode, setOthersCode] = useState(0);
+  const [totalClaim, setTotalClaim] = useState(0);
   const [preHospitalizationPeriod, setPreHospitalizationPeriod] = useState('');
   const [postHospitalizationPeriod, setPostHospitalizationPeriod] = useState(
     '',
@@ -29,13 +30,13 @@ const ClaimDetail = (props) => {
     claimForDomiciliaryHospitalization,
     setClaimForDomiciliaryHospitalization,
   ] = useState('');
-  const [hospitalDailyCash, setHospitalDailyCash] = useState('');
-  const [surgicalCash, setSurgicalCash] = useState('');
-  const [criticalIllness, setCriticalIllness] = useState('');
-  const [convalescence, setConvalescence] = useState('');
-  const [lumsumBenefit, setLumsumBenefit] = useState('');
-  const [others, setOthers] = useState('');
-  const [totalClaimValue, setTotalClaimValue] = useState();
+  const [hospitalDailyCash, setHospitalDailyCash] = useState(0);
+  const [surgicalCash, setSurgicalCash] = useState(0);
+  const [criticalIllness, setCriticalIllness] = useState(0);
+  const [convalescence, setConvalescence] = useState(0);
+  const [lumsumBenefit, setLumsumBenefit] = useState(0);
+  const [others, setOthers] = useState(0);
+  const [totalClaimValue, setTotalClaimValue] = useState(0);
   const [claimFormDulySigned, setCheckBox1] = useState(false);
   const [copyOfClaimIntimation, setCheckBox2] = useState(false);
   const [hospitalMainBill, setCheckBox3] = useState(false);
@@ -48,10 +49,97 @@ const ClaimDetail = (props) => {
   const [pharmacyBill, setCheckBox10] = useState(false);
   const [OthersClaim, setCheckBox11] = useState(false);
   const [investigationReports, setCheckBox12] = useState(false);
-  // const [calculation, setCalculation] = useState(0);
+  const [errorMsg, seterrorMsg] = useState('');
+  const [isModalVisible, setisModalVisible] = useState(false);
 
-  console.log('total', totalClaim);
-  console.log('totalClaimValue', totalClaimValue);
+  const submmitData = () => {
+    if (
+      preHospitalizationExpenses != undefined &&
+      hospitalizationExpenses != undefined &&
+      postHospitalizationExpenses != undefined &&
+      ambulanceCharges != undefined &&
+      hospitalDailyCash != undefined &&
+      surgicalCash != undefined &&
+      criticalIllness != undefined &&
+      convalescence != undefined &&
+      lumsumBenefit != undefined &&
+      others != undefined
+    ) {
+      updateClaimDetails({
+        preHospitalizationExpenses: preHospitalizationExpenses,
+        hospitalizationExpenses: hospitalizationExpenses,
+        postHospitalizationExpenses: postHospitalizationExpenses,
+        healthCheckupCost: healthCheckupCost,
+        ambulanceCharges: ambulanceCharges,
+        othersCode: othersCode,
+        totalClaim: totalClaim,
+        preHospitalizationPeriod: preHospitalizationPeriod,
+        postHospitalizationPeriod: postHospitalizationPeriod,
+        claimForDomiciliaryHospitalization: claimForDomiciliaryHospitalization,
+        hospitalDailyCash: hospitalDailyCash,
+        surgicalCash: surgicalCash,
+        criticalIllness: criticalIllness,
+        convalescence: convalescence,
+        lumsumBenefit: lumsumBenefit,
+        others: others,
+        totalClaimValue: totalClaimValue,
+        claimFormDulySigned: claimFormDulySigned,
+        copyOfClaimIntimation: copyOfClaimIntimation,
+        hospitalMainBill: hospitalMainBill,
+        hospitalBreakupBill: hospitalBreakupBill,
+        hospitalBillPaymentReceipt: hospitalBillPaymentReceipt,
+        hospitalDischargeSummary: hospitalDischargeSummary,
+        ecg: ecg,
+        requestForInvestigation: requestForInvestigation,
+        doctorPrescription: doctorPrescription,
+        pharmacyBill: pharmacyBill,
+        OthersClaim: OthersClaim,
+        investigationReports: investigationReports,
+      });
+    } else {
+      if (preHospitalizationExpenses === undefined) {
+        seterrorMsg('Please enter pre hospitalization expenses');
+        setisModalVisible(true);
+        return false;
+      }
+      if (hospitalizationExpenses === undefined) {
+        seterrorMsg('Please enter hospitalization expenses');
+        setisModalVisible(true);
+        return false;
+      }
+      if (postHospitalizationExpenses === undefined) {
+        seterrorMsg('Please enter post hospitalization expenses');
+        setisModalVisible(true);
+        return false;
+      }
+      if (ambulanceCharges ===undefined) {
+        seterrorMsg('Please enter ambulance charges');
+        setisModalVisible(true);
+        return false;
+      }
+      if (hospitalDailyCash === undefined) {
+        seterrorMsg('Please enter hospital daily cash');
+        setisModalVisible(true);
+        return false;
+      }
+      if (surgicalCash === undefined ) {
+        seterrorMsg('Please enter surgical cash');
+        setisModalVisible(true);
+        return false;
+      }
+
+      if (criticalIllness === undefined ) {
+        seterrorMsg('Please enter critical illness');
+        setisModalVisible(true);
+        return false;
+      }
+      if (convalescence === undefined) {
+        seterrorMsg('Please enter convalescence');
+        setisModalVisible(true);
+        return false;
+      }
+    }
+  };
   return (
     <View>
       <Text style={{ marginLeft: 15, fontSize: 16, marginTop: 10 }}>
@@ -75,7 +163,11 @@ const ClaimDetail = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setPreHospitalizationExpenses(text), setTotalClaim(text))
+                  ? (setPreHospitalizationExpenses(text), setTotalClaim(parseInt(text) +
+                  parseInt(hospitalizationExpenses) +
+                  parseInt(postHospitalizationExpenses) +
+                  parseInt(healthCheckupCost) +
+                  parseInt(ambulanceCharges)+parseInt(othersCode)))
                   : null
               }
               testID="editPreHospitalizationExpenses"
@@ -102,7 +194,10 @@ const ClaimDetail = (props) => {
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setHospitalizationExpenses(text),
                     setTotalClaim(
-                      parseInt(text) + parseInt(preHospitalizationExpenses),
+                      parseInt(text) + parseInt(preHospitalizationExpenses)+
+                      parseInt(postHospitalizationExpenses) +
+                      parseInt(healthCheckupCost) +
+                      parseInt(ambulanceCharges)+parseInt(othersCode),
                     ))
                   : null
               }
@@ -132,8 +227,11 @@ const ClaimDetail = (props) => {
                   ? (setPostHospitalizationExpenses(text),
                     setTotalClaim(
                       parseInt(text) +
-                      parseInt(preHospitalizationExpenses) +
-                      parseInt(hospitalizationExpenses),
+                      parseInt(preHospitalizationExpenses)+
+                      parseInt(hospitalizationExpenses) +
+                      
+                      parseInt(healthCheckupCost) +
+                      parseInt(ambulanceCharges)+parseInt(othersCode),
                     ))
                   : null
               }
@@ -164,7 +262,8 @@ const ClaimDetail = (props) => {
                       parseInt(text) +
                       parseInt(preHospitalizationExpenses) +
                       parseInt(hospitalizationExpenses) +
-                      parseInt(postHospitalizationExpenses),
+                      parseInt(postHospitalizationExpenses) +
+                      parseInt(ambulanceCharges)+parseInt(othersCode),
                     ))
                   : null
               }
@@ -196,7 +295,8 @@ const ClaimDetail = (props) => {
                       parseInt(preHospitalizationExpenses) +
                       parseInt(hospitalizationExpenses) +
                       parseInt(postHospitalizationExpenses) +
-                      parseInt(healthCheckupCost),
+                      parseInt(healthCheckupCost) +
+                      parseInt(othersCode)
                     ))
                   : null
               }
@@ -363,7 +463,11 @@ const ClaimDetail = (props) => {
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
                   ? (setHospitalDailyCash(text),
-                    setTotalClaimValue(parseInt(text)))
+                    setTotalClaimValue(parseInt(text)+
+                    parseInt(surgicalCash) +
+                    parseInt(criticalIllness) +
+                    parseInt(convalescence) +
+                    parseInt(lumsumBenefit)+parseInt(others)))
                   : null
               }
               testID="editHospitalDailyCash"
@@ -387,10 +491,14 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setSurgicalCash(text), setTotalClaimValue(
-                    parseInt(text) +
-                    parseInt(hospitalDailyCash)
-                  ))
+                  ? (setSurgicalCash(text),
+                    setTotalClaimValue(
+                      parseInt(text) + parseInt(hospitalDailyCash)+
+                     
+                      parseInt(criticalIllness) +
+                      parseInt(convalescence) +
+                      parseInt(lumsumBenefit)+parseInt(others),
+                    ))
                   : null
               }
               testID="editSurgicalCash"
@@ -414,11 +522,15 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setCriticalIllness(text), setTotalClaimValue(
-                    parseInt(text) +
-                    parseInt(hospitalDailyCash) +
-                    parseInt(surgicalCash)
-                  ))
+                  ? (setCriticalIllness(text),
+                    setTotalClaimValue(
+                      parseInt(text) +
+                      parseInt(hospitalDailyCash)+
+                      parseInt(surgicalCash) +
+                      
+                      parseInt(convalescence) +
+                      parseInt(lumsumBenefit)+parseInt(others)
+                    ))
                   : null
               }
               testID="editCriticalIllness"
@@ -442,10 +554,15 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setConvalescence(text), setTotalClaimValue(
-                    parseInt(text) +
-                    parseInt(hospitalDailyCash) +
-                    parseInt(surgicalCash) + parseInt(criticalIllness)))
+                  ? (setConvalescence(text),
+                    setTotalClaimValue(
+                      parseInt(text) +
+                      parseInt(hospitalDailyCash)+
+                      parseInt(surgicalCash) +
+                      parseInt(criticalIllness) +
+                      
+                      parseInt(lumsumBenefit)+parseInt(others),
+                    ))
                   : null
               }
               testID="editConvalescence"
@@ -469,10 +586,15 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setLumsumBenefit(text), setTotalClaimValue(
-                    parseInt(text) +
-                    parseInt(hospitalDailyCash) +
-                    parseInt(surgicalCash) + parseInt(criticalIllness) + parseInt(convalescence)))
+                  ? (setLumsumBenefit(text),
+                    setTotalClaimValue(
+                      parseInt(text) +
+                      parseInt(hospitalDailyCash)+
+                      parseInt(surgicalCash) +
+                      parseInt(criticalIllness) +
+                      parseInt(convalescence) +
+                      parseInt(others)
+                    ))
                   : null
               }
               testID="editLumsumBenefit"
@@ -496,10 +618,15 @@ const ClaimDetail = (props) => {
               keyboardType={'number-pad'}
               onChangeText={(text) =>
                 acceptNumbersOnly(text) == true || text === ''
-                  ? (setOthers(text), setTotalClaimValue(
-                    parseInt(text) +
-                    parseInt(hospitalDailyCash) +
-                    parseInt(surgicalCash) + parseInt(criticalIllness) + parseInt(convalescence) + parseInt(lumsumBenefit10)))
+                  ? (setOthers(parseInt(text)),
+                    setTotalClaimValue(
+                      parseInt(text) +
+                        parseInt(hospitalDailyCash) +
+                        parseInt(surgicalCash) +
+                        parseInt(criticalIllness) +
+                        parseInt(convalescence) +
+                        parseInt(lumsumBenefit),
+                    ))
                   : null
               }
               testID="editOthers"
@@ -731,43 +858,18 @@ const ClaimDetail = (props) => {
       <View style={styles.ButtonView}>
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
-          onPress={() =>
-            updateClaimDetails({
-              preHospitalizationExpenses: preHospitalizationExpenses,
-              hospitalizationExpenses: hospitalizationExpenses,
-              postHospitalizationExpenses: postHospitalizationExpenses,
-              healthCheckupCost: healthCheckupCost,
-              ambulanceCharges: ambulanceCharges,
-              othersCode: othersCode,
-              totalClaim: totalClaim,
-              preHospitalizationPeriod: preHospitalizationPeriod,
-              postHospitalizationPeriod: postHospitalizationPeriod,
-              claimForDomiciliaryHospitalization: claimForDomiciliaryHospitalization,
-              hospitalDailyCash: hospitalDailyCash,
-              surgicalCash: surgicalCash,
-              criticalIllness: criticalIllness,
-              convalescence: convalescence,
-              lumsumBenefit: lumsumBenefit,
-              others: others,
-              totalClaimValue: totalClaimValue,
-              claimFormDulySigned: claimFormDulySigned,
-              copyOfClaimIntimation: copyOfClaimIntimation,
-              hospitalMainBill: hospitalMainBill,
-              hospitalBreakupBill: hospitalBreakupBill,
-              hospitalBillPaymentReceipt: hospitalBillPaymentReceipt,
-              hospitalDischargeSummary: hospitalDischargeSummary,
-              ecg: ecg,
-              requestForInvestigation: requestForInvestigation,
-              doctorPrescription: doctorPrescription,
-              pharmacyBill: pharmacyBill,
-              OthersClaim: OthersClaim,
-              investigationReports: investigationReports,
-            })
-          }
+          onPress={() => submmitData()}
           testID="submitDetails4">
           <Text style={{ color: '#fff' }}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>
+
+      <ModalPopup
+        errorMessageText={errorMsg}
+        closeButtonText={'CLOSE'}
+        closeButtonAction={() => setisModalVisible(false)}
+        visible={isModalVisible}
+      />
     </View>
   );
 };

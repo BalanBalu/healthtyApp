@@ -218,7 +218,8 @@ form_field: {
     borderBottomLeftRadius:0,
     borderTopLeftRadius:0,
     height: 45,
-    fontSize:12
+    fontSize:12,
+    fontFamily:  'Roboto',
 },
 Heading_form_field: {
     color: '#000',
@@ -275,7 +276,12 @@ radioButtonStyle: {
      justifyContent: 'center' 
 },
 fontColorOfInput:{
-    fontSize:15
+    fontFamily:  'Roboto',
+   fontSize:15
+},
+inputTextBoxStyleColor:{
+   fontFamily:  'Roboto',
+   fontSize:15
 }
 
   })

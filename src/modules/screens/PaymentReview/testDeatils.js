@@ -11,10 +11,12 @@ import { fetchUserProfile, getCorporateUserFamilyDetails, getPolicYDetailsByid }
 import {getCorporateEmployeeDetailsById} from '../../providers/corporate/corporate.actions'
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { dateDiff } from '../../../setup/helpers';
-import {primaryColor} from '../../../setup/config'
+import {primaryColor} from '../../../setup/config';
+import {translate} from '../../../setup/translator.helper'
+
 
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
-import { getRandomInt } from '../../common';
+import { getRandomInt,arrangeFullName } from '../../common';
 const POSSIBLE_FAMILY_MEMBERS = {
     SELF: 'SELF',
     FAMILY_WITH_PAY: 'FAMILY_WITH_PAY',
@@ -58,7 +60,7 @@ class TestDetails extends PureComponent {
 
             this.defaultPatDetails = {
                 type: 'self',
-                full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
+                full_name:arrangeFullName(patInfoResp&&patInfoResp.first_name,patInfoResp&&patInfoResp.last_name) ,
                 gender: patInfoResp.gender,
                 age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years')),
                 phone_no: patInfoResp.mobile_no
@@ -73,7 +75,7 @@ class TestDetails extends PureComponent {
                     result.forEach(element => {
                         let obj = {
                             type: 'familymembers',
-                            full_name: (element.firstName ? element.firstName + ' ' : '') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ' : ''),
+                            full_name:arrangeFullName(element.firstName,element.middleName,element.lastName),
                             gender: element.gender,
                             // age: element.ageInYrs,
                             phone_no: element.mobile,
@@ -320,7 +322,7 @@ class TestDetails extends PureComponent {
                             let expandedListIndexPayBy = patientSelectionType + '-' + index;
                             this.setState({ expandedListIndex: this.state.expandedListIndex === expandedListIndexPayBy ? -1 : expandedListIndexPayBy })
                         }}>
-                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'Roboto', }}>Show Benefeciary Details</Text>
+                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'Roboto', }}>{translate("Show Benefeciary Details")}</Text>
                             <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
                         </TouchableOpacity>
                         <View>
@@ -340,7 +342,7 @@ class TestDetails extends PureComponent {
                             let expandedListIndexPayBy = patientSelectionType + '-' + index;
                             this.setState({ expandedListIndex: this.state.expandedListIndex === expandedListIndexPayBy ? -1 : expandedListIndexPayBy })
                         }}>
-                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'Roboto', }}>Show Benefeciary Details</Text>
+                            <Text style={{ color: "#0054A5", fontSize: 12, fontFamily: 'Roboto', }}>{translate("Show Benefeciary Details")}</Text>
                             <MaterialIcons name='keyboard-arrow-down' style={{ fontSize: 20, marginLeft: 5, color: "#0054A5", marginTop: 5 }} />
                         </TouchableOpacity>
                         <View>
@@ -386,7 +388,7 @@ class TestDetails extends PureComponent {
         return (
 
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
-                <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>Appointment for?</Text>
+                <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>{translate("Appointment for?")}</Text>
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                     {this.getPossiblePaymentMethods(payBy).includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
@@ -407,7 +409,7 @@ class TestDetails extends PureComponent {
                                 />
                             }
 
-                            <Text style={[styles.commonText, { marginLeft: 5 }]}>Self</Text>
+                            <Text style={[styles.commonText, { marginLeft: 5 }]}>{translate("Self")}</Text>
                         </View>
                         : null}
 
@@ -434,7 +436,7 @@ class TestDetails extends PureComponent {
                                             }}
                                         />
                                     }
-                                    <Text style={[styles.commonText, { marginLeft: 5 }]}>Family </Text>
+                                    <Text style={[styles.commonText, { marginLeft: 5 }]}>{translate("Family")} </Text>
                                 </>
                                 : null}
                         </View>
@@ -463,7 +465,7 @@ class TestDetails extends PureComponent {
                                         this.setPatientType(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY);
                                     }}
                                 />}
-                            <Text style={[styles.commonText, { marginLeft: 5 }]}>{'Family'} </Text>
+                            <Text style={[styles.commonText, { marginLeft: 5 }]}>{translate('Family')} </Text>
                         </View>
                         : null}
                 </View>
@@ -472,7 +474,7 @@ class TestDetails extends PureComponent {
                 <View style={{ marginTop: 10 }}>
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ?
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'Roboto' ,marginTop: 10}}>Patient Details</Text>
+                            <Text style={{ fontSize: 12, fontFamily: 'Roboto' ,marginTop: 10}}>{translate("Patient Details")}</Text>
                             <View>
                                 {this.renderPatientDetails(this.defaultPatDetails, 0, false, POSSIBLE_FAMILY_MEMBERS.SELF)}
                             </View>
@@ -483,7 +485,7 @@ class TestDetails extends PureComponent {
                     {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) ?
                         <View>
                             {onlyFamilyWithPayDetailsData.length !== 0 ?
-                                <Text style={{ fontSize: 12, fontFamily: 'Roboto',marginTop: 10 }}>Patient Details</Text>
+                                <Text style={{ fontSize: 12, fontFamily: 'Roboto',marginTop: 10 }}>{translate("Patient Details")}</Text>
                                 : null}
                             <FlatList
                                 data={onlyFamilyWithPayDetailsData}
@@ -494,7 +496,7 @@ class TestDetails extends PureComponent {
                             {(selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === false) || (selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY) && this.props.singlePatientSelect === true && familyDetailsData.filter(ele => ele.type === 'others').length === 0) ?
                                 <View style={{ marginTop: 8, }}>
                                     {familyDetailsData.length !== 0 ? <Text style={{ fontSize: 12, fontFamily: 'Roboto', color: primaryColor, textAlign: 'center', }}>(OR)</Text> : null}
-                                    <Text style={styles.subHead}>Add other patient's details</Text>
+                                    <Text style={styles.subHead}>{translate("Add other patient's details")}</Text>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={6}>
                                             <Row>
@@ -562,7 +564,7 @@ class TestDetails extends PureComponent {
                                     </View>
                                     <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
                                         <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()} >
-                                            <Text style={styles.touchText}>Add patient</Text>
+                                            <Text style={styles.touchText}>{translate("Add patient")}</Text>
                                         </TouchableOpacity>
                                     </Row>
                                 </View>
@@ -574,7 +576,7 @@ class TestDetails extends PureComponent {
                         {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY) ?
 
                             <View>
-                                <Text style={{ fontSize: 12, fontFamily: 'Roboto' }}>Patient Details</Text>
+                                <Text style={{ fontSize: 12, fontFamily: 'Roboto' }}>{translate("Patient Details")}</Text>
                                 <FlatList
                                     data={payBy === POSSIBLE_PAY_METHODS.INSURANCE ? data.familyDataByInsurance : data.familyDataByCorporate}
                                     keyExtractor={(item, index) => index.toString()}

@@ -71,9 +71,9 @@ import CancelService from '../../modules/screens/commonScreen/cancelService'
 import LabSearchList from '../../modules/screens/LabTest/labSearchList';
 import LabCategory from '../../modules/screens/LabTest/categories'
 
-import {primaryColor} from '../../setup/config';
+import { primaryColor } from '../../setup/config';
 
-
+import MedicineRecords from '../../modules/screens/medicalRecords/index';
 import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index'
 import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
@@ -652,7 +652,7 @@ const HomeStack = createStackNavigator({
       title: 'Claim Status'
     }
   },
- 
+
   //================  Appoinment Booking Through Hospitals ===============
   HospitalList: {
     screen: HospitalList,
@@ -836,7 +836,7 @@ const HomeStack = createStackNavigator({
               name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
             />
             {Platform.OS === "ios" ?
-              <Text style={{ fontFamily: 'Roboto', fontSize: 16, color: '#FFF', marginLeft: 5,  }}>Back</Text> : null}
+              <Text style={{ fontFamily: 'Roboto', fontSize: 16, color: '#FFF', marginLeft: 5, }}>Back</Text> : null}
           </Row>
         </TouchableOpacity>
       ),
@@ -959,7 +959,7 @@ const drawerNavigatorRoutes = {
     screen: AvailableDoctors4Video,
     routeName: 'Video and Chat Service'
   },
- 
+
   "My Appointments": {
     screen: MyAppoinmentList,
     routeName: 'My Appointments'
@@ -967,8 +967,10 @@ const drawerNavigatorRoutes = {
   "My Chats": {
     screen: MyChats,
     routeName: 'My Chats',
-
-
+  },
+  "MedicineRecords": {
+    screen: MedicineRecords,
+    routeName: 'MedicineRecords',
   },
   PolicyStatus: {
     screen: PolicyStatus,
@@ -1025,46 +1027,119 @@ const drawerNavigatorRoutes = {
 }
 export const corporateUserSideBarMenuList = [
   {
-    menuName: 'Home',
-    routeName: drawerNavigatorRoutes.Home.routeName,
-    icon: require('../../../assets/images/drawerIcons/Home.png'),
-    subMenus: []
-  },
-  {
     menuName: 'Insurance Services',
     menuForCorporateUser: true,
     subMenus: [
       {
+        name: 'Home',
+        routeName: drawerNavigatorRoutes.Home.routeName,
+        icon: require('../../../assets/images/drawerIcons/Home.png'),
+        largeIcon: { height: 20, width: 20, marginRight: 16 },
+        appoinmentSubMenus: []
+      },
+      {
         name: 'E Card',
         routeName: drawerNavigatorRoutes['E Card'].routeName,
         icon: require('../../../assets/images/drawerIcons/EcardDesign.png'),
-        largeIcon: { height: 15, width: 28, marginRight: 10 },
+        largeIcon: { height: 15, width: 28, marginRight: 10, marginTop: 5 },
         appoinmentSubMenus: []
       },
-       {
+      {
         name: 'Insurance',
         routeName: [],
         icon: require('../../../assets/images/drawerIcons/Insurance.png'),
-        largeIcon: {height: 25, width: 28, marginRight: 10},
+        largeIcon: { height: 20, width: 20, },
         appoinmentSubMenus: [
           {
             name: 'My Insurance Policies',
             routeName: drawerNavigatorRoutes['Insurance'].routeName,
             icon: require('../../../assets/images/drawerIcons/Insurance.png'),
-            largeIcon: {height: 20, width: 20},
+            largeIcon: { height: 20, width: 20 },
           },
           {
             name: 'Insurance History',
             routeName: drawerNavigatorRoutes['InsuranceHistory'].routeName,
             icon: require('../../../assets/images/drawerIcons/Insurance.png'),
-            largeIcon: {height: 20, width: 20},
+            largeIcon: { height: 20, width: 20 },
           }]
-       },
-        
+      },
+
       {
         name: 'Claim Status',
         routeName: drawerNavigatorRoutes['PolicyStatus'].routeName,
         icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon: { height: 20, width: 20, marginRight: 16 },
+        appoinmentSubMenus: []
+      },
+      {
+        name: 'Consultation',
+        routeName: [],
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon: { height: 20, width: 20, },
+        appoinmentSubMenus: [
+          {
+            name: 'Doctor Consultation',
+            routeName: drawerNavigatorRoutes["Categories"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            largeIcon: { height: 20, width: 20, }
+          },
+          {
+            name: 'Home Consultation',
+            routeName: drawerNavigatorRoutes["Home Healthcare Address List"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            largeIcon: { height: 20, width: 20, }
+          },
+
+
+          {
+            name: 'Lab Consultation',
+            routeName: drawerNavigatorRoutes["Lab Test"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            largeIcon: { height: 20, width: 20, }
+          },
+          {
+            name: 'Tele Consultation',
+            routeName: drawerNavigatorRoutes["Categories"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Chat.png'),
+            largeIcon: { height: 20, width: 20, }
+          },
+        ]
+      },
+      {
+        name: 'Health Records',
+        routeName: drawerNavigatorRoutes["MedicineRecords"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon: { height: 20, width: 20, marginRight: 16 },
+        appoinmentSubMenus: []
+      },
+
+      {
+        name: 'Contact Us',
+        routeName: drawerNavigatorRoutes["ContactUs"].routeName,
+        icon: require('../../../assets/images/drawerIcons/ContactUsIcon.png'),
+        largeIcon: 'Contact Us',
+        largeIcon: { height: 14, width: 20, marginRight: 16, marginTop: 5 },
+        appoinmentSubMenus: []
+      },]
+  },
+  {
+    menuName: 'Insurance Services',
+    menuForCorporateUser: true,
+    subMenus: [
+    ]
+  },
+]
+
+export const userSideBarMenuList = [
+
+  {
+    menuName: 'Insurance Services',
+    menuForUser: true,
+    subMenus: [
+      {
+        name: 'Home',
+        routeName: drawerNavigatorRoutes.Home.routeName,
+        icon: require('../../../assets/images/drawerIcons/Home.png'),
         largeIcon: { height: 20, width: 20, marginRight: 16 },
         appoinmentSubMenus: []
       },
@@ -1102,21 +1177,22 @@ export const corporateUserSideBarMenuList = [
           },
         ]
       },
-     
+      {
+        name: 'Health Records',
+        routeName: drawerNavigatorRoutes["MedicineRecords"].routeName,
+        icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+        largeIcon: { height: 20, width: 20, marginRight: 16 },
+        appoinmentSubMenus: []
+      },
+
       {
         name: 'Contact Us',
         routeName: drawerNavigatorRoutes["ContactUs"].routeName,
         icon: require('../../../assets/images/drawerIcons/ContactUsIcon.png'),
         largeIcon: 'Contact Us',
-        largeIcon: { height: 14, width: 20, marginRight: 16 },
+        largeIcon: { height: 14, width: 20, marginRight: 16,marginTop: 5 },
         appoinmentSubMenus: []
       },]
-  },
-  {
-    menuName: 'Insurance Services',
-    menuForCorporateUser: true,
-    subMenus: [
-    ]
   },
 ]
 
@@ -1164,7 +1240,7 @@ const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
             icon: require('../../../assets/images/drawerIcons/Appointments.png'),
 
           }
-         
+
         ]
       },
       {

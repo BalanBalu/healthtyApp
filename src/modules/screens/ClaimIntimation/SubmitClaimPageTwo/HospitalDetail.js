@@ -30,75 +30,48 @@ const HospitalDetail = (props) => {
     const inputEl8 = useRef(null);
 
     const submmitData = () => {
-        // if (hospitalName != '' && hospitalId != '' && hospitalType != '' && doctorFirstName != '' && doctorMiddleName != '' && doctorLastName != '' && qualification != '' && streetNumber != '' && phoneNumber != '') {
-        updateHospitalDetail({
-            hospitalName: hospitalName,
-            hospitalId: hospitalId,
-            hospitalType: hospitalType,
-            treatingDoctorName: doctorFirstName,
-            treatingDoctorMiddleName: doctorMiddleName,
-            treatingDoctorLastName: doctorLastName,
-            qualification: qualification,
-            registrationStateCode: streetNumber,
-            hospitalPhoneNumber: phoneNumber,
-        })
-        sethospitalName('')
-        sethospitalId('')
-        sethospitalType('')
-        setdoctorFirstName('')
-        setdoctorMiddleName('')
-        setdoctorLastName('')
-        setqualification('')
-        setstreetNumber('')
-        setphoneNumber('')
-        // } 
-        // else {
-        //     if (hospitalName === '') {
-        //         seterrorMsg('Please enter hospital name')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        //     if (hospitalId === '') {
-        //         seterrorMsg('Please enter hospital Id')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        //     if (hospitalType === '') {
-        //         seterrorMsg('Please enter hospital type')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        //     if (doctorFirstName === '') {
-        //         seterrorMsg('Please enter doctor first name')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        //     if (doctorMiddleName === '') {
-        //         seterrorMsg('Please enter doctor middle name')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        //     if (doctorLastName === '') {
-        //         seterrorMsg('Please enter doctor last name')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        //     if (qualification === '') {
-        //         seterrorMsg('Please enter hospital Name')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        //     if (streetNumber === '') {
-        //         seterrorMsg('Please enter qualification')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        //     if (phoneNumber === '') {
-        //         seterrorMsg('Please enter phone number')
-        //         setisModalVisible(true)
-        //         return false
-        //     }
-        // }
+        if (hospitalName != '' && doctorFirstName != ''  && qualification != '') {
+            updateHospitalDetail({
+                hospitalName: hospitalName,
+                hospitalId: hospitalId,
+                hospitalType: hospitalType,
+                treatingDoctorName: doctorFirstName,
+                treatingDoctorMiddleName: doctorMiddleName,
+                treatingDoctorLastName: doctorLastName,
+                qualification: qualification,
+                registrationStateCode  : streetNumber,
+                hospitalPhoneNumber: phoneNumber,
+            })
+            sethospitalName('')
+            sethospitalId('')
+            sethospitalType('')
+            setdoctorFirstName('')
+            setdoctorMiddleName('')
+            setdoctorLastName('')
+            setqualification('')
+            setstreetNumber('')
+            setphoneNumber('')
+        } 
+        else {
+            if (hospitalName === '') {
+                seterrorMsg('Please enter hospital name')
+                setisModalVisible(true)
+                return false
+            }
+            
+            if (doctorFirstName === '') {
+                seterrorMsg('Please enter doctor first name')
+                setisModalVisible(true)
+                return false
+            }
+           
+            if (qualification === '') {
+                seterrorMsg('Please enter hospital Name')
+                setisModalVisible(true)
+                return false
+            }
+            
+        }
     }
     return (
         <View>
@@ -128,7 +101,7 @@ const HospitalDetail = (props) => {
                 size={4}
                 style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
                 <Col size={1}>
-                    <Text style={styles.text}>Hospital Id.<Text style={{ color: 'red' }}>*</Text></Text>
+                    <Text style={styles.text}>Hospital Id</Text>
 
                     <Item regular style={{ borderRadius: 6, height: 35 }}>
                         <Input
@@ -150,7 +123,7 @@ const HospitalDetail = (props) => {
                 size={4}
                 style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
                 <Col size={1}>
-                    <Text style={styles.text}>Type of hospital.<Text style={{ color: 'red' }}>*</Text></Text>
+                    <Text style={styles.text}>Type of hospital</Text>
 
                     <Item regular style={{ borderRadius: 6, height: 35 }}>
                         <Input
@@ -195,7 +168,7 @@ const HospitalDetail = (props) => {
                 size={4}
                 style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
                 <Col size={1}>
-                    <Text style={styles.text}>Treating doctor middle name.<Text style={{ color: 'red' }}>*</Text></Text>
+                    <Text style={styles.text}>Treating doctor middle name</Text>
 
                     <Item regular style={{ borderRadius: 6, height: 35 }}>
                         <Input
@@ -217,7 +190,7 @@ const HospitalDetail = (props) => {
                 size={4}
                 style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
                 <Col size={1}>
-                    <Text style={styles.text}>Treating doctor last name.<Text style={{ color: 'red' }}>*</Text></Text>
+                    <Text style={styles.text}>Treating doctor last name</Text>
 
                     <Item regular style={{ borderRadius: 6, height: 35 }}>
                         <Input
@@ -263,7 +236,7 @@ const HospitalDetail = (props) => {
                 size={4}
                 style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
                 <Col size={1}>
-                    <Text style={styles.text}>Registration with state code.<Text style={{ color: 'red' }}>*</Text></Text>
+                    <Text style={styles.text}>Registration with state code</Text>
 
                     <Item regular style={{ borderRadius: 6, height: 35 }}>
                         <Input
@@ -285,7 +258,7 @@ const HospitalDetail = (props) => {
                 size={4}
                 style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
                 <Col size={1}>
-                    <Text style={styles.text}>Phone Number.<Text style={{ color: 'red' }}>*</Text></Text>
+                    <Text style={styles.text}>Phone Number</Text>
                     <Item regular style={{ borderRadius: 6, height: 35 }}>
                         <Input
                             placeholder="Enter Phone Number"

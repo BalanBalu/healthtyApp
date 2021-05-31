@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { formatDate } from '../../../setup/helpers';
+import {arrangeFullName} from '../../common';
 
 class BenefeciaryDetails extends PureComponent {
     constructor(props) {
@@ -17,7 +18,7 @@ class BenefeciaryDetails extends PureComponent {
         }
     }
     getCorporateBenificeryName(element) {
-        return (element.firstName ? element.firstName + ' ' : '') + (element.middleName ? element.middleName + ' ' : '') + (element.lastName ? element.lastName + ' ' : '');
+return arrangeFullName(element.firstName,element.middleName,element.lastName);
     }
 
 

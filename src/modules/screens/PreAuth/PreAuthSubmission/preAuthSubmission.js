@@ -7,7 +7,7 @@ import {
   Row,
   Col
 } from 'native-base';
-import { TextInput, StyleSheet, SafeAreaView,ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -18,6 +18,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { serviceOfSearchByNetworkHospitalDetails } from '../../../providers/corporate/corporate.actions';
 import IconName from 'react-native-vector-icons/MaterialIcons'
 import { primaryColor } from '../../../../setup/config';
+import { translate } from '../../../../setup/translator.helper';
 
 class PreAuth extends React.PureComponent {
   constructor(props) {
@@ -99,7 +100,7 @@ class PreAuth extends React.PureComponent {
       hospitalIdTextErrorMsg: null,
       rohiniIdTextErrorMsg: null,
       hospitalEmailTextErrorMsg: null,
-      isLoadingNetworkHosp:false,
+      isLoadingNetworkHosp: false,
     };
 
     this.preAuthInfoObj = props.navigation.getParam('preAuthInfo') || null
@@ -107,76 +108,76 @@ class PreAuth extends React.PureComponent {
   }
   async componentDidMount() {
     try {
-    let preAuthInfo = this.props.navigation.getParam('preAuthInfo')
-    let currentForm = this.props.navigation.getParam('currentForm') || 1
-    let uploadDocs = this.props.navigation.getParam('uploadDocs') || 1;
-    /* Get Network Hospital list by Member TPA Code   */
-    const tpaCode = preAuthInfo && preAuthInfo.tpaInfo && preAuthInfo.tpaInfo.tpaCode;
-    if (tpaCode) {
-      this.setState({isLoadingNetworkHosp:true})
-      const reqData4GetNetworkWithoutLoc = { tpaCode };
-      const getHospitalList = await serviceOfSearchByNetworkHospitalDetails(reqData4GetNetworkWithoutLoc);
-      if (getHospitalList && getHospitalList.length) {
-        getHospitalList.forEach((item) => {
-          const addressObj = {
-            address: item.address,
-            city: item.city,
-            state: item.state,
-            pinCode: item.pinCode
-          }
-          const renderSubAddress = [
-            {
-              hospitalName: getNetworkHospitalAddress(addressObj),
-              disabled: true,
-            },
-          ];
-          item.renderSubAddress = renderSubAddress;
-        });
-        var networkHospList = getHospitalList;
+      let preAuthInfo = this.props.navigation.getParam('preAuthInfo')
+      let currentForm = this.props.navigation.getParam('currentForm') || 1
+      let uploadDocs = this.props.navigation.getParam('uploadDocs') || 1;
+      /* Get Network Hospital list by Member TPA Code   */
+      const tpaCode = preAuthInfo && preAuthInfo.tpaInfo && preAuthInfo.tpaInfo.tpaCode;
+      if (tpaCode && !preAuthInfo.hospitalInfo) {
+        this.setState({ isLoadingNetworkHosp: true })
+        const reqData4GetNetworkWithoutLoc = { tpaCode };
+        const getHospitalList = await serviceOfSearchByNetworkHospitalDetails(reqData4GetNetworkWithoutLoc);
+        if (getHospitalList && getHospitalList.length) {
+          getHospitalList.forEach((item) => {
+            const addressObj = {
+              address: item.address,
+              city: item.city,
+              state: item.state,
+              pinCode: item.pinCode
+            }
+            const renderSubAddress = [
+              {
+                hospitalName: getNetworkHospitalAddress(addressObj),
+                disabled: true,
+              },
+            ];
+            item.renderSubAddress = renderSubAddress;
+          });
+          var networkHospList = getHospitalList;
+        }
       }
-    }
-    let hospitalInfo = preAuthInfo.hospitalInfo || {};
-    let tpaInfo = preAuthInfo.tpaInfo || {}
-    let tpaInformation = {
-      tpaCompany: tpaInfo.tpaName || '',
-      tpaCompanyPhoneNumber: tpaInfo.tpaPhoneNumber || '',
-      tpaTollFreeFaxNo: ''
-    }
-    const selectedHospitalAddress = {
-      address: hospitalInfo.address,
-      city: hospitalInfo.city,
-      state: hospitalInfo.state,
-      pinCode: hospitalInfo.pinCode
-    }
-    let hospitalInfomation = {
-      hospitalName: hospitalInfo.hospitalName || '',
-      hospitalLocation: getNetworkHospitalAddress(selectedHospitalAddress) || '',
-      hospitalId: '',
-      hospitalEmail: hospitalInfo.email || '',
-      rohiniId: hospitalInfo.rohiniId || ''
-    }
-    let memberInformation = this.props.navigation.getParam('memberInfo');
-    let memberInfo = {
-      patientName: this.getMemberName(memberInformation),
-      relationship: memberInformation.relationship || '',
-      contactNo: memberInformation.mobile || '',
-      alterNateContactNumber: memberInformation.phone || '',
-      patientAgeInYr: memberInformation.age ? String(memberInformation.age) : '',
-      patientAgeMonth: memberInformation.month ? String(memberInformation.month) : '0',
-      insurerId: memberInformation.memberId || '',
-      policyNo: memberInformation.policyNo || '',
-      employeeId: memberInformation.employeeId || '',
-      selectedGender: memberInformation.gender || '',
-      dob: memberInformation.dob || new Date()
-    }
-    await this.setState({ networkHospList: networkHospList || [], hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
-  
-} catch (error) {
+      let hospitalInfo = preAuthInfo.hospitalInfo || {};
+      let tpaInfo = preAuthInfo.tpaInfo || {}
+      let tpaInformation = {
+        tpaCompany: tpaInfo.tpaName || '',
+        tpaCompanyPhoneNumber: tpaInfo.tpaPhoneNumber || '',
+        tpaTollFreeFaxNo: ''
+      }
+      const selectedHospitalAddress = {
+        address: hospitalInfo.address,
+        city: hospitalInfo.city,
+        state: hospitalInfo.state,
+        pinCode: hospitalInfo.pinCode
+      }
+      let hospitalInfomation = {
+        hospitalName: hospitalInfo.hospitalName || '',
+        hospitalLocation: getNetworkHospitalAddress(selectedHospitalAddress) || '',
+        hospitalId: '',
+        hospitalEmail: hospitalInfo.email || '',
+        rohiniId: hospitalInfo.rohiniId || ''
+      }
+      let memberInformation = this.props.navigation.getParam('memberInfo');
+      let memberInfo = {
+        patientName: this.getMemberName(memberInformation),
+        relationship: memberInformation.relationship || '',
+        contactNo: memberInformation.mobile || '',
+        alterNateContactNumber: memberInformation.phone || '',
+        patientAgeInYr: memberInformation.age ? String(memberInformation.age) : '',
+        patientAgeMonth: memberInformation.month ? String(memberInformation.month) : '0',
+        insurerId: memberInformation.memberId || '',
+        policyNo: memberInformation.policyNo || '',
+        employeeId: memberInformation.employeeId || '',
+        selectedGender: memberInformation.gender || '',
+        dob: memberInformation.dob || new Date()
+      }
+      await this.setState({ networkHospList: networkHospList || [], hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
+
+    } catch (error) {
       console.log('error is getting on Pre Auth submission componentDidMount', error.message)
-}
-finally {
-  this.setState({isLoadingNetworkHosp: false})
-}
+    }
+    finally {
+      this.setState({ isLoadingNetworkHosp: false })
+    }
   }
   getMemberName(item) {
     let name = ''
@@ -224,7 +225,7 @@ finally {
     let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location' : null
 
     if (!onlySpaceNotAllowed(hospitalInfo.hospitalName)) {
-      this.setState({ hospitalNameTextErrorMsg: 'Kindly fill hospital name' });
+      this.setState({ hospitalNameTextErrorMsg: translate('Kindly fill hospital name') });
       this.scrollViewRef.scrollTo({
         y: this.hospitalNameText.y,
         animated: true
@@ -232,7 +233,7 @@ finally {
       return false;
     }
     if (!onlySpaceNotAllowed(hospitalInfo.hospitalLocation)) {
-      this.setState({ hospitalLocationTextErrorMsg: 'Kindly fill hospital location' });
+      this.setState({ hospitalLocationTextErrorMsg: translate('Kindly fill hospital location') });
       this.scrollViewRef.scrollTo({
         y: this.hospitalLocationText.y,
         animated: true
@@ -240,7 +241,7 @@ finally {
       return false;
     }
     // if (!onlySpaceNotAllowed(hospitalInfo.hospitalId)) {
-    //   this.setState({ hospitalIdTextErrorMsg: 'Kindly fill hospital id' });
+    //   this.setState({ hospitalIdTextErrorMsg: 'Kindly fil`l hospital id' });
     //   this.scrollViewRef.scrollTo({
     //     y: this.hospitalIdText.y,
     //     animated: true
@@ -280,7 +281,7 @@ finally {
     let errorMsg = null
 
     if (!onlySpaceNotAllowed(tpaInfo.tpaCompany)) {
-      this.setState({ TpaComErrorMsg: 'Kindly fill tpa  company name' });
+      this.setState({ TpaComErrorMsg: translate('Kindly fill tpa  company name') });
       this.scrollViewRef.scrollTo({
         y: this.TpaCompany.y,
         animated: true
@@ -288,7 +289,7 @@ finally {
       return false;
     }
     if (!onlySpaceNotAllowed(tpaInfo.tpaCompanyPhoneNumber)) {
-      this.setState({ MobileNumError: 'Kindly fill tpa  company mobile number' });
+      this.setState({ MobileNumError: translate('Kindly fill tpa  company mobile number') });
       this.scrollViewRef.scrollTo({
         y: this.PhoneNumber.y,
         animated: true
@@ -297,7 +298,7 @@ finally {
     }
 
     if (!onlySpaceNotAllowed(memberInfo.patientName)) {
-      this.setState({ patientNameErrorMsg: 'Kindly fill patient name' });
+      this.setState({ patientNameErrorMsg: translate('Kindly fill patient name') });
       this.scrollViewRef.scrollTo({
         y: this.patientNameText.y,
         animated: true
@@ -306,7 +307,7 @@ finally {
     }
 
     if (!onlySpaceNotAllowed(memberInfo.contactNo)) {
-      this.setState({ contactNoErrorMsg: 'Kindly fill valid  contact number' });
+      this.setState({ contactNoErrorMsg: translate('Kindly fill valid  contact number') });
       this.scrollViewRef.scrollTo({
         y: this.contactNoText.y,
         animated: true
@@ -314,7 +315,7 @@ finally {
       return false;
     }
     if (!onlySpaceNotAllowed(memberInfo.patientAgeInYr)) {
-      this.setState({ patientAgeErrorMsg: 'Kindly fill age Year' });
+      this.setState({ patientAgeErrorMsg: translate('Kindly fill age Year') });
       this.scrollViewRef.scrollTo({
         y: this.patientAgeText.y,
         animated: true
@@ -323,7 +324,7 @@ finally {
     }
 
     if (!onlySpaceNotAllowed(memberInfo.patientAgeMonth)) {
-      this.setState({ patientMonthErrorMsg: 'Kindly fill age month' });
+      this.setState({ patientMonthErrorMsg: translate('Kindly fill age month') });
       this.scrollViewRef.scrollTo({
         y: this.patientAgeText.y,
         animated: true
@@ -331,7 +332,7 @@ finally {
       return false;
     }
     if (!onlySpaceNotAllowed(memberInfo.insurerId)) {
-      this.setState({ patientIDCardErrorMsg: 'Kindly fill insurer id' });
+      this.setState({ patientIDCardErrorMsg: translate('Kindly fill insurer id') });
       this.scrollViewRef.scrollTo({
         y: this.patientIDCardText.y,
         animated: true
@@ -340,7 +341,7 @@ finally {
     }
 
     if (!onlySpaceNotAllowed(memberInfo.policyNo)) {
-      this.setState({ policyNoTextErrorMsg: 'Kindly fill policy number' });
+      this.setState({ policyNoTextErrorMsg: translate('Kindly fill policy number') });
       this.scrollViewRef.scrollTo({
         y: this.policyNoText.y,
         animated: true
@@ -348,7 +349,7 @@ finally {
       return false;
     }
     if (!onlySpaceNotAllowed(memberInfo.employeeId)) {
-      this.setState({ employeeIdTextErrorMsg: 'Kindly fill employee ID' });
+      this.setState({ employeeIdTextErrorMsg: translate('Kindly fill employee ID') });
       this.scrollViewRef.scrollTo({
         y: this.EmployeeIdText.y,
         animated: true
@@ -357,7 +358,7 @@ finally {
     }
     if (this.state.alreadyHaveInsurance === 'yes') {
       if (!onlySpaceNotAllowed(insurerName)) {
-        this.setState({ insureNameTextErrorMsg: 'Kindly fill insurer name' });
+        this.setState({ insureNameTextErrorMsg: translate('Kindly fill insurer name') });
         this.scrollViewRef.scrollTo({
           y: this.InsureNameText.y,
           animated: true
@@ -369,7 +370,7 @@ finally {
     if (this.state.haveFamilyPhysician === 'yes') {
 
       if (!onlySpaceNotAllowed(physicianName)) {
-        this.setState({ PhysicianNameTextErrorMsg: 'Kindly fill physician name' });
+        this.setState({ PhysicianNameTextErrorMsg: translate('Kindly fill physician name') });
         this.scrollViewRef.scrollTo({
           y: this.personalPhysicianNameText.y,
           animated: true
@@ -377,7 +378,7 @@ finally {
         return false;
       }
       if (!validateMobileNumber(physicianContactNumber)) {
-        this.setState({ physicianContactNoTextErrorMsg: 'Kindly fill  valid physician contact number' });
+        this.setState({ physicianContactNoTextErrorMsg: translate('Kindly fill  valid physician contact number') });
         this.scrollViewRef.scrollTo({
           y: this.physicianContactNoText.y,
           animated: true
@@ -386,7 +387,7 @@ finally {
       }
     }
     if (!onlySpaceNotAllowed(insurerPatientOccupation)) {
-      this.setState({ insurerPatientOccupationsErrorMsg: "Patient occupation field can't be empty" });
+      this.setState({ insurerPatientOccupationsErrorMsg: translate("Patient occupation field can't be empty") });
       this.scrollViewRef.scrollTo({
         y: this.insurerPatientOccupations.y,
         animated: true
@@ -394,7 +395,7 @@ finally {
       return false;
     }
     if (!onlySpaceNotAllowed(insurerPatientAddress)) {
-      this.setState({ insurerPatientAddressTextErrorMsg: "Patient address field can't be empty" });
+      this.setState({ insurerPatientAddressTextErrorMsg: translate("Patient address field can't be empty") });
       this.scrollViewRef.scrollTo({
         y: this.insurerPatientAddressText.y,
         animated: true
@@ -439,12 +440,12 @@ finally {
         <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
           <View style={{ flexDirection: 'column' }}>
             <Text style={styles.headerText}>
-              Details of third party administrator
-          </Text>
+              {translate("Details of third party administrator")}
+            </Text>
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.TpaCompany = event.nativeEvent.layout)
-              }>A. Name of TPA Company</Text>
+              }>{translate("Name of TPA Company")}</Text>
             <TextInput
               value={tpaInfo.tpaCompany}
               editable={tpaInformation.tpaCompany === '' ? true : false}
@@ -471,7 +472,7 @@ finally {
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.PhoneNumber = event.nativeEvent.layout)
-              }>B. Phone Number</Text>
+              }>{translate("Phone Number")}</Text>
             <TextInput
               value={tpaInfo.tpaCompanyPhoneNumber}
               editable={tpaInformation.tpaCompanyPhoneNumber === '' ? true : false}
@@ -498,12 +499,12 @@ finally {
               : null}
 
             <Text style={styles.headerText}>
-              to be filled by insurer / patient
-          </Text>
+              {translate("to be filled by insurer / patient")}
+            </Text>
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.patientNameText = event.nativeEvent.layout)
-              }>A. Name of the patient</Text>
+              }>{translate("Name of the patient")}</Text>
             <TextInput
               value={memberInfo.patientName}
               editable={memberInformation.patientName === '' ? true : false}
@@ -516,7 +517,7 @@ finally {
               })}
 
 
-              placeholder={'Enter name of patient'}
+              placeholder={translate('Enter name of patient')}
               style={[
                 styles.inputText,
                 this.state.patientNameErrorMsg != null ?
@@ -530,7 +531,7 @@ finally {
             {this.state.patientNameErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.patientNameErrorMsg}</Text>
               : null}
-            <Text style={styles.inputLabel}>B. Gender</Text>
+            <Text style={styles.inputLabel}>{translate("B Gender")}</Text>
             <View style={{ flexDirection: 'row', marginTop: 2 }}>
               <Radio
                 color={primaryColor}
@@ -548,7 +549,7 @@ finally {
                 }}
                 selected={memberInfo.selectedGender === 'Male'}
               />
-              <Text style={{ marginLeft: 10 }}>Male</Text>
+              <Text style={{ marginLeft: 10 }}>{translate("Male")}</Text>
               <Radio
                 color={primaryColor}
                 selectedColor={'#128283'}
@@ -565,15 +566,15 @@ finally {
                 }}
                 selected={memberInfo.selectedGender === 'Female'}
               />
-              <Text style={{ marginLeft: 10 }}>Female</Text>
+              <Text style={{ marginLeft: 10 }}>{translate("Female")}</Text>
             </View>
 
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.contactNoText = event.nativeEvent.layout)
-              }>C. Contact No</Text>
+              }>{translate("C Contact No")}</Text>
             <TextInput
-              placeholder={'Enter contact no'}
+              placeholder={translate('Enter contact no')}
               value={memberInfo.contactNo}
               editable={memberInformation.contactNo === '' ? true : false}
               onChangeText={(text) => this.setState({
@@ -595,9 +596,9 @@ finally {
             {this.state.contactNoErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.contactNoErrorMsg}</Text>
               : null}
-            <Text style={styles.inputLabel}>D. Alternate Contact No</Text>
+            <Text style={styles.inputLabel}>{translate("D Alternate Contact No")}</Text>
             <TextInput
-              placeholder={'Enter alternate contact no'}
+              placeholder={translate('Enter alternate contact no')}
 
               onChangeText={(text) => this.setState({ alterNateContactNumber: text })}
               style={styles.inputText}
@@ -605,7 +606,7 @@ finally {
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.patientAgeText = event.nativeEvent.layout)
-              }>E. Age</Text>
+              }>{translate("E Age")}</Text>
             <View style={{ flexDirection: 'row' }}>
               <TextInput
                 placeholder={'YY'}
@@ -653,7 +654,7 @@ finally {
             {this.state.patientMonthErrorMsg !== null ?
               <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.patientMonthErrorMsg}</Text>
               : null}
-            <Text style={styles.inputLabel}>F. Date of birth</Text>
+            <Text style={styles.inputLabel}>{translate("F Date of birth")}</Text>
             <View style={[styles.inputText, { marginTop: 2 }]}>
               <TouchableOpacity
                 onPress={() => {
@@ -688,7 +689,7 @@ finally {
                         marginTop: 7,
                         marginBottom: 7,
                         marginLeft: 5,
-                        fontFamily: 'OpenSans',
+                        fontFamily: 'Roboto',
                         fontSize: 13,
                         textAlign: 'center',
                       }
@@ -696,7 +697,7 @@ finally {
                   }>
                   {memberInfo.dob != null
                     ? formatDate(memberInfo.dob, 'DD/MM/YYYY')
-                    : 'Date of Birth'}
+                    : translate('Date of Birth')}
                 </Text>
                 <DateTimePicker
                   mode={'date'}
@@ -715,10 +716,10 @@ finally {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.inputLabel}>G. Insurer ID Card No</Text>
+            <Text style={styles.inputLabel}>{translate("G Insurer ID Card No")}</Text>
             <TextInput
 
-              placeholder={'Enter Insurer ID Card No'}
+              placeholder={translate('Enter Insurer ID Card No')}
               value={memberInfo.insurerId}
               editable={memberInformation.insurerId === '' ? true : false}
               onChangeText={(text) => this.setState({
@@ -736,10 +737,10 @@ finally {
               onLayout={event =>
                 (this.policyNoText = event.nativeEvent.layout)
               }>
-              H. Policy number / Name of corporate
-          </Text>
+              {translate("H Policy number / Name of corporate")}
+            </Text>
             <TextInput
-              placeholder={'Enter policy no / corporate name'}
+              placeholder={translate('Enter policy no / corporate name')}
               value={memberInfo.policyNo}
               editable={memberInformation.policyNo === '' ? true : false}
               onChangeText={(text) => this.setState({
@@ -763,10 +764,10 @@ finally {
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.EmployeeIdText = event.nativeEvent.layout)
-              }>I. Employee ID</Text>
+              }>{translate("I Employee ID")}</Text>
             <TextInput
 
-              placeholder={'Enter Employee ID'}
+              placeholder={translate('Enter Employee ID')}
               value={memberInfo.employeeId}
               editable={memberInformation.employeeId === '' ? true : false}
               onChangeText={(text) => this.setState({
@@ -792,8 +793,8 @@ finally {
               onLayout={event =>
                 (this.InsureNameText = event.nativeEvent.layout)
               }>
-              J. Currently you have any other medical claim / insurance
-          </Text>
+              {translate("J Currently you have any other medical claim / insurance")}
+            </Text>
             <View style={{ flexDirection: 'row', marginBottom: 1, marginTop: 2 }}>
               <Radio
                 color={primaryColor}
@@ -807,7 +808,7 @@ finally {
                   this.state.alreadyHaveInsurance === 'yes' ? true : false
                 }
               />
-              <Text style={{ marginLeft: 10 }}>Yes</Text>
+              <Text style={{ marginLeft: 10 }}>{translate("Yes")}</Text>
               <Radio
                 color={primaryColor}
                 selectedColor={'#128283'}
@@ -818,15 +819,15 @@ finally {
                 standardStyle={true}
                 selected={this.state.alreadyHaveInsurance === 'no' ? true : false}
               />
-              <Text style={{ marginLeft: 10 }}>No</Text>
+              <Text style={{ marginLeft: 10 }}>{translate("No")}</Text>
             </View>
             {this.state.alreadyHaveInsurance === 'yes' ?
               <View>
                 <Text style={styles.inputLabel}
-                >J.1. Insurer Name</Text>
+                >{translate("J 1 Insurer Name")}</Text>
                 <TextInput
                   onChangeText={(text) => this.setState({ insurerName: text, insureNameTextErrorMsg: null })}
-                  placeholder={'Enter insurer Name'}
+                  placeholder={translate('Enter insurer Name')}
                   style={[styles.inputText,
                   this.state.insureNameTextErrorMsg != null ?
                     {
@@ -839,10 +840,10 @@ finally {
                 {this.state.insureNameTextErrorMsg !== null ?
                   <Text style={{ color: 'red', marginRight: 40, marginTop: 10, textAlign: 'right', fontSize: 14 }}>{this.state.insureNameTextErrorMsg}</Text>
                   : null}
-                <Text style={styles.inputLabel}>J.2. Give Details</Text>
+                <Text style={styles.inputLabel}>{translate("J 2 Give Details")}</Text>
                 <TextInput
 
-                  placeholder={'Enter Employee ID'}
+                  placeholder={translate('Enter Employee ID')}
                   value={memberInfo.employeeId}
                   editable={memberInformation.employeeId === '' ? true : false}
                   onChangeText={(text) => this.setState({
@@ -857,8 +858,8 @@ finally {
               : null}
 
             <Text style={[styles.inputLabel, { lineHeight: 26 }]}>
-              K. If you have family physician
-          </Text>
+              {translate("K If you have family physician")}
+            </Text>
             <View style={{ flexDirection: 'row', marginBottom: '0.5%', marginTop: 2 }}>
               <Radio
                 color={primaryColor}
@@ -870,7 +871,7 @@ finally {
                 standardStyle={true}
                 selected={this.state.haveFamilyPhysician === 'yes' ? true : false}
               />
-              <Text style={{ marginLeft: 10 }}>Yes</Text>
+              <Text style={{ marginLeft: 10 }}>{translate("Yes")}</Text>
               <Radio
                 color={primaryColor}
                 selectedColor={'#128283'}
@@ -881,7 +882,7 @@ finally {
                 standardStyle={true}
                 selected={this.state.haveFamilyPhysician === 'no' ? true : false}
               />
-              <Text style={{ marginLeft: 10 }}>No</Text>
+              <Text style={{ marginLeft: 10 }}>{translate("No")}</Text>
             </View>
             <Text onLayout={event =>
               (this.personalPhysicianNameText = event.nativeEvent.layout)
@@ -892,7 +893,7 @@ finally {
                 <TextInput
 
                   onChangeText={(text) => this.setState({ physicianName: text, PhysicianNameTextErrorMsg: null })}
-                  placeholder={'Enter Physician name'}
+                  placeholder={translate('Enter Physician name')}
                   style={[styles.inputText,
                   this.state.PhysicianNameTextErrorMsg != null ?
                     {
@@ -914,9 +915,9 @@ finally {
             } />
             {this.state.haveFamilyPhysician === 'yes' ? (
               <View>
-                <Text style={styles.inputLabel} >K.1. Contact No</Text>
+                <Text style={styles.inputLabel} >{translate("K 1 Contact No")}</Text>
                 <TextInput
-                  placeholder={'Enter Contact No'}
+                  placeholder={translate('Enter Contact No')}
 
                   onChangeText={(text) => this.setState({ physicianContactNumber: text, physicianContactNoTextErrorMsg: null })}
                   style={[styles.inputText,
@@ -937,12 +938,12 @@ finally {
               onLayout={event =>
                 (this.insurerPatientOccupations = event.nativeEvent.layout)
               }>
-              L. Occupation of insured patient
-          </Text>
+              {translate("L Occupation of insured patient")}
+            </Text>
             <TextInput
 
               onChangeText={(text) => this.setState({ insurerPatientOccupation: text, insurerPatientOccupationsErrorMsg: null })}
-              placeholder={'Enter Occupation of insured patient'}
+              placeholder={translate('Enter Occupation of insured patient')}
               style={[styles.inputText,
               this.state.insurerPatientOccupationsErrorMsg != null ?
                 {
@@ -958,9 +959,9 @@ finally {
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.insurerPatientAddressText = event.nativeEvent.layout)
-              }>M. Address of insured patient</Text>
+              }>{translate("M Address of insured patient")}</Text>
             <TextInput
-              placeholder={'Enter address of insured'}
+              placeholder={translate('Enter address of insured')}
 
               onChangeText={(text) => this.setState({ insurerPatientAddress: text, insurerPatientAddressTextErrorMsg: null })}
               style={[styles.inputText,
@@ -998,15 +999,15 @@ finally {
                 ]}>
                 <Text
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     color: '#128283',
                     fontSize: 16,
                     textAlign: 'center',
                     marginTop: 7,
                     textTransform: 'uppercase',
                   }}>
-                  Back
-              </Text>
+                  {translate("Back")}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -1024,15 +1025,15 @@ finally {
                 ]}>
                 <Text
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     color: '#fff',
                     fontSize: 16,
                     textAlign: 'center',
                     marginTop: 7,
                     textTransform: 'uppercase',
                   }}>
-                  Next
-              </Text>
+                  {translate("Next")}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1061,25 +1062,25 @@ finally {
   }
 
   HospitalDetails = () => {
-    const { hospitalInfo, hospitalInfomation, networkHospList, selectedHospitalName ,isLoadingNetworkHosp, isLoading } = this.state
+    const { hospitalInfo, hospitalInfomation, networkHospList, selectedHospitalName, isLoadingNetworkHosp, isLoading } = this.state
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.body} ref={ref => (this.scrollViewRef = ref)}>
           <Text style={styles.formHeader}>
-            Request For cashless hospitalization for health insurance policy
-        </Text>
+            {translate("Request For cashless hospitalization for health insurance policy")}
+          </Text>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={styles.headerText}>enter hospital details</Text>
+            <Text style={styles.headerText}>{translate("enter hospital details")}</Text>
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.hospitalNameText = event.nativeEvent.layout)
-              }>Name of the hospital</Text>
+              }>{translate("Name of the hospital")}</Text>
             {this.preAuthInfoObj && this.preAuthInfoObj.hospitalInfo && Object.keys(this.preAuthInfoObj.hospitalInfo).length ?
 
               <TextInput
                 value={hospitalInfo.hospitalName}
                 editable={hospitalInfomation.hospitalName === ''}
-                placeholder={'Enter name of the hospital'}
+                placeholder={translate('Enter name of the hospital')}
                 style={[styles.inputText,
                 this.state.hospitalNameTextErrorMsg != null ?
                   {
@@ -1144,15 +1145,17 @@ finally {
                         },
                       }}
                       IconRenderer={IconName}
-                      loading ={isLoadingNetworkHosp}
-                      loadingComponent={isLoadingNetworkHosp?<ActivityIndicator
-                      style={{marginTop: 300,
-                        justifyContent: "center"}}
-                      animating={isLoadingNetworkHosp}
-                  size= "large" 
-                  color ={primaryColor}
-                  /> : null}
-                
+                      loading={isLoadingNetworkHosp}
+                      loadingComponent={isLoadingNetworkHosp ? <ActivityIndicator
+                        style={{
+                          marginTop: 300,
+                          justifyContent: "center"
+                        }}
+                        animating={isLoadingNetworkHosp}
+                        size="large"
+                        color={primaryColor}
+                      /> : null}
+
                       readOnlyHeadings={false}
                       showCancelButton={true}
                       items={networkHospList}
@@ -1160,7 +1163,7 @@ finally {
                       subKey="renderSubAddress"
                       displayKey="hospitalName"
                       selectText={
-                        selectedHospitalName ? '' : 'Choose your Hospital'
+                        selectedHospitalName ? '' : translate('Choose your Hospital')
                       }
                       modalWithTouchable={true}
                       hideSearch={false}
@@ -1179,7 +1182,7 @@ finally {
                       colors={{ primary: '#18c971' }}
                       showCancelButton={true}
                       animateDropDowns={true}
-                      
+
                       dropDownToggleIconDownComponent={
                         <MaterialIcons
                           name="keyboard-arrow-down"
@@ -1227,7 +1230,7 @@ finally {
                         />
                       }
                       confirmText={
-                        selectedHospitalName ? 'Confirm' : 'Please Select'
+                        selectedHospitalName ? translate('Confirm') : translate('Please Select')
                       }
                     />
                   </Col>
@@ -1240,11 +1243,11 @@ finally {
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.hospitalLocationText = event.nativeEvent.layout)
-              }>Hospital Location</Text>
+              }>{translate("Hospital Location")}</Text>
             <TextInput
               value={truncateByString(hospitalInfo.hospitalLocation, 45) || ''}
               editable={hospitalInfomation.hospitalLocation === ''}
-              placeholder={'Enter hospital location'}
+              placeholder={translate('Enter hospital location')}
               style={[styles.inputText,
               this.state.hospitalLocationTextErrorMsg != null ?
                 {
@@ -1267,9 +1270,9 @@ finally {
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.hospitalIdText = event.nativeEvent.layout)
-              }>Hospital ID</Text>
+              }>{translate("Hospital ID")}</Text>
             <TextInput
-              placeholder={'Enter hospital ID'}
+              placeholder={translate('Enter hospital ID')}
 
               value={hospitalInfo.hospitalId}
               editable={hospitalInfomation.hospitalId === '' ? true : false}
@@ -1296,11 +1299,11 @@ finally {
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.hospitalEmailText = event.nativeEvent.layout)
-              }>Hospital Email ID</Text>
+              }>{translate("Hospital Email ID")}</Text>
             <TextInput
               value={hospitalInfo.hospitalEmail}
               editable={hospitalInfomation.hospitalEmail === '' ? true : false}
-              placeholder={'Enter Email ID'
+              placeholder={translate('Enter Email ID')
               }
               style={[styles.inputText,
               this.state.hospitalEmailTextErrorMsg != null ?
@@ -1325,9 +1328,9 @@ finally {
             <Text style={styles.inputLabel}
               onLayout={event =>
                 (this.rohiniIdText = event.nativeEvent.layout)
-              }>Rohini ID</Text>
+              }>{translate("Rohini ID")}</Text>
             <TextInput
-              placeholder={'Enter Rohini ID'}
+              placeholder={translate('Enter Rohini ID')}
               style={[styles.inputText,
               this.state.rohiniIdTextErrorMsg != null ?
                 {
@@ -1369,15 +1372,15 @@ finally {
               onPress={() => this.submitFirstPage()}>
               <Text
                 style={{
-                  fontFamily: 'OpenSans',
+                  fontFamily: 'Roboto',
                   color: '#fff',
                   fontSize: 16,
                   textAlign: 'center',
                   marginTop: 7,
                   textTransform: 'uppercase',
                 }}>
-                proceed to next step
-            </Text>
+                {translate("proceed to next step")}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -1397,7 +1400,7 @@ finally {
 const styles = StyleSheet.create({
   body: {
     backgroundColor: '#fff',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     display: 'flex',
   },
   buttonStyle: {
@@ -1419,20 +1422,19 @@ const styles = StyleSheet.create({
   },
   headerText: {
     textTransform: 'uppercase',
-    fontWeight: '700',
     marginLeft: 20,
     color: '#3E4459',
     lineHeight: 26,
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     marginRight: 20,
     marginTop: 20,
   },
   formHeader: {
     color: '#128283',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     lineHeight: 30,
     fontSize: 17,
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     paddingLeft: 20,
     paddingRight: 20,
     marginTop: 20,
@@ -1447,15 +1449,16 @@ const styles = StyleSheet.create({
     // backgroundColor: '#fff',
     marginRight: 20,
     paddingLeft: 18,
+    fontFamily: 'Roboto',
   },
   inputLabel: {
     marginLeft: 20,
     marginRight: 20,
     marginBottom: 6,
-    fontWeight: '700',
     color: 'rgba(0,0,0,0.65)',
     marginTop: 18,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
+    fontSize:16
   },
   /* Hospital Details End */
 });

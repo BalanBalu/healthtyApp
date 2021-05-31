@@ -18,7 +18,7 @@ const InsuranceHistory = (props) => {
   ] = useState();
   const [isVisible, setIsVisible] = useState(false);
   const [mediClaimCompanyName, setMediClaimCompanyName] = useState('');
-  const [hospitalized, setHospitalized] = useState('');
+  const [hospitalized, setHospitalized] = useState(true);
   const [sumInsuresPerPolicy, setSumInsuresPerPolicy] = useState('');
   const [hospitalizationDate, setHospitalizationDate] = useState();
   const [
@@ -27,7 +27,7 @@ const InsuranceHistory = (props) => {
   ] = useState(false);
   const [diagnosisDetails, setDiagnosisDetails] = useState('');
   const [hospitalizedCompany, setHospitalizedCompany] = useState('');
-  const [isCoveredByOtherClaim, setIsCoveredByOtherClaim] = useState(false);
+  const [isCoveredByOtherClaim, setIsCoveredByOtherClaim] = useState(true);
 
   const onPressConfirmDateValue = (date) => {
     setCommencementOfFirstInsuranceDate(date);

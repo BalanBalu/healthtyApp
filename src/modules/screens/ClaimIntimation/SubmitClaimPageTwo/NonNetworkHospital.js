@@ -3,11 +3,12 @@ import { Text, View, Item, Input, Radio } from 'native-base';
 import { TouchableOpacity } from 'react-native';
 import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
-import { primaryColor } from '../../../../setup/config';
-import { toastMeassage } from '../../../common';
+import {primaryColor} from '../../../../setup/config';
+import {toastMeassage} from '../../../common';
+import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 const NonNetworkHospital = (props) => {
-  const { updateNonNetworkHospital } = props;
+  const {updateNonNetworkHospital} = props;
   const [address, setAddress] = useState('');
   const [pinCode, setPinCode] = useState();
   const [noAndStreet, setNoAndStreet] = useState('');
@@ -21,6 +22,68 @@ const NonNetworkHospital = (props) => {
   const [ot, setOT] = useState();
   const [icu, setICU] = useState();
   const [others, setOthers] = useState('');
+  const [errorMsg, seterrorMsg] = useState('');
+  const [isModalVisible, setisModalVisible] = useState(false);
+
+  const submitData = () => {
+    if (
+      address != '' &&
+      pinCode != '' &&
+      state != '' &&
+      city != '' &&
+      noAndStreet != '' &&
+      country != ''
+    ) {
+      updateNonNetworkHospital({
+        nonNetworkHospitalAddress: address,
+        nonNetworkHospitalPinCode: pinCode,
+        nonNetworkHospitalState: state,
+        nonNetworkHospitalCity: city,
+        nonNetworkHospitalNoAndStreet: noAndStreet,
+        nonNetworkHospitalCountry: country,
+        nonNetworkHospitalRegistrationStateCode: stateCode,
+        nonNetworkHospitalPlan: hospitalPan,
+        nonNetworkHospitalMobileNumber: phoneNo,
+        nonNetworkHospitalInpatientBeds: noOfInpatientBeds,
+        othersNonNetworkHospital: others,
+        OT: ot,
+        ICU: icu,
+      });
+    } else {
+      if (address === '') {
+        seterrorMsg('Please enter address');
+        setisModalVisible(true);
+        return false;
+      }
+      if (pinCode === '') {
+        seterrorMsg('Please enter pinCode');
+        setisModalVisible(true);
+        return false;
+      }
+      if (noAndStreet === '') {
+        seterrorMsg('Please enter no and street');
+        setisModalVisible(true);
+        return false;
+      }
+
+      if (city === '') {
+        seterrorMsg('Please enter city');
+        setisModalVisible(true);
+        return false;
+      }
+      if (state === '') {
+        seterrorMsg('Please enter state');
+        setisModalVisible(true);
+        return false;
+      }
+      if (country === '') {
+        seterrorMsg('Please enter country');
+        setisModalVisible(true);
+        return false;
+      }
+    }
+  };
+
   return (
     <View>
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
@@ -61,7 +124,6 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setPinCode(text)}
               testID="editPinCode"
-
             />
           </Item>
         </Col>
@@ -83,7 +145,6 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setNoAndStreet(text)}
               testID="editNoAndStreet"
-
             />
           </Item>
         </Col>
@@ -105,7 +166,6 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setCity(text)}
               testID="editCity"
-
             />
           </Item>
         </Col>
@@ -127,7 +187,6 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setState(text)}
               testID="editState"
-
             />
           </Item>
         </Col>
@@ -135,7 +194,7 @@ const NonNetworkHospital = (props) => {
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Country<Text style={{ color: 'red' }}>*</Text>
+            Country.<Text style={{color: 'red'}}>*</Text>
           </Text>
 
           <Item regular style={{ borderRadius: 6, height: 35 }}>
@@ -149,18 +208,14 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setCountry(text)}
               testID="editCountry"
-
             />
           </Item>
         </Col>
       </Row>
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Phone Number.<Text style={{ color: 'red' }}>*</Text>
-          </Text>
-
-          <Item regular style={{ borderRadius: 6, height: 35 }}>
+          <Text style={styles.text}>Phone Number</Text>
+          <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
               placeholder="Enter Phone Number"
               placeholderTextColor={'#CDD0D9'}
@@ -171,18 +226,14 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setPhoneNo(text)}
               testID="editPhoneNo"
-
             />
           </Item>
         </Col>
       </Row>
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Registration with state code.<Text style={{ color: 'red' }}>*</Text>
-          </Text>
-
-          <Item regular style={{ borderRadius: 6, height: 35 }}>
+          <Text style={styles.text}>Registration with state code</Text>
+          <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
               placeholder="Enter Registration with state code"
               placeholderTextColor={'#CDD0D9'}
@@ -193,16 +244,13 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setStateCode(text)}
               testID="editStateCode"
-
             />
           </Item>
         </Col>
       </Row>
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Hospital PAN.<Text style={{ color: 'red' }}>*</Text>
-          </Text>
+          <Text style={styles.text}>Hospital PAN</Text>
 
           <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
@@ -215,16 +263,13 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setHospitalPan(text)}
               testID="editHospitalPan"
-
             />
           </Item>
         </Col>
       </Row>
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Number of inpatient beds .<Text style={{ color: 'red' }}>*</Text>
-          </Text>
+          <Text style={styles.text}>Number of inpatient beds</Text>
 
           <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
@@ -237,17 +282,13 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setNoOfInpatientBeds(text)}
               testID="editNoOfInpatientBeds"
-
             />
           </Item>
         </Col>
       </Row>
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Facilities available in hospital{' '}
-            <Text style={{ color: 'red' }}>*</Text>
-          </Text>
+          <Text style={styles.text}>Facilities available in hospital{' '}</Text>
 
           <Text style={styles.text}>
             OT<Text style={{ color: 'red' }}>*</Text>
@@ -261,7 +302,6 @@ const NonNetworkHospital = (props) => {
               selected={ot === true}
               onPress={() => setOT(true)}
               testID="selectOt"
-
             />
             <Text style={styles.text}>Yes</Text>
 
@@ -273,11 +313,9 @@ const NonNetworkHospital = (props) => {
                 selected={ot === false}
                 onPress={() => setOT(false)}
                 testID="selectNoOt"
-
               />
               <Text style={styles.text}>No</Text>
             </View>
-
           </Item>
 
           <Text style={styles.text}>
@@ -292,7 +330,6 @@ const NonNetworkHospital = (props) => {
               selected={icu === true}
               onPress={() => setICU(true)}
               testID="selectICU"
-
             />
             <Text style={styles.text}>Yes</Text>
 
@@ -304,19 +341,15 @@ const NonNetworkHospital = (props) => {
                 selected={icu === false}
                 onPress={() => setICU(false)}
                 testID="selectNOICU"
-
               />
               <Text style={styles.text}>No</Text>
             </View>
-
           </Item>
         </Col>
       </Row>
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
-          <Text style={styles.text}>
-            Others.<Text style={{ color: 'red' }}>*</Text>
-          </Text>
+          <Text style={styles.text}>Others</Text>
 
           <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
@@ -329,44 +362,24 @@ const NonNetworkHospital = (props) => {
               //   editable={employeeId == undefined ? true : false}
               onChangeText={(text) => setOthers(text)}
               testID="editOthers"
-
             />
           </Item>
         </Col>
       </Row>
       <View style={styles.ButtonView}>
-        <TouchableOpacity style={styles.submit_ButtonStyle} onPress={() =>
-          address &&
-            pinCode &&
-            state &&
-            city &&
-            noAndStreet &&
-            country &&
-            stateCode &&
-            hospitalPan &&
-            phoneNo &&
-            noOfInpatientBeds &&
-            others
-            ? updateNonNetworkHospital({
-              nonNetworkHospitalAddress: address,
-              nonNetworkHospitalPinCode: pinCode,
-              nonNetworkHospitalState: state,
-              nonNetworkHospitalCity: city,
-              nonNetworkHospitalNoAndStreet: noAndStreet,
-              nonNetworkHospitalCountry: country,
-              nonNetworkHospitalRegistrationStateCode: stateCode,
-              nonNetworkHospitalPlan: hospitalPan,
-              nonNetworkHospitalMobileNumber: phoneNo,
-              nonNetworkHospitalInpatientBeds: noOfInpatientBeds,
-              othersNonNetworkHospital: others,
-              OT: ot,
-              ICU: icu,
-            })
-            : toastMeassage('Unable to Submit Claim, Please fill all details')}
+        <TouchableOpacity
+          style={styles.submit_ButtonStyle}
+          onPress={() => submitData()}
           testID="submitSection5">
-          <Text style={{ color: '#fff' }}>Submit And Continue</Text>
+          <Text style={{color: '#fff'}}>Submit And Continue</Text>
         </TouchableOpacity>
       </View>
+      <ModalPopup
+        errorMessageText={errorMsg}
+        closeButtonText={'CLOSE'}
+        closeButtonAction={() => setisModalVisible(false)}
+        visible={isModalVisible}
+      />
     </View>
   );
 };

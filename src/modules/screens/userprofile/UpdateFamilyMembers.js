@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Container,
   Content,
@@ -13,9 +13,9 @@ import {
   View,
   Card,
 } from 'native-base';
-import {userFiledsUpdate} from '../../providers/auth/auth.actions';
-import {connect} from 'react-redux';
-import {Row, Col} from 'react-native-easy-grid';
+import { userFiledsUpdate } from '../../providers/auth/auth.actions';
+import { connect } from 'react-redux';
+import { Row, Col } from 'react-native-easy-grid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
@@ -27,7 +27,7 @@ import {
   TextInput,
 } from 'react-native';
 import styles from './style.js';
-import {formatDate, subTimeUnit} from '../../../setup/helpers';
+import { formatDate, subTimeUnit } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import {
   relationship,
@@ -38,9 +38,9 @@ import {
 } from '../../common';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {ImageUpload} from '../../screens/commonScreen/imageUpload';
-import {uploadImage} from '../../providers/common/common.action';
-import {primaryColor} from '../../../setup/config';
+import { ImageUpload } from '../../screens/commonScreen/imageUpload';
+import { uploadImage } from '../../providers/common/common.action';
+import { primaryColor } from '../../../setup/config';
 import IconName from 'react-native-vector-icons/MaterialIcons';
 import {
   addFamilyMembersDetails,
@@ -49,6 +49,7 @@ import {
   updateFamilyMembersDetails,
 } from '../../providers/corporate/corporate.actions';
 import ModalPopup from '../../../components/Shared/ModalPopup';
+import { translate } from '../../../setup/translator.helper'
 
 class UpdateFamilyMembers extends Component {
   constructor(props) {
@@ -81,14 +82,14 @@ class UpdateFamilyMembers extends Component {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result) {
-        await this.setState({memberDetails: result[0]});
+        await this.setState({ memberDetails: result[0] });
       }
     } catch (ex) {
       console.log(ex);
     }
   };
   async getFamilyDetails() {
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     let userData = navigation.getParam('updatedata');
     const fromProfile = navigation.getParam('fromProfile') || false;
     if (fromProfile) {
@@ -106,10 +107,10 @@ class UpdateFamilyMembers extends Component {
     }
   }
   showOnlyDateTimePicker = () => {
-    this.setState({isOnlyDateTimePickerVisible: true});
+    this.setState({ isOnlyDateTimePickerVisible: true });
   };
   hideOnlyDateTimePicker = () => {
-    this.setState({isOnlyDateTimePickerVisible: false});
+    this.setState({ isOnlyDateTimePickerVisible: false });
   };
   handleOnlyDateTimePicker = (date) => {
     try {
@@ -138,42 +139,42 @@ class UpdateFamilyMembers extends Component {
 
       if (!name) {
         this.setState({
-          errorMsg: 'Please enter name',
+          errorMsg: translate('Please enter name'),
           isModalVisible: true,
         });
         return false;
       }
       if (!dob) {
         this.setState({
-          errorMsg: 'Please select date of birth',
+          errorMsg: translate('Please select date of birth'),
           isModalVisible: true,
         });
         return false;
       }
       if (!gender) {
         this.setState({
-          errorMsg: 'Please select gender',
+          errorMsg: translate('Please select gender'),
           isModalVisible: true,
         });
         return false;
       }
       if (!relationship) {
         this.setState({
-          errorMsg: 'Please select relationship',
+          errorMsg: translate('Please select relationship'),
           isModalVisible: true,
         });
         return false;
       }
       if (!memberId) {
         this.setState({
-          errorMsg: 'Please enter member code',
+          errorMsg: translate('Please enter member code'),
           isModalVisible: true,
         });
         return false;
       }
       const getAge = calculateAge(dob);
 
-      this.setState({errorMsg: '', isLoading: true, updateButton: false});
+      this.setState({ errorMsg: '', isLoading: true, updateButton: false });
       let requestData = {
         familyMemberDocument: uploadData || [],
         corporateId: memberDetails.corporateId,
@@ -199,15 +200,15 @@ class UpdateFamilyMembers extends Component {
       console.log('response', response);
       if (response) {
         console.log('this.state.data', this.state.data);
-        let temp = this.state.data||[];
+        let temp = this.state.data || [];
         temp.push(response);
         console.log(' temp', temp);
 
-        this.setState({data: temp});
+        this.setState({ data: temp });
         console.log(' data', this.state.data);
 
         Toast.show({
-          text: 'Your family member details are updated',
+          text: translate('Your family member details are updated'),
           type: 'success',
           duration: 3000,
         });
@@ -229,7 +230,7 @@ class UpdateFamilyMembers extends Component {
           type: 'danger',
           duration: 3000,
         });
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       }
     } catch (e) {
       Toast.show({
@@ -238,30 +239,30 @@ class UpdateFamilyMembers extends Component {
       });
       console.log(e);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
 
   onSelectedItemsChange = async (selectedItems) => {
-    this.setState({relationship: selectedItems, updateButton: false});
+    this.setState({ relationship: selectedItems, updateButton: false });
     if (this.state.data.length != 0) {
       this.state.data.map(async (ele, index) => {
         if (ele.relationship == selectedItems[0]) {
           await this.setState({
             relationship: '',
-            errorMsg: 'Selected relationship is already exist',
+            errorMsg: translate('Selected relationship is already exist'),
             isModalVisible: true,
             updateButton: true,
           });
           console.log(this.state.relationship)
           return false;
-        } 
+        }
       });
-    } 
+    }
   };
 
   imageUpload = async (data) => {
-    this.setState({selectOptionPopup: false});
+    this.setState({ selectOptionPopup: false });
     if (data.image !== null) {
       await this.uploadImageToServer(data.image);
     }
@@ -276,18 +277,18 @@ class UpdateFamilyMembers extends Component {
     if (response) {
       this.setState({
         memberId: '',
-        errorMsg: 'Member code already exist',
+        errorMsg: translate('Member code already exist'),
         isModalVisible: true,
         updateButton: true,
       });
       return false;
     } else {
-      this.setState({memberId: this.state.memberId, updateButton: false});
+      this.setState({ memberId: this.state.memberId, updateButton: false });
     }
   };
   uploadImageToServer = async (imagePath) => {
     try {
-      this.setState({isLoading: true});
+      this.setState({ isLoading: true });
       let appendForm, endPoint;
       appendForm = 'memberFamilyId';
       endPoint = 'images/upload?path=memberFamilyId';
@@ -299,18 +300,18 @@ class UpdateFamilyMembers extends Component {
           uploadData: this.uploadedData,
           updateButton: false,
         });
-        toastMeassage('Image upload successfully', 'success', 3000);
+        toastMeassage(translate('Image upload successfully'), 'success', 3000);
       } else {
         toastMeassage(
-          'Problem Uploading Picture' + response.error,
+          translate('Problem Uploading Picture') + response.error,
           'danger',
           3000,
         );
       }
     } catch (e) {
-      toastMeassage('Problem Uploading Picture' + e, 'danger', 3000);
+      toastMeassage(translate('Problem Uploading Picture') + e, 'danger', 3000);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
 
@@ -330,24 +331,24 @@ class UpdateFamilyMembers extends Component {
       <Container>
         <Content>
           <View>
-            <ScrollView style={{padding: 20, marginBottom: 20}}>
+            <ScrollView style={{ padding: 20, marginBottom: 20 }}>
               <Form>
-                <Text style={styles.subHeadingText}>Name</Text>
+                <Text style={styles.subHeadingText}>{translate("Name")}</Text>
                 <TextInput
-                  placeholder="Enter Name"
+                  placeholder={translate("Enter Name")}
                   placeholderTextColor={'#909090'}
                   style={styles.textInputStyle}
-                  placeholderStyle={{marginTop: 2}}
+                  placeholderStyle={{ marginTop: 2 }}
                   value={name}
                   onChangeText={(value) =>
-                    this.setState({name: value, updateButton: false})
+                    this.setState({ name: value, updateButton: false })
                   }
                   blurOnSubmit={false}
                   testID="editName"
                 />
 
-                <View style={{marginTop: 10}}>
-                  <Text style={styles.subHeadingText}>Date of birth</Text>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.subHeadingText}>{translate("Date of birth")}</Text>
                   <TouchableOpacity
                     onPress={() => {
                       this.setState({
@@ -358,7 +359,7 @@ class UpdateFamilyMembers extends Component {
                     <View style={styles.searchSection}>
                       <AntDesign
                         name="calendar"
-                        style={{fontSize: 20, padding: 10}}
+                        style={{ fontSize: 20, padding: 10 }}
                       />
                       <DateTimePicker
                         mode={'date'}
@@ -378,16 +379,16 @@ class UpdateFamilyMembers extends Component {
                         style={styles.input}
                         underlineColorAndroid="transparent">
                         {dob === '' || dob == null
-                          ? 'Date of Birth'
+                          ? translate('Date of Birth')
                           : dob != null
-                          ? formatDate(dob, 'DD/MM/YYYY')
-                          : ''}
+                            ? formatDate(dob, 'DD/MM/YYYY')
+                            : ''}
                       </Text>
                     </View>
                   </TouchableOpacity>
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text style={styles.subHeadingText}>Gender</Text>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.subHeadingText}>{translate("Gender")}</Text>
                   <View
                     style={{
                       marginTop: 5,
@@ -406,7 +407,7 @@ class UpdateFamilyMembers extends Component {
                         standardStyle={true}
                         selected={gender === 'Male' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'Male', updateButton: false})
+                          this.setState({ gender: 'Male', updateButton: false })
                         }
                       />
                       <Text
@@ -415,7 +416,7 @@ class UpdateFamilyMembers extends Component {
                           fontSize: 12,
                           marginLeft: 10,
                         }}>
-                        Male
+                        {translate("Male")}
                       </Text>
                     </View>
                     <View
@@ -429,7 +430,7 @@ class UpdateFamilyMembers extends Component {
                         standardStyle={true}
                         selected={gender === 'Female' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'Female', updateButton: false})
+                          this.setState({ gender: 'Female', updateButton: false })
                         }
                       />
                       <Text
@@ -438,7 +439,7 @@ class UpdateFamilyMembers extends Component {
                           fontSize: 12,
                           marginLeft: 10,
                         }}>
-                        Female
+                        {translate("Female")}
                       </Text>
                     </View>
                     <View
@@ -452,7 +453,7 @@ class UpdateFamilyMembers extends Component {
                         standardStyle={true}
                         selected={gender === 'Others' ? true : false}
                         onPress={() =>
-                          this.setState({gender: 'Others', updateButton: false})
+                          this.setState({ gender: 'Others', updateButton: false })
                         }
                       />
                       <Text
@@ -461,13 +462,13 @@ class UpdateFamilyMembers extends Component {
                           fontSize: 12,
                           marginLeft: 10,
                         }}>
-                        Others
+                        {translate("Others")}
                       </Text>
                     </View>
                   </View>
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text style={styles.subHeadingText}>Relationship </Text>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.subHeadingText}>{translate("Relationship")} </Text>
                   <TouchableOpacity>
                     <Col
                       size={10}
@@ -486,9 +487,9 @@ class UpdateFamilyMembers extends Component {
                         IconRenderer={IconName}
                         uniqueKey="value"
                         displayKey="value"
-                        selectText="Select relation"
-                        selectToggleText={{fontSize: 10}}
-                        searchPlaceholderText="Select relation"
+                        selectText={translate("Select relation")}
+                        selectToggleText={{ fontSize: 10 ,  fontFamily: 'Roboto',}}
+                        searchPlaceholderText={translate("Select relation")}
                         modalWithTouchable={true}
                         showDropDowns={true}
                         hideSearch={false}
@@ -498,8 +499,9 @@ class UpdateFamilyMembers extends Component {
                         readOnlyHeadings={false}
                         onSelectedItemsChange={this.onSelectedItemsChange}
                         selectedItems={this.state.relationship}
-                        colors={{primary: '#18c971'}}
+                        colors={{ primary: '#18c971' }}
                         showCancelButton={true}
+                        confirmText={translate("Confirm")}
                         animateDropDowns={true}
                         testID="relationSelected"
                       />
@@ -507,15 +509,15 @@ class UpdateFamilyMembers extends Component {
                   </TouchableOpacity>
                 </View>
 
-                <View style={{marginTop: 10}}>
-                  <Text style={styles.subHeadingText}>Member Code</Text>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.subHeadingText}>{translate("Member Code")}</Text>
                   <TextInput
-                    placeholder="Enter member code"
+                    placeholder={translate("Enter member code")}
                     placeholderTextColor={'#909090'}
                     style={styles.textInputStyle}
-                    placeholderStyle={{marginTop: 2}}
+                    placeholderStyle={{ marginTop: 2 }}
                     value={memberId}
-                    onChangeText={(code) => this.setState({memberId: code})}
+                    onChangeText={(code) => this.setState({ memberId: code })}
                     blurOnSubmit={false}
                     editable={memberId && fromProfile ? false : true}
                     testID="editMemberCode"
@@ -525,13 +527,13 @@ class UpdateFamilyMembers extends Component {
                   />
                 </View>
 
-                <View style={{marginTop: 10}}>
-                  <Text style={styles.subHeadingText}>Upload Document</Text>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.subHeadingText}>{translate("Upload Document")}</Text>
                   <TouchableOpacity
-                    onPress={() => this.setState({selectOptionPopup: true})}>
+                    onPress={() => this.setState({ selectOptionPopup: true })}>
                     <Image
                       source={require('../../../../assets/images/documentuploadgreen.png')}
-                      style={{width: 100, height: 55, marginTop: 10}}
+                      style={{ width: 100, height: 55, marginTop: 10 }}
                     />
                   </TouchableOpacity>
                 </View>
@@ -544,17 +546,17 @@ class UpdateFamilyMembers extends Component {
                 <FlatList
                   data={uploadData}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item, index}) => (
+                  renderItem={({ item, index }) => (
                     <View>
                       <Card style={styles.cardStyles}>
                         <Row>
-                          <Col style={{width: '10%'}}>
+                          <Col style={{ width: '10%' }}>
                             <Image
                               source={RenderDocumentUpload(item)}
-                              style={{width: 25, height: 25}}
+                              style={{ width: 25, height: 25 }}
                             />
                           </Col>
-                          <Col style={{width: '70%'}}>
+                          <Col style={{ width: '70%' }}>
                             <Text style={styles.innerCardText}>
                               {item.original_file_name}
                             </Text>
@@ -567,12 +569,12 @@ class UpdateFamilyMembers extends Component {
               </Form>
             </ScrollView>
           </View>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <ModalPopup
               errorMessageText={errorMsg}
-              closeButtonText={'CLOSE'}
+              closeButtonText={translate('CLOSE')}
               closeButtonAction={() =>
-                this.setState({isModalVisible: !isModalVisible})
+                this.setState({ isModalVisible: !isModalVisible })
               }
               visible={isModalVisible}
             />
@@ -595,7 +597,7 @@ class UpdateFamilyMembers extends Component {
               fontFamily: 'opensans-bold',
               color: '#fff',
             }}>
-            {fromProfile ? 'UPDATE' : 'Save'}
+            {fromProfile ? translate('UPDATE') : translate('Save')}
           </Text>
         </TouchableOpacity>
       </Container>

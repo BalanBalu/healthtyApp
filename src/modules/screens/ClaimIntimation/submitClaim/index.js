@@ -16,9 +16,7 @@ import { TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import { Col, Row } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { primaryColor } from '../../../../setup/config';
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import { subTimeUnit, addTimeUnit, formatDate } from '../../../../setup/helpers';
+import {primaryColor} from '../../../../setup/config';
 import PrimaryInsured from './PrimaryInsured';
 import InsuranceHistory from './InsuranceHistory';
 import InsuredPersonHospitalized from './InsuredPersonHospitalized';
@@ -33,6 +31,7 @@ import {
   updateClaimSubmission,
 } from '../../../providers/corporate/corporate.actions';
 import styles from '../Styles';
+import {TimeOfAdmissionHours,TimeOfAdmissionMinute,TimeOfDischargeHours,TimeOfDischargeMinute} from '../../../common';
 
 const dropdownData = [
   'Select your Item',
@@ -92,15 +91,10 @@ class SubmitClaim extends PureComponent {
     this.state = {
       showCard: -1,
       show: true,
-      selectedAdmissionDate: '',
-      isSelected: true,
-      isVisibleDatePicker: false,
-      dropdownList: '',
       Occupation: '',
       RoomCategory: '',
       Hospitalization: '',
       InjuryCause: '',
-      checkBoxClick: false,
       claimListData: this.props.navigation.getParam('claimListData') || null,
       sectionADisable: true,
       sectionBDisable: true,
@@ -110,16 +104,9 @@ class SubmitClaim extends PureComponent {
       sectionFDisable: true,
       sectionGDisable: true,
       sectionHDisable: true,
-      updateId: '',
+      updateId: '60b22d697d0508132089ae51',
       nextButtonEnable: true,
-      isVisible: false,
-      billNo: '',
-      dateOfHospitalizationForBill: null,
-      issuedBy: '',
-      towards: '',
-      amount: '',
-      bilEnclosedList: [],
-      disabled: 0,
+      disabled: 1,
     };
   }
 
@@ -131,23 +118,6 @@ class SubmitClaim extends PureComponent {
       this.setState({ showCard: -1, show: null });
     }
   }
-  onPressConfirmDateValue = (date) => {
-    try {
-      this.setState({ isVisible: false, dateOfHospitalizationForBill: date });
-    } catch (error) {
-      console.error('Error on Date Picker: ', error);
-    }
-  };
-
-  oncancelThePicker = () => {
-    const { isVisibleDatePicker } = this.state;
-    this.setState({ isVisibleDatePicker: !isVisibleDatePicker });
-  };
-
-  openPicker = () => {
-    const { isVisibleDatePicker } = this.state;
-    this.setState({ isVisibleDatePicker: !isVisibleDatePicker });
-  };
 
   submissionDetails = async (data) => {
     try {
@@ -174,10 +144,8 @@ class SubmitClaim extends PureComponent {
         payerCode: claimListData.payerCode,
       };
       let result = await createClaimSubmission(reqData);
-      console.log;
       if (result) {
         await this.setState({
-          // sectionBDisable: true,
           updateId: result._id,
           submissionDetails: result.submissionDetails,
         });
@@ -187,15 +155,16 @@ class SubmitClaim extends PureComponent {
       console.error('Error on: ', error);
     }
   };
-  updateDisableCout = () => {
+  updateDisableCout = (number) => {
     const { disabled } = this.state;
+    if(number === disabled){
     this.setState({ disabled: disabled + 1 });
+    }
   };
 
   updateSubmissionDetails = async (data) => {
     try {
-      console.log('data', data);
-      const { submissionDetails } = this.state;
+      const {submissionDetails} = this.state;
       let reqData = {
         _id: this.state.updateId,
         submissionDetails: {
@@ -566,10 +535,7 @@ class SubmitClaim extends PureComponent {
               : null,
         },
       };
-      console.log('reqData', reqData);
       let result = await updateClaimSubmission(reqData);
-      console.log('result', result);
-      console.log('result', result._id);
 
       if (result) {
         this.setState({
@@ -579,7 +545,6 @@ class SubmitClaim extends PureComponent {
         return true;
       }
 
-      console.log('updateId', this.state.updateId);
     } catch (error) {
       console.error('Error on: ', error);
     }
@@ -587,7 +552,7 @@ class SubmitClaim extends PureComponent {
   updatePrimaryInsuredDetails = async (data) => {
     let primaryDetails = this.submissionDetails(data);
 
-    this.updateDisableCout();
+    this.updateDisableCout(1);
     const { showCard } = this.state;
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
@@ -597,7 +562,7 @@ class SubmitClaim extends PureComponent {
   };
   updateInsuranceHistoryDetails = async (data) => {
     let historyDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(2);
     const { showCard } = this.state;
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 200, animated: true });
@@ -607,7 +572,7 @@ class SubmitClaim extends PureComponent {
   };
   updateInsuredPersonHospitalizedDetails = async (data) => {
     let personDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(3);
     const { showCard } = this.state;
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
@@ -617,7 +582,7 @@ class SubmitClaim extends PureComponent {
   };
   updateHospitalization = async (data) => {
     let hospitalDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(4);
     const { showCard } = this.state;
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
@@ -627,7 +592,7 @@ class SubmitClaim extends PureComponent {
   };
   updateClaimDetails = async (data) => {
     let claimDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(5);
     const { showCard } = this.state;
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
@@ -637,8 +602,8 @@ class SubmitClaim extends PureComponent {
     }
   };
   updateBillsEnclosedDetails = async (data) => {
-    let billEnclosedDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    let billEnclosedDetails = this.submitData(data);
+    this.updateDisableCout(6);
     const { showCard } = this.state;
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
@@ -649,7 +614,7 @@ class SubmitClaim extends PureComponent {
   };
   updatePrimaryInsuredBankAccountDetails = async (data) => {
     let bankAccDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(7);
     const { showCard } = this.state;
     this.setState({ showCard: showCard + 1 });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
@@ -660,7 +625,7 @@ class SubmitClaim extends PureComponent {
   };
   updateDeclarationByInsuredDetails = async (data) => {
     let declarationDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(8);
     const { showCard } = this.state;
     this.setState({ showCard: showCard + 1, nextButtonEnable: false });
     this.scroll.scrollTo({ x: 0, y: 0, animated: true });
@@ -668,34 +633,13 @@ class SubmitClaim extends PureComponent {
       this.setState({ nextButtonEnable: false });
     }
   };
-  addTable = async () => {
-    let temp = [];
-    temp.push({
-      billNo: this.state.billNo,
-      dateOfHospitalizationForBill: this.state.dateOfHospitalizationForBill,
-      issuedBy: this.state.issuedBy,
-      towards: this.state.towards,
-      amount: this.state.amount,
-    });
-    let data = [...this.state.bilEnclosedList, ...temp];
-    this.setState({
-      bilEnclosedList: data,
-      billNo: '',
-      issuedBy: '',
-      towards: '',
-      amount: '',
-      dateOfHospitalizationForBill: null,
-    });
-  };
-  submitData = async () => {
+  submitData = async (data) => {
     try {
       let reqData = {
         _id: this.state.updateId,
-        bilEnclosedList: this.state.bilEnclosedList,
+        billDetails: data,
       };
-      console.log('reqData', reqData);
       let result = await updateClaimSubmission(reqData);
-      console.log('result', result);
       if (result) {
         this.setState({
           updateId: result._id,
@@ -730,13 +674,6 @@ class SubmitClaim extends PureComponent {
       sectionFDisable,
       sectionGDisable,
       sectionHDisable,
-      billNo,
-      issuedBy,
-      towards,
-      amount,
-      dateOfHospitalizationForBill,
-      isVisible,
-      bilEnclosedList,
       disabled,
     } = this.state;
     return (
@@ -820,6 +757,10 @@ class SubmitClaim extends PureComponent {
                         Hospitalization={Hospitalization}
                         InjuryCause={InjuryCause}
                         claimListData={claimListData}
+                        TimeOfAdmissionHours={TimeOfAdmissionHours}
+                        TimeOfAdmissionMinute={TimeOfAdmissionMinute}
+                        TimeOfDischargeHours={TimeOfDischargeHours}
+                        TimeOfDischargeMinute={TimeOfDischargeMinute}
                         updateHospitalization={(data) =>
                           this.updateHospitalization(data)
                         }
@@ -859,8 +800,8 @@ class SubmitClaim extends PureComponent {
                   </View>
                 </Card>
               ) : (
-                <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
-                  <Card style={disabled >= index ? { backgroundColor: '#fff' } : { backgroundColor: '#E0E0E0' }}>
+                <View pointerEvents={disabled >= item.id ? 'auto' : 'none'}>
+                  <Card style={disabled >= item.id  ? { backgroundColor: '#fff' } : { backgroundColor: '#E0E0E0' }}>
                     <TouchableOpacity
                       style={{
                         justifyContent: 'center',
