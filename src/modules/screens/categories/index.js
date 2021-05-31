@@ -30,7 +30,6 @@ class Categories extends Component {
       selectedSpecialist: null,
       isLoading: true,
       isCorporateUser: false,
-      textInputStatus: 'clear',
       textInputValue: '',
     }
 
@@ -129,7 +128,7 @@ class Categories extends Component {
   }
 
   filterCategories(searchValue) {
-    this.setState({ textInputStatus: 'unClear', textInputValue: searchValue });
+    this.setState({ textInputValue: searchValue });
 
     const { categoriesMain } = this.state;
     if (!searchValue) {
@@ -142,7 +141,7 @@ class Categories extends Component {
     }
   }
   clearText = async () => {
-    this.setState({ textInputStatus: 'clear', textInputValue: '' });
+    this.setState({ textInputValue: '' });
     await this.getCatagries();
   }
 
@@ -166,7 +165,7 @@ class Categories extends Component {
             />
           </Col>
           <Col size={0.9} style={styles.SearchStyle}>
-            {this.state.textInputStatus == 'unClear' ? <TouchableOpacity onPress={() => this.clearText()} style={{ justifyContent: 'center' }}>
+            {this.state.textInputValue ? <TouchableOpacity onPress={() => this.clearText()} style={{ justifyContent: 'center' }}>
               <Icon name="ios-close" style={{ color: 'gray', fontSize: 25 }} />
             </TouchableOpacity> :
               <TouchableOpacity style={{ justifyContent: 'center' }}><Icon name='ios-search' style={{ color: primaryColor, fontSize: 22 }} /></TouchableOpacity>}
