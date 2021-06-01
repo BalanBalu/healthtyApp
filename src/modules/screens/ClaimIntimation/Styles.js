@@ -218,7 +218,8 @@ form_field: {
     borderBottomLeftRadius:0,
     borderTopLeftRadius:0,
     height: 45,
-    fontSize:12
+    fontSize:12,
+    fontFamily:  'Roboto',
 },
 Heading_form_field: {
     color: '#000',
@@ -256,15 +257,15 @@ calenderStyle:{
 timeplaceHolder:{
     marginLeft: 5,
     fontFamily: 'Roboto',
-    fontSize: 13,
+    fontSize: 15,
     textAlign: 'center',
     marginTop: 8,
     color: '#000',
 },
 afterTimePlaceholder: {
-    color: '#909090',
+    color: '#CDD0D9',
     fontFamily: 'Roboto',
-    fontSize: 13,
+    fontSize: 15,
     textAlign: 'center',
     marginTop: 8,
 },
@@ -273,6 +274,10 @@ radioButtonStyle: {
     flexDirection: 'row',
      alignItems: 'center', 
      justifyContent: 'center' 
+},
+fontColorOfInput:{
+    fontFamily:  'Roboto',
+   fontSize:15
 },
 inputTextBoxStyleColor:{
    fontFamily:  'Roboto',

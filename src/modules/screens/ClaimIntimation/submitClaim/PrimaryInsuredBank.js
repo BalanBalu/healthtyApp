@@ -6,7 +6,7 @@ import styles from '../Styles';
 import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 const PrimaryInsuredBank = (props) => {
-  const {updatePrimaryInsuredBankAccountDetails} = props;
+  const { updatePrimaryInsuredBankAccountDetails } = props;
   const [PanCardDetail, setPanCardDetail] = useState('');
   const [accountNo, setAccountNo] = useState('');
   const [bankName, setBankName] = useState('');
@@ -71,6 +71,7 @@ const PrimaryInsuredBank = (props) => {
             <Input
               placeholder="Enter PAN number"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={PanCardDetail}
               keyboardType={'default'}
@@ -92,6 +93,7 @@ const PrimaryInsuredBank = (props) => {
             <Input
               placeholder="Enter Bank Account No"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={accountNo}
               ref={inputEl1}
@@ -114,6 +116,7 @@ const PrimaryInsuredBank = (props) => {
             <Input
               placeholder="Enter Bank Branch Name"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={bankName}
               ref={inputEl2}
@@ -134,6 +137,7 @@ const PrimaryInsuredBank = (props) => {
             <Input
               placeholder="Enter Cheque dd payable details"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={chequeDetails}
               ref={inputEl3}
@@ -156,6 +160,7 @@ const PrimaryInsuredBank = (props) => {
             <Input
               placeholder="Enter IFSC Code of bank branch "
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={ifscCode}
               ref={inputEl4}

@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, Item, Input, Icon} from 'native-base';
-import {TouchableOpacity} from 'react-native';
-import {Col, Row} from 'react-native-easy-grid';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Item, Input, Icon } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {subTimeUnit, formatDate} from '../../../../setup/helpers';
 import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 const DeclarationByInsured = (props) => {
-  const {updateDeclarationByInsuredDetails} = props;
+  const { updateDeclarationByInsuredDetails } = props;
   const [insuredPlace, setInsuredPlace] = useState('');
   const [dateOfHospitalization, setDateOfHospitalization] = useState();
   const [isVisible, setIsVisible] = useState(false);
@@ -53,7 +53,7 @@ const DeclarationByInsured = (props) => {
 
   return (
     <View>
-      <Text style={{padding: 8, fontSize: 14}}>
+      <Text style={{ padding: 8, fontSize: 14 }}>
         I hereby declare that the information furnished in the claim form is
         true & correct to the best of my knowledge and belief. If I have made
         any false or untrue statement. suppression or concealent of any material
@@ -66,16 +66,17 @@ const DeclarationByInsured = (props) => {
         will not be making any supplementary daim except the
         pre/post-hospitalization claim, if any.
       </Text>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Place<Text style={{color: 'red'}}>*</Text>
+            Place<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Place "
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={insuredPlace}
               keyboardType={'default'}
@@ -86,13 +87,13 @@ const DeclarationByInsured = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Date of hospitalization<Text style={{color: 'red'}}>*</Text>
+            Date of hospitalization<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <TouchableOpacity
               style={{flexDirection: 'row'}}
               onPress={openPicker}
@@ -121,14 +122,15 @@ const DeclarationByInsured = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>Signature of insured</Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Signature of insured "
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={signatureOfInsures}
               keyboardType={'default'}
@@ -144,7 +146,7 @@ const DeclarationByInsured = (props) => {
           style={styles.submit_ButtonStyle}
           onPress={() => submitData()}
           testID="submitDetails7">
-          <Text style={{color: '#fff'}}>Submit</Text>
+          <Text style={{ color: '#fff' }}>Submit</Text>
         </TouchableOpacity>
       </View>
       <ModalPopup

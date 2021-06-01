@@ -112,7 +112,7 @@ class SubmitClaimPageTwo extends PureComponent {
       section6Disable: true,
       section7Disable: true,
       updateId: this.props.navigation.getParam('dataId') || null,
-      disabled: 0,
+      disabled: 1,
       submitButton: true,
     };
     this.submissionDetails = this.props.navigation.getParam(
@@ -473,7 +473,7 @@ class SubmitClaimPageTwo extends PureComponent {
   };
   updateHospitalDetail = async (data) => {
     let hospitalDetail = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(1);
     const {showCard} = this.state;
     this.setState({showCard: showCard + 1});
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
@@ -483,7 +483,7 @@ class SubmitClaimPageTwo extends PureComponent {
   };
   updateInsuredPersonHospitalizedDetails = async (data) => {
     let personDetails = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(2);
     const {showCard} = this.state;
     this.setState({showCard: showCard + 1});
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
@@ -493,7 +493,7 @@ class SubmitClaimPageTwo extends PureComponent {
   };
   updateDocumentSubmitted = async (data) => {
     let documentSubmitted = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(3);
     const {showCard} = this.state;
     this.setState({showCard: showCard + 1});
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
@@ -503,7 +503,7 @@ class SubmitClaimPageTwo extends PureComponent {
   };
   updateNonNetworkHospital = async (data) => {
     let nonNetworkHospital = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(4);
     const {showCard} = this.state;
     this.setState({showCard: showCard + 1});
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
@@ -513,7 +513,7 @@ class SubmitClaimPageTwo extends PureComponent {
   };
   updateDeclarationByHospital = async (data) => {
     let declarationByHospital = this.updateSubmissionDetails(data);
-    this.updateDisableCout();
+    this.updateDisableCout(5);
     const {showCard} = this.state;
     this.setState({showCard: showCard + 1});
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
@@ -523,7 +523,7 @@ class SubmitClaimPageTwo extends PureComponent {
   };
   updateAttachment = async (data) => {
     let attachmentDetails = this.submitData(data);
-    this.updateDisableCout();
+    this.updateDisableCout(6);
     const {showCard} = this.state;
     this.setState({showCard: showCard + 1});
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
@@ -532,9 +532,11 @@ class SubmitClaimPageTwo extends PureComponent {
     }
   };
 
-  updateDisableCout = () => {
-    const {disabled} = this.state;
-    this.setState({disabled: disabled + 1});
+  updateDisableCout = (number) => {
+    const { disabled } = this.state;
+    if(number === disabled){
+    this.setState({ disabled: disabled + 1 });
+    }
   };
 
   submitData = async (data) => {
@@ -674,13 +676,12 @@ class SubmitClaimPageTwo extends PureComponent {
                   </View>
                 </Card>
               ) : (
-                <View pointerEvents={disabled >= index ? 'auto' : 'none'}>
-                  <Card>
+                 <View pointerEvents={disabled >= item.id ? 'auto' : 'none'}>
+                  <Card style={disabled >= item.id  ? { backgroundColor: '#fff' } : { backgroundColor: '#E0E0E0' }}>
                     <TouchableOpacity
                       style={{
                         justifyContent: 'center',
                         padding: 10,
-
                         alignItems: 'center',
                       }}
                       onPress={() => this.toggleData(index, 'DOWN')}>

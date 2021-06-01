@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Text, View, Item, Input,Button } from 'native-base';
+import { Text, View, Item, Input, Button } from 'native-base';
 import { TouchableOpacity, } from 'react-native'
 import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
@@ -85,6 +85,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Hospital Name"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={hospitalName}
                             keyboardType={'default'}
@@ -106,6 +107,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Hospital Id."
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={hospitalId}
                             ref={inputEl1}
@@ -127,6 +129,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Type of hospital"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             keyboardType={'default'}
                             ref={inputEl2}
@@ -149,6 +152,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Treating doctor first name"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={doctorFirstName}
                             ref={inputEl3}
@@ -170,6 +174,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Treating doctor middle name"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={doctorMiddleName}
                             ref={inputEl4}
@@ -191,6 +196,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Last Name"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={doctorLastName}
                             ref={inputEl5}
@@ -213,6 +219,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Qualification"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={qualification}
                             ref={inputEl6}
@@ -235,6 +242,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Street Number"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={streetNumber}
                             ref={inputEl7}
@@ -255,6 +263,7 @@ const HospitalDetail = (props) => {
                         <Input
                             placeholder="Enter Phone Number"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             value={phoneNumber}
                             ref={inputEl8}

@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, Item, Input, Radio} from 'native-base';
-import {TouchableOpacity} from 'react-native';
-import {Col, Row} from 'react-native-easy-grid';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Item, Input, Radio } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import { Col, Row } from 'react-native-easy-grid';
 import styles from '../Styles';
 import {primaryColor} from '../../../../setup/config';
 import {toastMeassage} from '../../../common';
@@ -86,16 +86,17 @@ const NonNetworkHospital = (props) => {
 
   return (
     <View>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            Address.<Text style={{color: 'red'}}>*</Text>
+            Address.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Address"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={address}
               keyboardType={'default'}
@@ -106,16 +107,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            PinCode.<Text style={{color: 'red'}}>*</Text>
+            PinCode.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter PinCode."
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={pinCode}
               keyboardType={'default'}
@@ -126,16 +128,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            No and Street.<Text style={{color: 'red'}}>*</Text>
+            No and Street.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter No and Street"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={noAndStreet}
               keyboardType={'default'}
@@ -146,16 +149,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            City.<Text style={{color: 'red'}}>*</Text>
+            City.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter City"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={city}
               keyboardType={'default'}
@@ -166,16 +170,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
-            State.<Text style={{color: 'red'}}>*</Text>
+            State.<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter State"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={state}
               keyboardType={'default'}
@@ -186,16 +191,17 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>
             Country.<Text style={{color: 'red'}}>*</Text>
           </Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Country"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={country}
               keyboardType={'default'}
@@ -206,13 +212,14 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>Phone Number</Text>
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
               placeholder="Enter Phone Number"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={phoneNo}
               keyboardType={'default'}
@@ -223,13 +230,14 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>Registration with state code</Text>
           <Item regular style={{borderRadius: 6, height: 35}}>
             <Input
               placeholder="Enter Registration with state code"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={stateCode}
               keyboardType={'default'}
@@ -240,14 +248,15 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>Hospital PAN</Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Hospital PAN"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={hospitalPan}
               keyboardType={'default'}
@@ -258,14 +267,15 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>Number of inpatient beds</Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Enter Number of inpatient beds "
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={noOfInpatientBeds}
               keyboardType={'default'}
@@ -276,15 +286,15 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>Facilities available in hospital{' '}</Text>
 
           <Text style={styles.text}>
-            OT<Text style={{color: 'red'}}>*</Text>
+            OT<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
@@ -309,10 +319,10 @@ const NonNetworkHospital = (props) => {
           </Item>
 
           <Text style={styles.text}>
-            ICU<Text style={{color: 'red'}}>*</Text>
+            ICU<Text style={{ color: 'red' }}>*</Text>
           </Text>
 
-          <Item style={{borderRadius: 6, height: 35, borderBottomWidth: 0}}>
+          <Item style={{ borderRadius: 6, height: 35, borderBottomWidth: 0 }}>
             <Radio
               color={primaryColor}
               selectedColor={primaryColor}
@@ -337,14 +347,15 @@ const NonNetworkHospital = (props) => {
           </Item>
         </Col>
       </Row>
-      <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+      <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
         <Col size={1}>
           <Text style={styles.text}>Others</Text>
 
-          <Item regular style={{borderRadius: 6, height: 35}}>
+          <Item regular style={{ borderRadius: 6, height: 35 }}>
             <Input
               placeholder="Others"
               placeholderTextColor={'#CDD0D9'}
+              style={styles.fontColorOfInput}
               returnKeyType={'next'}
               value={others}
               keyboardType={'default'}

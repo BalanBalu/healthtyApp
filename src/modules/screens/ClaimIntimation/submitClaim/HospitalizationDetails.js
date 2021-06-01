@@ -4,7 +4,7 @@ import {TouchableOpacity, FlatList} from 'react-native';
 import {Col, Row} from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Styles';
-import {primaryColor} from '../../../../setup/config';
+import { primaryColor } from '../../../../setup/config';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {subTimeUnit, formatDate} from '../../../../setup/helpers';
 import ModalPopup from '../../../../components/Shared/ModalPopup';
@@ -140,6 +140,7 @@ const HospitalizationDetails = (props) => {
               <Input
                 placeholder="Enter Name of Hospital"
                 placeholderTextColor={'#CDD0D9'}
+                style={styles.fontColorOfInput}
                 returnKeyType={'next'}
                 value={hospitalName}
                 keyboardType={'default'}
@@ -675,6 +676,7 @@ const HospitalizationDetails = (props) => {
               <Input
                 placeholder="Enter system of medicine"
                 placeholderTextColor={'#CDD0D9'}
+                style={styles.fontColorOfInput}
                 returnKeyType={'next'}
                 value={systemOfMedicine}
                 keyboardType={'default'}
