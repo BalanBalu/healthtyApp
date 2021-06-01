@@ -40,10 +40,11 @@ class LabCategories extends PureComponent {
     this.state = {
       labData: [],
       categoriesMain: [],
-      isLoading: false,
+      isLoading: true,
       consultPopVisible: false,
       selectedSpecialist: null,
-      isCorporateUser: false
+      isCorporateUser: false,
+      textInputValue: '',
     }
     this.emailId = '',
       this.mobile = '',
@@ -69,7 +70,7 @@ class LabCategories extends PureComponent {
   }
   getLabCategories = async () => {
     try {
-      this.setState({ isLoading: true });
+      // this.setState({ isLoading: true });
       const {
         bookappointment: { locationCordinates, isLocationSelected },
       } = this.props;
@@ -145,19 +146,22 @@ class LabCategories extends PureComponent {
   filterCategories(searchValue) {
 
     const { labData } = this.state;
-    if (searchValue === searchValue.replace(/^[^*|\":<>[\]{}`\\()'; @& $]+$/)) {
-      return [];
-    }
-    if (!searchValue) {
-      this.setState({ searchValue, data: labData });
-    } else {
-      if (this.mainLabData != undefined) {
-        const filteredCategories = this.mainLabData.filter(ele =>
-          ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
-        );
-        this.setState({ searchValue, labData: filteredCategories });
-      }
-    }
+    this.setState({ textInputValue: searchValue });
+    // if (searchValue === searchValue.replace(/^[^*|\":<>[\]{}`\\()'; @& $]+$/)) {
+    //   return [];
+    // }
+    // if (!searchValue) {
+    //   this.setState({ searchValue, data: labData });
+    // } else {
+    //   if (this.mainLabData != undefined) {
+    const filteredCategories = this.mainLabData.filter(ele =>
+      ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
+    );
+    this.setState({ searchValue, labData: filteredCategories });
+  }
+  clearText = async () => {
+    this.setState({ textInputValue: '' });
+    await this.getLabCategories();
   }
 
   renderStickeyHeader() {
@@ -173,25 +177,31 @@ class LabCategories extends PureComponent {
           {translate('Search Labs by categories')}
         </Text>
         <Row style={styles.SearchRow}>
-          <Col size={9.1} style={{ justifyContent: 'center' }}>
-            <Input
-              placeholder={translate('Categories')}
-              style={styles.inputfield}
-              placeholderTextColor="#e2e2e2"
-              keyboardType={'email-address'}
-              onChangeText={(searchValue) => this.filterCategories(searchValue)}
-              underlineColorAndroid="transparent"
-              returnKeyType={'done'}
-            />
-          </Col>
-          <Col size={0.9} style={styles.SearchStyle}>
-            <TouchableOpacity style={{ justifyContent: 'center' }}>
-              <Icon
-                name="ios-search"
-                style={{ color: 'gray', fontSize: 20, padding: 2 }}
+          <Grid><Col size={10}>
+            <Item style={{
+              borderBottomWidth: 0,
+              backgroundColor: '#fff',
+              height: 30,
+              borderRadius: 5
+            }}>
+              <Input
+                placeholder={translate('Categories')}
+                style={styles.inputfield}
+                placeholderTextColor="#e2e2e2"
+                keyboardType={'email-address'}
+                onChangeText={(searchValue) => this.filterCategories(searchValue)}
+                returnKeyType={'done'}
+                multiline={false}
+                value={this.state.textInputValue}
+                underlineColorAndroid="transparent"
+                returnKeyType={'done'}
               />
-            </TouchableOpacity>
-          </Col>
+              {this.state.textInputValue ? <TouchableOpacity onPress={() => this.clearText()} style={{ justifyContent: 'center' }}>
+                <Icon name="ios-close" style={{ color: 'gray', fontSize: 25 }} />
+              </TouchableOpacity> :
+                <TouchableOpacity style={{ justifyContent: 'center' }}><Icon name='ios-search' style={{ color: primaryColor, fontSize: 22 }} /></TouchableOpacity>}
+
+            </Item></Col></Grid>
         </Row>
       </View>
     );
@@ -242,7 +252,7 @@ class LabCategories extends PureComponent {
   }
   onPressArrangeCallBack() {
     try {
-      const message = `${this.userName} needs ${this.state.selectedSpecialist} Test at ${this.city ? this.city + ',' : ''} ${this.stateAddress?this.stateAddress:''}. please contact them. Mobile Number : ${this.mobile}`;
+      const message = `${this.userName} needs ${this.state.selectedSpecialist} Test at ${this.city ? this.city + ',' : ''} ${this.stateAddress ? this.stateAddress : ''}. please contact them. Mobile Number : ${this.mobile}`;
       Alert.alert(
         'Send request by SMS / WhatsApp / Mail',
         '',
@@ -296,14 +306,16 @@ class LabCategories extends PureComponent {
                 <View >
                   <TouchableOpacity
                     danger
-                    style={{   paddingLeft: 10,
+                    style={{
+                      paddingLeft: 10,
                       paddingRight: 10,
                       borderRadius: 5,
                       backgroundColor: '#128283',
                       height: 38,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginTop: 15}}
+                      marginTop: 15
+                    }}
                     onPress={() => {
                       this.callToBookAppointment();
                       this.onPressCloseToConsultPop();
@@ -316,11 +328,13 @@ class LabCategories extends PureComponent {
                       </Col>
                       <Col size={8}>
 
-                        <Text style={{ fontFamily: 'opensans-bold',
-    fontSize: 15,
-    // textAlign: 'center',
-    color: '#fff',
-    marginTop: 10}}>
+                        <Text style={{
+                          fontFamily: 'opensans-bold',
+                          fontSize: 15,
+                          // textAlign: 'center',
+                          color: '#fff',
+                          marginTop: 10
+                        }}>
                           {'Call to Book Appointment'}
                         </Text>
                       </Col>
@@ -331,14 +345,16 @@ class LabCategories extends PureComponent {
                 <View>
                   <TouchableOpacity
                     danger
-                    style={{  paddingLeft: 10,
+                    style={{
+                      paddingLeft: 10,
                       paddingRight: 10,
                       borderRadius: 5,
                       backgroundColor: '#59a7a8',
                       height: 38,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginTop: 20,}}
+                      marginTop: 20,
+                    }}
                     onPress={() => {
                       this.onPressArrangeCallBack();
                       this.onPressCloseToConsultPop();
@@ -350,11 +366,13 @@ class LabCategories extends PureComponent {
                         <MaterialIcons name="reply" style={{ fontSize: 25, color: '#FFF' }} />
                       </Col>
                       <Col size={8}>
-                        <Text style={{  fontFamily: 'opensans-bold',
-    fontSize: 15,
-    // textAlign: 'center',
-    color: '#fff',
-    marginTop: 10}}>
+                        <Text style={{
+                          fontFamily: 'opensans-bold',
+                          fontSize: 15,
+                          // textAlign: 'center',
+                          color: '#fff',
+                          marginTop: 10
+                        }}>
                           {'Arrange Callback'}
                         </Text>
                       </Col>
