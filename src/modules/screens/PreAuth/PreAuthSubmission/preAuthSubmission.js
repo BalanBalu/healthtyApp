@@ -162,13 +162,13 @@ class PreAuth extends React.PureComponent {
         relationship: memberInformation.relationship || '',
         contactNo: memberInformation.mobile || '',
         alterNateContactNumber: memberInformation.phone || '',
-        patientAgeInYr: memberInformation.age ? String(memberInformation.age) : '',
-        patientAgeMonth: memberInformation.month ? String(memberInformation.month) : '0',
+        patientAgeInYr: memberInformation.familyMemberAge ? String(memberInformation.familyMemberAge) : '',
+        patientAgeMonth: memberInformation.familyMemberMonth ? String(memberInformation.familyMemberMonth) : '0',
         insurerId: memberInformation.memberId || '',
         policyNo: memberInformation.policyNo || '',
         employeeId: memberInformation.employeeId || '',
-        selectedGender: memberInformation.gender || '',
-        dob: memberInformation.dob || new Date()
+        selectedGender: memberInformation.familyMemberGender? memberInformation.familyMemberGender==='M'?"Male":"Female" : '',
+        dob: memberInformation.familyMemberDob || new Date()
       }
       await this.setState({ networkHospList: networkHospList || [], hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
 
