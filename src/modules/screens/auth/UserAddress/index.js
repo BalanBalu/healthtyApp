@@ -4,7 +4,8 @@ import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Item, Text, Icon, Header, Left, Row, } from 'native-base';
 import MapboxAutocomplete from './AutoComplete';
 let token = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjZ0ZXMwdWozNDRteTB4bG14Y2o1In0.A34n-MA-vy3hsydgt_8pRQ';
-import {primaryColor} from '../../../../setup/config'
+import {primaryColor} from '../../../../setup/config';
+import {translate}from '../../../../setup/translator.helper';
 export default class UserAddress extends Component {
     constructor(props) {
         super(props);
@@ -29,7 +30,7 @@ export default class UserAddress extends Component {
                             <Left>
                                 <TouchableOpacity onPress={() => this.props.navigation.pop()} style={Platform.OS === "ios" ? { paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: primaryColor, marginTop: -10, marginLeft: -10 } : { paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: primaryColor, marginLeft: 10 }} >
                                     <Icon name="arrow-back" style={{ color: '#fff', fontSize: 30, marginLeft: 10, marginTop: 10 }} />
-                                    <Text style={{ color: '#fff', fontSize: 20, marginLeft: 20, marginTop: 10 }}>Back</Text>
+                                    <Text style={{ color: '#fff', fontSize: 20, marginLeft: 20, marginTop: 10 }}>{translate("Back")}</Text>
                                 </TouchableOpacity>
 
                             </Left>
@@ -38,18 +39,18 @@ export default class UserAddress extends Component {
                     : null}
                 {Platform.OS === "ios" ?
                     <View style={style.iosSlide}>
-                        <Text style={[style.welcome, { marginTop: 20 }]}>Hi, Add Your Location</Text>
+                        <Text style={[style.welcome, { marginTop: 20 }]}>{translate("Hai, Add Your Location")}</Text>
                         <Icon name="location-sharp" style={{ fontSize: 30, color: primaryColor, marginLeft: 10, marginTop: 20 }} />
                     </View> :
                     <Item style={style.slide}>
-                        <Text style={style.welcome}>Hi, Add Your Location </Text>
+                        <Text style={style.welcome}>{translate("Hai, Add Your Location")} </Text>
                         <Icon name="location-sharp" style={{ fontSize: 50, color: primaryColor, marginLeft: 10 }} />
                     </Item>
                 }
                 <MapboxAutocomplete
                     text={this.state.enteredText}
                     minLength={2}
-                    placeholder='Search Your Location'
+                    placeholder={translate('Search Your Location')}
                     accessToken={token}
                     countryCode={'IN'}
                     returnKeyType={'search'}
@@ -61,7 +62,7 @@ export default class UserAddress extends Component {
                     onChangeText={(enteredText) => this.setState({ enteredText })}
                     style={{
                         backgroundColor: 'white', borderRadius: 5, marginLeft: 30,
-                        marginRight: 30, fontfamily: 'OpenSans', fontSize: 18
+                        marginRight: 30, fontfamily: 'Roboto', fontSize: 18
                     }}
                 />
             </View>
@@ -74,7 +75,7 @@ const style = StyleSheet.create({
         fontSize: 22,
         textAlign: 'center',
         marginTop: -10,
-        fontFamily: 'opensans-semibold',
+        fontFamily: 'Roboto-semibold',
     },
     slide: {
         borderBottomWidth: 0,
@@ -82,12 +83,12 @@ const style = StyleSheet.create({
         marginTop: 30,
         paddingLeft: 30,
         paddingRight: 40,
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
     },
     iosSlide: {
         borderBottomWidth: 0,
         justifyContent: 'center',
-        fontFamily: 'OpenSans',
+        fontFamily: 'Roboto',
         flexDirection: 'row',
         marginTop: 30
     },

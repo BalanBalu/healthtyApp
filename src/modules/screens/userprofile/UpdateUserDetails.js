@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Container,
   Content,
@@ -18,11 +18,13 @@ import {
   Picker,
   View,
 } from 'native-base';
-import {updateMemberDetails, logout} from '../../providers/auth/auth.actions';
-import {connect} from 'react-redux';
-import {Row, Col} from 'react-native-easy-grid';
+import { updateMemberDetails, logout } from '../../providers/auth/auth.actions';
+import { connect } from 'react-redux';
+import { Row, Col } from 'react-native-easy-grid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {updateFamilyMembersDetails} from '../../providers/corporate/corporate.actions';
+import { updateFamilyMembersDetails } from '../../providers/corporate/corporate.actions';
+import { translate } from '../../../setup/translator.helper';
+import { storeBasicProfile } from '../../providers/profile/profile.action';
 
 import {
   Image,
@@ -32,11 +34,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import styles from './style.js';
-import {formatDate, subTimeUnit} from '../../../setup/helpers';
+import { formatDate, subTimeUnit } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import {bloodGroupList, validateName, calculateAge} from '../../common';
+import { bloodGroupList, validateName, calculateAge } from '../../common';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {primaryColor} from '../../../setup/config';
+import { primaryColor } from '../../../setup/config';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 
 class UpdateUserDetails extends Component {
@@ -63,18 +65,18 @@ class UpdateUserDetails extends Component {
   }
 
   onPressRadio(value) {
-    this.setState({gender: value});
+    this.setState({ gender: value });
   }
 
   toggleRadio = (radioSelect, genderSelect) => {
     let tempArray = [false, false, false];
     tempArray[radioSelect] = true;
-    this.setState({radioStatus: tempArray});
-    this.setState({gender: genderSelect});
+    this.setState({ radioStatus: tempArray });
+    this.setState({ gender: genderSelect });
   };
 
   async bindValues() {
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     const userData = navigation.getParam('updatedata');
     const fromProfile = navigation.getParam('fromProfile') || false;
     if (fromProfile) {
@@ -141,28 +143,28 @@ class UpdateUserDetails extends Component {
     try {
       if (!firstName) {
         this.setState({
-          errorMsg: 'Please enter first name',
+          errorMsg: translate('Please enter first name'),
           isModalVisible: true,
         });
         return false;
       }
       if (!dob) {
         this.setState({
-          errorMsg: 'Please select date of birth',
+          errorMsg: translate('Please select date of birth'),
           isModalVisible: true,
         });
         return false;
       }
       if (!gender) {
         this.setState({
-          errorMsg: 'Please select gender',
+          errorMsg: translate('Please select gender'),
           isModalVisible: true,
         });
         return false;
       }
-      if (selectedBloodGroup=='Select Blood Group') {
+      if (selectedBloodGroup == 'Select Blood Group') {
         this.setState({
-          errorMsg: 'Please select blood group',
+          errorMsg: translate('Please select blood group'),
           isModalVisible: true,
         });
         return false;
@@ -188,6 +190,7 @@ class UpdateUserDetails extends Component {
       };
 
       let response = await updateMemberDetails(requestData);
+      storeBasicProfile(response);
       if (response) {
         let temp =
           this.props &&
@@ -214,7 +217,7 @@ class UpdateUserDetails extends Component {
         }
       
         Toast.show({
-          text: 'Your Profile has been Updated',
+          text: translate('Your Profile has been Updated'),
           type: 'success',
           duration: 3000,
         });
@@ -225,7 +228,7 @@ class UpdateUserDetails extends Component {
           type: 'danger',
           duration: 3000,
         });
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       }
     } catch (e) {
       Toast.show({
@@ -234,14 +237,14 @@ class UpdateUserDetails extends Component {
       });
       console.log(e);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
   showOnlyDateTimePicker = () => {
-    this.setState({isOnlyDateTimePickerVisible: true});
+    this.setState({ isOnlyDateTimePickerVisible: true });
   };
   hideOnlyDateTimePicker = () => {
-    this.setState({isOnlyDateTimePickerVisible: false});
+    this.setState({ isOnlyDateTimePickerVisible: false });
   };
   handleOnlyDateTimePicker = (date) => {
     try {
@@ -264,12 +267,12 @@ class UpdateUserDetails extends Component {
               <Spinner color="blue" visible={this.state.isLoading} />
             ) : null}
 
-            <Text style={styles.headerText}>Update Your Details</Text>
-            <View style={{marginLeft: -10}}>
-              <Form style={{marginTop: 10}}>
-                <Item style={{borderBottomWidth: 0}}>
+            <Text style={styles.headerText}>{translate("Update Your Details")}</Text>
+            <View style={{ marginLeft: -10 }}>
+              <Form style={{ marginTop: 10 }}>
+                <Item style={{ borderBottomWidth: 0 }}>
                   <Input
-                    placeholder="First Name"
+                    placeholder={translate("First Name")}
                     style={styles.transparentLabel2}
                     value={this.state.firstName}
                     keyboardType={'default'}
@@ -287,9 +290,9 @@ class UpdateUserDetails extends Component {
                   />
                 </Item>
 
-                <Item style={{borderBottomWidth: 0}}>
+                <Item style={{ borderBottomWidth: 0 }}>
                   <Input
-                    placeholder="Middle Name"
+                    placeholder={translate("Middle Name")}
                     style={styles.transparentLabel2}
                     ref={(input) => {
                       this.firstName = input;
@@ -304,14 +307,14 @@ class UpdateUserDetails extends Component {
                     autoCapitalize="none"
                     blurOnSubmit={false}
                     onSubmitEditing={() => {
-                      this.middleName._root.focus(this.setState({focus: true}));
+                      this.middleName._root.focus(this.setState({ focus: true }));
                     }}
                     testID="editMiddleName"
                   />
                 </Item>
-                <Item style={{borderBottomWidth: 0}}>
+                <Item style={{ borderBottomWidth: 0 }}>
                   <Input
-                    placeholder="Last Name"
+                    placeholder={translate("Last Name")}
                     style={styles.transparentLabel2}
                     ref={(input) => {
                       this.middleName = input;
@@ -362,18 +365,18 @@ class UpdateUserDetails extends Component {
                     style={
                       this.state.dob != null
                         ? {
-                            marginTop: 7,
-                            marginBottom: 7,
-                            marginLeft: 5,
-                            fontFamily: 'Roboto',
-                            fontSize: 13,
-                            textAlign: 'center',
-                          }
-                        : {color: '#909090'}
+                          marginTop: 7,
+                          marginBottom: 7,
+                          marginLeft: 5,
+                          fontFamily: 'Roboto',
+                          fontSize: 13,
+                          textAlign: 'center',
+                        }
+                        : { color: '#909090' }
                     }>
                     {this.state.dob != null
                       ? formatDate(this.state.dob, 'DD/MM/YYYY')
-                      : 'Date of Birth'}
+                      : translate('Date of Birth')}
                   </Text>
                   <DateTimePicker
                     mode={'date'}
@@ -404,22 +407,22 @@ class UpdateUserDetails extends Component {
                   <Picker
                     style={styles.transparentLabel2}
                     mode="dropdown"
-                    placeholderStyle={{fontSize: 15, marginLeft: -5}}
+                    placeholderStyle={{ fontSize: 15, marginLeft: -5 }}
                     iosIcon={
                       <Icon
                         name="ios-arrow-down"
-                        style={{color: primaryColor, fontSize: 20}}
+                        style={{ color: primaryColor, fontSize: 20 }}
                       />
                     }
-                    textStyle={{left: 0, marginLeft: -5, color: primaryColor}}
+                    textStyle={{ left: 0, marginLeft: -5, color: primaryColor }}
                     note={false}
                     itemStyle={{
                       color: primaryColor,
                       paddingLeft: 10,
                       fontSize: 16,
                     }}
-                    itemTextStyle={{color: primaryColor}}
-                    style={{width: '100%', color: primaryColor}}
+                    itemTextStyle={{ color: primaryColor }}
+                    style={{ width: '100%', color: primaryColor }}
                     onValueChange={(sample) => {
                       this.setState({
                         selectedBloodGroup: sample,
@@ -441,21 +444,21 @@ class UpdateUserDetails extends Component {
                 </Item>
 
                 <View
-                  style={{marginTop: 20, borderBottomWidth: 0, marginLeft: 20}}>
+                  style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 20 }}>
                   <Row
                     style={
                       Platform.OS === 'ios'
-                        ? {marginLeft: 10, marginRight: 10}
+                        ? { marginLeft: 10, marginRight: 10 }
                         : null
                     }>
                     <Col
                       size={3}
-                      style={{flexDirection: 'row', alignItems: 'center'}}>
+                      style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Radio
                         color={primaryColor}
                         standardStyle={true}
                         onPress={() =>
-                          this.setState({gender: 'Male', updateButton: false})
+                          this.setState({ gender: 'Male', updateButton: false })
                         }
                         selected={this.state.gender === 'Male'}
                       />
@@ -463,27 +466,27 @@ class UpdateUserDetails extends Component {
                         style={
                           Platform.OS === 'ios'
                             ? {
-                                fontFamily: 'Roboto',
-                                fontSize: 14,
-                                marginLeft: 5,
-                              }
+                              fontFamily: 'Roboto',
+                              fontSize: 14,
+                              marginLeft: 5,
+                            }
                             : {
-                                fontFamily: 'Roboto',
-                                fontSize: 12,
-                                marginLeft: 5,
-                              }
+                              fontFamily: 'Roboto',
+                              fontSize: 12,
+                              marginLeft: 5,
+                            }
                         }>
-                        Male
+                        {translate("Male")}
                       </Text>
                     </Col>
                     <Col
                       size={3}
-                      style={{alignItems: 'center', flexDirection: 'row'}}>
+                      style={{ alignItems: 'center', flexDirection: 'row' }}>
                       <Radio
                         color={primaryColor}
                         standardStyle={true}
                         onPress={() =>
-                          this.setState({gender: 'Female', updateButton: false})
+                          this.setState({ gender: 'Female', updateButton: false })
                         }
                         selected={this.state.gender === 'Female'}
                       />
@@ -491,28 +494,28 @@ class UpdateUserDetails extends Component {
                         style={
                           Platform.OS === 'ios'
                             ? {
-                                fontFamily: 'Roboto',
-                                fontSize: 14,
-                                marginLeft: 5,
-                              }
+                              fontFamily: 'Roboto',
+                              fontSize: 14,
+                              marginLeft: 5,
+                            }
                             : {
-                                fontFamily: 'Roboto',
-                                fontSize: 12,
-                                marginLeft: 5,
-                              }
+                              fontFamily: 'Roboto',
+                              fontSize: 12,
+                              marginLeft: 5,
+                            }
                         }>
-                        Female
+                        {translate("Female")}
                       </Text>
                     </Col>
                     <Col
                       size={3}
-                      style={{alignItems: 'center', flexDirection: 'row'}}>
+                      style={{ alignItems: 'center', flexDirection: 'row' }}>
                       <Radio
                         color={primaryColor}
                         standardStyle={true}
                         selectedColor={primaryColor}
                         onPress={() =>
-                          this.setState({gender: 'others', updateButton: false})
+                          this.setState({ gender: 'others', updateButton: false })
                         }
                         selected={this.state.gender === 'others'}
                       />
@@ -520,17 +523,17 @@ class UpdateUserDetails extends Component {
                         style={
                           Platform.OS === 'ios'
                             ? {
-                                fontFamily: 'Roboto',
-                                fontSize: 14,
-                                marginLeft: 5,
-                              }
+                              fontFamily: 'Roboto',
+                              fontSize: 14,
+                              marginLeft: 5,
+                            }
                             : {
-                                fontFamily: 'Roboto',
-                                fontSize: 12,
-                                marginLeft: 5,
-                              }
+                              fontFamily: 'Roboto',
+                              fontSize: 12,
+                              marginLeft: 5,
+                            }
                         }>
-                        Others
+                        {translate("Others")}
                       </Text>
                     </Col>
                   </Row>
@@ -548,18 +551,18 @@ class UpdateUserDetails extends Component {
                     block
                     onPress={() => this.userUpdate()}
                     testID="updateBasicDetails">
-                    <Text style={styles.buttonText}>Update</Text>
+                    <Text style={styles.buttonText}>{translate("Update")}</Text>
                   </Button>
                 </View>
               </Form>
             </View>
           </ScrollView>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <ModalPopup
               errorMessageText={this.state.errorMsg}
               closeButtonText={'CLOSE'}
               closeButtonAction={() =>
-                this.setState({isModalVisible: !this.state.isModalVisible})
+                this.setState({ isModalVisible: !this.state.isModalVisible })
               }
               visible={this.state.isModalVisible}
             />

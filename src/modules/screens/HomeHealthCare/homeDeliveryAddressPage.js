@@ -12,9 +12,11 @@ import { Loader } from '../../../components/ContentLoader';
 import { SERVICE_TYPES } from '../../../setup/config'
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import ConfirmPopup from '../../../components/Shared/ConfirmPopup';
+import {translate} from '../../../setup/translator.helper';
 import {primaryColor, secondaryColor, secondaryColorTouch} from '../../../setup/config';
 
 import RenderUserAddressList from './RenderUserAddressList';
+import {arrangeFullName} from '../../common';
 const USER_FIELDS = "first_name,last_name,mobile_no,email,address,delivery_address,home_healthcare_address"
 
 export default class HomeHealthCareAddressChange extends Component {
@@ -51,7 +53,7 @@ export default class HomeHealthCareAddressChange extends Component {
             const userInfoResp = await fetchUserProfile(userId, USER_FIELDS);
            
             if (userInfoResp && Object.keys(userInfoResp).length) {
-                const fullName = userInfoResp.first_name + " " + userInfoResp.last_name;
+                const fullName =arrangeFullName(userInfoResp&&userInfoResp.first_name,userInfoResp&&userInfoResp.last_name) ;
                 const mobileNo = userInfoResp.mobile_no;
                 const userAddress = userInfoResp.address && userInfoResp.address;
                 const homeHealthCareAddress = userInfoResp.home_healthcare_address && userInfoResp.home_healthcare_address.length ? userInfoResp.home_healthcare_address : [];
@@ -160,7 +162,7 @@ export default class HomeHealthCareAddressChange extends Component {
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
                     <View style={{ marginTop: 10, marginBottom: 10 }} >
-                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, color: primaryColor, alignSelf: 'center', }}>MY ADDRESS</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 14, color: primaryColor, alignSelf: 'center', }}>{translate('MY ADDRESS')}</Text>
                     </View>
                     <View>
                         <FlatList
@@ -172,17 +174,17 @@ export default class HomeHealthCareAddressChange extends Component {
                     <Row style={{alignItems:'center',justifyContent:'center',marginTop:10}}>
                     <TouchableOpacity transparent onPress={() => this.onPressGoToLocPage()} style={{marginBottom:25,alignItems:'center',justifyContent:'center',flexDirection:'row',marginTop:10}}>
                         <Icon name='add' style={{ color: primaryColor,fontSize:35,}} />
-                        <Text uppercase={false} style={styles.customText}>ADD NEW ADDRESS</Text>
+                            <Text uppercase={false} style={styles.customText}>{translate("ADD NEW ADDRESS")}</Text>
                     </TouchableOpacity>
                     </Row>
                    
                 </Content>
                 <ConfirmPopup
-                    warningMessageText={'Are you sure you want to delete this Address !'}
-                    confirmButtonText={'Confirm'}
+                    warningMessageText={translate('Are you sure you want to delete this Address !')}
+                    confirmButtonText={translate('Confirm')}
                     confirmButtonStyle={styles.confirmButton}
                     cancelButtonStyle={styles.cancelButton}
-                    cancelButtonText={'Cancel'}
+                    cancelButtonText={translate('Cancel')}
                     confirmButtonAction={() => {
                         this.removeSelectedUserAddress();
                         this.setState({ isVisibleDeletePop: false })
@@ -196,7 +198,7 @@ export default class HomeHealthCareAddressChange extends Component {
                                 onPress={() => selectedAddressIndex !== -1 ? this.onPressGoToCategoriesPage() : null}
                                 testID='clickButtonToPaymentReviewPage'>
                                 <Row style={{ justifyContent: 'center', }}>
-                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>{selectedAddressIndex !== -1 ? 'NEXT' : 'SELECT ADDRESS'}</Text>
+                                    <Text style={{ marginLeft: -25, marginTop: 2, justifyContent: 'center', alignItems: 'center',fontFamily:'opensans-bold' }}>{selectedAddressIndex !== -1 ? translate('NEXT') : translate('SELECT ADDRESS')}</Text>
                                 </Row>
                             </Button>
                         </Col>

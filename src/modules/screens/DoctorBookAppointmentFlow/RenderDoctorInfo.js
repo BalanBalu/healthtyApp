@@ -4,7 +4,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList,  Dimensions, ScrollView, Image } from 'react-native';
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount } from '../../screens/CommonAll/components';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../common';
-import { getDistance } from '../CommonAll/functions'
+import { getDistance } from '../CommonAll/functions';
+import {translate} from '../../../setup/translator.helper'
 const vipLogo = require('../../../../assets/images/viplogo.png')
 
 export default class RenderDoctorInfo extends Component {
@@ -61,7 +62,7 @@ export default class RenderDoctorInfo extends Component {
                 </Row>
                 <Row>
                     <Col style={{ width: "25%", marginTop: 20 }}>
-                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, }}> Experience</Text>
+                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, }}> {translate("Experience")}</Text>
                         <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{getDoctorExperience(item.calculatedExperience) || {}}</Text>
                     </Col>
                     <Col style={{ width: "25%", marginTop: 20 }}>
@@ -75,7 +76,7 @@ export default class RenderDoctorInfo extends Component {
                         />
                     </Col>
                     <Col style={{ width: "25%", marginTop: 20 }}>
-                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> Fees</Text>
+                        <Text note style={{ fontFamily: 'Roboto', fontSize: 12, textAlign: 'center' }}> {translate("Fees")}</Text>
                         <Text style={{ fontFamily: 'opensans-bold', fontSize: 12,  textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
                             {fee !== feeWithoutOffer ?
                                 <Text style={{ fontFamily: 'opensans-bold',  fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>

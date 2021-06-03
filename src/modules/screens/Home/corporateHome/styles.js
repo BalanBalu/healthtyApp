@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     marginVertical: 1,
   },
   boxText: {
-    fontSize: 14,
+    fontSize: 13,
     marginTop: 5,
     paddingLeft: 5,
     paddingRight: 5,
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
 
   inititationText1: {
-    fontSize: 14,
+    fontSize: 13,
     marginTop: 2,
     color: primaryColor,
     fontFamily: 'opensans-bold',
@@ -102,6 +102,17 @@ const styles = StyleSheet.create({
     color: '#909090',
     textAlign: 'center'
   },
+  commonCardDesignment: {
+    backgroundColor: primaryColor,
+    height: 135,
+    borderRadius: 22,
+    marginTop: 10,
+    marginBottom: 5,
+    marginHorizontal: 10,
+    position: 'relative',
+    flex: 1,
+  },
+ 
 });
 
 export default styles;

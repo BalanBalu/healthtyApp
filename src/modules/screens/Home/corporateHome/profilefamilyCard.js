@@ -5,6 +5,7 @@ import Svg, {Path} from 'react-native-svg';
 import {primaryColor, secondaryColor} from '../../../../setup/config'
 import {FamilyData} from './svgDrawings';
 // import { translate } from "../../../../setup/translator.helper"
+import styles from './styles';
 
 export const ProfileFamilyCard = props => {
   const {navigation,translate} = props;
@@ -12,17 +13,7 @@ export const ProfileFamilyCard = props => {
     <TouchableHighlight activeOpacity={0.6}
     underlayColor="#fff" onPress={() => navigation('E Card')}>
       <View
-      
-        style={{
-          backgroundColor: primaryColor,
-          height: 135,
-          borderRadius: 22,
-          marginTop: 0,
-          marginBottom: 5,
-          marginHorizontal: 10,
-          position: 'relative',
-          flex: 1,
-        }}>
+        style={styles.commonCardDesignment}>
         <View
           style={{
             flexDirection: 'column',
@@ -42,7 +33,7 @@ export const ProfileFamilyCard = props => {
             style={{
               color: '#fff',
               fontFamily: 'Roboto',
-              fontSize: 15,
+              fontSize: 13,
               lineHeight: 24,
             }}>
             {translate('View E card and family')} {'\n'}{translate('profile from here')}{' '}

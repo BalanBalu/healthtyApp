@@ -239,7 +239,7 @@ export const statusValue = {
   },
   "COMPLETED":
   {
-    text: 'Appointment completed',
+    text:'Appointment completed',
     color: 'green',
     icon: 'checkmark-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_COMPLETED'
@@ -253,7 +253,8 @@ export const statusValue = {
   },
   "PROPOSED_NEW_TIME":
   {
-    text: 'PROPOSED NEW TIME',
+    text: 
+    'PROPOSED NEW TIME',
     color: '#3d70ff',
     icon: 'md-timer',
     type: 'REPORT_ISSUE_APPOINTMENT_PROPOSED_NEW_TIME'
@@ -282,14 +283,14 @@ export const statusValue = {
   },
   "PAYMENT_FAILED":
   {
-    text: 'Payment process failed',
+    text:'Payment process failed',
     color: 'red',
     icon: 'ios-close-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_FAILED'
   },
   "DRAFT":
   {
-    text: 'DRAFT',
+    text:'DRAFT',
     color: '#3d70ff',
     icon: 'md-timer',
     type: 'REPORT_ISSUE_APPOINTMENT_DRAFT'

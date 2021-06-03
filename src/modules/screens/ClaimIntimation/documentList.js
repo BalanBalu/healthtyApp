@@ -5,6 +5,7 @@ import { Col, Row, } from 'react-native-easy-grid';
 import styles from './Styles'
 import RNFetchBlob from 'rn-fetch-blob';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { translate } from '../../../setup/translator.helper';
 import { ImageUpload } from '../../screens/commonScreen/imageUpload'
 import { toastMeassage } from '../../common'
 import { uploadImage } from '../../providers/common/common.action'
@@ -35,7 +36,7 @@ class DocumentList extends PureComponent {
     let viewDocs = this.props.navigation.getParam('viewDocs') || false;
     let data = this.props.navigation.getParam('data') || null;
     let uploadData = this.props.navigation.getParam('uploadData') || [];
-    this.setState({ docsUpload, data, uploadData,familyDocs,viewDocs })
+    this.setState({ docsUpload, data, uploadData, familyDocs, viewDocs })
   }
 
   imageUpload = async (data) => {
@@ -61,12 +62,12 @@ class DocumentList extends PureComponent {
       if (response.success) {
         this.uploadedData = [...this.state.uploadData, ...response.data]
         await this.setState({ uploadData: this.uploadedData })
-        toastMeassage('Image upload successfully', 'success', 1000)
+        toastMeassage(translate('Image upload successfully'), 'success', 1000)
       } else {
-        toastMeassage('Problem Uploading Picture' + response.error, 'danger', 3000)
+        toastMeassage(translate('Problem Uploading Picture') + response.error, 'danger', 3000)
       }
     } catch (e) {
-      toastMeassage('Problem Uploading Picture' + e, 'danger', 3000)
+      toastMeassage(translate('Problem Uploading Picture') + e, 'danger', 3000)
     }
     finally {
       this.setState({ isLoadingUploadDocs: false })
@@ -82,13 +83,13 @@ class DocumentList extends PureComponent {
       }
       const claimUpdateResp = await serviceOfClaimIntimation(claimIntimationReqData);
       if (claimUpdateResp && claimUpdateResp.referenceNumber) {
-        this.props.navigation.navigate('ClaimIntimationSuccess', { referenceNumber: claimUpdateResp.referenceNumber, successMsg: 'Your Claim Intimation request is being processed, will be notified on successful completion, your app reference id is' });
+        this.props.navigation.navigate('ClaimIntimationSuccess', { referenceNumber: claimUpdateResp.referenceNumber, successMsg: translate('Your Claim Intimation request is being processed, will be notified on successful completion, your app reference id is') });
       }
       else if (claimUpdateResp && claimUpdateResp.success === false) {
-        toastMeassage('Unable to Submit Claim Request')
+        toastMeassage(translate('Unable to Submit Claim Request'))
       }
     } catch (error) {
-      toastMeassage('Something Went Wrong' + error.message)
+      toastMeassage(translate('Something Went Wrong') + error.message)
     }
     finally {
       this.setState({ isLoading: false })
@@ -105,13 +106,13 @@ class DocumentList extends PureComponent {
       }
       const preAuthUpdateResp = await serviceOfSubmitPreAuthReq(preAuthReqData);
       if (preAuthUpdateResp && preAuthUpdateResp.referenceNumber) {
-        this.props.navigation.navigate('ClaimIntimationSuccess', { successMsg: `Your pre-auth request is successfully sent to the hospital. Kindly contact hospital for further process.` });
+        this.props.navigation.navigate('ClaimIntimationSuccess', { successMsg: translate(`Your pre-auth request is successfully sent to the hospital Kindly contact hospital for further process`) });
       }
       else if (preAuthUpdateResp && preAuthUpdateResp.success === false) {
-        toastMeassage('Unable to Submit PreAuth Request')
+        toastMeassage(translate('Unable to Submit PreAuth Request'))
       }
     } catch (error) {
-      toastMeassage('Something Went Wrong' + error.message)
+      toastMeassage(translate('Something Went Wrong') + error.message)
     }
     finally {
       this.setState({ isLoading: false })
@@ -142,12 +143,12 @@ class DocumentList extends PureComponent {
           }
           await serviceOfUpdateClaimIntimation(reqData);
         }
-        toastMeassage('Image deleted successfully', 'success', 3000)
+        toastMeassage(translate('Image deleted successfully'), 'success', 3000)
       } else {
-        toastMeassage('Something Went Wrong')
+        toastMeassage(translate('Something Went Wrong'))
       }
     } catch (error) {
-      toastMeassage('Something Went Wrong' + error.message)
+      toastMeassage(translate('Something Went Wrong') + error.message)
     }
     finally {
       this.setState({ isLoading: false })
@@ -168,7 +169,7 @@ class DocumentList extends PureComponent {
     })
       .fetch('GET', imageUrl, {})
       .then((res) => {
-        toastMeassage('Your file has been downloaded to downloads folder!')
+        toastMeassage(translate('Your file has been downloaded to downloads folder!'))
         console.log('The file saved to ', res.path());
       })
       .catch((e) => {
@@ -182,7 +183,7 @@ class DocumentList extends PureComponent {
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         {
           title: 'Storage Permission',
-          message: 'App needs access to memory to download the file ',
+          message: translate('App needs access to memory to download the file '),
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -198,7 +199,7 @@ class DocumentList extends PureComponent {
     }
   }
   renderDocumentList(item, index) {
-    const { docsUpload,familyDocs,viewDocs } = this.state;
+    const { docsUpload, familyDocs, viewDocs } = this.state;
     return (
       <RenderDocumentList
         item={item}
@@ -229,7 +230,7 @@ class DocumentList extends PureComponent {
       <Container>
         <Content>
           {docsUpload ?
-            <Text style={styles.headerText}>Upload Your Document</Text> : null}
+            <Text style={styles.headerText}>{translate("Upload Your Document")}</Text> : null}
           {docsUpload ?
             <View
               style={{
@@ -271,15 +272,15 @@ class DocumentList extends PureComponent {
                 } /> :
               !docsUpload ?
                 <Item style={{ borderBottomWidth: 0, marginTop: 100, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > Document list not found!</Text>
+                  <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > {translate("Document list not found!")}</Text>
                 </Item> : null
           }
           <ConfirmPopup
-            warningMessageText={'Are you sure you want to delete !'}
-            confirmButtonText={'Confirm'}
+            warningMessageText={translate('Are you sure you want to delete !')}
+            confirmButtonText={translate('Confirm')}
             confirmButtonStyle={styles.confirmButton}
             cancelButtonStyle={styles.cancelButton}
-            cancelButtonText={'Cancel'}
+            cancelButtonText={translate('Cancel')}
             confirmButtonAction={() => {
               this.deleteDocs();
               this.setState({ deletePopupVisible: false })
@@ -305,7 +306,7 @@ class DocumentList extends PureComponent {
                     onPress={() => this.onPressSubmitOrUpload()}
                     testID='clickButtonToPaymentReviewPage'>
                     <Row style={{ justifyContent: 'center' }}>
-                      <Text style={styles.appButtonText}>{uploadData && uploadData.length ? 'SUBMIT' : 'Upload Document'}</Text>
+                      <Text style={styles.appButtonText}>{uploadData && uploadData.length ? translate('SUBMIT') : translate('Upload Document')}</Text>
                     </Row>
                   </Button>
                 </Col>

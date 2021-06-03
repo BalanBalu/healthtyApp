@@ -1,5 +1,24 @@
 import React, { Component, PureComponent } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Left, Right, Thumbnail, Body, Icon, locations, Input } from 'native-base';
+import {
+  Container,
+  Content,
+  Text,
+  Title,
+  Header,
+  Button,
+  H3,
+  Item,
+  List,
+  ListItem,
+  Card,
+  Left,
+  Right,
+  Thumbnail,
+  Body,
+  Icon,
+  locations,
+  Input,
+} from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -11,24 +30,28 @@ import { Loader } from '../../../../components/ContentLoader';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Communications from 'react-native-communications';
+import { translate } from '../../../../setup/translator.helper';
 import { MAX_DISTANCE_TO_COVER, CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2, primaryColor } from '../../../../setup/config';
 import { getCorporateFullName } from '../../../common';
-
+import { NegativeLabTestDrawing } from '../../Home/corporateHome/svgDrawings';
 class LabCategories extends PureComponent {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       labData: [],
       categoriesMain: [],
-      isLoading: false,
+      isLoading: true,
       consultPopVisible: false,
       selectedSpecialist: null,
-      isCorporateUser: false
+      isCorporateUser: false,
+      textInputValue: '',
     }
     this.emailId = '',
       this.mobile = '',
       this.userName = '',
-      this.city = ''
+      this.city = '',
+      this.stateAddress = ''
+
   }
   async componentDidMount() {
     const loggedMemberInfo = this.props && this.props.profile && this.props.profile.corporateData;
@@ -38,6 +61,8 @@ class LabCategories extends PureComponent {
       if (memInfo.mobile) this.mobile = memInfo.mobile;
       this.userName = getCorporateFullName(memInfo);
       if (memInfo.city) this.city = memInfo.city;
+      if (memInfo.state) this.stateAddress = memInfo.state;
+
     }
     const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
     this.setState({ isCorporateUser: isCorporateUser });
@@ -45,54 +70,58 @@ class LabCategories extends PureComponent {
   }
   getLabCategories = async () => {
     try {
-      this.setState({ isLoading: true })
-      const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
+      // this.setState({ isLoading: true });
+      const {
+        bookappointment: { locationCordinates, isLocationSelected },
+      } = this.props;
       if (!isLocationSelected) {
         Alert.alert(
-          "Location Warning",
-          "Please select the location to continue...!",
+          'Location Warning',
+          'Please select the location to continue...!',
           [
-            { text: "Cancel" },
+            { text: 'Cancel' },
             {
-              text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
-            }
+              text: 'OK',
+              onPress: () => this.props.navigation.navigate('Locations'),
+            },
           ],
         );
-        return
+        return;
       }
       let locationData = {
-        "coordinates": locationCordinates,
-        "maxDistance": MAX_DISTANCE_TO_COVER
-      }
+        coordinates: locationCordinates,
+        maxDistance: MAX_DISTANCE_TO_COVER,
+      };
       let result = await getLabTestCateries(JSON.stringify(locationData));
 
       if (result.success) {
         this.setState({ labData: result.data });
         this.mainLabData = result.data;
       }
-    }
-    catch (e) {
-      console.log(e)
-    }
-    finally {
+    } catch (e) {
+      console.log(e);
+    } finally {
       this.setState({ isLoading: false });
     }
   }
   onPressCatItem = async (type, value) => {
-    const { bookappointment: { locationCordinates, isLocationSelected } } = this.props;
+    const {
+      bookappointment: { locationCordinates, isLocationSelected },
+    } = this.props;
 
     if (!isLocationSelected) {
       Alert.alert(
-        "Location Warning",
-        "Please select the location to continue...!",
+        'Location Warning',
+        'Please select the location to continue...!',
         [
-          { text: "Cancel" },
+          { text: 'Cancel' },
           {
-            text: "OK", onPress: () => this.props.navigation.navigate('Locations'),
-          }
+            text: 'OK',
+            onPress: () => this.props.navigation.navigate('Locations'),
+          },
         ],
       );
-      return
+      return;
     }
     const inputDataBySearch = [
       {
@@ -117,49 +146,65 @@ class LabCategories extends PureComponent {
   filterCategories(searchValue) {
 
     const { labData } = this.state;
-    if (searchValue === searchValue.replace(/^[^*|\":<>[\]{}`\\()'; @& $]+$/)) {
-      return [];
-    }
-    if (!searchValue) {
-      this.setState({ searchValue, data: labData });
-    } else {
-      if (this.mainLabData != undefined) {
-        const filteredCategories = this.mainLabData.filter(ele =>
-          ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
-        );
-        this.setState({ searchValue, labData: filteredCategories })
-      }
-
-    }
+    this.setState({ textInputValue: searchValue });
+    // if (searchValue === searchValue.replace(/^[^*|\":<>[\]{}`\\()'; @& $]+$/)) {
+    //   return [];
+    // }
+    // if (!searchValue) {
+    //   this.setState({ searchValue, data: labData });
+    // } else {
+    //   if (this.mainLabData != undefined) {
+    const filteredCategories = this.mainLabData.filter(ele =>
+      ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
+    );
+    this.setState({ searchValue, labData: filteredCategories });
   }
-
+  clearText = async () => {
+    this.setState({ textInputValue: '' });
+    await this.getLabCategories();
+  }
 
   renderStickeyHeader() {
     return (
-      <View style={{ width: '100%' }} >
-        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Labs by categories</Text>
+      <View style={{ width: '100%' }}>
+        <Text
+          style={{
+            fontFamily: 'Roboto',
+            fontSize: 12,
+            marginLeft: 10,
+            marginTop: 10,
+          }}>
+          {translate('Search Labs by categories')}
+        </Text>
         <Row style={styles.SearchRow}>
+          <Grid><Col size={10}>
+            <Item style={{
+              borderBottomWidth: 0,
+              backgroundColor: '#fff',
+              height: 30,
+              borderRadius: 5
+            }}>
+              <Input
+                placeholder={translate('Categories')}
+                style={styles.inputfield}
+                placeholderTextColor="#e2e2e2"
+                keyboardType={'email-address'}
+                onChangeText={(searchValue) => this.filterCategories(searchValue)}
+                returnKeyType={'done'}
+                multiline={false}
+                value={this.state.textInputValue}
+                underlineColorAndroid="transparent"
+                returnKeyType={'done'}
+              />
+              {this.state.textInputValue ? <TouchableOpacity onPress={() => this.clearText()} style={{ justifyContent: 'center' }}>
+                <Icon name="ios-close" style={{ color: 'gray', fontSize: 25 }} />
+              </TouchableOpacity> :
+                <TouchableOpacity style={{ justifyContent: 'center' }}><Icon name='ios-search' style={{ color: primaryColor, fontSize: 22 }} /></TouchableOpacity>}
 
-          <Col size={9.1} style={{ justifyContent: 'center', }}>
-            <Input
-              placeholder="Categories"
-              style={styles.inputfield}
-              placeholderTextColor="#e2e2e2"
-              keyboardType={'email-address'}
-              onChangeText={searchValue => this.filterCategories(searchValue)}
-              underlineColorAndroid="transparent"
-              blurOnSubmit={false}
-            />
-          </Col>
-          <Col size={0.9} style={styles.SearchStyle}>
-            <TouchableOpacity style={{ justifyContent: 'center' }}>
-              <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
-            </TouchableOpacity>
-          </Col>
-
+            </Item></Col></Grid>
         </Row>
       </View>
-    )
+    );
   }
 
   callToBookAppointment() {
@@ -207,9 +252,9 @@ class LabCategories extends PureComponent {
   }
   onPressArrangeCallBack() {
     try {
-      const message = `${this.userName} needs ${this.state.selectedSpecialist} Test at ${this.city}. please contact Him/Her to this mobile number of ${this.mobile}`;
+      const message = `${this.userName} needs ${this.state.selectedSpecialist} Test at ${this.city ? this.city + ',' : ''} ${this.stateAddress ? this.stateAddress : ''}. please contact them. Mobile Number : ${this.mobile}`;
       Alert.alert(
-        'Send message to SMS / WhatsApp / G-Mail',
+        'Send request by SMS / WhatsApp / Mail',
         '',
         [
           {
@@ -217,7 +262,7 @@ class LabCategories extends PureComponent {
             onPress: () => this.onPressGotoMessageApp(message)
           },
           { text: 'WhatsApp', onPress: () => this.onPressGotoWhatsApp(message) },
-          { text: 'G-Mail', onPress: () => this.onPressGotoMailApp(message) },
+          { text: 'Mail', onPress: () => this.onPressGotoMailApp(message) },
         ]
       );
     } catch (error) {
@@ -258,44 +303,82 @@ class LabCategories extends PureComponent {
                     {`You can Test ${this.state.selectedSpecialist || ''} by `}
                   </Text>
                 </Row>
+                <View >
+                  <TouchableOpacity
+                    danger
+                    style={{
+                      paddingLeft: 10,
+                      paddingRight: 10,
+                      borderRadius: 5,
+                      backgroundColor: '#128283',
+                      height: 38,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 15
+                    }}
+                    onPress={() => {
+                      this.callToBookAppointment();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Row>
+                      <Col size={1} ></Col>
+                      <Col size={1} style={{ marginTop: 7, marginLeft: 40 }}>
+                        <MaterialIcons name="call" style={{ fontSize: 25, color: '#FFF' }} />
+                      </Col>
+                      <Col size={8}>
 
-                <Row
-                  style={{
-                    marginTop: 15,
-                    justifyContent: 'flex-end',
-                    marginBottom: 5,
-                  }}>
-                  <Col size={5}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton1}
-                      onPress={() => {
-                        this.callToBookAppointment();
-                        this.onPressCloseToConsultPop();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText1}>
-                        {' '}
-                        {'Call to Book Appointment'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                  <Col size={5} style={{ marginLeft: 10 }}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton}
-                      onPress={() => {
-                        this.onPressArrangeCallBack();
-                        this.onPressCloseToConsultPop();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText}>
-                        {' '}
-                        {'Arrange Callback'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                </Row>
+                        <Text style={{
+                          fontFamily: 'opensans-bold',
+                          fontSize: 15,
+                          // textAlign: 'center',
+                          color: '#fff',
+                          marginTop: 10
+                        }}>
+                          {'Call to Book Appointment'}
+                        </Text>
+                      </Col>
+                    </Row>
+
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    danger
+                    style={{
+                      paddingLeft: 10,
+                      paddingRight: 10,
+                      borderRadius: 5,
+                      backgroundColor: '#59a7a8',
+                      height: 38,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 20,
+                    }}
+                    onPress={() => {
+                      this.onPressArrangeCallBack();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Row>
+                      <Col size={1} ></Col>
+                      <Col size={1} style={{ marginTop: 7, marginLeft: 40 }}>
+                        <MaterialIcons name="reply" style={{ fontSize: 25, color: '#FFF' }} />
+                      </Col>
+                      <Col size={8}>
+                        <Text style={{
+                          fontFamily: 'opensans-bold',
+                          fontSize: 15,
+                          // textAlign: 'center',
+                          color: '#fff',
+                          marginTop: 10
+                        }}>
+                          {'Arrange Callback'}
+                        </Text>
+                      </Col>
+                    </Row>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </Modal>
@@ -324,65 +407,73 @@ class LabCategories extends PureComponent {
                           resizeMode={FastImage.resizeMode.contain}
                         />
                         <Text style={styles.mainText}>{item.lab_test_category_info.category_name}</Text>
-                        <Text style={styles.subText}>Package starts from</Text>
+                        {/* <Text style={styles.subText}>Package starts from</Text>
                         <Row>
                           <Text style={styles.rsText}> {item.minPriceWithoutOffer != item.minPriceWithOffer ? ('₹' + item.minPriceWithoutOffer) : null}</Text>
                           <Text style={styles.finalRs}>₹ {Math.round(item.minPriceWithOffer)}</Text>
-                        </Row>
+                        </Row> */}
                       </TouchableOpacity>
                     </Col>
                   }
                   keyExtractor={(item, index) => index.toString()}
                 />
-              </View> : null}
+              </View> : Object.keys(labData).length === 0 ?
+                <View style={{ marginBottom: 10 }}>
+                  <FlatList horizontal={false} numColumns={3}
+                    ListHeaderComponent={this.renderStickeyHeader()}
+                  />
+                  <View style={{ marginTop: "70%", flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <NegativeLabTestDrawing />
+                    <Text style={{
+                      fontFamily: "Roboto",
+                      fontSize: 15,
+                      marginTop: "10%",
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                    }} >Your Search Is Not Found</Text></View>
+                </View>
+                : null}
         </Content>
       </Container>
-
-    )
+    );
   }
-
 }
 function labCategoriesState(state) {
-
   return {
     profile: state.profile,
     bookappointment: state.bookappointment,
-  }
+  };
 }
-export default connect(labCategoriesState)(LabCategories)
-
+export default connect(labCategoriesState)(LabCategories);
 
 const styles = StyleSheet.create({
-
-  container:
-  {
-    backgroundColor: '#F4F4F4'
+  container: {
+    backgroundColor: '#F4F4F4',
   },
 
   bodyContent: {
     padding: 5,
-    backgroundColor: '#F4F4F4'
+    backgroundColor: '#F4F4F4',
   },
   textcenter: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'Roboto'
+    fontFamily: 'Roboto',
   },
 
-  column:
-  {
+  column: {
     width: '15%',
     borderRadius: 10,
     margin: 10,
-    padding: 6
+    padding: 6,
   },
-
 
   customImage: {
     height: 100,
     width: 100,
     margin: 10,
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   titleText: {
@@ -390,7 +481,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontFamily: 'Roboto',
-
   },
   SearchRow: {
     backgroundColor: 'white',
@@ -399,10 +489,10 @@ const styles = StyleSheet.create({
     height: 35,
     marginRight: 10,
     marginLeft: 10,
-    marginTop: 5, borderRadius: 5
+    marginTop: 5,
+    borderRadius: 5,
   },
   SearchStyle: {
-
     width: '85%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -412,11 +502,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 12,
     padding: 5,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   mainCol: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderColor: 'gray',
     borderRadius: 20,
     flexDirection: 'row',
@@ -433,14 +523,14 @@ const styles = StyleSheet.create({
     minHeight: 100
   },
   mainText: {
-    fontSize: 10,
+    fontSize: 11,
     textAlign: 'center',
     fontFamily: 'Roboto',
     marginTop: 5,
     paddingLeft: 5,
     paddingRight: 5,
     paddingTop: 1,
-    color: primaryColor
+    color: primaryColor,
   },
   subText: {
     fontSize: 8,

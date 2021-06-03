@@ -8,6 +8,7 @@ import FastImage from 'react-native-fast-image'
 import { CURRENT_PRODUCT_ANDROID_VERSION_CODE, CURRENT_PRODUCT_IOS_VERSION_CODE, IS_ANDROID, CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from '../config'
 import { translate } from "../../setup/translator.helper"
 import { corporateUserSideBarMenuList } from "./appRouterHome";
+import { userSideBarMenuList } from "./appRouterHome";
 import { primaryColor, secondaryColor, secondaryColorTouch } from '../../setup/config';
 import { getFullName } from '../../modules/common';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -28,29 +29,25 @@ class SideBar extends React.Component {
   async componentDidMount() {
     this.getBasicData()
     const token = await AsyncStorage.getItem('token');
-    const userId = await AsyncStorage.getItem('userId');
     if (
       token === undefined ||
-      userId === undefined ||
-      token === null ||
-      userId === null
+      token === null
     ) {
     } else {
-      this.setState({hasLoggedIn: true});
+      this.setState({ hasLoggedIn: true });
     }
     const is_corporate_user = await AsyncStorage.getItem('is_corporate_user');
-
     if (!!is_corporate_user) {
-      this.setState({is_corporate_user: true});
+      this.setState({ is_corporate_user: true });
     }
   }
   clearAysncStorage = async () => {
     try {
       await AsyncStorage.clear()
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
-  
+
     // console.log('Cleared AysyncStorage')
   }
   signInOrSignup(hasLoggedIn) {
@@ -68,8 +65,8 @@ class SideBar extends React.Component {
     if (!data || this.state.hasLoggedIn === false)
       return require('../../../assets/images/Logo.png');
     if (data.profileImage) {
-    
-      if (data.profileImage) source = {uri: data.profileImage[0].original_imageURL};
+
+      if (data.profileImage) source = { uri: data.profileImage[0].original_imageURL };
       else source = require('../../../assets/images/Logo.png');
     } else {
       source = require('../../../assets/images/Logo.png');
@@ -113,8 +110,8 @@ class SideBar extends React.Component {
   }
 
   render() {
-    const {items, menuSubMenus} = this.props;
-    const {hasLoggedIn, is_corporate_user} = this.state;
+    const { items, menuSubMenus } = this.props;
+    const { hasLoggedIn, is_corporate_user } = this.state;
     this.getBasicData();
     return (
       <Container>
@@ -129,7 +126,7 @@ class SideBar extends React.Component {
                 position: 'absolute',
                 marginTop: 30,
               }}>
-              <Col style={{width: '30%'}}>
+              <Col style={{ width: '30%' }}>
                 <FastImage
                   square
                   source={this.renderProfileImageOrLogo()}
@@ -142,9 +139,9 @@ class SideBar extends React.Component {
                   }}
                 />
               </Col>
-              <Col style={{width: '70%'}}>
+              <Col style={{ width: '70%' }}>
                 {hasLoggedIn ? (
-                  <View style={{marginLeft: 10}}>
+                  <View style={{ marginLeft: 10 }}>
                     <Text
                       style={{
                         fontSize: 16,
@@ -155,7 +152,7 @@ class SideBar extends React.Component {
                     </Text>
                     <TouchableOpacity
                       onPress={() => this.props.navigation.navigate('Profile')}
-                      style={{paddingRight: 10, paddingTop: 2, width: '100%'}}>
+                      style={{ paddingRight: 10, paddingTop: 2, width: '100%' }}>
                       <Text
                         style={{
                           fontFamily: 'Roboto',
@@ -170,7 +167,7 @@ class SideBar extends React.Component {
 
                   </View>
                 ) : (
-                  <View style={{alignItems: 'center'}}>
+                  <View style={{ alignItems: 'center' }}>
                     <TouchableOpacity
                       style={{
                         borderColor: '#fff',
@@ -181,16 +178,16 @@ class SideBar extends React.Component {
                         paddingRight: 15,
                         paddingLeft: 15,
                       }}>
-                      <View style={{flexDirection: 'row'}}>
+                      <View style={{ flexDirection: 'row' }}>
                         <Icon
                           name="log-in"
-                          style={{color: '#FFF', fontSize: 25}}
+                          style={{ color: '#FFF', fontSize: 25 }}
                         />
                         <Text
                           style={{
                             fontFamily: 'opensans-bold',
                             fontSize: 15,
-                         
+
                             color: '#FFF',
                             marginTop: 4,
                             marginLeft: 5,
@@ -206,15 +203,12 @@ class SideBar extends React.Component {
           </View>
 
           <FlatList
-            data={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ? corporateUserSideBarMenuList : menuSubMenus}
+            data={is_corporate_user === true ? corporateUserSideBarMenuList : userSideBarMenuList}
             keyExtractor={(item, index) => index.toString()}
-          
+
             renderItem={({ item, index }) =>
-              item.menuForCorporateUser === true && is_corporate_user === false ? null :
+              // item.menuForCorporateUser === true && is_corporate_user === false ? null :
                 <View>
-
-
-
                   <FlatList
                     data={item.subMenus}
                     keyExtractor={(item, index) => index.toString()}
@@ -231,20 +225,20 @@ class SideBar extends React.Component {
                           <Image square source={item.icon}
                             style={item.largeIcon}
                           />
-                          {item.name === "Consultation","Insurance" && item.routeName.length === 0 ?
+                          {item.name === "Consultation", "Insurance" && item.routeName.length === 0 ?
                             <Text style={{ fontFamily: 'Roboto', fontSize: 15, marginLeft: 16 }}>{translate(item.name)}</Text> :
                             <Text style={{ fontFamily: 'Roboto', fontSize: 15 }}>{translate(item.name)}</Text>}
 
-                          {item.name === "Consultation","Insurance" && item.routeName.length === 0 ?
+                          {item.name === "Consultation", "Insurance" && item.routeName.length === 0 ?
                             <Right>
-                              <TouchableOpacity    onPress={() => {
-                            this.subItemPress(item, index)
-                          }}>
-                                <MaterialIcons name={this.state.selectedIndex === index  ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 20 }} />
+                              <TouchableOpacity onPress={() => {
+                                this.subItemPress(item, index)
+                              }}>
+                                <MaterialIcons name={this.state.selectedIndex === index ? "keyboard-arrow-up" : "keyboard-arrow-down"} style={{ fontSize: 20 }} />
                               </TouchableOpacity>
                             </Right> : null}
                         </Row>
-                        {item.name === "Consultation","Insurance" ?
+                        {item.name === "Consultation", "Insurance" ?
                           <View>
 
                             {this.state.showAppointments && item.routeName.length === 0 &&
@@ -293,7 +287,7 @@ class SideBar extends React.Component {
           </View>
         </Content>
         <View>
-          <Footer style={{marginTop: 10, backgroundColor: '#fff'}}>
+          <Footer style={{ marginTop: 10, backgroundColor: '#fff' }}>
             <FooterTab
               style={{
                 justifyContent: 'center',

@@ -12,12 +12,14 @@ import { MAX_DISTANCE_TO_COVER, SERVICE_TYPES } from '../../../setup/config';
 import FastImage from 'react-native-fast-image'
 import CheckLocationWarning from '../Home/LocationWarning';
 import { Loader } from '../../../components/ContentLoader';
+import { translate } from '../../../setup/translator.helper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Communications from 'react-native-communications';
 import { CONSULTATION_ADMIN_MOBILE_NUMBER, CONSULTATION_ADMIN_EMAIL_ID1, CONSULTATION_ADMIN_EMAIL_ID2 } from '../../../setup/config';
 import { getCorporateFullName } from '../../common';
-
+import { NegativeConsultationDrawing } from '../../screens/Home/corporateHome/svgDrawings';
+import { primaryColor } from '../../../setup/config';
 class Categories extends Component {
   constructor(props) {
     super(props)
@@ -26,8 +28,9 @@ class Categories extends Component {
       categoriesMain: [],
       consultPopVisible: false,
       selectedSpecialist: null,
-      isLoading: false,
-      isCorporateUser: false
+      isLoading: true,
+      isCorporateUser: false,
+      textInputValue: '',
     }
 
     this.emailId = '',
@@ -57,10 +60,10 @@ class Categories extends Component {
         this.setState({ data: result.data, categoriesMain: result.data })
         for (let i = 0; i < result.data.length; i++) {
           const item = result.data[i];
-          imageURL = item.imageBaseURL + item.category_id + '.png';
-          base64ImageDataRes = await toDataUrl(imageURL)
-          result.data[i].base64ImageData = base64ImageDataRes;
-          this.setState({ categoriesMain: result.data })
+          // imageURL = item.imageBaseURL + item.category_id + '.png';
+          // base64ImageDataRes = await toDataUrl(imageURL)
+          // result.data[i].base64ImageData = base64ImageDataRes;
+          // this.setState({ categoriesMain: result.data })
         }
       }
     } catch (e) {
@@ -125,6 +128,7 @@ class Categories extends Component {
   }
 
   filterCategories(searchValue) {
+    this.setState({ textInputValue: searchValue });
 
     const { categoriesMain } = this.state;
     if (!searchValue) {
@@ -136,29 +140,35 @@ class Categories extends Component {
       this.setState({ searchValue, data: filteredCategories })
     }
   }
+  clearText = async () => {
+    this.setState({ textInputValue: '' });
+    await this.getCatagries();
+  }
 
 
   renderStickeyHeader() {
     return (
       <View style={{ width: '100%' }} >
-        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Doctors by their specialism</Text>
+        <Text style={{ fontFamily: 'Roboto', fontSize: 12, marginLeft: 10, marginTop: 10 }}>{translate('Search Doctors by their specialism')}</Text>
         <Row style={styles.SearchRow}>
 
           <Col size={9.1} style={{ justifyContent: 'center', }}>
             <Input
-              placeholder="Specialism and Categories"
+              placeholder={translate("Specialism and Categories")}
               style={styles.inputfield}
               placeholderTextColor="#e2e2e2"
               keyboardType={'email-address'}
+              returnKeyType={'done'}
               onChangeText={searchValue => this.filterCategories(searchValue)}
+              value={this.state.textInputValue}
               underlineColorAndroid="transparent"
-              blurOnSubmit={false}
             />
           </Col>
           <Col size={0.9} style={styles.SearchStyle}>
-            <TouchableOpacity style={{ justifyContent: 'center' }}>
-              <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
-            </TouchableOpacity>
+            {this.state.textInputValue ? <TouchableOpacity onPress={() => this.clearText()} style={{ justifyContent: 'center' }}>
+              <Icon name="ios-close" style={{ color: 'gray', fontSize: 25 }} />
+            </TouchableOpacity> :
+              <TouchableOpacity style={{ justifyContent: 'center' }}><Icon name='ios-search' style={{ color: primaryColor, fontSize: 22 }} /></TouchableOpacity>}
           </Col>
 
         </Row>
@@ -216,13 +226,13 @@ class Categories extends Component {
         let userAddressInfo = this.props.navigation.getParam('userAddressInfo') || null;
         const city = userAddressInfo && userAddressInfo.address && userAddressInfo.address.city ? userAddressInfo && userAddressInfo.address && userAddressInfo.address.city : '';
         const state = userAddressInfo && userAddressInfo.address && userAddressInfo.address.state ? userAddressInfo && userAddressInfo.address && userAddressInfo.address.state : '';
-        message = `${this.userName} needs ${this.state.selectedSpecialist} Home health consultation at ${city ? city + ',' : ''} ${state}. please contact Him/Her to this mobile number of ${this.mobile}`;
+        message = `${this.userName} needs ${this.state.selectedSpecialist} Home health consultation at ${city ? city + ', ' : ''} ${state ? state : ''}. please contact them. Mobile Number : ${this.mobile}`;
       }
       else {
-        message = `${this.userName} needs ${this.state.selectedSpecialist} specialist consultation. please contact Him/Her to this mobile number of ${this.mobile}`;
+        message = `${this.userName} needs ${this.state.selectedSpecialist} consultation. please contact them. Phone Number: ${this.mobile}`;
       }
       Alert.alert(
-        'Send message to SMS / WhatsApp / G-Mail',
+        'Send request by SMS / WhatsApp / Mail',
         '',
         [
           {
@@ -230,7 +240,7 @@ class Categories extends Component {
             onPress: () => this.onPressGotoMessageApp(message)
           },
           { text: 'WhatsApp', onPress: () => this.onPressGotoWhatsApp(message) },
-          { text: 'G-Mail', onPress: () => this.onPressGotoMailApp(message) },
+          { text: 'Mail', onPress: () => this.onPressGotoMailApp(message) },
         ]
       );
     } catch (error) {
@@ -272,43 +282,61 @@ class Categories extends Component {
                   </Text>
                 </Row>
 
-                <Row
+                {/* <Row
                   style={{
                     marginTop: 15,
                     justifyContent: 'flex-end',
                     marginBottom: 5,
                   }}>
-                  <Col size={5}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton1}
-                      onPress={() => {
-                        this.callToBookAppointment();
-                        this.onPressCloseToConsultPop();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText1}>
-                        {' '}
-                        {'Call to Book Appointment'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                  <Col size={5} style={{ marginLeft: 10 }}>
-                    <TouchableOpacity
-                      danger
-                      style={styles.backToHomeButton}
-                      onPress={() => {
-                        this.onPressArrangeCallBack();
-                        this.onPressCloseToConsultPop();
-                      }}
-                      testID="cancelButton">
-                      <Text style={styles.backToHomeButtonText}>
-                        {' '}
-                        {'Arrange Callback'}
-                      </Text>
-                    </TouchableOpacity>
-                  </Col>
-                </Row>
+                  <Col size={5}> */}
+                <View >
+                  <TouchableOpacity
+                    danger
+                    style={styles.backToHomeButton1}
+                    onPress={() => {
+                      this.callToBookAppointment();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Row>
+                      <Col size={1} ></Col>
+                      <Col size={1} style={{ marginTop: 7, marginLeft: 40 }}>
+                        <MaterialIcons name="call" style={{ fontSize: 25, color: '#FFF' }} />
+                      </Col>
+                      <Col size={8}>
+
+                        <Text style={styles.backToHomeButtonText1}>
+                          {'Call to Book Appointment'}
+                        </Text>
+                      </Col>
+                    </Row>
+
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    danger
+                    style={styles.backToHomeButton}
+                    onPress={() => {
+                      this.onPressArrangeCallBack();
+                      this.onPressCloseToConsultPop();
+                    }}
+                    testID="cancelButton">
+                    <Row>
+                      <Col size={1} ></Col>
+                      <Col size={1} style={{ marginTop: 7, marginLeft: 40 }}>
+                        <MaterialIcons name="reply" style={{ fontSize: 25, color: '#FFF' }} />
+                      </Col>
+                      <Col size={8}>
+                        <Text style={styles.backToHomeButtonText1}>
+                          {'Arrange Callback'}
+                        </Text>
+                      </Col>
+                    </Row>
+                  </TouchableOpacity>
+                </View>
+                {/* </Col>
+                </Row> */}
               </View>
             </View>
           </Modal>
@@ -344,7 +372,23 @@ class Categories extends Component {
                   }
                   keyExtractor={(item, index) => index.toString()}
                 />
-              </View> : null}
+              </View> : Object.keys(data).length === 0 ?
+                <View style={{ marginBottom: 10 }}>
+                  <FlatList horizontal={false} numColumns={3}
+                    ListHeaderComponent={this.renderStickeyHeader()}
+                  />
+                  <View style={{ marginTop: "70%", flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <NegativeConsultationDrawing />
+                    <Text style={{
+                      fontFamily: "Roboto",
+                      fontSize: 15,
+                      marginTop: "10%",
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                    }} >Your Search Is Not Found</Text></View>
+                </View>
+                : null}
         </Content>
       </Container>
 
@@ -473,13 +517,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#128283',
     height: 38,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 15
   },
   backToHomeButtonText1: {
     fontFamily: 'opensans-bold',
     fontSize: 15,
-    textAlign: 'center',
+    // textAlign: 'center',
     color: '#fff',
+    marginTop: 10
   },
   backToHomeButton: {
     paddingLeft: 10,
@@ -488,7 +534,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#59a7a8',
     height: 38,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 20,
   },
   backToHomeButtonText: {
     fontFamily: 'opensans-bold',

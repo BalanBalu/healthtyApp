@@ -9,7 +9,7 @@ import Spinner from "../../../components/Spinner";
 import { getCurrentVersion } from '../../providers/profile/profile.action';
 import { onlySpaceNotAllowed, chatIssue, pharmacyIssue } from '../../common';
 // import { statusValue } from '../../../setup/helpers';
-
+import {translate} from '../../../setup/translator.helper';
 import { insertReportIssue } from '../../providers/reportIssue/reportIssue.action';
 import {primaryColor} from '../../../setup/config'
 
@@ -50,7 +50,7 @@ class ReportIssue extends Component {
    
       let obj={ 
         issue_no:issueList.length+1 ,
-        issue : "Others" }
+        issue : translate("Others") }
         issueList.push(obj)
         
       this.setState({ issueList:issueList })
@@ -115,7 +115,7 @@ class ReportIssue extends Component {
       }
       else {
         Toast.show({
-          text: 'kindly give report ',
+          text: translate('kindly give report'),
           type: 'dangers',
           duration: 3000,
         })
@@ -145,7 +145,7 @@ class ReportIssue extends Component {
             cancelable={false}
           /> : null}
           <View style={{ marginBottom: 40, }}>
-            <Text style={{ fontFamily: 'opensans-bold', fontSize: 20, textAlign: 'center',  }}>{this.state.issueFor.serviceType || ' ' + ' Issue'}</Text>
+            <Text style={{ fontFamily: 'opensans-bold', fontSize: 20, textAlign: 'center',  }}>{this.state.issueFor.serviceType || ' ' + translate('Issue')}</Text>
 
             <Form>
               <View >
@@ -167,7 +167,7 @@ class ReportIssue extends Component {
                           <Col size={8.5}>
                             <TextInput
                               onChangeText={complaint => this.setState({ complaint })}
-                              multiline={true} placeholder="Reason......"
+                              multiline={true} placeholder={translate("Reason")}
                               style={styles.textInput1} />
                           </Col>
                         </Row> : null}
@@ -187,10 +187,10 @@ class ReportIssue extends Component {
         <Footer style={{ backgroundColor: 'white' }}>
           <Row style={{ justifyContent: 'center', marginTop: -10 }}>
             <Button style={styles.ReportButton} onPress={() => this.props.navigation.pop()}>
-              <Text style={styles.ReportButtonText}>CANCEL</Text>
+              <Text style={styles.ReportButtonText}>{translate("CANCEL")}</Text>
             </Button>
             <Button style={styles.ReportButton1} onPress={() => this.insertReportIssueData()}>
-              <Text style={styles.ReportButtonText}>REPORT</Text>
+              <Text style={styles.ReportButtonText}>{translate("REPORT")}</Text>
             </Button>
           </Row>
         </Footer>
