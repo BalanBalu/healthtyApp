@@ -1,7 +1,12 @@
 import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService, postServiceExternal, smartHealthDeleteService } from '../../../setup/services/httpservices';
 import { getCorporateUserEcardDetailsEndpoint, getECardLinkEndpoint } from '../../../setup/services/corporateEndpoint';
 import { AuthId } from '../../../setup/config'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
+export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
+export const LOGIN_RESPONSE = 'AUTH/LOGIN_RESPONSE'
+import { store } from '../../../setup/store';
+import {setUserLocally} from '../../providers/auth/auth.actions'
 
 
 /*  Search by Network hospitals for Corporate User */
@@ -407,6 +412,80 @@ export async function serviceOfGenerateOtp4UpdateMemberEmail(bodyData) {
     const endpoint = 'auth/member/send-update-email-otp'
     const resp = await smartHealthPostService(endpoint, bodyData)
     return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}
+
+export async function generateOTPForLoginWithOtp(userId) {
+  try {
+    const endpoint = 'auth/generate-otp-member-login?userId='+userId;
+    console.log("endpoint",endpoint)
+    const resp = await smartHealthPostService(endpoint)
+    return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}
+
+export async function verifyMemberLoginWithOtp(reqData) {
+  try {
+    const endpoint = 'auth/login-with-otp';
+    console.log("reqData",reqData)
+    const response = await smartHealthPostService(endpoint,reqData)
+    if (response && response.data && response.data.access_token) {
+      await AsyncStorage.setItem('smartToken', response.data.access_token)
+      let ends = 'member-detail/memberId/by-email?email=' + response.data.userId;
+       let res = await smartHealthGetService(ends);
+       if (res && res.data && res.data[0]) {
+         let reqData = res.data[0];
+         const loggedUsersData={
+           is_corporate_user : true
+         }
+         if(reqData&& reqData.emailId){
+           loggedUsersData.email=reqData.emailId
+         }
+         if(reqData&& reqData.mobile){
+           loggedUsersData.mobile_no=reqData.mobile
+         }
+         if (reqData.relationship) {
+           await AsyncStorage.setItem('relationship', reqData.relationship)
+         }
+            await AsyncStorage.setItem('memberId', reqData.memberId)
+           await AsyncStorage.setItem('memberEmailId', reqData.emailId)
+           await AsyncStorage.setItem('memberPolicyNo', reqData.policyNo)
+           await AsyncStorage.setItem('employeeCode', reqData.employeeId)
+           const token = response.data.access_token;
+           await setUserLocally(token, loggedUsersData);
+           store.dispatch({
+             type: LOGIN_RESPONSE,
+             message: "Successfully Logged in"
+           })
+       }
+       else{
+       store.dispatch({
+         type: LOGIN_HAS_ERROR,
+         message: "Invalid Login Credentials"
+       })
+     }
+     } else {
+       store.dispatch({
+         type: LOGIN_HAS_ERROR,
+         message: "Invalid Login Credentials"
+       })
+     }
+     return true
+ 
   } catch (Ex) {
 
     return {

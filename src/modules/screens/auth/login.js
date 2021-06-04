@@ -146,9 +146,9 @@ class Login extends Component {
                         onSubmitEditing={() => { this.userEntry._root.focus(); }}
                       />
                     </Item>
-                    <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Password</Label>
+                    <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>MPIN</Label>
                     <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
-                      <Input placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 15, }}
+                      <Input placeholder="MPIN" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 15, }}
                         ref={(input) => { this.userEntry = input; }}
                         secureTextEntry={true}
                         returnKeyType={'done'}
@@ -216,8 +216,18 @@ class Login extends Component {
                       </TouchableOpacity>
                       {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'Roboto', marginTop: 2 }}>{loginErrorMsg}</Text> */}
                     </View>
+{isSelected === 'corporate_user'?
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                      <TouchableOpacity small
+                        style={ styles.loginButton1}
+                        disabled={isLoading}
+                        block success onPress={() => this.props.navigation.navigate('loginWithOtp')}>
+                        <Text uppercase={true} style={styles.ButtonText}>Login With OTP </Text>
+                      </TouchableOpacity>
+                      {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'Roboto', marginTop: 2 }}>{loginErrorMsg}</Text> */}
+                    </View>:null}
 
-                    <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
+                    <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginTop: 20, marginBottom: 10 }}>
                       <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'Roboto', color: primaryColor }}>Don't Have An Account ?</Text>
                       <TouchableOpacity onPress={() => {
                         this.props.navigation.navigate('signup')
