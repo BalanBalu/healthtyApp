@@ -354,9 +354,12 @@ export default class MapBox extends Component {
         return;
       }
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let relationship = (await AsyncStorage.getItem('relationship')) || null;
+
       const reqUserAddressData = {
         _id: updateId,
         emailId:memberEmailId,
+        relationship:relationship,
         coordinates: [center[1], center[0]],
         pinCode: Number(pinCode),
         address1,
@@ -391,7 +394,10 @@ export default class MapBox extends Component {
       //     delete reqUserAddressData.address;
       //   }
       this.setState({ isLoading: true });
+      console.log("reqUserAddressData",reqUserAddressData)
       const updateResp = await updateMemberDetails(reqUserAddressData);
+      console.log("updateResp",updateResp)
+
       if (updateResp) {
         if (fromProfile) {
           Toast.show({
