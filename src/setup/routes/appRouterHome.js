@@ -18,6 +18,8 @@ import { Icon, View, Thumbnail, Item, Input, Left, Right } from 'native-base';
 import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
+import loginWithOtp from "../../modules/screens/auth/loginWithOtp";
+
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
 import renderOtpInput from "../../modules/screens/auth/renderOtpInput";
@@ -132,6 +134,9 @@ const AuthRoutes = {
   },
   renderOtpInput: {
     screen: renderOtpInput,
+  },
+  loginWithOtp:{
+    screen:loginWithOtp
   },
   RenderVerifyEmailOtp: {
     screen: RenderVerifyEmailOtp,
