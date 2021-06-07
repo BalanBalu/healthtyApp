@@ -561,7 +561,7 @@ export const smartHealthStack=createStackNavigator({
   MedicineRecords: {
     screen: MedicineRecords,
     navigationOptions: {
-      title: translate('Health Records'),
+      title: "Health Records",
       headerTitleStyle: { fontFamily: "Roboto", }
 
     }

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { FlatList, Image, ImageBackground, TabBarIOS, TouchableOpacity } from 'react-native'
 import styles from '../../screens/auth/styles';
 import { ScrollView } from 'react-native-gesture-handler';
-import { debounce, validateEmailAddress, acceptNumbersOnly } from '../../common';
+import { debounce, validateEmailAddress, acceptNumbersOnly ,validateMobileNumber} from '../../common';
 import Spinner from '../../../components/Spinner';
 import OTPTextInput from 'react-native-otp-textinput';
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE, primaryColor } from "../../../setup/config";
@@ -66,11 +66,15 @@ class Forgotpassword extends Component {
                 }
             } else {
                 if (!userEntry) {
-                    this.setState({ errorMessage: 'Enter your Email' });
+                    this.setState({ errorMessage: 'Enter your Email Or Mobile' });
                     return false;
                 }
-                if (validateEmailAddress(userEntry) === false) {
+                if (isNaN(userEntry)&&validateEmailAddress(userEntry) === false) {
                     this.setState({ errorMessage: 'You Entered Email is Not valid' });
+                    return false;
+                }
+                if (!isNaN(userEntry)&&validateMobileNumber(userEntry) === false) {
+                    this.setState({ errorMessage: 'You Entered Mobile number is not valid' });
                     return false;
                 }
             }

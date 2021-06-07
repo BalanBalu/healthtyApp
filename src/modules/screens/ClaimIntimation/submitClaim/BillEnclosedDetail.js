@@ -1,11 +1,11 @@
-import React, {PureComponent} from 'react';
-import {Text, View, Input, Icon, Item, ListItem} from 'native-base';
-import {TouchableOpacity, FlatList} from 'react-native';
+import React, { PureComponent } from 'react';
+import { Text, View, Input, Icon, Item, ListItem } from 'native-base';
+import { TouchableOpacity, FlatList } from 'react-native';
 import styles from '../Styles';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {subTimeUnit, formatDate} from '../../../../setup/helpers';
-import {toastMeassage, acceptNumbersOnly} from '../../../common';
-import {Col, Row} from 'react-native-easy-grid';
+import { subTimeUnit, formatDate } from '../../../../setup/helpers';
+import { toastMeassage, acceptNumbersOnly } from '../../../common';
+import { Col, Row } from 'react-native-easy-grid';
 import ModalPopup from '../../../../components/Shared/ModalPopup';
 
 class BillEnclosedDeatil extends PureComponent {
@@ -23,17 +23,18 @@ class BillEnclosedDeatil extends PureComponent {
       billNo: '',
       isModalVisible: false,
       errorMsg: '',
+      editDetails: false,
     };
   }
   onPressConfirmDateValue = (date) => {
-    this.setState({dateOfHospitalizationForBill: date, isVisible: false});
+    this.setState({ dateOfHospitalizationForBill: date, isVisible: false });
   };
   onCancelPicker = () => {
-    this.setState({isVisible: false});
+    this.setState({ isVisible: false });
   };
 
   openPicker = () => {
-    this.setState({isVisible: true});
+    this.setState({ isVisible: true });
   };
 
   addTable = () => {
@@ -45,6 +46,7 @@ class BillEnclosedDeatil extends PureComponent {
       towards,
       amount,
       bilEnclosedList,
+      refreshCount,
     } = this.state;
     if (billNo === '') {
       this.setState({
@@ -88,7 +90,6 @@ class BillEnclosedDeatil extends PureComponent {
       towards: towards,
       amount: amount,
     });
-    const {refreshCount} = this.state;
     this.setState({
       bilEnclosedList: bilEnclosedList,
       refreshCount: refreshCount + 1,
@@ -98,27 +99,62 @@ class BillEnclosedDeatil extends PureComponent {
       towards: '',
       amount: '',
     });
-    console.log('bilEnclosedList', bilEnclosedList);
   };
 
   deleteBillEnclosedDetails = async (item, index) => {
     let temp = this.state.bilEnclosedList;
     await temp.splice(index, 1);
-    await this.setState({bilEnclosedList: temp,refreshCount: this.state.refreshCount + 1,});
-    console.log(this.state.bilEnclosedList);
+    await this.setState({
+      bilEnclosedList: temp,
+      refreshCount: this.state.refreshCount + 1,
+    });
   };
 
-  // editBillEnclosedDetails = async (item, index) => {
-  //   console.log('index', index);
+  editBillEnclosedDetails = async (item, index) => {
+    this.setState({
+      refreshCount: this.state.refreshCount + 1,
+      billNo: item.billNo,
+      dateOfHospitalizationForBill: item.dateOfHospitalizationForBill,
+      issuedBy: item.issuedBy,
+      towards: item.towards,
+      amount: item.amount,
+      editDetails: true,
+      index: index,
+    });
+  };
+  editTable = async () => {
+    const {
+      billNo,
+      dateOfHospitalizationForBill,
+      issuedBy,
+      towards,
+      amount,
+      bilEnclosedList,
+      refreshCount,
+      index,
+    } = this.state;
+    bilEnclosedList.map((ele, i) => {
+      if (index == i) {
+        (ele.billNo = billNo),
+          (ele.dateOfHospitalizationForBill = dateOfHospitalizationForBill),
+          (ele.issuedBy = issuedBy),
+          (ele.towards = towards),
+          (ele.amount = amount);
+      }
+    });
 
-  //   console.log('item', item);
-  //  this.setState()
-  //   // let temp = this.state.bilEnclosedList;
-  //   // temp.splice(index, 1);
-  //   // await this.setState({bilEnclosedList: temp});
-  //   // console.log(this.state.bilEnclosedList);
-  // };
-  //   console.log('bilEnclosedList', bilEnclosedList.length);
+    this.setState({
+      bilEnclosedList: bilEnclosedList,
+      refreshCount: refreshCount + 1,
+      billNo: '',
+      dateOfHospitalizationForBill: null,
+      issuedBy: '',
+      towards: '',
+      amount: '',
+      editDetails: false,
+    });
+  };
+
   render() {
     const {
       billNo,
@@ -130,41 +166,42 @@ class BillEnclosedDeatil extends PureComponent {
       bilEnclosedList,
       isModalVisible,
       errorMsg,
+      editDetails,
     } = this.state;
-    const{updateBillsEnclosedDetails}=this.props
+    const {updateBillsEnclosedDetails} = this.props;
 
     return (
       <View>
-        <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
           <Col size={1}>
             <Text style={styles.text}>
-              Bill No<Text style={{color: 'red'}}>*</Text>
+              Bill No<Text style={{ color: 'red' }}>*</Text>
             </Text>
 
-            <Item regular style={{borderRadius: 6, height: 35}}>
+            <Item regular style={{ borderRadius: 6, height: 35 }}>
               <Input
                 placeholder="Enter BILL No "
                 placeholderTextColor={'#CDD0D9'}
+                style={styles.fontColorOfInput}
                 returnKeyType={'next'}
                 value={billNo}
-                style={styles.form_field}
                 keyboardType={'default'}
-                onChangeText={(text) => this.setState({billNo: text})}
+                onChangeText={(text) => this.setState({ billNo: text })}
                 testID="addBillNo"
               />
             </Item>
           </Col>
         </Row>
 
-        <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
           <Col size={1}>
             <Text style={styles.text}>
-              Date of hospitalization<Text style={{color: 'red'}}>*</Text>
+              Date of hospitalization<Text style={{ color: 'red' }}>*</Text>
             </Text>
 
-            <Item regular style={{borderRadius: 6, height: 35}}>
+            <Item regular style={{ borderRadius: 6, height: 35 }}>
               <TouchableOpacity
-                style={{flexDirection: 'row'}}
+                style={{ flexDirection: 'row' }}
                 onPress={this.openPicker}
                 testID="chooseDateOfHospitalizationForBill">
                 <Icon name="md-calendar" style={styles.calenderStyle} />
@@ -191,63 +228,65 @@ class BillEnclosedDeatil extends PureComponent {
             </Item>
           </Col>
         </Row>
-        <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
           <Col size={1}>
             <Text style={styles.text}>
-              Issued by<Text style={{color: 'red'}}>*</Text>
+              Issued by<Text style={{ color: 'red' }}>*</Text>
             </Text>
 
-            <Item regular style={{borderRadius: 6, height: 35}}>
+            <Item regular style={{ borderRadius: 6, height: 35 }}>
               <Input
                 placeholder="Enter Inssured by details "
                 placeholderTextColor={'#CDD0D9'}
+                style={styles.fontColorOfInput}
                 returnKeyType={'next'}
                 value={issuedBy}
-                style={styles.form_field}
+               
                 keyboardType={'default'}
-                onChangeText={(text) => this.setState({issuedBy: text})}
+                onChangeText={(text) => this.setState({ issuedBy: text })}
                 testID="addIssuedBy"
               />
             </Item>
           </Col>
         </Row>
-        <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
           <Col size={1}>
             <Text style={styles.text}>
-              Towards<Text style={{color: 'red'}}>*</Text>
+              Towards<Text style={{ color: 'red' }}>*</Text>
             </Text>
 
-            <Item regular style={{borderRadius: 6, height: 35}}>
+            <Item regular style={{ borderRadius: 6, height: 35 }}>
               <Input
                 placeholder="Enter Towards details "
                 placeholderTextColor={'#CDD0D9'}
+                style={styles.fontColorOfInput}
                 returnKeyType={'next'}
                 value={towards}
-                style={styles.form_field}
+                
                 keyboardType={'default'}
-                onChangeText={(text) => this.setState({towards: text})}
+                onChangeText={(text) => this.setState({ towards: text })}
                 testID="addTowards"
               />
             </Item>
           </Col>
         </Row>
-        <Row size={4} style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
+        <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>
           <Col size={1}>
             <Text style={styles.text}>
-              Amount<Text style={{color: 'red'}}>*</Text>
+              Amount<Text style={{ color: 'red' }}>*</Text>
             </Text>
 
-            <Item regular style={{borderRadius: 6, height: 35}}>
+            <Item regular style={{ borderRadius: 6, height: 35 }}>
               <Input
                 placeholder="Enter Amount "
                 placeholderTextColor={'#CDD0D9'}
+                style={styles.fontColorOfInput}
                 returnKeyType={'next'}
-                value={amount}
-                style={styles.form_field}
+                value={amount}  
                 keyboardType={'number-pad'}
                 onChangeText={(text) =>
                   acceptNumbersOnly(text) == true || text === ''
-                    ? this.setState({amount: text})
+                    ? this.setState({ amount: text })
                     : null
                 }
                 testID="addAmount"
@@ -259,26 +298,28 @@ class BillEnclosedDeatil extends PureComponent {
         <View style={styles.ButtonView}>
           <TouchableOpacity
             style={styles.submit_ButtonStyle}
-            onPress={this.addTable}>
-            <Text style={{color: '#fff'}}>Save</Text>
+            onPress={editDetails ? this.editTable : this.addTable}>
+            <Text style={{color: '#fff'}}>
+              {editDetails ? 'Upadte' : 'Save'}
+            </Text>
           </TouchableOpacity>
         </View>
 
         {bilEnclosedList && bilEnclosedList.length != 0 ? (
           <FlatList
-            containerstyle={{flex: 1}}
+            containerstyle={{ flex: 1 }}
             data={bilEnclosedList}
             extraData={bilEnclosedList}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               return (
-                <View style={{padding: 10, marginTop: 10, marginBottom: 20}}>
+                <View style={{ padding: 10, marginTop: 10, marginBottom: 20 }}>
                   <View style={styles.form_field_view}>
                     <Text style={[styles.form_field_inline_label]}>SL No</Text>
                     <Text
                       style={[
                         styles.form_field,
-                        {paddingTop: 15, paddingLeft: 10},
+                        { paddingTop: 15, paddingLeft: 10 },
                       ]}>
                       {index + 1}
                     </Text>
@@ -291,10 +332,11 @@ class BillEnclosedDeatil extends PureComponent {
                     <Input
                       placeholder="Enter BILL No "
                       placeholderTextColor={'#CDD0D9'}
+                      style={styles.fontColorOfInput}
                       returnKeyType={'next'}
                       style={styles.form_field}
                       keyboardType={'default'}
-                      onChangeText={(text) => this.setState({billNo: text})}
+                      onChangeText={(text) => this.setState({ billNo: text })}
                       value={item.billNo}
                       testID="editBillNo"
                     />
@@ -309,12 +351,12 @@ class BillEnclosedDeatil extends PureComponent {
                           alignItems: 'center',
                         },
                       ]}>
-                      <Text style={{fontSize: 12}}>Date of</Text>
+                      <Text style={{ fontSize: 12 }}>Date of</Text>
 
-                      <Text style={{fontSize: 12}}>hospitalization</Text>
+                      <Text style={{ fontSize: 12 }}>hospitalization</Text>
                     </View>
                     <TouchableOpacity
-                      style={[styles.form_field, {flexDirection: 'row'}]}
+                      style={[styles.form_field, { flexDirection: 'row' }]}
                       onPress={this.openPicker}>
                       <Icon name="md-calendar" style={styles.calenderStyle} />
                       <Text
@@ -325,9 +367,9 @@ class BillEnclosedDeatil extends PureComponent {
                         }>
                         {item.dateOfHospitalizationForBill
                           ? formatDate(
-                              item.dateOfHospitalizationForBill,
-                              'DD/MM/YYYY',
-                            )
+                            item.dateOfHospitalizationForBill,
+                            'DD/MM/YYYY',
+                          )
                           : new Date()}
                       </Text>
                       <DateTimePicker
@@ -348,11 +390,12 @@ class BillEnclosedDeatil extends PureComponent {
                     <Input
                       placeholder="Enter Inssured by details "
                       placeholderTextColor={'#CDD0D9'}
+                      style={styles.fontColorOfInput}
                       returnKeyType={'next'}
                       value={item.issuedBy}
                       style={styles.form_field}
                       keyboardType={'default'}
-                      onChangeText={(text) => this.setState({issuedBy: text})}
+                      onChangeText={(text) => this.setState({ issuedBy: text })}
                       testID="editIssuedBy"
                     />
                   </View>
@@ -363,11 +406,12 @@ class BillEnclosedDeatil extends PureComponent {
                     <Input
                       placeholder="Enter Towards details "
                       placeholderTextColor={'#CDD0D9'}
+                      style={styles.fontColorOfInput}
                       returnKeyType={'next'}
                       value={item.towards}
                       style={styles.form_field}
                       keyboardType={'default'}
-                      onChangeText={(text) => this.setState({towards: text})}
+                      onChangeText={(text) => this.setState({ towards: text })}
                       testID="editTowards"
                     />
                   </View>
@@ -378,11 +422,12 @@ class BillEnclosedDeatil extends PureComponent {
                     <Input
                       placeholder="Enter Amount "
                       placeholderTextColor={'#CDD0D9'}
+                      style={styles.fontColorOfInput}
                       returnKeyType={'next'}
                       value={item.amount}
                       style={styles.form_field}
                       keyboardType={'number-pad'}
-                      onChangeText={(text) => this.setState({amount: text})}
+                      onChangeText={(text) => this.setState({ amount: text })}
                       testID="editAmount"
                     />
                   </View>
@@ -391,9 +436,9 @@ class BillEnclosedDeatil extends PureComponent {
                     <View
                       style={
                         (styles.form_field,
-                        {flexDirection: 'row', width: '85%'})
+                          { flexDirection: 'row', width: '85%' })
                       }>
-                      {/* <TouchableOpacity
+                      <TouchableOpacity
                         style={{
                           width: '40%',
                           backgroundColor: 'gray',
@@ -407,7 +452,7 @@ class BillEnclosedDeatil extends PureComponent {
                         <Text style={{textAlign: 'center', color: '#fff'}}>
                           Edit
                         </Text>
-                      </TouchableOpacity> */}
+                      </TouchableOpacity>
 
                       <TouchableOpacity
                         style={{
@@ -420,7 +465,7 @@ class BillEnclosedDeatil extends PureComponent {
                         onPress={() =>
                           this.deleteBillEnclosedDetails(item, index)
                         }>
-                        <Text style={{textAlign: 'center', color: '#fff'}}>
+                        <Text style={{ textAlign: 'center', color: '#fff' }}>
                           Delete
                         </Text>
                       </TouchableOpacity>
@@ -431,28 +476,29 @@ class BillEnclosedDeatil extends PureComponent {
             }}
           />
         ) : null}
-        
+
         <View style={{flex: 1}}>
           <ModalPopup
             errorMessageText={errorMsg}
             closeButtonText={'CLOSE'}
             closeButtonAction={() =>
-              this.setState({isModalVisible: !isModalVisible})
+              this.setState({ isModalVisible: !isModalVisible })
             }
             visible={isModalVisible}
           />
         </View>
-        {this.state.bilEnclosedList&&this.state.bilEnclosedList.length?
-        <View style={styles.ButtonView}>
-        <TouchableOpacity
+        {this.state.bilEnclosedList && this.state.bilEnclosedList.length ? (
+          <View style={styles.ButtonView}>
+            <TouchableOpacity
               style={styles.submit_ButtonStyle}
-              onPress={() => updateBillsEnclosedDetails(this.state.bilEnclosedList)}
-              disabled={
-                this.state.bilEnclosedList.length ? false : true
-              }>
+              onPress={() =>
+                updateBillsEnclosedDetails(this.state.bilEnclosedList)
+              }
+              disabled={this.state.bilEnclosedList.length ? false : true}>
               <Text style={{color: '#fff'}}>Submit</Text>
             </TouchableOpacity>
-          </View>:null}
+          </View>
+        ) : null}
       </View>
     );
   }

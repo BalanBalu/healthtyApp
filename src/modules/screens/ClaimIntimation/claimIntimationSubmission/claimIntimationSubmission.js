@@ -243,6 +243,7 @@ export default class ClaimInitiationSubmission extends Component {
                   onChangeText={(enteredPolicyText) =>
                     this.setState({policyNo: enteredPolicyText})
                   }
+                  style={styles.inputTextBoxStyleColor}
                   editable={policyNo == undefined ? true : false}
                   blurOnSubmit={false}
                   onSubmitEditing={() => {
@@ -263,6 +264,7 @@ export default class ClaimInitiationSubmission extends Component {
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={name}
+                  style={styles.inputTextBoxStyleColor}
                   keyboardType={'default'}
                   editable={name == undefined ? true : false}
                   onChangeText={(name) => this.setState({name: name})}
@@ -285,6 +287,7 @@ export default class ClaimInitiationSubmission extends Component {
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={email}
+                  style={styles.inputTextBoxStyleColor}
                   keyboardType={'default'}
                   editable={this.emailEditable}
                   onChangeText={(mailId) => this.setState({email: mailId})}
@@ -308,6 +311,7 @@ export default class ClaimInitiationSubmission extends Component {
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={memberId}
+                  style={styles.inputTextBoxStyleColor}
                   keyboardType={'number-pad'}
                   editable={this.mIdEditable}
                   onChangeText={(enteredMemberIdText) =>
@@ -330,6 +334,7 @@ export default class ClaimInitiationSubmission extends Component {
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'next'}
                   value={employeeId}
+                  style={styles.inputTextBoxStyleColor}
                   keyboardType={'number-pad'}
                   editable={employeeId == undefined ? true : false}
                   onChangeText={(enteredEmployeeIdText) =>
@@ -344,7 +349,7 @@ export default class ClaimInitiationSubmission extends Component {
             style={{marginLeft: 20, marginRight: 20, marginTop: 10}}>
             <Col size={1}>
               <Text style={styles.text}>{translate("Hospital")}</Text>
-              <Item regular style={{borderRadius: 6}}>
+              <Item regular style={{borderRadius: 6,}}>
                 <Input
                   ref={(input) => {
                     this.mailId = input;
@@ -353,6 +358,7 @@ export default class ClaimInitiationSubmission extends Component {
                   placeholderTextColor={'#CDD0D9'}
                   returnKeyType={'done'}
                   value={hospitalName}
+                  style={styles.inputTextBoxStyleColor}
                   keyboardType={'default'}
                   onChangeText={(hospitalName) => this.setState({hospitalName})}
                 />
@@ -489,6 +495,7 @@ export default class ClaimInitiationSubmission extends Component {
                   returnKeyType={'next'}
                   value={ailment}
                   keyboardType={'default'}
+                  style={styles.inputTextBoxStyleColor}
                   onChangeText={(ailment) => this.setState({ailment})}
                   blurOnSubmit={false}
                   onSubmitEditing={() => {
@@ -515,6 +522,7 @@ export default class ClaimInitiationSubmission extends Component {
                   keyboardType={'number-pad'}
                   onChangeText={(amount) => this.setState({amount})}
                   blurOnSubmit={false}
+                  style={styles.inputTextBoxStyleColor}
                   onSubmitEditing={() => {
                     this.amount._root.focus();
                   }}
@@ -537,6 +545,7 @@ export default class ClaimInitiationSubmission extends Component {
                   returnKeyType={'done'}
                   value={contactNum}
                   keyboardType={'number-pad'}
+                  style={styles.inputTextBoxStyleColor}
                   onChangeText={(contactNum) =>
                     acceptNumbersOnly(contactNum) == true || contactNum === ''
                       ? this.setState({contactNum})

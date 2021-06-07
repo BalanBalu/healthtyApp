@@ -39,8 +39,29 @@ class DocumentList extends PureComponent {
     this.setState({ docsUpload, data, uploadData, familyDocs, viewDocs })
   }
 
+  checkFileType(ele) {
+    if (ele.path) {
+      const [extension, ...nameParts] = ele.path.split('.').reverse();
+      if (extension === "GIF" || extension === "gif") {
+        return true
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return false
+    }
+  }
   imageUpload = async (data) => {
     this.setState({ selectOptionPoopup: false })
+    if (data && data.image && data.image.length) {
+      const isGifFile = data.image.some(this.checkFileType);
+      if (isGifFile === true) {
+        toastMeassage("GIF is not supported, please try to upload Image Files!", 'danger', 4000);
+        return
+      }
+    }
     if (data.image !== null) {
       await this.uploadImageToServer(data.image);
     }

@@ -2,14 +2,8 @@ import React, { PureComponent } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Image,
-  FlatList,
+  View
 } from 'react-native';
-import { CorporateProfileCard } from './profileCard';
 import { ProfileFamilyCard } from './profilefamilyCard';
 import { SearchAndAppointmentCard } from './searchAndAppointmentcard';
 import { TransactionHistoryCard } from './transactionHistoryCard';
@@ -18,12 +12,6 @@ import { connect } from 'react-redux';
 import {
   Container,
   Content,
-  Button,
-  Card,
-  Input,
-  Left,
-  Right,
-  Icon,
   Toast,
 } from 'native-base';
 import {
@@ -49,62 +37,46 @@ import { NavigationEvents } from 'react-navigation';
 import { ContactUsCard } from './contactUsCard';
 import PolicyCoverageCard from './policyCoverageCard';
 import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions';
-import { formatDate } from '../../../../setup/helpers';
 import { translate } from '../../../../setup/translator.helper';
-
-const LIMIT = 10;
 
 class CorporateHome extends PureComponent {
   locationUpdatedCount = 0;
   constructor(props) {
     super(props);
     this.state = {
-      isCorporateUser: false,
-      relationship: null,
       corporateData: {},
       TPAData: null,
       memberDetails: {},
       policyDetails: {},
       connectionStatus: null,
-      relationship: null,
       helpLineNumberData: [],
+      isLoadingPolicyCard:true
     };
     this.pagination = 1;
-
   }
-  async componentDidMount() {
-    let userId = await AsyncStorage.getItem('userId');
-    let relationship = (await AsyncStorage.getItem('relationship')) || null; 
-    
 
-    const isCorporateUser =
-      (await AsyncStorage.getItem('is_corporate_user')) === 'true';
-    this.setState({isCorporateUser, relationship});
-    if (this.state.isCorporateUser) {
-      await this.getCorporateDatails(userId);
-    }
-   
-    this.initialFunction();
+  async componentDidMount() {
+      await this.getCorporateDatails();
+    this.setState({ corporateData: this.props?.profile?.corporateData,TPAData: this.props?.profile?.memberTpaInfo })
     await this.getMemberDetailsByPolicyNo();
     this.getMemberDetailsByEmail();
+    this.initialFunction();
     this.getCorporatePhoneNumber();
-    this.setState({ corporateData: this.props?.profile?.corporateData })
-    this.setState({ TPAData: this.props?.profile?.memberTpaInfo })
-  }
-  
 
- async componentDidUpdate(prevProps, prevState) {
-   this.setState({connectionStatus: this.props.profile.connectionStatus})
+  }
+
+
+  async componentDidUpdate(prevProps, prevState) {
+    this.setState({ connectionStatus: this.props.profile.connectionStatus })
     if (prevState.connectionStatus !== this.state.connectionStatus) {
       let userID = await AsyncStorage.getItem('userID');
       await this.getCorporateDatails(userID)
       await this.getFamilyMemberDetailsByPolicyNo()
       await this.getMemberDetailsByPolicyNo();
-    this.getMemberDetailsByEmail();
-    this.getCorporatePhoneNumber();
-      
-      this.setState({ corporateData: this.props?.profile?.corporateData })
-      this.setState({ TPAData: this.props?.profile?.memberTpaInfo })
+      this.getMemberDetailsByEmail();
+      this.getCorporatePhoneNumber();
+
+      this.setState({ corporateData: this.props?.profile?.corporateData ,TPAData: this.props?.profile?.memberTpaInfo })
     }
   }
 
@@ -113,15 +85,15 @@ class CorporateHome extends PureComponent {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
-      if (result) {
-        let policyData = await getPolicyByPolicyNo(result[0]?.policyNo);
+      if (result && result.length) {
+        let policyData = await getPolicyByPolicyNo(result&&result[0].policyNo);
         await this.setState({
           memberDetails: result[0],
           policyDetails: policyData,
         });
       }
-    } catch (ex) {
-      console.log(ex);
+    } catch (Ex) {
+      console.log('Ex is getting on get getMemberDetailsByEmail ',Ex.message);
     }
   };
   getCorporatePhoneNumber = async () => {
@@ -139,48 +111,44 @@ class CorporateHome extends PureComponent {
   initialFunction = async () => {
     try {
       CurrentLocation.getCurrentPosition();
-      let userId = await AsyncStorage.getItem('userId');
-      if (userId) {
-        const {
-          notification: { notificationCount },
-          navigation,
-        } = this.props;
+      // const userId = await AsyncStorage.getItem('userId');
+      // if (userId) {
+      //   const {
+      //     notification: { notificationCount },
+      //     navigation,
+      //   } = this.props;
 
-        navigation.setParams({
-          notificationBadgeCount: notificationCount,
-        });
+      //   navigation.setParams({
+      //     notificationBadgeCount: notificationCount,
+      //   });
 
-        this.getMarkedAsReadedNotification(userId);
-      }
+      //   this.getMarkedAsReadedNotification(userId);
+      // }
     } catch (ex) {
       console.log(ex);
     }
   };
 
-  getCorporateDatails = async (userId) => {
+  getCorporateDatails = async () => {
     try {
-      let fields = 'corporate_member_id,employee_code';
-      let employeeCode = await AsyncStorage.getItem('employeeCode');
-      let userResult = await fetchUserProfile(userId, fields);
-
-      if (userResult || employeeCode) {
-        let corporateResult = await getCorporateEmployeeDetailsById(
-          userResult.employee_code || employeeCode
-        );
-        if (!!corporateResult && !corporateResult.error) {
-          store.dispatch({
+      this.setState({isLoadingPolicyCard: true})
+      const employeeCode = await AsyncStorage.getItem('employeeCode');
+      if (employeeCode) {
+        const corporateResult = await getCorporateEmployeeDetailsById(employeeCode);
+        if (corporateResult && corporateResult.length) {
+        await   store.dispatch({
             type: SET_CORPORATE_DATA,
             data: corporateResult,
           });
-          const memberPolicyNo =
-            corporateResult &&
-            corporateResult.length &&
-            corporateResult[0].policyNo;
+          const memberPolicyNo = corporateResult &&  corporateResult.length &&  corporateResult[0].policyNo;
           if (memberPolicyNo) {
             const policyData = await getPolicyByPolicyNo(memberPolicyNo);
             if (policyData && Object.keys(policyData).length) {
+              await store.dispatch({
+                type: SET_MEMBER_POLICY_INFO,
+                data: policyData,
+              });
               if (policyData && policyData.TPA) {
-
                 const memberTpaResp = await getTpaInfoByTpaCode(policyData.TPA);
                 const memberTpaData =
                   memberTpaResp && memberTpaResp.length && memberTpaResp[0];
@@ -191,16 +159,11 @@ class CorporateHome extends PureComponent {
                   });
                 }
               }
-              await store.dispatch({
-                type: SET_MEMBER_POLICY_INFO,
-                data: policyData,
-              });
             }
           }
         }
       }
-      let forceToChangePassword =
-        (await AsyncStorage.getItem('forceToChangePassword')) || null;
+      const forceToChangePassword =  (await AsyncStorage.getItem('forceToChangePassword')) || null;
       if (forceToChangePassword) {
         this.props.navigation.navigate('UpdatePassword', { updatedata: {} });
       }
@@ -211,21 +174,24 @@ class CorporateHome extends PureComponent {
         type: 'danger',
       });
     }
+    finally{
+      this.setState({isLoadingPolicyCard: false})
+    }
   };
 
   getMemberDetailsByPolicyNo = async () => {
     try {
-      this.setState({ isLoading: true });
-      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
-      let result = await getMemberDetailsByPolicyNo(memberPolicyNo);
-      if (result) {
-        await this.setState({ memberDetails: result });
+      this.setState({ isLoadingPolicyCard: true });
+      const memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      const  respData = await getMemberDetailsByPolicyNo(memberPolicyNo);
+      if (respData) {
+        await this.setState({ memberDetails: respData });
         this.getFamilyMemberDetailsByPolicyNo(memberPolicyNo);
       }
-    } catch (ex) {
-      console.log(ex);
+    } catch (Ex) {
+      console.log('Ex is getting on get Policy Card info',Ex.message);
     } finally {
-      this.setState({ isLoading: false });
+      this.setState({ isLoadingPolicyCard: false });
     }
   };
 
@@ -235,11 +201,11 @@ class CorporateHome extends PureComponent {
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-      
+
       //commented out since no states family_members and id is declared -aashiq
       // if (result) {
       //   this.setState({family_members: result, id: result[0]?._id});
-     
+
       //    store.dispatch({
       //     type: SET_FAMILY_DATA,
       //     data: this.state.family_members,
@@ -284,17 +250,11 @@ class CorporateHome extends PureComponent {
   };
 
   render() {
-    const { corporateData, TPAData } = this.state;
-    // let corporateData = this.props.profile.corporateData;
-    // let TPAData = this.props.profile.memberTpaInfo;
-    const {navigate} = this.props.navigation;
+    const { corporateData } = this.state;
+    const { navigate } = this.props.navigation;
 
     const {
-      isCorporateUser,
-      relationship,
-      memberDetails,
       helpLineNumberData,
-      policyDetails,
     } = this.state;
     const {
       bookappointment: {
@@ -327,19 +287,12 @@ class CorporateHome extends PureComponent {
             }}
           />
           <View style={{ padding: 10 }}>
-            {isCorporateUser && corporateData && corporateData.length ? (
+            { corporateData && corporateData.length ? (
               <PolicyCoverageCard
-              //  data={corporateData && corporateData.find(ele => ele.relationship === relationship) || null}
-              // data={memberDetails}
-              // policyData={policyDetails}
-              // TPAdata={TPAData}
               />
             ) : null}
-
-            {isCorporateUser ? (
               <ProfileFamilyCard navigation={navigate} translate={translate} />
-            ) : null}
-            {isCorporateUser ? <CoverageCard navigation={navigate} /> : null}
+          <CoverageCard navigation={navigate} /> 
             <SearchAndAppointmentCard navigation={navigate} />
             <TransactionHistoryCard navigation={navigate} />
             <ContactUsCard navigation={navigate} data={helpLineNumberData} />

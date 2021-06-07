@@ -26,10 +26,11 @@ const ClaimDetails = ({ isSelected, }) => {
                 <Input
                     placeholder="Enter ICD code "
                     placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                     returnKeyType={'next'}
                     //   value={employeeId}
                     style={styles.form_field}
-                     keyboardType={'default'}
+                    keyboardType={'default'}
                 //   editable={employeeId == undefined ? true : false}
                 //   onChangeText={(enteredEmployeeIdText) =>
                 //     this.setState({employeeId: enteredEmployeeIdText})
@@ -38,10 +39,11 @@ const ClaimDetails = ({ isSelected, }) => {
                 <Input
                     placeholder="Enter Description"
                     placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                     returnKeyType={'next'}
                     //   value={employeeId}
                     style={styles.form_field}
-                     keyboardType={'default'}
+                    keyboardType={'default'}
                 //   editable={employeeId == undefined ? true : false}
                 //   onChangeText={(enteredEmployeeIdText) =>
                 //     this.setState({employeeId: enteredEmployeeIdText})
@@ -58,10 +60,11 @@ const ClaimDetails = ({ isSelected, }) => {
                 <Input
                     placeholder="Enter ICD code "
                     placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                     returnKeyType={'next'}
                     //   value={employeeId}
                     style={styles.form_field}
-                     keyboardType={'default'}
+                    keyboardType={'default'}
                 //   editable={employeeId == undefined ? true : false}
                 //   onChangeText={(enteredEmployeeIdText) =>
                 //     this.setState({employeeId: enteredEmployeeIdText})
@@ -70,10 +73,11 @@ const ClaimDetails = ({ isSelected, }) => {
                 <Input
                     placeholder="Enter Description"
                     placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                     returnKeyType={'next'}
                     //   value={employeeId}
                     style={styles.form_field}
-                     keyboardType={'default'}
+                    keyboardType={'default'}
                 //   editable={employeeId == undefined ? true : false}
                 //   onChangeText={(enteredEmployeeIdText) =>
                 //     this.setState({employeeId: enteredEmployeeIdText})
@@ -90,10 +94,11 @@ const ClaimDetails = ({ isSelected, }) => {
                 <Input
                     placeholder="Enter ICD code "
                     placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                     returnKeyType={'next'}
                     //   value={employeeId}
                     style={styles.form_field}
-                     keyboardType={'default'}
+                    keyboardType={'default'}
                 //   editable={employeeId == undefined ? true : false}
                 //   onChangeText={(enteredEmployeeIdText) =>
                 //     this.setState({employeeId: enteredEmployeeIdText})
@@ -102,10 +107,11 @@ const ClaimDetails = ({ isSelected, }) => {
                 <Input
                     placeholder="Enter Description"
                     placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                     returnKeyType={'next'}
                     //   value={employeeId}
                     style={styles.form_field}
-                     keyboardType={'default'}
+                    keyboardType={'default'}
                 //   editable={employeeId == undefined ? true : false}
                 //   onChangeText={(enteredEmployeeIdText) =>
                 //     this.setState({employeeId: enteredEmployeeIdText})
@@ -122,10 +128,11 @@ const ClaimDetails = ({ isSelected, }) => {
                 <Input
                     placeholder="Enter ICD code "
                     placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                     returnKeyType={'next'}
                     //   value={employeeId}
                     style={styles.form_field}
-                     keyboardType={'default'}
+                    keyboardType={'default'}
                 //   editable={employeeId == undefined ? true : false}
                 //   onChangeText={(enteredEmployeeIdText) =>
                 //     this.setState({employeeId: enteredEmployeeIdText})
@@ -134,10 +141,11 @@ const ClaimDetails = ({ isSelected, }) => {
                 <Input
                     placeholder="Enter Description"
                     placeholderTextColor={'#CDD0D9'}
+                    style={styles.fontColorOfInput}
                     returnKeyType={'next'}
                     //   value={employeeId}
                     style={styles.form_field}
-                     keyboardType={'default'}
+                    keyboardType={'default'}
                 //   editable={employeeId == undefined ? true : false}
                 //   onChangeText={(enteredEmployeeIdText) =>
                 //     this.setState({employeeId: enteredEmployeeIdText})
@@ -162,10 +170,11 @@ const ClaimDetails = ({ isSelected, }) => {
                     <Input
                         placeholder="Enter ICD code "
                         placeholderTextColor={'#CDD0D9'}
+                        style={styles.fontColorOfInput}
                         returnKeyType={'next'}
                         //   value={employeeId}
                         style={styles.form_field}
-                         keyboardType={'default'}
+                        keyboardType={'default'}
                     //   editable={employeeId == undefined ? true : false}
                     //   onChangeText={(enteredEmployeeIdText) =>
                     //     this.setState({employeeId: enteredEmployeeIdText})
@@ -174,10 +183,11 @@ const ClaimDetails = ({ isSelected, }) => {
                     <Input
                         placeholder="Enter Description"
                         placeholderTextColor={'#CDD0D9'}
+                        style={styles.fontColorOfInput}
                         returnKeyType={'next'}
                         //   value={employeeId}
                         style={styles.form_field}
-                         keyboardType={'default'}
+                        keyboardType={'default'}
                     //   editable={employeeId == undefined ? true : false}
                     //   onChangeText={(enteredEmployeeIdText) =>
                     //     this.setState({employeeId: enteredEmployeeIdText})
@@ -194,10 +204,11 @@ const ClaimDetails = ({ isSelected, }) => {
                     <Input
                         placeholder="Enter ICD code "
                         placeholderTextColor={'#CDD0D9'}
+                        style={styles.fontColorOfInput}
                         returnKeyType={'next'}
                         //   value={employeeId}
                         style={styles.form_field}
-                         keyboardType={'default'}
+                        keyboardType={'default'}
                     //   editable={employeeId == undefined ? true : false}
                     //   onChangeText={(enteredEmployeeIdText) =>
                     //     this.setState({employeeId: enteredEmployeeIdText})
@@ -206,10 +217,11 @@ const ClaimDetails = ({ isSelected, }) => {
                     <Input
                         placeholder="Enter Description"
                         placeholderTextColor={'#CDD0D9'}
+                        style={styles.fontColorOfInput}
                         returnKeyType={'next'}
                         //   value={employeeId}
                         style={styles.form_field}
-                         keyboardType={'default'}
+                        keyboardType={'default'}
                     //   editable={employeeId == undefined ? true : false}
                     //   onChangeText={(enteredEmployeeIdText) =>
                     //     this.setState({employeeId: enteredEmployeeIdText})
@@ -226,10 +238,11 @@ const ClaimDetails = ({ isSelected, }) => {
                     <Input
                         placeholder="Enter ICD code "
                         placeholderTextColor={'#CDD0D9'}
+                        style={styles.fontColorOfInput}
                         returnKeyType={'next'}
                         //   value={employeeId}
                         style={styles.form_field}
-                         keyboardType={'default'}
+                        keyboardType={'default'}
                     //   editable={employeeId == undefined ? true : false}
                     //   onChangeText={(enteredEmployeeIdText) =>
                     //     this.setState({employeeId: enteredEmployeeIdText})
@@ -238,10 +251,11 @@ const ClaimDetails = ({ isSelected, }) => {
                     <Input
                         placeholder="Enter Description"
                         placeholderTextColor={'#CDD0D9'}
+                        style={styles.fontColorOfInput}
                         returnKeyType={'next'}
                         //   value={employeeId}
                         style={styles.form_field}
-                         keyboardType={'default'}
+                        keyboardType={'default'}
                     //   editable={employeeId == undefined ? true : false}
                     //   onChangeText={(enteredEmployeeIdText) =>
                     //     this.setState({employeeId: enteredEmployeeIdText})
@@ -258,10 +272,11 @@ const ClaimDetails = ({ isSelected, }) => {
                     <Input
                         placeholder="Enter ICD code "
                         placeholderTextColor={'#CDD0D9'}
+                        style={styles.fontColorOfInput}
                         returnKeyType={'next'}
                         //   value={employeeId}
                         style={styles.form_field}
-                         keyboardType={'default'}
+                        keyboardType={'default'}
                     //   editable={employeeId == undefined ? true : false}
                     //   onChangeText={(enteredEmployeeIdText) =>
                     //     this.setState({employeeId: enteredEmployeeIdText})
@@ -270,10 +285,11 @@ const ClaimDetails = ({ isSelected, }) => {
                     <Input
                         placeholder="Enter Description"
                         placeholderTextColor={'#CDD0D9'}
+                        style={styles.fontColorOfInput}
                         returnKeyType={'next'}
                         //   value={employeeId}
                         style={styles.form_field}
-                         keyboardType={'default'}
+                        keyboardType={'default'}
                     //   editable={employeeId == undefined ? true : false}
                     //   onChangeText={(enteredEmployeeIdText) =>
                     //     this.setState({employeeId: enteredEmployeeIdText})
@@ -322,9 +338,10 @@ const ClaimDetails = ({ isSelected, }) => {
                         <Input
                             placeholder="Enter Pre-authorization Number"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             //   value={employeeId}
-                             keyboardType={'default'}
+                            keyboardType={'default'}
                         //   editable={employeeId == undefined ? true : false}
                         //   onChangeText={(enteredEmployeeIdText) =>
                         //     this.setState({employeeId: enteredEmployeeIdText})
@@ -343,9 +360,10 @@ const ClaimDetails = ({ isSelected, }) => {
                         <Input
                             placeholder="Enter Reason"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             //   value={employeeId}
-                             keyboardType={'default'}
+                            keyboardType={'default'}
                         //   editable={employeeId == undefined ? true : false}
                         //   onChangeText={(enteredEmployeeIdText) =>
                         //     this.setState({employeeId: enteredEmployeeIdText})
@@ -535,9 +553,10 @@ const ClaimDetails = ({ isSelected, }) => {
                         <Input
                             placeholder="Enter FIR No"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             //   value={employeeId}
-                             keyboardType={'default'}
+                            keyboardType={'default'}
                         //   editable={employeeId == undefined ? true : false}
                         //   onChangeText={(enteredEmployeeIdText) =>
                         //     this.setState({employeeId: enteredEmployeeIdText})
@@ -556,9 +575,10 @@ const ClaimDetails = ({ isSelected, }) => {
                         <Input
                             placeholder="Enter Reason"
                             placeholderTextColor={'#CDD0D9'}
+                            style={styles.fontColorOfInput}
                             returnKeyType={'next'}
                             //   value={employeeId}
-                             keyboardType={'default'}
+                            keyboardType={'default'}
                         //   editable={employeeId == undefined ? true : false}
                         //   onChangeText={(enteredEmployeeIdText) =>
                         //     this.setState({employeeId: enteredEmployeeIdText})

@@ -126,6 +126,12 @@ export default StyleSheet.create({
         marginLeft: 15,
         borderRadius: 5,
     },
+    loginButtonDisable: {
+        marginTop: 20,
+        backgroundColor: primaryColor,
+        marginLeft: 15,
+        borderRadius: 5,
+    },
     forgotButtonDisable: {
         marginTop: 20,
         backgroundColor: primaryColor,
@@ -135,6 +141,15 @@ export default StyleSheet.create({
         marginTop: 20,
         backgroundColor: primaryColor,
         borderRadius: 5,
+    },
+    smallSignInButton: {
+        backgroundColor: primaryColor,
+        marginLeft: 15,
+        borderRadius: 20,
+        paddingRight: 20,
+        paddingLeft: 20,
+        paddingBottom: 10,
+        paddingTop: 10
     },
     smallSignUpButton: {
         backgroundColor: primaryColor,

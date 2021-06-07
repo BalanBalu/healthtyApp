@@ -162,13 +162,13 @@ class PreAuth extends React.PureComponent {
         relationship: memberInformation.relationship || '',
         contactNo: memberInformation.mobile || '',
         alterNateContactNumber: memberInformation.phone || '',
-        patientAgeInYr: memberInformation.age ? String(memberInformation.age) : '',
-        patientAgeMonth: memberInformation.month ? String(memberInformation.month) : '0',
+        patientAgeInYr: memberInformation.familyMemberAge ? String(memberInformation.familyMemberAge) : '',
+        patientAgeMonth: memberInformation.familyMemberMonth ? String(memberInformation.familyMemberMonth) : '0',
         insurerId: memberInformation.memberId || '',
         policyNo: memberInformation.policyNo || '',
         employeeId: memberInformation.employeeId || '',
-        selectedGender: memberInformation.gender || '',
-        dob: memberInformation.dob || new Date()
+        selectedGender: memberInformation.familyMemberGender? memberInformation.familyMemberGender==='M'?"Male":"Female" : '',
+        dob: memberInformation.familyMemberDob || new Date()
       }
       await this.setState({ networkHospList: networkHospList || [], hospitalInfo: hospitalInfomation, hospitalInfomation: hospitalInfomation, tpaInformation: tpaInformation, tpaInfo: tpaInformation, memberInfo: memberInfo, memberInformation: memberInfo, currentForm, imageData: uploadDocs })
 
@@ -689,7 +689,7 @@ class PreAuth extends React.PureComponent {
                         marginTop: 7,
                         marginBottom: 7,
                         marginLeft: 5,
-                        fontFamily: 'OpenSans',
+                        fontFamily: 'Roboto',
                         fontSize: 13,
                         textAlign: 'center',
                       }
@@ -999,7 +999,7 @@ class PreAuth extends React.PureComponent {
                 ]}>
                 <Text
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     color: '#128283',
                     fontSize: 16,
                     textAlign: 'center',
@@ -1025,7 +1025,7 @@ class PreAuth extends React.PureComponent {
                 ]}>
                 <Text
                   style={{
-                    fontFamily: 'OpenSans',
+                    fontFamily: 'Roboto',
                     color: '#fff',
                     fontSize: 16,
                     textAlign: 'center',
@@ -1372,7 +1372,7 @@ class PreAuth extends React.PureComponent {
               onPress={() => this.submitFirstPage()}>
               <Text
                 style={{
-                  fontFamily: 'OpenSans',
+                  fontFamily: 'Roboto',
                   color: '#fff',
                   fontSize: 16,
                   textAlign: 'center',
@@ -1400,7 +1400,7 @@ class PreAuth extends React.PureComponent {
 const styles = StyleSheet.create({
   body: {
     backgroundColor: '#fff',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     display: 'flex',
   },
   buttonStyle: {
@@ -1422,20 +1422,19 @@ const styles = StyleSheet.create({
   },
   headerText: {
     textTransform: 'uppercase',
-    fontWeight: '700',
     marginLeft: 20,
     color: '#3E4459',
     lineHeight: 26,
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     marginRight: 20,
     marginTop: 20,
   },
   formHeader: {
     color: '#128283',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     lineHeight: 30,
     fontSize: 17,
-    fontFamily: 'OpenSans',
+    fontFamily: 'opensans-bold',
     paddingLeft: 20,
     paddingRight: 20,
     marginTop: 20,
@@ -1450,15 +1449,16 @@ const styles = StyleSheet.create({
     // backgroundColor: '#fff',
     marginRight: 20,
     paddingLeft: 18,
+    fontFamily: 'Roboto',
   },
   inputLabel: {
     marginLeft: 20,
     marginRight: 20,
     marginBottom: 6,
-    fontWeight: '700',
     color: 'rgba(0,0,0,0.65)',
     marginTop: 18,
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
+    fontSize:16
   },
   /* Hospital Details End */
 });

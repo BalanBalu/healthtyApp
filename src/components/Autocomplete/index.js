@@ -232,13 +232,13 @@ const androidStyles = {
     height: 40,
     paddingLeft: 3,
     color: '#000',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     borderRadius:5
   },
   list: {
     ...border,
     backgroundColor: 'white',
-    fontFamily: 'OpenSans',
+    fontFamily: 'Roboto',
     color: 'gray',
     marginTop:5,
     borderColor:'gray',
