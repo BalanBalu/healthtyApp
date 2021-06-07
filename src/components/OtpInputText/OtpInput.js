@@ -59,11 +59,9 @@ class OtpInput extends Component {
 
     render() {
         return (
-            <Content padder>
-                <Grid style={styles.gridPad}>
+            <Grid style={styles.gridPad}>
                     {this.renderInputs()}
                 </Grid>
-            </Content>
         );
     }
 }
@@ -74,4 +72,4 @@ const styles = StyleSheet.create({
     inputRadius: { textAlign: 'center', fontSize: 25, fontWeight: 'bold' }
 });
 
-export default OtpInput
+export default OtpInput;

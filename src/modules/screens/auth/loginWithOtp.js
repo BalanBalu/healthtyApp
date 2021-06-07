@@ -13,10 +13,12 @@ import {
   View,
   Button,
   Text,
+  KeyboardAvoidingView,
   Toast,
   Content,
   Container,
   Left,
+  Icon,
   Right,
   Card,
   Item,
@@ -54,7 +56,7 @@ class LoginWithOtp extends Component {
     super(props);
     this.state = {
       otp: '',
-      isOTPGenerated: false,
+      isOTPGenerated: true,
       requestData: {},
       errorMsg: '',
       isLoading: false,
@@ -173,6 +175,39 @@ class LoginWithOtp extends Component {
       isModalVisible,
     } = this.state;
     return (
+
+      isOTPGenerated ? (<ImageBackground
+        style={{flex: 1}}
+        source={require('../../../../assets/images/loginBG.jpeg')}
+        blurRadius={15}>
+          
+     <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', alignContent: 'center', justifyContent: 'center'}}>
+     <View style={styles.outerContainer}>
+          <View style={styles.container}>
+          <Text style={styles.heading1}>OTP Verification</Text>
+          <Text style={{ color: 'black', fontFamily: 'opensans-semibold', fontSize: 17, justifyContent: 'center', marginTop: 15 }}>Phone No or Email</Text>
+          <OtpInputs
+                    noOfDigits={4}
+                    getOtp={(otp) => this.getEnteredotp(otp)}
+                  />
+                      <Text style={{marginVertical: 30, color: '#C2CCCC'}}>A 4-digit OTP will be sent to your mobile / email to verify your mobile number or email provided</Text>
+          <Pressable onPress={() => this.props.navigation.navigate('login')} style={{ }}>
+              <Text style={{color: '#39B0E5'}}><MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} />
+  
+  Go Back</Text>
+      </Pressable>
+         
+         
+        </View>
+        <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
+         <Pressable onPress={() => this.generateotp()} S style={{ }}>
+              <Text style={styles.createAccountText}>Send OTP</Text>
+      </Pressable>
+      </LinearGradient>
+        </View>
+          </View>
+  </ImageBackground>) :
+     
       <ImageBackground
       style={{flex: 1}}
       source={require('../../../../assets/images/loginBG.jpeg')}
@@ -181,11 +216,13 @@ class LoginWithOtp extends Component {
    <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', alignContent: 'center', justifyContent: 'center'}}>
    <View style={styles.outerContainer}>
         <View style={styles.container}>
-        <Text style={styles.heading1}>Your Phone!</Text>
+        <Text style={styles.heading1}>Login With OTP!</Text>
+        <Text style={{ color: 'black', fontFamily: 'opensans-semibold', fontSize: 17, justifyContent: 'center', marginTop: 15 }}>Phone No or Email</Text>
         <Item 
-        style={{marginTop: 40, borderBottomColor: '#dddddd', borderBottomWidth: 1,
+        style={{marginTop: 15, borderBottomColor: '#dddddd', borderBottomWidth: 1,
          width: '88%', marginRight: 50, marginLeft: 0}}>
                       <Input
+                       placeholderTextColor={'##A1A1A1'} 
                         placeholder={'Mobile Number / Email'}
                         ref={(input) => {
                           this.enterTextInputEmail = input;
@@ -206,21 +243,24 @@ class LoginWithOtp extends Component {
 
                      
                     </Item>
-                    <Text style={{marginVertical: 40, color: '#C2CCCC'}}>A 4-digit OTP will be sent to your mobile / email to verify your mobile number or email provided</Text>
+                    <Text style={{marginVertical: 30, color: '#C2CCCC'}}>A 4-digit OTP will be sent to your mobile / email to verify your mobile number or email provided</Text>
         <Pressable onPress={() => this.props.navigation.navigate('login')} style={{ }}>
-            <Text>Go Back</Text>
+            <Text style={{color: '#39B0E5'}}><MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} />
+
+Go Back</Text>
     </Pressable>
        
        
       </View>
       <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
-       <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{ }}>
-            <Text style={styles.createAccountText}>Continue</Text>
+       <Pressable onPress={() => this.generateotp()} S style={{ }}>
+            <Text style={styles.createAccountText}>Send OTP</Text>
     </Pressable>
     </LinearGradient>
       </View>
         </View>
 </ImageBackground>
+
       
     );
   }
@@ -228,7 +268,7 @@ class LoginWithOtp extends Component {
 
 const styles = StyleSheet.create({
   outerContainer: {display: 'flex', justifyContent: 'center'},
-  container: {display: 'flex', height: '65%', width : width - 40,
+  container: {display: 'flex', height: 365,minHeight: 365,maxHeight: 365, width : width - 40,
   paddingHorizontal: 20, paddingVertical: 40, marginHorizontal: 40, 
   backgroundColor: '#fff', borderRadius: 24, fontWeight: 'bold', fontSize: 20},
   heading1: {
