@@ -67,7 +67,7 @@ class OtpInput extends Component {
 }
 
 const styles = StyleSheet.create({
-    gridPad: { padding: 10 },
+    gridPad: { padding: 0 },
     txtMargin: { margin: 1, },
     inputRadius: { textAlign: 'center', fontSize: 25, fontWeight: 'bold' }
 });

@@ -185,7 +185,7 @@ class LoginWithOtp extends Component {
      <View style={styles.outerContainer}>
           <View style={styles.container}>
           <Text style={styles.heading1}>OTP Verification</Text>
-          <Text style={{marginVertical: 10, color: '#C2CCCC', lineHeight: 30}}>Enter the OTP you received to your entered <Text style={{fontFamily: 'opensans-bold'}}>{userEntry}</Text> </Text>
+          <Text style={{marginVertical:30, color: '#C2CCCC', lineHeight: 30}}>Enter the OTP you received to <Text style={{fontFamily: 'opensans-bold'}}>{userEntry}</Text> </Text>
                     <OtpInputs
                     userEntry={userEntry}
                     noOfDigits={4}
