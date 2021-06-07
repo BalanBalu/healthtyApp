@@ -56,7 +56,7 @@ class LoginWithOtp extends Component {
     super(props);
     this.state = {
       otp: '',
-      isOTPGenerated: true,
+      isOTPGenerated: false,
       requestData: {},
       errorMsg: '',
       isLoading: false,
@@ -269,7 +269,7 @@ Go Back</Text>
 
 const styles = StyleSheet.create({
   outerContainer: {display: 'flex', justifyContent: 'center'},
-  container: {display: 'flex', height: 365,minHeight: 365,maxHeight: 365, width : width - 40,
+  container: {height: 'auto', flex: 0 , width : width - 40,
   paddingHorizontal: 20, paddingVertical: 40, marginHorizontal: 40, 
   backgroundColor: '#fff', borderRadius: 24, fontWeight: 'bold', fontSize: 20},
   heading1: {
