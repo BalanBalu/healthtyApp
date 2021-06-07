@@ -5,6 +5,9 @@ import {
   AsyncStorage,
   ScrollView,
   ImageBackground,
+  Pressable,
+  Dimensions,
+  TextInput,
 } from 'react-native';
 import {
   View,
@@ -35,11 +38,15 @@ import {Col, Grid, Row} from 'react-native-easy-grid';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import {primaryColor} from '../../../setup/config';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
-import styles from '../../screens/auth/styles';
+// import styles from '../../screens/auth/styles';
 import {RESET_REDIRECT_NOTICE} from '../../providers/auth/auth.actions';
 import {
   storeBasicProfile,
 } from '../../providers/profile/profile.action';
+
+let width = Dimensions.get('window').width;
+let height = Dimensions.get('window').height; 
+
 
 class LoginWithOtp extends Component {
   constructor(props) {
@@ -165,378 +172,43 @@ class LoginWithOtp extends Component {
       isModalVisible,
     } = this.state;
     return (
-      <Container style={styles.container}>
-        <ImageBackground
-          source={mainBg}
-          style={{width: '100%', height: '100%', flex: 1}}>
-          <Content contentContainerStyle={styles.authBodyContent}>
-            <ScrollView>
-              {isLoading ? (
-                <Spinner visible={isLoading} />
-              ) : isOTPGenerated ? (
-                <View style={styles.container}>
-                  <Row>
-                    <Left>
-                      <Text
-                        style={{
-                          color: 'black',
-                          fontFamily: 'Roboto',
-                          fontSize: 20,
-                        }}>
-                        VERIFY DETAILS
-                      </Text>
-                    </Left>
-                  </Row>
-                  {/* {isOTPGenerated == true ? <Text style={{ color: 'gray', fontSize: 15 }}>{`OTP is successfully sent to ${userEntry}`}</Text> : <Text style={{ color: 'gray', fontSize: 15 }}>OTP couldn't sent to {userEntry} Please Contact Our @Support_Team!</Text>} */}
-                  <Text style={{marginTop: 10, fontSize: 13}}>
-                    Enter Your OTP
-                  </Text>
-                  <OtpInputs
-                    noOfDigits={4}
-                    getOtp={(otp) => this.getEnteredotp(otp)}
-                  />
-                  <TouchableOpacity onPress={() => this.generateotp()}>
-                    <Text
-                      style={{
-                        color: '#1caed6',
-                        marginLeft: 10,
-                        fontSize: 13,
-                        textAlign: 'right',
-                      }}>
-                      RESEND OTP
-                    </Text>
-                  </TouchableOpacity>
-                  <Button
-                    style={
-                      otp.length != 4
-                        ? styles.loginButtonDisable
-                        : styles.loginButton
-                    }
-                    block
-                    success
-                    disabled={otp.length != 4}
-                    onPress={() => this.verifyotp()}>
-                    {otp.length != 4 ? (
-                      <Text style={styles.ButtonText}>Enter OTP</Text>
-                    ) : (
-                      <Text style={styles.ButtonText}>Verify OTP</Text>
-                    )}
-                  </Button>
-                  <Text style={{color: 'red', marginLeft: 15, marginTop: 10}}>
-                    {errorMsg}
-                  </Text>
-
-                  <Item
-                    style={{
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                      borderBottomWidth: 0,
-                      marginBottom: 10,
-                      marginTop: 10,
-                    }}>
-                    <Text
-                      uppercase={false}
-                      style={{
-                        color: '#000',
-                        fontSize: 16,
-                        fontFamily: 'Roboto',
-                        color: primaryColor,
-                      }}>
-                      Go Back To
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => this.props.navigation.navigate('login')}
-                      style={styles.smallSignInButton}>
-                      <Text
-                        uppercase={true}
-                        style={{
-                          color: '#000',
-                          fontSize: 12,
-                          fontFamily: 'Roboto',
-                          fontWeight: 'bold',
-                          color: '#fff',
-                        }}>
-                        {' '}
-                        Sign In
-                      </Text>
-                    </TouchableOpacity>
-                  </Item>
-                </View>
-              ) : (
-                // <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
-                // <Content contentContainerStyle={styles.authBodyContent}>
-                //   <ScrollView>
-
-                <Card style={{borderRadius: 10, padding: 5, marginTop: 20}}>
-                  <View style={{flex: 1}}>
-                    <ModalPopup
-                      errorMessageText={errorMsg}
-                      closeButtonText={'CLOSE'}
-                      closeButtonAction={() =>
-                        this.setState({isModalVisible: !isModalVisible})
-                      }
-                      visible={isModalVisible}
-                    />
-                  </View>
-                  <View style={{marginLeft: 10, marginRight: 10}}>
-                    <Text
-                      uppercase={true}
-                      style={[styles.cardHead, {color: primaryColor}]}>
-                      Login With OTP
-                    </Text>
-
-                    <Form>
-                      <Label
-                        style={{
-                          marginTop: 20,
-                          fontSize: 15,
-                          color: primaryColor,
-                          fontFamily: 'opensans-bold',
-                        }}>
-                        {'Mobile Number/ Email'}
-                      </Label>
-                      <Item
-                        style={{
-                          borderBottomWidth: 0,
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                        }}>
-                        <Input
-                          placeholder={'Mobile Number / Email'}
-                          style={styles.authTransparentLabel}
-                          ref={(input) => {
-                            this.enterTextInputEmail = input;
-                          }}
-                          returnKeyType={'next'}
-                          value={userEntry}
-                          keyboardType={'default'}
-                          onChangeText={
-                            (userEntry) =>
-                              this.setState({
-                                userEntry,
-                              }) /*acceptNumbersOnly(userEntry) == true || userEntry === '' ? this.setState({ userEntry }) : null */
-                          }
-                          autoCapitalize="none"
-                          blurOnSubmit={false}
-                          // onSubmitEditing={() => { this.userEntry._root.focus(); }}
-                        />
-                      </Item>
-
-                      {isLoading ? <Spinner visible={isLoading} /> : null}
-                      <View
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <TouchableOpacity
-                          small
-                          style={
-                            userEntry == ''
-                              ? styles.loginButton1Disable
-                              : styles.loginButton1
-                          }
-                          disabled={isLoading}
-                          block
-                          success
-                          disabled={userEntry == ''}
-                          onPress={() => this.generateotp()}>
-                          <Text uppercase={true} style={styles.ButtonText}>
-                            Continue With OTP{' '}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-
-                      <Item
-                        style={{
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                          borderBottomWidth: 0,
-                          marginBottom: 10,
-                          marginTop: 10,
-                        }}>
-                        <Text
-                          uppercase={false}
-                          style={{
-                            color: '#000',
-                            fontSize: 15,
-                            fontFamily: 'Roboto',
-                            color: primaryColor,
-                          }}>
-                          Go Back To
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() =>
-                            this.props.navigation.navigate('login')
-                          }
-                          style={styles.smallSignUpButton}>
-                          <Text
-                            uppercase={true}
-                            style={{
-                              color: '#000',
-                              fontSize: 10,
-                              fontFamily: 'opensans-bold',
-                              color: '#fff',
-                            }}>
-                            {' '}
-                            SignIn
-                          </Text>
-                        </TouchableOpacity>
-                      </Item>
-
-                      <Item
-                        style={{
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                          borderBottomWidth: 0,
-                          marginTop: 20,
-                          marginBottom: 10,
-                        }}>
-                        <Text
-                          uppercase={false}
-                          style={{
-                            color: '#000',
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: primaryColor,
-                          }}>
-                          Don't Have An Account ?
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => {
-                            this.props.navigation.navigate('signup');
-                          }}
-                          style={styles.smallSignUpButton}>
-                          <Text
-                            uppercase={true}
-                            style={{
-                              color: '#000',
-                              fontSize: 10,
-                              fontFamily: 'opensans-bold',
-                              color: '#fff',
-                            }}>
-                            {' '}
-                            Sign Up
-                          </Text>
-                        </TouchableOpacity>
-                      </Item>
-                    </Form>
-                  </View>
-                </Card>
-                // </ScrollView>
-                // </Content>
-                // </ImageBackground>
-              )}
-            </ScrollView>
-          </Content>
-        </ImageBackground>
-      </Container>
+      <View style={styles.outerContainer}>
+        <View style={styles.container}>
+        <Text style={styles.heading1}>Your Phone / E-mail</Text>
+       
+      </View>
+      <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
+       <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{ }}>
+            <Text style={styles.createAccountText}>Continue</Text>
+    </Pressable>
+    </LinearGradient>
+      </View>
     );
   }
 }
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     padding: 8,
-//     marginTop: 10,
-//   },
-//   authBodyContent: {
-//     flex: 1,
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     paddingLeft: 20,
-//     paddingRight: 20,
-//   },
-
-//   loginButton: {
-//     marginTop: 20,
-//     backgroundColor: primaryColor,
-//     marginLeft: 15,
-//     borderRadius: 5,
-//   },
-//   loginButtonDisable: {
-//     marginTop: 20,
-//     backgroundColor: primaryColor,
-//     marginLeft: 15,
-//     borderRadius: 5,
-//   },
-//   smallSignInButton: {
-//     backgroundColor: primaryColor,
-//     marginLeft: 15,
-//     borderRadius: 20,
-//     paddingRight: 20,
-//     paddingLeft: 20,
-//     paddingBottom: 10,
-//     paddingTop: 10,
-//   },
-//   updateButtonDisable: {
-//     height: 40,
-//     width: 'auto',
-//     borderRadius: 10,
-//     textAlign: 'center',
-//     color: 'white',
-//     fontSize: 10,
-//     marginTop: 5,
-//     justifyContent: 'center',
-//     fontFamily: 'Helvetica-Light',
-//     paddingLeft: 40,
-//     paddingRight: 40,
-//   },
-//   updateButton1: {
-//     height: 40,
-//     width: 'auto',
-//     borderRadius: 10,
-//     textAlign: 'center',
-//     color: 'white',
-//     fontSize: 10,
-//     marginTop: 5,
-//     justifyContent: 'center',
-//     backgroundColor: primaryColor,
-//     fontFamily: 'Helvetica-Light',
-//     paddingLeft: 40,
-//     paddingRight: 40,
-//   },
-//   otpButton: {
-//     height: 40,
-//     width: 'auto',
-//     borderRadius: 25,
-//     textAlign: 'center',
-//     color: 'white',
-//     fontSize: 10,
-//     marginTop: 25,
-//     justifyContent: 'center',
-//     backgroundColor: primaryColor,
-//     fontFamily: 'Helvetica-Light',
-//     paddingLeft: 40,
-//     paddingRight: 40,
-//   },
-//   otpButtonDisable: {
-//     height: 40,
-//     width: 'auto',
-//     borderRadius: 25,
-//     textAlign: 'center',
-//     color: 'white',
-//     fontSize: 10,
-//     marginTop: 25,
-//     justifyContent: 'center',
-//     fontFamily: 'Helvetica-Light',
-//     paddingLeft: 40,
-//     paddingRight: 40,
-//   },
-//   transparentLabel1: {
-//     borderBottomColor: 'transparent',
-//     backgroundColor: '#F1F1F1',
-//     height: 45,
-//     marginTop: 20,
-//     borderRadius: 5,
-//     paddingLeft: 20,
-//     fontFamily: 'Helvetica-Light',
-//     marginLeft: 15,
-//     color: 'black',
-//   },
-// });
+const styles = StyleSheet.create({
+  outerContainer: {display: 'flex', justifyContent: 'center'},
+  container: {display: 'flex', height: '65%', width : width - 40,
+  paddingHorizontal: 20, paddingVertical: 40, marginHorizontal: 40, 
+  backgroundColor: '#fff', borderRadius: 24, fontWeight: 'bold', fontSize: 20},
+  heading1: {
+    fontFamily:'opensans-bold',
+    fontSize: 20
+  },
+  createAccount: {display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
+        backgroundColor: "#48b4a5",
+        borderColor: '#48b4a5',
+        borderWidth: 0,
+        borderRadius: 30,
+        paddingVertical: 15,
+        paddingHorizontal: 67},
+        createAccountText: {  fontSize: 18,
+          color: "#fff",
+          fontFamily: 'opensans-bold',
+          alignSelf: "center",
+      },
+})
 
 function LoginWithOtpState(state) {
   return {

@@ -19,10 +19,12 @@ import ModalPopup from '../../../components/Shared/ModalPopup';
 import Svg, {Defs, Ellipse, G, Path, Stop,TSpan,Circle,Rect } from 'react-native-svg';
 
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE } from "../../../setup/config";
+import Modal from 'react-native-modal';
 import {primaryColor} from '../../../setup/config'
 import {
   getMemberDetailsByEmail,
 } from '../../providers/corporate/corporate.actions';
+import LoginWithOtp from './loginWithOtp';
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -209,7 +211,7 @@ class Login extends Component {
                         secureTextEntry={true}
                         returnKeyType={'done'}
                         value={password}
-                        secureTextEntry={showPassword}
+                        // secureTextEntry={showPassword}
                         autoCapitalize='none'
                         onChangeText={password => this.setState({ password })}
                         // blurOnSubmit={false}
@@ -258,139 +260,27 @@ class Login extends Component {
 </Form>
 
 <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
-                   <Pressable onPress={() => {
-                         this.props.navigation.navigate('signup')
-                       }} style={{ }}>
-                        <Text style={styles.createAccountText}>Create Account</Text>
+                   <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{ }}>
+                        <Text style={styles.createAccountText}>Login With OTP</Text>
                 </Pressable>
                 </LinearGradient>
+                <Modal animationType={'fade'}
+      transparent={true} style={{padding: 0, margin: 0}} isVisible={true}>
+        <ImageBackground
+      style={{flex: 1}}
+      source={require('../../../../assets/images/loginBG.jpeg')}
+      blurRadius={15}>
+   <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', alignContent: 'center', justifyContent: 'center'}}>
+         <LoginWithOtp />
+        </View>
+</ImageBackground>
+
+        
+
+        
+      </Modal>
       </View>
-     
-     
-      
-
-      
-       
       </Container>
-      // <Container style={styles.container}>
-      //   <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
-      //     <Content contentContainerStyle={styles.authBodyContent}>
-      //       <ScrollView>
-
-      //         <Text uppercase={true}
-      //           style={[styles.welcome, { color: '#fff' }]}> {CURRENT_APP_NAME}</Text>
-
-      //         <Card style={{ borderRadius: 10, padding: 5, marginTop: 20 }}>
-      //           <View style={{ flex: 1 }}>
-      //             <ModalPopup
-      //               errorMessageText={loginErrorMsg}
-      //               closeButtonText={'CLOSE'}
-      //               closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
-      //               visible={isModalVisible} />
-      //           </View>
-      //           <View style={{ marginLeft: 10, marginRight: 10 }}>
-      //             <Text uppercase={true} style={[styles.cardHead, { color: primaryColor }]}>Login</Text>
-
-      //             <Form>
-      //               <Label style={{ marginTop: 20, fontSize: 15, color: primaryColor, fontFamily:'opensans-bold' }}>{ isSelected === 'corporate_user' ? "Email" : "Mobile Number/ Email"}</Label>
-      //               <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
-      //                 <Input placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={styles.authTransparentLabel}
-      //                   ref={(input) => { this.enterTextInputEmail = input; }}
-      //                   returnKeyType={'next'}
-      //                   value={userEntry}
-      //                   keyboardType={"default"}
-      //                   onChangeText={userEntry => this.setState({ userEntry })/*acceptNumbersOnly(userEntry) == true || userEntry === '' ? this.setState({ userEntry }) : null */}
-      //                   autoCapitalize='none'
-      //                   blurOnSubmit={false}
-      //                   onSubmitEditing={() => { this.userEntry._root.focus(); }}
-      //                 />
-      //               </Item>
-      //               <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Password</Label>
-      //               <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
-      //                 <Input placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 15, }}
-      //                   ref={(input) => { this.userEntry = input; }}
-      //                   secureTextEntry={true}
-      //                   returnKeyType={'done'}
-      //                   value={password}
-      //                   secureTextEntry={showPassword}
-      //                   autoCapitalize='none'
-      //                   onChangeText={password => this.setState({ password })}
-      //                   // blurOnSubmit={false}
-      //                   onSubmitEditing={() => { (userEntry && password) != '' ? this.doLogin() : this.enterTextInputEmail._root.focus() }}
-      //                 />
-
-
-      //                 {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
-      //                   : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: primaryColor }} onPress={() => this.setState({ showPassword: !showPassword })} />
-      //                 }
-      //               </Item>
-                    // {CURRENT_APP_NAME === MY_SMART_HEALTH_CARE ?
-                    //   <Row style={{ marginTop: 10 }}>
-                    //      <Col size={4}>
-                    //       <Row style={{ alignItems: 'center' }}>
-                    //         <Radio
-                    //           color={primaryColor}
-                    //         selectedColor={primaryColor}
-                              // standardStyle={true}
-                              // selected={ isSelected === 'corporate_user'}
-                              // onPress={() => this.setState({  isSelected: 'corporate_user', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
-                    //         />
-                    //         <Text style={styles.firstCheckBox}>Corporate</Text>
-                    //       </Row>
-                    //     </Col>
-                    //     <Col size={3}>
-                    //       <Row style={{ alignItems: 'center' }}>
-                    //         <Radio
-                    //           color={primaryColor}
-                    //          selectedColor={primaryColor}
-                    //           standardStyle={true}
-                    //           selected={ isSelected === 'user'}
-                    //           onPress={() => this.setState({  isSelected: 'user', patientDetailsObj: this.defaultPatDetails })}
-                    //         />
-                    //         <Text style={styles.firstCheckBox}>User</Text>
-                    //       </Row>
-                    //     </Col>
-                       
-                    //     <Col size={3}>
-                    //     </Col>
-                    //   </Row>
-                    //   : null}
-      //               <Row style={{ marginTop: 20, }}>
-      //                 <Right>
-      //                   <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
-      //                     <Text style={styles.customText}> Forgot Password?</Text>
-      //                   </TouchableOpacity>
-      //                 </Right>
-      //               </Row>
-      //               {isLoading ?
-      //                 <Spinner
-      //                   visible={isLoading}
-      //                 /> : null}
-      //               <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-      //                 <TouchableOpacity small
-      //                   style={(userEntry && password) == '' ? styles.loginButton1Disable : styles.loginButton1}
-      //                   disabled={isLoading}
-      //                   block success disabled={(userEntry && password) == ''} onPress={() => this.doLogin()}>
-      //                   <Text uppercase={true} style={styles.ButtonText}>Login </Text>
-      //                 </TouchableOpacity>
-      //                 {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'Roboto', marginTop: 2 }}>{loginErrorMsg}</Text> */}
-      //               </View>
-
-      //               <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
-      //                 <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'Roboto', color: primaryColor }}>Don't Have An Account ?</Text>
-      //                 <TouchableOpacity onPress={() => {
-      //                   this.props.navigation.navigate('signup')
-      //                 }} style={styles.smallSignUpButton}>
-      //                   <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'opensans-bold', color: '#fff' }}> Sign Up</Text>
-      //                 </TouchableOpacity>
-      //               </Item>
-      //             </Form>
-      //           </View>
-      //         </Card>
-      //       </ScrollView>
-      //     </Content>
-      //   </ImageBackground>
-      // </Container>
     )
   }
 }
