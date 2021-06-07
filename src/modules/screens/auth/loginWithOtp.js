@@ -26,6 +26,7 @@ import {
 } from 'native-base';
 import {connect} from 'react-redux';
 import {acceptNumbersOnly} from '../../common';
+
 import {
   generateOTPForLoginWithOtp,
   verifyMemberLoginWithOtp,getMemberDetailsByEmail
@@ -172,9 +173,44 @@ class LoginWithOtp extends Component {
       isModalVisible,
     } = this.state;
     return (
-      <View style={styles.outerContainer}>
+      <ImageBackground
+      style={{flex: 1}}
+      source={require('../../../../assets/images/loginBG.jpeg')}
+      blurRadius={15}>
+        
+   <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', alignContent: 'center', justifyContent: 'center'}}>
+   <View style={styles.outerContainer}>
         <View style={styles.container}>
-        <Text style={styles.heading1}>Your Phone / E-mail</Text>
+        <Text style={styles.heading1}>Your Phone!</Text>
+        <Item 
+        style={{marginTop: 40, borderBottomColor: '#dddddd', borderBottomWidth: 1,
+         width: '88%', marginRight: 50, marginLeft: 0}}>
+                      <Input
+                        placeholder={'Mobile Number / Email'}
+                        ref={(input) => {
+                          this.enterTextInputEmail = input;
+                        }}
+                        returnKeyType={'next'}
+                        value={userEntry}
+                        keyboardType={'default'}
+                        onChangeText={
+                          (userEntry) =>
+                            this.setState({
+                              userEntry,
+                            }) /*acceptNumbersOnly(userEntry) == true || userEntry === '' ? this.setState({ userEntry }) : null */
+                          }
+                          autoCapitalize="none"
+                          blurOnSubmit={false}
+                      />
+
+
+                     
+                    </Item>
+                    <Text style={{marginVertical: 40, color: '#C2CCCC'}}>A 4-digit OTP will be sent to your mobile / email to verify your mobile number or email provided</Text>
+        <Pressable onPress={() => this.props.navigation.navigate('login')} style={{ }}>
+            <Text>Go Back</Text>
+    </Pressable>
+       
        
       </View>
       <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
@@ -183,6 +219,9 @@ class LoginWithOtp extends Component {
     </Pressable>
     </LinearGradient>
       </View>
+        </View>
+</ImageBackground>
+      
     );
   }
 }
@@ -208,6 +247,17 @@ const styles = StyleSheet.create({
           fontFamily: 'opensans-bold',
           alignSelf: "center",
       },
+      authTransparentLabel: {
+        borderBottomColor: 'transparent',
+        backgroundColor: '#F1F1F1',
+        height: 45,
+        marginTop: 10,
+        borderRadius: 5,
+        paddingLeft: 15,
+        fontFamily: 'Roboto',
+        fontSize: 15,
+
+    },
 })
 
 function LoginWithOtpState(state) {

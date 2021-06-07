@@ -328,7 +328,8 @@ export default StyleSheet.create({
             color: "rgba(72,180,165,0.5)",
             fontFamily: 'opensans-bold',
             alignSelf: "center",
-        }
+        },
+        
 })
 
 

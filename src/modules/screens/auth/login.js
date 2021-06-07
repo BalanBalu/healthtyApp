@@ -34,6 +34,7 @@ class Login extends Component {
       password: '',
       loginErrorMsg: '',
       checked: false,
+      isVisibleOTP: false,
       isModalVisible: false,
       backgroundColor: '#dddddd',
       showPassword: true,
@@ -206,7 +207,7 @@ class Login extends Component {
                       <Input 
                       onBlur={ () => this.onBlur(2) }
                       onFocus={ () => this.onFocus(2) }
-                      placeholderTextColor={'#A1A1A1'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                      placeholderTextColor={'#A1A1A1'} placeholder="MPIN" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                         ref={(input) => { this.userEntry = input; }}
                         secureTextEntry={true}
                         returnKeyType={'done'}
@@ -264,21 +265,7 @@ class Login extends Component {
                         <Text style={styles.createAccountText}>Login With OTP</Text>
                 </Pressable>
                 </LinearGradient>
-                <Modal animationType={'fade'}
-      transparent={true} style={{padding: 0, margin: 0}} isVisible={true}>
-        <ImageBackground
-      style={{flex: 1}}
-      source={require('../../../../assets/images/loginBG.jpeg')}
-      blurRadius={15}>
-   <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', alignContent: 'center', justifyContent: 'center'}}>
-         <LoginWithOtp />
-        </View>
-</ImageBackground>
-
-        
-
-        
-      </Modal>
+            
       </View>
       </Container>
     )
