@@ -185,23 +185,24 @@ class LoginWithOtp extends Component {
      <View style={styles.outerContainer}>
           <View style={styles.container}>
           <Text style={styles.heading1}>OTP Verification</Text>
-          <Text style={{ color: 'black', fontFamily: 'opensans-semibold', fontSize: 17, justifyContent: 'center', marginTop: 15 }}>Phone No or Email</Text>
-          <OtpInputs
+          <Text style={{marginVertical: 10, color: '#C2CCCC', lineHeight: 30}}>Enter the OTP you received to your entered <Text style={{fontFamily: 'opensans-bold'}}>{userEntry}</Text> </Text>
+                    <OtpInputs
+                    userEntry={userEntry}
                     noOfDigits={4}
                     getOtp={(otp) => this.getEnteredotp(otp)}
                   />
-                      <Text style={{marginVertical: 30, color: '#C2CCCC'}}>A 4-digit OTP will be sent to your mobile / email to verify your mobile number or email provided</Text>
+                    
           <Pressable onPress={() => this.props.navigation.navigate('login')} style={{ }}>
-              <Text style={{color: '#39B0E5'}}><MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} />
+              <Text style={{color: '#39B0E5'}}>
   
-  Go Back</Text>
+  RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
       </Pressable>
          
          
         </View>
         <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
          <Pressable onPress={() => this.generateotp()} S style={{ }}>
-              <Text style={styles.createAccountText}>Send OTP</Text>
+              <Text style={styles.createAccountText}>Continue</Text>
       </Pressable>
       </LinearGradient>
         </View>
