@@ -60,6 +60,7 @@ class LoginWithOtp extends Component {
       requestData: {},
       errorMsg: '',
       isLoading: false,
+      backgroundColor: '#dddddd',
       userEntry: '',
       userId: '',
     };
@@ -164,6 +165,17 @@ class LoginWithOtp extends Component {
       this.setState({isLoading: false});
     }
   };
+  onFocus() {
+    this.setState({
+      backgroundColor: '#48b4a5'
+    });
+  }
+
+  onBlur() {
+    this.setState({
+      backgroundColor: '#dddddd'
+    });
+  }
 
   render() {
     const {
@@ -185,14 +197,14 @@ class LoginWithOtp extends Component {
      <View style={styles.outerContainer}>
           <View style={styles.container}>
           <Text style={styles.heading1}>OTP Verification</Text>
-          <Text style={{marginVertical:30, color: '#C2CCCC', lineHeight: 30}}>Enter the OTP you received to <Text style={{fontFamily: 'opensans-bold'}}>{userEntry}</Text> </Text>
+          <Text style={{marginVertical:20, color: '#C2CCCC', lineHeight: 30}}>Enter the OTP you received to <Text style={{fontFamily: 'opensans-bold'}}>{userEntry}</Text> </Text>
                     <OtpInputs
                     userEntry={userEntry}
                     noOfDigits={4}
                     getOtp={(otp) => this.getEnteredotp(otp)}
                   />
                     
-          <Pressable onPress={() => this.props.navigation.navigate('login')} style={{ }}>
+          <Pressable onPress={() => this.props.navigation.navigate('login')} style={{marginTop: 30 }}>
               <Text style={{color: '#39B0E5'}}>
   
   RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
@@ -217,10 +229,10 @@ class LoginWithOtp extends Component {
    <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', alignContent: 'center', justifyContent: 'center'}}>
    <View style={styles.outerContainer}>
         <View style={styles.container}>
-        <Text style={styles.heading1}>Login With OTP!</Text>
-        <Text style={{ color: 'black', fontFamily: 'opensans-semibold', fontSize: 17, justifyContent: 'center', marginTop: 15 }}>Phone No or Email</Text>
+        <Text style={styles.heading1}>Login With OTP</Text>
+        <Text style={{ color: 'black', fontFamily: 'opensans-semibold', fontSize: 16, justifyContent: 'center', marginTop: 15 }}>Phone No or Email</Text>
         <Item 
-        style={{marginTop: 15, borderBottomColor: '#dddddd', borderBottomWidth: 1,
+        style={{marginTop: 15, borderBottomColor: this.state.backgroundColor, borderBottomWidth: 1,
          width: '88%', marginRight: 50, marginLeft: 0}}>
                       <Input
                        placeholderTextColor={'##A1A1A1'} 
@@ -228,6 +240,8 @@ class LoginWithOtp extends Component {
                         ref={(input) => {
                           this.enterTextInputEmail = input;
                         }}
+                        onFocus={ () => this.onFocus() }
+                        onBlur={ () => this.onBlur() }
                         returnKeyType={'next'}
                         value={userEntry}
                         keyboardType={'default'}
@@ -269,12 +283,12 @@ Go Back</Text>
 
 const styles = StyleSheet.create({
   outerContainer: {display: 'flex', justifyContent: 'center'},
-  container: {height: 'auto', flex: 0 , width : width - 40,
+  container: {height: 'auto', flex: 0 , width : width - 40,minHeight: height - 490,
   paddingHorizontal: 20, paddingVertical: 40, marginHorizontal: 40, 
   backgroundColor: '#fff', borderRadius: 24, fontWeight: 'bold', fontSize: 20},
   heading1: {
     fontFamily:'opensans-bold',
-    fontSize: 20
+    fontSize: 20.5
   },
   createAccount: {display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
         backgroundColor: "#48b4a5",
