@@ -163,6 +163,8 @@ class SubmitClaim extends PureComponent {
   };
 
   updateSubmissionDetails = async (data) => {
+    console.log("data",data)
+
     try {
       const {submissionDetails} = this.state;
       let reqData = {
@@ -313,230 +315,230 @@ class SubmitClaim extends PureComponent {
             : submissionDetails.occupation
               ? submissionDetails.occupation
               : null,
-          occupationDetail: data.occupationDetailNo
-            ? data.occupationDetailNo
-            : submissionDetails.occupationDetailNo
-              ? submissionDetails.occupationDetailNo
+          occupationDetail: data.occupationDetail 
+            ? data.occupationDetail 
+            : submissionDetails.occupationDetail 
+              ? submissionDetails.occupationDetail 
               : null,
-          patientAddress: data.patientAddressNo
-            ? data.patientAddressNo
-            : submissionDetails.patientAddressNo
-              ? submissionDetails.patientAddressNo
+          patientAddress: data.patientAddress 
+            ? data.patientAddress 
+            : submissionDetails.patientAddress 
+              ? submissionDetails.patientAddress 
               : null,
-          patientNoAndStreet: data.patientNoAndStreetNo
-            ? data.patientNoAndStreetNo
-            : submissionDetails.patientNoAndStreetNo
-              ? submissionDetails.patientNoAndStreetNo
+          patientNoAndStreet: data.patientNoAndStreet
+            ? data.patientNoAndStreet
+            : submissionDetails.patientNoAndStreet
+              ? submissionDetails.patientNoAndStreet
               : null,
-          patientCity: data.patientCityNo
-            ? data.patientCityNo
-            : submissionDetails.patientCityNo
-              ? submissionDetails.patientCityNo
+          patientCity: data.patientCity
+            ? data.patientCity 
+            : submissionDetails.patientCity 
+              ? submissionDetails.patientCity 
               : null,
-          patientState: data.patientStateNo
-            ? data.patientStateNo
-            : submissionDetails.patientStateNo
-              ? submissionDetails.patientStateNo
+          patientState: data.patientState 
+            ? data.patientState 
+            : submissionDetails.patientState 
+              ? submissionDetails.patientState 
               : null,
-          patientCountry: data.patientCountryNo
-            ? data.patientCountryNo
-            : submissionDetails.patientCountryNo
-              ? submissionDetails.patientCountryNo
+          patientCountry: data.patientCountry 
+            ? data.patientCountry 
+            : submissionDetails.patientCountry 
+              ? submissionDetails.patientCountry 
               : null,
-          patientPhoneNumber: data.patientPhoneNumberNo
-            ? data.patientPhoneNumberNo
-            : submissionDetails.patientPhoneNumberNo
-              ? submissionDetails.patientPhoneNumberNo
+          patientPhoneNumber: data.patientPhoneNumber 
+            ? data.patientPhoneNumber 
+            : submissionDetails.patientPhoneNumber 
+              ? submissionDetails.patientPhoneNumber 
               : null,
-          patientEmail: data.patientEmailNo
-            ? data.patientEmailNo
-            : submissionDetails.patientEmailNo
-              ? submissionDetails.patientEmailNo
+          patientEmail: data.patientEmail 
+            ? data.patientEmail 
+            : submissionDetails.patientEmail 
+              ? submissionDetails.patientEmail 
               : null,
-          hospitalName: data.hospitalNameNo
-            ? data.hospitalNameNo
-            : submissionDetails.hospitalNameNo
-              ? submissionDetails.hospitalNameNo
+          hospitalName: data.hospitalName 
+            ? data.hospitalName 
+            : submissionDetails.hospitalName 
+              ? submissionDetails.hospitalName 
               : null,
-          roomCategory: data.roomCategoryNo
-            ? data.roomCategoryNo
-            : submissionDetails.roomCategoryNo
-              ? submissionDetails.roomCategoryNo
+          roomCategory: data.roomCategory 
+            ? data.roomCategory 
+            : submissionDetails.roomCategory 
+              ? submissionDetails.roomCategory 
               : null,
-          hospitalizationDueTo: data.hospitalizationDueToNo
-            ? data.hospitalizationDueToNo
-            : submissionDetails.hospitalizationDueToNo
-              ? submissionDetails.hospitalizationDueToNo
+          hospitalizationDueTo: data.hospitalizationDueTo 
+            ? data.hospitalizationDueTo 
+            : submissionDetails.hospitalizationDueTo 
+              ? submissionDetails.hospitalizationDueTo 
               : null,
-          dayOfInjury: data.dayOfInjuryNo
-            ? data.dayOfInjuryNo
-            : submissionDetails.dayOfInjuryNo
-              ? submissionDetails.dayOfInjuryNo
+          dayOfInjury: data.dayOfInjury 
+            ? data.dayOfInjury 
+            : submissionDetails.dayOfInjury 
+              ? submissionDetails.dayOfInjury 
               : null,
-          dateOfAdmission: data.dateOfAdmissionNo
-            ? data.dateOfAdmissionNo
-            : submissionDetails.dateOfAdmissionNo
-              ? submissionDetails.dateOfAdmissionNo
+          dateOfAdmission: data.dateOfAdmission 
+            ? data.dateOfAdmission 
+            : submissionDetails.dateOfAdmission 
+              ? submissionDetails.dateOfAdmission 
               : null,
-          dateOfDischarge: data.dateOfDischargeNo
-            ? data.dateOfDischargeNo
-            : submissionDetails.dateOfDischargeNo
-              ? submissionDetails.dateOfDischargeNo
+          dateOfDischarge: data.dateOfDischarge 
+            ? data.dateOfDischarge 
+            : submissionDetails.dateOfDischarge 
+              ? submissionDetails.dateOfDischarge 
               : null,
-          injuryCause: data.injuryCauseNo
-            ? data.injuryCauseNo
-            : submissionDetails.injuryCauseNo
-              ? submissionDetails.injuryCauseNo
+          injuryCause: data.injuryCause 
+            ? data.injuryCause 
+            : submissionDetails.injuryCause 
+              ? submissionDetails.injuryCause 
               : null,
-          medicoLegal: data.medicoLegalNo
-            ? data.medicoLegalNo
-            : submissionDetails.medicoLegalNo
-              ? submissionDetails.medicoLegalNo
+          medicoLegal: data.medicoLegal 
+            ? data.medicoLegal 
+            : submissionDetails.medicoLegal 
+              ? submissionDetails.medicoLegal 
               : null,
-          reportedTpPolice: data.reportedTpPoliceNo
-            ? data.reportedTpPoliceNo
-            : submissionDetails.reportedTpPoliceNo
-              ? submissionDetails.reportedTpPoliceNo
+          reportedTpPolice: data.reportedTpPolice 
+            ? data.reportedTpPolice 
+            : submissionDetails.reportedTpPolice 
+              ? submissionDetails.reportedTpPolice 
               : null,
-          mlcReport: data.mlcReportNo
-            ? data.mlcReportNo
-            : submissionDetails.mlcReportNo
-              ? submissionDetails.mlcReportNo
+          mlcReport: data.mlcReport 
+            ? data.mlcReport 
+            : submissionDetails.mlcReport 
+              ? submissionDetails.mlcReport 
               : null,
-          systemOfMedicine: data.systemOfMedicineNo
-            ? data.systemOfMedicineNo
-            : submissionDetails.systemOfMedicineNo
-              ? submissionDetails.systemOfMedicineNo
+          systemOfMedicine: data.systemOfMedicine 
+            ? data.systemOfMedicine 
+            : submissionDetails.systemOfMedicine 
+              ? submissionDetails.systemOfMedicine 
               : null,
-          preHospitalizationExpenses: data.preHospitalizationExpensesNo
-            ? data.preHospitalizationExpensesNo
-            : submissionDetails.preHospitalizationExpensesNo
-              ? submissionDetails.preHospitalizationExpensesNo
+          preHospitalizationExpenses: data.preHospitalizationExpenses 
+            ? data.preHospitalizationExpenses 
+            : submissionDetails.preHospitalizationExpenses 
+              ? submissionDetails.preHospitalizationExpenses 
               : null,
-          hospitalizationExpenses: data.hospitalizationExpensesNo
-            ? data.hospitalizationExpensesNo
-            : submissionDetails.hospitalizationExpensesNo
-              ? submissionDetails.hospitalizationExpensesNo
+          hospitalizationExpenses: data.hospitalizationExpenses 
+            ? data.hospitalizationExpenses 
+            : submissionDetails.hospitalizationExpenses 
+              ? submissionDetails.hospitalizationExpenses 
               : null,
-          postHospitalizationExpenses: data.postHospitalizationExpensesNo
-            ? data.postHospitalizationExpensesNo
-            : submissionDetails.postHospitalizationExpensesNo
-              ? submissionDetails.postHospitalizationExpensesNo
+          postHospitalizationExpenses: data.postHospitalizationExpenses 
+            ? data.postHospitalizationExpenses 
+            : submissionDetails.postHospitalizationExpenses 
+              ? submissionDetails.postHospitalizationExpenses 
               : null,
-          healthCheckupCost: data.healthCheckupCostNo
-            ? data.healthCheckupCostNo
-            : submissionDetails.healthCheckupCostNo
-              ? submissionDetails.healthCheckupCostNo
+          healthCheckupCost: data.healthCheckupCost 
+            ? data.healthCheckupCost 
+            : submissionDetails.healthCheckupCost 
+              ? submissionDetails.healthCheckupCost 
               : null,
-          ambulanceCharges: data.ambulanceChargesNo
-            ? data.ambulanceChargesNo
-            : submissionDetails.ambulanceChargesNo
-              ? submissionDetails.ambulanceChargesNo
+          ambulanceCharges: data.ambulanceCharges 
+            ? data.ambulanceCharges 
+            : submissionDetails.ambulanceCharges 
+              ? submissionDetails.ambulanceCharges 
               : null,
-          othersCode: data.othersCodeNo
-            ? data.othersCodeNo
-            : submissionDetails.othersCodeNo
-              ? submissionDetails.othersCodeNo
+          othersCode: data.othersCode 
+            ? data.othersCode 
+            : submissionDetails.othersCode 
+              ? submissionDetails.othersCode 
               : null,
-          totalClaim: data.totalClaimNo
-            ? data.totalClaimNo
-            : submissionDetails.totalClaimNo
-              ? submissionDetails.totalClaimNo
+          totalClaim: data.totalClaim 
+            ? data.totalClaim 
+            : submissionDetails.totalClaim 
+              ? submissionDetails.totalClaim 
               : null,
-          preHospitalizationPeriod: data.preHospitalizationPeriodNo
-            ? data.preHospitalizationPeriodNo
-            : submissionDetails.preHospitalizationPeriodNo
-              ? submissionDetails.preHospitalizationPeriodNo
+          preHospitalizationPeriod: data.preHospitalizationPeriod 
+            ? data.preHospitalizationPeriod 
+            : submissionDetails.preHospitalizationPeriod 
+              ? submissionDetails.preHospitalizationPeriod 
               : null,
-          postHospitalizationPeriod: data.postHospitalizationPeriodNo
-            ? data.postHospitalizationPeriodNo
-            : submissionDetails.postHospitalizationPeriodNo
-              ? submissionDetails.postHospitalizationPeriodNo
+          postHospitalizationPeriod: data.postHospitalizationPeriod 
+            ? data.postHospitalizationPeriod 
+            : submissionDetails.postHospitalizationPeriod 
+              ? submissionDetails.postHospitalizationPeriod 
               : null,
-          claimForDomiciliaryHospitalization: data.claimForDomiciliaryHospitalizationNo
-            ? data.claimForDomiciliaryHospitalizationNo
-            : submissionDetails.claimForDomiciliaryHospitalizationNo
-              ? submissionDetails.claimForDomiciliaryHospitalizationNo
+          claimForDomiciliaryHospitalization: data.claimForDomiciliaryHospitalization 
+            ? data.claimForDomiciliaryHospitalization 
+            : submissionDetails.claimForDomiciliaryHospitalization 
+              ? submissionDetails.claimForDomiciliaryHospitalization 
               : null,
-          hospitalDailyCash: data.hospitalDailyCashNo
-            ? data.hospitalDailyCashNo
-            : submissionDetails.hospitalDailyCashNo
-              ? submissionDetails.hospitalDailyCashNo
+          hospitalDailyCash: data.hospitalDailyCash 
+            ? data.hospitalDailyCash 
+            : submissionDetails.hospitalDailyCash 
+              ? submissionDetails.hospitalDailyCash 
               : null,
-          surgicalCash: data.surgicalCashNo
-            ? data.surgicalCashNo
-            : submissionDetails.surgicalCashNo
-              ? submissionDetails.surgicalCashNo
+          surgicalCash: data.surgicalCash 
+            ? data.surgicalCash 
+            : submissionDetails.surgicalCash 
+              ? submissionDetails.surgicalCash 
               : null,
-          criticalIllness: data.criticalIllnessNo
-            ? data.criticalIllnessNo
-            : submissionDetails.criticalIllnessNo
-              ? submissionDetails.criticalIllnessNo
+          criticalIllness: data.criticalIllness 
+            ? data.criticalIllness 
+            : submissionDetails.criticalIllness 
+              ? submissionDetails.criticalIllness 
               : null,
-          convalescence: data.convalescenceNo
-            ? data.convalescenceNo
-            : submissionDetails.convalescenceNo
-              ? submissionDetails.convalescenceNo
+          convalescence: data.convalescence 
+            ? data.convalescence 
+            : submissionDetails.convalescence 
+              ? submissionDetails.convalescence 
               : null,
-          lumsumBenefit: data.lumsumBenefitNo
-            ? data.lumsumBenefitNo
-            : submissionDetails.lumsumBenefitNo
-              ? submissionDetails.lumsumBenefitNo
+          lumsumBenefit: data.lumsumBenefit 
+            ? data.lumsumBenefit 
+            : submissionDetails.lumsumBenefit 
+              ? submissionDetails.lumsumBenefit 
               : null,
-          others: data.othersNo
-            ? data.othersNo
-            : submissionDetails.othersNo
-              ? submissionDetails.othersNo
+          others: data.others 
+            ? data.others 
+            : submissionDetails.others 
+              ? submissionDetails.others 
               : null,
-          totalClaimValue: data.totalClaimValueNo
-            ? data.totalClaimValueNo
-            : submissionDetails.totalClaimValueNo
-              ? submissionDetails.totalClaimValueNo
+          totalClaimValue: data.totalClaimValue 
+            ? data.totalClaimValue 
+            : submissionDetails.totalClaimValue 
+              ? submissionDetails.totalClaimValue 
               : null,
-          PanCardDetail: data.PanCardDetailNo
-            ? data.PanCardDetailNo
-            : submissionDetails.PanCardDetailNo
-              ? submissionDetails.PanCardDetailNo
+          PanCardDetail: data.PanCardDetail
+            ? data.PanCardDetail
+            : submissionDetails.PanCardDetail
+              ? submissionDetails.PanCardDetail
               : null,
-          accountNo: data.accountNoNo
-            ? data.accountNoNo
-            : submissionDetails.accountNoNo
-              ? submissionDetails.accountNoNo
+          accountNo: data.accountNo
+            ? data.accountNo
+            : submissionDetails.accountNo
+              ? submissionDetails.accountNo
               : null,
-          bankName: data.bankNameNo
-            ? data.bankNameNo
-            : submissionDetails.bankNameNo
-              ? submissionDetails.bankNameNo
+          bankName: data.bankName
+            ? data.bankName
+            : submissionDetails.bankName
+              ? submissionDetails.bankName
               : null,
-          chequeDetails: data.chequeDetailsNo
-            ? data.chequeDetailsNo
-            : submissionDetails.chequeDetailsNo
-              ? submissionDetails.chequeDetailsNo
+          chequeDetails: data.chequeDetails
+            ? data.chequeDetails
+            : submissionDetails.chequeDetails
+              ? submissionDetails.chequeDetails
               : null,
-          ifscCode: data.ifscCodeNo
-            ? data.ifscCodeNo
-            : submissionDetails.ifscCodeNo
-              ? submissionDetails.ifscCodeNo
+          ifscCode: data.ifscCode
+            ? data.ifscCode
+            : submissionDetails.ifscCode
+              ? submissionDetails.ifscCode
               : null,
-          insuredPlace: data.insuredPlaceNo
-            ? data.insuredPlaceNo
-            : submissionDetails.insuredPlaceNo
-              ? submissionDetails.insuredPlaceNo
+          insuredPlace: data.insuredPlace
+            ? data.insuredPlace 
+            : submissionDetails.insuredPlace 
+              ? submissionDetails.insuredPlace 
               : null,
-          dateOfHospitalization: data.dateOfHospitalizationNo
-            ? data.dateOfHospitalizationNo
-            : submissionDetails.dateOfHospitalizationNo
-              ? submissionDetails.dateOfHospitalizationNo
+          dateOfHospitalization: data.dateOfHospitalization 
+            ? data.dateOfHospitalization 
+            : submissionDetails.dateOfHospitalization 
+              ? submissionDetails.dateOfHospitalization 
               : null,
-          signatureOfInsures: data.signatureOfInsuresNo
-            ? data.signatureOfInsuresNo
-            : submissionDetails.signatureOfInsuresNo
-              ? submissionDetails.signatureOfInsuresNo
+          signatureOfInsures: data.signatureOfInsures 
+            ? data.signatureOfInsures 
+            : submissionDetails.signatureOfInsures 
+              ? submissionDetails.signatureOfInsures 
               : null,
         },
       };
       let result = await updateClaimSubmission(reqData);
-
+console.log("result",result)
       if (result) {
         this.setState({
           updateId: result._id,
