@@ -146,8 +146,9 @@ class Login extends Component {
     
     const { userEntry, password, showPassword, loginErrorMsg, isModalVisible, isSelected } = this.state;
     return (
-      <ScrollView>
+      
         <Container style={{backgroundColor: '#fff'}}>
+          <ScrollView>
              <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270}}>
 
       <View>
@@ -261,15 +262,16 @@ class Login extends Component {
                    
 </Form>
 
-<LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
+<LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={[styles.createAccount, {marginBottom: 50}]}>
                    <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{ }}>
                         <Text style={styles.createAccountText}>Login With OTP</Text>
                 </Pressable>
                 </LinearGradient>
             
       </View>
-      </Container>
       </ScrollView>
+      </Container>
+   
     )
   }
 }
