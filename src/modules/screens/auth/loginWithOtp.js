@@ -151,16 +151,16 @@ class LoginWithOtp extends Component {
         this.props.navigation.navigate('CorporateHome');
       } else {
         Toast.show({
-          text: this.props.user.message || '',
+          text: this.props.user.message || 'OTP you have entered is Invalid',
           type: 'danger',
           duration: 4000,
         });
       }
     } catch (e) {
-      Toast.show({
-        text: 'Something Went Wrong' + e,
-        duration: 3000,
-      });
+      // Toast.show({
+      //   text: 'Something Went Wrong' + e,
+      //   duration: 3000,
+      // });
     } finally {
       this.setState({isLoading: false});
     }
@@ -204,7 +204,7 @@ class LoginWithOtp extends Component {
                     getOtp={(otp) => this.getEnteredotp(otp)}
                   />
                     
-          <Pressable onPress={() => this.props.navigation.navigate('login')} style={{marginTop: 30 }}>
+          <Pressable onPress={() => this.generateotp()} style={{marginTop: 30 }}>
               <Text style={{color: '#39B0E5'}}>
   
   RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
