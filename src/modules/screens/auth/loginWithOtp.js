@@ -69,26 +69,16 @@ class LoginWithOtp extends Component {
       }
       this.setState({errorMsg: '', isLoading: true});
       const getOtpResp = await generateOTPForLoginWithOtp(userEntry);
+      console.log("getOtpResp",getOtpResp)
       if (getOtpResp) {
-        // Toast.show({
-        //   text: (getOtpResp && getOtpResp.message) || '',
-        //   type: 'success',
-        //   duration: 4000,
-        // });
+       
         this.setState({
           isOTPGenerated: true,
           requestData: getOtpResp,
-          userId: getOtpResp.userId,
         });
       } else {
-        this.setState({
-          errorMsg:
-            getOtpResp && getOtpResp.error
-              ? getOtpResp.error
-              : getOtpResp && getOtpResp.message
-              ? getOtpResp.message
-              : '',
-        });
+        this.setState({ errorMsg: "Something Went Wrong",isModalVisible:true })
+
       }
     } catch (e) {
       console.log(e);
@@ -111,7 +101,7 @@ class LoginWithOtp extends Component {
       }
       this.setState({isLoading: true, errorMsg: ''});
       let reqDataForVerifyotp = {
-        userId,
+        userId:userEntry,
         otp: otp,
       };
       let reqOtpVerifiedResponse = await verifyMemberLoginWithOtp(
@@ -166,14 +156,15 @@ class LoginWithOtp extends Component {
     } = this.state;
     return (
       <Container style={styles.container}>
+        {isLoading ? (
+                <Spinner visible={isLoading} />
+              ) : null}
         <ImageBackground
           source={mainBg}
           style={{width: '100%', height: '100%', flex: 1}}>
           <Content contentContainerStyle={styles.authBodyContent}>
             <ScrollView>
-              {isLoading ? (
-                <Spinner visible={isLoading} />
-              ) : isOTPGenerated ? (
+              {isOTPGenerated ? (
                 <View style={styles.container}>
                   <Row>
                     <Left>
