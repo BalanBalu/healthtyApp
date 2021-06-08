@@ -208,18 +208,27 @@ class LoginWithOtp extends Component {
                     name="arrow-forward-ios"
                     style={{color: '#39B0E5'}}
                   />
-                </Text>
-              </Pressable>
-            </View>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 0.5, y: 0}}
-              colors={['#0390e8', '#48b4a5']}
-              style={styles.createAccount}>
-              <Pressable onPress={() => this.generateotp()} S style={{}}>
-                <Text style={styles.createAccountText}>Continue</Text>
-              </Pressable>
-            </LinearGradient>
+                    
+          <View style={{display: 'flex', flexDirection: 'row', marginTop: 100, justifyContent: 'space-between'}}>
+          <Pressable onPress={() => this.generateotp()} style={{marginTop: 30 }}>
+              <Text style={{color: '#39B0E5'}}>
+  
+  RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
+      </Pressable>
+      <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{marginTop: 30 }}>
+              <Text style={{color: '#39B0E5'}}> 
+  BACK <MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} /></Text>
+      </Pressable>
+          </View>
+         
+         
+        </View>
+        <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
+         <Pressable onPress={() => this.generateotp()} S style={{ }}>
+              <Text style={styles.createAccountText}>Continue</Text>
+      </Pressable>
+      </LinearGradient>
+        </View>
           </View>
         </View>
       </ImageBackground>
@@ -313,19 +322,9 @@ class LoginWithOtp extends Component {
 
 const styles = StyleSheet.create({
   outerContainer: {display: 'flex', justifyContent: 'center'},
-  container: {
-    height: 'auto',
-    flex: 0,
-    width: width - 40,
-    minHeight: height - 490,
-    paddingHorizontal: 20,
-    paddingVertical: 40,
-    marginHorizontal: 40,
-    backgroundColor: '#fff',
-    borderRadius: 24,
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
+  container: {height: 'auto', flex: 0 , width : width - 40,
+  paddingHorizontal: 20, paddingVertical: 40, marginHorizontal: 40, 
+  backgroundColor: '#fff', borderRadius: 24, fontWeight: 'bold', fontSize: 20},
   heading1: {
     fontFamily: 'opensans-bold',
     fontSize: 20.5,
