@@ -146,7 +146,8 @@ class Login extends Component {
     
     const { userEntry, password, showPassword, loginErrorMsg, isModalVisible, isSelected } = this.state;
     return (
-      <Container style={{backgroundColor: '#fff'}}>
+      <ScrollView>
+        <Container style={{backgroundColor: '#fff'}}>
              <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270}}>
 
       <View>
@@ -268,6 +269,7 @@ class Login extends Component {
             
       </View>
       </Container>
+      </ScrollView>
     )
   }
 }
