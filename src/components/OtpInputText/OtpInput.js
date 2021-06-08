@@ -24,7 +24,7 @@ class OtpInput extends Component {
                 <Col key={j}
                     style={styles.txtMargin}
                 >
-                    <Item style={{ borderBottomWidth: 2, borderBottomColor: primaryColor, marginTop: 10, }}>
+                    <Item style={{ borderBottomWidth: 0, borderBottomColor: primaryColor, marginTop: 1, backgroundColor: '#EAF5F5', borderRadius: 20, height: 70 }}>
                         <Input
                             style={[styles.inputRadius, { borderRadius: 10 }]}
                             maxLength={1}
@@ -59,19 +59,17 @@ class OtpInput extends Component {
 
     render() {
         return (
-            <Content padder>
-                <Grid style={styles.gridPad}>
+            <Grid style={styles.gridPad}>
                     {this.renderInputs()}
                 </Grid>
-            </Content>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    gridPad: { padding: 10 },
-    txtMargin: { margin: 3, },
+    gridPad: { padding: 0 },
+    txtMargin: { margin: 1, },
     inputRadius: { textAlign: 'center', fontSize: 25, fontWeight: 'bold' }
 });
 
-export default OtpInput
+export default OtpInput;

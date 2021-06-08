@@ -281,6 +281,56 @@ export default StyleSheet.create({
         paddingBottom:2,
         borderRadius:5,
         flexDirection:'row'
-    }
+    },
+    imageContainer: {display: 'flex', justifyContent: 'center', alignItems: 'center', alignContent: 'center', marginTop: 30, marginLeft: 30, alignSelf: 'baseline'},
+    textBold: { fontFamily:'opensans-bold', color: '#fff' },
+    inputContainer: {borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', minHeight: '100%', marginTop: -30, display: 'flex', alignItems: "flex-start"},
+    welcomeText: {fontFamily: 'opensans-bold', marginLeft: 28, marginTop: 55, fontSize: 20, color: '#333333'},
+    signinButton: { elevation: 2,
+        backgroundColor: "#fff",
+        borderColor: '#48b4a5',
+        borderWidth: 2,
+        borderRadius: 30,
+        paddingVertical: 15,
+        paddingHorizontal: 102},
+        singinText: {  fontSize: 18,
+            color: "#48b4a5",
+            fontFamily: 'opensans-bold',
+            alignSelf: "center",
+        },
+        signinButtonDisabled: {
+            backgroundColor: "#fff",
+            borderColor: 'rgba(72,180,165,0.5)',
+            borderWidth: 2,
+            borderRadius: 30,
+            paddingVertical: 15,
+            paddingHorizontal: 102,
+           
+        },
+        createAccount: {display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
+        backgroundColor: "#48b4a5",
+        borderColor: '#48b4a5',
+        borderWidth: 0,
+        borderRadius: 30,
+        paddingVertical: 15,
+        paddingHorizontal: 67},
+        createAccountText: {  fontSize: 18,
+            color: "#fff",
+            fontFamily: 'opensans-bold',
+            alignSelf: "center",
+        },
+        signinText: {  fontSize: 18,
+            color: "#48b4a5",
+            fontFamily: 'opensans-bold',
+            alignSelf: "center",
+        },
+        signinTextDisabled: {
+            color: "rgba(72,180,165,0.5)",
+            fontFamily: 'opensans-bold',
+            alignSelf: "center",
+        },
+        
 })
+
+
 
