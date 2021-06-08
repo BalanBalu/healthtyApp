@@ -56,7 +56,7 @@ class LoginWithOtp extends Component {
     super(props);
     this.state = {
       otp: '',
-      isOTPGenerated: false,
+      isOTPGenerated: true,
       requestData: {},
       errorMsg: '',
       isLoading: false,
@@ -204,11 +204,18 @@ class LoginWithOtp extends Component {
                     getOtp={(otp) => this.getEnteredotp(otp)}
                   />
                     
+          <View style={{display: 'flex', flexDirection: 'row', marginTop: 100, justifyContent: 'space-between'}}>
           <Pressable onPress={() => this.generateotp()} style={{marginTop: 30 }}>
               <Text style={{color: '#39B0E5'}}>
   
   RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
       </Pressable>
+      <Pressable onPress={() => this.props.navigation.navigate('login')} style={{marginTop: 30 }}>
+              <Text style={{color: '#39B0E5'}}>
+  
+  BACK <MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} /></Text>
+      </Pressable>
+          </View>
          
          
         </View>
@@ -283,7 +290,7 @@ Go Back</Text>
 
 const styles = StyleSheet.create({
   outerContainer: {display: 'flex', justifyContent: 'center'},
-  container: {height: 'auto', flex: 0 , width : width - 40,minHeight: height - 490,
+  container: {height: 'auto', flex: 0 , width : width - 40,
   paddingHorizontal: 20, paddingVertical: 40, marginHorizontal: 40, 
   backgroundColor: '#fff', borderRadius: 24, fontWeight: 'bold', fontSize: 20},
   heading1: {
