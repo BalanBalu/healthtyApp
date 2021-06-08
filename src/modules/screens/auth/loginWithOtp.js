@@ -56,7 +56,7 @@ class LoginWithOtp extends Component {
     super(props);
     this.state = {
       otp: '',
-      isOTPGenerated: true,
+      isOTPGenerated: false,
       requestData: {},
       errorMsg: '',
       isLoading: false,
@@ -210,7 +210,7 @@ class LoginWithOtp extends Component {
   
   RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
       </Pressable>
-      <Pressable onPress={() => this.props.navigation.navigate('login')} style={{marginTop: 30 }}>
+      <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{marginTop: 30 }}>
               <Text style={{color: '#39B0E5'}}>
   
   BACK <MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} /></Text>
