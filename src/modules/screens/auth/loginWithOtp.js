@@ -198,16 +198,7 @@ class LoginWithOtp extends Component {
                 noOfDigits={4}
                 getOtp={(otp) => this.getEnteredotp(otp)}
               />
-
-              <Pressable
-                onPress={() => this.generateotp()}
-                style={{marginTop: 30}}>
-                <Text style={{color: '#39B0E5'}}>
-                  RESEND OTP{' '}
-                  <MaterialIcons
-                    name="arrow-forward-ios"
-                    style={{color: '#39B0E5'}}
-                  />
+          
                     
           <View style={{display: 'flex', flexDirection: 'row', marginTop: 100, justifyContent: 'space-between'}}>
           <Pressable onPress={() => this.generateotp()} style={{marginTop: 30 }}>
@@ -230,7 +221,7 @@ class LoginWithOtp extends Component {
       </LinearGradient>
         </View>
           </View>
-        </View>
+      
       </ImageBackground>
     ) : (
       <ImageBackground
