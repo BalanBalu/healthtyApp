@@ -190,7 +190,7 @@ class Login extends Component {
                       <Input
                        onBlur={ () => this.onBlur(1) }
                        onFocus={ () => this.onFocus(1) }
-                      placeholderTextColor={'##A1A1A1'} placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                      placeholderTextColor={'#A1A1A1'} placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                  ref={(input) => { this.enterTextInputEmail = input; }}
                                     returnKeyType={'next'}
                                     value={userEntry}

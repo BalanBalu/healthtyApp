@@ -268,7 +268,7 @@ class LoginWithOtp extends Component {
                   marginLeft: 0,
                 }}>
                 <Input
-                  placeholderTextColor={'##A1A1A1'}
+                  placeholderTextColor={'#A1A1A1'}
                   placeholder={'Mobile Number / Email'}
                   ref={(input) => {
                     this.enterTextInputEmail = input;
