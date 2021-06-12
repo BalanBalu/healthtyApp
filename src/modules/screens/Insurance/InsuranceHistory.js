@@ -68,6 +68,7 @@ export default class InsuranceHistory extends Component {
     }
   };
 
+  
   getBuyInsuranceList = async (actionType) => {
     try {
       let memberId = await AsyncStorage.getItem('memberId');

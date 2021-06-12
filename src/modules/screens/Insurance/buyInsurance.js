@@ -55,6 +55,7 @@ const LifeInsurance = [
   'endowment policies',
 ];
 
+
 class BuyInsurance extends PureComponent {
   constructor(props) {
     super(props);

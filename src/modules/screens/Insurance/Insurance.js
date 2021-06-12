@@ -51,6 +51,7 @@ class Insurance extends Component {
     this.pagination = 1;
     this.insuranceData = [];
   }
+  
 
   async componentDidMount() {
     let memberId = await AsyncStorage.getItem('memberId');
