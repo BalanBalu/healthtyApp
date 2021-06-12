@@ -27,11 +27,13 @@ import styles from './styles';
 import {
   getInsuranceByMemberId,
   arrangeCallbackAction,
+  createInsuranceHistory,
 } from '../../providers/insurance/insurance.action';
 import {dateDiff, formatDate} from '../../../setup/helpers';
 import moment from 'moment';
 import {NavigationEvents} from 'react-navigation';
 import InsuranceRenewalPopup from '../../shared/insuranceRenewalPopup';
+import { Loader } from '../../../components/ContentLoader';
 
 const LIMIT = 5;
 
@@ -50,15 +52,16 @@ class Insurance extends Component {
     this.insuranceData = [];
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    let memberId = await AsyncStorage.getItem('memberId');
+    this.setState({memberId});
     this.getInsuranceList();
   }
 
   getInsuranceList = async () => {
     try {
-      let memberId = await AsyncStorage.getItem('memberId');
       let result = await getInsuranceByMemberId(
-        memberId,
+        this.state.memberId,
         this.pagination,
         LIMIT,
       );
@@ -88,7 +91,6 @@ class Insurance extends Component {
     const basicProfileData = await AsyncStorage.getItem('basicProfileData');
     const basicData = JSON.parse(basicProfileData);
     let fullName = getFullName(basicData);
-    console.log("this.state.selectedInsurance",this.state.selectedInsurance)
     let result = await arrangeCallbackAction(
       fullName,
       this.state.selectedInsurance,
@@ -102,6 +104,38 @@ class Insurance extends Component {
         },
       ],
     );
+    let renewalData = {
+      memberId: this.state.memberId,
+      actionType: 'INSURANCE',
+      policyType: this.state.selectedItem.productType,
+      transactionType: 'Arrange-Callback',
+      renewalDate: new Date(),
+    };
+    await createInsuranceHistory(renewalData);
+  };
+  renewalOnline = async () => {
+    try {
+      let renewalData = {
+        memberId: this.state.memberId,
+        actionType: 'INSURANCE',
+        policyType: this.state.selectedItem.productType,
+        transactionType: 'Renewal-Online',
+        renewalDate: new Date(),
+      };
+      let result = await createInsuranceHistory(renewalData);
+      if (result) {
+        toastMeassage(
+          'Your insurance details is submited successfully',
+          'success',
+          1000,
+        );
+        this.props.navigation.navigate('CorporateHome');
+      }
+    } catch (error) {
+      console.log('Ex is getting on', error.message);
+    } finally {
+      this.setState({isLoading: false});
+    }
   };
 
   loadMoreData = async () => {
@@ -165,28 +199,39 @@ class Insurance extends Component {
         {/* <Content style={{padding: 10}}> */}
         <View style={styles.mainView}>
           <View style={{flexDirection: 'row'}}>
-         <View style={{width:'50%'}}>
-            <TouchableOpacity
-              style={[styles.addInsuranceButton,{width:'80%',marginLeft:25,}]}
-              onPress={() => this.props.navigation.navigate('AddInsurance')}>
-              <Icon
-                name="add-circle-outline"
-                style={{fontSize: 20, color: '#128283'}}
-              />
-              <Text style={styles.addInsuranceText}>Add Insurance</Text>
-            </TouchableOpacity>
+            <View style={{width: '50%'}}>
+              <TouchableOpacity
+                style={[
+                  styles.addInsuranceButton,
+                  {width: '80%', marginLeft: 25},
+                ]}
+                onPress={() => this.props.navigation.navigate('AddInsurance')}>
+                <Icon
+                  name="add-circle-outline"
+                  style={{fontSize: 20, color: '#128283'}}
+                />
+                <Text style={styles.addInsuranceText}>Add Insurance</Text>
+              </TouchableOpacity>
             </View>
-            <View style={{width:'50%',justifyContent:'flex-end',alignItems:'flex-end'}}>
-            <TouchableOpacity
-              style={[styles.addInsuranceButton,{width:'80%',marginRight:30}]}
-              onPress={() => this.props.navigation.navigate('BuyInsurance')}>
-              <Icon
-                name="add-circle-outline"
-                style={{fontSize: 20, color: '#128283'}}
-              />
-              <Text style={styles.addInsuranceText}>Buy Insurance</Text>
-            </TouchableOpacity>
-            </View >
+            <View
+              style={{
+                width: '50%',
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+              }}>
+              <TouchableOpacity
+                style={[
+                  styles.addInsuranceButton,
+                  {width: '80%', marginRight: 30},
+                ]}
+                onPress={() => this.props.navigation.navigate('BuyInsurance')}>
+                <Icon
+                  name="add-circle-outline"
+                  style={{fontSize: 20, color: '#128283'}}
+                />
+                <Text style={styles.addInsuranceText}>Buy Insurance</Text>
+              </TouchableOpacity>
+            </View>
           </View>
           {isLoading ? (
             <Loader style="list" />
@@ -290,6 +335,7 @@ class Insurance extends Component {
                             this.setState({
                               descriptionVisible: true,
                               selectedInsurance: item.insuranceName,
+                              selectedItem: item,
                             })
                           }>
                           <Text style={styles.renewalButtonText}>
@@ -323,22 +369,23 @@ class Insurance extends Component {
           )}
         </View>
         <InsuranceRenewalPopup
-                messageText={'Your request for buying Insurance!'}
-                callbackButtonText={'Arrange call back'}
-                renewOnlineButtonText={'Buy online'}
-                callbackButtonAction={() => {
-                    this.arrangeCallback();
-                    this.popUpClose();
-                }}
-                renewOnlineButtonAction={() =>{
-                    Linking.openURL('http://www.readypolicy.com/');
-                    this.popUpClose();
-                }}
-                popUpClose={() =>{
-                    this.popUpClose();
-                }}
-                visible={this.state.descriptionVisible}
-              />
+          messageText={'Your request for buying Insurance!'}
+          callbackButtonText={'Arrange call back'}
+          renewOnlineButtonText={'Buy online'}
+          callbackButtonAction={() => {
+            this.arrangeCallback();
+            this.popUpClose();
+          }}
+          renewOnlineButtonAction={() => {
+            Linking.openURL('http://www.readypolicy.com/');
+            this.popUpClose();
+            this.renewalOnline();
+          }}
+          popUpClose={() => {
+            this.popUpClose();
+          }}
+          visible={this.state.descriptionVisible}
+        />
         {isLoadingMoreData ? (
           <View style={{flex: 1, justifyContent: 'flex-end'}}>
             <ActivityIndicator
