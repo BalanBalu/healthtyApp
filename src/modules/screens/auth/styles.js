@@ -305,6 +305,10 @@ export default StyleSheet.create({
             borderRadius: 30,
             paddingVertical: 15,
             paddingHorizontal: 102,
+            alignContent: 'center',
+            justifyContent: 'center',
+            alignItems: 'center'
+
            
         },
         createAccount: {display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
@@ -313,7 +317,7 @@ export default StyleSheet.create({
         borderWidth: 0,
         borderRadius: 30,
         paddingVertical: 15,
-        paddingHorizontal: 67},
+        paddingHorizontal: '15%', marginLeft: '2%'},
         createAccountText: {  fontSize: 18,
             color: "#fff",
             fontFamily: 'opensans-bold',
