@@ -402,7 +402,7 @@ class Forgotpassword extends Component {
                     
                     
                     <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={[styles.createAccount, {marginBottom: 50, marginTop: 50, marginRight: 24}]}>
-                   <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{ }}>
+                   <Pressable  block success onPress={() => this.generateOtpCode()} style={{ }}>
                         <Text style={styles.createAccountText}>Generate OTP</Text>
                 </Pressable>
                 </LinearGradient>
