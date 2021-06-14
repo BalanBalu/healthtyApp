@@ -78,17 +78,25 @@ class LoginWithOtp extends Component {
       }
       this.setState({errorMsg: '', isLoading: true});
       const getOtpResp = await generateOTPForLoginWithOtp(userEntry);
-      console.log('getOtpResp', getOtpResp);
-      if (getOtpResp) {
+      if (getOtpResp.success == true) {
         this.setState({
           isOTPGenerated: true,
           requestData: getOtpResp,
         });
       } else {
-        this.setState({errorMsg: 'Something Went Wrong', isModalVisible: true});
+        if (getOtpResp.error.response.data.message == 'USER_NOT_FOUND') {
+          this.setState({errorMsg: 'User Not Found, Go Back to Sign In Page'});
+        } else {
+          this.setState({
+            errorMsg: 'Something Went Wrong, Go Back to Sign In Page',
+          });
+        }
       }
     } catch (e) {
-      console.log(e);
+      Toast.show({
+        text: 'Something Went Wrong' + e,
+        duration: 3000,
+      });
     } finally {
       this.setState({isLoading: false});
     }
@@ -114,7 +122,6 @@ class LoginWithOtp extends Component {
       let reqOtpVerifiedResponse = await verifyMemberLoginWithOtp(
         reqDataForVerifyotp,
       );
-      console.log('reqOtpVerifiedResponse', reqOtpVerifiedResponse);
       if (this.props.user.isAuthenticated) {
         let memberEmailId =
           (await AsyncStorage.getItem('memberEmailId')) || null;
@@ -198,30 +205,61 @@ class LoginWithOtp extends Component {
                 noOfDigits={4}
                 getOtp={(otp) => this.getEnteredotp(otp)}
               />
-          
-                    
-          <View style={{display: 'flex', flexDirection: 'row', marginTop: 100, justifyContent: 'space-between'}}>
-          <Pressable onPress={() => this.generateotp()} style={{marginTop: 30 }}>
-              <Text style={{color: '#39B0E5'}}>
-  
-  RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
-      </Pressable>
-      <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{marginTop: 30 }}>
-              <Text style={{color: '#39B0E5'}}> 
-  BACK <MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} /></Text>
-      </Pressable>
+
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  marginTop: 100,
+                  justifyContent: 'space-between',
+                }}>
+                <Pressable
+                  onPress={() => this.generateotp()}
+                  style={{marginTop: 30}}>
+                  <Text style={{color: '#39B0E5'}}>
+                    RESEND OTP{' '}
+                    <MaterialIcons
+                      name="arrow-forward-ios"
+                      style={{color: '#39B0E5'}}
+                    />
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => this.props.navigation.navigate('loginWithOtp')}
+                  style={{marginTop: 30}}>
+                  <Text style={{color: '#39B0E5'}}>
+                    BACK{' '}
+                    <MaterialIcons
+                      name="arrow-back-ios"
+                      style={{color: '#39B0E5'}}
+                    />
+                  </Text>
+                </Pressable>
+              </View>
+              {errorMsg ? (
+                <Text
+                  style={{
+                    color: 'red',
+                    fontSize: 15,
+                    marginLeft: 5,
+                    marginTop: 5,
+                  }}>
+                  {errorMsg}
+                </Text>
+              ) : null}
+            </View>
+            
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 0.5, y: 0}}
+              colors={['#0390e8', '#48b4a5']}
+              style={styles.createAccount}>
+              <Pressable onPress={() => this.verifyotp()} style={{}}>
+                <Text style={styles.createAccountText}>Continue</Text>
+              </Pressable>
+            </LinearGradient>
           </View>
-         
-         
         </View>
-        <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
-         <Pressable onPress={() => this.generateotp()} S style={{ }}>
-              <Text style={styles.createAccountText}>Continue</Text>
-      </Pressable>
-      </LinearGradient>
-        </View>
-          </View>
-      
       </ImageBackground>
     ) : (
       <ImageBackground
@@ -279,6 +317,17 @@ class LoginWithOtp extends Component {
                   blurOnSubmit={false}
                 />
               </Item>
+              {errorMsg ? (
+                <Text
+                  style={{
+                    color: 'red',
+                    fontSize: 15,
+                    marginLeft: 5,
+                    marginTop: 5,
+                  }}>
+                  {errorMsg}
+                </Text>
+              ) : null}
               <Text style={{marginVertical: 30, color: '#C2CCCC'}}>
                 A 4-digit OTP will be sent to your mobile / email to verify your
                 mobile number or email provided
@@ -313,9 +362,18 @@ class LoginWithOtp extends Component {
 
 const styles = StyleSheet.create({
   outerContainer: {display: 'flex', justifyContent: 'center'},
-  container: {height: 'auto', flex: 0 , width : width - 40,
-  paddingHorizontal: 20, paddingVertical: 40, marginHorizontal: 40, 
-  backgroundColor: '#fff', borderRadius: 24, fontWeight: 'bold', fontSize: 20},
+  container: {
+    height: 'auto',
+    flex: 0,
+    width: width - 40,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    marginHorizontal: 40,
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
   heading1: {
     fontFamily: 'opensans-bold',
     fontSize: 20.5,

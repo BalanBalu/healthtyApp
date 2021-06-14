@@ -57,16 +57,16 @@ const HospitalizationDetails = (props) => {
   };
 
   const submitData = () => {
-    if (
-      hospitalName != '' &&
-      hospitalizationDueTo != '' &&
-      dateOfAdmission != '' &&
-      timeOfAdmissionHours != '' &&
-      timeOfAdmissionMinute != '' &&
-      dateOfDischarge != '' &&
-      timeOfDischargeHours != '' &&
-      timeOfDischargeMinute != ''
-    ) {
+    // if (
+    //   hospitalName != '' &&
+    //   hospitalizationDueTo != '' &&
+    //   dateOfAdmission != '' &&
+    //   timeOfAdmissionHours != '' &&
+    //   timeOfAdmissionMinute != '' &&
+    //   dateOfDischarge != '' &&
+    //   timeOfDischargeHours != '' &&
+    //   timeOfDischargeMinute != ''
+    // ) {
       updateHospitalization({
         hospitalName: hospitalName,
         roomCategory: roomCategory,
@@ -84,49 +84,49 @@ const HospitalizationDetails = (props) => {
         mlcReport: mlcReport,
         systemOfMedicine: systemOfMedicine,
       });
-    } else {
-      if (hospitalName === '') {
-        seterrorMsg('Please enter hospital name');
-        setisModalVisible(true);
-        return false;
-      }
-      if (hospitalizationDueTo === ''||hospitalizationDueTo ==='Select your Item') {
-        seterrorMsg('Please enter hospitalization due');
-        setisModalVisible(true);
-        return false;
-      }
-      if (dateOfAdmission === '') {
-        seterrorMsg('Please enter admission date');
-        setisModalVisible(true);
-        return false;
-      }
-      if (timeOfAdmissionHours === '' || timeOfAdmissionHours === 'Select') {
-        seterrorMsg('Please enter time of admission hours')
-        setisModalVisible(true);
-        return false;
-      }
-      if (timeOfAdmissionMinute === '' || timeOfAdmissionMinute === 'Select') {
-        seterrorMsg('Please enter time of admission minutes')
-        setisModalVisible(true);
-        return false;
-      }
-      if (dateOfDischarge === '' || dateOfDischarge === 'Select') {
-        seterrorMsg('Please enter discharge date');
-        setisModalVisible(true);
-        return false;
-      }
+    // } else {
+    //   if (hospitalName === '') {
+    //     seterrorMsg('Please enter hospital name');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (hospitalizationDueTo === ''||hospitalizationDueTo ==='Select your Item') {
+    //     seterrorMsg('Please enter hospitalization due');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (dateOfAdmission === '') {
+    //     seterrorMsg('Please enter admission date');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (timeOfAdmissionHours === '' || timeOfAdmissionHours === 'Select') {
+    //     seterrorMsg('Please enter time of admission hours')
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (timeOfAdmissionMinute === '' || timeOfAdmissionMinute === 'Select') {
+    //     seterrorMsg('Please enter time of admission minutes')
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (dateOfDischarge === '' || dateOfDischarge === 'Select') {
+    //     seterrorMsg('Please enter discharge date');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
 
-      if (timeOfDischargeHours === '' || timeOfDischargeHours === 'Select') {
-        seterrorMsg('Please enter time of discharge hours')
-        setisModalVisible(true);
-        return false;
-      }
-      if (timeOfDischargeMinute === '' || timeOfDischargeMinute === 'Select') {
-        seterrorMsg('Please enter time of discharge minutes')
-        setisModalVisible(true);
-        return false;
-      }
-    }
+    //   if (timeOfDischargeHours === '' || timeOfDischargeHours === 'Select') {
+    //     seterrorMsg('Please enter time of discharge hours')
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (timeOfDischargeMinute === '' || timeOfDischargeMinute === 'Select') {
+    //     seterrorMsg('Please enter time of discharge minutes')
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    // }
   }
     return (
       <View>

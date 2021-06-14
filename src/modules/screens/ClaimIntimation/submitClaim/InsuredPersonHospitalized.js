@@ -42,13 +42,13 @@ const InsuredPersonHospitalized = (props) => {
     setIsVisible(true);
   };
   const submitData = () => {
-    if (
-      patientName != '' &&
-      patientGender!= ''&&
-      patientAge != '' &&
-      patientDob!= ''&&
-      relationship != '' 
-    ) {
+    // if (
+    //   patientName != '' &&
+    //   patientGender!= ''&&
+    //   patientAge != '' &&
+    //   patientDob!= ''&&
+    //   relationship != '' 
+    // ) {
       updateInsuredPersonHospitalizedDetails({
         patientName: patientName,
         patientGender: patientGender,
@@ -66,33 +66,33 @@ const InsuredPersonHospitalized = (props) => {
         patientPhoneNumber: patientPhoneNumber,
         patientEmail: patientEmail,
       });
-    } else {
-      if (patientName === '') {
-        seterrorMsg('Please enter patient name');
-        setisModalVisible(true);
-        return false;
-      }
-      if (!patientGender) {
-        seterrorMsg('Please choose patient gender');
-        setisModalVisible(true);
-        return false;
-      }
-      if (!patientDob) {
-        seterrorMsg('Please choose patient dob');
-        setisModalVisible(true);
-        return false;
-      }
-      if (patientAge === '') {
-        seterrorMsg('Please enter patient age');
-        setisModalVisible(true);
-        return false;
-      }
-      if (relationship === '') {
-        seterrorMsg('Please enter relationship');
-        setisModalVisible(true);
-        return false;
-      }
-    }
+    // } else {
+    //   if (patientName === '') {
+    //     seterrorMsg('Please enter patient name');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (!patientGender) {
+    //     seterrorMsg('Please choose patient gender');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (!patientDob) {
+    //     seterrorMsg('Please choose patient dob');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (patientAge === '') {
+    //     seterrorMsg('Please enter patient age');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (relationship === '') {
+    //     seterrorMsg('Please enter relationship');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    // }
   };
 
   return (
