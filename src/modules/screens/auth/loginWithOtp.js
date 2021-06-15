@@ -225,7 +225,7 @@ class LoginWithOtp extends Component {
                   </Text>
                 </Pressable>
                 <Pressable
-                  onPress={() => this.props.navigation.navigate('loginWithOtp')}
+                  onPress={() => this.setState({isOTPGenerated:false})}
                   style={{marginTop: 30}}>
                   <Text style={{color: '#39B0E5'}}>
                     BACK{' '}
