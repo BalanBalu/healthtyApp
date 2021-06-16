@@ -46,6 +46,10 @@ class LanguagePopUp extends React.PureComponent {
         return setI18nConfig('ka');
     }
   };
+  selectedLanguage = async (index) => {
+    console.log('selectedLanguage', index)
+    await AsyncStorage.setItem('selectedLanguage', JSON.stringify({ index }));
+  }
 
   showMenu = () => {
     this._menu.show();
@@ -81,7 +85,7 @@ class LanguagePopUp extends React.PureComponent {
                   style={
                     selectedIndex === index ? { backgroundColor: primaryColor, color: '#fff', } : {}
                   }
-                  onPress={() => this.hideMenu(index, item.listName)}>
+                  onPress={() => this.hideMenu(index, item.listName) & this.selectedLanguage(index)}>
                   {item.listName}
                 </MenuItem>
               </View>
