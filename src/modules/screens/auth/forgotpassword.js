@@ -479,7 +479,7 @@ class Forgotpassword extends Component {
                     <Input
                      onBlur={ () => this.onBlur(1) }
                      onFocus={ () => this.onFocus(1) }
-                    placeholderTextColor={'#A1A1A1'} placeholder="Confirm Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                    placeholderTextColor={'#A1A1A1'} placeholder="Enter Password again" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                                  ref={(input) => { this.enterNewPassTextInput = input; }}
                         secureTextEntry={showPassword}
                         returnKeyType={'go'}
@@ -493,7 +493,7 @@ class Forgotpassword extends Component {
                   </Item>
                  </View>
                  {
-                     isPasswordMatch === false && password !== '' && confirmPassword !== '' ? <Text style={{color: 'red', top: 10}}>Passwords don't match</Text> : null
+                     isPasswordMatch === false && password  && confirmPassword ? <Text style={{color: '#d00729', top: 10}}>Passwords don't match</Text> : null
                  }
               
                         
