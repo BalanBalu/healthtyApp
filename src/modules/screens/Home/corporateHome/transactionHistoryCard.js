@@ -35,8 +35,9 @@ export const TransactionHistoryCard = (props) => {
     try {
       let selectedLanguage = await AsyncStorage.getItem("selectedLanguage");
       let selectedLang = JSON.parse(selectedLanguage);
+      if(selectedLang){
       let Data = setCount(selectedLang.index)
-
+      }
     }
     catch (e) {
       console.log(e)
