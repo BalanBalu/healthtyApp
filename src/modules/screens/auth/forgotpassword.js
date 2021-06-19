@@ -23,7 +23,7 @@ class Forgotpassword extends Component {
             otpCode: '',
             type: '',
             password: '',
-            isOTPGenerated: true,
+            isOTPGenerated: false,
             errorMessage: '',
             userEntry: '',
             showPassword: true,
@@ -51,6 +51,9 @@ class Forgotpassword extends Component {
     /*  Generate OTP Code for Reset Password   */
     generateOtpCode = async (isResendOtp) => {
         const { userEntry, employeeId, corporateName } = this.state;
+        console.log('corporateName :', corporateName);
+        console.log('employeeId :', employeeId);
+        console.log('userEntry :', userEntry);
         try {
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
                 if (!corporateName) {
@@ -84,6 +87,7 @@ class Forgotpassword extends Component {
                 }
             }
             await this.setState({ errorMessage: '', isLoading: true })
+            console.log(this.state.errorMessage);
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
                 let reqObject = {
                     userId: userEntry,
@@ -91,6 +95,7 @@ class Forgotpassword extends Component {
                     corporate: this.state.corporateName
                 }
                 let smartHealthReqOtpResponse = await generateOTPForSmartHealth(reqObject)
+                console.log('smartHealthReqOtpResponse :', smartHealthReqOtpResponse);
 
                 if (smartHealthReqOtpResponse && smartHealthReqOtpResponse.otp) {
                     this.smartHealthOtpData = smartHealthReqOtpResponse
@@ -129,6 +134,7 @@ class Forgotpassword extends Component {
             })
         }
         finally {
+            
             this.setState({ isLoading: false })
         }
     }
@@ -136,6 +142,9 @@ class Forgotpassword extends Component {
     /*  Change the New Password using Generated OTP Code  */
     changePassword = async () => {
         const { otpCode, password, isPasswordMatch } = this.state;
+        console.log('isPasswordMatch :', isPasswordMatch);
+        console.log('password :', password);
+        console.log('otpCode :', otpCode);
         try {
             if (!otpCode) {
                 this.setState({ errorMessage: 'kindly enter received OTP' });
@@ -169,6 +178,7 @@ class Forgotpassword extends Component {
                         userType: 'MEMBER'
                     };
                     let result = await changePasswordForSmartHelath(reqDataObj);
+                    console.log('result :', result);
 
                     if (result === 'SUCCESS') {
                         reqOtpVerifyResponse.success = true,
@@ -403,7 +413,7 @@ class Forgotpassword extends Component {
                     
                     
                     <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={[styles.createAccount, {marginBottom: 50, marginTop: 50, marginRight: 24}]}>
-                   <Pressable  block success onPress={() => this.generateOtpCode()} style={{ }}>
+                   <Pressable  onPress={() => this.generateOtpCode()}>
                         <Text style={styles.createAccountText}>Generate OTP</Text>
                 </Pressable>
                 </LinearGradient>
