@@ -26,6 +26,9 @@ class Forgotpassword extends Component {
             isOTPGenerated: false,
             errorMessage: '',
             userEntry: '',
+            backgroundColor1: '#dddddd',
+            backgroundColor2: '#dddddd',
+            backgroundColor3: '#dddddd',
             showPassword: true,
             isPasswordMatch: false,
             isCorporateUserSelected: false,
@@ -225,29 +228,6 @@ class Forgotpassword extends Component {
         this.setState({ password: value.replace(/\s/g, "") });
     }
 
-    onFocus(item) {
-        if(item === 1) {
-          this.setState({
-            backgroundColor1: '#48b4a5'
-          })
-        } else {
-          this.setState({
-            backgroundColor2: '#48b4a5'
-          })
-        }
-      }
-    
-      onBlur(item) {
-        if(item === 1) {
-          this.setState({
-            backgroundColor1: '#dddddd'
-          })
-        } else {
-          this.setState({
-            backgroundColor2: '#dddddd'
-          })
-        }
-      }
     onChangeRemoveSpaces(value) {
         // code to remove White Spaces from text field
         this.setState({ userEntry: value.replace(/\s/g, "") });
@@ -290,11 +270,12 @@ class Forgotpassword extends Component {
                 {isCorporateUserSelected === false ?
                     <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
+                     onBlur={() => this.setState({backgroundColor1: '#dddddd'})  }
+                     onFocus={ () => this.setState({backgroundColor1: '#48b4a5'}) }
                     placeholderTextColor={'#A1A1A1'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     value={userEntry}
-                                autoCapitalize={false}
+                                // autoCapitalize={false}
+                                autoCapitalize='none'
                                 keyboardType={'email-address'}
                                 onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
                                 onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
@@ -308,11 +289,12 @@ class Forgotpassword extends Component {
                     <View style={{width: '100%'}}>
                          <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
+                    onBlur={() => this.setState({backgroundColor1: '#dddddd'})  }
+                    onFocus={ () => this.setState({backgroundColor1: '#48b4a5'}) }
                     placeholderTextColor={'#A1A1A1'} placeholder="Enter Corporate Name" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     value={this.state.corporateName}
-                                autoCapitalize={false}
+                                // autoCapitalize={false}
+                                autoCapitalize='none'
                                 keyboardType={'email-address'}
                                 returnKeyType={'done'}
                                 onChangeText={corporateName => this.onPressChangeCorporateName(corporateName)}
@@ -330,7 +312,7 @@ class Forgotpassword extends Component {
                                     renderItem={({ item, index }) => (
                                         <TouchableOpacity style={{ marginTop: 5, marginBottom: 5 }} onPress={() => this.onSelectCorporateName(item)}>
                                             <Text style={{
-                                                color: '#775DA3',
+                                                color: '#48b4a5',
                                                 marginTop: 2,
                                                 fontFamily: 'OpenSans',
                                                 fontSize: 16,
@@ -346,13 +328,14 @@ class Forgotpassword extends Component {
 
                                 : null}
 
-<Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
+<Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor2, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
-                    placeholderTextColor={'#A1A1A1'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                   onBlur={() => this.setState({backgroundColor2: '#dddddd'})  }
+                   onFocus={ () => this.setState({backgroundColor2: '#48b4a5'}) }
+                    placeholderTextColor={'#A1A1A1'} placeholder="Email / Mobile Number" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     value={userEntry}
-                                autoCapitalize={false}
+                                // autoCapitalize={false}
+                                autoCapitalize='none'
                                 keyboardType={'email-address'}
                                 onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
                                 onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
@@ -361,13 +344,15 @@ class Forgotpassword extends Component {
             
                    
                   </Item>
-                  <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
+                  <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor3, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
+                  
+                    onFocus={ () => this.setState({backgroundColor3: '#48b4a5'}) }
+                    onBlur={() => this.setState({backgroundColor3: '#dddddd'})  }
                     placeholderTextColor={'#A1A1A1'} placeholder="Employee ID" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     value={this.state.employeeId}
-                    autoCapitalize={false}
+                    // autoCapitalize={false}
+                    autoCapitalize='none'
                     ref={(input) => { this.employeeId = input; }}
                     keyboardType={'email-address'}
                     returnKeyType={'done'}
@@ -469,8 +454,8 @@ class Forgotpassword extends Component {
                  <View style={{marginTop: 100}}>
                  <Item style={{marginTop: 0, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '95%', marginRight: 10, marginLeft: 10}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
+                    //  onBlur={ () => this.onBlur(1) }
+                    //  onFocus={ () => this.onFocus(1) }
                     placeholderTextColor={'#A1A1A1'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     sref={(input) => { this.enterOtpTextInput = input; }}
                         secureTextEntry={this.state.showPassword}
@@ -487,8 +472,8 @@ class Forgotpassword extends Component {
                  <View style={{marginTop: 10}}>
                  <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '95%', marginRight: 10, marginLeft: 10}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
+                    //  onBlur={ () => this.onBlur(1) }
+                    //  onFocus={ () => this.onFocus(1) }
                     placeholderTextColor={'#A1A1A1'} placeholder="Enter Password again" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                                  ref={(input) => { this.enterNewPassTextInput = input; }}
                         secureTextEntry={showPassword}
@@ -511,21 +496,21 @@ class Forgotpassword extends Component {
               <Pressable onPress={() => this.generateOtpCode(true)} style={{marginTop: 30 }}>
                   <Text style={{color: '#39B0E5'}}>
       
-      RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
+      Resend OTP </Text>
           </Pressable>
           <Pressable onPress={() => this.setState({isOTPGenerated: false})} style={{marginTop: 30 }}>
                   <Text style={{color: '#39B0E5'}}> 
-      BACK <MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} /></Text>
+      Change Password <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
           </Pressable>
               </View>
              
              
             </View>
-            <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
+            {/* <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
              <Pressable onPress={() => this.changePassword()} style={{ }}>
                   <Text style={styles.createAccountText}>Change Password</Text>
           </Pressable>
-          </LinearGradient>
+          </LinearGradient> */}
             </View>
               </View>
           

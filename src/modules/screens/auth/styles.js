@@ -1,5 +1,5 @@
 // Imports
-import { Dimensions, StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet, PixelRatio } from 'react-native'
 import {primaryColor, secondaryColor} from '../../../setup/config'
 import { useWindowDimensions } from 'react-native';
 
@@ -8,18 +8,15 @@ import { useWindowDimensions } from 'react-native';
 let width = Dimensions.get('window').width;
 let height = Dimensions.get('window').height;
 
-const scale = - height / 10
+const scale = width / 375
 
-export const normalize = (size) => {
+
+
+const normalize = (size) => {
     const newSize = size * scale
-
-    if (Platform.OS === 'ios') {
-        return Math.round(PixelRatio.roundToNearestPixel(newSize))
-    } else {
-        return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
-    }
+    return Math.round(PixelRatio.roundToNearestPixel(newSize))
 }
-// Styles
+
 export default StyleSheet.create({
     container:
     {
@@ -300,7 +297,7 @@ export default StyleSheet.create({
     },
     imageContainer: {display: 'flex', justifyContent: 'center', alignItems: 'center', alignContent: 'center', marginTop: 30, marginLeft: 30, alignSelf: 'baseline'},
     textBold: { fontFamily:'opensans-bold', color: '#fff' },
-    inputContainer: {borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', marginTop: scale, display: 'flex', alignItems: "flex-start"},
+    inputContainer: {borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', marginTop: '-20%', display: 'flex', alignItems: "flex-start"},
     welcomeText: {fontFamily: 'opensans-bold', marginLeft: 28, marginTop: '8%', fontSize: 20, color: '#333333'},
     signinButton: { elevation: 2,
         backgroundColor: "#fff",
@@ -351,7 +348,7 @@ export default StyleSheet.create({
         },
         /* OTP Styles */
         outerContainer: {display: 'flex', justifyContent: 'center'},
-        containerOTP: {height: 'auto', flex: 0 , width : width - 40,
+        containerOTP: {height: 'auto', flex: 0 , width : width - 20,
         paddingHorizontal: 20, paddingVertical: 40, marginHorizontal: 40, 
         backgroundColor: '#fff', borderRadius: 24, fontWeight: 'bold', fontSize: 20},
         heading1: {
