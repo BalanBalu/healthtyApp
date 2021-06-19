@@ -22,41 +22,41 @@ const PrimaryInsuredBank = (props) => {
 
 
   const submitData = () => {
-    if (
-      PanCardDetail != '' &&
-      accountNo != '' &&
-      bankName != '' &&
-      ifscCode != ''
-    ) {
+    // if (
+    //   PanCardDetail != '' &&
+    //   accountNo != '' &&
+    //   bankName != '' &&
+    //   ifscCode != ''
+    // ) {
       updatePrimaryInsuredBankAccountDetails({
         PanCardDetail: PanCardDetail,
         accountNo: accountNo,
         bankName: bankName,
-        chequeDetails: chequeDetails,
+        chequeDetails: chequeDetails?chequeDetails:null,
         ifscCode: ifscCode,
       });
-    } else {
-      if (PanCardDetail === '') {
-        seterrorMsg('Please enter pan number');
-        setisModalVisible(true);
-        return false;
-      }
-      if (accountNo === '') {
-        seterrorMsg('Please enter account number');
-        setisModalVisible(true);
-        return false;
-      }
-      if (bankName === '') {
-        seterrorMsg('Please enter bank name');
-        setisModalVisible(true);
-        return false;
-      }
-      if (ifscCode === '') {
-        seterrorMsg('Please enter ifsc code');
-        setisModalVisible(true);
-        return false;
-      }
-    }
+    // } else {
+    //   if (PanCardDetail === '') {
+    //     seterrorMsg('Please enter pan number');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (accountNo === '') {
+    //     seterrorMsg('Please enter account number');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (bankName === '') {
+    //     seterrorMsg('Please enter bank name');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (ifscCode === '') {
+    //     seterrorMsg('Please enter ifsc code');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    // }
   };
 
   return (

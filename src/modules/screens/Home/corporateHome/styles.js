@@ -1,6 +1,6 @@
-import {StyleSheet} from 'react-native';
-import {Dimensions} from 'react-native';
-import {primaryColor, secondaryColor} from '../../../../setup/config'
+import { StyleSheet } from 'react-native';
+import { Dimensions } from 'react-native';
+import { primaryColor, secondaryColor } from '../../../../setup/config'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,10 +21,10 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    
+
     elevation: 5,
   },
-  
+
   rectBoxNone: {
     width: 100,
     display: 'flex',
@@ -52,7 +52,17 @@ const styles = StyleSheet.create({
     color: primaryColor,
     fontFamily: 'opensans-bold',
 
-    textAlign:'center'
+    textAlign: 'center'
+  },
+  boxTextSmall: {
+    fontSize: 10.50,
+    marginTop: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
+    color: primaryColor,
+    fontFamily: 'opensans-bold',
+
+    textAlign: 'center'
   },
 
   inititationText1: {
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
   shadowEffect: {
     backgroundColor: 'rgba(255,255,255,1)',
     shadowColor: 'rgba(112,144,176,0.16)',
-    shadowOffset: {width: 0, height: 8},
+    shadowOffset: { width: 0, height: 8 },
     elevation: 72,
     shadowOpacity: 1,
     shadowRadius: 24,
@@ -112,7 +122,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     flex: 1,
   },
- 
+
 });
 
 export default styles;

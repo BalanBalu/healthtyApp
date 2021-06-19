@@ -53,18 +53,18 @@ const ClaimDetail = (props) => {
   const [isModalVisible, setisModalVisible] = useState(false);
 
   const submmitData = () => {
-    if (
-      preHospitalizationExpenses != undefined &&
-      hospitalizationExpenses != undefined &&
-      postHospitalizationExpenses != undefined &&
-      ambulanceCharges != undefined &&
-      hospitalDailyCash != undefined &&
-      surgicalCash != undefined &&
-      criticalIllness != undefined &&
-      convalescence != undefined &&
-      lumsumBenefit != undefined &&
-      others != undefined
-    ) {
+    // if (
+    //   preHospitalizationExpenses != undefined &&
+    //   hospitalizationExpenses != undefined &&
+    //   postHospitalizationExpenses != undefined &&
+    //   ambulanceCharges != undefined &&
+    //   hospitalDailyCash != undefined &&
+    //   surgicalCash != undefined &&
+    //   criticalIllness != undefined &&
+    //   convalescence != undefined &&
+    //   lumsumBenefit != undefined &&
+    //   others != undefined
+    // ) {
       updateClaimDetails({
         preHospitalizationExpenses: preHospitalizationExpenses,
         hospitalizationExpenses: hospitalizationExpenses,
@@ -96,49 +96,49 @@ const ClaimDetail = (props) => {
         OthersClaim: OthersClaim,
         investigationReports: investigationReports,
       });
-    } else {
-      if (preHospitalizationExpenses === undefined) {
-        seterrorMsg('Please enter pre hospitalization expenses');
-        setisModalVisible(true);
-        return false;
-      }
-      if (hospitalizationExpenses === undefined) {
-        seterrorMsg('Please enter hospitalization expenses');
-        setisModalVisible(true);
-        return false;
-      }
-      if (postHospitalizationExpenses === undefined) {
-        seterrorMsg('Please enter post hospitalization expenses');
-        setisModalVisible(true);
-        return false;
-      }
-      if (ambulanceCharges ===undefined) {
-        seterrorMsg('Please enter ambulance charges');
-        setisModalVisible(true);
-        return false;
-      }
-      if (hospitalDailyCash === undefined) {
-        seterrorMsg('Please enter hospital daily cash');
-        setisModalVisible(true);
-        return false;
-      }
-      if (surgicalCash === undefined ) {
-        seterrorMsg('Please enter surgical cash');
-        setisModalVisible(true);
-        return false;
-      }
+    // } else {
+    //   if (preHospitalizationExpenses === undefined) {
+    //     seterrorMsg('Please enter pre hospitalization expenses');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (hospitalizationExpenses === undefined) {
+    //     seterrorMsg('Please enter hospitalization expenses');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (postHospitalizationExpenses === undefined) {
+    //     seterrorMsg('Please enter post hospitalization expenses');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (ambulanceCharges ===undefined) {
+    //     seterrorMsg('Please enter ambulance charges');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (hospitalDailyCash === undefined) {
+    //     seterrorMsg('Please enter hospital daily cash');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (surgicalCash === undefined ) {
+    //     seterrorMsg('Please enter surgical cash');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
 
-      if (criticalIllness === undefined ) {
-        seterrorMsg('Please enter critical illness');
-        setisModalVisible(true);
-        return false;
-      }
-      if (convalescence === undefined) {
-        seterrorMsg('Please enter convalescence');
-        setisModalVisible(true);
-        return false;
-      }
-    }
+    //   if (criticalIllness === undefined ) {
+    //     seterrorMsg('Please enter critical illness');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (convalescence === undefined) {
+    //     seterrorMsg('Please enter convalescence');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    // }
   };
   return (
     <View>
