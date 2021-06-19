@@ -498,7 +498,7 @@ class Forgotpassword extends Component {
       
       Resend OTP </Text>
           </Pressable>
-          <Pressable onPress={() => this.setState({isOTPGenerated: false})} style={{marginTop: 30 }}>
+          <Pressable onPress={() => this.changePassword()} style={{marginTop: 30 }}>
                   <Text style={{color: '#39B0E5'}}> 
       Change Password <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
           </Pressable>
