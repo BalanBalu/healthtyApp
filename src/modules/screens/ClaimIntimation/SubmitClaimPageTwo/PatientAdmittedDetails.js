@@ -118,8 +118,8 @@ const PatientAdmittedDetails = (props) => {
     };
 
     const submmitData = () => {
-        if (patientFirstName  && patientLastName && gender && registrationNo && selectedAdmissionDate &&
-            selectDischargeDate && claimAmount != '') {
+        // if (patientFirstName  && patientLastName && gender && registrationNo && selectedAdmissionDate &&
+        //     selectDischargeDate && claimAmount != '') {
                 updateInsuredPersonHospitalizedDetails({
                 patientFirstName: patientFirstName,
                 patientMiddleName: patientMiddleName,
@@ -143,66 +143,66 @@ const PatientAdmittedDetails = (props) => {
                 submissionDateOfDischarge: selectDischargeDate,
                 gravidaStatus: gravidaStatus,
             })
-            setpatientFirstName('')
-            setpatientMiddleName('')
-            setpatientLastName('')
-            setregistrationNo('')
-            setselectedAdmissionDate('')
-            setselectedDateOfBirth('')
-            setselectDischargeDate('')
-            setadmissionType('')
-            setselectdeliveryDate('')
-            setgravidaStatus('')
-            setclaimAmount('')
-            setdischargeTime('')
-            setpatientAgeYear1('')
-            setpatientAgeYear2('')
-            setpatientAgeMonth1('')
-            setpatientAgeMonth2('')
-            settimeOfAdmissionHours()
-            settimeOfAdmissionMinute()
-            settimeOfDischargeHours()
-            settimeOfDischargeMinute()
+        //     setpatientFirstName('')
+        //     setpatientMiddleName('')
+        //     setpatientLastName('')
+        //     setregistrationNo('')
+        //     setselectedAdmissionDate('')
+        //     setselectedDateOfBirth('')
+        //     setselectDischargeDate('')
+        //     setadmissionType('')
+        //     setselectdeliveryDate('')
+        //     setgravidaStatus('')
+        //     setclaimAmount('')
+        //     setdischargeTime('')
+        //     setpatientAgeYear1('')
+        //     setpatientAgeYear2('')
+        //     setpatientAgeMonth1('')
+        //     setpatientAgeMonth2('')
+        //     settimeOfAdmissionHours()
+        //     settimeOfAdmissionMinute()
+        //     settimeOfDischargeHours()
+        //     settimeOfDischargeMinute()
 
-        } else {
-            if (patientFirstName === '') {
-                seterrorMsg('Please enter patient first name')
-                setisModalVisible(true)
-                return false
-            }
+        // } else {
+        //     if (patientFirstName === '') {
+        //         seterrorMsg('Please enter patient first name')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
             
-            if (patientLastName === '') {
-                seterrorMsg('Please enter patient Last name')
-                setisModalVisible(true)
-                return false
-            }
-            if (gender === '') {
-                seterrorMsg('Please enter patient gender')
-                setisModalVisible(true)
-                return false
-            }
-            if (registrationNo === '') {
-                seterrorMsg('Please enter registration number')
-                setisModalVisible(true)
-                return false
-            }
+        //     if (patientLastName === '') {
+        //         seterrorMsg('Please enter patient Last name')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
+        //     if (gender === '') {
+        //         seterrorMsg('Please enter patient gender')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
+        //     if (registrationNo === '') {
+        //         seterrorMsg('Please enter registration number')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
            
-            if (selectedAdmissionDate === '') {
-                seterrorMsg('Please selecte admission date')
-                setisModalVisible(true)
-                return false
-            }
-            if (selectDischargeDate === '') {
-                seterrorMsg('Please select discharge date')
-                setisModalVisible(true)
-                return false
-            }
-            if (claimAmount === '') {
-                seterrorMsg('Please enter claimAmount')
-                setisModalVisible(true)
-                return false
-            }
-        }
+        //     if (selectedAdmissionDate === '') {
+        //         seterrorMsg('Please selecte admission date')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
+        //     if (selectDischargeDate === '') {
+        //         seterrorMsg('Please select discharge date')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
+        //     if (claimAmount === '') {
+        //         seterrorMsg('Please enter claimAmount')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
+        // }
     }
 
 

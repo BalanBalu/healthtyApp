@@ -30,7 +30,7 @@ const HospitalDetail = (props) => {
     const inputEl8 = useRef(null);
 
     const submmitData = () => {
-        if (hospitalName != '' && doctorFirstName != ''  && qualification != '') {
+        // if (hospitalName != '' && doctorFirstName != ''  && qualification != '') {
             updateHospitalDetail({
                 hospitalName: hospitalName,
                 hospitalId: hospitalId,
@@ -42,36 +42,36 @@ const HospitalDetail = (props) => {
                 registrationStateCode  : streetNumber,
                 hospitalPhoneNumber: phoneNumber,
             })
-            sethospitalName('')
-            sethospitalId('')
-            sethospitalType('')
-            setdoctorFirstName('')
-            setdoctorMiddleName('')
-            setdoctorLastName('')
-            setqualification('')
-            setstreetNumber('')
-            setphoneNumber('')
-        } 
-        else {
-            if (hospitalName === '') {
-                seterrorMsg('Please enter hospital name')
-                setisModalVisible(true)
-                return false
-            }
+            // sethospitalName('')
+            // sethospitalId('')
+            // sethospitalType('')
+            // setdoctorFirstName('')
+            // setdoctorMiddleName('')
+            // setdoctorLastName('')
+            // setqualification('')
+            // setstreetNumber('')
+            // setphoneNumber('')
+        // } 
+        // else {
+        //     if (hospitalName === '') {
+        //         seterrorMsg('Please enter hospital name')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
             
-            if (doctorFirstName === '') {
-                seterrorMsg('Please enter doctor first name')
-                setisModalVisible(true)
-                return false
-            }
+        //     if (doctorFirstName === '') {
+        //         seterrorMsg('Please enter doctor first name')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
            
-            if (qualification === '') {
-                seterrorMsg('Please enter hospital Name')
-                setisModalVisible(true)
-                return false
-            }
+        //     if (qualification === '') {
+        //         seterrorMsg('Please enter hospital Name')
+        //         setisModalVisible(true)
+        //         return false
+        //     }
             
-        }
+        // }
     }
     return (
         <View>
