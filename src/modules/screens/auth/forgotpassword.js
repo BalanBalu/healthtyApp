@@ -90,7 +90,7 @@ class Forgotpassword extends Component {
                 }
             }
             await this.setState({ errorMessage: '', isLoading: true })
-            console.log(this.state.errorMessage);
+    
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
                 let reqObject = {
                     userId: userEntry,
@@ -362,7 +362,7 @@ class Forgotpassword extends Component {
             
                    
                   </Item>
-
+                  <Text style={{color: '#d00729', marginLeft: 30, marginTop: 10 }}>{this.state.errorMessage}</Text>
                     </View>
 
                 }
