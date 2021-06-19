@@ -37,20 +37,20 @@ const PrimaryInsured = (props) => {
   const inputEl11 = useRef(null);
 
   const submitData = () => {
-    if (
-      certificateNo != '' &&
-      tpaID != '' &&
-      firstName != '' &&
-      lastName != '' &&
-      pinCode != '' &&
-      noAndStreet != '' &&
-      address != '' &&
-      city != '' &&
-      state != '' &&
-      country != '' &&
-      phoneNo != '' &&
-      emailId != ''
-    ) {
+    // if (
+    //   certificateNo != '' &&
+    //   tpaID != '' &&
+    //   firstName != '' &&
+    //   lastName != '' &&
+    //   pinCode != '' &&
+    //   noAndStreet != '' &&
+    //   address != '' &&
+    //   city != '' &&
+    //   state != '' &&
+    //   country != '' &&
+    //   phoneNo != '' &&
+    //   emailId != ''
+    // ) {
       updatePrimaryInsuredDetails({
         certificateNumber: certificateNo,
         tpaIdNo: tpaID,
@@ -66,68 +66,68 @@ const PrimaryInsured = (props) => {
         phoneNumber: phoneNo,
         policyHolderMailId: emailId,
       });
-    } else {
-      if (certificateNo === '') {
-        seterrorMsg('Please enter certificate number');
-        setisModalVisible(true);
-        return false;
-      }
-      if (tpaID === '') {
-        seterrorMsg('Please enter tpa Id');
-        setisModalVisible(true);
-        return false;
-      }
-      if (firstName === '') {
-        seterrorMsg('Please enter first name');
-        setisModalVisible(true);
-        return false;
-      }
-      if (lastName === '') {
-        seterrorMsg('Please enter last name');
-        setisModalVisible(true);
-        return false;
-      }
-      if (pinCode === '') {
-        seterrorMsg('Please enter pinCode');
-        setisModalVisible(true);
-        return false;
-      }
-      if (noAndStreet === '') {
-        seterrorMsg('Please enter no and street');
-        setisModalVisible(true);
-        return false;
-      }
-      if (address === '') {
-        seterrorMsg('Please enter address');
-        setisModalVisible(true);
-        return false;
-      }
-      if (city === '') {
-        seterrorMsg('Please enter city');
-        setisModalVisible(true);
-        return false;
-      }
-      if (state === '') {
-        seterrorMsg('Please enter state');
-        setisModalVisible(true);
-        return false;
-      }
-      if (country === '') {
-        seterrorMsg('Please enter country');
-        setisModalVisible(true);
-        return false;
-      }
-      if (phoneNo === '') {
-        seterrorMsg('Please enter phone number');
-        setisModalVisible(true);
-        return false;
-      }
-      if (emailId === '') {
-        seterrorMsg('Please enter email id');
-        setisModalVisible(true);
-        return false;
-      }
-    }
+    // } else {
+    //   if (certificateNo === '') {
+    //     seterrorMsg('Please enter certificate number');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (tpaID === '') {
+    //     seterrorMsg('Please enter tpa Id');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (firstName === '') {
+    //     seterrorMsg('Please enter first name');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (lastName === '') {
+    //     seterrorMsg('Please enter last name');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (pinCode === '') {
+    //     seterrorMsg('Please enter pinCode');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (noAndStreet === '') {
+    //     seterrorMsg('Please enter no and street');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (address === '') {
+    //     seterrorMsg('Please enter address');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (city === '') {
+    //     seterrorMsg('Please enter city');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (state === '') {
+    //     seterrorMsg('Please enter state');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (country === '') {
+    //     seterrorMsg('Please enter country');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (phoneNo === '') {
+    //     seterrorMsg('Please enter phone number');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (emailId === '') {
+    //     seterrorMsg('Please enter email id');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    // }
   };
 
   return (

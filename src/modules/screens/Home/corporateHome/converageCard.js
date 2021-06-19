@@ -1,6 +1,6 @@
-import React from 'react';
-import {Text, View} from 'native-base';
-import {TouchableHighlight} from 'react-native-gesture-handler';
+import React, { useState, useEffect } from 'react';
+import { Text, View } from 'native-base';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 import styles from './styles';
 import {
   PreAuthDrawing,
@@ -10,15 +10,36 @@ import {
   HospitalDrawing,
   InsuranceRenewalDrawing
 } from './svgDrawings';
-import {primaryColor, secondaryColorTouch} from '../../../../setup/config';
+import { primaryColor, secondaryColorTouch } from '../../../../setup/config';
 import CurrentLocation from '../CurrentLocation';
-import { translate } from "../../../../setup/translator.helper"
+import { translate } from "../../../../setup/translator.helper";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export const CoverageCard = props => {
-  const {navigation} = props;
-  const navigationTo =  () => {
-   CurrentLocation.getCurrentPosition();
+  const [count, setCount] = useState(0);
+  const { navigation } = props;
+  const navigationTo = () => {
+    CurrentLocation.getCurrentPosition();
     navigation('NetworkHospitals')
+  }
+  useEffect(() => {
+    selected_Language();
+  })
+  async function selected_Language() {
+    try {
+      let selectedLanguage = await AsyncStorage.getItem("selectedLanguage");
+      let selectedLang = JSON.parse(selectedLanguage);
+      if(selectedLang){
+      let Data = setCount(selectedLang.index)
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+    finally {
+
+    }
   }
   return (
     <View
@@ -42,7 +63,7 @@ export const CoverageCard = props => {
                 marginTop: 10,
               }}>
               <PreAuthDrawing />
-              <Text style={styles.boxText}>{translate("Pre Auth")}</Text>
+              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Pre Auth")}</Text> : <Text style={styles.boxText}>{translate("Pre Auth")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -58,8 +79,7 @@ export const CoverageCard = props => {
                 marginTop: 10,
               }}>
               <ClaimStatusDrawing />
-
-              <Text style={styles.boxText}>{translate("Claim Status")}</Text>
+              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Claim Status")}</Text> : <Text style={styles.boxText}>{translate("Claim Status")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -75,8 +95,7 @@ export const CoverageCard = props => {
                 marginTop: 10,
               }}>
               <PolicyCoverageDrawing />
-
-              <Text style={styles.boxText}>{translate("Policy Cover")}</Text>
+              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Policy Cover")}</Text> : <Text style={styles.boxText}>{translate("Policy Cover")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -99,27 +118,27 @@ export const CoverageCard = props => {
                 marginTop: 3,
               }}>
               <ClaimInitiationDrawing />
-              <Text style={styles.boxText}>{translate("Claim Intimation")}</Text>
+              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Claim Intimation")}</Text> : <Text style={styles.boxText}>{translate("Claim Intimation")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
         <TouchableHighlight
-            activeOpacity={0.6}
-            underlayColor={secondaryColorTouch}
-            style={styles.rectBox}
-            onPress={() => navigationTo()}>
-        <View>
-          
+          activeOpacity={0.6}
+          underlayColor={secondaryColorTouch}
+          style={styles.rectBox}
+          onPress={() => navigationTo()}>
+          <View>
+
             <View
               style={{
                 alignItems: 'center',
                 marginTop: 13.5,
               }}>
               <HospitalDrawing />
-              <Text style={styles.inititationText1}>{translate("Network Hospital")}</Text>
+              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Network Hospital")}</Text> : <Text style={styles.boxText}>{translate("Network Hospital")}</Text>}
             </View>
-         
-        </View>
+
+          </View>
         </TouchableHighlight>
         <View style={[styles.rectBoxNone]} />
       </View>

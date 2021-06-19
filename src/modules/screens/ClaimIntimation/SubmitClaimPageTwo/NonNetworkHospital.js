@@ -26,14 +26,14 @@ const NonNetworkHospital = (props) => {
   const [isModalVisible, setisModalVisible] = useState(false);
 
   const submitData = () => {
-    if (
-      address != '' &&
-      pinCode != '' &&
-      state != '' &&
-      city != '' &&
-      noAndStreet != '' &&
-      country != ''
-    ) {
+    // if (
+    //   address != '' &&
+    //   pinCode != '' &&
+    //   state != '' &&
+    //   city != '' &&
+    //   noAndStreet != '' &&
+    //   country != ''
+    // ) {
       updateNonNetworkHospital({
         nonNetworkHospitalAddress: address,
         nonNetworkHospitalPinCode: pinCode,
@@ -49,39 +49,39 @@ const NonNetworkHospital = (props) => {
         OT: ot,
         ICU: icu,
       });
-    } else {
-      if (address === '') {
-        seterrorMsg('Please enter address');
-        setisModalVisible(true);
-        return false;
-      }
-      if (pinCode === '') {
-        seterrorMsg('Please enter pinCode');
-        setisModalVisible(true);
-        return false;
-      }
-      if (noAndStreet === '') {
-        seterrorMsg('Please enter no and street');
-        setisModalVisible(true);
-        return false;
-      }
+    // } else {
+    //   if (address === '') {
+    //     seterrorMsg('Please enter address');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (pinCode === '') {
+    //     seterrorMsg('Please enter pinCode');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (noAndStreet === '') {
+    //     seterrorMsg('Please enter no and street');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
 
-      if (city === '') {
-        seterrorMsg('Please enter city');
-        setisModalVisible(true);
-        return false;
-      }
-      if (state === '') {
-        seterrorMsg('Please enter state');
-        setisModalVisible(true);
-        return false;
-      }
-      if (country === '') {
-        seterrorMsg('Please enter country');
-        setisModalVisible(true);
-        return false;
-      }
-    }
+    //   if (city === '') {
+    //     seterrorMsg('Please enter city');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (state === '') {
+    //     seterrorMsg('Please enter state');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (country === '') {
+    //     seterrorMsg('Please enter country');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    // }
   };
 
   return (

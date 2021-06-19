@@ -31,24 +31,24 @@ const DeclarationByInsured = (props) => {
   };
 
   const submitData = () => {
-    if (insuredPlace != '' && dateOfHospitalization != undefined) {
+    // if (insuredPlace != '' && dateOfHospitalization != undefined) {
       updateDeclarationByInsuredDetails({
         insuredPlace: insuredPlace,
         dateOfHospitalization: dateOfHospitalization,
         signatureOfInsures: signatureOfInsures,
       });
-    } else {
-      if (insuredPlace === '') {
-        seterrorMsg('Please enter insured place');
-        setisModalVisible(true);
-        return false;
-      }
-      if (dateOfHospitalization === undefined) {
-        seterrorMsg('Please choose date Of hospitalization');
-        setisModalVisible(true);
-        return false;
-      }
-    }
+    // } else {
+    //   if (insuredPlace === '') {
+    //     seterrorMsg('Please enter insured place');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    //   if (dateOfHospitalization === undefined) {
+    //     seterrorMsg('Please choose date Of hospitalization');
+    //     setisModalVisible(true);
+    //     return false;
+    //   }
+    // }
   };
 
   return (

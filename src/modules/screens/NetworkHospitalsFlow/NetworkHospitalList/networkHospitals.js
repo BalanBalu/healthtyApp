@@ -40,7 +40,7 @@ class NetworkHospitals extends Component {
         this.navigationPage = props.navigation.getParam('navigationPage') || null;
         this.selectedTpaInfoObj = props.profile && props.profile.memberTpaInfo || null;
         this.selectedTpaCode = props.profile && props.profile.memberTpaInfo && props.profile.memberTpaInfo.tpaCode || null;
-
+        this.isSearchWithMapLocData = true;
     }
 
     async componentDidMount() {
@@ -65,14 +65,15 @@ class NetworkHospitals extends Component {
             const { bookappointment: { locationCordinates } } = this.props;
             const coordinates = isFromMapBox ? selectedLocCoOrdinates : locationCordinates;
             const reqData4ServiceCall = {};
-            // if (coordinates && coordinates.length) {
-            //     reqData4ServiceCall.locationData = {
-            //         coordinates,
-            //         maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
-            //     }
-            // }
+            if (this.isSearchWithMapLocData === true && coordinates && coordinates.length) {
+                reqData4ServiceCall.locationData = {
+                    coordinates,
+                    maxDistance: MAX_DISTANCE_TO_COVER_HOSPITALS
+                }
+            }
             if (this.selectedTpaCode) reqData4ServiceCall.tpaCode = this.selectedTpaCode;
             if (this.state.visibleClearIcon) reqData4ServiceCall.enteredText = this.state.visibleClearIcon;
+            // console.log('reqData4ServiceCall===>', JSON.stringify(reqData4ServiceCall));
             const getHospitalResp = await serviceOfSearchByNetworkHospitalDetails(reqData4ServiceCall, this.incrementPaginationCount, PAGINATION_COUNT_FOR_GET_HOSPITAL_LIST);
             const getHospitalList = getHospitalResp && getHospitalResp.docs;
             if (getHospitalList && getHospitalList.length) {
@@ -143,7 +144,7 @@ class NetworkHospitals extends Component {
         try {
             const hospitalName = item.hospitalName ? item.hospitalName : 'Un known hospital';
             const destinationCoOrdinates = item.geoLocation && item.geoLocation.coordinates;
-            if (!destinationCoOrdinates || destinationCoOrdinates.length<=0) {
+            if (!destinationCoOrdinates || destinationCoOrdinates.length <= 0) {
                 Toast.show({
                     text: 'Hospital coordinates not found! ',
                     type: 'warning',
@@ -204,6 +205,7 @@ class NetworkHospitals extends Component {
             const { navigation } = this.props;
             const isFromMapBox = navigation && navigation.getParam('isFromMapBox') || false;
             if (navigationData.action && isFromMapBox) {
+                this.isSearchWithMapLocData = true;
                 const selectedCityName = navigation.getParam('selectedCityName') || '';
                 const selectedLocCoOrdinates = navigation.getParam('coordinates') || null;
                 this.isEnabledLoadMoreData = true;
@@ -230,7 +232,22 @@ class NetworkHospitals extends Component {
         await this.onChangeCallByNetworkHospList();  // Call Initial network hospitals API 
 
     };
-
+    async onPressClearLocData() {
+        try {
+            this.isSearchWithMapLocData = false;
+            this.isEnabledLoadMoreData = true;
+            this.incrementPaginationCount = 1;
+            this.hospitalInfoListArray = [];
+            await this.setState({ isLoadingOnChangeHospitalList: true, hospitalInfoList: [], selectedHospitalData: null, showFullInfoCard: -1, })
+            await this.searchByNetworkHospitalDetails();
+        }
+        catch (Ex) {
+            console.log('Ex is getting on Get Network Hospital list by onPress clear loc Icon', Ex.message)
+        }
+        finally {
+            this.setState({ isLoadingOnChangeHospitalList: false })
+        }
+    }
     render() {
         const { visibleClearIcon, hospitalInfoList, isLoadingMoreHospitalList, enableSearchIcon, isLoading, isLoadingOnChangeHospitalList, selectedCityName, isFromMapBox } = this.state;
         const { bookappointment: { isLocationSelected, patientSearchLocationName, isSearchByCurrentLocation } } = this.props;
@@ -246,7 +263,7 @@ class NetworkHospitals extends Component {
                             <Item style={Styles.inputItem}>
                                 <Input
                                     placeholder="Search by name, pincode, city, state, country etc..."
-                                    style={{ fontSize: 14, width: '300%',fontFamily: 'Roboto'}}
+                                    style={{ fontSize: 14, width: '300%', fontFamily: 'Roboto' }}
                                     placeholderTextColor="#909894"
                                     keyboardType={'default'}
                                     onChangeText={enteredText => this.getSuggestionListFunction(enteredText)}
@@ -268,8 +285,8 @@ class NetworkHospitals extends Component {
                         </Col>
                     </Grid>
                 </View>
-                
-                {/* <View>
+
+                <View>
                     <TouchableOpacity onPress={() => this.navigateToLocationMap()}>
                         <Row style={{ padding: 5, height: 30, marginHorizontal: 15, marginVertical: 5, backgroundColor: '#EFEFF0', borderRadius: 5 }}>
                             <Col size={1} style={{ justifyContent: 'center' }}>
@@ -278,13 +295,13 @@ class NetworkHospitals extends Component {
 
 
                             </Col>
-                            <Col size={8} style={{ justifyContent: 'center' }}>
+                            <Col size={7} style={{ justifyContent: 'center' }}>
                                 <Text style={{
                                     fontFamily: 'Roboto',
                                     color: '#000',
                                     fontSize: 13,
                                 }}>
-                                    {isFromMapBox ? 'Showing Hospitals in ' + selectedCityName + ' City' : locationText}
+                                    {this.isSearchWithMapLocData === false ? "Please Choose your Location In Map" : isFromMapBox ? 'Showing Hospitals in ' + selectedCityName + ' City' : locationText}
 
                                 </Text>
                             </Col>
@@ -295,9 +312,15 @@ class NetworkHospitals extends Component {
                                 </TouchableOpacity>
 
                             </Col>
+                            <Col size={1} style={{ justifyContent: 'center' }}>
+                                <Button transparent onPress={() => this.onPressClearLocData()} style={{ marginLeft: -12 }}>
+                                    <Icon name="ios-close" style={{ fontSize: 22, color: 'gray' }} />
+                                </Button>
+
+                            </Col>
                         </Row>
                     </TouchableOpacity>
-                </View>  */}
+                </View>
                 {isLoadingOnChangeHospitalList ?
                     <View style={{ marginTop: 60 }}>
                         <ActivityIndicator

@@ -155,7 +155,7 @@ export default class MapBox extends Component {
       Geolocation.getCurrentPosition(async (position) => {
         const currentLocCoOrdinates = [
           position.coords.longitude,
-          position.coords.latitude,
+          position.coords.latitude
         ];
         await this.setState({
           center: currentLocCoOrdinates,
@@ -175,7 +175,7 @@ export default class MapBox extends Component {
   }
   async serviceOfUpdateLocInfoByCoOrdinates(coOrdinates) {
     // Call Map Box data service
-    let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coOrdinates[0]},${coOrdinates[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
+    let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coOrdinates[1]},${coOrdinates[0]}.json?access_token=${MAP_BOX_TOKEN}`;
     let mapBoxResp = await axios.get(fullPath, {
       headers: {
         'Content-Type': null,
@@ -394,10 +394,7 @@ export default class MapBox extends Component {
       //     delete reqUserAddressData.address;
       //   }
       this.setState({ isLoading: true });
-      console.log("reqUserAddressData",reqUserAddressData)
       const updateResp = await updateMemberDetails(reqUserAddressData);
-      console.log("updateResp",updateResp)
-
       if (updateResp) {
         if (fromProfile) {
           Toast.show({
@@ -503,7 +500,7 @@ export default class MapBox extends Component {
       const coordinates = [center[1], center[0]];
       const reqData4NetworkHosp = {
         coordinates,
-        selectedCityName: address.address2,
+        selectedCityName: address.city? address.city:address.district,
       };
       if (coordinates && coordinates.length) {
         reqData4NetworkHosp.isFromMapBox = true;

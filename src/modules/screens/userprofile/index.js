@@ -648,7 +648,8 @@ class Profile extends Component {
             </Card>
             <List>
               <Text style={styles.titleText}>{translate("Personal details")}</Text>
-
+              {family_members &&
+                        family_members.length != 0 ? (
               <ListItem avatar>
                 <Left>
                   <Icon name="ios-home" style={{color: primaryColor}} />
@@ -850,7 +851,7 @@ class Profile extends Component {
                       </View>
                     )}
                   />
-                  {family_members.length < 11 ? (
+                  {/* {family_members.length < 11 ? (
                     <Button
                       transparent
                       style={{justifyContent: 'flex-start', marginLeft: -15}}>
@@ -870,9 +871,9 @@ class Profile extends Component {
                         {translate("Add your family details")}
                       </Text>
                     </Button>
-                  ) : null}
+                  ) : null} */}
                 </Body>
-              </ListItem>
+              </ListItem>):null}
 
               <ConfirmPopup
                 warningMessageText={translate('Are you sure you want to delete !')}
