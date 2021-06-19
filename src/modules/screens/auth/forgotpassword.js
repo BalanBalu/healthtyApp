@@ -5,14 +5,15 @@ import { connect } from 'react-redux';
 import { FlatList, Image, Pressable, ImageBackground, TabBarIOS, TouchableOpacity } from 'react-native'
 import styles from '../../screens/auth/styles';
 import LinearGradient from 'react-native-linear-gradient';
-
-
+import OtpInputs from '../../../components/OtpInputText/OtpInput';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Svg, {Defs, Ellipse, G, Path, Stop,TSpan,Circle,Rect } from 'react-native-svg';
 import { ScrollView } from 'react-native-gesture-handler';
 import { debounce, validateEmailAddress, acceptNumbersOnly ,validateMobileNumber} from '../../common';
 import Spinner from '../../../components/Spinner';
 import OTPTextInput from 'react-native-otp-textinput';
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE, primaryColor } from "../../../setup/config";
+import LoginWithOtp from './loginWithOtp';
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
@@ -22,7 +23,7 @@ class Forgotpassword extends Component {
             otpCode: '',
             type: '',
             password: '',
-            isOTPGenerated: false,
+            isOTPGenerated: true,
             errorMessage: '',
             userEntry: '',
             showPassword: true,
@@ -431,76 +432,125 @@ class Forgotpassword extends Component {
         const { user: { isLoading } } = this.props;
         const { otpCode, password, confirmPassword, showPassword, isPasswordMatch } = this.state;
         return (
-            <View>
-                <Row>
-                    <Col size={5}>
-                        <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>OTP</Text>
-                    </Col>
-                    <Col size={5}>
-                        <TouchableOpacity onPress={() => this.generateOtpCode(true)} >
-                            <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold', alignSelf: 'flex-end' }}>RESEND</Text>
-                        </TouchableOpacity>
-                    </Col>
-                </Row>
-                <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                    <OTPTextInput
-                        ref={e => (this.otpInput = e)}
-                        inputCount={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE && this.state.isCorporateUserSelected ? 4 : 6}
-                        tintColor={primaryColor}
-                        inputCellLength={1}
-                        containerStyle={{
-                            marginLeft: -1,
-                        }}
-                        textInputStyle={{
-                            width: 38,
-                            fontFamily: 'opensans-bold'
-                        }}
-                        handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
-                    />
-                </Item>
-                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Password</Label>
-
-                <Item style={styles.authTransparentLabel}>
-                    <Input placeholder="Enter new password" style={{ fontSize: 15 }}
-                        ref={(input) => { this.enterOtpTextInput = input; }}
-                        secureTextEntry={this.state.showPassword}
-                        returnKeyType={'go'}
-                        value={password}
-                        onChangeText={password => this.onPasswordTextChanged(password)}
-                        onSubmitEditing={() => { this.enterNewPassTextInput._root.focus(); }}
-                    />
-                    {password.length >= 6 ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
-                </Item>
-                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Conform Password</Label>
-
-                <Item style={styles.authTransparentLabel}>
-                    <Input placeholder="Retype new password" style={{ fontSize: 15 }}
-                        ref={(input) => { this.enterNewPassTextInput = input; }}
-                        secureTextEntry={showPassword}
-                        returnKeyType={'go'}
-                        value={confirmPassword}
-                        onChangeText={confirmPassword => this.checkEnteredPasswords(confirmPassword)}
-                        onSubmitEditing={() => { this.changePassword() }}
-                    />
-                    {isPasswordMatch == true ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
-                </Item>
-                {isLoading ?
-                    <Spinner
-                        visible={isLoading}
-                    /> : null}
-                <Button
-                    style={styles.forgotButton}
-                    block success onPress={() => this.changePassword()}>
-                    <Text style={styles.ButtonText}>Reset Password</Text>
-                </Button>
+            <ImageBackground
+            style={{flex: 1}}
+            source={require('../../../../assets/images/loginBG.jpeg')}
+            blurRadius={15}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                alignItems: 'center',
+                alignContent: 'center',
+                justifyContent: 'center',
+              }}>
+              <View style={styles.outerContainer}>
+                <View style={styles.containerOTP}>
+                  <Text style={styles.heading1}>OTP Verification</Text>
+                  <Text
+                    style={{marginVertical: 20, color: '#C2CCCC', lineHeight: 30}}>
+                    Enter the OTP you received
+                  </Text>
+                  <OtpInputs
+                    userEntry={''}
+                    noOfDigits={4}
+                    getOtp={(otp) => this.getEnteredotp(otp)}
+                  />
+              
+                        
+              <View style={{display: 'flex', flexDirection: 'row', marginTop: 100, justifyContent: 'space-between'}}>
+              <Pressable onPress={() => this.generateOtpCode(true)} style={{marginTop: 30 }}>
+                  <Text style={{color: '#39B0E5'}}>
+      
+      RESEND OTP <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
+          </Pressable>
+          <Pressable onPress={() => this.setState({isOTPGenerated: false})} style={{marginTop: 30 }}>
+                  <Text style={{color: '#39B0E5'}}> 
+      BACK <MaterialIcons name="arrow-back-ios" style={{  color: '#39B0E5' }} /></Text>
+          </Pressable>
+              </View>
+             
+             
             </View>
+            <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
+             <Pressable onPress={() => this.generateotp()} S style={{ }}>
+                  <Text style={styles.createAccountText}>Continue</Text>
+          </Pressable>
+          </LinearGradient>
+            </View>
+              </View>
+          
+          </ImageBackground>
+            // <View>
+            //     <Row>
+            //         <Col size={5}>
+            //             <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>OTP</Text>
+            //         </Col>
+            //         <Col size={5}>
+            //             <TouchableOpacity onPress={() => this.generateOtpCode(true)} >
+            //                 <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold', alignSelf: 'flex-end' }}>RESEND</Text>
+            //             </TouchableOpacity>
+            //         </Col>
+            //     </Row>
+            //     <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+            //         <OTPTextInput
+            //             ref={e => (this.otpInput = e)}
+            //             inputCount={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE && this.state.isCorporateUserSelected ? 4 : 6}
+            //             tintColor={primaryColor}
+            //             inputCellLength={1}
+            //             containerStyle={{
+            //                 marginLeft: -1,
+            //             }}
+            //             textInputStyle={{
+            //                 width: 38,
+            //                 fontFamily: 'opensans-bold'
+            //             }}
+            //             handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
+            //         />
+            //     </Item>
+            //     <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Password</Label>
+
+            //     <Item style={styles.authTransparentLabel}>
+            //         <Input placeholder="Enter new password" style={{ fontSize: 15 }}
+            //             ref={(input) => { this.enterOtpTextInput = input; }}
+            //             secureTextEntry={this.state.showPassword}
+            //             returnKeyType={'go'}
+            //             value={password}
+            //             onChangeText={password => this.onPasswordTextChanged(password)}
+            //             onSubmitEditing={() => { this.enterNewPassTextInput._root.focus(); }}
+            //         />
+            //         {password.length >= 6 ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
+            //     </Item>
+            //     <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Conform Password</Label>
+
+            //     <Item style={styles.authTransparentLabel}>
+            //         <Input placeholder="Retype new password" style={{ fontSize: 15 }}
+            //             ref={(input) => { this.enterNewPassTextInput = input; }}
+            //             secureTextEntry={showPassword}
+            //             returnKeyType={'go'}
+            //             value={confirmPassword}
+            //             onChangeText={confirmPassword => this.checkEnteredPasswords(confirmPassword)}
+            //             onSubmitEditing={() => { this.changePassword() }}
+            //         />
+            //         {isPasswordMatch == true ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
+            //     </Item>
+            //     {isLoading ?
+            //         <Spinner
+            //             visible={isLoading}
+            //         /> : null}
+            //     <Button
+            //         style={styles.forgotButton}
+            //         block success onPress={() => this.changePassword()}>
+            //         <Text style={styles.ButtonText}>Reset Password</Text>
+            //     </Button>
+            // </View>
         )
     }
     render() {
         const { user: { message } } = this.props;
         const { errorMessage, isOTPGenerated } = this.state;
 
-        return (
+        return !isOTPGenerated ? (
             <Container style={styles.container}>
                 <ScrollView>
                 <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270}}>
@@ -533,15 +583,16 @@ class Forgotpassword extends Component {
 <View style={styles.inputContainer}>
 <Text style={styles.welcomeText}>Forgot Password?</Text>
 <Form>
-{isOTPGenerated == true ? this.renderAfterOtpGenerated() : this.renderEnterEmail()}
+{this.renderEnterEmail()}
 </Form>
 
 </View>
                 </ScrollView>               
             </Container>
-        )
+        ) : this.renderAfterOtpGenerated()
     }
 }
+
 
 function forgotpasswordState(state) {
     return {

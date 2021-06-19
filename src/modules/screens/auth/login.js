@@ -211,7 +211,7 @@ class Login extends Component {
                       onFocus={ () => this.onFocus(2) }
                       placeholderTextColor={'#A1A1A1'} placeholder="MPIN" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                         ref={(input) => { this.userEntry = input; }}
-                        secureTextEntry={true}
+                        secureTextEntry={showPassword}
                         returnKeyType={'done'}
                         value={password}
                         // secureTextEntry={showPassword}
