@@ -454,11 +454,50 @@ class Forgotpassword extends Component {
                   <OtpInputs
                     userEntry={''}
                     noOfDigits={4}
-                    getOtp={(otp) => this.getEnteredotp(otp)}
+                    getOtp={(otp) => this.setState({otpCode: otp ?? ''})}
                   />
+                 <View style={{marginTop: 100}}>
+                 <Item style={{marginTop: 0, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '95%', marginRight: 10, marginLeft: 10}}>
+                    <Input
+                     onBlur={ () => this.onBlur(1) }
+                     onFocus={ () => this.onFocus(1) }
+                    placeholderTextColor={'#A1A1A1'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                    sref={(input) => { this.enterOtpTextInput = input; }}
+                        secureTextEntry={this.state.showPassword}
+                        returnKeyType={'go'}
+                        value={password}
+                        onChangeText={password => this.onPasswordTextChanged(password)}
+                        onSubmitEditing={() => { this.enterNewPassTextInput._root.focus(); }}
+                    />
+            
+            
+                   
+                  </Item>
+                 </View>
+                 <View style={{marginTop: 10}}>
+                 <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '95%', marginRight: 10, marginLeft: 10}}>
+                    <Input
+                     onBlur={ () => this.onBlur(1) }
+                     onFocus={ () => this.onFocus(1) }
+                    placeholderTextColor={'#A1A1A1'} placeholder="Confirm Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                                 ref={(input) => { this.enterNewPassTextInput = input; }}
+                        secureTextEntry={showPassword}
+                        returnKeyType={'go'}
+                        value={confirmPassword}
+                        onChangeText={confirmPassword => this.checkEnteredPasswords(confirmPassword)}
+                        onSubmitEditing={() => { this.changePassword() }}
+                    />
+            
+            
+                   
+                  </Item>
+                 </View>
+                 {
+                     isPasswordMatch === false && password !== '' && confirmPassword !== '' ? <Text style={{color: 'red', top: 10}}>Passwords don't match</Text> : null
+                 }
               
                         
-              <View style={{display: 'flex', flexDirection: 'row', marginTop: 100, justifyContent: 'space-between'}}>
+              <View style={{display: 'flex', flexDirection: 'row', marginTop: 20, justifyContent: 'space-between'}}>
               <Pressable onPress={() => this.generateOtpCode(true)} style={{marginTop: 30 }}>
                   <Text style={{color: '#39B0E5'}}>
       
@@ -473,8 +512,8 @@ class Forgotpassword extends Component {
              
             </View>
             <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
-             <Pressable onPress={() => this.generateotp()} S style={{ }}>
-                  <Text style={styles.createAccountText}>Continue</Text>
+             <Pressable onPress={() => this.changePassword()} style={{ }}>
+                  <Text style={styles.createAccountText}>Change Password</Text>
           </Pressable>
           </LinearGradient>
             </View>
