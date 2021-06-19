@@ -113,3 +113,32 @@ export async function arrangeCallbackAction(name,insuranceName) {
     }
   }
 
+  export async function createInsuranceHistory(reqData) {
+    try {
+      let endPoint = 'insurance-history';
+      let response = await smartHealthPostService(endPoint,reqData);
+      return response.data;
+    } catch (e) {
+  
+      return {
+        message: 'exceptio1n' + e,
+        success: false
+      }
+    }
+  }
+
+  
+
+  export async function getInsuranceHistory(memberId,actionType,page,limit) {
+    try {
+      let endPoint = 'insurance-history/page?mId=' + memberId+'&actionType='+actionType+'&p='+page+'&l='+limit;
+      let response = await smartHealthGetService(endPoint);
+      return response.data;
+    } catch (e) {
+  
+      return {
+        message: 'exceptio1n' + e,
+        success: false
+      }
+    }
+  }
