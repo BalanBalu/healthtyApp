@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Image, TouchableOpacity, ScrollView, ImageBackground, Pressable } from 'react-native';
+import { Image, TouchableOpacity, ScrollView, ImageBackground, Pressable, Dimensions } from 'react-native';
 import { login, RESET_REDIRECT_NOTICE,SmartHealthlogin } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
@@ -139,8 +139,11 @@ class Login extends Component {
       console.log(e);
     }
   }
+  
 
   render() {
+    let width = Dimensions.get('window').width;
+let height = Dimensions.get('window').height;
     const { user: { isLoading } } = this.props;
 
     
@@ -148,7 +151,7 @@ class Login extends Component {
     return (
       
         <Container style={{backgroundColor: '#fff'}}>
-          <ScrollView>
+          {/* <ScrollView> */}
              <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270}}>
 
       <View>
@@ -186,11 +189,11 @@ class Login extends Component {
                          visible={isLoading}
                        />
                       </View> : null}
-<Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
+<Item style={{marginTop: '6%', borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                       <Input
                        onBlur={ () => this.onBlur(1) }
                        onFocus={ () => this.onFocus(1) }
-                      placeholderTextColor={'#A1A1A1'} placeholder={ isSelected === 'corporate_user' ? "Email" : "Mobile Number / Email"} style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                      placeholderTextColor={'#A1A1A1'} placeholder={ isSelected === 'corporate_user' ? "Mobile Number / Email" : "Mobile Number / Email"} style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                  ref={(input) => { this.enterTextInputEmail = input; }}
                                     returnKeyType={'next'}
                                     value={userEntry}
@@ -205,7 +208,7 @@ class Login extends Component {
                      
                     </Item>
                     
-            <Item style={{borderBottomColor: this.state.backgroundColor2, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30, marginTop: 35}}>
+            <Item style={{borderBottomColor: this.state.backgroundColor2, borderBottomWidth: 1, width: '87%', marginRight: 50, marginLeft: 30, marginTop: 35}}>
                       <Input 
                       onBlur={ () => this.onBlur(2) }
                       onFocus={ () => this.onFocus(2) }
@@ -262,14 +265,14 @@ class Login extends Component {
                    
 </Form>
 
-<LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={[styles.createAccount, {marginBottom: 50}]}>
+<LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={[styles.createAccount]}>
                    <Pressable onPress={() => this.props.navigation.navigate('loginWithOtp')} style={{ }}>
                         <Text style={styles.createAccountText}>Login With OTP</Text>
                 </Pressable>
                 </LinearGradient>
             
       </View>
-      </ScrollView>
+      {/* </ScrollView> */}
       </Container>
    
     )

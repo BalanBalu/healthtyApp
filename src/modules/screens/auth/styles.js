@@ -1,10 +1,24 @@
 // Imports
 import { Dimensions, StyleSheet } from 'react-native'
 import {primaryColor, secondaryColor} from '../../../setup/config'
+import { useWindowDimensions } from 'react-native';
+
 
 
 let width = Dimensions.get('window').width;
 let height = Dimensions.get('window').height;
+
+const scale = - height / 10
+
+export const normalize = (size) => {
+    const newSize = size * scale
+
+    if (Platform.OS === 'ios') {
+        return Math.round(PixelRatio.roundToNearestPixel(newSize))
+    } else {
+        return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
+    }
+}
 // Styles
 export default StyleSheet.create({
     container:
@@ -286,8 +300,8 @@ export default StyleSheet.create({
     },
     imageContainer: {display: 'flex', justifyContent: 'center', alignItems: 'center', alignContent: 'center', marginTop: 30, marginLeft: 30, alignSelf: 'baseline'},
     textBold: { fontFamily:'opensans-bold', color: '#fff' },
-    inputContainer: {borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', minHeight: '100%', marginTop: -30, display: 'flex', alignItems: "flex-start"},
-    welcomeText: {fontFamily: 'opensans-bold', marginLeft: 28, marginTop: 55, fontSize: 20, color: '#333333'},
+    inputContainer: {borderTopRightRadius: 45, borderTopLeftRadius: 45, backgroundColor: '#fff', marginTop: scale, display: 'flex', alignItems: "flex-start"},
+    welcomeText: {fontFamily: 'opensans-bold', marginLeft: 28, marginTop: '8%', fontSize: 20, color: '#333333'},
     signinButton: { elevation: 2,
         backgroundColor: "#fff",
         borderColor: '#48b4a5',
@@ -313,7 +327,7 @@ export default StyleSheet.create({
 
            
         },
-        createAccount: {display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 30, elevation: 8,
+        createAccount: {display: 'flex', alignSelf: 'center', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginTop: 20, elevation: 8,
         backgroundColor: "#48b4a5",
         borderColor: '#48b4a5',
         borderWidth: 0,
@@ -351,7 +365,7 @@ export default StyleSheet.create({
           justifyContent: 'center',
           alignContent: 'center',
           alignItems: 'center',
-          marginTop: 30,
+          marginTop: 20,
           elevation: 8,
           backgroundColor: '#48b4a5',
           borderColor: '#48b4a5',
