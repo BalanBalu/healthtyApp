@@ -115,10 +115,8 @@ class SideBar extends React.Component {
     this.getBasicData();
     return (
       <Container>
-
         <Content style={{ backgroundColor: '#DCEAE9' }}>
           <View style={{ height: 120, backgroundColor: '#128283', }}>
-
             <Row
               style={{
                 alignItems: 'center',
@@ -238,10 +236,34 @@ class SideBar extends React.Component {
                               </TouchableOpacity>
                             </Right> : null}
                         </Row>
-                        {item.name === "Consultation", "Insurance" ?
+                        {/* {, "Insurance" ? */}
                           <View>
 
-                            {this.state.showAppointments && item.routeName.length === 0 &&
+                            {this.state.selectedIndex === index&&item.name === "Consultation"&&
+                              <FlatList
+                                data={item.appoinmentSubMenus}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item }) =>
+                                  <ListItem style={{ borderBottomWidth: 0, backgroundColor: '#DCEAE9', paddingLeft: 25 }}
+                                    small
+                                    onPress={() => {
+                                      if (item.params) {
+                                        this.props.navigation.navigate(item.routeName, { ...item.params })
+                                      } else {
+                                        this.props.navigation.navigate(item.routeName)
+                                      }
+                                    }
+                                    }>
+                                    <Image square source={item.icon}
+                                      style={item.largeIcon}
+                                    />
+                                    <Body style={{ borderBottomWidth: 0, }}>
+                                      <Text style={{ fontFamily: 'Roboto', fontSize: 13 }}>{translate(item.name)}</Text>
+                                    </Body>
+                                  </ListItem>
+                                } />
+                            }
+                                 {this.state.selectedIndex === index &&item.name === "Insurance"&&
                               <FlatList
                                 data={item.appoinmentSubMenus}
                                 keyExtractor={(item, index) => index.toString()}
@@ -266,9 +288,9 @@ class SideBar extends React.Component {
                                 } />
                             }
                           </View>
-                          :
+                          {/* :
                           null
-                        }
+                        } */}
                       </View>
                     } />
                 </View>
