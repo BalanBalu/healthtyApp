@@ -89,7 +89,7 @@ class SubmitClaim extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      showCard: -1,
+      showCard: 0,
       show: true,
       Occupation: '',
       RoomCategory: '',
@@ -111,8 +111,10 @@ class SubmitClaim extends PureComponent {
   }
 
   toggleData(index, typeOfArrowIcon) {
+    console.log(index)
+
     const { showCard, show } = this.state;
-    if (typeOfArrowIcon === 'DOWN') {
+    if (typeOfArrowIcon === 'DOWN' || index===showCard) {
       this.setState({ showCard: index, show: !this.state.show });
     } else {
       this.setState({ showCard: -1, show: null });
@@ -703,11 +705,11 @@ console.log("result",result)
                         <Text style={{ color: '#fff' }}>{item.title}</Text>
                       </Col>
                       <Col size={1}>
-                        <TouchableOpacity
-                          onPress={() => this.toggleData(index, 'UP')}>
+                        <TouchableOpacity style={{paddingHorizontal:6}}
+                          onPress={() => this.toggleData(index,'UP')}>
                           <MaterialIcons
                             name={
-                              showCard === index && !show
+                              showCard === index && !show 
                                 ? 'keyboard-arrow-up'
                                 : 'keyboard-arrow-down'
                             }
