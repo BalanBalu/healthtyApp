@@ -111,13 +111,11 @@ const DeclarationByHospital = (props) => {
         <TouchableOpacity
           style={styles.submit_ButtonStyle}
           onPress={() =>
-            declarationDate && place && signatureOfHospitalAuthority
-              ? updateDeclarationByHospital({
+            updateDeclarationByHospital({
                 declarationDate: declarationDate,
                 declarationPlace: place,
                 authoritySign: signatureOfHospitalAuthority,
               })
-              : toastMeassage('Unable to Submit Claim, Please fill all details')
           } testID="submitSection6">
           <Text style={{ color: '#fff' }}>Submit</Text>
         </TouchableOpacity>

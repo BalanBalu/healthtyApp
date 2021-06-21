@@ -525,7 +525,7 @@ class SubmitClaimPageTwo extends PureComponent {
     let attachmentDetails = this.submitData(data);
     this.updateDisableCout(6);
     const {showCard} = this.state;
-    this.setState({showCard: showCard + 1});
+    this.setState({showCard: showCard + 1,submitButton: false});
     this.scroll.scrollTo({x: 0, y: 0, animated: true});
     if (attachmentDetails == true) {
       this.setState({submitButton: false});
