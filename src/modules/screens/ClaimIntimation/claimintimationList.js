@@ -57,7 +57,6 @@ class ClaimIntimationList extends PureComponent {
   };
 
   toggleData(index, typeOfArrowIcon) {
-    console.log(index)
     const { showCard, show } = this.state;
     if (typeOfArrowIcon === 'DOWN') {
       this.setState({ showCard: index, show: !this.state.show });
