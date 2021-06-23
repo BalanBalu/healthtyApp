@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import {primaryColor} from '../../../setup/config'
+import { primaryColor } from '../../../setup/config'
 
 export default StyleSheet.create({
 
@@ -97,8 +97,8 @@ export default StyleSheet.create({
         height: 30,
         borderRadius: 5,
         marginTop: 8,
-      },
-      input: {
+    },
+    input: {
         flex: 1,
         paddingTop: 2,
         paddingRight: 2,
@@ -106,7 +106,7 @@ export default StyleSheet.create({
         paddingLeft: 0,
         backgroundColor: '#fff',
         color: '#909090',
-      },
+    },
     textInputStyle: {
         borderColor: '#909090',
         borderWidth: 1,
@@ -114,7 +114,7 @@ export default StyleSheet.create({
         marginTop: 8,
         borderRadius: 5,
         fontFamily: 'Roboto',
-      },
+    },
     transparentLabel2:
     {
         borderBottomColor: 'transparent',
@@ -179,6 +179,13 @@ export default StyleSheet.create({
         backgroundColor: '#f6f8fa',
         textAlign: 'center',
         fontFamily: 'Roboto',
+    },
+    cardStyles: {
+        marginTop: 15,
+        marginRight: 15,
+        marginLeft: 15,
+        borderRadius: 5,
+        padding: 10
     },
     text: {
         color: '#fff',
