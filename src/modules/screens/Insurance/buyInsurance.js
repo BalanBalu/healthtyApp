@@ -15,14 +15,14 @@ import {
   Alert
 } from 'react-native';
 import {
-  arrangeCallbackActionForBuyInsurance,
+  arrangeCallbackActionForBuyInsurance,createInsuranceHistory
 } from '../../providers/insurance/insurance.action';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { primaryColor } from '../../../setup/config';
 import styles from './styles';
 import ModalPopup from '../../../components/Shared/ModalPopup';
 import InsuranceRenewalPopup from '../../shared/insuranceRenewalPopup';
-import { getFullName } from '../../common';
+import { getFullName,toastMeassage } from '../../common';
 
 const PolicyTypeList = [
   'Choose Policy Type',
@@ -54,6 +54,7 @@ const LifeInsurance = [
   'Term insurance',
   'endowment policies',
 ];
+
 
 class BuyInsurance extends PureComponent {
   constructor(props) {
@@ -87,9 +88,42 @@ class BuyInsurance extends PureComponent {
         },
       ],
     );
+    let memberId= await AsyncStorage.getItem('memberId')
+    let renewalData={
+      memberId:memberId,
+      actionType:'BUY-INSURANCE',
+      policyType:this.state.policyType,
+      transactionType:'Arrange-Callback',
+      requestedDate:new Date()
+    }
+   await createInsuranceHistory(renewalData);
   };
 
-
+  renewalOnline = async () => {
+    try {
+    let memberId= await AsyncStorage.getItem('memberId')
+    let renewalData={
+      memberId:memberId,
+      actionType:'BUY-INSURANCE',
+      policyType:this.state.policyType,
+      transactionType:'Renewal-Online',
+      requestedDate:new Date()
+    }
+    let result = await createInsuranceHistory(renewalData);
+    if (result) {
+      toastMeassage(
+        'Your insurance details is submited successfully',
+        'success',
+        1000,
+      );
+      this.props.navigation.navigate('CorporateHome');
+    }
+  } catch (error) {
+    console.log('Ex is getting on', error.message);
+  } finally {
+    this.setState({isLoading: false});
+  }
+  };
 
 
   popUpClose() {
@@ -368,6 +402,7 @@ class BuyInsurance extends PureComponent {
           renewOnlineButtonAction={() => {
             Linking.openURL('http://www.readypolicy.com/');
             this.popUpClose();
+            this.renewalOnline()
           }}
           popUpClose={() => {
             this.popUpClose();

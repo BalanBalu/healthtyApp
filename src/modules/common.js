@@ -83,7 +83,9 @@ export function getCorporateFullName(data) {
 export function arrangeFullName(firstName,middleName,lastName) {
     let name = 'unKnown'
     if (firstName ||middleName||lastName) {
-        name = `${firstName ? firstName + ' ' : ''}${middleName? middleName + ' ' : ''}${lastName ? lastName : ''}`;
+        // name = `${firstName ? firstName + ' ' : ''}${middleName? middleName + ' ' : ''}${lastName ? lastName : ''}`;
+        name = `${firstName ? firstName + ' ' : ''}${lastName ? lastName : ''}`;
+
         name = name ? name : 'unKnown';
     }
     return name

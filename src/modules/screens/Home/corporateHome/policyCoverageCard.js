@@ -100,10 +100,12 @@ class PolicyCoverageCard extends React.Component {
                   marginTop: 15,
                 }}>
                 <Text
+                numberOfLines={1}
                   style={{
                     color: '#fff',
                     fontFamily: 'opensans-bold',
                     fontSize: 18,
+                    width: '70%'
                   }}>
                     {arrangeFullName(memberDetails&&memberDetails.firstName,memberDetails&&memberDetails.middleName,memberDetails&&memberDetails.lastName)}
                 </Text>
