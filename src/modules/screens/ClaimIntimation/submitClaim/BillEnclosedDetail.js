@@ -62,20 +62,20 @@ class BillEnclosedDeatil extends PureComponent {
       });
       return false;
     }
-    if (issuedBy === '') {
-      this.setState({
-        errorMsg: 'Please enter issuedBy',
-        isModalVisible: true,
-      });
-      return false;
-    }
-    if (towards === '') {
-      this.setState({
-        errorMsg: 'Please enter towards',
-        isModalVisible: true,
-      });
-      return false;
-    }
+    // if (issuedBy === '') {
+    //   this.setState({
+    //     errorMsg: 'Please enter issuedBy',
+    //     isModalVisible: true,
+    //   });
+    //   return false;
+    // }
+    // if (towards === '') {
+    //   this.setState({
+    //     errorMsg: 'Please enter towards',
+    //     isModalVisible: true,
+    //   });
+    //   return false;
+    // }
     if (amount === '') {
       this.setState({
         errorMsg: 'Please enter amount',
