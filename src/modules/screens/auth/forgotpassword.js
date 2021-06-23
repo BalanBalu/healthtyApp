@@ -5,14 +5,15 @@ import { connect } from 'react-redux';
 import { FlatList, Image, Pressable, ImageBackground, TabBarIOS, TouchableOpacity } from 'react-native'
 import styles from '../../screens/auth/styles';
 import LinearGradient from 'react-native-linear-gradient';
-
-
+import OtpInputs from '../../../components/OtpInputText/OtpInput';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Svg, {Defs, Ellipse, G, Path, Stop,TSpan,Circle,Rect } from 'react-native-svg';
 import { ScrollView } from 'react-native-gesture-handler';
 import { debounce, validateEmailAddress, acceptNumbersOnly ,validateMobileNumber} from '../../common';
 import Spinner from '../../../components/Spinner';
 import OTPTextInput from 'react-native-otp-textinput';
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE, primaryColor } from "../../../setup/config";
+import LoginWithOtp from './loginWithOtp';
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
@@ -25,6 +26,9 @@ class Forgotpassword extends Component {
             isOTPGenerated: false,
             errorMessage: '',
             userEntry: '',
+            backgroundColor1: '#dddddd',
+            backgroundColor2: '#dddddd',
+            backgroundColor3: '#dddddd',
             showPassword: true,
             isPasswordMatch: false,
             isCorporateUserSelected: false,
@@ -50,6 +54,9 @@ class Forgotpassword extends Component {
     /*  Generate OTP Code for Reset Password   */
     generateOtpCode = async (isResendOtp) => {
         const { userEntry, employeeId, corporateName } = this.state;
+        console.log('corporateName :', corporateName);
+        console.log('employeeId :', employeeId);
+        console.log('userEntry :', userEntry);
         try {
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
                 if (!corporateName) {
@@ -83,6 +90,7 @@ class Forgotpassword extends Component {
                 }
             }
             await this.setState({ errorMessage: '', isLoading: true })
+    
             if (this.state.isCorporateUserSelected && CURRENT_APP_NAME === MY_SMART_HEALTH_CARE) {
                 let reqObject = {
                     userId: userEntry,
@@ -90,6 +98,7 @@ class Forgotpassword extends Component {
                     corporate: this.state.corporateName
                 }
                 let smartHealthReqOtpResponse = await generateOTPForSmartHealth(reqObject)
+                console.log('smartHealthReqOtpResponse :', smartHealthReqOtpResponse);
 
                 if (smartHealthReqOtpResponse && smartHealthReqOtpResponse.otp) {
                     this.smartHealthOtpData = smartHealthReqOtpResponse
@@ -128,6 +137,7 @@ class Forgotpassword extends Component {
             })
         }
         finally {
+            
             this.setState({ isLoading: false })
         }
     }
@@ -135,6 +145,9 @@ class Forgotpassword extends Component {
     /*  Change the New Password using Generated OTP Code  */
     changePassword = async () => {
         const { otpCode, password, isPasswordMatch } = this.state;
+        console.log('isPasswordMatch :', isPasswordMatch);
+        console.log('password :', password);
+        console.log('otpCode :', otpCode);
         try {
             if (!otpCode) {
                 this.setState({ errorMessage: 'kindly enter received OTP' });
@@ -168,6 +181,7 @@ class Forgotpassword extends Component {
                         userType: 'MEMBER'
                     };
                     let result = await changePasswordForSmartHelath(reqDataObj);
+                    console.log('result :', result);
 
                     if (result === 'SUCCESS') {
                         reqOtpVerifyResponse.success = true,
@@ -214,29 +228,6 @@ class Forgotpassword extends Component {
         this.setState({ password: value.replace(/\s/g, "") });
     }
 
-    onFocus(item) {
-        if(item === 1) {
-          this.setState({
-            backgroundColor1: '#48b4a5'
-          })
-        } else {
-          this.setState({
-            backgroundColor2: '#48b4a5'
-          })
-        }
-      }
-    
-      onBlur(item) {
-        if(item === 1) {
-          this.setState({
-            backgroundColor1: '#dddddd'
-          })
-        } else {
-          this.setState({
-            backgroundColor2: '#dddddd'
-          })
-        }
-      }
     onChangeRemoveSpaces(value) {
         // code to remove White Spaces from text field
         this.setState({ userEntry: value.replace(/\s/g, "") });
@@ -279,11 +270,12 @@ class Forgotpassword extends Component {
                 {isCorporateUserSelected === false ?
                     <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
+                     onBlur={() => this.setState({backgroundColor1: '#dddddd'})  }
+                     onFocus={ () => this.setState({backgroundColor1: '#48b4a5'}) }
                     placeholderTextColor={'#A1A1A1'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     value={userEntry}
-                                autoCapitalize={false}
+                                // autoCapitalize={false}
+                                autoCapitalize='none'
                                 keyboardType={'email-address'}
                                 onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
                                 onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
@@ -297,11 +289,12 @@ class Forgotpassword extends Component {
                     <View style={{width: '100%'}}>
                          <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
+                    onBlur={() => this.setState({backgroundColor1: '#dddddd'})  }
+                    onFocus={ () => this.setState({backgroundColor1: '#48b4a5'}) }
                     placeholderTextColor={'#A1A1A1'} placeholder="Enter Corporate Name" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     value={this.state.corporateName}
-                                autoCapitalize={false}
+                                // autoCapitalize={false}
+                                autoCapitalize='none'
                                 keyboardType={'email-address'}
                                 returnKeyType={'done'}
                                 onChangeText={corporateName => this.onPressChangeCorporateName(corporateName)}
@@ -319,7 +312,7 @@ class Forgotpassword extends Component {
                                     renderItem={({ item, index }) => (
                                         <TouchableOpacity style={{ marginTop: 5, marginBottom: 5 }} onPress={() => this.onSelectCorporateName(item)}>
                                             <Text style={{
-                                                color: '#775DA3',
+                                                color: '#48b4a5',
                                                 marginTop: 2,
                                                 fontFamily: 'OpenSans',
                                                 fontSize: 16,
@@ -335,13 +328,14 @@ class Forgotpassword extends Component {
 
                                 : null}
 
-<Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
+<Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor2, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
-                    placeholderTextColor={'#A1A1A1'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                   onBlur={() => this.setState({backgroundColor2: '#dddddd'})  }
+                   onFocus={ () => this.setState({backgroundColor2: '#48b4a5'}) }
+                    placeholderTextColor={'#A1A1A1'} placeholder="Email / Mobile Number" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     value={userEntry}
-                                autoCapitalize={false}
+                                // autoCapitalize={false}
+                                autoCapitalize='none'
                                 keyboardType={'email-address'}
                                 onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
                                 onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
@@ -350,13 +344,15 @@ class Forgotpassword extends Component {
             
                    
                   </Item>
-                  <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
+                  <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor3, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30}}>
                     <Input
-                     onBlur={ () => this.onBlur(1) }
-                     onFocus={ () => this.onFocus(1) }
+                  
+                    onFocus={ () => this.setState({backgroundColor3: '#48b4a5'}) }
+                    onBlur={() => this.setState({backgroundColor3: '#dddddd'})  }
                     placeholderTextColor={'#A1A1A1'} placeholder="Employee ID" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                     value={this.state.employeeId}
-                    autoCapitalize={false}
+                    // autoCapitalize={false}
+                    autoCapitalize='none'
                     ref={(input) => { this.employeeId = input; }}
                     keyboardType={'email-address'}
                     returnKeyType={'done'}
@@ -366,7 +362,7 @@ class Forgotpassword extends Component {
             
                    
                   </Item>
-
+                  <Text style={{color: '#d00729', marginLeft: 30, marginTop: 10 }}>{this.state.errorMessage}</Text>
                     </View>
 
                 }
@@ -402,7 +398,7 @@ class Forgotpassword extends Component {
                     
                     
                     <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={[styles.createAccount, {marginBottom: 50, marginTop: 50, marginRight: 24}]}>
-                   <Pressable  block success onPress={() => this.generateOtpCode()} style={{ }}>
+                   <Pressable  onPress={() => this.generateOtpCode()}>
                         <Text style={styles.createAccountText}>Generate OTP</Text>
                 </Pressable>
                 </LinearGradient>
@@ -431,76 +427,164 @@ class Forgotpassword extends Component {
         const { user: { isLoading } } = this.props;
         const { otpCode, password, confirmPassword, showPassword, isPasswordMatch } = this.state;
         return (
-            <View>
-                <Row>
-                    <Col size={5}>
-                        <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>OTP</Text>
-                    </Col>
-                    <Col size={5}>
-                        <TouchableOpacity onPress={() => this.generateOtpCode(true)} >
-                            <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold', alignSelf: 'flex-end' }}>RESEND</Text>
-                        </TouchableOpacity>
-                    </Col>
-                </Row>
-                <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                    <OTPTextInput
-                        ref={e => (this.otpInput = e)}
-                        inputCount={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE && this.state.isCorporateUserSelected ? 4 : 6}
-                        tintColor={primaryColor}
-                        inputCellLength={1}
-                        containerStyle={{
-                            marginLeft: -1,
-                        }}
-                        textInputStyle={{
-                            width: 38,
-                            fontFamily: 'opensans-bold'
-                        }}
-                        handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
-                    />
-                </Item>
-                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Password</Label>
-
-                <Item style={styles.authTransparentLabel}>
-                    <Input placeholder="Enter new password" style={{ fontSize: 15 }}
-                        ref={(input) => { this.enterOtpTextInput = input; }}
+            <ImageBackground
+            style={{flex: 1}}
+            source={require('../../../../assets/images/loginBG.jpeg')}
+            blurRadius={15}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                alignItems: 'center',
+                alignContent: 'center',
+                justifyContent: 'center',
+              }}>
+              <View style={styles.outerContainer}>
+                <View style={styles.containerOTP}>
+                  <Text style={styles.heading1}>OTP Verification</Text>
+                  <Text
+                    style={{marginVertical: 20, color: '#C2CCCC', lineHeight: 30}}>
+                    Enter the OTP you received
+                  </Text>
+                  <OtpInputs
+                    userEntry={''}
+                    noOfDigits={4}
+                    getOtp={(otp) => this.setState({otpCode: otp ?? ''})}
+                  />
+                 <View style={{marginTop: 100}}>
+                 <Item style={{marginTop: 0, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '95%', marginRight: 10, marginLeft: 10}}>
+                    <Input
+                    //  onBlur={ () => this.onBlur(1) }
+                    //  onFocus={ () => this.onFocus(1) }
+                    placeholderTextColor={'#A1A1A1'} placeholder="Password" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                    sref={(input) => { this.enterOtpTextInput = input; }}
                         secureTextEntry={this.state.showPassword}
                         returnKeyType={'go'}
                         value={password}
                         onChangeText={password => this.onPasswordTextChanged(password)}
                         onSubmitEditing={() => { this.enterNewPassTextInput._root.focus(); }}
                     />
-                    {password.length >= 6 ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
-                </Item>
-                <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Conform Password</Label>
-
-                <Item style={styles.authTransparentLabel}>
-                    <Input placeholder="Retype new password" style={{ fontSize: 15 }}
-                        ref={(input) => { this.enterNewPassTextInput = input; }}
+            
+            
+                   
+                  </Item>
+                 </View>
+                 <View style={{marginTop: 10}}>
+                 <Item style={{marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '95%', marginRight: 10, marginLeft: 10}}>
+                    <Input
+                    //  onBlur={ () => this.onBlur(1) }
+                    //  onFocus={ () => this.onFocus(1) }
+                    placeholderTextColor={'#A1A1A1'} placeholder="Enter Password again" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                                 ref={(input) => { this.enterNewPassTextInput = input; }}
                         secureTextEntry={showPassword}
                         returnKeyType={'go'}
                         value={confirmPassword}
                         onChangeText={confirmPassword => this.checkEnteredPasswords(confirmPassword)}
                         onSubmitEditing={() => { this.changePassword() }}
                     />
-                    {isPasswordMatch == true ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
-                </Item>
-                {isLoading ?
-                    <Spinner
-                        visible={isLoading}
-                    /> : null}
-                <Button
-                    style={styles.forgotButton}
-                    block success onPress={() => this.changePassword()}>
-                    <Text style={styles.ButtonText}>Reset Password</Text>
-                </Button>
+            
+            
+                   
+                  </Item>
+                 </View>
+                 {
+                     isPasswordMatch === false && password  && confirmPassword ? <Text style={{color: '#d00729', top: 10}}>Passwords don't match</Text> : null
+                 }
+              
+                        
+              <View style={{display: 'flex', flexDirection: 'row', marginTop: 20, justifyContent: 'space-between'}}>
+              <Pressable onPress={() => this.generateOtpCode(true)} style={{marginTop: 30 }}>
+                  <Text style={{color: '#39B0E5'}}>
+      
+      Resend OTP </Text>
+          </Pressable>
+          <Pressable onPress={() => this.changePassword()} style={{marginTop: 30 }}>
+                  <Text style={{color: '#39B0E5'}}> 
+      Change Password <MaterialIcons name="arrow-forward-ios" style={{  color: '#39B0E5' }} /></Text>
+          </Pressable>
+              </View>
+             
+             
             </View>
+            {/* <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
+             <Pressable onPress={() => this.changePassword()} style={{ }}>
+                  <Text style={styles.createAccountText}>Change Password</Text>
+          </Pressable>
+          </LinearGradient> */}
+            </View>
+              </View>
+          
+          </ImageBackground>
+            // <View>
+            //     <Row>
+            //         <Col size={5}>
+            //             <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>OTP</Text>
+            //         </Col>
+            //         <Col size={5}>
+            //             <TouchableOpacity onPress={() => this.generateOtpCode(true)} >
+            //                 <Text style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold', alignSelf: 'flex-end' }}>RESEND</Text>
+            //             </TouchableOpacity>
+            //         </Col>
+            //     </Row>
+            //     <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+            //         <OTPTextInput
+            //             ref={e => (this.otpInput = e)}
+            //             inputCount={CURRENT_APP_NAME === MY_SMART_HEALTH_CARE && this.state.isCorporateUserSelected ? 4 : 6}
+            //             tintColor={primaryColor}
+            //             inputCellLength={1}
+            //             containerStyle={{
+            //                 marginLeft: -1,
+            //             }}
+            //             textInputStyle={{
+            //                 width: 38,
+            //                 fontFamily: 'opensans-bold'
+            //             }}
+            //             handleTextChange={(otpCode) => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
+            //         />
+            //     </Item>
+            //     <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Password</Label>
+
+            //     <Item style={styles.authTransparentLabel}>
+            //         <Input placeholder="Enter new password" style={{ fontSize: 15 }}
+            //             ref={(input) => { this.enterOtpTextInput = input; }}
+            //             secureTextEntry={this.state.showPassword}
+            //             returnKeyType={'go'}
+            //             value={password}
+            //             onChangeText={password => this.onPasswordTextChanged(password)}
+            //             onSubmitEditing={() => { this.enterNewPassTextInput._root.focus(); }}
+            //         />
+            //         {password.length >= 6 ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
+            //     </Item>
+            //     <Label style={{ fontSize: 15, marginTop: 10, color: primaryColor, fontFamily: 'opensans-bold' }}>Conform Password</Label>
+
+            //     <Item style={styles.authTransparentLabel}>
+            //         <Input placeholder="Retype new password" style={{ fontSize: 15 }}
+            //             ref={(input) => { this.enterNewPassTextInput = input; }}
+            //             secureTextEntry={showPassword}
+            //             returnKeyType={'go'}
+            //             value={confirmPassword}
+            //             onChangeText={confirmPassword => this.checkEnteredPasswords(confirmPassword)}
+            //             onSubmitEditing={() => { this.changePassword() }}
+            //         />
+            //         {isPasswordMatch == true ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
+            //     </Item>
+            //     {isLoading ?
+            //         <Spinner
+            //             visible={isLoading}
+            //         /> : null}
+            //     <Button
+            //         style={styles.forgotButton}
+            //         block success onPress={() => this.changePassword()}>
+            //         <Text style={styles.ButtonText}>Reset Password</Text>
+            //     </Button>
+            // </View>
         )
     }
     render() {
         const { user: { message } } = this.props;
         const { errorMessage, isOTPGenerated } = this.state;
 
-        return (
+        return !isOTPGenerated ? (
             <Container style={styles.container}>
                 <ScrollView>
                 <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270}}>
@@ -533,15 +617,16 @@ class Forgotpassword extends Component {
 <View style={styles.inputContainer}>
 <Text style={styles.welcomeText}>Forgot Password?</Text>
 <Form>
-{isOTPGenerated == true ? this.renderAfterOtpGenerated() : this.renderEnterEmail()}
+{this.renderEnterEmail()}
 </Form>
 
 </View>
                 </ScrollView>               
             </Container>
-        )
+        ) : this.renderAfterOtpGenerated()
     }
 }
+
 
 function forgotpasswordState(state) {
     return {

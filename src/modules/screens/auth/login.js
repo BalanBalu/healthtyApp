@@ -316,7 +316,7 @@ class Login extends Component {
                   placeholderTextColor={'#A1A1A1'}
                   placeholder={
                     isSelected === 'corporate_user'
-                      ? 'Email'
+                      ? 'Mobile Number / Email'
                       : 'Mobile Number / Email'
                   }
                   style={{fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1}}
