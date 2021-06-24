@@ -83,6 +83,7 @@ class Profile extends Component {
       is_blood_donor: false,
       family_members: [],
       deletePopupVisible: false,
+      is_corporate_user:false
     };
   }
   async componentDidMount() {
@@ -91,6 +92,10 @@ class Profile extends Component {
     if (!isLoggedIn) {
       this.props.navigation.navigate('login');
       return;
+    }
+    const is_corporate_user = await AsyncStorage.getItem('is_corporate_user');
+    if (!!is_corporate_user) {
+      this.setState({ is_corporate_user: true });
     }
     await this.getFamilyDetails();
     await this.getMemberDetailsByEmail();
@@ -417,7 +422,7 @@ class Profile extends Component {
     const {
       profile: {isLoading},
     } = this.props;
-    const {data, imageSource, family_members} = this.state;
+    const {data, imageSource, family_members,is_corporate_user} = this.state;
 
     return (
       <Container style={styles.container}>
@@ -648,8 +653,7 @@ class Profile extends Component {
             </Card>
             <List>
               <Text style={styles.titleText}>{translate("Personal details")}</Text>
-              {family_members &&
-                        family_members.length != 0 ? (
+              {family_members && family_members.length != 0 ? (
               <ListItem avatar>
                 <Left>
                   <Icon name="ios-home" style={{color: primaryColor}} />
@@ -851,7 +855,7 @@ class Profile extends Component {
                       </View>
                     )}
                   />
-                  {/* {family_members.length < 11 ? (
+                  {!is_corporate_user? (family_members.length < 11 ? (
                     <Button
                       transparent
                       style={{justifyContent: 'flex-start', marginLeft: -15}}>
@@ -871,7 +875,7 @@ class Profile extends Component {
                         {translate("Add your family details")}
                       </Text>
                     </Button>
-                  ) : null} */}
+                  ) : null):null}
                 </Body>
               </ListItem>):null}
 
