@@ -94,6 +94,7 @@ class Forgotpassword extends Component {
                     employeeId: this.state.employeeId,
                     corporate: this.state.corporateName
                 }
+
                 let smartHealthReqOtpResponse = await generateOTPForSmartHealth(reqObject);
                 if (smartHealthReqOtpResponse && smartHealthReqOtpResponse.otp) {
                     this.smartHealthOtpData = smartHealthReqOtpResponse
@@ -478,24 +479,26 @@ class Forgotpassword extends Component {
 
                                 </Item>
                             </View>
-                            {
-                                isPasswordMatch === false && password && confirmPassword ? <Text style={{ color: '#d00729', top: 10 }}>Passwords don't match</Text> : null
-                            }
-
-
+                            <Text style={{ color: '#d00729', marginLeft: 30, marginTop: 10 }}>{this.state.errorMessage}</Text>
                             <View style={{ display: 'flex', flexDirection: 'row', marginTop: 20, justifyContent: 'space-between' }}>
+                            <TouchableOpacity>
                                 <Pressable onPress={() => this.generateOtpCode(true)} style={{ marginTop: 30 }}>
                                     <Text style={{ color: '#39B0E5' }}>
 
                                         Resend OTP </Text>
                                 </Pressable>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
                                 <Pressable onPress={() => this.changePassword()} style={{ marginTop: 30 }}>
                                     <Text style={{ color: '#39B0E5' }}>
                                         Change Password <MaterialIcons name="arrow-forward-ios" style={{ color: '#39B0E5' }} /></Text>
                                 </Pressable>
+                                </TouchableOpacity>
                             </View>
-
-
+                             {isLoading ?
+                    <Spinner
+                       visible={isLoading}
+                 /> : null}
                         </View>
                         {/* <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
              <Pressable onPress={() => this.changePassword()} style={{ }}>

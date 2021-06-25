@@ -123,9 +123,9 @@ class Login extends Component {
         const isCorporateUser =
           (await AsyncStorage.getItem('is_corporate_user')) === 'true';
 
-        await this.setState({CorporateUser: isCorporateUser});
-        const {CorporateUser} = this.state;
-        if (CorporateUser === true) {
+        // await this.setState({CorporateUser: isCorporateUser});
+        // const {CorporateUser} = this.state;
+        if (isCorporateUser === true) {
           this.props.navigation.navigate('CorporateHome');
         } else {
           this.props.navigation.navigate('Home');
