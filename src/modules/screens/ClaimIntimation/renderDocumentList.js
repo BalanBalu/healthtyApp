@@ -13,39 +13,56 @@ import { uploadImage } from '../../providers/common/common.action'
 import { serviceOfClaimIntimation, serviceOfUpdateClaimIntimation } from '../../providers/corporate/corporate.actions'
 import ConfirmPopup from '../../shared/confirmPopup'
 export default class RenderDocumentList extends Component {
-    constructor(props) {
-      super(props)
+  constructor(props) {
+    super(props)
+    this.state = {
+      imageName: [],
+      imageURL: []
     }
-    render() {
-      const {item,showCard, show, selectOptionPoopup, docsUpload, uploadData, isLoading ,deleteSelectedDocs,downloadFile,familyDocs,viewDocs} = this.props;
-  
+  }
+  componentDidMount() {
+    const { item, showCard, show, selectOptionPoopup, docsUpload, uploadData, isLoading, deleteSelectedDocs, downloadFile, familyDocs, viewDocs } = this.props;
+    if (item.original_file_name == undefined) {
+      let undefinedName = item.map((item) => item.original_file_name)
+      this.setState({ imageName: undefinedName[0] })
+    }
+    if (item.original_imageURL == undefined) {
+      let undefinedURL = item.map((item) => item.original_imageURL)
+      this.setState({ imageURL: undefinedURL[0] })
+    }
+
+
+  }
+  render() {
+    const { item, showCard, show, selectOptionPoopup, docsUpload, uploadData, isLoading, deleteSelectedDocs, downloadFile, familyDocs, viewDocs } = this.props;
+
     return (
-        
-         
-                <View>
-                  <Card style={styles.cardStyles}>
-                    <Row>
-                      <Col style={{ width: '10%' }}>
-                        <Image source={RenderDocumentUpload(item)} style={{ width: 25, height: 25 }} />
-                      </Col>
-                      <Col style={{ width: '70%' }}>
-                        <Text style={styles.innerCardText}>{item.original_file_name}</Text>
-                      </Col>
-                      {!docsUpload?
-                        <Col style={{ width: '10%' }}>
-                          <TouchableOpacity onPress={() => downloadFile(item.original_imageURL,item.original_file_name)} style={{ alignItems: 'center', marginTop: 5 }}>
-                            <MaterialIcons name="file-download" style={{ fontSize: 20, color: 'red' }} />
-                          </TouchableOpacity>
-                        </Col> : null}
-                      {!docsUpload&&!familyDocs&&!viewDocs ?
-                        <Col style={{ width: '10%' }}>
-                          <TouchableOpacity onPress={(index) => deleteSelectedDocs(index)} style={{ alignItems: 'center', marginTop: 5 }}>
-                            <EvilIcons name="trash" style={{ fontSize: 20, color: 'red' }} />
-                          </TouchableOpacity>
-                        </Col> : null}
-                    </Row>
-                  </Card>
-                </View>
+
+
+      <View>
+        <Card style={styles.cardStyles}>
+          <Row>
+            <Col style={{ width: '10%' }}>
+              <Image source={RenderDocumentUpload(item)} style={{ width: 25, height: 25 }} />
+            </Col>
+            <Col style={{ width: '70%' }}>
+              <Text style={styles.innerCardText}>{item.original_file_name == undefined ? this.state.imageName : item.original_file_name}</Text>
+            </Col>
+            {!docsUpload ?
+              <Col style={{ width: '10%' }}>
+                <TouchableOpacity onPress={() => downloadFile(item.original_imageURL == undefined ? this.state.imageURL : item.original_imageURL, item.original_file_name == undefined ? this.state.imageName : item.original_file_name)} style={{ alignItems: 'center', marginTop: 5 }}>
+                  <MaterialIcons name="file-download" style={{ fontSize: 20, color: 'red' }} />
+                </TouchableOpacity>
+              </Col> : null}
+            {!docsUpload && !familyDocs && !viewDocs ?
+              <Col style={{ width: '10%' }}>
+                <TouchableOpacity onPress={(index) => deleteSelectedDocs(index)} style={{ alignItems: 'center', marginTop: 5 }}>
+                  <EvilIcons name="trash" style={{ fontSize: 20, color: 'red' }} />
+                </TouchableOpacity>
+              </Col> : null}
+          </Row>
+        </Card>
+      </View>
     )
   }
 }

@@ -300,7 +300,7 @@ class BillEnclosedDeatil extends PureComponent {
             style={styles.submit_ButtonStyle}
             onPress={editDetails ? this.editTable : this.addTable}>
             <Text style={{color: '#fff'}}>
-              {editDetails ? 'Upadte' : 'Save'}
+              {editDetails ? 'Update' : 'Save'}
             </Text>
           </TouchableOpacity>
         </View>
