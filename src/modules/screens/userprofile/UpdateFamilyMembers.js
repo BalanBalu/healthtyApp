@@ -488,7 +488,7 @@ class UpdateFamilyMembers extends Component {
                         uniqueKey="value"
                         displayKey="value"
                         selectText={translate("Select relation")}
-                        selectToggleText={{ fontSize: 10 ,  fontFamily: 'Roboto',}}
+                        selectToggleText={{ fontSize: 10, fontFamily: 'Roboto', }}
                         searchPlaceholderText={translate("Select relation")}
                         modalWithTouchable={true}
                         showDropDowns={true}
@@ -558,7 +558,9 @@ class UpdateFamilyMembers extends Component {
                           </Col>
                           <Col style={{ width: '70%' }}>
                             <Text style={styles.innerCardText}>
-                              {item.original_file_name}
+                              {item.original_file_name == undefined ?
+                                this.imageName = item.map((item) => item.original_file_name)
+                                : item.original_file_name}
                             </Text>
                           </Col>
                         </Row>
