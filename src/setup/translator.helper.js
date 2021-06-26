@@ -2,6 +2,8 @@ import * as RNLocalize from "react-native-localize";
 import i18n from "i18n-js";
 import memoize from "lodash.memoize";
 import { I18nManager } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
@@ -20,9 +22,11 @@ const translate = memoize(
   (key, config) => (config ? key + JSON.stringify(config) : key)
 );
 
-const setI18nConfig = (languageShortForm) => {
+const setI18nConfig = async (languageShortForm) => {
+  let setDefaultLanguage = await AsyncStorage.getItem('setDefaultLanguage');
+
   // fallback if no available language fits
-  const fallback = { languageTag: languageShortForm || 'en', isRTL: false };
+  const fallback = { languageTag: languageShortForm || setDefaultLanguage, isRTL: false };
 
   const { languageTag, isRTL } = /* RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) || */ fallback;
   // clear translation cache

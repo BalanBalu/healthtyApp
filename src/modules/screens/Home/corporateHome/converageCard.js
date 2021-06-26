@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export const CoverageCard = props => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState('en');
   const { navigation } = props;
   const navigationTo = () => {
     CurrentLocation.getCurrentPosition();
@@ -28,10 +28,9 @@ export const CoverageCard = props => {
   })
   async function selected_Language() {
     try {
-      let selectedLanguage = await AsyncStorage.getItem("selectedLanguage");
-      let selectedLang = JSON.parse(selectedLanguage);
-      if(selectedLang){
-      let Data = setCount(selectedLang.index)
+      let setDefaultLanguage = await AsyncStorage.getItem('setDefaultLanguage');
+      if (setDefaultLanguage) {
+        setCount(setDefaultLanguage)
       }
     }
     catch (e) {
@@ -63,7 +62,7 @@ export const CoverageCard = props => {
                 marginTop: 10,
               }}>
               <PreAuthDrawing />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Pre Auth")}</Text> : <Text style={styles.boxText}>{translate("Pre Auth")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Pre Auth")}</Text> : <Text style={styles.boxText}>{translate("Pre Auth")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -79,7 +78,7 @@ export const CoverageCard = props => {
                 marginTop: 10,
               }}>
               <ClaimStatusDrawing />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Claim Status")}</Text> : <Text style={styles.boxText}>{translate("Claim Status")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Claim Status")}</Text> : <Text style={styles.boxText}>{translate("Claim Status")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -95,7 +94,7 @@ export const CoverageCard = props => {
                 marginTop: 10,
               }}>
               <PolicyCoverageDrawing />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Policy Cover")}</Text> : <Text style={styles.boxText}>{translate("Policy Cover")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Policy Cover")}</Text> : <Text style={styles.boxText}>{translate("Policy Cover")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -118,7 +117,7 @@ export const CoverageCard = props => {
                 marginTop: 3,
               }}>
               <ClaimInitiationDrawing />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Claim Intimation")}</Text> : <Text style={styles.boxText}>{translate("Claim Intimation")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Claim Intimation")}</Text> : <Text style={styles.boxText}>{translate("Claim Intimation")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -135,7 +134,7 @@ export const CoverageCard = props => {
                 marginTop: 13.5,
               }}>
               <HospitalDrawing />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Network Hospital")}</Text> : <Text style={styles.boxText}>{translate("Network Hospital")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Network Hospital")}</Text> : <Text style={styles.boxText}>{translate("Network Hospital")}</Text>}
             </View>
 
           </View>

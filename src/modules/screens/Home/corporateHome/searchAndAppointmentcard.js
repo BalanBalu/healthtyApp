@@ -25,7 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export const SearchAndAppointmentCard = props => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState('en');
   const { navigation } = props;
   const navigateToSettings = () => {
     Linking.openSettings();
@@ -35,10 +35,9 @@ export const SearchAndAppointmentCard = props => {
   })
   async function selected_Language() {
     try {
-      let selectedLanguage = await AsyncStorage.getItem("selectedLanguage");
-      let selectedLang = JSON.parse(selectedLanguage);
-      if(selectedLang){
-      let Data = setCount(selectedLang.index)
+      let setDefaultLanguage = await AsyncStorage.getItem('setDefaultLanguage');
+      if (setDefaultLanguage) {
+        setCount(setDefaultLanguage)
       }
     }
     catch (e) {
@@ -47,8 +46,7 @@ export const SearchAndAppointmentCard = props => {
     finally {
 
     }
-  }
-  const navigateBycalenderPermission = async () => {
+  } const navigateBycalenderPermission = async () => {
     const permissionResult = await requestCalendarPermissions()
     console.log("permissionResult", permissionResult)
     if (permissionResult === 'authorized') {
@@ -107,7 +105,7 @@ export const SearchAndAppointmentCard = props => {
                 marginTop: 10,
               }}>
               <ConsultationDrawing />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Consultation")}</Text> : <Text style={styles.boxText}>{translate("Consultation")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Consultation")}</Text> : <Text style={styles.boxText}>{translate("Consultation")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -124,7 +122,7 @@ export const SearchAndAppointmentCard = props => {
                 marginTop: 10,
               }}>
               <LabTestDrawing />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Lab Test")}</Text> : <Text style={styles.boxText}>{translate("Lab Test")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Lab Test")}</Text> : <Text style={styles.boxText}>{translate("Lab Test")}</Text>}
             </View>
 
           </View>
@@ -143,7 +141,7 @@ export const SearchAndAppointmentCard = props => {
               }}>
               {/* <HomeTestDrawing /> */}
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{ height: 63, width: 45, marginTop: -3 }} />
-              {(count === 1) || (count === 2) ? <Text style={[styles.boxTextSmall,{marginTop:-5}]}>{translate("Home Care")}</Text> : <Text style={styles.boxText}>{translate("Home Care")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={[styles.boxTextSmall, { marginTop: -5 }]}>{translate("Home Care")}</Text> : <Text style={styles.boxText}>{translate("Home Care")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -183,7 +181,7 @@ export const SearchAndAppointmentCard = props => {
                 marginTop: 10,
               }}>
               <VideoConsultDrawing />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Tele Consult")}</Text> : <Text style={styles.boxText}>{translate("Tele Consult")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Tele Consult")}</Text> : <Text style={styles.boxText}>{translate("Tele Consult")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
