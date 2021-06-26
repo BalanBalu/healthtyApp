@@ -46,29 +46,23 @@ class LanguagePopUp extends React.PureComponent {
         return setI18nConfig('ka');
     }
   };
-  selectedLanguage = async (index) => {
-    console.log('selectedLanguage', index)
-    await AsyncStorage.setItem('selectedLanguage', JSON.stringify({ index }));
-  }
   setDefaultLanguage = async (language) => {
     switch (language) {
       case 'English':
-        return this.language('en');
+        return this.is_SelectedLanguage('en');
       case 'Tamil':
-        return this.language('ta');
+        return this.is_SelectedLanguage('ta');
       case 'Malayalam':
-        return this.language('ma');
+        return this.is_SelectedLanguage('ma');
       case 'Hindi':
-        return this.language('hi');
+        return this.is_SelectedLanguage('hi');
       case 'Kannada':
-        return this.language('ka');
+        return this.is_SelectedLanguage('ka');
     }
 
   }
-  language = async (val) => {
-    console.log(val)
+  is_SelectedLanguage = async (val) => {
     await AsyncStorage.setItem('setDefaultLanguage', val);
-
   }
 
   showMenu = () => {
@@ -105,7 +99,7 @@ class LanguagePopUp extends React.PureComponent {
                   style={
                     selectedIndex === index ? { backgroundColor: primaryColor, color: '#fff', } : {}
                   }
-                  onPress={() => this.hideMenu(index, item.listName) & this.selectedLanguage(index) & this.setDefaultLanguage(item.listName)}>
+                  onPress={() => this.hideMenu(index, item.listName) & this.setDefaultLanguage(item.listName)}>
                   {item.listName}
                 </MenuItem>
               </View>

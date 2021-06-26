@@ -25,7 +25,7 @@ import { translate } from "../../../../setup/translator.helper"
 
 
 export const TransactionHistoryCard = (props) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState('en');
 
   const { navigation } = props;
   useEffect(() => {
@@ -33,10 +33,9 @@ export const TransactionHistoryCard = (props) => {
   })
   async function selected_Language() {
     try {
-      let selectedLanguage = await AsyncStorage.getItem("selectedLanguage");
-      let selectedLang = JSON.parse(selectedLanguage);
-      if(selectedLang){
-      let Data = setCount(selectedLang.index)
+      let setDefaultLanguage = await AsyncStorage.getItem('setDefaultLanguage');
+      if (setDefaultLanguage) {
+        setCount(setDefaultLanguage)
       }
     }
     catch (e) {
@@ -67,7 +66,7 @@ export const TransactionHistoryCard = (props) => {
               }}>
               <LabTestDrawing />
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{ height: 23, width: 23, position: 'absolute', top: 30, right: 20 }} />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Lab Test")}</Text> : <Text style={styles.boxText}>{translate("Lab Test")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Lab Test")}</Text> : <Text style={styles.boxText}>{translate("Lab Test")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -81,7 +80,7 @@ export const TransactionHistoryCard = (props) => {
               }}>
               <HospitalDrawing />
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{ height: 23, width: 23, position: 'absolute', top: 31, right: 10 }} />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Hospital")}</Text> : <Text style={styles.boxText}>{translate("Hospital")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Hospital")}</Text> : <Text style={styles.boxText}>{translate("Hospital")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
@@ -95,7 +94,7 @@ export const TransactionHistoryCard = (props) => {
               }}>
               <ConsultationDrawing />
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{ height: 23, width: 23, position: 'absolute', top: 32, right: 30 }} />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Consultation")}</Text> : <Text style={styles.boxText}>{translate("Consultation")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Consultation")}</Text> : <Text style={styles.boxText}>{translate("Consultation")}</Text>}
 
             </View>
           </View>
@@ -114,7 +113,7 @@ export const TransactionHistoryCard = (props) => {
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{ height: 63, width: 45, marginTop: -3 }} />
 
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{ height: 23, width: 23, position: 'absolute', top: 35.5, right: 11 }} />
-              {(count === 1) || (count === 2) ? <Text style={[styles.boxTextSmall, { marginTop: -5 }]}>{translate("Home Care")}</Text> : <Text style={styles.boxText}>{translate("Home Care")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={[styles.boxTextSmall, { marginTop: -5 }]}>{translate("Home Care")}</Text> : <Text style={styles.boxText}>{translate("Home Care")}</Text>}
 
             </View>
           </View>
@@ -144,7 +143,7 @@ export const TransactionHistoryCard = (props) => {
               }}>
               <VideoConsultDrawing />
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{ height: 23, width: 23, position: 'absolute', top: 31, right: 15 }} />
-              {(count === 1) || (count === 2) ? <Text style={styles.boxTextSmall}>{translate("Tele Consult")}</Text> : <Text style={styles.boxText}>{translate("Tele Consult")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Tele Consult")}</Text> : <Text style={styles.boxText}>{translate("Tele Consult")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
