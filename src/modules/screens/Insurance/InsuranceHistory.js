@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Loader } from '../../../components/ContentLoader';
 import { dateDiff, formatDate } from '../../../setup/helpers';
 import { toastMeassage } from '../../common';
+import { NegativePolicyCoverageDrawing } from '../Home/corporateHome/svgDrawings'
 const LIMIT = 5;
 
 export default class InsuranceHistory extends Component {
@@ -211,23 +212,17 @@ export default class InsuranceHistory extends Component {
                     )}
                   />
                 </View>) : (
-                <Item
-                  style={{
-                    borderBottomWidth: 0,
-                    marginTop: 100,
+                <View style={{ borderBottomWidth: 0, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <NegativePolicyCoverageDrawing />
+                  <Text style={{
+                    fontFamily: "Roboto",
+                    fontSize: 15,
+                    marginTop: "10%",
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    {' '}
-                    No insurance policy list found!
-                  </Text>
-                </Item>
+                    textAlign: 'center',
+                  }} >No insurance policy list found!</Text>
+                </View>
               )
             ) : selectedIndex === 1 ? (
               isLoadingBuyInsurance ? (
@@ -292,23 +287,17 @@ export default class InsuranceHistory extends Component {
                     </Card>
                   )} />
               ) : (
-                <Item
-                  style={{
-                    borderBottomWidth: 0,
-                    marginTop: 100,
+                <View style={{ borderBottomWidth: 0, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <NegativePolicyCoverageDrawing />
+                  <Text style={{
+                    fontFamily: "Roboto",
+                    fontSize: 15,
+                    marginTop: "10%",
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    {' '}
-                    No insurance policy list found!
-                  </Text>
-                </Item>)) : null}
+                    textAlign: 'center',
+                  }} >No insurance policy list found!</Text>
+                </View>)) : null}
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>
               {this.state.isLoadingMoreData ? <ActivityIndicator
                 style={{ marginBottom: 17 }}
