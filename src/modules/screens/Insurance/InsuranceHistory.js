@@ -18,7 +18,7 @@ export default class InsuranceHistory extends Component {
     this.state = {
       selectedIndex: 0,
       isLoading: true,
-      isLoadingMoreData: true,
+      isLoadingMoreData: false,
       isLoadingBuyInsurance: true
     };
     this.isEnabledLoadMoreData = true;
@@ -61,7 +61,7 @@ export default class InsuranceHistory extends Component {
         this.insuranceData = [...this.insuranceData, ...result.docs];
         this.setState({ isLoading: false, data: this.insuranceData });
       } else {
-        if (this.insuranceData.length > 3) {
+        if (this.insuranceData.length > 0) {
           toastMeassage('No more data Available!', 'success', 3000);
         }
         this.isEnabledLoadMoreInsuranceData = false;
@@ -87,7 +87,7 @@ export default class InsuranceHistory extends Component {
         this.setState({ isLoadingBuyInsurance: false, isLoading: false, buyInsuranceData: this.buyInsuranceData });
 
       } else {
-        if (this.buyInsuranceData.length > 3) {
+        if (this.buyInsuranceData.length > 0) {
           toastMeassage('No more data Available!', 'success', 3000);
         }
         this.isEnabledLoadMoreData = false;
@@ -212,7 +212,7 @@ export default class InsuranceHistory extends Component {
                     )}
                   />
                 </View>) : (
-                <View style={{ borderBottomWidth: 0, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ borderBottomWidth: 0, flex: 1, marginTop: 250, justifyContent: 'center', alignItems: 'center' }}>
                   <NegativePolicyCoverageDrawing />
                   <Text style={{
                     fontFamily: "Roboto",
@@ -287,7 +287,7 @@ export default class InsuranceHistory extends Component {
                     </Card>
                   )} />
               ) : (
-                <View style={{ borderBottomWidth: 0, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ borderBottomWidth: 0, flex: 1, marginTop: 250, justifyContent: 'center', alignItems: 'center' }}>
                   <NegativePolicyCoverageDrawing />
                   <Text style={{
                     fontFamily: "Roboto",
