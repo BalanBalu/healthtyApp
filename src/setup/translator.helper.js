@@ -26,7 +26,7 @@ const setI18nConfig = async (languageShortForm) => {
   let setDefaultLanguage = await AsyncStorage.getItem('setDefaultLanguage');
 
   // fallback if no available language fits
-  const fallback = { languageTag: languageShortForm || setDefaultLanguage, isRTL: false };
+  const fallback = { languageTag: languageShortForm || setDefaultLanguage || 'en', isRTL: false };
 
   const { languageTag, isRTL } = /* RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) || */ fallback;
   // clear translation cache

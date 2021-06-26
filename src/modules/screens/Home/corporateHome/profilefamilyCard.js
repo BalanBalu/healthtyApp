@@ -1,17 +1,36 @@
-import React from 'react';
-import {View, TouchableOpacity, Text, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, TouchableOpacity, Text, Image } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
-import Svg, {Path} from 'react-native-svg';
-import {primaryColor, secondaryColor} from '../../../../setup/config'
-import {FamilyData} from './svgDrawings';
+import Svg, { Path } from 'react-native-svg';
+import { primaryColor, secondaryColor } from '../../../../setup/config'
+import { FamilyData } from './svgDrawings';
 // import { translate } from "../../../../setup/translator.helper"
 import styles from './styles';
 
 export const ProfileFamilyCard = props => {
-  const {navigation,translate} = props;
+  const [count, setCount] = useState('en');
+  const { navigation, translate } = props;
+  useEffect(() => {
+    selected_Language();
+  })
+  async function selected_Language() {
+    try {
+      let setDefaultLanguage = await AsyncStorage.getItem('setDefaultLanguage');
+      if (setDefaultLanguage) {
+        setCount(setDefaultLanguage)
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+    finally {
+
+    }
+  }
   return (
     <TouchableHighlight activeOpacity={0.6}
-    underlayColor="#fff" onPress={() => navigation('E Card')}>
+      underlayColor="#fff" onPress={() => navigation('E Card')}>
       <View
         style={styles.commonCardDesignment}>
         <View
@@ -24,22 +43,33 @@ export const ProfileFamilyCard = props => {
           <Text
             style={{
               color: '#fff',
-             fontFamily: 'opensans-bold',
+              fontFamily: 'opensans-bold',
               fontSize: 18,
             }}>
-             {translate('Family')}
+            {translate('Family')}
           </Text>
-          <Text
-            style={{
-              color: '#fff',
-              fontFamily: 'Roboto',
-              fontSize: 13,
-              lineHeight: 24,
-            }}>
-            {translate('View E card and family')} {'\n'}{translate('profile from here')}{' '}
-          </Text>
+          {(count == 'ta') || (count == 'ma') ?
+            <Text
+              style={{
+                color: '#fff',
+                fontFamily: 'Roboto',
+                fontSize: 11,
+                lineHeight: 24,
+              }}>
+              {translate('View E card and family')} {'\n'}{translate('profile from here')}{' '}
+            </Text> : <Text
+              style={{
+                color: '#fff',
+                fontFamily: 'Roboto',
+                fontSize: 13,
+                lineHeight: 24,
+              }}>
+              {translate('View E card and family')} {'\n'}{translate('profile from here')}{' '}
+            </Text>
+          }
+
         </View>
-        <View style={{position: 'absolute', top: 0, right: -11.5}}>
+        <View style={{ position: 'absolute', top: 0, right: -11.5 }}>
           <Svg
             xmlns="http://www.w3.org/2000/svg"
             width="192.099"
@@ -58,10 +88,10 @@ export const ProfileFamilyCard = props => {
           source={require('../../../../../assets/images/group.png')}
           style={{height: 60, width: 140, position: 'absolute', right: 5, top: 68}}
         /> */}
-        <View style={{position: 'absolute', right: 20, top: -160}}>
-        <FamilyData   />
+        <View style={{ position: 'absolute', right: 20, top: -160 }}>
+          <FamilyData />
         </View>
-      
+
       </View>
     </TouchableHighlight>
   );
