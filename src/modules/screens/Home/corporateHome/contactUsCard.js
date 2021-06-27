@@ -1,18 +1,20 @@
-import React from 'react';
-import { View, TouchableOpacity,TouchableHighlight,Text, Image,Linking } from 'react-native';
-import {Card} from 'native-base';
-
+import { View, TouchableOpacity, TouchableHighlight, Text, Image, Linking } from 'react-native';
+import { Card } from 'native-base';
 import Svg, { Path } from 'react-native-svg';
+import React, { useState, useEffect } from 'react';
 import { primaryColor, secondaryColor } from '../../../../setup/config'
 import { ContactUsImage } from './svgDrawings';
 import styles from './styles'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { translate } from "../../../../setup/translator.helper"
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export const ContactUsCard = props => {
-  const { navigation,data } = props;
-  const  dialCall = (number) => {
+  const [count, setCount] = useState('en');
+  const { navigation, data } = props;
+  const dialCall = (number) => {
     let phoneNumber = '';
     if (Platform.OS === 'android') { phoneNumber = `tel:${number}`; }
     else { phoneNumber = `telprompt:${number}`; }
@@ -26,6 +28,23 @@ export const ContactUsCard = props => {
       })
       .catch(err => console.log(err));
   };
+  useEffect(() => {
+    selected_Language();
+  })
+  async function selected_Language() {
+    try {
+      let setDefaultLanguage = await AsyncStorage.getItem('setDefaultLanguage');
+      if (setDefaultLanguage) {
+        setCount(setDefaultLanguage)
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+    finally {
+
+    }
+  }
 
   return (
     <TouchableHighlight activeOpacity={0.6}
@@ -61,29 +80,31 @@ export const ContactUsCard = props => {
                 color: '#fff',
                 fontFamily: 'opensans-bold',
                 fontSize: 18,
-                
+
               }}>
               {translate("Help line")}
-          </Text>
-          <TouchableOpacity onPress={() =>{dialCall(data&&data.value ? data.value : '') }} style={{paddingRight:20}}>
-            <View  style={{ flexDirection: 'row' }}>
-              <MaterialIcons name="phone" style={{ fontSize: 15, color: '#fff',marginTop:5 }} />
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'Roboto',
-                  fontSize: 15,
-                  lineHeight: 24,
-                  marginLeft:5
-                }}>{ data&&data.value ? data.value : ''}</Text>
-               
-            </View>
+            </Text>
+            <TouchableOpacity onPress={() => { dialCall(data && data.value ? data.value : '') }} style={{ paddingRight: 20 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <MaterialIcons name="phone" style={{ fontSize: 15, color: '#fff', marginTop: 5 }} />
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'Roboto',
+                    fontSize: 15,
+                    lineHeight: 24,
+                    marginLeft: 5
+                  }}>{data && data.value ? data.value : ''}</Text>
+
+              </View>
             </TouchableOpacity>
           </View>
-          
+
           <Row style={{ marginTop: 10, marginLeft: 20 }}>
             <TouchableOpacity style={{ borderRadius: 15, borderColor: '#fff', borderWidth: 1, paddingHorizontal: 5, height: 25, justifyContent: 'center', flexDirection: 'row' }} onPress={() => navigation('ContactUs')}>
-              <Text style={{ color: '#fff', textAlign: 'center', fontFamily: 'Roboto', }}>{translate("Contact Us")}</Text>
+              {(count == 'ta') || (count == 'ma') ? <Text style={{ color: '#fff', textAlign: 'center', fontFamily: 'Roboto', fontSize: 11, marginTop: 2 }}>{translate("Contact Us")}</Text>
+                : <Text style={{ color: '#fff', textAlign: 'center', fontFamily: 'Roboto', }}>{translate("Contact Us")}</Text>
+              }
               <MaterialIcons name="keyboard-arrow-right" style={{ color: '#fff', fontSize: 20, }} />
 
             </TouchableOpacity>
@@ -104,7 +125,7 @@ export const ContactUsCard = props => {
               />
             </Svg>
           </View>
-          <View style={{position:'absolute',right:15,top:35 }}>
+          <View style={{ position: 'absolute', right: 15, top: 35 }}>
             <ContactUsImage />
           </View>
         </View>
