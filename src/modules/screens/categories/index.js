@@ -57,13 +57,43 @@ class Categories extends Component {
       this.setState({ isLoading: true })
       let result = await catagries('services=0');
       if (result.success) {
-        this.setState({ data: result.data, categoriesMain: result.data })
-        for (let i = 0; i < result.data.length; i++) {
-          const item = result.data[i];
-          // imageURL = item.imageBaseURL + item.category_id + '.png';
-          // base64ImageDataRes = await toDataUrl(imageURL)
-          // result.data[i].base64ImageData = base64ImageDataRes;
-          // this.setState({ categoriesMain: result.data })
+        const categoriesData = result.data;
+        if (categoriesData && categoriesData.length) {
+          categoriesData.map(element => {
+            switch (element.category_id) {
+              case 1:
+                categoriesData[0] = element;
+                break;
+              case 12:
+                categoriesData[1] = element;
+                break;
+              case 2:
+                categoriesData[2] = element;
+                break;
+              case 36:
+                categoriesData[3] = element;
+                break;
+              case 8:
+                categoriesData[4] = element;
+                break;
+              case 35:
+                categoriesData[5] = element;
+                break;
+              default:
+                categoriesData.push(element)
+                break;
+            }
+          })
+          const getFilterIds = categoriesData.map(item => item.category_id)
+          const finalCategoriesData = categoriesData.filter(({ category_id }, index) => !getFilterIds.includes(category_id, index + 1))
+          this.setState({ data:finalCategoriesData, categoriesMain: finalCategoriesData })
+          // for (let i = 0; i < result.data.length; i++) {
+          //   const item = result.data[i];
+          //   // imageURL = item.imageBaseURL + item.category_id + '.png';
+          //   // base64ImageDataRes = await toDataUrl(imageURL)
+          //   // result.data[i].base64ImageData = base64ImageDataRes;
+          //   // this.setState({ categoriesMain: result.data })
+          // }
         }
       }
     } catch (e) {
