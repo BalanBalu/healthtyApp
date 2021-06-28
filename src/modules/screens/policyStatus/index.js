@@ -247,9 +247,10 @@ class PolicyStatus extends Component {
           <Loader style="newList" />
         ) : claimsData && claimsData.length ? (
           <View style={{ padding: 10 }}>
+            {this.headerComponent()}
             <FlatList
               data={claimsData}
-              ListHeaderComponent={() => this.headerComponent()}
+              // ListHeaderComponent={() => this.headerComponent()}
               keyExtractor={(item, index) => index.toString()}
               // onEndReached={() => this.loadMoreData()}
               //            onMomentumScrollBegin={() => { this.setState({isEnabledLoadMoreData:false}) }}

@@ -55,15 +55,15 @@ const DeclarationByInsured = (props) => {
     <View>
       <Text style={{ padding: 8, fontSize: 14 }}>
         I hereby declare that the information furnished in the claim form is
-        true & correct to the best of my knowledge and belief. If I have made
-        any false or untrue statement. suppression or concealent of any material
+        true and  correct to the best of my knowledge and belief. If I have made
+        any false or untrue statement.Suppression or concealent of any material
         fact with respect to questions asked in relation to this claim, my right
-        to claim reimbrusement shall be forfeited1 I .:ilso consent & authorize
+        to claim reimbrusement shall be forfeited I also consent and authorize
         TPA / insurance Company, to seek necessary medical information/
-        documents frorn any hospital/ Medical Practitioner who has attended on
+        documents from any hospital / Medical Practitioner who has attended on
         the person against whom this claim is made. I hereby declare that I have
-        included all the bills / receipts for the purpose of this claim & that I
-        will not be making any supplementary daim except the
+        included all the bills / receipts for the purpose of this claim and that I
+        will not be making any supplementary claim except the
         pre/post-hospitalization claim, if any.
       </Text>
       <Row size={4} style={{ marginLeft: 20, marginRight: 20, marginTop: 10 }}>

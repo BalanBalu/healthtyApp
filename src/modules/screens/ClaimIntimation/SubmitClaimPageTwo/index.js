@@ -93,7 +93,7 @@ class SubmitClaimPageTwo extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      showCard: -1,
+      showCard: 0,
       show: true,
       dropdownList: '',
       Occupation: '',
@@ -122,7 +122,7 @@ class SubmitClaimPageTwo extends PureComponent {
 
   toggleData(index, typeOfArrowIcon) {
     const {showCard, show} = this.state;
-    if (typeOfArrowIcon === 'DOWN') {
+    if (typeOfArrowIcon === 'DOWN' || index===showCard) {
       this.setState({showCard: index, show: !this.state.show});
     } else {
       this.setState({showCard: -1, show: null});

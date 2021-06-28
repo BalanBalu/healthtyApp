@@ -505,6 +505,69 @@ function NegativeClaimStatusDrawing() {
   );
 }
 
+function NegativePolicyCoverageDrawing() {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      // width="48.322"
+      // height="52.246"
+      width="44.3"
+      height="49.26"
+      viewBox="0 0 48.322 52.246">
+      <Image source={require('../../../../../assets/images/No.png')} style={{ height: 70, width: 70, position: 'absolute', top: -11.50, right: -14 }} />
+
+      <G
+        id="Group_411"
+        data-name="Group 411"
+        transform="translate(-394.099 -86.157)">
+        <Path
+          id="Path_5204"
+          data-name="Path 5204"
+          d="M423.741,86.689c4.855-.083,6.881,2.354,9.229,4.751l.164-.054a11.66,11.66,0,0,1,6.226-4.424c5.978-1.514,12.336,3.707,11.2,10.1-.686,3.849-2.944,6.223-4.915,8.792a44.661,44.661,0,0,1-7.1,7.7c-1.13.909-3.829,3.8-5.188,4.1-1.287.284-2-.839-2.621-1.31a35.478,35.478,0,0,1-6.335-5.79c-2.746-3.412-5.973-6.284-7.974-10.485a10.322,10.322,0,0,1-.491-7.537,11.007,11.007,0,0,1,1.693-2.785,9.114,9.114,0,0,1,3.823-2.567Z"
+          transform="translate(-8.79)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5205"
+          data-name="Path 5205"
+          d="M437.708,101.1c-1.808,1-.64,1.863-1.147,3.933-1.6-.048-4.123-.353-3.877,1.419.249,1.8,2.285.854,3.932,1.256-.049,1.593-.345,4.257,1.529,3.878,1.573-.319.892-2.315,1.147-3.932,1.65.046,4.619.3,3.823-1.8-.527-1.4-2.526-.356-3.877-.928C439.295,103.055,439.658,101.094,437.708,101.1Z"
+          transform="translate(-12.867 -4.209)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5206"
+          data-name="Path 5206"
+          d="M394.708,130.683l5.3.109q-.028,8.928-.055,17.858l-.164.055h-5.079l-.109-.055V136.581Q394.653,133.632,394.708,130.683Z"
+          transform="translate(0 -12.914)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+        <Path
+          id="Path_5207"
+          data-name="Path 5207"
+          d="M408.518,132.827a48.9,48.9,0,0,1,13.271,1.8c1.687.429,4.19.582,3.675,3.222-.627,3.212-6.4,2.076-9.852,2.075l-2.246.055a.892.892,0,0,0,.051,1.583h6.074c1.993,0,4.3.264,6.074-.164a26.058,26.058,0,0,0,4.849-1.966l7.094-3.167c1.772-.815,6.469-3.715,7.146-.055.346,1.872-.944,2.459-1.837,3.058-2.007,1.348-4.054,2.66-6.125,3.987-2.832,1.815-5.757,3.52-8.626,5.352a18.678,18.678,0,0,1-4.542,2.567c-2.341.69-5.327.032-7.656-.437l-11.229-1.474V133.1Z"
+          transform="translate(-2.886 -13.528)"
+          fill="none"
+          stroke={primaryColor}
+          stroke-miterlimit="10"
+          stroke-width="1"
+          fill-rule="evenodd"
+        />
+      </G>
+    </Svg>
+  );
+}
 function PolicyCoverageDrawing() {
   return (
     <Svg
@@ -2273,6 +2336,7 @@ export {
   ClaimStatusDrawing,
   NegativeClaimStatusDrawing,
   PolicyCoverageDrawing,
+  NegativePolicyCoverageDrawing,
   ClaimInitiationDrawing,
   NegativeClaimInitiationDrawing,
   InsuranceRenewalDrawing,

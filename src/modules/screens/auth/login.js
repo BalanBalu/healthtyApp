@@ -123,9 +123,9 @@ class Login extends Component {
         const isCorporateUser =
           (await AsyncStorage.getItem('is_corporate_user')) === 'true';
 
-        await this.setState({CorporateUser: isCorporateUser});
-        const {CorporateUser} = this.state;
-        if (CorporateUser === true) {
+        // await this.setState({CorporateUser: isCorporateUser});
+        // const {CorporateUser} = this.state;
+        if (isCorporateUser === true) {
           this.props.navigation.navigate('CorporateHome');
         } else {
           this.props.navigation.navigate('Home');
@@ -316,7 +316,7 @@ class Login extends Component {
                   placeholderTextColor={'#A1A1A1'}
                   placeholder={
                     isSelected === 'corporate_user'
-                      ? 'Email'
+                      ? 'Mobile Number / Email'
                       : 'Mobile Number / Email'
                   }
                   style={{fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1}}
