@@ -175,7 +175,7 @@ export default class InsuranceHistory extends Component {
                               }}>
                               Transaction Type
                             </Text>
-                            <Text style={{ marginLeft: 5, color: '#128283',fontFamily: 'opensans-semibold', marginTop: 5, marginVertical: 20 }}>{item.transactionType}</Text>
+                            <Text style={{ marginLeft: 5, color: '#128283',fontFamily: 'opensans-semibold', marginTop: 5, marginVertical: 10 }}>{item.transactionType}</Text>
                         </View>
 
                         <View>
@@ -198,12 +198,13 @@ export default class InsuranceHistory extends Component {
                        
                             <Text style={{ fontFamily: 'opensans-bold',
                                 fontSize: 14,
-                                color: 'rgba(18,130,131,0.7)',
+                                fontFamily: 'opensans-semibold', marginTop: 3, 
+                                color: 'rgba(0,0,0,0.5)',
                                 marginLeft: 5,  }}> <Text
                               style={{
-                                fontFamily: 'opensans-bold',
+                                fontFamily: 'opensans-semibold',
                                 fontSize: 14,
-                                color: '#128283',
+                                color: 'rgba(0,0,0,0.8)',
                                 
                                 marginLeft: 5,
                                 // textTransform: 'uppercase'
@@ -329,6 +330,6 @@ const styles = StyleSheet.create({
     padding: 5,
     marginTop: 10,
     paddingHorizontal: 20,
-    paddingVertical: 20
+    paddingVertical: 10
   },
 });
