@@ -50,14 +50,15 @@ class CorporateHome extends PureComponent {
       policyDetails: {},
       connectionStatus: null,
       helpLineNumberData: [],
-      isLoadingPolicyCard:true
+      isLoadingPolicyCard: true
     };
     this.pagination = 1;
+    this.locationUpdatedCount = 0;
   }
 
   async componentDidMount() {
-      await this.getCorporateDatails();
-    this.setState({ corporateData: this.props?.profile?.corporateData,TPAData: this.props?.profile?.memberTpaInfo })
+    await this.getCorporateDatails();
+    this.setState({ corporateData: this.props?.profile?.corporateData, TPAData: this.props?.profile?.memberTpaInfo })
     await this.getMemberDetailsByPolicyNo();
     this.getMemberDetailsByEmail();
     this.initialFunction();
@@ -76,7 +77,7 @@ class CorporateHome extends PureComponent {
       this.getMemberDetailsByEmail();
       this.getCorporatePhoneNumber();
 
-      this.setState({ corporateData: this.props?.profile?.corporateData ,TPAData: this.props?.profile?.memberTpaInfo })
+      this.setState({ corporateData: this.props?.profile?.corporateData, TPAData: this.props?.profile?.memberTpaInfo })
     }
   }
 
@@ -86,14 +87,14 @@ class CorporateHome extends PureComponent {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result && result.length) {
-        let policyData = await getPolicyByPolicyNo(result&&result[0].policyNo);
+        let policyData = await getPolicyByPolicyNo(result && result[0].policyNo);
         await this.setState({
           memberDetails: result[0],
           policyDetails: policyData,
         });
       }
     } catch (Ex) {
-      console.log('Ex is getting on get getMemberDetailsByEmail ',Ex.message);
+      console.log('Ex is getting on get getMemberDetailsByEmail ', Ex.message);
     }
   };
   getCorporatePhoneNumber = async () => {
@@ -131,16 +132,16 @@ class CorporateHome extends PureComponent {
 
   getCorporateDatails = async () => {
     try {
-      this.setState({isLoadingPolicyCard: true})
+      this.setState({ isLoadingPolicyCard: true })
       const employeeCode = await AsyncStorage.getItem('employeeCode');
       if (employeeCode) {
         const corporateResult = await getCorporateEmployeeDetailsById(employeeCode);
         if (corporateResult && corporateResult.length) {
-        await   store.dispatch({
+          await store.dispatch({
             type: SET_CORPORATE_DATA,
             data: corporateResult,
           });
-          const memberPolicyNo = corporateResult &&  corporateResult.length &&  corporateResult[0].policyNo;
+          const memberPolicyNo = corporateResult && corporateResult.length && corporateResult[0].policyNo;
           if (memberPolicyNo) {
             const policyData = await getPolicyByPolicyNo(memberPolicyNo);
             if (policyData && Object.keys(policyData).length) {
@@ -163,7 +164,7 @@ class CorporateHome extends PureComponent {
           }
         }
       }
-      const forceToChangePassword =  (await AsyncStorage.getItem('forceToChangePassword')) || null;
+      const forceToChangePassword = (await AsyncStorage.getItem('forceToChangePassword')) || null;
       if (forceToChangePassword) {
         this.props.navigation.navigate('UpdatePassword', { updatedata: {} });
       }
@@ -174,8 +175,8 @@ class CorporateHome extends PureComponent {
         type: 'danger',
       });
     }
-    finally{
-      this.setState({isLoadingPolicyCard: false})
+    finally {
+      this.setState({ isLoadingPolicyCard: false })
     }
   };
 
@@ -183,13 +184,13 @@ class CorporateHome extends PureComponent {
     try {
       this.setState({ isLoadingPolicyCard: true });
       const memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
-      const  respData = await getMemberDetailsByPolicyNo(memberPolicyNo);
+      const respData = await getMemberDetailsByPolicyNo(memberPolicyNo);
       if (respData) {
         await this.setState({ memberDetails: respData });
         this.getFamilyMemberDetailsByPolicyNo(memberPolicyNo);
       }
     } catch (Ex) {
-      console.log('Ex is getting on get Policy Card info',Ex.message);
+      console.log('Ex is getting on get Policy Card info', Ex.message);
     } finally {
       this.setState({ isLoadingPolicyCard: false });
     }
@@ -287,12 +288,12 @@ class CorporateHome extends PureComponent {
             }}
           />
           <View style={{ padding: 10 }}>
-            { corporateData && corporateData.length ? (
+            {corporateData && corporateData.length ? (
               <PolicyCoverageCard
               />
             ) : null}
-              <ProfileFamilyCard navigation={navigate} translate={translate} />
-          <CoverageCard navigation={navigate} /> 
+            <ProfileFamilyCard navigation={navigate} translate={translate} />
+            <CoverageCard navigation={navigate} />
             <SearchAndAppointmentCard navigation={navigate} />
             <TransactionHistoryCard navigation={navigate} />
             <ContactUsCard navigation={navigate} data={helpLineNumberData} />
