@@ -48,6 +48,7 @@ class BillEnclosedDeatil extends PureComponent {
       bilEnclosedList,
       refreshCount,
     } = this.state;
+    console.log("dateOfHospitalizationForBill",dateOfHospitalizationForBill)
     if (billNo === '') {
       this.setState({
         errorMsg: 'Please enter bill number',
@@ -55,7 +56,7 @@ class BillEnclosedDeatil extends PureComponent {
       });
       return false;
     }
-    if (dateOfHospitalizationForBill === null) {
+    if (dateOfHospitalizationForBill === '') {
       this.setState({
         errorMsg: 'Please select date of hospitalization for bill',
         isModalVisible: true,
