@@ -130,9 +130,9 @@ export default class InsuranceHistory extends Component {
             <Card transparent>
               <SegmentedControlTab
                 tabsContainerStyle={{
-                  width: 250,
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
+                  width: '95%',
+                  marginLeft: 10,
+                  marginRight: 30,
                   marginTop: 'auto',
                   fontFamily: 'Roboto',
                 }}
@@ -163,51 +163,59 @@ export default class InsuranceHistory extends Component {
                     }}
                     renderItem={({ item, index }) => (
                       <Card style={styles.cardStyle}>
-                        <Col>
-                          <Row>
-                            <Text
+                        <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
+                        <View>
+                        <Text
                               style={{
                                 fontFamily: 'opensans-bold',
                                 fontSize: 14,
-                                color: 'primaryColor',
+                                color: '#B6B3D4',
                                 marginLeft: 5,
+                                textTransform: 'uppercase'
                               }}>
-                              Renewal Date
+                              Transaction Type
                             </Text>
-                            <Text style={{ marginLeft: 30 }}>:</Text>
-                            <Text style={{ marginLeft: 11 }}>{formatDate(item.renewalDate, 'DD-MM-YY')}</Text>
-                          </Row>
-                        </Col>
+                            <Text style={{ marginLeft: 5, color: '#128283',fontFamily: 'opensans-semibold', marginTop: 5, marginVertical: 20 }}>{item.transactionType}</Text>
+                        </View>
 
-                        <Col>
-                          <Row>
-                            <Text
+                        <View>
+                        <Text
                               style={{
-                                fontSize: 15,
+                                fontFamily: 'opensans-bold',
+                                fontSize: 14,
+                                color: '#B6B3D4',
                                 marginLeft: 5,
-                                fontFamily: 'Roboto',
+                                textTransform: 'uppercase'
                               }}>
-                              PolicyType
+                              POLICY TYPE
                             </Text>
-                            <Text style={{ marginLeft: 50 }}>:</Text>
-                            <Text style={{ marginLeft: 11 }}>{item.policyType}</Text>
-                          </Row>
-                        </Col>
+                            <Text style={{ marginLeft: 5, color: '#128283',fontFamily: 'opensans-semibold', marginTop: 5 }}>{item.policyType}</Text>
+                        </View>
+                        </View>
 
-                        <Col>
-                          <Row>
-                            <Text
+                        <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
+                        <View>
+                       
+                            <Text style={{ fontFamily: 'opensans-bold',
+                                fontSize: 14,
+                                color: 'rgba(18,130,131,0.7)',
+                                marginLeft: 5,  }}> <Text
                               style={{
-                                fontSize: 15,
+                                fontFamily: 'opensans-bold',
+                                fontSize: 14,
+                                color: '#128283',
+                                
                                 marginLeft: 5,
-                                fontFamily: 'Roboto',
+                                // textTransform: 'uppercase'
                               }}>
-                              TransactionType
-                            </Text>
-                            <Text style={{ marginLeft: 11 }}>:</Text>
-                            <Text style={{ marginLeft: 11 }}>{item.transactionType}</Text>
-                          </Row>
-                        </Col>
+                              Renewal Date,
+                            </Text> {formatDate(item.renewalDate, 'MMMM Do dddd YYYY')}</Text>
+                        </View>
+
+                        
+
+                        
+                        </View>
                       </Card>
                     )}
                   />
@@ -316,8 +324,11 @@ export default class InsuranceHistory extends Component {
 const styles = StyleSheet.create({
   cardStyle: {
     marginRight: 15,
+    borderRadius: 12,
     marginLeft: 15,
     padding: 5,
     marginTop: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 20
   },
 });
