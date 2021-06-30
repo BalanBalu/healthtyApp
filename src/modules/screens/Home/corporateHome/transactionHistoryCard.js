@@ -100,7 +100,7 @@ export const TransactionHistoryCard = (props) => {
           </View>
         </TouchableHighlight>
       </View>
-      <View style={[styles.flexRow, { marginVertical: 15, marginRight: 110 }]}>
+      <View style={[styles.flexRow, { marginVertical: 15, marginRight: 125 }]}>
         <TouchableHighlight activeOpacity={0.6}
           underlayColor={secondaryColorTouch} style={styles.rectBox} onPress={() => navigation('My Home Healthcare Appointments')}>
           <View >
@@ -113,7 +113,17 @@ export const TransactionHistoryCard = (props) => {
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{ height: 63, width: 45, marginTop: -3 }} />
 
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/transactionNewIcon.png')} style={{ height: 23, width: 23, position: 'absolute', top: 35.5, right: 11 }} />
-              {(count === 'ta') || (count === 'ma') ? <Text style={[styles.boxTextSmall, { marginTop: -1 }]}>{translate("Home Care")}</Text> : <Text style={styles.boxText}>{translate("Home Care")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={[styles.boxTextSmall, { marginTop: -1 }]}>{translate("Home Care")}</Text> :
+                <Text style={{
+                  fontSize: 13,
+                  marginTop: -3,
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  color: primaryColor,
+                  fontFamily: 'opensans-bold',
+
+                  textAlign: 'center'
+                }}>{translate("Home Care")}</Text>}
 
             </View>
           </View>
