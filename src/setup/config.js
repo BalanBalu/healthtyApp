@@ -27,8 +27,8 @@ export const CONNECTY_CUBE = [{
   },
 }
 ]
-export const CURRENT_PRODUCT_VERSION_CODE = 26;
-export const CURRENT_PRODUCT_ANDROID_VERSION_CODE = '1.0.26';
+export const CURRENT_PRODUCT_VERSION_CODE = 28;
+export const CURRENT_PRODUCT_ANDROID_VERSION_CODE = '1.0.28';
 export const CURRENT_PRODUCT_IOS_VERSION_CODE = '16.0.0';
 
 /*** Change ON Prod End ***/
