@@ -100,7 +100,7 @@ export const TransactionHistoryCard = (props) => {
           </View>
         </TouchableHighlight>
       </View>
-      <View style={[styles.flexRow, { marginVertical: 15, marginRight: 110 }]}>
+      <View style={[styles.flexRow, { marginVertical: 15, marginRight: 125 }]}>
         <TouchableHighlight activeOpacity={0.6}
           underlayColor={secondaryColorTouch} style={styles.rectBox} onPress={() => navigation('My Home Healthcare Appointments')}>
           <View >

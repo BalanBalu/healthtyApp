@@ -249,52 +249,64 @@ export default class InsuranceHistory extends Component {
                   }}
                   renderItem={({ item, index }) => (
                     <Card style={styles.cardStyle}>
-                      <Col>
-                        <Row>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: 'primaryColor',
-                              marginLeft: 5,
-                              fontFamily: 'opensans-bold',
-                            }}>
-                            Request Date
-                          </Text>
-                          <Text style={{ marginLeft: 32 }}>:</Text>
-                          <Text style={{ marginLeft: 11 }}>{formatDate(item.requestedDate, 'DD-MM-YY')}</Text>
-                        </Row>
-                      </Col>
+                        <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
+                        <View>
+                        <Text
+                              style={{
+                                fontFamily: 'opensans-bold',
+                                fontSize: 14,
+                                color: '#B6B3D4',
+                                marginLeft: 5,
+                                textTransform: 'uppercase'
+                              }}>
+                              POLICY TYPE
+                            </Text>
+                            <Text style={{ marginLeft: 5, color: '#128283',fontFamily: 'opensans-semibold', marginTop: 5 }}>{item.policyType}</Text>
+                        </View>
+                        <View>
+                        <Text
+                              style={{
+                                fontFamily: 'opensans-bold',
+                                fontSize: 14,
+                                color: '#B6B3D4',
+                                marginLeft: 5,
+                                textTransform: 'uppercase'
+                              }}>
+                              Transaction Type
+                            </Text>
+                            <Text style={{ marginLeft: 5, color: '#128283',fontFamily: 'opensans-semibold', marginTop: 5, marginVertical: 10 }}>{item.transactionType}</Text>
+                        </View>
 
-                      <Col>
-                        <Row>
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              marginLeft: 5,
-                              fontFamily: 'Roboto',
-                            }}>
-                            PolicyType
-                          </Text>
-                          <Text style={{ marginLeft: 50 }}>:</Text>
-                          <Text style={{ marginLeft: 11 }}>{item.policyType}</Text>
-                        </Row>
-                      </Col>
+                        
+                        </View>
 
-                      <Col>
-                        <Row>
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              marginLeft: 5,
-                              fontFamily: 'Roboto',
-                            }}>
-                            TransactionType
-                          </Text>
-                          <Text style={{ marginLeft: 11 }}>:</Text>
-                          <Text style={{ marginLeft: 11 }}>{item.transactionType}</Text>
-                        </Row>
-                      </Col>
-                    </Card>
+                        <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
+                        <View>
+                       
+                            <Text style={{ fontFamily: 'opensans-bold',
+                                fontSize: 14,
+                                fontFamily: 'opensans-semibold', marginTop: 3, 
+                                color: 'rgba(0,0,0,0.5)',
+                                marginLeft: 5,  }}> <Text
+                              style={{
+                                fontFamily: 'opensans-semibold',
+                                fontSize: 14,
+                                color: 'rgba(0,0,0,0.8)',
+                                
+                                marginLeft: 5,
+                                // textTransform: 'uppercase'
+                              }}>
+                              Request Date,
+                            </Text> {formatDate(item.requestedDate, 'MMMM Do dddd YYYY')}</Text>
+                        </View>
+
+                        
+
+                        
+                        </View>
+                      </Card>
+                    
+                    
                   )} />
               ) : (
                 <View style={{ borderBottomWidth: 0, flex: 1, marginTop: 250, justifyContent: 'center', alignItems: 'center' }}>
