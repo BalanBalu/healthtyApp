@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Container, Content, Button, Text, Form, Item, Input, Card, Footer, FooterTab, Toast, Icon, Label, Row, Col, Radio } from 'native-base';
 import { generateOTP, generateOTPForSmartHealth, changePassword, changePasswordForSmartHelath, getAllCorporateNames } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
-import { FlatList, Image, Pressable, ImageBackground, TabBarIOS, TouchableOpacity } from 'react-native'
+import { FlatList, Image, Pressable, ImageBackground, TabBarIOS, TouchableOpacity, Dimensions } from 'react-native'
 import styles from '../../screens/auth/styles';
 import LinearGradient from 'react-native-linear-gradient';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
@@ -15,6 +15,9 @@ import OTPTextInput from 'react-native-otp-textinput';
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE, primaryColor } from "../../../setup/config";
 import LoginWithOtp from './loginWithOtp';
 const mainBg = require('../../../../assets/images/MainBg.jpg')
+
+
+const { height } = Dimensions.get('window');
 
 class Forgotpassword extends Component {
     constructor(props) {
@@ -41,6 +44,7 @@ class Forgotpassword extends Component {
         this.smartHealthOtpData = null
         this.checkMatchPasswords = debounce(this.checkMatchPasswords, 500);
     }
+
     checkEnteredPasswords = async (confirmPassword) => {
         this.setState({ confirmPassword: confirmPassword.replace(/\s/g, "") });
         this.checkMatchPasswords();
@@ -577,10 +581,12 @@ class Forgotpassword extends Component {
     render() {
         const { user: { message } } = this.props;
         const { errorMessage, isOTPGenerated } = this.state;
-
+        const scrollEnabled = height < 600;
         return !isOTPGenerated ? (
+            
             <Container style={styles.container}>
-                <ScrollView>
+                <ScrollView  scrollEnabled={scrollEnabled}
+          onContentSizeChange={this.onContentSizeChange}>
                     <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270 }}>
 
                         <View>
