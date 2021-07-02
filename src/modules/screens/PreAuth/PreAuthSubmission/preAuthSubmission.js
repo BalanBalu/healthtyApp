@@ -280,82 +280,82 @@ class PreAuth extends React.PureComponent {
     } = this.state
     let errorMsg = null
 
-    if (!onlySpaceNotAllowed(tpaInfo.tpaCompany)) {
-      this.setState({ TpaComErrorMsg: translate('Kindly fill tpa  company name') });
-      this.scrollViewRef.scrollTo({
-        y: this.TpaCompany.y,
-        animated: true
-      });
-      return false;
-    }
-    if (!onlySpaceNotAllowed(tpaInfo.tpaCompanyPhoneNumber)) {
-      this.setState({ MobileNumError: translate('Kindly fill tpa  company mobile number') });
-      this.scrollViewRef.scrollTo({
-        y: this.PhoneNumber.y,
-        animated: true
-      });
-      return false;
-    }
+    // if (!onlySpaceNotAllowed(tpaInfo.tpaCompany)) {
+    //   this.setState({ TpaComErrorMsg: translate('Kindly fill tpa  company name') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.TpaCompany.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
+    // if (!onlySpaceNotAllowed(tpaInfo.tpaCompanyPhoneNumber)) {
+    //   this.setState({ MobileNumError: translate('Kindly fill tpa  company mobile number') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.PhoneNumber.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
 
-    if (!onlySpaceNotAllowed(memberInfo.patientName)) {
-      this.setState({ patientNameErrorMsg: translate('Kindly fill patient name') });
-      this.scrollViewRef.scrollTo({
-        y: this.patientNameText.y,
-        animated: true
-      });
-      return false;
-    }
+    // if (!onlySpaceNotAllowed(memberInfo.patientName)) {
+    //   this.setState({ patientNameErrorMsg: translate('Kindly fill patient name') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.patientNameText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
 
-    if (!onlySpaceNotAllowed(memberInfo.contactNo)) {
-      this.setState({ contactNoErrorMsg: translate('Kindly fill valid  contact number') });
-      this.scrollViewRef.scrollTo({
-        y: this.contactNoText.y,
-        animated: true
-      });
-      return false;
-    }
-    if (!onlySpaceNotAllowed(memberInfo.patientAgeInYr)) {
-      this.setState({ patientAgeErrorMsg: translate('Kindly fill age Year') });
-      this.scrollViewRef.scrollTo({
-        y: this.patientAgeText.y,
-        animated: true
-      });
-      return false;
-    }
+    // if (!onlySpaceNotAllowed(memberInfo.contactNo)) {
+    //   this.setState({ contactNoErrorMsg: translate('Kindly fill valid  contact number') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.contactNoText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
+    // if (!onlySpaceNotAllowed(memberInfo.patientAgeInYr)) {
+    //   this.setState({ patientAgeErrorMsg: translate('Kindly fill age Year') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.patientAgeText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
 
-    if (!onlySpaceNotAllowed(memberInfo.patientAgeMonth)) {
-      this.setState({ patientMonthErrorMsg: translate('Kindly fill age month') });
-      this.scrollViewRef.scrollTo({
-        y: this.patientAgeText.y,
-        animated: true
-      });
-      return false;
-    }
-    if (!onlySpaceNotAllowed(memberInfo.insurerId)) {
-      this.setState({ patientIDCardErrorMsg: translate('Kindly fill insurer id') });
-      this.scrollViewRef.scrollTo({
-        y: this.patientIDCardText.y,
-        animated: true
-      });
-      return false;
-    }
+    // if (!onlySpaceNotAllowed(memberInfo.patientAgeMonth)) {
+    //   this.setState({ patientMonthErrorMsg: translate('Kindly fill age month') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.patientAgeText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
+    // if (!onlySpaceNotAllowed(memberInfo.insurerId)) {
+    //   this.setState({ patientIDCardErrorMsg: translate('Kindly fill insurer id') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.patientIDCardText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
 
-    if (!onlySpaceNotAllowed(memberInfo.policyNo)) {
-      this.setState({ policyNoTextErrorMsg: translate('Kindly fill policy number') });
-      this.scrollViewRef.scrollTo({
-        y: this.policyNoText.y,
-        animated: true
-      });
-      return false;
-    }
-    if (!onlySpaceNotAllowed(memberInfo.employeeId)) {
-      this.setState({ employeeIdTextErrorMsg: translate('Kindly fill employee ID') });
-      this.scrollViewRef.scrollTo({
-        y: this.EmployeeIdText.y,
-        animated: true
-      });
-      return false;
-    }
+    // if (!onlySpaceNotAllowed(memberInfo.policyNo)) {
+    //   this.setState({ policyNoTextErrorMsg: translate('Kindly fill policy number') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.policyNoText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
+    // if (!onlySpaceNotAllowed(memberInfo.employeeId)) {
+    //   this.setState({ employeeIdTextErrorMsg: translate('Kindly fill employee ID') });
+    //   this.scrollViewRef.scrollTo({
+    //     y: this.EmployeeIdText.y,
+    //     animated: true
+    //   });
+    //   return false;
+    // }
     if (this.state.alreadyHaveInsurance === 'yes') {
       if (!onlySpaceNotAllowed(insurerName)) {
         this.setState({ insureNameTextErrorMsg: translate('Kindly fill insurer name') });
