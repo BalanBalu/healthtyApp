@@ -134,7 +134,17 @@ export const CoverageCard = props => {
                 marginTop: 13.5,
               }}>
               <HospitalDrawing />
-              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Network Hospital")}</Text> : <Text style={styles.boxText}>{translate("Network Hospital")}</Text>}
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Network Hospital")}</Text>
+                : <Text style={{
+                  fontSize: 13,
+                  marginTop: -1,
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  color: primaryColor,
+                  fontFamily: 'opensans-bold',
+
+                  textAlign: 'center'
+                }}>{translate("Network Hospital")}</Text>}
             </View>
 
           </View>

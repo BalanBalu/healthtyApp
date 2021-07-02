@@ -141,12 +141,28 @@ export const SearchAndAppointmentCard = props => {
               }}>
               {/* <HomeTestDrawing /> */}
               <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{ height: 63, width: 45, marginTop: -3 }} />
-              {(count === 'ta') || (count === 'ma') ? <Text style={[styles.boxTextSmall, { marginTop: -5 }]}>{translate("Home Care")}</Text> : <Text style={styles.boxText}>{translate("Home Care")}</Text>}
+              {(count === 'ta') || (count === 'ma') ?
+                <Text style={[styles.boxTextSmall, { marginTop: -1 }]}>{translate("Home Care")}</Text> :
+                <Text style={{
+                  fontSize: 13,
+                  marginTop: -5,
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  color: primaryColor,
+                  fontFamily: 'opensans-bold',
+
+                  textAlign: 'center'
+                }}>{translate("Home Care")}</Text>}
             </View>
           </View>
         </TouchableHighlight>
       </View>
-      <View style={{ marginLeft: 8, justifyContent: 'space-around', marginVertical: 1, marginTop: 15 }}>
+      <View style={{
+        marginLeft: 13,
+        flexDirection: 'row',
+        // justifyContent: 'space-around',
+        marginTop: 15,
+      }}>
         {/*       
         <TouchableHighlight
           style={styles.rectBox}
