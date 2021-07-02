@@ -24,7 +24,7 @@ def buildTime() {
 */
  
 def genVersionName() {
-    return "1" + ".0." + "27";
+    return "1" + ".0." + "28";
 }
  
 // def genVersionCode() {
@@ -162,7 +162,7 @@ android {
         applicationId "com.ads.mysmarthealth"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 27
+        versionCode 28
         versionName genVersionName()
         multiDexEnabled true
     }
