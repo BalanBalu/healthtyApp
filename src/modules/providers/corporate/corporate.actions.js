@@ -497,6 +497,23 @@ export async function verifyMemberLoginWithOtp(reqData) {
 }
 
 
+export async function resendActivateLink(userId) {
+  try {
+    const endpoint = 'auth/resend/activation-link?userIdOrContactNo='+userId;
+    const resp = await smartHealthPostService(endpoint)
+    return resp.data
+  } catch (Ex) {
+
+    return {
+      success: false,
+      statusCode: 500,
+      error: Ex,
+    }
+  }
+}
+
+
+
 export async function serviceOfVerifyOtpCode4UpdateEmail(bodyData) {
   try {
     const endpoint = 'auth/member/update-email'
