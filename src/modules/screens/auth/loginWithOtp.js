@@ -33,6 +33,7 @@ import {
   generateOTPForLoginWithOtp,
   verifyMemberLoginWithOtp,
   getMemberDetailsByEmail,
+  resendActivateLink,
 } from '../../providers/corporate/corporate.actions';
 import Spinner from '../../../components/Spinner';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
@@ -61,7 +62,9 @@ class LoginWithOtp extends Component {
       backgroundColor: '#dddddd',
       userEntry: '',
       userId: '',
+      isModalVisible: false,
     };
+    this.isRegister = false;
   }
   getEnteredotp = async (otp) => {
     await this.setState({otp});
@@ -84,12 +87,26 @@ class LoginWithOtp extends Component {
           requestData: getOtpResp,
         });
       } else {
+       
         if (getOtpResp.error.response.data.message == 'USER_NOT_FOUND') {
-          this.setState({errorMsg: 'User Not Found, Go Back to Sign In Page'});
+          this.setState({errorMsg: 'User Not Found, Please try again..',isModalVisible:true});
+        } else if (getOtpResp.error.response.data.message == 'ACTIVATE_LINK_ERROR') {
+          this.setState({
+            errorMsg:
+              'User not registered with us. Please click on activation link if you received member creation mail or contact administrator.',
+              isModalVisible:true});
+        } else if (
+          getOtpResp.error.response.data.message == 'MEMBER_NOT_REGISTERED'
+        ) {
+          this.isRegister = true;
+          this.setState({
+            errorMsg:
+              'User not registered with us. Please click on activation link if you received member creation mail or contact administrator.',
+              isModalVisible:true });
         } else {
           this.setState({
             errorMsg: 'Something Went Wrong, Go Back to Sign In Page',
-          });
+            isModalVisible:true });
         }
       }
     } catch (e) {
@@ -158,6 +175,34 @@ class LoginWithOtp extends Component {
       this.setState({isLoading: false});
     }
   };
+
+  onResendActivateLink = async () => {
+    try {
+      const {userEntry} = this.state;
+      if (!userEntry) {
+        this.setState({errorMsg: 'Please enter Email Or Mobile number',isModalVisible:true});
+        return false;
+      }
+      this.setState({errorMsg: '', isLoading: true});
+      const response = await resendActivateLink(userEntry);
+      if (response.success == true) {
+        this.setState({errorMsg:'Activation link has been sent to registered email. Please click on activation link on email and continue.',isModalVisible:true})
+      
+      } else {
+        this.setState({
+          errorMsg: 'Something Went Wrong, Go Back to Sign In Page',isModalVisible:true
+        });
+      }
+    } catch (e) {
+      Toast.show({
+        text: 'Something Went Wrong' + e,
+        duration: 3000,
+      });
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+
   onFocus() {
     this.setState({
       backgroundColor: '#48b4a5',
@@ -225,7 +270,7 @@ class LoginWithOtp extends Component {
                   </Text>
                 </Pressable>
                 <Pressable
-                  onPress={() => this.setState({isOTPGenerated:false})}
+                  onPress={() => this.setState({isOTPGenerated: false})}
                   style={{marginTop: 30}}>
                   <Text style={{color: '#39B0E5'}}>
                     BACK{' '}
@@ -248,7 +293,7 @@ class LoginWithOtp extends Component {
                 </Text>
               ) : null}
             </View>
-            
+
             <LinearGradient
               start={{x: 0, y: 0}}
               end={{x: 0.5, y: 0}}
@@ -317,32 +362,42 @@ class LoginWithOtp extends Component {
                   blurOnSubmit={false}
                 />
               </Item>
-              {errorMsg ? (
-                <Text
-                  style={{
-                    color: 'red',
-                    fontSize: 15,
-                    marginLeft: 5,
-                    marginTop: 5,
-                  }}>
-                  {errorMsg}
-                </Text>
-              ) : null}
+             
               <Text style={{marginVertical: 30, color: '#C2CCCC'}}>
                 A 4-digit OTP will be sent to your mobile / email to verify your
                 mobile number or email provided
               </Text>
-              <Pressable
-                onPress={() => this.props.navigation.navigate('login')}
-                style={{}}>
-                <Text style={{color: '#39B0E5'}}>
-                  <MaterialIcons
-                    name="arrow-back-ios"
-                    style={{color: '#39B0E5'}}
-                  />
-                  Go Back
-                </Text>
-              </Pressable>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  marginTop: 10,
+                  justifyContent: 'space-between',
+                }}>
+                <Pressable
+                  onPress={() => this.props.navigation.navigate('login')}
+                  style={{}}>
+                  <Text style={{color: '#39B0E5'}}>
+                    <MaterialIcons
+                      name="arrow-back-ios"
+                      style={{color: '#39B0E5'}}
+                    />
+                    Go Back
+                  </Text>
+                </Pressable>
+                {this.isRegister ? (
+                  <Pressable onPress={() => this.onResendActivateLink()}>
+                    {/* // style={{marginTop: 30}}> */}
+                    <Text style={{color: '#39B0E5'}}>
+                      <MaterialIcons
+                        name="arrow-back-ios"
+                        style={{color: '#39B0E5'}}
+                      />
+                      Resend Activation Link{' '}
+                    </Text>
+                  </Pressable>
+                ) : null}
+              </View>
             </View>
             <LinearGradient
               start={{x: 0, y: 0}}
@@ -353,6 +408,16 @@ class LoginWithOtp extends Component {
                 <Text style={styles.createAccountText}>Send OTP</Text>
               </Pressable>
             </LinearGradient>
+          </View>
+          <View>
+            <ModalPopup
+              errorMessageText={errorMsg}
+              closeButtonText={'CLOSE'}
+              closeButtonAction={() =>
+                this.setState({isModalVisible: !isModalVisible})
+              }
+              visible={isModalVisible}
+            />
           </View>
         </View>
       </ImageBackground>
