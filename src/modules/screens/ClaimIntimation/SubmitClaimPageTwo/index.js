@@ -443,11 +443,11 @@ class SubmitClaimPageTwo extends PureComponent {
       let result = await updateClaimSubmission(reqData);
 
       if (result) {
-        Toast.show({
-          text: 'Successfully Saved the Details',
-          duration: 3000,
-          type: 'success',
-        });
+        // Toast.show({
+        //   text: 'Successfully Saved the Details',
+        //   duration: 3000,
+        //   type: 'success',
+        // });
         this.submissionDetails = result.submissionDetails;
         this.setState({updateId: result._id});
         return true;
