@@ -118,11 +118,6 @@ export default class App extends Component {
       console.log(e)
     }
   }
-
-
-
-
-
   render() {
     return (
       <Provider store={store} key="provider">
