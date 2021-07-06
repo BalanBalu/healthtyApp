@@ -177,6 +177,7 @@ class UpdateUserDetails extends Component {
         updateButton: false,
       });
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let relationship = (await AsyncStorage.getItem('relationship')) || null;
 
       let requestData = {
         firstName: firstName,
@@ -187,6 +188,7 @@ class UpdateUserDetails extends Component {
         bloodGroup: selectedBloodGroup,
         _id: this.state.userData._id,
         emailId:memberEmailId,
+        relationship:relationship
       };
 
       let response = await updateMemberDetails(requestData);

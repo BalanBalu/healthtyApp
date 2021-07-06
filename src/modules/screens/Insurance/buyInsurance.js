@@ -71,9 +71,6 @@ class BuyInsurance extends PureComponent {
       selectedInsurance: '',
     };
   }
-  createMemberInsurance = async () => {
-    //Need API Dependency
-  }
   arrangeCallback = async () => {
     const basicProfileData = await AsyncStorage.getItem('basicProfileData');
     const basicData = JSON.parse(basicProfileData);
@@ -100,6 +97,8 @@ class BuyInsurance extends PureComponent {
       requestedDate: new Date()
     }
     await createInsuranceHistory(renewalData);
+    this.props.navigation.navigate('CorporateHome');
+
   };
 
   renewalOnline = async () => {
@@ -376,7 +375,7 @@ class BuyInsurance extends PureComponent {
             />
           </View>
         </Content>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             alignSelf: 'stretch',
             backgroundColor: primaryColor,
@@ -393,7 +392,7 @@ class BuyInsurance extends PureComponent {
             }}>
             Save
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <InsuranceRenewalPopup
           messageText={'You Can Renew Your Insurance Policy By!'}
           callbackButtonText={'Arrange Callback'}
