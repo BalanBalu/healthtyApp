@@ -345,6 +345,8 @@ class Profile extends Component {
   uploadImageToServer = async (image) => {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let relationship = (await AsyncStorage.getItem('relationship')) || null;
+
       let appendForm = 'profileImage';
       let endPoint = 'images/upload?path=profileImage';
       const response = await uploadImage(image, endPoint, appendForm);
@@ -353,6 +355,7 @@ class Profile extends Component {
           profileImage: response.data,
           _id: this.state.data?._id,
           emailId:memberEmailId,
+          relationship:relationship
         };
         let result = await updateMemberDetails(requestData);
         if (result) {
