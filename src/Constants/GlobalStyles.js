@@ -13,7 +13,7 @@ const normalize = (size) => {
   return Math.round(PixelRatio.roundToNearestPixel(newSize));
 };
 
-export default StyleSheet.create({
+const GlobalStyles = StyleSheet.create({
   flexColumn: {
     flexDirection: 'column',
   },
@@ -139,3 +139,17 @@ export default StyleSheet.create({
     flex: 3,
   },
 });
+
+const widthPercentageToDP = (widthPercent) => {
+  const screenWidth = Dimensions.get('window').width;
+  const elemWidth = parseFloat(widthPercent);
+  return PixelRatio.roundToNearestPixel((screenWidth * elemWidth) / 100);
+};
+const heightPercentageToDP = (heightPercent) => {
+  const screenHeight = Dimensions.get('window').height;
+
+  const elemHeight = parseFloat(heightPercent);
+  return PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100);
+};
+
+export {widthPercentageToDP, heightPercentageToDP, GlobalStyles};
