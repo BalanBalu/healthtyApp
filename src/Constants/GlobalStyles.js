@@ -1,6 +1,17 @@
-// Imports
 import {Dimensions, StyleSheet, PixelRatio} from 'react-native';
 
+
+const widthPercentageToDP = (widthPercent) => {
+  const screenWidth = Dimensions.get('window').width;
+  const elemWidth = parseFloat(widthPercent);
+  return PixelRatio.roundToNearestPixel((screenWidth * elemWidth) / 100);
+};
+const heightPercentageToDP = (heightPercent) => {
+  const screenHeight = Dimensions.get('window').height;
+
+  const elemHeight = parseFloat(heightPercent);
+  return PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100);
+};
 
 const GlobalStyles = StyleSheet.create({
   flexColumn: {
@@ -113,19 +124,42 @@ const GlobalStyles = StyleSheet.create({
   },
   textAlignCenter: {
     textAlign: 'center'
-  }
+  },
+  mt1: {
+    marginTop: heightPercentageToDP('1%'),
+  },
+  mt2: {
+    marginTop: heightPercentageToDP('2%'),
+  },
+  mt3: {
+    marginTop: heightPercentageToDP('3%'),
+  },
+  ml1: {
+    marginLeft: heightPercentageToDP('1%'),
+  },
+  ml2: {
+    marginLeft: heightPercentageToDP('2%'),
+  },
+  ml3: {
+    marginLeft: heightPercentageToDP('3%'),
+  },
+  fontBold: {
+    fontFamily: 'opensans-bold',
+    fontWeight: 'bold'
+  },
+  fontSize3: {
+    fontSize: widthPercentageToDP('3%')
+  },
+  fontSize4: {
+    fontSize: widthPercentageToDP('4%')
+  },
+  fontSize5: {
+    fontSize: widthPercentageToDP('5%')
+  },
+  fontSize6: {
+    fontSize: widthPercentageToDP('6%')
+  },
+
 });
-
-const widthPercentageToDP = (widthPercent) => {
-  const screenWidth = Dimensions.get('window').width;
-  const elemWidth = parseFloat(widthPercent);
-  return PixelRatio.roundToNearestPixel((screenWidth * elemWidth) / 100);
-};
-const heightPercentageToDP = (heightPercent) => {
-  const screenHeight = Dimensions.get('window').height;
-
-  const elemHeight = parseFloat(heightPercent);
-  return PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100);
-};
 
 export {widthPercentageToDP, heightPercentageToDP, GlobalStyles};
