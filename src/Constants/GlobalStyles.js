@@ -22,110 +22,103 @@ export default StyleSheet.create({
   },
   flexRowJustifyCenter: {
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   flexRowJustifyEnd: {
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   flexRowJustifyStart: {
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   flexRowJustifySpaceAround: {
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   flexRowJustifySpaceBetween: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   flexRowJustifySpaceEvenly: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
-
-
 
   flexRowAlignCenter: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   flexRowAlignEnd: {
     flexDirection: 'row',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   flexRowAlignStart: {
     flexDirection: 'row',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
   },
   flexRowAlignSpaceAround: {
     flexDirection: 'row',
-    alignItems: 'space-around'
+    alignItems: 'space-around',
   },
   flexRowAlignSpaceBetween: {
     flexDirection: 'row',
-    alignItems: 'space-between'
+    alignItems: 'space-between',
   },
   flexRowAlignSpaceEvenly: {
     flexDirection: 'row',
-    alignItems: 'space-evenly'
+    alignItems: 'space-evenly',
   },
-  
-
 
   flexColumnJustifyCenter: {
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   flexColumnJustifyEnd: {
     flexDirection: 'column',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   flexColumnJustifyStart: {
     flexDirection: 'column',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   flexColumnJustifySpaceAround: {
     flexDirection: 'column',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   flexColumnJustifySpaceBetween: {
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   flexColumnJustifySpaceEvenly: {
     flexDirection: 'column',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
-
 
   flexColumnAlignCenter: {
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   flexAlignJustifyEnd: {
     flexDirection: 'column',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   flexAlignJustifyStart: {
     flexDirection: 'column',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
   },
   flexAlignJustifySpaceAround: {
     flexDirection: 'column',
-    alignItems: 'space-around'
+    alignItems: 'space-around',
   },
   flexAlignJustifySpaceBetween: {
     flexDirection: 'column',
-    alignItems: 'space-between'
+    alignItems: 'space-between',
   },
   flexAlignJustifySpaceEvenly: {
     flexDirection: 'column',
-    alignItems: 'space-evenly'
+    alignItems: 'space-evenly',
   },
-
-
 
   flexRowReverse: {
     flexDirection: 'row-reverse',
