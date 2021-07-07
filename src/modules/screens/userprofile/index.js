@@ -354,8 +354,8 @@ class Profile extends Component {
         let requestData = {
           profileImage: response.data,
           _id: this.state.data?._id,
-          emailId:memberEmailId,
-          relationship:relationship
+          emailId: memberEmailId,
+          relationship: relationship
         };
         let result = await updateMemberDetails(requestData);
         if (result) {
@@ -983,19 +983,19 @@ class Profile extends Component {
                         <Text note style={styles.customText1}>
                           {data?.address1 + ','}
                           <Text note style={styles.customText1}>
-                            {data?.address2 ? data?.address2 : ' '}
+                            {data?.address2 ? data?.address2 : ''}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data?.address3 ? data?.address3 + ',' : ' '}
+                          {data?.address3 ? data?.address3 + ',' : ''}
                           <Text note style={styles.customText1}>
-                            {data?.city ? data?.city : ' '}
+                            {data?.city ? data?.city : ''}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data?.state ? data?.state + ',' : ' '}
+                          {data?.state ? data?.state + ',' : ''}
                           <Text note style={styles.customText1}>
-                            {data?.country ? data?.country : ' '}
+                            {data?.country ? data?.country : ''}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
