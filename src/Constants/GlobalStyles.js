@@ -1,17 +1,6 @@
 // Imports
 import {Dimensions, StyleSheet, PixelRatio} from 'react-native';
-import {primaryColor, secondaryColor} from '../../../setup/config';
-import {useWindowDimensions} from 'react-native';
 
-let width = Dimensions.get('window').width;
-let height = Dimensions.get('window').height;
-
-const scale = width / 375;
-
-const normalize = (size) => {
-  const newSize = size * scale;
-  return Math.round(PixelRatio.roundToNearestPixel(newSize));
-};
 
 const GlobalStyles = StyleSheet.create({
   flexColumn: {
@@ -122,6 +111,9 @@ const GlobalStyles = StyleSheet.create({
   flexFour: {
     flex: 3,
   },
+  textAlignCenter: {
+    textAlign: 'center'
+  }
 });
 
 const widthPercentageToDP = (widthPercent) => {

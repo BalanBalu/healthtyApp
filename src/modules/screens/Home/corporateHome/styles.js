@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   rectBox: {
     width: 100,
     display: 'flex',
-    height: 98,
+    height: 103,
     backgroundColor: 'rgba(255,255,255,1)',
     borderRadius: 22,
     /*  Box Shadow */
