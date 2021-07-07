@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Container,
   Content,
@@ -33,25 +33,25 @@ import {
   fetchUserProfile,
   storeBasicProfile,
 } from '../../providers/profile/profile.action';
-import {getPatientWishList} from '../../providers/bookappointment/bookappointment.action';
+import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
 import {
   hasLoggedIn,
   updateMemberDetails,
   getPostOffNameAndDetails,
 } from '../../providers/auth/auth.actions';
-import {Col, Row, Grid} from 'react-native-easy-grid';
-import {connect} from 'react-redux';
-import {dateDiff} from '../../../setup/helpers';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import { connect } from 'react-redux';
+import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import {StyleSheet, TouchableOpacity, FlatList, Modal} from 'react-native';
+import { StyleSheet, TouchableOpacity, FlatList, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import Modal from "react-native-modal";
-import {NavigationEvents} from 'react-navigation';
-import {Loader} from '../../../components/ContentLoader';
+import { NavigationEvents } from 'react-navigation';
+import { Loader } from '../../../components/ContentLoader';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
-import {uploadImage} from '../../providers/common/common.action';
+import { uploadImage } from '../../providers/common/common.action';
 import {
   renderDoctorImage,
   renderProfileImage,
@@ -65,7 +65,7 @@ import {
   deleteFamilyMembersDetails,
 } from '../../providers/corporate/corporate.actions';
 import ConfirmPopup from '../../shared/confirmPopup';
-import {translate} from '../../../setup/translator.helper';
+import { translate } from '../../../setup/translator.helper';
 
 class Profile extends Component {
   navigation = this.props.navigation;
@@ -83,7 +83,7 @@ class Profile extends Component {
       is_blood_donor: false,
       family_members: [],
       deletePopupVisible: false,
-      is_corporate_user:false
+      is_corporate_user: false
     };
   }
   async componentDidMount() {
@@ -102,60 +102,60 @@ class Profile extends Component {
     this.getfavouritesList();
   }
   componentWillUnmount() {
-    this.setState({selectOptionPoopup: false});
+    this.setState({ selectOptionPoopup: false });
   }
 
   /*Get userProfile*/
   getUserLoginDetails = async () => {
-  let userId = await AsyncStorage.getItem('userId');
+    let userId = await AsyncStorage.getItem('userId');
     let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob,is_corporate_user"
-  let result = await fetchUserProfile(userId, fields);
-  const toCamel = (str) => {
-    return str.replace(/([-_][a-z])/ig, ($1) => {
-      return $1.toUpperCase()
-        .replace('-', '')
-        .replace('_', '');
-    });
-  };
-  
-  const isObject = function (obj) {
-    return obj === Object(obj) && !Array.isArray(obj) && typeof obj !== 'function';
-  };
-  
-  const keysToCamel = function (obj) {
-    if (isObject(obj)) {
-      const n = {};
-  
-      Object.keys(obj)
-        .forEach((k) => {
-          n[toCamel(k)] = keysToCamel(obj[k]);
-        });
-  
-      return n;
-    } else if (Array.isArray(obj)) {
-      return obj.map((i) => {
-        return keysToCamel(i);
+    let result = await fetchUserProfile(userId, fields);
+    const toCamel = (str) => {
+      return str.replace(/([-_][a-z])/ig, ($1) => {
+        return $1.toUpperCase()
+          .replace('-', '')
+          .replace('_', '');
       });
-    }
-    
-    return obj;
-  };
-  
-  
-  
-  this.setState({data: keysToCamel(result) ?? {}})
+    };
+
+    const isObject = function (obj) {
+      return obj === Object(obj) && !Array.isArray(obj) && typeof obj !== 'function';
+    };
+
+    const keysToCamel = function (obj) {
+      if (isObject(obj)) {
+        const n = {};
+
+        Object.keys(obj)
+          .forEach((k) => {
+            n[toCamel(k)] = keysToCamel(obj[k]);
+          });
+
+        return n;
+      } else if (Array.isArray(obj)) {
+        return obj.map((i) => {
+          return keysToCamel(i);
+        });
+      }
+
+      return obj;
+    };
+
+
+
+    this.setState({ data: keysToCamel(result) ?? {} })
   }
 
-  
+
   getMemberDetailsByEmail = async () => {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
-      if(memberEmailId) {
+      if (memberEmailId) {
         let result = await getMemberDetailsByEmail(memberEmailId);
-        this.setState({data: result?.[0] ?? {} });
+        this.setState({ data: result?.[0] ?? {} });
       } else {
         this.getUserLoginDetails()
-      } 
+      }
       // if (result) {
       //   await this.setState({data: result[0]});
       // }
@@ -165,17 +165,17 @@ class Profile extends Component {
   };
   getFamilyDetails = async () => {
     try {
-      this.setState({isLoading: true});
+      this.setState({ isLoading: true });
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
       if (result) {
-        this.setState({family_members: result});
+        this.setState({ family_members: result });
       }
     } catch (e) {
       console.log(e);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
 
@@ -184,7 +184,7 @@ class Profile extends Component {
       let userId = await AsyncStorage.getItem('userId');
       let result = await getPatientWishList(userId);
       if (result.success) {
-        this.setState({favouriteList: result.data});
+        this.setState({ favouriteList: result.data });
       }
     } catch (e) {
       console.log(e);
@@ -204,7 +204,7 @@ class Profile extends Component {
     try {
       let addrressData;
       if (item === null || item.pinCode === null) {
-        this.editProfile('MapBox', {id: this.state.data?._id});
+        this.editProfile('MapBox', { id: this.state.data?._id });
       } else {
         let address = {
           address1: item.address1,
@@ -235,7 +235,7 @@ class Profile extends Component {
             );
           }
           if (coordinates.length == 0) {
-            this.editProfile('MapBox', {id: this.state.data?._id});
+            this.editProfile('MapBox', { id: this.state.data?._id });
             return
           }
           addrressData = {
@@ -298,7 +298,7 @@ class Profile extends Component {
     } catch (e) {
       console.log(e);
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   };
   /*Upload profile pic*/
@@ -314,12 +314,12 @@ class Profile extends Component {
         freeStyleCropEnabled: true,
       })
         .then((image) => {
-          this.setState({selectOptionPoopup: false});
+          this.setState({ selectOptionPoopup: false });
 
           this.uploadImageToServer(image);
         })
         .catch((ex) => {
-          this.setState({selectOptionPoopup: false});
+          this.setState({ selectOptionPoopup: false });
         });
     } else {
       ImagePicker.openPicker({
@@ -332,11 +332,11 @@ class Profile extends Component {
         avoidEmptySpaceAroundImage: true,
       })
         .then((image) => {
-          this.setState({selectOptionPoopup: false});
+          this.setState({ selectOptionPoopup: false });
           this.uploadImageToServer(image);
         })
         .catch((ex) => {
-          this.setState({selectOptionPoopup: false});
+          this.setState({ selectOptionPoopup: false });
         });
     }
   }
@@ -395,7 +395,7 @@ class Profile extends Component {
   removeSelected = async () => {
     let temp = this.state.family_members;
     temp.splice(this.state.selectedFamilyIndex4Delete, 1);
-    this.setState({family_members: temp, updateButton: false});
+    this.setState({ family_members: temp, updateButton: false });
     let deleteFamilyMembers = await deleteFamilyMembersDetails(
       this.state.selectedFamilyid4Delete,
     );
@@ -423,9 +423,9 @@ class Profile extends Component {
 
   render() {
     const {
-      profile: {isLoading},
+      profile: { isLoading },
     } = this.props;
-    const {data, imageSource, family_members,is_corporate_user} = this.state;
+    const { data, imageSource, family_members, is_corporate_user } = this.state;
 
     return (
       <Container style={styles.container}>
@@ -442,14 +442,14 @@ class Profile extends Component {
           <Content style={styles.bodyContent}>
             <LinearGradient
               colors={[primaryColor, secondaryColor]}
-              style={{height: 180}}>
+              style={{ height: 180 }}>
               <Grid>
                 <Row>
-                  <Col style={{width: '10%'}} />
+                  <Col style={{ width: '10%' }} />
                   <Col style={styles.customCol}>
                     <Icon name="heart" style={styles.profileIcon} />
                   </Col>
-                  <Col style={{width: '55%'}}>
+                  <Col style={{ width: '55%' }}>
                     <TouchableOpacity
                       onPress={() =>
                         this.props.navigation.navigate('ImageView', {
@@ -460,7 +460,7 @@ class Profile extends Component {
                       {imageSource != undefined && imageSource != null ? (
                         <Thumbnail
                           style={styles.profileImage}
-                          source={{uri: imageSource}}
+                          source={{ uri: imageSource }}
                         />
                       ) : (
                         <Thumbnail
@@ -478,9 +478,9 @@ class Profile extends Component {
                       }}>
                       <Icon
                         name="camera"
-                        style={{fontSize: 20}}
+                        style={{ fontSize: 20 }}
                         onPress={() =>
-                          this.setState({selectOptionPoopup: true})
+                          this.setState({ selectOptionPoopup: true })
                         }
                         testID="cameraIconTapped"
                       />
@@ -519,7 +519,7 @@ class Profile extends Component {
                   <Col style={styles.customCol}>
                     <Icon name="heart" style={styles.profileIcon} />
                   </Col>
-                  <Col style={{width: '10%'}} />
+                  <Col style={{ width: '10%' }} />
                 </Row>
               </Grid>
             </LinearGradient>
@@ -555,7 +555,7 @@ class Profile extends Component {
                     {translate("Select a Photo")}{' '}
                   </Text>
                   {/* </Item> */}
-                  <Row style={{marginTop: 10}}>
+                  <Row style={{ marginTop: 10 }}>
                     <Col>
                       <TouchableOpacity
                         onPress={() => this.uploadProfilePicture('Camera')}
@@ -585,16 +585,16 @@ class Profile extends Component {
                       </TouchableOpacity>
                     </Col>
                   </Row>
-                  <Row style={{marginTop: 50}}>
-                    <Right style={{marginTop: 15, marginLeft: 15}}>
+                  <Row style={{ marginTop: 50 }}>
+                    <Right style={{ marginTop: 15, marginLeft: 15 }}>
                       <Button
                         transparent
-                        style={{marginTop: 15}}
+                        style={{ marginTop: 15 }}
                         onPress={() =>
-                          this.setState({selectOptionPoopup: false})
+                          this.setState({ selectOptionPoopup: false })
                         }
                         testID="cancleButton">
-                        <Text style={{fontFamily: 'Roboto', fontSize: 20}}>
+                        <Text style={{ fontFamily: 'Roboto', fontSize: 20 }}>
                           {' '}
                           {translate("Cancel")}
                         </Text>
@@ -606,7 +606,7 @@ class Profile extends Component {
             </Modal>
 
             <Card>
-              <Grid style={{padding: 10}}>
+              <Grid style={{ padding: 10 }}>
                 <Col
                   style={{
                     backgroundColor: 'transparent',
@@ -631,7 +631,7 @@ class Profile extends Component {
                     marginRight: 'auto',
                     justifyContent: 'center',
                   }}>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.topValue}>{translate("Gender")} </Text>
                   </View>
                   <Text note style={styles.bottomValue}>
@@ -657,230 +657,255 @@ class Profile extends Component {
             <List>
               <Text style={styles.titleText}>{translate("Personal details")}</Text>
               {family_members && family_members.length != 0 ? (
-              <ListItem avatar>
-                <Left>
-                  <Icon name="ios-home" style={{color: primaryColor}} />
-                </Left>
-                <Body>
-                  <Text style={styles.customText}>{translate("Family details")}</Text>
+                <ListItem avatar>
+                  <Left>
+                    <Icon name="ios-home" style={{ color: primaryColor }} />
+                  </Left>
+                  <Body>
+                    <Text style={styles.customText}>{translate("Family details")}</Text>
 
-                  <FlatList
-                    data={family_members}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item, index}) => (
-                      <View
-                        style={{
-                          borderWidth: 0.3,
-                          borderColor: '#101010',
-                          marginBottom: 10,
-                          borderRadius: 5,
-                          padding: 5,
-                          marginRight: 20,
-                          marginTop: 10,
-                        }}>
-                        <Row style={{marginTop: 10}}>
-                          <Col size={8}>
-                            <Row>
-                              <Col size={4}>
-                                <Text note style={styles.customText1}>
-                                  {translate("Name")}
-                                </Text>
+                    <FlatList
+                      data={family_members}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item, index }) => (
+                        <View
+                          style={{
+                            borderWidth: 0.3,
+                            borderColor: '#101010',
+                            marginBottom: 10,
+                            borderRadius: 5,
+                            padding: 5,
+                            marginRight: 20,
+                            marginTop: 10,
+                          }}>
+
+                          <Row>
+                            {item.relationship != 'EMPLOYEE' &&
+                              item.relationship != 'SELF' ? (
+                              <Col size={10}>
+                                <Row>
+                                  <Col size={4}>
+                                    <Text note style={styles.customText1}>
+                                      {translate("Name")}
+                                    </Text>
+                                  </Col>
+                                  <Col size={0.7}>
+                                    <Text note style={styles.customText1}>
+                                      -
+                                    </Text>
+                                  </Col>
+                                  <Col size={6}>
+                                    <Text note style={styles.customText1}>
+                                      {getMemberName(item)}
+                                    </Text>
+                                  </Col>
+                                </Row>
+                              </Col>) : (
+                              <Col size={10}>
+                                <Row>
+                                  <Col size={3}>
+                                    <Text note style={styles.customText1}>
+                                      {translate("Name")}
+                                    </Text>
+                                  </Col>
+                                  <Col size={0.5}>
+                                    <Text note style={styles.customText1}>
+                                      -
+                                    </Text>
+                                  </Col>
+                                  <Col size={6}>
+                                    <Text note style={styles.customText1}>
+                                      {getMemberName(item)}
+                                    </Text>
+                                  </Col>
+                                </Row>
                               </Col>
-                              <Col size={0.5}>
-                                <Text note style={styles.customText1}>
-                                  -
-                                </Text>
-                              </Col>
-                              <Col size={6}>
-                                <Text note style={styles.customText1}>
-                                  {getMemberName(item)}
-                                </Text>
-                              </Col>
-                            </Row>
-                          </Col>
-                          {item.relationship != 'EMPLOYEE' &&
-                          item.relationship != 'SELF' ? (
-                            <Col size={1}>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  this.props.navigation.navigate(
-                                    'UpdateFamilyMembers',
-                                    {
-                                      updatedata: item,
-                                      fromProfile: true,
-                                      data: family_members,
-                                    },
-                                  )
-                                }>
-                                <MaterialIcons
-                                  active
-                                  name="create"
-                                  style={{
-                                    color: 'black',
-                                    fontSize: 15,
-                                    marginRight: 5,
-                                  }}
-                                />
-                              </TouchableOpacity>
-                            </Col>
-                          ) : null}
-                          {item.relationship != 'EMPLOYEE' &&
-                          item.relationship != 'SELF' ? (
-                            <Col size={0.5}>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  this.deleteSelectedDocs(item._id, index)
-                                }>
-                                <Icon
-                                  active
-                                  name="ios-trash"
-                                  style={{color: '#d00729', fontSize: 15}}
-                                />
-                              </TouchableOpacity>
-                            </Col>
-                          ) : null}
-                        </Row>
-                        <Row>
-                          <Col size={10}>
-                            <Row>
-                              <Col size={3}>
-                                <Text note style={styles.customText1}>
-                                  {translate("Member Code")}
-                                </Text>
-                              </Col>
-                              <Col size={0.5}>
-                                <Text note style={styles.customText1}>
-                                  -
-                                </Text>
-                              </Col>
-                              <Col size={6}>
-                                <Text note style={styles.customText1}>
-                                  {item.memberId ? item.memberId : 'N/A'}
-                                </Text>
-                              </Col>
-                            </Row>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col size={10}>
-                            <Row>
-                              <Col size={3}>
-                                <Text note style={styles.customText1}>
-                                  {translate("Age")}
-                                </Text>
-                              </Col>
-                              <Col size={0.5}>
-                                <Text note style={styles.customText1}>
-                                  -
-                                </Text>
-                              </Col>
-                              <Col size={6}>
-                                <Text note style={styles.customText1}>
-                                  {this.familyMemAgeCal(item)}
-                                </Text>
-                              </Col>
-                            </Row>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col size={10}>
-                            <Row>
-                              <Col size={3}>
-                                <Text note style={styles.customText1}>
-                                  {translate("Gender")}
-                                </Text>
-                              </Col>
-                              <Col size={0.5}>
-                                <Text note style={styles.customText1}>
-                                  -
-                                </Text>
-                              </Col>
-                              <Col size={6}>
-                                <Text note style={styles.customText1}>
-                                  {item.familyMemberGender
-                                    ? item.familyMemberGender
-                                    : 'N/A'}
-                                </Text>
-                              </Col>
-                            </Row>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col size={10}>
-                            <Row>
-                              <Col size={3}>
-                                <Text note style={styles.customText1}>
-                                  {translate("Relation")}
-                                </Text>
-                              </Col>
-                              <Col size={0.5}>
-                                <Text note style={styles.customText1}>
-                                  -
-                                </Text>
-                              </Col>
-                              <Col size={6}>
-                                <Text note style={styles.customText1}>
-                                  {item.relationship}
-                                </Text>
-                              </Col>
-                            </Row>
-                          </Col>
-                        </Row>
-                        {item.familyMemberDocument &&
-                        item.familyMemberDocument.length != 0 ? (
-                          <View style={styles.subView}>
-                            <Row
-                              style={{
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}>
-                              <Left>
+                            )}
+
+
+                            {item.relationship != 'EMPLOYEE' &&
+                              item.relationship != 'SELF' ? (
+                              <Col size={-15}>
                                 <TouchableOpacity
-                                  style={styles.ecardButton}
                                   onPress={() =>
                                     this.props.navigation.navigate(
-                                      'DocumentList',
+                                      'UpdateFamilyMembers',
                                       {
-                                        uploadData: item.familyMemberDocument,
-                                        data: item,
-                                        familyDocs: true,
+                                        updatedata: item,
+                                        fromProfile: true,
+                                        data: family_members,
                                       },
                                     )
                                   }>
-                                  <Text style={styles.linkHeader}>
-                                    {translate("View Document")}
-                                  </Text>
+                                  <MaterialIcons
+                                    active
+                                    name="create"
+                                    style={{
+                                      color: 'black',
+                                      fontSize: 15,
+                                      marginRight: 5,
+                                    }}
+                                  />
                                 </TouchableOpacity>
-                              </Left>
-                            </Row>
-                          </View>
-                        ) : null}
-                      </View>
-                    )}
-                  />
-                  {!is_corporate_user? (family_members.length < 11 ? (
-                    <Button
-                      transparent
-                      style={{justifyContent: 'flex-start', marginLeft: -15}}>
-                      <Icon name="add" style={{color: 'gray'}} />
-                      <Text
-                        uppercase={false}
-                        style={styles.customText2}
-                        onPress={() =>
-                          this.props.navigation.navigate(
-                            'UpdateFamilyMembers',
-                            {
-                              data: family_members,
-                            },
-                          )
-                        }
-                        testID="onPressAddFamilyMembers">
-                        {translate("Add your family details")}
-                      </Text>
-                    </Button>
-                  ) : null):null}
-                </Body>
-              </ListItem>):null}
+                              </Col>
+                            ) : null}
+                            {item.relationship != 'EMPLOYEE' &&
+                              item.relationship != 'SELF' ? (
+                              <Col>
+                                <TouchableOpacity
+                                  onPress={() =>
+                                    this.deleteSelectedDocs(item._id, index)
+                                  }>
+                                  <Icon
+                                    active
+                                    name="ios-trash"
+                                    style={{ color: '#d00729', fontSize: 15 }}
+                                  />
+                                </TouchableOpacity>
+                              </Col>
+                            ) : null}
+                          </Row>
+                          <Row>
+                            <Col size={10}>
+                              <Row>
+                                <Col size={3}>
+                                  <Text note style={styles.customText1}>
+                                    {translate("Member Code")}
+                                  </Text>
+                                </Col>
+                                <Col size={0.5}>
+                                  <Text note style={styles.customText1}>
+                                    -
+                                  </Text>
+                                </Col>
+                                <Col size={6}>
+                                  <Text note style={styles.customText1}>
+                                    {item.memberId ? item.memberId : 'N/A'}
+                                  </Text>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col size={10}>
+                              <Row>
+                                <Col size={3}>
+                                  <Text note style={styles.customText1}>
+                                    {translate("Age")}
+                                  </Text>
+                                </Col>
+                                <Col size={0.5}>
+                                  <Text note style={styles.customText1}>
+                                    -
+                                  </Text>
+                                </Col>
+                                <Col size={6}>
+                                  <Text note style={styles.customText1}>
+                                    {this.familyMemAgeCal(item)}
+                                  </Text>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col size={10}>
+                              <Row>
+                                <Col size={3}>
+                                  <Text note style={styles.customText1}>
+                                    {translate("Gender")}
+                                  </Text>
+                                </Col>
+                                <Col size={0.5}>
+                                  <Text note style={styles.customText1}>
+                                    -
+                                  </Text>
+                                </Col>
+                                <Col size={6}>
+                                  <Text note style={styles.customText1}>
+                                    {item.familyMemberGender
+                                      ? item.familyMemberGender
+                                      : 'N/A'}
+                                  </Text>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col size={10}>
+                              <Row>
+                                <Col size={3}>
+                                  <Text note style={styles.customText1}>
+                                    {translate("Relation")}
+                                  </Text>
+                                </Col>
+                                <Col size={0.5}>
+                                  <Text note style={styles.customText1}>
+                                    -
+                                  </Text>
+                                </Col>
+                                <Col size={6}>
+                                  <Text note style={styles.customText1}>
+                                    {item.relationship}
+                                  </Text>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          {item.familyMemberDocument &&
+                            item.familyMemberDocument.length != 0 ? (
+                            <View style={styles.subView}>
+                              <Row
+                                style={{
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}>
+                                <Left>
+                                  <TouchableOpacity
+                                    style={styles.ecardButton}
+                                    onPress={() =>
+                                      this.props.navigation.navigate(
+                                        'DocumentList',
+                                        {
+                                          uploadData: item.familyMemberDocument,
+                                          data: item,
+                                          familyDocs: true,
+                                        },
+                                      )
+                                    }>
+                                    <Text style={styles.linkHeader}>
+                                      {translate("View Document")}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </Left>
+                              </Row>
+                            </View>
+                          ) : null}
+                        </View>
+                      )}
+                    />
+                    {!is_corporate_user ? (family_members.length < 11 ? (
+                      <Button
+                        transparent
+                        style={{ justifyContent: 'flex-start', marginLeft: -15 }}>
+                        <Icon name="add" style={{ color: 'gray' }} />
+                        <Text
+                          uppercase={false}
+                          style={styles.customText2}
+                          onPress={() =>
+                            this.props.navigation.navigate(
+                              'UpdateFamilyMembers',
+                              {
+                                data: family_members,
+                              },
+                            )
+                          }
+                          testID="onPressAddFamilyMembers">
+                          {translate("Add your family details")}
+                        </Text>
+                      </Button>
+                    ) : null) : null}
+                  </Body>
+                </ListItem>) : null}
 
               <ConfirmPopup
                 warningMessageText={translate('Are you sure you want to delete !')}
@@ -890,7 +915,7 @@ class Profile extends Component {
                 cancelButtonText={translate('Cancel')}
                 confirmButtonAction={() => {
                   this.removeSelected();
-                  this.setState({deletePopupVisible: false});
+                  this.setState({ deletePopupVisible: false });
                 }}
                 cancelButtonAction={() =>
                   this.setState({
@@ -902,7 +927,7 @@ class Profile extends Component {
 
               <ListItem avatar>
                 <Left>
-                  <Icon name="mail" style={{color: primaryColor}} />
+                  <Icon name="mail" style={{ color: primaryColor }} />
                 </Left>
 
                 <Body>
@@ -917,8 +942,8 @@ class Profile extends Component {
                     ) : (
                       <Button
                         transparent
-                        style={{justifyContent: 'flex-start', marginLeft: -15}}>
-                        <Icon name="add" style={{color: 'gray'}} />
+                        style={{ justifyContent: 'flex-start', marginLeft: -15 }}>
+                        <Icon name="add" style={{ color: 'gray' }} />
                         <Text
                           uppercase={false}
                           style={styles.customText}
@@ -935,7 +960,7 @@ class Profile extends Component {
                   <Right>
                     <MaterialIcons
                       name="create"
-                      style={{color: 'black', fontSize: 20}}
+                      style={{ color: 'black', fontSize: 20 }}
                       onPress={() => this.editProfile('UpdateEmail')}
                       testID="iconToUpdateEmail"
                     />
@@ -945,7 +970,7 @@ class Profile extends Component {
 
               <ListItem avatar>
                 <Left>
-                  <Icon name="locate" style={{color: primaryColor}} />
+                  <Icon name="locate" style={{ color: primaryColor }} />
                 </Left>
 
                 <Body>
@@ -980,9 +1005,9 @@ class Profile extends Component {
                     ) : (
                       <Button
                         transparent
-                        style={{justifyContent: 'flex-start', marginLeft: -15}}
+                        style={{ justifyContent: 'flex-start', marginLeft: -15 }}
                         onPress={() => this.editProfile('MapBox')}>
-                        <Icon name="add" style={{color: 'gray'}} />
+                        <Icon name="add" style={{ color: 'gray' }} />
                         <Text uppercase={false} style={styles.customText}>
                           {translate("Add Address")}
                         </Text>
@@ -994,7 +1019,7 @@ class Profile extends Component {
                   <Right>
                     <MaterialIcons
                       name="create"
-                      style={{color: 'black', fontSize: 20}}
+                      style={{ color: 'black', fontSize: 20 }}
                       onPress={() => this.editAddress(data)}
                       testID="iconToUpdateAddress"
                     />
@@ -1004,7 +1029,7 @@ class Profile extends Component {
 
               <ListItem avatar>
                 <Left>
-                  <Icon name="call" style={{color: primaryColor}} />
+                  <Icon name="call" style={{ color: primaryColor }} />
                 </Left>
                 <Body>
                   <TouchableOpacity
@@ -1018,8 +1043,8 @@ class Profile extends Component {
                     ) : (
                       <Button
                         transparent
-                        style={{justifyContent: 'flex-start', marginLeft: -15}}>
-                        <Icon name="add" style={{color: 'gray'}} />
+                        style={{ justifyContent: 'flex-start', marginLeft: -15 }}>
+                        <Icon name="add" style={{ color: 'gray' }} />
                         <Text
                           uppercase={false}
                           style={styles.customText}
@@ -1040,7 +1065,7 @@ class Profile extends Component {
                   <Right>
                     <MaterialIcons
                       name="create"
-                      style={{color: 'black', fontSize: 20}}
+                      style={{ color: 'black', fontSize: 20 }}
                       onPress={() => this.editProfile('UpdateContact')}
                       testID="iconToUpdateContact"
                     />
@@ -1050,7 +1075,7 @@ class Profile extends Component {
 
               <ListItem avatar>
                 <Left>
-                  <Icon name="briefcase" style={{color: primaryColor}} />
+                  <Icon name="briefcase" style={{ color: primaryColor }} />
                 </Left>
                 <Body>
                   <TouchableOpacity
@@ -1065,7 +1090,7 @@ class Profile extends Component {
                 <Right>
                   <MaterialIcons
                     name="create"
-                    style={{color: 'black', fontSize: 20}}
+                    style={{ color: 'black', fontSize: 20 }}
                     onPress={() => this.editProfile('UpdatePassword')}
                     testID="iconToUpdatePassword"
                   />
@@ -1074,13 +1099,13 @@ class Profile extends Component {
             </List>
             {/* <EcardDetails /> */}
             {this.state.favouriteList.length === 0 ? null : (
-              <Card style={{padding: 10}}>
+              <Card style={{ padding: 10 }}>
                 <List>
                   <Text style={styles.titleText}>{translate("Your Doctors")}</Text>
 
                   <FlatList
                     data={this.state.favouriteList}
-                    renderItem={({item}) => (
+                    renderItem={({ item }) => (
                       <ListItem avatar noBorder>
                         <Left>
                           <TouchableOpacity
@@ -1098,7 +1123,7 @@ class Profile extends Component {
                             <Thumbnail
                               square
                               source={renderDoctorImage(item.doctorInfo)}
-                              style={{height: 60, width: 60, borderRadius: 60}}
+                              style={{ height: 60, width: 60, borderRadius: 60 }}
                             />
                           </TouchableOpacity>
                         </Left>
