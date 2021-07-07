@@ -1,12 +1,65 @@
 import React, {useState} from 'react';
-import {ImageBackground} from 'react-native';
+import {FlatList, ImageBackground, Pressable} from 'react-native';
 import {View, Text} from 'native-base';
 import {styles} from './styles';
 import {GlobalStyles} from '../../../Constants/GlobalStyles';
 import StarRating from 'react-native-star-rating';
 
+
+
+const getNoOfColumns = (length) => { 
+  let noOfCol = Math.floor(length / 2.5)
+  return noOfCol
+}
+
 const DoctorConsultation = () => {
   const [starCount, setStarCount] = useState(4);
+
+  const DATA = [
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+      title: '4.00 PM',
+    },
+    {
+      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+      title: '5.00 PM',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: '6.00 PM',
+    },
+    {
+      id: '58694dsa0f-3da1-471f-bd96-145571e29d72',
+      title: '6.00 PM',
+    },
+    {
+      id: '58694vvdsdsfa0f-3da1-471f-bd96-145571e29d72',
+      title: '9.00 PM',
+    },
+    {
+      id: '58ds694a0f-3da1-471sjndsf-bd96-145571e29d72',
+      title: '8.00 PM',
+    },
+    {
+      id: '58694a0f-3da1-471cxkf-bd96-145571e29d72',
+      title: '6.00 PM',
+    },
+    {
+      id: '5869b4a0f-3da1-471dsnjnjlf-bd96-145571e29d72',
+      title: '4.00 PM',
+    },
+  ];
+
+  
+
+  
+  const renderItem = ({ item }) => (
+    
+    <View style={styles.bookingOpen}>
+      <Text>{item.title}</Text>
+    </View>
+    
+  );
 
   return (
     <View style={[styles.outerContainer]}>
@@ -25,7 +78,7 @@ const DoctorConsultation = () => {
             GlobalStyles.fontBold,
             {fontSize: 40},
           ]}>
-          <Text style={[GlobalStyles.fontSize5, {color: '#128283'}]}>
+          <Text style={[GlobalStyles.fontSize5, {color: '#128283', fontWeight: 'bold'}]}>
             Sachin Tendulkar
           </Text>
         </View>
@@ -65,6 +118,7 @@ const DoctorConsultation = () => {
           </Text>
         </View>
         <View style={[GlobalStyles.flexRowJustifyCenter]}>
+          <Pressable>
           <View
             style={[
               styles.callNowButton,
@@ -73,23 +127,20 @@ const DoctorConsultation = () => {
             ]}>
             <Text style={[styles.callNowButtonText]}>Call Now</Text>
           </View>
+          </Pressable>
         </View>
-        <View style={[GlobalStyles.flexRowJustifySpaceEvenly]}>
-          <View style={[styles.bookingOpen]}>
-            <Text>Hello</Text>
-          </View>
-          <View style={[styles.bookingOpen]}>
-            <Text>Hello</Text>
-          </View>
-          <View style={[styles.bookingOpen]}>
-            <Text>Hello</Text>
-          </View>
-          <View style={[styles.bookingOpen]}>
-            <Text>Hello</Text>
-          </View>
-          <View style={[styles.bookingOpen]}>
-            <Text>Hello</Text>
-          </View>
+        <View style={[GlobalStyles.flexRowAlignBaseline, styles.scheduleText]}>
+          <Text style={{fontWeight: 'bold'}}>Schedule Consultation</Text>
+        </View>
+        <View style={[GlobalStyles.flexRowJustifySpaceEvenly, {marginLeft: 40}]}>
+        <FlatList
+        numColumns={getNoOfColumns(DATA.length)}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        data={DATA}
+        renderItem={renderItem}
+        // keyExtractor={item => item.id}
+      />
           
         </View>
       </View>
