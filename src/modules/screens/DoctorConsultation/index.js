@@ -4,16 +4,16 @@ import {View, Text} from 'native-base';
 import {styles} from './styles';
 import {GlobalStyles} from '../../../Constants/GlobalStyles';
 import StarRating from 'react-native-star-rating';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-
-
-const getNoOfColumns = (length) => { 
-  let noOfCol = Math.floor(length / 2.5)
-  return noOfCol
-}
+const getNoOfColumns = (length) => {
+  let noOfCol = Math.floor(length / 2.5);
+  return noOfCol;
+};
 
 const DoctorConsultation = () => {
   const [starCount, setStarCount] = useState(4);
+  const [buttonSelected, setButtonSelected] = useState(0);
 
   const DATA = [
     {
@@ -50,15 +50,21 @@ const DoctorConsultation = () => {
     },
   ];
 
-  
+  const timeSelect = (itemID) => {
+    setButtonSelected(itemID);
+  };
 
-  
-  const renderItem = ({ item }) => (
-    
-    <View style={styles.bookingOpen}>
-      <Text>{item.title}</Text>
-    </View>
-    
+  const renderItem = ({item}) => (
+    <Pressable onPress={() => timeSelect(item.id)}>
+      <View
+        style={
+          item.id === buttonSelected
+            ? [styles.bookingOpen, {borderWidth: 2, borderColor: '#128283'}]
+            : [styles.bookingOpen]
+        }>
+        <Text>{item.title}</Text>
+      </View>
+    </Pressable>
   );
 
   return (
@@ -69,7 +75,7 @@ const DoctorConsultation = () => {
           <ImageBackground
             style={[styles.picCircle]}
             borderRadius={80}
-            source={require('../../../../assets/images/loginBG.jpeg')}></ImageBackground>
+            source={require('../../../../assets/images/docSample.jpg')}></ImageBackground>
         </View>
         <View
           style={[
@@ -78,7 +84,11 @@ const DoctorConsultation = () => {
             GlobalStyles.fontBold,
             {fontSize: 40},
           ]}>
-          <Text style={[GlobalStyles.fontSize5, {color: '#128283', fontWeight: 'bold'}]}>
+          <Text
+            style={[
+              GlobalStyles.fontSize5,
+              {color: '#128283', fontWeight: 'bold'},
+            ]}>
             Sachin Tendulkar
           </Text>
         </View>
@@ -89,11 +99,12 @@ const DoctorConsultation = () => {
             GlobalStyles.fontBold,
             {fontSize: 40},
           ]}>
-          <Text style={[GlobalStyles.fontSize4, {color: 'rgba(0,0,0,0.7)'}]}>
-            Dentist
+          <Text style={[GlobalStyles.fontSize4, {color: 'rgba(0,0,0,0.4)'}]}>
+            Dentist | 2 years experience
           </Text>
         </View>
-        <View style={[GlobalStyles.flexRowJustifyCenter, GlobalStyles.mt2]}>
+        <View style={styles.divider} />
+        <View style={[GlobalStyles.flexRowJustifyCenter]}>
           <StarRating
             starSize={30}
             fullStarColor={'orange'}
@@ -106,6 +117,46 @@ const DoctorConsultation = () => {
             4.0 of 344 reviews
           </Text>
         </View>
+        <View style={styles.divider} />
+
+        <View
+          style={[
+            GlobalStyles.flexRowAlignBaseline,
+            styles.scheduleText,
+            GlobalStyles.mt1,
+          ]}>
+          <Text style={{fontWeight: 'bold'}}>Schedule Consultation</Text>
+        </View>
+        <View
+          style={[GlobalStyles.flexRowJustifySpaceEvenly, {marginLeft: 40}]}>
+          <FlatList
+            numColumns={getNoOfColumns(DATA.length)}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            data={DATA}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+        </View>
+        <View style={[styles.divider, GlobalStyles.mb1]} />
+        <View style={[GlobalStyles.flexRowJustifyCenter]}>
+          <Pressable>
+            <View
+              style={[
+                styles.callNowButton,
+                GlobalStyles.flexRowAlignCenter,
+                GlobalStyles.mt3,
+              ]}>
+              <MaterialIcons
+                name={'attach-money'}
+                style={{fontSize: 25, color: '#128283'}}
+              />
+              <Text style={[styles.callNowButtonText]}>
+                <View></View>Pay and Consult
+              </Text>
+            </View>
+          </Pressable>
+        </View>
         <View style={[GlobalStyles.flexRowJustifyCenter]}>
           <Text
             style={[
@@ -116,32 +167,6 @@ const DoctorConsultation = () => {
             ]}>
             doctor last online 5 hours ago
           </Text>
-        </View>
-        <View style={[GlobalStyles.flexRowJustifyCenter]}>
-          <Pressable>
-          <View
-            style={[
-              styles.callNowButton,
-              GlobalStyles.flexRowAlignCenter,
-              GlobalStyles.mt3,
-            ]}>
-            <Text style={[styles.callNowButtonText]}>Call Now</Text>
-          </View>
-          </Pressable>
-        </View>
-        <View style={[GlobalStyles.flexRowAlignBaseline, styles.scheduleText]}>
-          <Text style={{fontWeight: 'bold'}}>Schedule Consultation</Text>
-        </View>
-        <View style={[GlobalStyles.flexRowJustifySpaceEvenly, {marginLeft: 40}]}>
-        <FlatList
-        numColumns={getNoOfColumns(DATA.length)}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        data={DATA}
-        renderItem={renderItem}
-        // keyExtractor={item => item.id}
-      />
-          
         </View>
       </View>
     </View>

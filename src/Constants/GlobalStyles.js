@@ -128,6 +128,9 @@ const GlobalStyles = StyleSheet.create({
   mt1: {
     marginTop: heightPercentageToDP('1%'),
   },
+  mb1: {
+    marginBottom: heightPercentageToDP('1%'),
+  },
   mt2: {
     marginTop: heightPercentageToDP('2%'),
   },

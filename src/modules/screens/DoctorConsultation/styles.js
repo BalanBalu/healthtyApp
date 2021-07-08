@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom:  heightPercentageToDP('3%'),
+    marginBottom:  heightPercentageToDP('5%'),
   },
   callNowButtonText: {
     color: "#128283",
@@ -62,6 +62,14 @@ const styles = StyleSheet.create({
     fontFamily: 'opensans-bold',
     paddingLeft: widthPercentageToDP('4%'),
     paddingRight: widthPercentageToDP('4%')
+  },
+  divider: {
+    borderBottomColor: 'rgba(0,0,0,0.1)',
+    borderBottomWidth: 1,
+    marginLeft: widthPercentageToDP('4%'),
+    marginRight: widthPercentageToDP('4%'),
+    marginTop: heightPercentageToDP('2.5%'),
+    marginBottom: heightPercentageToDP('2.5%')
   },
   bookingDisabled: {
     
