@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Container, Content, Button, Text, Form, Item, Input, Card, Footer, FooterTab, Toast, Icon, Label, Row, Col, Radio } from 'native-base';
 import { generateOTP, generateOTPForSmartHealth, changePassword, changePasswordForSmartHelath, getAllCorporateNames } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
-import { FlatList, Image, Pressable, ImageBackground, TabBarIOS, TouchableOpacity } from 'react-native'
+import { FlatList, Image, Pressable, ImageBackground, TabBarIOS, TouchableOpacity, Dimensions } from 'react-native'
 import styles from '../../screens/auth/styles';
 import LinearGradient from 'react-native-linear-gradient';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
@@ -15,6 +15,9 @@ import OTPTextInput from 'react-native-otp-textinput';
 import { CURRENT_APP_NAME, MY_SMART_HEALTH_CARE, primaryColor } from "../../../setup/config";
 import LoginWithOtp from './loginWithOtp';
 const mainBg = require('../../../../assets/images/MainBg.jpg')
+
+
+const { height } = Dimensions.get('window');
 
 class Forgotpassword extends Component {
     constructor(props) {
@@ -41,6 +44,7 @@ class Forgotpassword extends Component {
         this.smartHealthOtpData = null
         this.checkMatchPasswords = debounce(this.checkMatchPasswords, 500);
     }
+
     checkEnteredPasswords = async (confirmPassword) => {
         this.setState({ confirmPassword: confirmPassword.replace(/\s/g, "") });
         this.checkMatchPasswords();
@@ -254,9 +258,9 @@ class Forgotpassword extends Component {
     }
     renderEnterEmail() {
         // const { user: { isLoading } } = this.props;
-        const { userEntry, isCorporateUserSelected, corporateNameList, isEnableCorporateItems ,isLoading} = this.state;
+        const { userEntry, isCorporateUserSelected, corporateNameList, isEnableCorporateItems, isLoading } = this.state;
         return (
-            <View style={{ width: '100%' }}>
+            <View style={{ width: '100%', height: 570 }}>
                 {isCorporateUserSelected === false ?
                     <Item style={{ marginTop: 40, borderBottomColor: this.state.backgroundColor1, borderBottomWidth: 1, width: '88%', marginRight: 50, marginLeft: 30 }}>
                         <Input
@@ -329,7 +333,7 @@ class Forgotpassword extends Component {
                                 keyboardType={'email-address'}
                                 returnKeyType={'next'}
                                 onChangeText={userEntry => this.onChangeRemoveSpaces(userEntry)}
-                                // onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
+                            // onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
                             />
 
 
@@ -367,7 +371,7 @@ class Forgotpassword extends Component {
                                         selectedColor={'#AAAAAA'}
                                         standardStyle={true}
                                         selected={isCorporateUserSelected === false}
-                                        onPress={() => this.setState({ isCorporateUserSelected: false })}
+                                        onPress={() => this.setState({ isCorporateUserSelected: false, errorMessage: '' })}
                                     />
                                     <Text style={{ marginLeft: 8 }}>User</Text>
                                 </View>
@@ -378,7 +382,7 @@ class Forgotpassword extends Component {
                                         selectedColor={'#AAAAAA'}
                                         standardStyle={true}
                                         selected={isCorporateUserSelected === true}
-                                        onPress={() => this.setState({ isCorporateUserSelected: true })}
+                                        onPress={() => this.setState({ isCorporateUserSelected: true, errorMessage: '' })}
                                     />
                                     <Text style={{ marginLeft: 8 }}>Corporate</Text>
                                 </View>
@@ -387,12 +391,12 @@ class Forgotpassword extends Component {
 
                             <Text style={{ color: '#d00729', marginLeft: 30, marginTop: 10 }}>{this.state.errorMessage}</Text>
 
-<TouchableOpacity>
-                            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 0.5, y: 0 }} colors={['#0390e8', '#48b4a5']} style={[styles.createAccount, { marginBottom: 50, marginTop: 30, marginRight: 24 }]}>
-                                <Pressable onPress={() => this.generateOtpCode()}>
-                                    <Text style={styles.createAccountText}>Generate OTP</Text>
-                                </Pressable>
-                            </LinearGradient>
+                            <TouchableOpacity>
+                                <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 0.5, y: 0 }} colors={['#0390e8', '#48b4a5']} style={[styles.createAccount, { marginBottom: 50, marginTop: 30, marginRight: 24 }]}>
+                                    <Pressable onPress={() => this.generateOtpCode()}>
+                                        <Text style={styles.createAccountText}>Generate OTP</Text>
+                                    </Pressable>
+                                </LinearGradient>
                             </TouchableOpacity>
                             <View style={{ display: 'flex', alignContent: 'center', alignItems: 'center' }}>
 
@@ -417,7 +421,7 @@ class Forgotpassword extends Component {
     }
     renderAfterOtpGenerated() {
         // const { user: { isLoading } } = this.props;
-        const { otpCode, password, confirmPassword, showPassword, isPasswordMatch,isLoading } = this.state;
+        const { otpCode, password, confirmPassword, showPassword, isPasswordMatch, isLoading } = this.state;
         return (
             <ImageBackground
                 style={{ flex: 1 }}
@@ -481,24 +485,24 @@ class Forgotpassword extends Component {
                             </View>
                             <Text style={{ color: '#d00729', marginLeft: 30, marginTop: 10 }}>{this.state.errorMessage}</Text>
                             <View style={{ display: 'flex', flexDirection: 'row', marginTop: 20, justifyContent: 'space-between' }}>
-                            <TouchableOpacity>
-                                <Pressable onPress={() => this.generateOtpCode(true)} style={{ marginTop: 30 }}>
-                                    <Text style={{ color: '#39B0E5' }}>
+                                <TouchableOpacity>
+                                    <Pressable onPress={() => this.generateOtpCode(true)} style={{ marginTop: 30 }}>
+                                        <Text style={{ color: '#39B0E5' }}>
 
-                                        Resend OTP </Text>
-                                </Pressable>
+                                            Resend OTP </Text>
+                                    </Pressable>
                                 </TouchableOpacity>
                                 <TouchableOpacity>
-                                <Pressable onPress={() => this.changePassword()} style={{ marginTop: 30 }}>
-                                    <Text style={{ color: '#39B0E5' }}>
-                                        Change Password <MaterialIcons name="arrow-forward-ios" style={{ color: '#39B0E5' }} /></Text>
-                                </Pressable>
+                                    <Pressable onPress={() => this.changePassword()} style={{ marginTop: 30 }}>
+                                        <Text style={{ color: '#39B0E5' }}>
+                                            Change Password <MaterialIcons name="arrow-forward-ios" style={{ color: '#39B0E5' }} /></Text>
+                                    </Pressable>
                                 </TouchableOpacity>
                             </View>
-                             {isLoading ?
-                    <Spinner
-                       visible={isLoading}
-                 /> : null}
+                            {isLoading ?
+                                <Spinner
+                                    visible={isLoading}
+                                /> : null}
                         </View>
                         {/* <LinearGradient start={{x: 0, y: 0}} end={{x: 0.5, y: 0}}  colors={['#0390e8', '#48b4a5']} style={styles.createAccount}>
              <Pressable onPress={() => this.changePassword()} style={{ }}>
@@ -577,10 +581,12 @@ class Forgotpassword extends Component {
     render() {
         const { user: { message } } = this.props;
         const { errorMessage, isOTPGenerated } = this.state;
-
+        const scrollEnabled = height < 600;
         return !isOTPGenerated ? (
+            
             <Container style={styles.container}>
-                <ScrollView>
+                <ScrollView  scrollEnabled={scrollEnabled}
+          onContentSizeChange={this.onContentSizeChange}>
                     <ImageBackground source={require('../../../../assets/images/loginBG.jpeg')} style={{ minHeight: 270 }}>
 
                         <View>

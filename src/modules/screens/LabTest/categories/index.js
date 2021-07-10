@@ -39,7 +39,7 @@ class LabCategories extends PureComponent {
     super(props);
     this.state = {
       labData: [],
-      categoriesMain: [],
+      mainLabData: [],
       isLoading: true,
       consultPopVisible: false,
       selectedSpecialist: null,
@@ -95,8 +95,7 @@ class LabCategories extends PureComponent {
       let result = await getLabTestCateries(JSON.stringify(locationData));
 
       if (result.success) {
-        this.setState({ labData: result.data });
-        this.mainLabData = result.data;
+        this.setState({ labData: result.data, mainLabData: result.data });
       }
     } catch (e) {
       console.log(e);
@@ -145,7 +144,7 @@ class LabCategories extends PureComponent {
 
   filterCategories(searchValue) {
 
-    const { labData } = this.state;
+    const { labData, mainLabData } = this.state;
     this.setState({ textInputValue: searchValue });
     // if (searchValue === searchValue.replace(/^[^*|\":<>[\]{}`\\()'; @& $]+$/)) {
     //   return [];
@@ -154,7 +153,7 @@ class LabCategories extends PureComponent {
     //   this.setState({ searchValue, data: labData });
     // } else {
     //   if (this.mainLabData != undefined) {
-    const filteredCategories = this.mainLabData.filter(ele =>
+    const filteredCategories = mainLabData.filter(ele =>
       ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
     );
     this.setState({ searchValue, labData: filteredCategories });
