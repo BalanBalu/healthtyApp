@@ -206,24 +206,7 @@ export const SearchAndAppointmentCard = props => {
             </View>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight
-          style={[styles.rectBox, {marginLeft: 25}]}
-          activeOpacity={0.6}
-          underlayColor={secondaryColorTouch}
-          // onPress={() => navigation('Video and Chat Service')}>
-          onPress={() => navigateToConsultation()}>
-
-          <View>
-            <View
-              style={{
-                alignItems: 'center',
-                marginTop: 10,
-              }}>
-              <VideoConsultDrawing />
-              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Video Consult")}</Text> : <Text style={styles.boxText}>{translate("Video Consult")}</Text>}
-            </View>
-          </View>
-        </TouchableHighlight>
+        
         <View style={[styles.rectBoxNone]} />
       </View>
     </View>

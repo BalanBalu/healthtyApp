@@ -11,9 +11,10 @@ const getNoOfColumns = (length) => {
   return noOfCol;
 };
 
-const DoctorConsultation = () => {
+const DoctorConsultation = (props) => {
   const [starCount, setStarCount] = useState(4);
   const [buttonSelected, setButtonSelected] = useState(0);
+  console.log(props);
 
   const DATA = [
     {
@@ -49,6 +50,12 @@ const DoctorConsultation = () => {
       title: '4.00 PM',
     },
   ];
+
+  const goToPaymentReview = () => {
+    props.navigation.navigate(
+      'PaymentReview'
+    );
+  }
 
   const timeSelect = (itemID) => {
     setButtonSelected(itemID);
@@ -140,7 +147,7 @@ const DoctorConsultation = () => {
         </View>
         <View style={[styles.divider, GlobalStyles.mb1]} />
         <View style={[GlobalStyles.flexRowJustifyCenter]}>
-          <Pressable>
+          <Pressable onPress={() => goToPaymentReview()}>
             <View
               style={[
                 styles.callNowButton,
