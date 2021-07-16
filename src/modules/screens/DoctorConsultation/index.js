@@ -59,16 +59,13 @@ const DoctorConsultation = (props) => {
   ];
 
   const goToPaymentReview = () => {
-    console.log('props.navigation.navigate :', props);
-
     props.navigation.navigate(
       'Payment Review',
-      props.reqData4BookAppPage,
     );
   }
 
+
   const onPressConfirmDateValue = (date) => {
-  console.log('date :', date);
     setIsVisibleTrue(false)
     setDateOfConsulting(date)
   };
@@ -151,13 +148,13 @@ const DoctorConsultation = (props) => {
             styles.scheduleText,
             GlobalStyles.mt1,
           ]}>
-              <Item regular style={{ borderRadius: 6, height: 35 }}>
+              <Item regular style={{ borderRadius: 6, height: 35, padding: 10 }}>
               <Pressable
                 style={{ flexDirection: 'row' }}
                 isVisible={isVisible}
                 onPress={() => setIsVisibleTrue(true)}
                 testID="chooseDateOfConsulting">
-                <Icon name="md-calendar" style={styles.calenderStyle} />
+                <Icon name="md-calendar" />
                 <Text>
                 {dateOfConsulting
                     ? formatDate(dateOfConsulting, 'DD/MM/YYYY')

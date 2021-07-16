@@ -77,26 +77,29 @@ export default class PaymentReview extends Component {
 
   async componentDidMount() {
     const {navigation} = this.props;
-    const isLoggedIn = await hasLoggedIn(this.props);
-
-    const isCorporateUser =
-      (await AsyncStorage.getItem('is_corporate_user')) === 'true';
-
-    if (!isLoggedIn) {
-      this.setState({isLoading: false});
-      navigation.navigate('login');
-      return;
-    }
-    const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
-    const fromNavigation = navigation.getParam('fromNavigation') || null;
-
     this.setState({
-      bookSlotDetails: bookSlotDetails,
-      isCorporateUser,
-      fromNavigation,
       isLoading: false,
-    });
-    this.getPatientInfo();
+    })
+    // const isLoggedIn = await hasLoggedIn(this.props);
+
+    // const isCorporateUser =
+    //   (await AsyncStorage.getItem('is_corporate_user')) === 'true';
+
+    // if (!isLoggedIn) {
+    //   this.setState({isLoading: false});
+    //   navigation.navigate('login');
+    //   return;
+    // }
+    // const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
+    // const fromNavigation = navigation.getParam('fromNavigation') || null;
+
+    // this.setState({
+    //   bookSlotDetails: bookSlotDetails,
+    //   isCorporateUser,
+    //   fromNavigation,
+    //   isLoading: false,
+    // });
+    // this.getPatientInfo();
   }
   async confirmProceedPayment() {
     const {bookSlotDetails, patientDetailsObj} = this.state;
