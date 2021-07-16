@@ -574,10 +574,15 @@ class DoctorList extends Component {
       reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
       reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
     }
+    // this.props.navigation.navigate(
+    //   'Doctor Details Preview',
+    //   reqData4BookAppPage,
+    // );
     this.props.navigation.navigate(
-      'Doctor Details Preview',
+      'DoctorConsultation',
       reqData4BookAppPage,
     );
+    
   }
 
   getFeesBySelectedSlot(
@@ -1052,9 +1057,36 @@ class DoctorList extends Component {
                   {!expandItemOfDocIdHospitalsToShowSlotsData.includes(
                     item.doctorIdHostpitalId,
                   ) ? (
-                    <TouchableOpacity
+                  //   <TouchableOpacity
+                  //     onPress={() =>
+                  //       this.onBookPress(item.doctorIdHostpitalId, indexOfItem)
+                  //     }
+                  //     style={{
+                  //       textAlign: 'center',
+                  //       backgroundColor: 'green',
+                  //       borderColor: '#000',
+                  //       marginTop: 10,
+                  //       borderRadius: 18,
+                  //       height: 30,
+                  //       justifyContent: 'center',
+                  //       paddingLeft: 1,
+                  //       paddingRight: 1,
+                  //       marginLeft: -6,
+                  //     }}>
+                  //     <Text
+                  //       style={{
+                  //         textAlign: 'center',
+                  //         color: '#fff',
+                  //         fontSize: 13,
+                  //         fontFamily: 'opensans-bold',
+                  //       }}>
+                  //       {translate('BOOK')}{' '}
+                  //     </Text>
+                  //   </TouchableOpacity>
+                  // ) : null}
+                  <TouchableOpacity
                       onPress={() =>
-                        this.onBookPress(item.doctorIdHostpitalId, indexOfItem)
+                        this.onPressGoToBookAppointmentPage(item)
                       }
                       style={{
                         textAlign: 'center',

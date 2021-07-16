@@ -124,6 +124,7 @@ import PreAuthSubmission from '../../modules/screens/PreAuth/PreAuthSubmission/p
 import PreAuthList from '../../modules/screens/PreAuth/PreAuthList/preAuthList';
 import SubmitClaim from '../../modules/screens/ClaimIntimation/submitClaim';
 import SubmitClaimPageTwo from '../../modules/screens/ClaimIntimation/SubmitClaimPageTwo'
+import DoctorConsultation from '../../modules/screens/DoctorConsultation';
 export const smartHealthStack=createStackNavigator({
   CorporateHome: {
     screen: CorporateHome,
@@ -239,6 +240,14 @@ export const smartHealthStack=createStackNavigator({
     screen: Categories,
     navigationOptions: ({ navigation }) => ({
       title: translate('Specialty'),
+      headerTitleStyle: { fontFamily: "Roboto", }
+
+    })
+  },
+  DoctorConsultation: {
+    screen: DoctorConsultation,
+    navigationOptions: ({ navigation }) => ({
+      title: translate('Doctor Consultation'),
       headerTitleStyle: { fontFamily: "Roboto", }
 
     })
