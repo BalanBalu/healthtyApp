@@ -206,7 +206,7 @@ export const SearchAndAppointmentCard = props => {
             </View>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight
+        {/* <TouchableHighlight
           style={[styles.rectBox, {marginLeft: 25}]}
           activeOpacity={0.6}
           underlayColor={secondaryColorTouch}
@@ -223,7 +223,7 @@ export const SearchAndAppointmentCard = props => {
               {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Video Consult")}</Text> : <Text style={styles.boxText}>{translate("Video Consult")}</Text>}
             </View>
           </View>
-        </TouchableHighlight>
+        </TouchableHighlight> */}
         <View style={[styles.rectBoxNone]} />
       </View>
     </View>
