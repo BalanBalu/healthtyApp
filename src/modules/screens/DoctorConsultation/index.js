@@ -1,20 +1,27 @@
 import React, {useState} from 'react';
 import {FlatList, ImageBackground, Pressable} from 'react-native';
-import {View, Text} from 'native-base';
+import {View, Text, Item, Icon} from 'native-base';
 import {styles} from './styles';
 import {GlobalStyles} from '../../../Constants/GlobalStyles';
+
 import StarRating from 'react-native-star-rating';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { formatDate } from '../../../setup/helpers';
 
 const getNoOfColumns = (length) => {
   let noOfCol = Math.floor(length / 2.5);
   return noOfCol;
 };
 
+
+
 const DoctorConsultation = (props) => {
   const [starCount, setStarCount] = useState(4);
+  const[isVisible, setIsVisibleTrue] = useState(false)
   const [buttonSelected, setButtonSelected] = useState(0);
-  console.log(props);
+  const [dateOfConsulting, setDateOfConsulting] = useState('');
+
 
   const DATA = [
     {
@@ -52,10 +59,22 @@ const DoctorConsultation = (props) => {
   ];
 
   const goToPaymentReview = () => {
+    console.log('props.navigation.navigate :', props);
+
     props.navigation.navigate(
-      'PaymentReview'
+      'Payment Review',
+      props.reqData4BookAppPage,
     );
   }
+
+  const onPressConfirmDateValue = (date) => {
+  console.log('date :', date);
+    setIsVisibleTrue(false)
+    setDateOfConsulting(date)
+  };
+  const onCancelPicker = () => {
+    setIsVisibleTrue(false)
+  };
 
   const timeSelect = (itemID) => {
     setButtonSelected(itemID);
@@ -66,7 +85,7 @@ const DoctorConsultation = (props) => {
       <View
         style={
           item.id === buttonSelected
-            ? [styles.bookingOpen, {borderWidth: 2, borderColor: '#128283'}]
+            ? [styles.bookingOpen, {borderWidth: 2, borderColor: '#43b4a5'}]
             : [styles.bookingOpen]
         }>
         <Text>{item.title}</Text>
@@ -132,7 +151,31 @@ const DoctorConsultation = (props) => {
             styles.scheduleText,
             GlobalStyles.mt1,
           ]}>
-          <Text style={{fontWeight: 'bold'}}>Schedule Consultation</Text>
+              <Item regular style={{ borderRadius: 6, height: 35 }}>
+              <Pressable
+                style={{ flexDirection: 'row' }}
+                isVisible={isVisible}
+                onPress={() => setIsVisibleTrue(true)}
+                testID="chooseDateOfConsulting">
+                <Icon name="md-calendar" style={styles.calenderStyle} />
+                <Text>
+                {dateOfConsulting
+                    ? formatDate(dateOfConsulting, 'DD/MM/YYYY')
+                    : 'Date of Consulting'}
+                  
+                </Text>
+                <DateTimePicker
+                  mode={'date'}
+                  //  minimumDate={subTimeUnit(new Date(), 7, 'days')}
+                  //  maximumDate={new Date()}
+                  value={dateOfConsulting}
+                  isVisible={isVisible}
+                  onConfirm={onPressConfirmDateValue}
+                  onCancel={onCancelPicker}
+                />
+              </Pressable>
+            </Item>
+          {/* <Text style={{fontWeight: 'bold'}}>Schedule Consultation</Text> */}
         </View>
         <View
           style={[GlobalStyles.flexRowJustifySpaceEvenly, {marginLeft: 40}]}>
