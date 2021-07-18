@@ -10,10 +10,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, addTimeUnit, subTimeUnit, getAllId, statusValue } from "../../../setup/helpers";
-import { getUserAppointments, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
+import { getAppointmentByUserId, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
+import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getDoctorEducation, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
@@ -108,59 +108,61 @@ class MyAppoinmentList extends Component {
 
 
 			};
-			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-
-
-			if (upCommingAppointmentResult.success) {
-				let doctorInfo = new Map();
-				upCommingAppointmentResult = upCommingAppointmentResult.data;
-
-				let doctorIds = getAllId(upCommingAppointmentResult)
-				if (doctorIds) {
-					let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
-
-					speciallistResult.data.forEach(doctorData => {
-						let educationDetails = ' ';
-						let speaciallistDetails = '';
-
-						if (doctorData.education != undefined) {
-							educationDetails = getAllEducation(doctorData.education)
-						}
-						if (doctorData.specialist != undefined) {
-							speaciallistDetails = getAllSpecialist(doctorData.specialist)
-						}
-
-						doctorInfo.set(doctorData.doctor_id, {
-							degree: educationDetails,
-							specialist: speaciallistDetails,
-							prefix: doctorData.prefix,
-							profile_image: doctorData.profile_image,
-							gender: doctorData.gender
-						})
-					});
-				}
-
-				let upcommingInfo = [];
-				upCommingAppointmentResult.map(doctorData => {
-					let details = doctorInfo.get(doctorData.doctor_id)
-					if (details) {
-						upcommingInfo.push({
-							appointmentResult: doctorData,
-							specialist: details.specialist,
-							degree: details.degree,
-							prefix: details.prefix,
-							profile_image: details.profile_image
-						});
-					} else {
-						upcommingInfo.push({
-							appointmentResult: doctorData
-						});
-					}
-				})
-
-				tempData = this.state.upComingData.concat(upcommingInfo)
-
+			let upCommingAppointmentResult = await getAppointmentByUserId(userId, filters);
+			if (upCommingAppointmentResult) {
+			tempData=upCommingAppointmentResult
 			}
+
+			// if (upCommingAppointmentResult.success) {
+			// 	let doctorInfo = new Map();
+			// 	upCommingAppointmentResult = upCommingAppointmentResult.data;
+
+			// 	let doctorIds = getAllId(upCommingAppointmentResult)
+			// 	if (doctorIds) {
+			// 		let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
+
+			// 		speciallistResult.data.forEach(doctorData => {
+			// 			let educationDetails = ' ';
+			// 			let speaciallistDetails = '';
+
+			// 			if (doctorData.education != undefined) {
+			// 				educationDetails = getAllEducation(doctorData.education)
+			// 			}
+			// 			if (doctorData.specialist != undefined) {
+			// 				speaciallistDetails = getAllSpecialist(doctorData.specialist)
+			// 			}
+
+			// 			doctorInfo.set(doctorData.doctor_id, {
+			// 				degree: educationDetails,
+			// 				specialist: speaciallistDetails,
+			// 				prefix: doctorData.prefix,
+			// 				profile_image: doctorData.profile_image,
+			// 				gender: doctorData.gender
+			// 			})
+			// 		});
+			// 	}
+
+			// 	let upcommingInfo = [];
+			// 	upCommingAppointmentResult.map(doctorData => {
+			// 		let details = doctorInfo.get(doctorData.doctor_id)
+			// 		if (details) {
+			// 			upcommingInfo.push({
+			// 				appointmentResult: doctorData,
+			// 				specialist: details.specialist,
+			// 				degree: details.degree,
+			// 				prefix: details.prefix,
+			// 				profile_image: details.profile_image
+			// 			});
+			// 		} else {
+			// 			upcommingInfo.push({
+			// 				appointmentResult: doctorData
+			// 			});
+			// 		}
+			// 	})
+
+			// 	tempData = this.state.upComingData.concat(upcommingInfo)
+
+			// }
 			this.setState({
 				upComingData: tempData,
 				data: tempData,
@@ -191,7 +193,7 @@ class MyAppoinmentList extends Component {
 				reviewInfo: true
 			};
 
-			let pastAppointmentResult = await getUserAppointments(userId, filters);
+			let pastAppointmentResult = await getAppointmentByUserId(userId, filters);
 
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
@@ -444,8 +446,6 @@ class MyAppoinmentList extends Component {
 									</Item>
 								</Card>
 							) : (
-
-
 									<FlatList
 										data={data}
 										extraData={data}
@@ -458,18 +458,18 @@ class MyAppoinmentList extends Component {
 
 												<TouchableOpacity onPress={() =>
 													this.props.navigation.navigate("AppointmentInfo", {
-														data: item.appointmentResult, selectedIndex: selectedIndex
+														data: data[index], selectedIndex: selectedIndex
 													})
 												} testID='navigateAppointmentInfo'>
-													{item.appointmentResult.token_no ?
-														<Text style={{ textAlign: 'right', fontSize: 14, marginTop: -5 }} >{"Ref no :" + item.appointmentResult.token_no}</Text>
+													{item.tokenNo ?
+														<Text style={{ textAlign: 'right', fontSize: 14, marginTop: -5 }} >{"Ref no :" + item.tokenNo}</Text>
 														: null}
 													<Row>
 														<Col size={2}>
-															<TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
+															<TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item.doctorInfo), title: 'Profile photo' })}>
 																<Thumbnail
 																	circular
-																	source={renderDoctorImage(item)}
+																	source={renderDoctorImage(item.doctorInfo)}
 																	style={{ height: 60, width: 60 }}
 																/>
 															</TouchableOpacity>
@@ -478,14 +478,14 @@ class MyAppoinmentList extends Component {
 
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Col size={9}>
-																	<Text style={{ fontFamily: "opensans-bold", fontSize: 15,  }}>{getDoctorNameOrHospitalName(item.appointmentResult)}</Text>
+																	<Text style={{ fontFamily: "opensans-bold", fontSize: 15,  }}>{getDoctorNameOrHospitalName(item)}</Text>
 																	<Text
 																		style={{
 																			fontFamily: "Roboto",
 																			fontSize: 13,
 																			marginTop: "1%"
 																		}}
-																	>{item.degree}</Text>
+																	>{getDoctorEducation(item.doctorInfo.education)}</Text>
 																</Col>
 																<Col size={1}>
 																</Col>
@@ -494,12 +494,12 @@ class MyAppoinmentList extends Component {
 																<Text
 																	style={{ fontFamily: "Roboto", fontSize: 14, width: '60%' }}
 																>
-																	{item.specialist ? item.specialist : item.appointmentResult.booked_for === 'HOSPITAL' ? getHospitalName(item.appointmentResult.location[0]) : null}
+																	{item.specialist ? item.specialist : item.bookedFor === 'HOSPITAL' ? getHospitalName(item.hospitalInfo) : null}
 																</Text>
 
-																{selectedIndex == 1 &&
-																	item.appointmentResult.reviewInfo != undefined && item.appointmentResult.reviewInfo.overall_rating !== undefined && (
-
+																{/* {selectedIndex == 1 &&
+																	item.appointmentResult.reviewInfo != undefined && item.appointmentResult.reviewInfo.overall_rating !== undefined && ( */}
+                                									{/* StarRating Demo Count Shwoing */}
 																		<StarRating
 																			fullStarColor="#FF9500"
 																			starSize={15}
@@ -509,26 +509,26 @@ class MyAppoinmentList extends Component {
 																			}}
 																			disabled={false}
 																			maxStars={5}
-																			rating={item.appointmentResult.reviewInfo.overall_rating}
+																			rating={4}
 
 																		/>
-																	)}
+																	{/* )} */}
 															</Row>
 
 															<Row style={{ borderBottomWidth: 0 }}>
-																{item.appointmentResult.appointment_status == "APPROVED" && item.appointmentResult.onGoingAppointment ?
+																{item.status == "APPROVED" ?
 																	<Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: 'green', }} note>{'Appointment Ongoing'}</Text>
 																	:
-																	<Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.appointmentResult.appointment_status] ? statusValue[item.appointmentResult.appointment_status].color : 'red',  }} note>{statusValue[item.appointmentResult.appointment_status] ? translate(statusValue[item.appointmentResult.appointment_status].text) : item.appointmentResult.appointment_status}</Text>
+																	<Text style={{ fontFamily: "opensans-bold", fontSize: 13, color: statusValue[item.status] ? statusValue[item.status].color : 'red',  }} note>{statusValue[item.status] ? translate(statusValue[item.status].text) : item.status}</Text>
 																}
 
 
 															</Row>
 
 															<Text style={{ fontFamily: "Roboto", fontSize: 11 }} note>
-																{formatDate(item.appointmentResult.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}</Text>
-															{selectedIndex == 1 &&
-																item.appointmentResult.appointment_status == "COMPLETED" && (item.appointmentResult.is_review_added == undefined || item.appointmentResult.is_review_added == false) ? (
+																{formatDate(item.startTime, "dddd,MMMM DD-YYYY  hh:mm a")}</Text>
+															{/* {selectedIndex == 1 &&
+																item.status == "COMPLETED" && (item.appointmentResult.is_review_added == undefined || item.appointmentResult.is_review_added == false) ? (
 																	<Row style={{ borderBottomWidth: 0 }}>
 																		<Col size={1} ></Col>
 																		<Col size={4} >
@@ -583,7 +583,7 @@ class MyAppoinmentList extends Component {
 
 
 																	)
-																)}
+																)} */}
 														</Col>
 													</Row>
 												</TouchableOpacity>

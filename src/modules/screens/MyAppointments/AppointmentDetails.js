@@ -17,7 +17,7 @@ import { formatDate, dateDiff, statusValue, getMoment, isTimeAfter } from '../..
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress,getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import { translate } from "../../../setup/translator.helper";
 import { updateEvent } from "../../../setup/calendarEvent";
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -359,22 +359,22 @@ class AppointmentDetails extends Component {
 
                 <Grid style={styles.cardItem}>
                   <Row style={{ justifyContent: 'flex-end', marginRight: 10, marginTop: 10 }}>
-                    {data.token_no ?
-                      <Text style={{ textAlign: 'right', fontSize: 14, }} >{"Ref no :" + data.token_no}</Text>
+                    {data.tokenNo ?
+                      <Text style={{ textAlign: 'right', fontSize: 14, }} >{"Ref no :" + data.tokenNo}</Text>
                       : null}
                   </Row>
 
                   <Row style={{ marginLeft: 10, marginRight: 10 }}>
                     <Col style={{ width: '22%', justifyContent: 'center', marginTop: 10 }}>
-                      <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
-                        <Thumbnail circular source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60 }} />
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(data.doctorInfo), title: 'Profile photo' })}>
+                        <Thumbnail circular source={renderDoctorImage(data.doctorInfo)} style={{ height: 60, width: 60 }} />
                       </TouchableOpacity>
                     </Col>
                     <Col style={{ width: '77%', marginTop: 10 }}>
                       <Row>
                         <Col size={9}>
                           <Text style={styles.Textname} >{getDoctorNameOrHospitalName(data)}</Text>
-                          <Text note style={{ fontSize: 13, fontFamily: 'Roboto', color: '#4c4c4c' }}>{education}</Text>
+                          <Text note style={{ fontSize: 13, fontFamily: 'Roboto', color: '#4c4c4c' }}>{getDoctorEducation(data.doctorInfo.education)}</Text>
                           <Text style={styles.specialistTextStyle} >{specialist} </Text>
                         </Col>
                         <Col size={1}>
@@ -395,7 +395,7 @@ class AppointmentDetails extends Component {
                       <Row style={{ marginTop: 10, marginLeft: 5 }} >
                         <Text style={styles.subText1}>{translate("Experience")}</Text>
                         <Text style={styles.subText2}>-</Text>
-                        <Text note style={styles.subText2}>{getDoctorExperience(doctorData.calulatedExperience)}</Text>
+                        <Text note style={styles.subText2}>{getDoctorExperience(data.doctorInfo.experience)}</Text>
                       </Row>
                       <Row style={{ marginTop: 10, marginLeft: 5 }}>
                         <Text style={styles.subText1}>{translate("Payment Method")}</Text>
@@ -403,28 +403,28 @@ class AppointmentDetails extends Component {
                         <Text note style={styles.subText2}>{paymentDetails.payment_method || 0}</Text>
                       </Row>
                     </Col>
-                    {data.appointment_status == 'APPROVED' && data.onGoingAppointment === true ?
+                    {data.status == 'APPROVED'?
                       <Col size={3}>
                         <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>{translate("ONGOING")}</Text>
                       </Col>
                       :
-                      data.appointment_status != undefined &&
+                      data.status != undefined &&
                       <Col size={3}>
 
                         <View style={{ alignItems: 'center', marginLeft: -25 }}>
-                          <Icon name={statusValue[data.appointment_status].icon}
+                          <Icon name={statusValue[data.status].icon}
                             style={{
-                              color: statusValue[data.appointment_status].color,
+                              color: statusValue[data.status].color,
                               fontSize: 35
                             }} />
 
-                          <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' : data.appointment_status}</Text>
+                          <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.status].color }]}>{data.status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' : data.status}</Text>
                         </View>
                       </Col>
                     }
                   </Row>
 
-                  {selectedTab == 0 ? data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
+                  {selectedTab == 0 ? (data.status == 'APPROVED'|| data.status == 'PENDING') ?
                     <Row>
                       <Col size={7}>
                         <Row style={{ marginTop: 10 }}>
@@ -441,7 +441,7 @@ class AppointmentDetails extends Component {
                         </Row>
                       </Col>
                     </Row> :
-                    data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                    data.status == 'PROPOSED_NEW_TIME' ?
                       <Row>
                         <Col size={4}>
                           <Row style={{ marginTop: 10 }}>

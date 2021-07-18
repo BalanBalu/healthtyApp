@@ -179,8 +179,8 @@ export function renderProfileImage(data) {
 }
 export function renderDoctorImage(data) {
     let source = null;
-    if (data.profile_image) {
-        source = { uri: data.profile_image.imageURL }
+    if (data.profileImage) {
+        source = { uri: data.profileImage.imageURL }
     } else if (data.gender == 'M') {
         source = require('../../assets/images/profile_male.png')
     } else if (data.gender == 'F') {
@@ -435,10 +435,10 @@ export function validatePassword(value) {
     else return true;
 }
 
-export function getHospitalHeadeName(location) {
-    if (!location) return ''
-    if (location)
-        return `${location.name}`;
+export function getHospitalHeadeName(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.hospitalName}`;
     else
         return ''
 }
@@ -821,13 +821,13 @@ export function getDoctorNameOrHospitalName(data) {
     let name = 'unKnown'
     if (data) {
         if (data.doctorInfo) {
-            if (data.doctorInfo.first_name != undefined || data.doctorInfo.last_name != undefined) {
-                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.first_name || ''} ${data.doctorInfo.last_name || ''}`
+            if (data.doctorInfo.firstName != undefined || data.doctorInfo.lastName != undefined) {
+                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
 
             }
         } else {
-            if (data.booked_for === 'HOSPITAL') {
-                name = getHospitalHeadeName(data.location[0])
+            if (data.bookedFor === 'HOSPITAL') {
+                name = data.hospitalInfo&&data.hospitalInfo.hospitalName != undefined ?data.hospitalInfo.hospitalName:''
             }
         }
     }
