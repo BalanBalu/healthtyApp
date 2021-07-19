@@ -109,8 +109,8 @@ class MyAppoinmentList extends Component {
 
 			};
 			let upCommingAppointmentResult = await getAppointmentByUserId(userId, filters);
-			if (upCommingAppointmentResult) {
-			tempData=upCommingAppointmentResult
+			if (upCommingAppointmentResult.success) {
+			tempData=upCommingAppointmentResult.data
 			}
 
 			// if (upCommingAppointmentResult.success) {
@@ -198,56 +198,56 @@ class MyAppoinmentList extends Component {
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
 
-
-				let doctorInfo = new Map();
-
-
-				let doctorIds = getAllId(pastAppointmentResult)
-				if (doctorIds) {
-
-					let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
-
-					speciallistResult.data.forEach(doctorData => {
-
-						let educationDetails = ' ',
-							speaciallistDetails = '';
-
-						if (doctorData.education != undefined) {
-							educationDetails = getAllEducation(doctorData.education)
-						}
-						if (doctorData.specialist != undefined) {
-							speaciallistDetails = getAllSpecialist(doctorData.specialist)
-						}
-						doctorInfo.set(doctorData.doctor_id, {
-							degree: educationDetails,
-							specialist: speaciallistDetails.toString(),
-							prefix: doctorData.prefix,
-							profile_image: doctorData.profile_image,
-							gender: doctorData.gender
-						})
-					});
-				}
-				let pastDoctorDetails = [];
-				pastAppointmentResult.map((doctorData, index) => {
-					let details = doctorInfo.get(doctorData.doctor_id)
-					if (details) {
-						pastDoctorDetails.push({
-							appointmentResult: doctorData,
-							specialist: details.specialist,
-							degree: details.degree,
-							prefix: details.prefix,
-							profile_image: details.profile_image
-						});
-					} else {
-						pastDoctorDetails.push({
-							appointmentResult: doctorData,
-						});
-					}
-				}
-				)
+				// let doctorInfo = new Map();
 
 
-				tempData = this.state.pastData.concat(pastDoctorDetails)
+				// let doctorIds = getAllId(pastAppointmentResult)
+				// if (doctorIds) {
+
+				// 	let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
+
+				// 	speciallistResult.data.forEach(doctorData => {
+
+				// 		let educationDetails = ' ',
+				// 			speaciallistDetails = '';
+
+				// 		if (doctorData.education != undefined) {
+				// 			educationDetails = getAllEducation(doctorData.education)
+				// 		}
+				// 		if (doctorData.specialist != undefined) {
+				// 			speaciallistDetails = getAllSpecialist(doctorData.specialist)
+				// 		}
+				// 		doctorInfo.set(doctorData.doctor_id, {
+				// 			degree: educationDetails,
+				// 			specialist: speaciallistDetails.toString(),
+				// 			prefix: doctorData.prefix,
+				// 			profile_image: doctorData.profile_image,
+				// 			gender: doctorData.gender
+				// 		})
+				// 	});
+				// }
+				// let pastDoctorDetails = [];
+				// pastAppointmentResult.map((doctorData, index) => {
+				// 	let details = doctorInfo.get(doctorData.doctor_id)
+				// 	if (details) {
+				// 		pastDoctorDetails.push({
+				// 			appointmentResult: doctorData,
+				// 			specialist: details.specialist,
+				// 			degree: details.degree,
+				// 			prefix: details.prefix,
+				// 			profile_image: details.profile_image
+				// 		});
+				// 	} else {
+				// 		pastDoctorDetails.push({
+				// 			appointmentResult: doctorData,
+				// 		});
+				// 	}
+				// }
+				// )
+
+
+				// tempData = this.state.pastData.concat(pastDoctorDetails)
+				tempData=pastAppointmentResult
 
 
 			}
@@ -320,7 +320,7 @@ class MyAppoinmentList extends Component {
 
 	navigateToBookAppointmentPage(item) {
 
-		let doctorId = item.appointmentResult.doctor_id;
+		let doctorId = item.doctorId;
 		this.props.navigation.navigate('Doctor Details Preview', {
 			doctorId: doctorId,
 			fetchAvailabiltySlots: true
@@ -584,6 +584,24 @@ class MyAppoinmentList extends Component {
 
 																	)
 																)} */}
+																{
+																	selectedIndex === 1 ? (
+
+
+																		<Row style={{ borderBottomWidth: 0 }}>
+																			<Col size={6} style={(styles.marginRight = 10)}>
+
+																			</Col>
+																			<Col size={4} style={(styles.marginRight = 10)}>
+																				<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
+																					<Text style={styles.bookAgain1}>
+																						{translate("Book Again")}
+																			   </Text>
+																				</Button>
+																			</Col>
+																		</Row>
+																	):null
+																}
 														</Col>
 													</Row>
 												</TouchableOpacity>

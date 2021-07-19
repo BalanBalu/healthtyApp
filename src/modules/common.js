@@ -442,10 +442,10 @@ export function getHospitalHeadeName(data) {
     else
         return ''
 }
-export function getHospitalName(location) {
-    if (!location) return ''
-    if (location)
-        return `${location.location.address.no_and_street}, ${location.location.address.city}, ${location.location.address.state}, ${location.location.address.pin_code}`;
+export function getHospitalName(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.address.noAndStreet}, ${data.address.city}, ${data.address.state}, ${data.address.pinCode}`;
     else
         return ''
 }
