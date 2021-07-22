@@ -441,17 +441,14 @@ export async function generateOTPForLoginWithOtp(userId) {
 export async function verifyMemberLoginWithOtp(reqData) {
   try {
     const endpoint = 'auth/login-with-otp';
-    console.log("reqData",reqData)
     const response = await smartHealthPostService(endpoint,reqData)
     if (response && response.data && response.data.access_token) {
       await AsyncStorage.setItem('smartToken', response.data.access_token)
-      console.log(response.data.userId,'response.data.userId')
       let ends = 'member-detail/memberId/by-email?email=' + response.data.userId;
        let res = await smartHealthGetService(ends);
        if (res && res.data && res.data[0]) {
          let reqData = res.data[0];
 
-         console.log(reqData._id,'member-detail/memberId/by-email?email=')
 
          const loggedUsersData={
            is_corporate_user : true
@@ -465,7 +462,6 @@ export async function verifyMemberLoginWithOtp(reqData) {
          if (reqData.relationship) {
            await AsyncStorage.setItem('relationship', reqData.relationship)
          }
-         console.log(reqData._id,'member-detail/memberId/by-email?email=')
 
          await AsyncStorage.setItem('UserId', reqData._id)
 
