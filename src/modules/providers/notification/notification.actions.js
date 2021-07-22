@@ -1,7 +1,7 @@
 
 
 
-import { postService, getService, putService } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService, postServiceExternal, smartHealthDeleteService } from '../../../setup/services/httpservices';
 
 export const NOTIFICATION_REQUEST = 'NOTIFICATION/NOTIFICATION_REQUEST'
 export const NOTIFICATION_HAS_ERROR = 'NOTIFICATION/NOTIFICATION_HAS_ERROR'
@@ -9,17 +9,15 @@ export const NOTIFICATION_RESPONSE = 'NOTIFICATION/NOTIFICATION_RESPONSE'
 export const NOTIFICATION_RESET = 'NOTIFICATION/NOTIFICATION_RESET'
 import { store } from '../../../setup/store';
 
+
+
 /* Get Patient Notification List  */
-export const fetchUserNotification = async (userId,skip,limit) => {
+export const fetchUserNotification = async (userId,page,limit) => {
     try {
-       
-        let endPoint = '/notifications/' + userId;
-        if(limit){
-            endPoint+='?skip='+skip+'&limit='+limit
-        }
-        let response = await getService(endPoint);
+        let endPoint = 'notification/by-receiverId?receiverId='+userId +'&p='+ page +'&l='+limit;
+        let response = await smartHealthGetService(endPoint);
         let respData = response.data;
-        if(respData.success){
+        if(response.status === 200){
             store.dispatch({
                 type: NOTIFICATION_RESET,
               })
@@ -35,13 +33,13 @@ export const fetchUserNotification = async (userId,skip,limit) => {
 
 
 }
+
 // put services
-export const UpDateUserNotification = async (updateNode, notificationIds) => {
+export const UpDateUserNotification = async (data) => {
     try {
 
-        let endPoint = '/notifications/status/' + updateNode + '/' + notificationIds;
-
-        let response = await putService(endPoint);
+        let endPoint = 'notification/by-notificationIds';
+        let response = await smartHealthPutService(endPoint,data);
         let respData = response.data;
         return respData;
     } catch (e) {
@@ -57,31 +55,31 @@ export const UpDateUserNotification = async (updateNode, notificationIds) => {
 export const fetchUserMarkedAsReadedNotification = async (userId) => {
     try {
 
-        let endPoint = '/notifications/' + userId+'?mark_as_readed=false'
+        let endPoint = 'notification/by-receiverId/viewed?receiverId=' + userId;
 
-        let response = await getService(endPoint);
+        let response = await smartHealthGetService(endPoint);
         let respData = response.data;
-       
        
         store.dispatch({
             type: NOTIFICATION_REQUEST,
-            message: respData.message
+            message:  'Get all notifications successfully '
         })
-        if (respData.error || !respData.success) {
+        if (response.status != 200) {
             store.dispatch({
                 type: NOTIFICATION_HAS_ERROR,
                 message:'Occured! Please Try again'
             });
 
         } else {
-            let count = respData.data.length
+            let count = respData.length
             
-            let notificationIds = respData.data.map(element => {
+            let notificationIds = respData.map(element => {
                 return element._id;
        }).join(',')
+
             store.dispatch({
                 type: NOTIFICATION_RESPONSE,
-                message: respData.message,
+                message: 'Get all notifications successfully ',
                 notificationIds:notificationIds,
                 notificationCount: count
             })

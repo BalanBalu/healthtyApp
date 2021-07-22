@@ -535,9 +535,11 @@ export async function SmartHealthlogin(userCredentials, isLoading = true) {
         if(reqData&& reqData.mobile){
           loggedUsersData.mobile_no=reqData.mobile
         }
+        console.log(reqData,'reqData==========>>>>>>>>>>>')
         if (reqData.relationship) {
           await AsyncStorage.setItem('relationship', reqData.relationship)
         }
+          await AsyncStorage.setItem('UserId', reqData._id)
            await AsyncStorage.setItem('memberId', reqData.memberId)
           await AsyncStorage.setItem('memberEmailId', reqData.emailId)
           await AsyncStorage.setItem('memberPolicyNo', reqData.policyNo)
