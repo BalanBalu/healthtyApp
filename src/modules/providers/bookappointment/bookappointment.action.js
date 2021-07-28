@@ -209,7 +209,7 @@ export const appointment = async (userId, filters, isLoading = true) => {
     }
   }
 }
-export const getAppointmentByUserId=async (userId,filters)=>{
+export const getAppointmentByMemberId=async (userId,filters)=>{
   let endPoint = 'appointment/by-user-id?user-id=' + userId + '?&start-date=' + filters.startDate + '&end-date=' + filters.endDate;
 let response=smartHealthGetService(endPoint);
 return response.data

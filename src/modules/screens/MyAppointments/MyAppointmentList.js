@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, addTimeUnit, subTimeUnit, getAllId, statusValue } from "../../../setup/helpers";
-import { getAppointmentByUserId, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
+import { getAppointmentByMemberId, viewUserReviews, getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
 import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getDoctorEducation, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
@@ -29,7 +29,7 @@ class MyAppoinmentList extends Component {
 			selectedIndex: 0,
 			upComingData: [],
 			pastData: [],
-			userId: null,
+			memberId: null,
 
 			isRefreshing: false,
 			isNavigation: true,
@@ -50,9 +50,9 @@ class MyAppoinmentList extends Component {
 			this.props.navigation.navigate("login");
 			return;
 		}
-		let userId = await AsyncStorage.getItem("userId");
+		let memberId = await AsyncStorage.getItem("memberId");
 		this.setState({
-			userId
+			memberId
 		});
 		await this.upCommingAppointment(),
 
@@ -97,7 +97,7 @@ class MyAppoinmentList extends Component {
 	upCommingAppointment = async () => {
 		try {
 			// this.setState({ isLoading: true })
-			let userId = await AsyncStorage.getItem("userId");
+			let memberId = await AsyncStorage.getItem("memberId");
 			let tempData = this.state.upComingData
 			let filters = {
 				startDate: new Date().toUTCString(),
@@ -108,7 +108,7 @@ class MyAppoinmentList extends Component {
 
 
 			};
-			let upCommingAppointmentResult = await getAppointmentByUserId(userId, filters);
+			let upCommingAppointmentResult = await getAppointmentByMemberId(memberId, filters);
 			if (upCommingAppointmentResult.success) {
 			tempData=upCommingAppointmentResult.data
 			}
@@ -182,7 +182,7 @@ class MyAppoinmentList extends Component {
 			// this.setState({
 			// 	isLoading: true
 			// })
-			let userId = await AsyncStorage.getItem("userId");
+			let memberId = await AsyncStorage.getItem("memberId");
 			let tempData = this.state.pastData
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
@@ -193,7 +193,7 @@ class MyAppoinmentList extends Component {
 				reviewInfo: true
 			};
 
-			let pastAppointmentResult = await getAppointmentByUserId(userId, filters);
+			let pastAppointmentResult = await getAppointmentByMemberId(memberId, filters);
 
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
