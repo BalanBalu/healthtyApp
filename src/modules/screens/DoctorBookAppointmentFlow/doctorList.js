@@ -129,12 +129,14 @@ class DoctorList extends Component {
     try {
       const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
       this.setState({isCorporateUser: isCorporateUser});
-      await this.dispatchAndCResetOfRattingAndFavorites(); // clear the Ratting and Favorites counts in search list Props
-      const userId = await AsyncStorage.getItem('userId');
+      // await this.dispatchAndCResetOfRattingAndFavorites(); // clear the Ratting and Favorites counts in search list Props
+      const memberId = await AsyncStorage.getItem('memberId');
       /** Passing ActiveSponsor is TRUE Or FALSE values on Params **/
-      await this.callSearchAndFilterServiceWithActiveSponsorTrueAndFalse(); // multiple times services call
-      if (userId) {
-        await this.getFavoriteCounts4PatByUserId(userId);
+      // await this.callSearchAndFilterServiceWithActiveSponsorTrueAndFalse(); // multiple times services call
+      await this.searchByDoctorDetails(false);
+
+      if (memberId) {
+        // await this.getFavoriteCounts4PatByUserId(memberId);
         this.setState({isLoggedIn: true});
       }
     } catch (Ex) {
@@ -229,39 +231,36 @@ class DoctorList extends Component {
       } else {
         type = 'search';
       }
-
       const docListResponse = await searchByDocDetailsService(
         type,
-        activeSponsor,
         reqData4ServiceCall,
         this.incrementPaginationCount,
         PAGINATION_COUNT_FOR_GET_DOCTORS_LIST,
       );
 
       if (docListResponse.success) {
-        if (!activeSponsor) {
+        // if (!activeSponsor) {
           this.incrementPaginationCount =
             this.incrementPaginationCount +
             PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
-        }
+        // }
         const searchedDoctorIdsArray = [];
-        const activeSponsorDocIdsArry = [];
         const docListData = docListResponse.data || [];
         docListData.map((item) => {
           item.specialist = item.specialistInfo;
           delete item.specialistInfo;
-          const doctorIdHostpitalId = item.hospitalInfo.doctorIdHostpitalId;
+          const doctorIdHostpitalId = item.hospitalInfo.doctorIdHospitalId;
           item.doctorIdHostpitalId = doctorIdHostpitalId;
-          if (!this.totalSearchedDoctorIdsArray.includes(item.doctor_id)) {
-            searchedDoctorIdsArray.push(item.doctor_id);
-            this.totalSearchedDoctorIdsArray.push(item.doctor_id);
+          if (!this.totalSearchedDoctorIdsArray.includes(item.doctorId)) {
+            searchedDoctorIdsArray.push(item.doctorId);
+            this.totalSearchedDoctorIdsArray.push(item.doctorId);
           }
-          if (activeSponsor && item.is_doctor_sponsor) {
-            this.hospitalAndDoctorIdsArray.push(String(doctorIdHostpitalId));
-            if (!activeSponsorDocIdsArry.includes(item.doctor_id)) {
-              activeSponsorDocIdsArry.push(item.doctor_id);
-            }
-          }
+          // if (activeSponsor && item.is_doctor_sponsor) {
+          //   this.hospitalAndDoctorIdsArray.push(String(doctorIdHostpitalId));
+          //   if (!activeSponsorDocIdsArry.includes(item.doctor_id)) {
+          //     activeSponsorDocIdsArry.push(item.doctor_id);
+          //   }
+          // }
           if (
             !activeSponsor &&
             this.hospitalAndDoctorIdsArray &&
@@ -274,32 +273,32 @@ class DoctorList extends Component {
             );
           }
         });
-        await Promise.all([
-          ServiceOfGetDoctorFavoriteListCount4Pat(
-            searchedDoctorIdsArray,
-          ).catch((Ex) =>
-            console.log(
-              'Ex is getting on get Favorites list details for Patient====>',
-              Ex,
-            ),
-          ),
-          serviceOfGetTotalReviewsCount4Doctors(
-            searchedDoctorIdsArray,
-          ).catch((Ex) =>
-            console.log(
-              'Ex is getting on get Total Reviews  list details for Patient' +
-                Ex,
-            ),
-          ),
-        ]);
-        if (activeSponsor) {
-          this.updateDocSponsorViewersCountByUser(activeSponsorDocIdsArry);
-        }
+        // await Promise.all([
+        //   ServiceOfGetDoctorFavoriteListCount4Pat(
+        //     searchedDoctorIdsArray,
+        //   ).catch((Ex) =>
+        //     console.log(
+        //       'Ex is getting on get Favorites list details for Patient====>',
+        //       Ex,
+        //     ),
+        //   ),
+        //   serviceOfGetTotalReviewsCount4Doctors(
+        //     searchedDoctorIdsArray,
+        //   ).catch((Ex) =>
+        //     console.log(
+        //       'Ex is getting on get Total Reviews  list details for Patient' +
+        //         Ex,
+        //     ),
+        //   ),
+        // ]);
+        // if (activeSponsor) {
+        //   this.updateDocSponsorViewersCountByUser(activeSponsorDocIdsArry);
+        // }
         let doctorInfoList =
           Array.from(
             this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values(),
           ) || [];
-        doctorInfoList.sort(sortByPrimeDoctors); // Sort by active Sponsors list in TOP
+        // doctorInfoList.sort(sortByPrimeDoctors); // Sort by active Sponsors list in TOP
         if (!activeSponsor && docListData.length <= 3) {
           this.isEnabledLoadMoreData = false;
         }
@@ -314,7 +313,7 @@ class DoctorList extends Component {
           });
         }
       } else {
-        if (!activeSponsor) this.isEnabledLoadMoreData = false;
+     this.isEnabledLoadMoreData = false;
         if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.size > 7) {
           Toast.show({
             text: translate('No more Doctors Available!'),
@@ -332,9 +331,9 @@ class DoctorList extends Component {
     }
   };
 
-  getFavoriteCounts4PatByUserId = async (userId) => {
+  getFavoriteCounts4PatByUserId = async (memberId) => {
     try {
-      await getFavoriteListCount4PatientService(userId);
+      await getFavoriteListCount4PatientService(memberId);
     } catch (Ex) {
       return {
         success: false,
@@ -360,11 +359,11 @@ class DoctorList extends Component {
     if (isLoading) return <Loader style="list" />;
     return (
       <Container style={styles.container}>
-        <NavigationEvents
+        {/* <NavigationEvents
           onWillFocus={(payload) => {
             this.componentNavigationMount();
           }}
-        />
+        /> */}
         <Card style={{borderRadius: 7, paddingTop: 5, paddingBottom: 5}}>
           <Row style={{height: 35, alignItems: 'center'}}>
             <Col
@@ -427,7 +426,7 @@ class DoctorList extends Component {
             </Col>
           </Row>
         </Card>
-        {this.state.isCorporateUser===false&&doctorInfoListAndSlotsData.length ? (
+        {doctorInfoListAndSlotsData&&doctorInfoListAndSlotsData.length ? (
           <FlatList
             scrollEventThrottle={26}
             data={doctorInfoListAndSlotsData}
@@ -478,12 +477,12 @@ class DoctorList extends Component {
 
   updateDocSponsorViewersCountByUser = async (sponsorIds) => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
-      if (!userId) userId = 'NO_USER';
+      let memberId = await AsyncStorage.getItem('memberId');
+      if (!memberId) memberId = 'NO_USER';
       const sponsorIdsObj = {
         sponsorIds,
       };
-      await serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorIdsObj);
+      await serviceOfUpdateDocSponsorViewCountByUser(memberId, sponsorIdsObj);
     } catch (ex) {
       console.log(
         'Ex getting on updateDocSponsorViewersCountByUser service======',
@@ -491,10 +490,10 @@ class DoctorList extends Component {
       );
     }
   };
-  /* Update Favorites for Doctor by UserId  */
+  /* Update Favorites for Doctor by memberId  */
   addToFavoritesList = async (doctorId) => {
-    const userId = await AsyncStorage.getItem('userId');
-    const updateResp = await addFavoritesToDocByUserService(userId, doctorId);
+    const memberId = await AsyncStorage.getItem('memberId');
+    const updateResp = await addFavoritesToDocByUserService(memberId, doctorId);
     if (updateResp)
       Toast.show({
         text: translate('Doctor wish list updated successfully'),
@@ -520,7 +519,7 @@ class DoctorList extends Component {
     }
     this.props.navigation.setParams({conditionFromFilterPage: false});
     doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
-    doctorData.doctorId = doctorData.doctor_id;
+    doctorData.doctorId = doctorData.doctorId;
     const confirmSlotDetails = {
       ...doctorData,
       slotData: selectedSlotItemByDoctor,
@@ -560,11 +559,11 @@ class DoctorList extends Component {
 
   onPressGoToBookAppointmentPage(doctorItemData) {
     this.props.navigation.setParams({conditionFromFilterPage: false});
-    doctorItemData.doctorId = doctorItemData.doctor_id;
+    doctorItemData.doctorId = doctorItemData.doctorId;
     const singleDoctorItemData = {...doctorItemData};
     const reqData4BookAppPage = {
       singleDoctorItemData: singleDoctorItemData,
-      doctorId: doctorItemData.doctor_id,
+      doctorId: doctorItemData.doctorId,
       // weekWiseDatesList : this.weekWiseDatesList
     };
     const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
@@ -668,7 +667,7 @@ class DoctorList extends Component {
       ); // get 5 Or LessThan 5 of doctorIdHostpitalIds in order wise using index of given input of doctorInfoListAndSlotsData
       const setDoctorIdHostpitalIdsArrayMap = new Map();
       orderedDataFromWholeData.map((item) => {
-        const doctorIdFromItem = item.doctor_id;
+        const doctorIdFromItem = item.doctorId;
         const hospitalIdFromItem =
           item.hospitalInfo && item.hospitalInfo.hospital_id;
         if (setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem)) {
@@ -754,13 +753,13 @@ class DoctorList extends Component {
       const doctorDataListBySort = doctorDataList.sort(function (a, b) {
         let ratingA = 0;
         let ratingB = 0;
-        if (docReviewListCountOfDoctorIDs[a.doctor_id]) {
+        if (docReviewListCountOfDoctorIDs[a.doctorId]) {
           ratingA =
-            docReviewListCountOfDoctorIDs[a.doctor_id].average_rating || 0;
+            docReviewListCountOfDoctorIDs[a.doctorId].average_rating || 0;
         }
-        if (docReviewListCountOfDoctorIDs[b.doctor_id]) {
+        if (docReviewListCountOfDoctorIDs[b.doctorId]) {
           ratingB =
-            docReviewListCountOfDoctorIDs[b.doctor_id].average_rating || 0;
+            docReviewListCountOfDoctorIDs[b.doctorId].average_rating || 0;
         }
         if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
           return ratingB - ratingA;
@@ -791,17 +790,19 @@ class DoctorList extends Component {
         docReviewListCountOfDoctorIDs,
       },
     } = this.props;
-    const {fee, feeWithoutOffer} = this.getFeesBySelectedSlot(
-      item.slotData &&
-        item.slotData[
-          this.selectedDate4DocIdHostpitalIdToStoreInObj[
-            item.doctorIdHostpitalId
-          ] || currentDate
-        ],
-      item.slotData,
-      item.doctorIdHostpitalId,
-      item,
-    );
+    // const {fee, feeWithoutOffer} = this.getFeesBySelectedSlot(
+    //   item.slotData &&
+    //     item.slotData[
+    //       this.selectedDate4DocIdHostpitalIdToStoreInObj[
+    //         item.doctorIdHostpitalId
+    //       ] || currentDate
+    //     ],
+    //   item.slotData,
+    //   item.doctorIdHostpitalId,
+    //   item,
+    // );
+    const fee=null;
+    const feeWithoutOffer=null;
     return (
       <View>
         <RenderDoctorInfo
@@ -821,11 +822,13 @@ class DoctorList extends Component {
           onPressGoToBookAppointmentPage={(item) => {
             this.onPressGoToBookAppointmentPage(item);
           }}
-          shouldUpdate={`${
+          shouldUpdate={
+            `${
             item.doctorIdHostpitalId
           }-${fee}-${feeWithoutOffer}-${patientFavoriteListCountOfDoctorIds.includes(
-            item.doctor_id,
-          )}`}
+            item.doctorId,
+          )}`
+        }
         />
       </View>
     );
@@ -1037,7 +1040,7 @@ class DoctorList extends Component {
                       marginRight: 50,
                     }}>
                     {' '}
-                    {this.getNextAvailableDateAndTime(
+                    {/* {this.getNextAvailableDateAndTime(
                       item.slotData &&
                         item.slotData[
                           this.selectedDate4DocIdHostpitalIdToStoreInObj[
@@ -1045,7 +1048,7 @@ class DoctorList extends Component {
                           ] || currentDate
                         ],
                       item,
-                    )}
+                    )} */}
                   </Text>
                 </Col>
                 <Col size={1.7}>

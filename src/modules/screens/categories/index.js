@@ -378,7 +378,9 @@ class Categories extends Component {
                   ListHeaderComponent={this.renderStickeyHeader()}
                   renderItem={({ item, index }) =>
                     <Col style={styles.mainCol}>
-                      <TouchableOpacity onPress={() => this.state.isCorporateUser === true ? this.setState({ consultPopVisible: true, selectedSpecialist: item.category_name }) : this.navigate(item.category_name, item.category_id)}
+                                            {/* <TouchableOpacity onPress={() => this.state.isCorporateUser === true ? this.setState({ consultPopVisible: true, selectedSpecialist: item.category_name }) : this.navigate(item.category_name, item.category_id)} */}
+
+                      <TouchableOpacity onPress={() =>this.navigate(item.category_name, item.category_id)}
                         style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                         <FastImage
                           source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
