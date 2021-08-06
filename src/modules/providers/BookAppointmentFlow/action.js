@@ -1,4 +1,4 @@
-import { postService, getService, putService } from '../../../setup/services/httpservices';
+import { postService,smartHealthPostService, getService, putService } from '../../../setup/services/httpservices';
 
 export const SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA = 'BOOK_APP/DOCTOR_INFO_LIST_AND_SLOTS_DATA';
 export const BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER = 'BOOK_APP/BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER';
@@ -83,11 +83,12 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
 }
 
 
-export const searchByDocDetailsService = async (type, activeSponsor, reqData, skipCount, limit) => {
+export const searchByDocDetailsService = async (type,  reqData, skipCount, limit) => {
     try {
-        const endPoint = `V2/doctor/search/${type}?active_sponsor=${activeSponsor}&skip=${skipCount}&limit=${limit}`;
-        const response = await postService(endPoint, reqData);
+        const endPoint = `sm-doctor/search/${type}?p=${skipCount}&l=${limit}`;
+        const response = await smartHealthPostService(endPoint, reqData);
         const respData = response.data;
+        // console.log(JSON.stringify(respData));
         return respData;
     } catch (ex) {
         return {
