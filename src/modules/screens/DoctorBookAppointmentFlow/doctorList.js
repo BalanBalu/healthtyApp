@@ -962,43 +962,43 @@ class DoctorList extends Component {
     );
   }
 
-  onBookPress = async (doctorIdHostpitalId, indexOfItem) => {
+  onBookPress = async (doctorIdHostpitalId, indexOfItem) => {  // need to implement  SHOBANA work on this method
     try {
-      this.onEndReachedIsTriggedFromRenderDateList = false;
-      this.setState({
-        isLoadingDatesAndSlots: true,
-        isLoadingDatesAndSlotsByRespectedItem: doctorIdHostpitalId,
-      });
-      const {expandItemOfDocIdHospitalsToShowSlotsData} = this.state;
-      if (
-        expandItemOfDocIdHospitalsToShowSlotsData.indexOf(
-          doctorIdHostpitalId,
-        ) !== -1
-      ) {
-        expandItemOfDocIdHospitalsToShowSlotsData.splice(
-          expandItemOfDocIdHospitalsToShowSlotsData.indexOf(
-            doctorIdHostpitalId,
-          ),
-          1,
-        );
-      } else {
-        expandItemOfDocIdHospitalsToShowSlotsData.push(doctorIdHostpitalId);
-      }
-      const startDateByMoment = addMoment(this.state.currentDate);
-      const endDateByMoment = addMoment(this.state.currentDate, 7, 'days');
-      if (
-        this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
-          doctorIdHostpitalId,
-        ).slotData === undefined
-      ) {
-        await this.getDoctorAvailabilitySlots(
-          doctorIdHostpitalId,
-          startDateByMoment,
-          endDateByMoment,
-          indexOfItem,
-        );
-      }
-      this.setState({renderRefreshCount: this.state.renderRefreshCount + 1});
+      // this.onEndReachedIsTriggedFromRenderDateList = false;
+      // this.setState({
+      //   isLoadingDatesAndSlots: true,
+      //   isLoadingDatesAndSlotsByRespectedItem: doctorIdHostpitalId,
+      // });
+      // const {expandItemOfDocIdHospitalsToShowSlotsData} = this.state;
+      // if (
+      //   expandItemOfDocIdHospitalsToShowSlotsData.indexOf(
+      //     doctorIdHostpitalId,
+      //   ) !== -1
+      // ) {
+      //   expandItemOfDocIdHospitalsToShowSlotsData.splice(
+      //     expandItemOfDocIdHospitalsToShowSlotsData.indexOf(
+      //       doctorIdHostpitalId,
+      //     ),
+      //     1,
+      //   );
+      // } else {
+      //   expandItemOfDocIdHospitalsToShowSlotsData.push(doctorIdHostpitalId);
+      // }
+      // const startDateByMoment = addMoment(this.state.currentDate);
+      // const endDateByMoment = addMoment(this.state.currentDate, 7, 'days');
+      // if (
+      //   this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
+      //     doctorIdHostpitalId,
+      //   ).slotData === undefined
+      // ) {
+      //   await this.getDoctorAvailabilitySlots(
+      //     doctorIdHostpitalId,
+      //     startDateByMoment,
+      //     endDateByMoment,
+      //     indexOfItem,
+      //   );
+      // }
+      // this.setState({renderRefreshCount: this.state.renderRefreshCount + 1});
     } catch (Ex) {
       console.log(
         'Ex is getting on when Pressed BOOK button in Doctor list :',
