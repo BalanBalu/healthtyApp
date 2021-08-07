@@ -179,8 +179,8 @@ export function renderProfileImage(data) {
 }
 export function renderDoctorImage(data) {
     let source = null;
-    if (data.profile_image) {
-        source = { uri: data.profile_image.imageURL }
+    if (data.profileImage) {
+        source = { uri: data.profileImage.imageURL }
     } else if (data.gender == 'M') {
         source = require('../../assets/images/profile_male.png')
     } else if (data.gender == 'F') {
@@ -850,3 +850,16 @@ export function RenderDocumentUpload(data) {
     return (source)
 }
 
+export function familyMemAgeCal(value){
+    try {
+      if (value.familyMemberAge == 0 && value.familyMemberMonth <= 1)
+        return value.familyMemberMonth + ' Month';
+      else if (value.familyMemberAge == 0 &&value.familyMemberMonth > 1)
+        return value.familyMemberMonth + ' Months';
+      else if (value.familyMemberAge > 1)
+        return value.familyMemberAge + ` Years `;
+      else return value.familyMemberAge + ` Year`;
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
+  };
