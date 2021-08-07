@@ -266,7 +266,18 @@ export default class PaymentReview extends Component {
     let basicData = JSON.parse(basicProfileData);
     basicData.policyNumber=memberPolicyNo;
     this.setState({selfData:[basicData]})
-    this.getPatientInfo();
+    let bookAppointment=navigation.getParam('bookAppointment')
+    if(bookAppointment){
+    await this.setState({
+        doctorDetails:bookAppointment.doctorDetails,
+        bookSlotDetails:bookAppointment.selectedSlot,
+        isLoading: false,
+      })
+      console.log("bookSlotDetails",this.state.bookSlotDetails)
+
+      console.log("doctorDetails",this.state.doctorDetails)
+    }
+    // this.getPatientInfo();
   }
   async confirmProceedPayment() {
 
@@ -280,14 +291,14 @@ export default class PaymentReview extends Component {
     //   });
     //   return false;
     // }
-    if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
-      Toast.show({
-        text: translate('Please enter valid Reason'),
-        duration: 3000,
-        type: 'warning',
-      });
-      return;
-    }
+    // if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
+    //   Toast.show({
+    //     text: translate('Please enter valid Reason'),
+    //     duration: 3000,
+    //     type: 'warning',
+    //   });
+    //   return;
+    // }
     this.setState({isLoading: true, spinnerText: translate('Please Wait')});
     const bookingSlotData = bookSlotDetails;
     let validationResult;
