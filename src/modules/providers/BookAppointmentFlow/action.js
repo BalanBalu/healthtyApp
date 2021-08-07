@@ -130,11 +130,12 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
 }
 
 
-export const searchByDocDetailsService = async (type, activeSponsor, reqData, skipCount, limit) => {
+export const searchByDocDetailsService = async (type,  reqData, skipCount, limit) => {
     try {
-        const endPoint = `V2/doctor/search/${type}?active_sponsor=${activeSponsor}&skip=${skipCount}&limit=${limit}`;
-        const response = await postService(endPoint, reqData);
+        const endPoint = `sm-doctor/search/${type}?p=${skipCount}&l=${limit}`;
+        const response = await smartHealthPostService(endPoint, reqData);
         const respData = response.data;
+        // console.log(JSON.stringify(respData));
         return respData;
     } catch (ex) {
         return {
