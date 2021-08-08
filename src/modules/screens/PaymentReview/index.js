@@ -346,6 +346,7 @@ export default class PaymentReview extends Component {
               type: 'success',
               duration: 3000,
             });
+            this.props.navigation.navigate('CorporateHome');
       }else{
         Toast.show({
               text: validationResult.message,
