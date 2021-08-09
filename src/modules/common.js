@@ -435,17 +435,17 @@ export function validatePassword(value) {
     else return true;
 }
 
-export function getHospitalHeadeName(location) {
-    if (!location) return ''
-    if (location)
-        return `${location.name}`;
+export function getHospitalHeadeName(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.hospitalName}`;
     else
         return ''
 }
-export function getHospitalName(location) {
-    if (!location) return ''
-    if (location)
-        return `${location.location.address.no_and_street}, ${location.location.address.city}, ${location.location.address.state}, ${location.location.address.pin_code}`;
+export function getHospitalName(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.address.noAndStreet}, ${data.address.city}, ${data.address.state}, ${data.address.pinCode}`;
     else
         return ''
 }
@@ -821,13 +821,13 @@ export function getDoctorNameOrHospitalName(data) {
     let name = 'unKnown'
     if (data) {
         if (data.doctorInfo) {
-            if (data.doctorInfo.first_name != undefined || data.doctorInfo.last_name != undefined) {
-                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.first_name || ''} ${data.doctorInfo.last_name || ''}`
+            if (data.doctorInfo.firstName != undefined || data.doctorInfo.lastName != undefined) {
+                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
 
             }
         } else {
-            if (data.booked_for === 'HOSPITAL') {
-                name = getHospitalHeadeName(data.location[0])
+            if (data.bookedFor === 'HOSPITAL') {
+                name = data.hospitalInfo&&data.hospitalInfo.hospitalName != undefined ?data.hospitalInfo.hospitalName:''
             }
         }
     }
