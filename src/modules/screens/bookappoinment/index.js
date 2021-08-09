@@ -584,7 +584,7 @@ getMinVideoChatConsultFee(item) {
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Col size={9}>
-                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12,  }}>{(doctorData.prefix ? doctorData.prefix + '. ' : '') + (doctorData.first_name || '') + ' ' + (doctorData.last_name || '')}</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12,  }}>{(doctorData?.prefix ? doctorData.prefix + '. ' : '') + (doctorData.first_name || '') + ' ' + (doctorData.last_name || '')}</Text>
                         <Text note style={{ fontFamily: 'Roboto', fontSize: 11, marginTop: 5 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
                       </Col>
                       <Col size={1}>

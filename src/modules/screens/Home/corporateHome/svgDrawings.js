@@ -2328,6 +2328,194 @@ function FamilyData() {
     </Svg>
   )
 }
+function NegativeAppointmentDrawing() {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      // width="48.284"
+      // height="48.249"
+      width="44.3"
+      height="49.26"
+      viewBox="0 0 48.284 52.249">
+      <Image source={require('../../../../../assets/images/noappointment.png')} style={{ height: 70, width: 70, position: 'absolute', top: -11.50, right: -14 }} />
+      <G
+        id="Group_413"
+        data-name="Group 413"
+        transform="translate(-60.751 -431.877)">
+        <G
+          id="Group_412"
+          data-name="Group 412"
+          transform="translate(61.251 432.377)">
+          <Path
+            id="Path_5208"
+            data-name="Path 5208"
+            d="M553.812,92.494c2.673-.036,4.272.83,4.969,2.706q.172.837.344,1.673c1.192-.019,5.023-.26,5.609.246.49.423.441,4.946-.049,5.314-.667.5-4.719.2-5.953.2h-8.315l-.984-.787a24.672,24.672,0,0,1-4.92-4.477v-.148c1.381-.76,3.973.067,5.757-.394C550.484,94.069,551.836,93.489,553.812,92.494Z"
+            transform="translate(-524.729 -92.493)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5209"
+            data-name="Path 5209"
+            d="M560.725,95.946c-1.07.407-1.907.642-2.214,1.771a2.414,2.414,0,0,0,2.755,3.05A2.443,2.443,0,0,0,560.725,95.946Z"
+            transform="translate(-530.993 -94.026)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5210"
+            data-name="Path 5210"
+            d="M536.573,100.369c-.034.548-.093,1.426-.147,1.968-1.4.345-2.224.277-2.706,1.476l-.246,1.525a4.66,4.66,0,0,1-1.919,1.378l-.049-.1.049-2.509C532,101.665,533.6,100.334,536.573,100.369Z"
+            transform="translate(-519.132 -95.99)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5211"
+            data-name="Path 5211"
+            d="M574.03,100.369c2.677-.034,4.093,1.032,4.821,2.922.406,1.052.1,3.045.1,4.308v27.183c0,2.672.325,5.872-.836,7.377-1.64,2.126-5.966,1.585-9.693,1.585l-8.068-.05.147-.2,2.067-1.782h9.84a10.581,10.581,0,0,0,3.149-.1,2.864,2.864,0,0,0,1.132-.941c.694-1.072.345-6.86.344-8.813V110.421c0-2.915.659-7.087-1.476-7.922l-1.378-.149A17.841,17.841,0,0,0,574.03,100.369Z"
+            transform="translate(-531.761 -95.99)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5212"
+            data-name="Path 5212"
+            d="M528.67,105.06c.763.239,1.28,1.3,1.87,1.782,1.6,1.3,3.186,2.649,4.92,3.812a35.836,35.836,0,0,0,9.053,4.406l3.69.891c.161,13.391-4.388,23.136-11.906,28.863-1.954,1.489-4.869,3.71-7.38,4.505-.408.129-1.847-.777-2.165-.941a36.152,36.152,0,0,1-5.707-3.664c-5.808-4.492-9.1-10.848-10.972-19.358a33.779,33.779,0,0,1-.689-7.278l.049-2.178a16.483,16.483,0,0,0,3.3-.841,36.092,36.092,0,0,0,11.464-6.04A21.8,21.8,0,0,0,528.67,105.06Z"
+            transform="translate(-509.384 -98.072)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5213"
+            data-name="Path 5213"
+            d="M531.113,112.669a43.2,43.2,0,0,1-10.726,7.036l-3.838,1.476-1.772.541c-.212,13.093,7.338,23.4,16.286,27.355,1.38-.2,4.075-2.265,5.117-3.05a27.374,27.374,0,0,0,9.938-15.056,66.1,66.1,0,0,0,1.279-6.937c.089-.531.226-2.146-.049-2.362l-2.706-.836a32.71,32.71,0,0,1-5.609-2.558,58.275,58.275,0,0,1-5.166-3.346Z"
+            transform="translate(-511.777 -101.176)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5214"
+            data-name="Path 5214"
+            d="M570.528,118.952l8.364.049.3.3a.749.749,0,0,1-.2.542C577.178,120.279,571.106,119.86,570.528,118.952Z"
+            transform="translate(-536.279 -104.159)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5215"
+            data-name="Path 5215"
+            d="M582.04,125.379c.641-.025,1.869-.156,2.116.246.211.286,0,.492-.147.689h-2.067Z"
+            transform="translate(-541.347 -106.975)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5216"
+            data-name="Path 5216"
+            d="M533.973,128.6l5.707.049c.644,1.462-.4,4.6.246,6.052,1.35-.013,5.05-.339,5.953.148.195.689.211,5.627-.148,5.854-.787.549-4.806-.29-5.9.2.011,1.815.334,4.292-.1,5.9a18.946,18.946,0,0,1-5.707.1c-.874-.713.153-4.861-.394-6.1-1.4.016-5.194.312-6-.246-.1-1.075-.214-5.2.2-5.805,1.442-.249,4.8.351,5.9-.148C533.711,133.2,533.415,129.406,533.973,128.6Z"
+            transform="translate(-517.353 -108.353)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5217"
+            data-name="Path 5217"
+            d="M581.874,131.775a9.381,9.381,0,0,1,2.066.1l.2.246a.8.8,0,0,1-.246.639l-2.214-.049v-.049l.1-.836Z"
+            transform="translate(-541.229 -109.809)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5218"
+            data-name="Path 5218"
+            d="M580.969,139.184l.147-.935a5.724,5.724,0,0,1,2.559.1l.147.443-.1.246A9.726,9.726,0,0,1,580.969,139.184Z"
+            transform="translate(-540.915 -112.622)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5219"
+            data-name="Path 5219"
+            d="M579.937,144.652c.78-.032,3.585-.306,3.3.64-.16.525-2.9.5-3.591.3v-.049A2.822,2.822,0,0,1,579.937,144.652Z"
+            transform="translate(-540.326 -115.463)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5220"
+            data-name="Path 5220"
+            d="M578.039,151.161l4.034.049.3.3c0,.346-.058.433-.3.542l-4.379.049v-.049Z"
+            transform="translate(-539.461 -118.361)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5221"
+            data-name="Path 5221"
+            d="M575.414,157.443c1.218.309,5.277-.391,5.658.394v.394l-.246.3c-1,.1-5.343.272-6.052-.049A3.364,3.364,0,0,1,575.414,157.443Z"
+            transform="translate(-538.165 -121.13)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+          <Path
+            id="Path_5222"
+            data-name="Path 5222"
+            d="M575.473,157.8l-.344.787h5.707l.148-.049.2-.3-.148-.394Z"
+            transform="translate(-538.322 -121.287)"
+            fill="none"
+            stroke={primaryColor}
+            stroke-miterlimit="10"
+            stroke-width="1"
+            fill-rule="evenodd"
+          />
+        </G>
+      </G>
+    </Svg>
+  );
+}
 
 
 export {
@@ -2339,6 +2527,7 @@ export {
   NegativePolicyCoverageDrawing,
   ClaimInitiationDrawing,
   NegativeClaimInitiationDrawing,
+  NegativeAppointmentDrawing,
   InsuranceRenewalDrawing,
   LabTestDrawing,
   NegativeLabTestDrawing,
