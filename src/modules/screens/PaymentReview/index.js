@@ -284,13 +284,13 @@ export default class PaymentReview extends Component {
       let basicData = JSON.parse(basicProfileData);
       if (basicData) {
         basicData.policyNumber=memberPolicyNo;
-        this.defaultPatDetails = {
-          type: 'self',
-          full_name:arrangeFullName(basicData&&basicData.first_name,basicData&&basicData.last_name) ,
-          gender: basicData.gender?basicData.gender:'N/A',
-          age: parseInt(dateDiff(basicData.dob, new Date(), 'years')),
-          phone_no: basicData.mobile_no?basicData.mobile_no:'N/A'
-      } 
+      //   this.defaultPatDetails = {
+      //     type: 'self',
+      //     full_name:arrangeFullName(basicData&&basicData.first_name,basicData&&basicData.last_name) ,
+      //     gender: basicData.gender?basicData.gender:'N/A',
+      //     age: parseInt(dateDiff(basicData.dob, new Date(), 'years')),
+      //     phone_no: basicData.mobile_no?basicData.mobile_no:'N/A'
+      // } 
         this.setState({selfData:basicData}) 
      }
     } catch (e) {
@@ -490,8 +490,9 @@ export default class PaymentReview extends Component {
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-      console.log('result', result);
       if (result) {
+        result.shift()
+        console.log('result', result);
         this.setState({familyMembers: result, isLoading: false});
       }
     } catch (e) {
@@ -754,7 +755,7 @@ export default class PaymentReview extends Component {
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
-              selfData={this.defaultPatDetails}
+              selfData={selfData}
               onSelectionChange={(patientType) => {
                 if (patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
                   this.setState({

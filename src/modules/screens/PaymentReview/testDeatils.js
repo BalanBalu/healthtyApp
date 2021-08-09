@@ -239,7 +239,7 @@ class TestDetails extends PureComponent {
         this.props.changeFamilyMembersSelections([]);
     }
 
-    renderPatientDetails(data, index, enableSelectionBox, patientSelectionType) {
+    renderSelfDetails(data, index, enableSelectionBox, patientSelectionType) {
         console.log("data",data)
         const { isCorporateUser, payBy } = this.props;
         return (
@@ -251,7 +251,7 @@ class TestDetails extends PureComponent {
                     borderRadius: 5,
                     marginTop: 10,
                 }}>
-                <Row>
+                {/* <Row>
                     {data.type === 'others' ? (
                         <Right style={{ marginTop: -10 }}>
                             <TouchableOpacity
@@ -264,17 +264,15 @@ class TestDetails extends PureComponent {
                             </TouchableOpacity>
                         </Right>
                     ) : null}
-                </Row>
+                </Row> */}
                 <Row>
                     <Col size={5}>
                         <Text style={styles.NameText}>
-                            {data.full_name
-                                ? `${data.full_name}`
-                                : ''}
+                            {arrangeFullName(data.first_name,data.last_name)}
                         </Text>
                     </Col>
                     <Col size={5}>
-                        <Text style={styles.ageText}>{data.age} years</Text>
+                        <Text style={styles.ageText}>{parseInt(dateDiff(data.dob, new Date(), 'years'))}</Text>
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 10 }}>
@@ -294,7 +292,7 @@ class TestDetails extends PureComponent {
                         </Row>
                     </Col>
                     <Col size={4}>
-                        {data.phone_no != undefined ? (
+                        {data.mobileNo != undefined ? (
                             <Row>
                                 <Col size={3}>
                                     <Text style={styles.commonText}>Mobile</Text>
@@ -304,131 +302,94 @@ class TestDetails extends PureComponent {
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end' }}>
                                     <Text style={[styles.commonText, { color: '#909498' }]}>
-                                        {data.phone_no}
+                                        {data.mobileNo}
                                     </Text>
                                 </Col>
                             </Row>
                         ) : null}
                     </Col>
-                    {enableSelectionBox === true ? (
-                        <Col size={2}>
-                            <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                <CheckBox
-                                    style={{
-                                        borderRadius: 5,
-                                        marginRight: 10,
-                                        color: primaryColor,
-                                    }}
-                                    checked={this.props.familyMembersSelections.includes(
-                                        payBy + '-' + index,
-                                    )}
-                                    onPress={() =>
-                                        this.addFamilyMembersForBooking(data, index, payBy)
-                                    }
-                                />
-                            </Row>
-                        </Col>
-                    ) : null}
+                   
                 </Row>
-                {isCorporateUser &&
-                    payBy === POSSIBLE_PAY_METHODS.INSURANCE &&
-                    data.benefeciaryUserDeails ? (
-                    <View>
-                        <View
-                            style={{
-                                borderBottomColor: 'gray',
-                                borderBottomWidth: 0.5,
-                                marginTop: 10,
-                            }}
-                        />
-                        <TouchableOpacity
-                            style={styles.benefeciaryButton}
-                            onPress={() => {
-                                let expandedListIndexPayBy = patientSelectionType + '-' + index;
-                                this.setState({
-                                    expandedListIndex:
-                                        this.state.expandedListIndex === expandedListIndexPayBy
-                                            ? -1
-                                            : expandedListIndexPayBy,
-                                });
-                            }}>
-                            <Text
-                                style={{ color: '#0054A5', fontSize: 12, fontFamily: 'Roboto' }}>
-                                {translate('Show Benefeciary Details')}
-                            </Text>
-                            <MaterialIcons
-                                name="keyboard-arrow-down"
-                                style={{
-                                    fontSize: 20,
-                                    marginLeft: 5,
-                                    color: '#0054A5',
-                                    marginTop: 5,
-                                }}
-                            />
-                        </TouchableOpacity>
-                        <View>
-                            <BenefeciaryDetails
-                                expand={
-                                    this.state.expandedListIndex ===
-                                    patientSelectionType + '-' + index
-                                }
-                                data={data.benefeciaryUserDeails}
-                                payBy={payBy}
-                            />
-                        </View>
-                    </View>
-                ) : null}
-                {isCorporateUser &&
-                    payBy === POSSIBLE_PAY_METHODS.CORPORATE &&
-                    data.benefeciaryUserDeails ? (
-                    <View>
-                        <View
-                            style={{
-                                borderBottomColor: 'gray',
-                                borderBottomWidth: 0.5,
-                                marginTop: 10,
-                            }}
-                        />
-                        <TouchableOpacity
-                            style={styles.benefeciaryButton}
-                            onPress={() => {
-                                let expandedListIndexPayBy = patientSelectionType + '-' + index;
-                                this.setState({
-                                    expandedListIndex:
-                                        this.state.expandedListIndex === expandedListIndexPayBy
-                                            ? -1
-                                            : expandedListIndexPayBy,
-                                });
-                            }}>
-                            <Text
-                                style={{ color: '#0054A5', fontSize: 12, fontFamily: 'Roboto' }}>
-                                {translate('Show Benefeciary Details')}
-                            </Text>
-                            <MaterialIcons
-                                name="keyboard-arrow-down"
-                                style={{
-                                    fontSize: 20,
-                                    marginLeft: 5,
-                                    color: '#0054A5',
-                                    marginTop: 5,
-                                }}
-                            />
-                        </TouchableOpacity>
-                        <View>
-                            <BenefeciaryDetails
-                                expand={
-                                    this.state.expandedListIndex ===
-                                    patientSelectionType + '-' + index
-                                }
-                                data={data.benefeciaryUserDeails}
-                                payBy={payBy}
-                            />
-                        </View>
-                    </View>
-                ) : null}
+              
             </View>
         );
     }
+    renderFamilyDetails(data, index, enableSelectionBox, patientSelectionType) {
+        console.log("data",data)
+        const { isCorporateUser, payBy } = this.props;
+        return (
+            <View
+                style={{
+                    borderColor: 'gray',
+                    borderWidth: 0.3,
+                    padding: 10,
+                    borderRadius: 5,
+                    marginTop: 10,
+                }}>
+                {/* <Row>
+                    {data.type === 'others' ? (
+                        <Right style={{ marginTop: -10 }}>
+                            <TouchableOpacity
+                                onPress={() => this.onRemovePatientClicked(index)}>
+                                <Icon
+                                    active
+                                    name="ios-close"
+                                    style={{ color: '#d00729', fontSize: 25 }}
+                                />
+                            </TouchableOpacity>
+                        </Right>
+                    ) : null}
+                </Row> */}
+                <Row>
+                    <Col size={5}>
+                        <Text style={styles.NameText}>
+                        {arrangeFullName(data.familyMemberName,data.familyMemberLastName)}
+                        </Text>
+                    </Col>
+                    <Col size={5}>
+                        <Text style={styles.ageText}>{data.familyMemberAge} years</Text>
+                    </Col>
+                </Row>
+                <Row style={{ marginTop: 10 }}>
+                    <Col size={4}>
+                        <Row>
+                            <Col size={3}>
+                                <Text style={styles.commonText}>Gender</Text>
+                            </Col>
+                            <Col size={2}>
+                                <Text style={styles.commonText}>-</Text>
+                            </Col>
+                            <Col size={5}>
+                                <Text style={[styles.commonText, { color: '#909498' }]}>
+                                    {data.familyMemberGender ?data.familyMemberGender : 'N/A'}
+                                </Text>
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col size={4}>
+                        {data.relationship != undefined ? (
+                            <Row>
+                                <Col size={3}>
+                                    <Text style={styles.commonText}>Relationship</Text>
+                                </Col>
+                                <Col size={2}>
+                                    <Text style={styles.commonText}>-</Text>
+                                </Col>
+                                <Col size={5} style={{ alignItems: 'flex-end' }}>
+                                    <Text style={[styles.commonText, { color: '#909498' }]}>
+                                        {data.relationship}
+                                    </Text>
+                                </Col>
+                            </Row>
+                        ) : null}
+                    </Col>
+                   
+                </Row>
+              
+            </View>
+        );
+    }
+
 
     getPossiblePaymentMethods(payBy) {
         if (payBy === POSSIBLE_PAY_METHODS.SELF) {
@@ -443,11 +404,7 @@ class TestDetails extends PureComponent {
     }
 
     render() {
-        // const datas = {
-        //     full_name: 'S.Mukesh Kannan(self)', age: 21, gender: "male", phone_no: 8921595872,
-        //     familyDataByInsurance: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }, { full_name: 'S.Reshma', relation: 'Daughter', age: 4, gender: "female", phone_no: 8921595872 }],
-        //     familyDataByCorporate: [{ full_name: 'S.Ramesh', relation: 'Son', age: 4, gender: "male", phone_no: 8921595872 }]
-        // }
+       
         const {
             isCorporateUser,
             payBy,
@@ -457,7 +414,7 @@ class TestDetails extends PureComponent {
             singlePatientSelect,
             selfData,
         } = this.props;
-
+        console.log("selfData,",selfData)
         const { name, age, gender, onlyFamilyWithPayDetailsData, data } = this.state;
         // const familyData = payBy === POSSIBLE_PAY_METHODS.INSURANCE ? data.familyDataByInsurance : data.familyDataByCorporate
 
@@ -547,7 +504,7 @@ class TestDetails extends PureComponent {
                                 {translate('Patient Details')}
                             </Text>
                             <View>
-                                {this.renderPatientDetails(
+                                {this.renderSelfDetails(
                                     selfData,
                                     0,
                                     false,
@@ -572,7 +529,7 @@ class TestDetails extends PureComponent {
                                 data={onlyFamilyWithPayDetailsData}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
-                                    this.renderPatientDetails(
+                                    this.renderFamilyDetails(
                                         item,
                                         index,
                                         false,
