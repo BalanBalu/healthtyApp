@@ -112,19 +112,19 @@ class CorporateHome extends PureComponent {
   initialFunction = async () => {
     try {
       CurrentLocation.getCurrentPosition();
-      // const userId = await AsyncStorage.getItem('userId');
-      // if (userId) {
-      //   const {
-      //     notification: { notificationCount },
-      //     navigation,
-      //   } = this.props;
+      const userId = await AsyncStorage.getItem('UserId');
+      if (userId) {
+        const {
+          notification: { notificationCount },
+          navigation,
+        } = this.props;
 
-      //   navigation.setParams({
-      //     notificationBadgeCount: notificationCount,
-      //   });
+        navigation.setParams({
+          notificationBadgeCount: notificationCount,
+        });
 
-      //   this.getMarkedAsReadedNotification(userId);
-      // }
+        this.getMarkedAsReadedNotification(userId);
+      }
     } catch (ex) {
       console.log(ex);
     }
@@ -241,7 +241,7 @@ class CorporateHome extends PureComponent {
   };
   backNavigation = async (navigationData) => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
+      let userId = await AsyncStorage.getItem('UserId');
       if (userId) {
         this.getMarkedAsReadedNotification(userId);
       }
@@ -307,6 +307,7 @@ function CorporateHomeState(state) {
   return {
     profile: state.profile,
     bookappointment: state.bookappointment,
+    notification: state.notification
   };
 }
 export default connect(CorporateHomeState)(CorporateHome);
