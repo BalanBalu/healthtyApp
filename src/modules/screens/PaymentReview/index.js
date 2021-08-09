@@ -40,7 +40,8 @@ import {
   getAllSpecialist,
   getUserGenderAndAge,
   toastMeassage,
-  familyMemAgeCal
+  familyMemAgeCal,
+  arrangeFullName
 } from '../../common';
 import {SERVICE_TYPES} from '../../../setup/config';
 import {primaryColor} from '../../../setup/config';
@@ -64,163 +65,163 @@ import {
   deleteFamilyMembersDetails,
 } from '../../providers/corporate/corporate.actions';
 
-// const bookSlotDetails = {
-//   slotDate: '2021-08-27',
-//   slotStartDateAndTime: '2021-08-27T01:10:01Z',
-//   slotEndDateAndTime: '2021-08-27T01:20:01Z',
-//   slotTimeUnit: 'minutes',
-//   slotDuration: 10,
-//   fee: 9,
-//   offerPercent: 10,
-//   feeWithoutOffer: 10,
-//   isSlotBooked: false,
-//   location: null,
-// };
+const bookSlotDetails = {
+  slotDate: '2021-08-27',
+  slotStartDateAndTime: '2021-08-27T01:10:01Z',
+  slotEndDateAndTime: '2021-08-27T01:20:01Z',
+  slotTimeUnit: 'minutes',
+  slotDuration: 10,
+  fee: 9,
+  offerPercent: 10,
+  feeWithoutOffer: 10,
+  isSlotBooked: false,
+  location: null,
+};
 
-// const doctorDetails = {
-//   doctorId: '60deb4d937d7495cccd4aa18',
-//   hospitalId: '60deb53137d7495cccd4aa20',
-//   prefix: 'Dr',
-//   status: null,
-//   education: [
-//     {
-//       degree: 'B.D.S',
-//       institute: 'Christian Medical College',
-//       location: '122',
-//     },
-//     {
-//       degree: 'M.Surg',
-//       institute: 'Christian Medical College',
-//       location: 'we',
-//     },
-//     {
-//       degree: 'DPhil',
-//       institute: 'Christian Medical College',
-//       location: 'we',
-//     },
-//     {
-//       degree: 'M.B.B.S',
-//       institute: 'Christian Medical College',
-//       location: 'dsf',
-//     },
-//   ],
-//   specialist: [
-//     {
-//       "_id": "5dab9c65f680781894d6efa2",
-//       "category": "Primary Care Doctor",
-//       "categoryId": 1,
-//       "service": "Illness",
-//       "serviceId": 1
-//     }
-//   ],
-//   doctorIdHostpitalId: '60deb4d937d7495cccd4aa18-60deb53137d7495cccd4aa20',
-//   doctorName: 'pradeep pradeep',
-//   email: 'spradeepmp007@gmail.com',
-//   dob: '1995-10-01T18:30:00.000Z',
-//   profileImage: {
-//     image_id: '60e46b585acaff2ac0e9cb55',
-//     original_file_name: 'photo.jpg',
-//     type: 'image/jpeg',
-//     file_name: 'profileImage_1625582423857_photo.jpg',
-//     original_imageURL:
-//       'http://192.168.1.5:3000/smarthealth/profileImage/profileImage_1625582423857_photo.jpg',
-//     imageURL:
-//       'http://192.168.1.5:3000/images/profileImage_1625582423857_photo.jpg',
-//     updated_date: '2021-07-06T14:40:23.810Z',
-//     active: true,
-//   },
-//   yearOfExp: {year: 6, month: 6, isPrivate: null},
-//   slotData: {
-//     '2021-07-27': [
-//       {
-//         slotDate: '2021-07-27',
-//         slotStartDateAndTime: '2021-07-27T01:00:01Z',
-//         slotEndDateAndTime: '2021-07-27T01:10:01Z',
-//         slotTimeUnit: 'minutes',
-//         slotDuration: 10,
-//         fee: 9,
-//         offerPercent: 10,
-//         feeWithoutOffer: 10,
-//         isSlotBooked: false,
-//         location: null,
-//       },
-//       {
-//         slotDate: '2021-07-27',
-//         slotStartDateAndTime: '2021-07-27T01:10:01Z',
-//         slotEndDateAndTime: '2021-07-27T01:20:01Z',
-//         slotTimeUnit: 'minutes',
-//         slotDuration: 10,
-//         fee: 9,
-//         offerPercent: 10,
-//         feeWithoutOffer: 10,
-//         isSlotBooked: false,
-//         location: null,
-//       },
-//       {
-//         slotDate: '2021-07-27',
-//         slotStartDateAndTime: '2021-07-27T01:20:01Z',
-//         slotEndDateAndTime: '2021-07-27T01:30:01Z',
-//         slotTimeUnit: 'minutes',
-//         slotDuration: 10,
-//         fee: 9,
-//         offerPercent: 10,
-//         feeWithoutOffer: 10,
-//         isSlotBooked: false,
-//         location: null,
-//       },
-//       {
-//         slotDate: '2021-07-27',
-//         slotStartDateAndTime: '2021-07-27T01:30:01Z',
-//         slotEndDateAndTime: '2021-07-27T01:40:01Z',
-//         slotTimeUnit: 'minutes',
-//         slotDuration: 10,
-//         fee: 9,
-//         offerPercent: 10,
-//         feeWithoutOffer: 10,
-//         isSlotBooked: false,
-//         location: null,
-//       },
-//     ],
-//     '2021-08-01': [
-//       {
-//         slotDate: '2021-08-01',
-//         slotStartDateAndTime: '2021-07-31T18:30:01Z',
-//         slotEndDateAndTime: '2021-07-31T18:40:01Z',
-//         slotTimeUnit: 'minutes',
-//         slotDuration: 10,
-//         fee: 9,
-//         offerPercent: 10,
-//         feeWithoutOffer: 10,
-//         isSlotBooked: false,
-//         location: null,
-//       },
-//       {
-//         slotDate: '2021-08-01',
-//         slotStartDateAndTime: '2021-07-31T18:40:01Z',
-//         slotEndDateAndTime: '2021-07-31T18:50:01Z',
-//         slotTimeUnit: 'minutes',
-//         slotDuration: 10,
-//         fee: 9,
-//         offerPercent: 10,
-//         feeWithoutOffer: 10,
-//         isSlotBooked: false,
-//         location: null,
-//       },
-//       {
-//         slotDate: '2021-08-01',
-//         slotStartDateAndTime: '2021-07-31T18:50:01Z',
-//         slotEndDateAndTime: '2021-07-31T19:00:01Z',
-//         slotTimeUnit: 'minutes',
-//         slotDuration: 10,
-//         fee: 9,
-//         offerPercent: 10,
-//         feeWithoutOffer: 10,
-//         isSlotBooked: false,
-//         location: null,
-//       },
-//     ],
-//   },
-// };
+const doctorDetails = {
+  doctorId: '60deb4d937d7495cccd4aa18',
+  hospitalId: '60deb53137d7495cccd4aa20',
+  prefix: 'Dr',
+  status: null,
+  education: [
+    {
+      degree: 'B.D.S',
+      institute: 'Christian Medical College',
+      location: '122',
+    },
+    {
+      degree: 'M.Surg',
+      institute: 'Christian Medical College',
+      location: 'we',
+    },
+    {
+      degree: 'DPhil',
+      institute: 'Christian Medical College',
+      location: 'we',
+    },
+    {
+      degree: 'M.B.B.S',
+      institute: 'Christian Medical College',
+      location: 'dsf',
+    },
+  ],
+  specialist: [
+    {
+      "_id": "5dab9c65f680781894d6efa2",
+      "category": "Primary Care Doctor",
+      "categoryId": 1,
+      "service": "Illness",
+      "serviceId": 1
+    }
+  ],
+  doctorIdHostpitalId: '60deb4d937d7495cccd4aa18-60deb53137d7495cccd4aa20',
+  doctorName: 'pradeep pradeep',
+  email: 'spradeepmp007@gmail.com',
+  dob: '1995-10-01T18:30:00.000Z',
+  profileImage: {
+    image_id: '60e46b585acaff2ac0e9cb55',
+    original_file_name: 'photo.jpg',
+    type: 'image/jpeg',
+    file_name: 'profileImage_1625582423857_photo.jpg',
+    original_imageURL:
+      'http://192.168.1.5:3000/smarthealth/profileImage/profileImage_1625582423857_photo.jpg',
+    imageURL:
+      'http://192.168.1.5:3000/images/profileImage_1625582423857_photo.jpg',
+    updated_date: '2021-07-06T14:40:23.810Z',
+    active: true,
+  },
+  yearOfExp: {year: 6, month: 6, isPrivate: null},
+  slotData: {
+    '2021-07-27': [
+      {
+        slotDate: '2021-07-27',
+        slotStartDateAndTime: '2021-07-27T01:00:01Z',
+        slotEndDateAndTime: '2021-07-27T01:10:01Z',
+        slotTimeUnit: 'minutes',
+        slotDuration: 10,
+        fee: 9,
+        offerPercent: 10,
+        feeWithoutOffer: 10,
+        isSlotBooked: false,
+        location: null,
+      },
+      {
+        slotDate: '2021-07-27',
+        slotStartDateAndTime: '2021-07-27T01:10:01Z',
+        slotEndDateAndTime: '2021-07-27T01:20:01Z',
+        slotTimeUnit: 'minutes',
+        slotDuration: 10,
+        fee: 9,
+        offerPercent: 10,
+        feeWithoutOffer: 10,
+        isSlotBooked: false,
+        location: null,
+      },
+      {
+        slotDate: '2021-07-27',
+        slotStartDateAndTime: '2021-07-27T01:20:01Z',
+        slotEndDateAndTime: '2021-07-27T01:30:01Z',
+        slotTimeUnit: 'minutes',
+        slotDuration: 10,
+        fee: 9,
+        offerPercent: 10,
+        feeWithoutOffer: 10,
+        isSlotBooked: false,
+        location: null,
+      },
+      {
+        slotDate: '2021-07-27',
+        slotStartDateAndTime: '2021-07-27T01:30:01Z',
+        slotEndDateAndTime: '2021-07-27T01:40:01Z',
+        slotTimeUnit: 'minutes',
+        slotDuration: 10,
+        fee: 9,
+        offerPercent: 10,
+        feeWithoutOffer: 10,
+        isSlotBooked: false,
+        location: null,
+      },
+    ],
+    '2021-08-01': [
+      {
+        slotDate: '2021-08-01',
+        slotStartDateAndTime: '2021-07-31T18:30:01Z',
+        slotEndDateAndTime: '2021-07-31T18:40:01Z',
+        slotTimeUnit: 'minutes',
+        slotDuration: 10,
+        fee: 9,
+        offerPercent: 10,
+        feeWithoutOffer: 10,
+        isSlotBooked: false,
+        location: null,
+      },
+      {
+        slotDate: '2021-08-01',
+        slotStartDateAndTime: '2021-07-31T18:40:01Z',
+        slotEndDateAndTime: '2021-07-31T18:50:01Z',
+        slotTimeUnit: 'minutes',
+        slotDuration: 10,
+        fee: 9,
+        offerPercent: 10,
+        feeWithoutOffer: 10,
+        isSlotBooked: false,
+        location: null,
+      },
+      {
+        slotDate: '2021-08-01',
+        slotStartDateAndTime: '2021-07-31T18:50:01Z',
+        slotEndDateAndTime: '2021-07-31T19:00:01Z',
+        slotTimeUnit: 'minutes',
+        slotDuration: 10,
+        fee: 9,
+        offerPercent: 10,
+        feeWithoutOffer: 10,
+        isSlotBooked: false,
+        location: null,
+      },
+    ],
+  },
+};
 
 export default class PaymentReview extends Component {
   constructor(props) {
@@ -236,7 +237,6 @@ export default class PaymentReview extends Component {
       addPatientDataPoPupEnable: false,
       isCorporateUser: false,
       selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
-      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
       familyMembersSelections: [],
       fromNavigation: null,
       familyMembersSelections: [],
@@ -261,27 +261,49 @@ export default class PaymentReview extends Component {
       navigation.navigate('login');
       return;
     }
-    let basicProfileData = await AsyncStorage.getItem('basicProfileData');
-    let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
-    let basicData = JSON.parse(basicProfileData);
-    basicData.policyNumber=memberPolicyNo;
-    this.setState({selfData:[basicData]})
-    let bookAppointment=navigation.getParam('bookAppointment')
-    if(bookAppointment){
-    await this.setState({
-        doctorDetails:bookAppointment.doctorDetails,
-        bookSlotDetails:bookAppointment.selectedSlot,
-        isLoading: false,
-      })
-      console.log("bookSlotDetails",this.state.bookSlotDetails)
+    
+    // let bookAppointment=navigation.getParam('bookAppointment')
+    // if(bookAppointment){
+    // await this.setState({
+    //     doctorDetails:bookAppointment.doctorDetails,
+    //     bookSlotDetails:bookAppointment.selectedSlot,
+    //     isLoading: false,
+    //   })
+    //   console.log("bookSlotDetails",this.state.bookSlotDetails)
 
-      console.log("doctorDetails",this.state.doctorDetails)
-    }
-    // this.getPatientInfo();
+    //   console.log("doctorDetails",this.state.doctorDetails)
+    // }
+    this.getSelfDatails();
+    this.getFamilyInfo();
   }
+  getSelfDatails = async () => {
+    try {
+      this.setState({isLoading: true});
+      let basicProfileData = await AsyncStorage.getItem('basicProfileData');
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let basicData = JSON.parse(basicProfileData);
+      if (basicData) {
+        basicData.policyNumber=memberPolicyNo;
+        this.defaultPatDetails = {
+          type: 'self',
+          full_name:arrangeFullName(basicData&&basicData.first_name,basicData&&basicData.last_name) ,
+          gender: basicData.gender?basicData.gender:'N/A',
+          age: parseInt(dateDiff(basicData.dob, new Date(), 'years')),
+          phone_no: basicData.mobile_no?basicData.mobile_no:'N/A'
+      } 
+        this.setState({selfData:basicData}) 
+     }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
   async confirmProceedPayment() {
 
-    const {bookSlotDetails,patientDetailsObj,selfData} = this.state;
+    const {patientDetailsObj,selfData} = this.state;
+        // const {bookSlotDetails,patientDetailsObj,selfData} = this.state;
+
     let {diseaseDescription} = bookSlotDetails;
     // if (!Object.keys(patientDetailsObj).length) {
     //   Toast.show({
@@ -462,7 +484,7 @@ export default class PaymentReview extends Component {
     this.setState({isLoading: false, spinnerText: ' '});
   }
 
-  getPatientInfo = async () => {
+  getFamilyInfo = async () => {
     try {
       this.setState({isLoading: true});
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
@@ -551,7 +573,7 @@ export default class PaymentReview extends Component {
 
   render() {
     const {
-      bookSlotDetails,
+      // bookSlotDetails,
       isCorporateUser,
       patientDetailsObj,
       addPatientDataPoPupEnable,
@@ -565,7 +587,7 @@ export default class PaymentReview extends Component {
       fromNavigation,
       familyMembers,
       selfData,
-      doctorDetails
+      // doctorDetails
     } = this.state;
     // console.log("bookSlotDetails",bookSlotDetails)
     return (
@@ -696,7 +718,7 @@ export default class PaymentReview extends Component {
               </Row>
             </View>
 
-            <View style={{paddingBottom: 50}}>
+            {/* <View style={{paddingBottom: 50}}>
       <View style={{backgroundColor: '#fff', padding: 10}}>
               <Text style={{fontSize: 16, fontFamily: 'opensans-bold'}}>
                 {translate('Patient Details')}
@@ -714,7 +736,7 @@ export default class PaymentReview extends Component {
                 }
               />
             </View>
-            </View>
+            </View> */}
             {/* <PayBySelection
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
@@ -722,20 +744,17 @@ export default class PaymentReview extends Component {
                 this.setState({
                   selectedPayBy: mode,
                   selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
-                  patientDetailsObj: this.defaultPatDetails,
+                  patientDetailsObj: selfData,
                   familyMembersSelections: [],
                 });
               }}
             /> */}
 
-            {/* <TestDetails
+            <TestDetails
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
-              familyMembersSelections={this.state.familyMembersSelections}
-              changeFamilyMembersSelections={(familyMemberSelections) =>
-                this.setState({familyMembersSelections: familyMemberSelections})
-              }
+              selfData={this.defaultPatDetails}
               onSelectionChange={(patientType) => {
                 if (patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
                   this.setState({
@@ -762,7 +781,7 @@ export default class PaymentReview extends Component {
                 }
                 this.addPatientList(data);
               }}
-            /> */}
+            />
             <View style={{backgroundColor: '#fff', padding: 10, marginTop: 10}}>
               <Row>
                 <Icon name="create" style={{fontSize: 15, color: '#000'}} />
