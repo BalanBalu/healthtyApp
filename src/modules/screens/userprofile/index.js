@@ -684,7 +684,7 @@ class Profile extends Component {
                               item.relationship != 'SELF' ? (
                               <Col size={10}>
                                 <Row>
-                                  <Col size={4}>
+                                  <Col size={3.6}>
                                     <Text note style={styles.customText1}>
                                       {translate("Name")}
                                     </Text>
@@ -723,7 +723,7 @@ class Profile extends Component {
                             )}
 
 
-                            {item.relationship != 'EMPLOYEE' &&
+                            {/* {item.relationship != 'EMPLOYEE' &&
                               item.relationship != 'SELF' ? (
                               <Col size={-15}>
                                 <TouchableOpacity
@@ -748,7 +748,7 @@ class Profile extends Component {
                                   />
                                 </TouchableOpacity>
                               </Col>
-                            ) : null}
+                            ) : null} */}
                             {item.relationship != 'EMPLOYEE' &&
                               item.relationship != 'SELF' ? (
                               <Col>

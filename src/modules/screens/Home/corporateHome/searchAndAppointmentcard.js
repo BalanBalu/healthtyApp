@@ -189,7 +189,7 @@ export const SearchAndAppointmentCard = props => {
           </View>
         </TouchableHighlight> */}
         <TouchableHighlight
-          style={[styles.rectBox, {marginLeft: 8}]}
+          style={[styles.rectBox]}
           activeOpacity={0.6}
           underlayColor={secondaryColorTouch}
           // onPress={() => navigation('Video and Chat Service')}>
