@@ -38,6 +38,7 @@ import { ContactUsCard } from './contactUsCard';
 import PolicyCoverageCard from './policyCoverageCard';
 import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions';
 import { translate } from '../../../../setup/translator.helper';
+import NotifService from '../../../../setup/NotifService';
 
 class CorporateHome extends PureComponent {
   locationUpdatedCount = 0;
@@ -60,7 +61,7 @@ class CorporateHome extends PureComponent {
     await this.getCorporateDatails();
     this.setState({ corporateData: this.props?.profile?.corporateData, TPAData: this.props?.profile?.memberTpaInfo })
     await this.getMemberDetailsByPolicyNo();
-    this.getMemberDetailsByEmail();
+    await this.getMemberDetailsByEmail();
     this.initialFunction();
     this.getCorporatePhoneNumber();
 
@@ -87,7 +88,8 @@ class CorporateHome extends PureComponent {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result && result.length) {
-        let policyData = await getPolicyByPolicyNo(result && result[0].policyNo);
+        NotifService.initNotification(this.props.navigation,result[0]._id);
+        let policyData = await getPolicyByPolicyNo(result&&result[0].policyNo);
         await this.setState({
           memberDetails: result[0],
           policyDetails: policyData,
