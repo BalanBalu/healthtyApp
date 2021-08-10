@@ -273,15 +273,12 @@ export default class PaymentReview extends Component {
         bookSlotDetails:bookAppointment.selectedSlot,
         isLoading: false,
       })
-      console.log("bookSlotDetails",this.state.bookSlotDetails)
-
-      console.log("doctorDetails",this.state.doctorDetails)
     }
     // this.getPatientInfo();
   }
   async confirmProceedPayment() {
 
-    const {bookSlotDetails,patientDetailsObj,selfData} = this.state;
+    const {bookSlotDetails,patientDetailsObj,selfData,doctorDetails} = this.state;
     let {diseaseDescription} = bookSlotDetails;
     // if (!Object.keys(patientDetailsObj).length) {
     //   Toast.show({
@@ -291,14 +288,14 @@ export default class PaymentReview extends Component {
     //   });
     //   return false;
     // }
-    // if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
-    //   Toast.show({
-    //     text: translate('Please enter valid Reason'),
-    //     duration: 3000,
-    //     type: 'warning',
-    //   });
-    //   return;
-    // }
+    if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
+      Toast.show({
+        text: translate('Please enter valid Reason'),
+        duration: 3000,
+        type: 'warning',
+      });
+      return;
+    }
     this.setState({isLoading: true, spinnerText: translate('Please Wait')});
     const bookingSlotData = bookSlotDetails;
     let validationResult;
@@ -307,7 +304,6 @@ export default class PaymentReview extends Component {
     //     success: true,
     //   };
     // } else {
-      console.log("bookingSlotData",bookingSlotData)
       const reqData = {
         startTime: bookingSlotData.slotStartDateAndTime,
         endTime: bookingSlotData.slotEndDateAndTime,
@@ -337,10 +333,9 @@ export default class PaymentReview extends Component {
         appointmentTakenDate:new Date()
       };
       validationResult = await createAppointment(reqData);
-      console.log("validationResult",validationResult)
     // }
     this.setState({isLoading: false, spinnerText: ' '});
-      if (validationResult.success) {
+      if (validationResult) {
         Toast.show({
               text: "Your Appointment Booked Sucessfully",
               type: 'success',
@@ -468,7 +463,6 @@ export default class PaymentReview extends Component {
       let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-      console.log('result', result);
       if (result) {
         this.setState({familyMembers: result, isLoading: false});
       }
@@ -504,7 +498,7 @@ export default class PaymentReview extends Component {
         <Row>
           <Col size={5}>
             <Text style={styles.subText}>
-              {(data.first_name ? data.first_name + ' ' : '') + (data.last_name ? data.last_name + ' ' : '')}
+              {(data&&data.first_name ? data.first_name + ' ' : '') + (data&&data.last_name ? data.last_name + ' ' : '')}
             </Text>
           </Col>
           <Col size={5}>
@@ -522,12 +516,13 @@ export default class PaymentReview extends Component {
               </Col>
               <Col size={5}>
                 <Text style={[styles.subText, {color: '#909498'}]}>
-                  {data.gender? data.gender:'N/A'}
+                  {data&&data.gender? data.gender:'N/A'}
                 </Text>
               </Col>
             </Row>
           </Col>
         </Row>
+
         <Row style={{marginTop: 10}}>
           <Col size={4}>
             <Row>
@@ -539,7 +534,7 @@ export default class PaymentReview extends Component {
               </Col>
               <Col size={5}>
                 <Text style={[styles.subText, {color: '#909498'}]}>
-                  {data.relationship? data.relationship:'N/A'}
+                  {data&&data.relationship? data.relationship:'N/A'}
                 </Text>
               </Col>
             </Row>
@@ -567,7 +562,6 @@ export default class PaymentReview extends Component {
       selfData,
       doctorDetails
     } = this.state;
-    // console.log("bookSlotDetails",bookSlotDetails)
     return (
       <Container>
         <Content style={{padding: 15, backgroundColor: '#F5F5F5'}}>
