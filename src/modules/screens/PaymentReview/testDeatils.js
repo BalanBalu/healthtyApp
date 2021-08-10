@@ -36,8 +36,8 @@ class TestDetails extends PureComponent {
         this.state = {
             benefeciaryDeails: false,
             patientDetailsObj: {},
-           
             gender: 'M',
+            currentIndex: null,
             full_name: '',
             age: '',
             refreshCount: 0,
@@ -369,16 +369,27 @@ class TestDetails extends PureComponent {
                             ) : null}
                             <FlatList
                                 data={familyMembers}
+                                extraData={this.state.currentIndex}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
-                                <View
-                                style={{
+                                <TouchableOpacity
+                                onPress={() => this.setState({ 
+                                    currentIndex: index
+                                })}
+                                style={[this.state.currentIndex === index ? {
+                                    borderColor: '#48b4a5',
+                                    borderWidth: 1,
+                                    padding: 10,
+                                    backgroundColor: '#e5e5e5',
+                                    borderRadius: 5,
+                                    marginTop: 10,
+                                } : {
                                     borderColor: 'gray',
                                     borderWidth: 0.3,
                                     padding: 10,
                                     borderRadius: 5,
                                     marginTop: 10,
-                                }}>
+                                }]}>
                                
                                 <Row>
                                     <Col size={5}>
@@ -424,7 +435,7 @@ class TestDetails extends PureComponent {
                                    
                                 </Row>
                               
-                            </View>
+                            </TouchableOpacity>
                                 }
                             />
                         </View>
