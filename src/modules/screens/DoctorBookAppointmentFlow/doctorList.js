@@ -508,7 +508,7 @@ class DoctorList extends Component {
     // );
     this.props.navigation.navigate(
       'DoctorConsultation',
-      reqData4BookAppPage,
+      {reqData4BookAppPage},
     );
 
   }
