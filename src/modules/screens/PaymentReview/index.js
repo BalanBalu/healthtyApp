@@ -329,14 +329,14 @@ export default class PaymentReview extends Component {
     //   });
     //   return false;
     // }
-    // if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
-    //   Toast.show({
-    //     text: translate('Please enter valid Reason'),
-    //     duration: 3000,
-    //     type: 'warning',
-    //   });
-    //   return;
-    // }
+    if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
+      Toast.show({
+        text: translate('Please enter valid Reason'),
+        duration: 3000,
+        type: 'warning',
+      });
+      return;
+    }
     this.setState({isLoading: true, spinnerText: translate('Please Wait')});
     const bookingSlotData = bookSlotDetails;
     let validationResult;
@@ -345,7 +345,6 @@ export default class PaymentReview extends Component {
     //     success: true,
     //   };
     // } else {
-      console.log("bookingSlotData",bookingSlotData)
       const reqData = {
         startTime: bookingSlotData.slotStartDateAndTime,
         endTime: bookingSlotData.slotEndDateAndTime,
@@ -375,10 +374,9 @@ export default class PaymentReview extends Component {
         appointmentTakenDate:new Date()
       };
       validationResult = await createAppointment(reqData);
-      console.log("validationResult",validationResult)
     // }
     this.setState({isLoading: false, spinnerText: ' '});
-      if (validationResult.success) {
+      if (validationResult) {
         Toast.show({
               text: "Your Appointment Booked Sucessfully",
               type: 'success',
@@ -541,6 +539,7 @@ export default class PaymentReview extends Component {
             </Row>
           </Col>
         </Row>
+
         <Row style={{marginTop: 10}}>
           <Col size={4}>
             <Row>

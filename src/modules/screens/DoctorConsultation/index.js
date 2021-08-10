@@ -36,7 +36,7 @@ class DoctorConsultation extends Component {
       isVisibleDatePicker: false,
       buttonSelected: 0,
       selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
-      isLoading: false,
+      isLoading: true,
       availableSlots:[],
       isSlotBooked:false,
       refreshCount: 1,
@@ -48,8 +48,11 @@ class DoctorConsultation extends Component {
   }
 
   async componentDidMount() {
-    console.log("componentDidMount",this.state.selectedDate)
-   await this.getAvailabilitySlots(this.state.selectedDate);
+    let reqData4BookAppPage= this.props.navigation.getParam('reqData4BookAppPage');
+   if(reqData4BookAppPage){
+    await this.setState({doctorData:reqData4BookAppPage.singleDoctorItemData,doctorId:reqData4BookAppPage.doctorId,hospitalId:reqData4BookAppPage.singleDoctorItemData&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id?reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id:null,isLoading: false,})
+   } 
+    await this.getAvailabilitySlots(this.state.selectedDate);
 
   }
 
@@ -57,15 +60,13 @@ class DoctorConsultation extends Component {
     try {
       // this.setState({isLoading: true});
       let resultData = await fetchAvailabilitySlots(
-        '60deb4d937d7495cccd4aa18',
-        '60deb53137d7495cccd4aa20',
+        this.state.doctorId,
+        this.state.hospitalId,
         selectedDate,
       );
-      console.log("resultData",resultData)
       if (resultData.success) {
         this.setState({data: resultData.data[0],slotData:resultData.data[0].slotData});
-              console.log('this.state.slotData[selectedDate]', this.state.slotData[selectedDate]);
-              
+             
         if (this.state.slotData[selectedDate] != undefined) {
           await this.setState({ availableSlots: this.state.slotData[selectedDate] });
         }
@@ -118,8 +119,7 @@ class DoctorConsultation extends Component {
   }
 
   render() {
-    const {isVisibleDatePicker, selectedDate, data,isLoading,availableSlots,selectedIndex,errorMsg,isModalVisible} = this.state;
-    console.log("data",data)
+    const {isVisibleDatePicker, selectedDate,doctorData, data,isLoading,availableSlots,selectedIndex,errorMsg,isModalVisible} = this.state;
     return (
       <View style={[styles.outerContainer]}>
         <View style={[styles.topCurve]}></View>
@@ -130,7 +130,7 @@ class DoctorConsultation extends Component {
             <ImageBackground
               style={[styles.picCircle]}
               borderRadius={80}
-              source={data&&data.profileImage?data.profileImage.imageURL:null}></ImageBackground>
+              source={doctorData&&doctorData.profileImage?doctorData.profileImage.imageURL:null}></ImageBackground>
           </View>
           <View
             style={[
@@ -144,7 +144,7 @@ class DoctorConsultation extends Component {
                 GlobalStyles.fontSize5,
                 {color: '#128283', fontWeight: 'bold'},
               ]}>
-              {data&&data.doctorName?data.doctorName:null}
+              {`${doctorData&&doctorData.firstName?doctorData.firstName+' ':''} ${doctorData&&doctorData.lastName?doctorData.lastName+' ':''}`}
             </Text>
           </View>
           <View
@@ -155,7 +155,7 @@ class DoctorConsultation extends Component {
               {fontSize: 40},
             ]}>
             <Text style={[GlobalStyles.fontSize4, {color: 'rgba(0,0,0,0.4)'}]}>
-            {data&&data.yearOfExp?(getDoctorExperience(data.yearOfExp)+' Experience'):''}
+            {doctorData&&doctorData.experience?(getDoctorExperience(doctorData.experience)+' Experience'):''}
             </Text>
           </View>
           {/* <View style={styles.divider} />

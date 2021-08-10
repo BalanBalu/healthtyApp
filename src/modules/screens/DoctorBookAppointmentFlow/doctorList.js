@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Container,
   Content,
@@ -13,8 +13,8 @@ import {
   Thumbnail,
   Icon,
 } from 'native-base';
-import {Col, Row, Grid} from 'react-native-easy-grid';
-import {connect} from 'react-redux';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import { connect } from 'react-redux';
 import {
   TouchableOpacity,
   View,
@@ -41,28 +41,22 @@ import {
   serviceOfUpdateDocSponsorViewCountByUser,
   getFavoriteListCount4PatientService,
 } from '../../providers/BookAppointmentFlow/action';
-import {formatDate, addMoment, getMoment} from '../../../setup/helpers';
-import {Loader} from '../../../components/ContentLoader';
-import {NavigationEvents} from 'react-navigation';
+import { formatDate, addMoment, getMoment } from '../../../setup/helpers';
+import { Loader } from '../../../components/ContentLoader';
+import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
-import {store} from '../../../setup/store';
-import {primaryColor} from '../../../setup/config';
-import {translate} from '../../../setup/translator.helper';
+import { store } from '../../../setup/store';
+import { primaryColor } from '../../../setup/config';
+import { translate } from '../../../setup/translator.helper';
 
 import {
-  RenderListNotFound,
-  RenderNoSlotsAvailable,
+  RenderListNotFound
 } from '../CommonAll/components';
 import {
-  enumerateStartToEndDates,
   sortByPrimeDoctors,
 } from '../CommonAll/functions';
 import RenderDoctorInfo from './RenderDoctorInfo';
-import RenderDatesList from './RenderDateList';
-import RenderSlots from './RenderSlots';
 let currentDoctorOrder = 'ASC';
-
-const CALL_AVAILABILITY_SLOTS_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 const PAGINATION_COUNT_FOR_GET_DOCTORS_LIST = 8;
 class DoctorList extends Component {
   weekWiseDatesList = [];
@@ -86,7 +80,7 @@ class DoctorList extends Component {
       isLoading: true,
       isLoadingDatesAndSlots: false,
       isLoadingMoreDocList: false,
-      isCorporateUser:false
+      isCorporateUser: false
     };
     (this.conditionFromFilterPage = false), (this.isEnabledLoadMoreData = true);
     this.selectedDataFromFilterPage = null;
@@ -101,13 +95,13 @@ class DoctorList extends Component {
   }
   componentNavigationMount = async () => {
     try {
-      const {navigation} = this.props;
+      const { navigation } = this.props;
       this.selectedDataFromFilterPage = navigation.getParam('filterData');
       this.conditionFromFilterPage = navigation.getParam(
         'conditionFromFilterPage',
       );
       const {
-        bookAppointmentData: {getPreviousDocListWhenClearFilter},
+        bookAppointmentData: { getPreviousDocListWhenClearFilter },
       } = this.props;
       if (this.conditionFromFilterPage && getPreviousDocListWhenClearFilter) {
         //Call Initial search service  when clear the Filter data from filter page
@@ -128,7 +122,7 @@ class DoctorList extends Component {
   async componentDidMount() {
     try {
       const isCorporateUser = await AsyncStorage.getItem('is_corporate_user') === 'true';
-      this.setState({isCorporateUser: isCorporateUser});
+      this.setState({ isCorporateUser: isCorporateUser });
       // await this.dispatchAndCResetOfRattingAndFavorites(); // clear the Ratting and Favorites counts in search list Props
       const memberId = await AsyncStorage.getItem('memberId');
       /** Passing ActiveSponsor is TRUE Or FALSE values on Params **/
@@ -137,7 +131,7 @@ class DoctorList extends Component {
 
       if (memberId) {
         // await this.getFavoriteCounts4PatByUserId(memberId);
-        this.setState({isLoggedIn: true});
+        this.setState({ isLoggedIn: true });
       }
     } catch (Ex) {
       Toast.show({
@@ -146,15 +140,15 @@ class DoctorList extends Component {
         type: 'danger',
       });
     } finally {
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
     }
   }
   callInitialSearchOrFilterServiceWithClearedData = async (
     conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond,
   ) => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     if (conditionFromFilterPageIsTrueAndWithClearedFilteredDataCond) {
-      this.props.navigation.setParams({conditionFromFilterPage: false});
+      this.props.navigation.setParams({ conditionFromFilterPage: false });
       this.conditionFromFilterPage = false;
     }
     this.isEnabledLoadMoreData = true;
@@ -211,7 +205,7 @@ class DoctorList extends Component {
         'inputKeywordFromSearch',
       );
       const {
-        bookAppointmentData: {getPreviousDocListWhenClearFilter},
+        bookAppointmentData: { getPreviousDocListWhenClearFilter },
       } = this.props;
       let type;
       let reqData4ServiceCall = {
@@ -231,6 +225,7 @@ class DoctorList extends Component {
       } else {
         type = 'search';
       }
+      console.log('reqData4ServiceCall',JSON.stringify(reqData4ServiceCall))
       const docListResponse = await searchByDocDetailsService(
         type,
         reqData4ServiceCall,
@@ -240,9 +235,9 @@ class DoctorList extends Component {
 
       if (docListResponse.success) {
         // if (!activeSponsor) {
-          this.incrementPaginationCount =
-            this.incrementPaginationCount +
-            PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
+        this.incrementPaginationCount =
+          this.incrementPaginationCount +
+          PAGINATION_COUNT_FOR_GET_DOCTORS_LIST;
         // }
         const searchedDoctorIdsArray = [];
         const docListData = docListResponse.data || [];
@@ -313,7 +308,7 @@ class DoctorList extends Component {
           });
         }
       } else {
-     this.isEnabledLoadMoreData = false;
+        this.isEnabledLoadMoreData = false;
         if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.size > 7) {
           Toast.show({
             text: translate('No more Doctors Available!'),
@@ -353,9 +348,9 @@ class DoctorList extends Component {
   }
   render() {
     const {
-      bookAppointmentData: {doctorInfoListAndSlotsData},
+      bookAppointmentData: { doctorInfoListAndSlotsData },
     } = this.props;
-    const {isLoading, isLoadingMoreDocList} = this.state;
+    const { isLoading, isLoadingMoreDocList } = this.state;
     if (isLoading) return <Loader style="list" />;
     return (
       <Container style={styles.container}>
@@ -364,8 +359,8 @@ class DoctorList extends Component {
             this.componentNavigationMount();
           }}
         /> */}
-        <Card style={{borderRadius: 7, paddingTop: 5, paddingBottom: 5}}>
-          <Row style={{height: 35, alignItems: 'center'}}>
+        <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
+          <Row style={{ height: 35, alignItems: 'center' }}>
             <Col
               size={5}
               style={{
@@ -381,10 +376,10 @@ class DoctorList extends Component {
                       ? 'keyboard-arrow-up'
                       : 'keyboard-arrow-down'
                   }
-                  style={{color: 'gray', fontSize: 24}}
+                  style={{ color: 'gray', fontSize: 24 }}
                 />
               </Col>
-              <Col size={8.0} style={{justifyContent: 'center'}}>
+              <Col size={8.0} style={{ justifyContent: 'center' }}>
                 <Text
                   uppercase={false}
                   style={{
@@ -406,7 +401,7 @@ class DoctorList extends Component {
                 justifyContent: 'center',
               }}
               onPress={() => this.navigateToFilters()}>
-              <Col size={8.0} style={{justifyContent: 'center'}}>
+              <Col size={8.0} style={{ justifyContent: 'center' }}>
                 <Text
                   uppercase={false}
                   style={{
@@ -420,13 +415,13 @@ class DoctorList extends Component {
                   {translate('Filters')}{' '}
                 </Text>
               </Col>
-              <Col size={2.0} style={{marginLeft: 5}}>
-                <Icon name="ios-funnel" style={{color: 'gray', fontSize: 20}} />
+              <Col size={2.0} style={{ marginLeft: 5 }}>
+                <Icon name="ios-funnel" style={{ color: 'gray', fontSize: 20 }} />
               </Col>
             </Col>
           </Row>
         </Card>
-        {doctorInfoListAndSlotsData&&doctorInfoListAndSlotsData.length ? (
+        {doctorInfoListAndSlotsData && doctorInfoListAndSlotsData.length ? (
           <FlatList
             scrollEventThrottle={26}
             data={doctorInfoListAndSlotsData}
@@ -438,7 +433,7 @@ class DoctorList extends Component {
                 this.loadMoreData();
               }
             }}
-            renderItem={({item, index}) => this.renderDoctorCard(item, index)}
+            renderItem={({ item, index }) => this.renderDoctorCard(item, index)}
             keyExtractor={(item, index) => index.toString()}
           />
         ) : (
@@ -451,9 +446,9 @@ class DoctorList extends Component {
           />
         )}
         {isLoadingMoreDocList ? (
-          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
             <ActivityIndicator
-              style={{marginBottom: 17}}
+              style={{ marginBottom: 17 }}
               animating={isLoadingMoreDocList}
               size="large"
               color="blue"
@@ -466,30 +461,16 @@ class DoctorList extends Component {
 
   loadMoreData = async () => {
     try {
-      this.setState({isLoadingMoreDocList: true});
+      this.setState({ isLoadingMoreDocList: true });
       await this.searchByDoctorDetails(false);
     } catch (error) {
       console.log('Ex is getting on load more doctor ist data', error.message);
     } finally {
-      this.setState({isLoadingMoreDocList: false});
+      this.setState({ isLoadingMoreDocList: false });
     }
   };
 
-  updateDocSponsorViewersCountByUser = async (sponsorIds) => {
-    try {
-      let memberId = await AsyncStorage.getItem('memberId');
-      if (!memberId) memberId = 'NO_USER';
-      const sponsorIdsObj = {
-        sponsorIds,
-      };
-      await serviceOfUpdateDocSponsorViewCountByUser(memberId, sponsorIdsObj);
-    } catch (ex) {
-      console.log(
-        'Ex getting on updateDocSponsorViewersCountByUser service======',
-        ex.message,
-      );
-    }
-  };
+
   /* Update Favorites for Doctor by memberId  */
   addToFavoritesList = async (doctorId) => {
     const memberId = await AsyncStorage.getItem('memberId');
@@ -500,126 +481,38 @@ class DoctorList extends Component {
         type: 'success',
         duration: 3000,
       });
-    this.setState({renderRefreshCount: this.state.renderRefreshCount + 1});
+    this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
   };
 
   /*   navigate to next further process    */
-  onPressToContinue4PaymentReview = async (
-    doctorData,
-    selectedSlotItemByDoctor,
-    doctorIdHostpitalId,
-  ) => {
-    if (!selectedSlotItemByDoctor) {
-      Toast.show({
-        text: translate('Please select a slot to continue booking'),
-        type: 'warning',
-        duration: 3000,
-      });
-      return;
-    }
-    this.props.navigation.setParams({conditionFromFilterPage: false});
-    doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
-    doctorData.doctorId = doctorData.doctorId;
-    const confirmSlotDetails = {
-      ...doctorData,
-      slotData: selectedSlotItemByDoctor,
-    };
-    this.props.navigation.navigate('Payment Review', {
-      resultconfirmSlotDetails: confirmSlotDetails,
-    });
-  };
-  onSlotItemPress(doctorIdHostpitalId, item, index) {
-    const {storeFeeBySelectedSlotOfDocIdHostpitalIdInObj} = this.state;
-    this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[
-      doctorIdHostpitalId
-    ] = index;
-    this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[
-      doctorIdHostpitalId
-    ] = item;
-    if (
-      item.fee !=
-      storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctorIdHostpitalId]
-    ) {
-      if (
-        storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctorIdHostpitalId] !=
-        undefined
-      ) {
-        Toast.show({
-          text: translate('Appointment Fee Updated'),
-          type: 'warning',
-          duration: 3000,
-        });
-      }
-      storeFeeBySelectedSlotOfDocIdHostpitalIdInObj[doctorIdHostpitalId] =
-        item.fee;
-      this.setState({storeFeeBySelectedSlotOfDocIdHostpitalIdInObj});
-    }
-    this.setState({renderRefreshCount: this.state.renderRefreshCount + 1});
-  }
 
   onPressGoToBookAppointmentPage(doctorItemData) {
-    this.props.navigation.setParams({conditionFromFilterPage: false});
+    this.props.navigation.setParams({ conditionFromFilterPage: false });
     doctorItemData.doctorId = doctorItemData.doctorId;
-    const singleDoctorItemData = {...doctorItemData};
+    const singleDoctorItemData = { ...doctorItemData };
     const reqData4BookAppPage = {
       singleDoctorItemData: singleDoctorItemData,
       doctorId: doctorItemData.doctorId,
       // weekWiseDatesList : this.weekWiseDatesList
     };
-    const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
-      doctorItemData.doctorIdHostpitalId,
-    ).slotData;
-    if (doctorItemHaveSlotsDataObj) {
-      reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
-      reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
-    }
+    // const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
+    //   doctorItemData.doctorIdHostpitalId,
+    // ).slotData;
+    // if (doctorItemHaveSlotsDataObj) {
+    //   reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
+    //   reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
+    // }
     // this.props.navigation.navigate(
     //   'Doctor Details Preview',
     //   reqData4BookAppPage,
     // );
     this.props.navigation.navigate(
       'DoctorConsultation',
-      reqData4BookAppPage,
+      {reqData4BookAppPage},
     );
-    
+
   }
 
-  getFeesBySelectedSlot(
-    selectedSlotData,
-    wholeSlotData,
-    doctorIdHostpitalId,
-    item,
-  ) {
-    if (selectedSlotData) {
-      const selectedSlotIndex =
-        this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[
-          doctorIdHostpitalId
-        ] || 0;
-      if (selectedSlotData === undefined) {
-        selectedSlotData = wholeSlotData[Object.keys(wholeSlotData)[0]];
-      }
-      const selectedIndex = selectedSlotData[selectedSlotIndex]
-        ? selectedSlotIndex
-        : 0;
-      const selectedSlotFee = selectedSlotData[selectedIndex].fee;
-      const selectedSlotFeeWithoutOffer =
-        selectedSlotData[selectedIndex].feeWithoutOffer;
-
-      return {
-        fee: selectedSlotFee,
-        feeWithoutOffer: selectedSlotFeeWithoutOffer,
-      };
-    } else {
-      if (item.fee) {
-        return {
-          fee: item.fee,
-          feeWithoutOffer: item.feeWithoutOffer,
-        };
-      } else {
-        return {};
-      }
-    }
-  }
 
   getNextAvailableDateAndTime = (selectedSlotData, item) => {
     if (selectedSlotData) {
@@ -642,152 +535,45 @@ class DoctorList extends Component {
     }
   };
 
-  getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService = (
-    indexOfItem,
-  ) => {
-    const {
-      bookAppointmentData: {doctorInfoListAndSlotsData},
-    } = this.props;
-    const orderedDataFromWholeData = doctorInfoListAndSlotsData.slice(
-      indexOfItem,
-      indexOfItem + CALL_AVAILABILITY_SLOTS_SERVICE_BY_NO_OF_IDS_COUNT,
-    );
-    return orderedDataFromWholeData || [];
-  };
-  /* get Doctor  Availability Slots service */
-  getDoctorAvailabilitySlots = async (
-    doctorIdHostpitalId,
-    startDateByMoment,
-    endDateByMoment,
-    indexOfItem,
-  ) => {
-    try {
-      this.weekWiseDatesList = enumerateStartToEndDates(
-        startDateByMoment,
-        endDateByMoment,
-        this.weekWiseDatesList,
-      );
-      const orderedDataFromWholeData = this.getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService(
-        indexOfItem,
-      ); // get 5 Or LessThan 5 of doctorIdHostpitalIds in order wise using index of given input of doctorInfoListAndSlotsData
-      const setDoctorIdHostpitalIdsArrayMap = new Map();
-      orderedDataFromWholeData.map((item) => {
-        const doctorIdFromItem = item.doctorId;
-        const hospitalIdFromItem =
-          item.hospitalInfo && item.hospitalInfo.hospital_id;
-        if (setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem)) {
-          //Execute condition  when Doctor Id is repeated;
-          let baCupDocHospitalIdsObj = setDoctorIdHostpitalIdsArrayMap.get(
-            doctorIdFromItem,
-          );
-          const obj = {
-            doctorId: doctorIdFromItem,
-            hospitalIds: [
-              ...baCupDocHospitalIdsObj.hospitalIds,
-              hospitalIdFromItem,
-            ],
-          };
-          setDoctorIdHostpitalIdsArrayMap.set(doctorIdFromItem, obj);
-        } else {
-          setDoctorIdHostpitalIdsArrayMap.set(doctorIdFromItem, {
-            doctorId: doctorIdFromItem,
-            hospitalIds: [hospitalIdFromItem],
-          });
-        }
-      });
-      const reqData4Availability =
-        Array.from(setDoctorIdHostpitalIdsArrayMap.values()) || [];
-      const reqStartAndEndDates = {
-        startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
-        endDate: formatDate(endDateByMoment, 'YYYY-MM-DD'),
-      };
-      const resultSlotsData = await fetchDoctorAvailabilitySlotsService(
-        reqData4Availability,
-        reqStartAndEndDates,
-      );
-      if (resultSlotsData.success) {
-        const availabilitySlotsData = resultSlotsData.data;
-        if (availabilitySlotsData.length != 0) {
-          this.setDoctorAvailabilitySlotsDataByDocAndHospitalIds(
-            availabilitySlotsData || [],
-          );
-          const docInfoAndAvailableSlotsMap = Array.from(
-            this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values(),
-          );
-          store.dispatch({
-            type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-            data: docInfoAndAvailableSlotsMap,
-          });
-          // this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
-        }
-      }
-    } catch (ex) {
-      console.log(
-        'Ex getting on getAvailabilitySlots service======',
-        ex.message,
-      );
-    }
-  };
-  /*  Set Doctor Availability Slots data by doctorIdHostpitalIds   */
-  setDoctorAvailabilitySlotsDataByDocAndHospitalIds = (
-    SourceOfSlotsDataArray,
-  ) => {
-    SourceOfSlotsDataArray.map((item) => {
-      const baCupOfDocInfo = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
-        item.doctorIdHostpitalId,
-      );
-      const finalSlotsDataObj = {...baCupOfDocInfo.slotData, ...item.slotData}; // Merge the Previous weeks and On change the Next week slots data
-      delete baCupOfDocInfo.slotData;
-      const finalDocAndAvailabilityObj = {
-        ...baCupOfDocInfo,
-        slotData: finalSlotsDataObj,
-      };
-      this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(
-        item.doctorIdHostpitalId,
-        finalDocAndAvailabilityObj,
-      );
-    });
-  };
-
   sortByTopRatings(doctorDataList) {
-    const {
-      bookAppointmentData: {docReviewListCountOfDoctorIDs},
-    } = this.props;
-    if (!this.isRenderedTopRatedDocList) {
-      this.isRenderedTopRatedDocList = true;
-      const doctorDataListBySort = doctorDataList.sort(function (a, b) {
-        let ratingA = 0;
-        let ratingB = 0;
-        if (docReviewListCountOfDoctorIDs[a.doctorId]) {
-          ratingA =
-            docReviewListCountOfDoctorIDs[a.doctorId].average_rating || 0;
-        }
-        if (docReviewListCountOfDoctorIDs[b.doctorId]) {
-          ratingB =
-            docReviewListCountOfDoctorIDs[b.doctorId].average_rating || 0;
-        }
-        if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
-          return ratingB - ratingA;
-        }
-        if (currentDoctorOrder === 'ASC') {
-          return ratingB - ratingA;
-        }
-      });
-      store.dispatch({
-        type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-        data: doctorDataListBySort,
-      });
-    } else {
-      this.isRenderedTopRatedDocList = false;
-      store.dispatch({
-        type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
-        data: this.setDocListByPreviousOrder(),
-      });
-    }
+    // const {
+    //   bookAppointmentData: {docReviewListCountOfDoctorIDs},
+    // } = this.props;
+    // if (!this.isRenderedTopRatedDocList) {
+    //   this.isRenderedTopRatedDocList = true;
+    //   const doctorDataListBySort = doctorDataList.sort(function (a, b) {
+    //     let ratingA = 0;
+    //     let ratingB = 0;
+    //     if (docReviewListCountOfDoctorIDs[a.doctorId]) {
+    //       ratingA =
+    //         docReviewListCountOfDoctorIDs[a.doctorId].average_rating || 0;
+    //     }
+    //     if (docReviewListCountOfDoctorIDs[b.doctorId]) {
+    //       ratingB =
+    //         docReviewListCountOfDoctorIDs[b.doctorId].average_rating || 0;
+    //     }
+    //     if (a.is_doctor_sponsor || b.is_doctor_sponsor) {
+    //       return ratingB - ratingA;
+    //     }
+    //     if (currentDoctorOrder === 'ASC') {
+    //       return ratingB - ratingA;
+    //     }
+    //   });
+    //   store.dispatch({
+    //     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+    //     data: doctorDataListBySort,
+    //   });
+    // } else {
+    //   this.isRenderedTopRatedDocList = false;
+    //   store.dispatch({
+    //     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
+    //     data: this.setDocListByPreviousOrder(),
+    //   });
+    // }
   }
 
   renderDoctorInformationCard(item) {
-    const {isLoggedIn, currentDate} = this.state;
+    const { isLoggedIn, currentDate } = this.state;
     const {
       bookAppointmentData: {
         patientFavoriteListCountOfDoctorIds,
@@ -806,8 +592,8 @@ class DoctorList extends Component {
     //   item.doctorIdHostpitalId,
     //   item,
     // );
-    const fee=null;
-    const feeWithoutOffer=null;
+    const fee = null;
+    const feeWithoutOffer = null;
     return (
       <View>
         <RenderDoctorInfo
@@ -828,202 +614,55 @@ class DoctorList extends Component {
             this.onPressGoToBookAppointmentPage(item);
           }}
           shouldUpdate={
-            `${
-            item.doctorIdHostpitalId
-          }-${fee}-${feeWithoutOffer}-${patientFavoriteListCountOfDoctorIds.includes(
-            item.doctorId,
-          )}`
-        }
-        />
-      </View>
-    );
-  }
-
-  renderAvailableSlots(doctorIdHostpitalId, slotData) {
-    let selectedSlotIndex =
-      this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[
-        doctorIdHostpitalId
-      ] !== undefined
-        ? this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[
-            doctorIdHostpitalId
-          ]
-        : -1;
-    if (slotData === undefined || !Object.keys(slotData)) {
-      return null;
-    }
-    return (
-      <View>
-        <RenderSlots
-          selectedDate4DocIdHostpitalIdToStoreInObj={
-            this.selectedDate4DocIdHostpitalIdToStoreInObj
-          }
-          selectedSlotItem4DocIdHostpitalIdToStoreInObj={
-            this.selectedSlotItem4DocIdHostpitalIdToStoreInObj
-          }
-          slotDetails={{slotData, selectedSlotIndex, doctorIdHostpitalId}}
-          shouldUpdate={`${doctorIdHostpitalId}-${selectedSlotIndex}-${this.selectedDate4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId]}`}
-          onSlotItemPress={(
-            doctorIdHostpitalId,
-            selectedSlot,
-            selectedSlotItemIndex,
-          ) =>
-            this.onSlotItemPress(
-              doctorIdHostpitalId,
-              selectedSlot,
-              selectedSlotItemIndex,
-            )
+            `${item.doctorIdHostpitalId
+            }-${fee}-${feeWithoutOffer}-${patientFavoriteListCountOfDoctorIds.includes(
+              item.doctorId,
+            )}`
           }
         />
       </View>
     );
   }
 
-  /* Change the Date from Date Picker */
-  onDateChanged = async (selectedDate, doctorIdHostpitalId, indexOfItem) => {
-    this.onEndReachedIsTriggedFromRenderDateList = false;
-    this.selectedDate4DocIdHostpitalIdToStoreInObj[
-      doctorIdHostpitalId
-    ] = selectedDate;
-    this.selectedSlotIndex4DocIdHostpitalIdToStoreInObj[
-      doctorIdHostpitalId
-    ] = -1;
-    this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[
-      doctorIdHostpitalId
-    ] = null;
-    if (this.weekWiseDatesList.includes(selectedDate) === false) {
-      const endDateByMoment = addMoment(getMoment(selectedDate), 7, 'days');
-      await this.getDoctorAvailabilitySlots(
-        doctorIdHostpitalId,
-        getMoment(selectedDate),
-        endDateByMoment,
-        indexOfItem,
-      );
-    }
-    this.setState({renderRefreshCount: this.state.renderRefreshCount + 1});
-  };
-  callSlotsServiceWhenOnEndReached = async (
-    doctorIdHostpitalId,
-    weekWiseDatesList,
-    indexOfItem,
-  ) => {
-    // call availability slots service when change dates on next week
-    this.onEndReachedIsTriggedFromRenderDateList = true;
-    const finalIndex = weekWiseDatesList.length;
-    const lastProcessedDate = weekWiseDatesList[finalIndex - 1];
-    const startDateByMoment = getMoment(lastProcessedDate).add(1, 'day');
-    const endDateByMoment = addMoment(lastProcessedDate, 7, 'days');
-    if (
-      !this.weekWiseDatesList.includes(endDateByMoment.format('YYYY-MM-DD'))
-    ) {
-      await this.getDoctorAvailabilitySlots(
-        doctorIdHostpitalId,
-        startDateByMoment,
-        endDateByMoment,
-        indexOfItem,
-      );
-    }
-  };
-  renderDatesOnFlatList(doctorIdHostpitalId, slotData, indexOfItem) {
-    const selectedDate =
-      this.selectedDate4DocIdHostpitalIdToStoreInObj[doctorIdHostpitalId] ||
-      this.state.currentDate;
-    if (slotData === undefined || !Object.keys(slotData)) {
-      return null;
-    }
-    return (
-      <View>
-        <RenderDatesList
-          selectedDate={selectedDate}
-          slotData={slotData}
-          indexOfItem={indexOfItem}
-          doctorIdHostpitalId={doctorIdHostpitalId}
-          selectedDate4DocIdHostpitalIdToStoreInObj={
-            this.selectedDate4DocIdHostpitalIdToStoreInObj
-          }
-          selectedSlotItem4DocIdHostpitalIdToStoreInObj={
-            this.selectedSlotItem4DocIdHostpitalIdToStoreInObj
-          }
-          weekWiseDatesList={this.weekWiseDatesList}
-          onDateChanged={(item, doctorIdHostpitalId, indexOfItem) => {
-            this.onDateChanged(item, doctorIdHostpitalId, indexOfItem);
-          }}
-          callSlotsServiceWhenOnEndReached={(
-            doctorIdHostpitalId,
-            weekWiseDatesList,
-            indexOfItem,
-          ) => {
-            this.callSlotsServiceWhenOnEndReached(
-              doctorIdHostpitalId,
-              weekWiseDatesList,
-              indexOfItem,
-            );
-          }}
-          shouldUpdate={`${doctorIdHostpitalId}-${selectedDate}`}
-          onEndReachedIsTriggedFromRenderDateList={
-            this.onEndReachedIsTriggedFromRenderDateList
-          }
-        />
-      </View>
-    );
-  }
 
-  onBookPress = async (doctorIdHostpitalId, indexOfItem) => {  // need to implement  SHOBANA work on this method
+  onPressBookBtn = async (doctorItemData) => { 
     try {
-      // this.onEndReachedIsTriggedFromRenderDateList = false;
-      // this.setState({
-      //   isLoadingDatesAndSlots: true,
-      //   isLoadingDatesAndSlotsByRespectedItem: doctorIdHostpitalId,
-      // });
-      // const {expandItemOfDocIdHospitalsToShowSlotsData} = this.state;
-      // if (
-      //   expandItemOfDocIdHospitalsToShowSlotsData.indexOf(
-      //     doctorIdHostpitalId,
-      //   ) !== -1
-      // ) {
-      //   expandItemOfDocIdHospitalsToShowSlotsData.splice(
-      //     expandItemOfDocIdHospitalsToShowSlotsData.indexOf(
-      //       doctorIdHostpitalId,
-      //     ),
-      //     1,
-      //   );
-      // } else {
-      //   expandItemOfDocIdHospitalsToShowSlotsData.push(doctorIdHostpitalId);
+      this.props.navigation.setParams({ conditionFromFilterPage: false });
+      doctorItemData.doctorId = doctorItemData.doctorId;
+      const singleDoctorItemData = { ...doctorItemData };
+      const reqData4BookAppPage = {
+        singleDoctorItemData: singleDoctorItemData,
+        doctorId: doctorItemData.doctorId,
+        // weekWiseDatesList : this.weekWiseDatesList
+      };
+      // const doctorItemHaveSlotsDataObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
+      //   doctorItemData.doctorIdHostpitalId,
+      // ).slotData;
+      // if (doctorItemHaveSlotsDataObj) {
+      //   reqData4BookAppPage.singleDoctorAvailabilityData = doctorItemHaveSlotsDataObj;
+      //   reqData4BookAppPage.weekWiseDatesList = this.weekWiseDatesList;
       // }
-      // const startDateByMoment = addMoment(this.state.currentDate);
-      // const endDateByMoment = addMoment(this.state.currentDate, 7, 'days');
-      // if (
-      //   this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(
-      //     doctorIdHostpitalId,
-      //   ).slotData === undefined
-      // ) {
-      //   await this.getDoctorAvailabilitySlots(
-      //     doctorIdHostpitalId,
-      //     startDateByMoment,
-      //     endDateByMoment,
-      //     indexOfItem,
-      //   );
-      // }
-      // this.setState({renderRefreshCount: this.state.renderRefreshCount + 1});
+      this.props.navigation.navigate(
+        'DoctorConsultation',
+        {reqData4BookAppPage},
+      );
     } catch (Ex) {
       console.log(
         'Ex is getting on when Pressed BOOK button in Doctor list :',
         Ex,
       );
-    } finally {
-      this.setState({isLoadingDatesAndSlots: false});
     }
   };
 
   renderDoctorCard(item, indexOfItem) {
     const {
       currentDate,
-      expandItemOfDocIdHospitalsToShowSlotsData,
       isLoadingDatesAndSlots,
     } = this.state;
     return (
-      <Card style={{padding: 2, borderRadius: 10}}>
-        <List style={{borderBottomWidth: 0}}>
-          <ListItem style={{borderBottomWidth: 0}}>
+      <Card style={{ padding: 2, borderRadius: 10 }}>
+        <List style={{ borderBottomWidth: 0 }}>
+          <ListItem style={{ borderBottomWidth: 0 }}>
             <Grid>
               {this.renderDoctorInformationCard(item)}
               <Row
@@ -1033,7 +672,7 @@ class DoctorList extends Component {
                   marginTop: 5,
                 }}>
                 <Col size={0.8}>
-                  <Icon name="ios-time" style={{fontSize: 20, marginTop: 12}} />
+                  <Icon name="ios-time" style={{ fontSize: 20, marginTop: 12 }} />
                 </Col>
                 <Col size={7.5}>
                   <Text
@@ -1044,7 +683,7 @@ class DoctorList extends Component {
                       fontSize: 12,
                       marginRight: 50,
                     }}>
-                    {' '}
+                    {'Next available on ... '}
                     {/* {this.getNextAvailableDateAndTime(
                       item.slotData &&
                         item.slotData[
@@ -1057,187 +696,34 @@ class DoctorList extends Component {
                   </Text>
                 </Col>
                 <Col size={1.7}>
-                  {!expandItemOfDocIdHospitalsToShowSlotsData.includes(
-                    item.doctorIdHostpitalId,
-                  ) ? (
-                  //   <TouchableOpacity
-                  //     onPress={() =>
-                  //       this.onBookPress(item.doctorIdHostpitalId, indexOfItem)
-                  //     }
-                  //     style={{
-                  //       textAlign: 'center',
-                  //       backgroundColor: 'green',
-                  //       borderColor: '#000',
-                  //       marginTop: 10,
-                  //       borderRadius: 18,
-                  //       height: 30,
-                  //       justifyContent: 'center',
-                  //       paddingLeft: 1,
-                  //       paddingRight: 1,
-                  //       marginLeft: -6,
-                  //     }}>
-                  //     <Text
-                  //       style={{
-                  //         textAlign: 'center',
-                  //         color: '#fff',
-                  //         fontSize: 13,
-                  //         fontFamily: 'opensans-bold',
-                  //       }}>
-                  //       {translate('BOOK')}{' '}
-                  //     </Text>
-                  //   </TouchableOpacity>
-                  // ) : null}
                   <TouchableOpacity
-                      onPress={() =>
-                        this.onPressGoToBookAppointmentPage(item)
-                      }
+                    onPress={() =>
+                      this.onPressBookBtn(item)
+                    }
+                    style={{
+                      textAlign: 'center',
+                      backgroundColor: 'green',
+                      borderColor: '#000',
+                      marginTop: 10,
+                      borderRadius: 18,
+                      height: 30,
+                      justifyContent: 'center',
+                      paddingLeft: 1,
+                      paddingRight: 1,
+                      marginLeft: -6,
+                    }}>
+                    <Text
                       style={{
                         textAlign: 'center',
-                        backgroundColor: 'green',
-                        borderColor: '#000',
-                        marginTop: 10,
-                        borderRadius: 18,
-                        height: 30,
-                        justifyContent: 'center',
-                        paddingLeft: 1,
-                        paddingRight: 1,
-                        marginLeft: -6,
+                        color: '#fff',
+                        fontSize: 13,
+                        fontFamily: 'opensans-bold',
                       }}>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          color: '#fff',
-                          fontSize: 13,
-                          fontFamily: 'opensans-bold',
-                        }}>
-                        {translate('BOOK')}{' '}
-                      </Text>
-                    </TouchableOpacity>
-                  ) : null}
-                  {this.state.isLoadingDatesAndSlotsByRespectedItem ==
-                  item.doctorIdHostpitalId ? (
-                    isLoadingDatesAndSlots == true ? (
-                      <View style={{marginTop: 6}}>
-                        <ActivityIndicator
-                          animating={isLoadingDatesAndSlots}
-                          size="large"
-                          color="green"
-                        />
-                      </View>
-                    ) : null
-                  ) : null}
+                      {translate('BOOK')}{' '}
+                    </Text>
+                  </TouchableOpacity>
                 </Col>
               </Row>
-              {expandItemOfDocIdHospitalsToShowSlotsData.includes(
-                item.doctorIdHostpitalId,
-              ) ? (
-                item.slotData ? (
-                  <View>
-                    <Row style={{marginTop: 10}}>
-                      <Text style={{fontSize: 13, fontFamily: 'Roboto'}}>
-                        {translate('Choose appointment date and time')}
-                      </Text>
-                    </Row>
-                    {this.renderDatesOnFlatList(
-                      item.doctorIdHostpitalId,
-                      item.slotData,
-                      indexOfItem,
-                    )}
-                    {item.slotData[
-                      this.selectedDate4DocIdHostpitalIdToStoreInObj[
-                        item.doctorIdHostpitalId
-                      ] || this.state.currentDate
-                    ] !== undefined ? (
-                      this.renderAvailableSlots(
-                        item.doctorIdHostpitalId,
-                        item.slotData[
-                          this.selectedDate4DocIdHostpitalIdToStoreInObj[
-                            item.doctorIdHostpitalId
-                          ] || this.state.currentDate
-                        ],
-                      )
-                    ) : (
-                      <RenderNoSlotsAvailable text={translate('No Slots Available')} />
-                    )}
-                    <View
-                      style={{
-                        borderTopColor: '#000',
-                        borderTopWidth: 0.5,
-                        marginTop: 10,
-                      }}>
-                      <Row style={{marginTop: 10}}>
-                        <Col
-                          size={10}
-                          style={{
-                            alignContent: 'flex-start',
-                            alignItems: 'flex-start',
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              alignSelf: 'flex-start',
-                              fontFamily: 'Roboto',
-                            }}>
-                            {translate("Selected Appointment on")}
-                          </Text>
-                          <Text
-                            style={{
-                              alignSelf: 'flex-start',
-                              color: '#000',
-                              fontSize: 12,
-                              fontFamily: 'Roboto',
-                              marginTop: 5,
-                            }}>
-                            {this.selectedSlotItem4DocIdHostpitalIdToStoreInObj[
-                              item.doctorIdHostpitalId
-                            ]
-                              ? formatDate(
-                                  this
-                                    .selectedSlotItem4DocIdHostpitalIdToStoreInObj[
-                                    item.doctorIdHostpitalId
-                                  ].slotStartDateAndTime,
-                                  'ddd DD MMM, h:mm a',
-                                )
-                              : null}
-                          </Text>
-                        </Col>
-                        <Col size={4}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              this.onPressToContinue4PaymentReview(
-                                item,
-                                this
-                                  .selectedSlotItem4DocIdHostpitalIdToStoreInObj[
-                                  item.doctorIdHostpitalId
-                                ],
-                                item.doctorIdHostpitalId,
-                              );
-                            }}
-                            style={{
-                              backgroundColor: 'green',
-                              borderColor: '#000',
-                              height: 30,
-                              borderRadius: 20,
-                              justifyContent: 'center',
-                              marginLeft: 5,
-                              marginRight: 5,
-                              marginTop: 5,
-                            }}>
-                            <Text
-                              style={{
-                                color: '#fff',
-                                fontSize: 12,
-                                fontFamily: 'opensans-bold',
-                              }}>
-                              {translate("Continue")}{' '}
-                            </Text>
-                          </TouchableOpacity>
-                        </Col>
-                      </Row>
-                    </View>
-                  </View>
-                ) : null
-              ) : null}
             </Grid>
           </ListItem>
         </List>
@@ -1246,7 +732,7 @@ class DoctorList extends Component {
   }
 }
 
-const bookAppointmentDataState = ({bookAppointmentData} = state) => ({
+const bookAppointmentDataState = ({ bookAppointmentData } = state) => ({
   bookAppointmentData,
 });
 export default connect(bookAppointmentDataState)(DoctorList);
