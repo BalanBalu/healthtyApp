@@ -38,7 +38,6 @@ class TestDetails extends PureComponent {
             patientDetailsObj: {},
             gender: 'M',
             currentIndex: null,
-            currentFamilyMemberData: null,
             full_name: '',
             age: '',
             refreshCount: 0,
