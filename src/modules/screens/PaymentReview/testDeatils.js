@@ -90,7 +90,6 @@ class TestDetails extends PureComponent {
 
 
     renderSelfDetails(data) {
-        // console.log("data",data)
         const { isCorporateUser, payBy } = this.props;
         return (
             <View
@@ -166,7 +165,6 @@ class TestDetails extends PureComponent {
     }
 
 //     renderOthersDetails(data) {
-//         console.log("data",data)
 //         return (
            
 //                     <View>
@@ -268,7 +266,6 @@ class TestDetails extends PureComponent {
             familyMembers
         } = this.props;
         const { name, age, gender, onlyFamilyWithPayDetailsData, data } = this.state;
-// console.log("selectedPatientTypes",selectedPatientTypes)
         return (
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                 <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>
@@ -367,6 +364,7 @@ class TestDetails extends PureComponent {
                                     {translate('Patient Details')}
                                 </Text>
                             ) : null}
+                             {familyMembers.length !== 0 ? (
                             <FlatList
                                 data={familyMembers}
                                 keyExtractor={(item, index) => index.toString()}
@@ -379,7 +377,7 @@ class TestDetails extends PureComponent {
                                     borderRadius: 5,
                                     marginTop: 10,
                                 }}>
-                               
+                         <TouchableOpacity onPress={()=>this.props.onSelectionPatientDetails(item)}>
                                 <Row>
                                     <Col size={5}>
                                         <Text style={styles.NameText}>
@@ -423,10 +421,10 @@ class TestDetails extends PureComponent {
                                     </Col>
                                    
                                 </Row>
-                              
+                                </TouchableOpacity>
                             </View>
                                 }
-                            />
+                            />):null}
                         </View>
                     ) : null}
                 </View>
