@@ -65,163 +65,163 @@ import {
   deleteFamilyMembersDetails,
 } from '../../providers/corporate/corporate.actions';
 
-const bookSlotDetails = {
-  slotDate: '2021-08-27',
-  slotStartDateAndTime: '2021-08-27T01:10:01Z',
-  slotEndDateAndTime: '2021-08-27T01:20:01Z',
-  slotTimeUnit: 'minutes',
-  slotDuration: 10,
-  fee: 9,
-  offerPercent: 10,
-  feeWithoutOffer: 10,
-  isSlotBooked: false,
-  location: null,
-};
+// const bookSlotDetails = {
+//   slotDate: '2021-08-27',
+//   slotStartDateAndTime: '2021-08-27T01:10:01Z',
+//   slotEndDateAndTime: '2021-08-27T01:20:01Z',
+//   slotTimeUnit: 'minutes',
+//   slotDuration: 10,
+//   fee: 9,
+//   offerPercent: 10,
+//   feeWithoutOffer: 10,
+//   isSlotBooked: false,
+//   location: null,
+// };
 
-const doctorDetails = {
-  doctorId: '60deb4d937d7495cccd4aa18',
-  hospitalId: '60deb53137d7495cccd4aa20',
-  prefix: 'Dr',
-  status: null,
-  education: [
-    {
-      degree: 'B.D.S',
-      institute: 'Christian Medical College',
-      location: '122',
-    },
-    {
-      degree: 'M.Surg',
-      institute: 'Christian Medical College',
-      location: 'we',
-    },
-    {
-      degree: 'DPhil',
-      institute: 'Christian Medical College',
-      location: 'we',
-    },
-    {
-      degree: 'M.B.B.S',
-      institute: 'Christian Medical College',
-      location: 'dsf',
-    },
-  ],
-  specialist: [
-    {
-      "_id": "5dab9c65f680781894d6efa2",
-      "category": "Primary Care Doctor",
-      "categoryId": 1,
-      "service": "Illness",
-      "serviceId": 1
-    }
-  ],
-  doctorIdHostpitalId: '60deb4d937d7495cccd4aa18-60deb53137d7495cccd4aa20',
-  doctorName: 'pradeep pradeep',
-  email: 'spradeepmp007@gmail.com',
-  dob: '1995-10-01T18:30:00.000Z',
-  profileImage: {
-    image_id: '60e46b585acaff2ac0e9cb55',
-    original_file_name: 'photo.jpg',
-    type: 'image/jpeg',
-    file_name: 'profileImage_1625582423857_photo.jpg',
-    original_imageURL:
-      'http://192.168.1.5:3000/smarthealth/profileImage/profileImage_1625582423857_photo.jpg',
-    imageURL:
-      'http://192.168.1.5:3000/images/profileImage_1625582423857_photo.jpg',
-    updated_date: '2021-07-06T14:40:23.810Z',
-    active: true,
-  },
-  yearOfExp: {year: 6, month: 6, isPrivate: null},
-  slotData: {
-    '2021-07-27': [
-      {
-        slotDate: '2021-07-27',
-        slotStartDateAndTime: '2021-07-27T01:00:01Z',
-        slotEndDateAndTime: '2021-07-27T01:10:01Z',
-        slotTimeUnit: 'minutes',
-        slotDuration: 10,
-        fee: 9,
-        offerPercent: 10,
-        feeWithoutOffer: 10,
-        isSlotBooked: false,
-        location: null,
-      },
-      {
-        slotDate: '2021-07-27',
-        slotStartDateAndTime: '2021-07-27T01:10:01Z',
-        slotEndDateAndTime: '2021-07-27T01:20:01Z',
-        slotTimeUnit: 'minutes',
-        slotDuration: 10,
-        fee: 9,
-        offerPercent: 10,
-        feeWithoutOffer: 10,
-        isSlotBooked: false,
-        location: null,
-      },
-      {
-        slotDate: '2021-07-27',
-        slotStartDateAndTime: '2021-07-27T01:20:01Z',
-        slotEndDateAndTime: '2021-07-27T01:30:01Z',
-        slotTimeUnit: 'minutes',
-        slotDuration: 10,
-        fee: 9,
-        offerPercent: 10,
-        feeWithoutOffer: 10,
-        isSlotBooked: false,
-        location: null,
-      },
-      {
-        slotDate: '2021-07-27',
-        slotStartDateAndTime: '2021-07-27T01:30:01Z',
-        slotEndDateAndTime: '2021-07-27T01:40:01Z',
-        slotTimeUnit: 'minutes',
-        slotDuration: 10,
-        fee: 9,
-        offerPercent: 10,
-        feeWithoutOffer: 10,
-        isSlotBooked: false,
-        location: null,
-      },
-    ],
-    '2021-08-01': [
-      {
-        slotDate: '2021-08-01',
-        slotStartDateAndTime: '2021-07-31T18:30:01Z',
-        slotEndDateAndTime: '2021-07-31T18:40:01Z',
-        slotTimeUnit: 'minutes',
-        slotDuration: 10,
-        fee: 9,
-        offerPercent: 10,
-        feeWithoutOffer: 10,
-        isSlotBooked: false,
-        location: null,
-      },
-      {
-        slotDate: '2021-08-01',
-        slotStartDateAndTime: '2021-07-31T18:40:01Z',
-        slotEndDateAndTime: '2021-07-31T18:50:01Z',
-        slotTimeUnit: 'minutes',
-        slotDuration: 10,
-        fee: 9,
-        offerPercent: 10,
-        feeWithoutOffer: 10,
-        isSlotBooked: false,
-        location: null,
-      },
-      {
-        slotDate: '2021-08-01',
-        slotStartDateAndTime: '2021-07-31T18:50:01Z',
-        slotEndDateAndTime: '2021-07-31T19:00:01Z',
-        slotTimeUnit: 'minutes',
-        slotDuration: 10,
-        fee: 9,
-        offerPercent: 10,
-        feeWithoutOffer: 10,
-        isSlotBooked: false,
-        location: null,
-      },
-    ],
-  },
-};
+// const doctorDetails = {
+//   doctorId: '60deb4d937d7495cccd4aa18',
+//   hospitalId: '60deb53137d7495cccd4aa20',
+//   prefix: 'Dr',
+//   status: null,
+//   education: [
+//     {
+//       degree: 'B.D.S',
+//       institute: 'Christian Medical College',
+//       location: '122',
+//     },
+//     {
+//       degree: 'M.Surg',
+//       institute: 'Christian Medical College',
+//       location: 'we',
+//     },
+//     {
+//       degree: 'DPhil',
+//       institute: 'Christian Medical College',
+//       location: 'we',
+//     },
+//     {
+//       degree: 'M.B.B.S',
+//       institute: 'Christian Medical College',
+//       location: 'dsf',
+//     },
+//   ],
+//   specialist: [
+//     {
+//       "_id": "5dab9c65f680781894d6efa2",
+//       "category": "Primary Care Doctor",
+//       "categoryId": 1,
+//       "service": "Illness",
+//       "serviceId": 1
+//     }
+//   ],
+//   doctorIdHostpitalId: '60deb4d937d7495cccd4aa18-60deb53137d7495cccd4aa20',
+//   doctorName: 'pradeep pradeep',
+//   email: 'spradeepmp007@gmail.com',
+//   dob: '1995-10-01T18:30:00.000Z',
+//   profileImage: {
+//     image_id: '60e46b585acaff2ac0e9cb55',
+//     original_file_name: 'photo.jpg',
+//     type: 'image/jpeg',
+//     file_name: 'profileImage_1625582423857_photo.jpg',
+//     original_imageURL:
+//       'http://192.168.1.5:3000/smarthealth/profileImage/profileImage_1625582423857_photo.jpg',
+//     imageURL:
+//       'http://192.168.1.5:3000/images/profileImage_1625582423857_photo.jpg',
+//     updated_date: '2021-07-06T14:40:23.810Z',
+//     active: true,
+//   },
+//   yearOfExp: {year: 6, month: 6, isPrivate: null},
+//   slotData: {
+//     '2021-07-27': [
+//       {
+//         slotDate: '2021-07-27',
+//         slotStartDateAndTime: '2021-07-27T01:00:01Z',
+//         slotEndDateAndTime: '2021-07-27T01:10:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-07-27',
+//         slotStartDateAndTime: '2021-07-27T01:10:01Z',
+//         slotEndDateAndTime: '2021-07-27T01:20:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-07-27',
+//         slotStartDateAndTime: '2021-07-27T01:20:01Z',
+//         slotEndDateAndTime: '2021-07-27T01:30:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-07-27',
+//         slotStartDateAndTime: '2021-07-27T01:30:01Z',
+//         slotEndDateAndTime: '2021-07-27T01:40:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//     ],
+//     '2021-08-01': [
+//       {
+//         slotDate: '2021-08-01',
+//         slotStartDateAndTime: '2021-07-31T18:30:01Z',
+//         slotEndDateAndTime: '2021-07-31T18:40:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-08-01',
+//         slotStartDateAndTime: '2021-07-31T18:40:01Z',
+//         slotEndDateAndTime: '2021-07-31T18:50:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-08-01',
+//         slotStartDateAndTime: '2021-07-31T18:50:01Z',
+//         slotEndDateAndTime: '2021-07-31T19:00:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//     ],
+//   },
+// };
 
 export default class PaymentReview extends Component {
   constructor(props) {
@@ -261,17 +261,14 @@ export default class PaymentReview extends Component {
     await this.getSelfDatails();
     await this.getFamilyInfo();
     this.setState({isLoading: false});
-    // let bookAppointment=navigation.getParam('bookAppointment')
-    // if(bookAppointment){
-    // await this.setState({
-    //     doctorDetails:bookAppointment.doctorDetails,
-    //     bookSlotDetails:bookAppointment.selectedSlot,
-    //     isLoading: false,
-    //   })
-    //   console.log("bookSlotDetails",this.state.bookSlotDetails)
-
-    //   console.log("doctorDetails",this.state.doctorDetails)
-    // }
+    let bookAppointment=navigation.getParam('bookAppointment')
+    if(bookAppointment){
+    await this.setState({
+        doctorDetails:bookAppointment.doctorDetails,
+        bookSlotDetails:bookAppointment.selectedSlot,
+        isLoading: false,
+      })
+    }
   }
   getSelfDatails = async () => {
     try {
@@ -288,7 +285,7 @@ export default class PaymentReview extends Component {
       //     age: parseInt(dateDiff(basicData.dob, new Date(), 'years')),
       //     phone_no: basicData.mobile_no?basicData.mobile_no:'N/A'
       // } 
-      await this.setState({selfData:basicData,isLoading: false}) 
+      await this.setState({selfData:basicData,patientDetailsObj:basicData,isLoading: false}) 
      }
     } catch (e) {
       console.log(e);
@@ -304,9 +301,7 @@ export default class PaymentReview extends Component {
       let employeeCode = await AsyncStorage.getItem('employeeCode');
       let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
       if (result) {
-        // result.shift()
-        // console.log('result', result);
-        this.setState({familyMembers: result, isLoading: false});
+          this.setState({familyMembers: result, isLoading: false});
       }
     } catch (e) {
       console.log(e);
@@ -317,18 +312,9 @@ export default class PaymentReview extends Component {
 
   async confirmProceedPayment() {
 
-    const {patientDetailsObj,selfData} = this.state;
-        // const {bookSlotDetails,patientDetailsObj,selfData} = this.state;
+    const {bookSlotDetails,patientDetailsObj,doctorDetails,selectedPatientTypes} = this.state;
 
     let {diseaseDescription} = bookSlotDetails;
-    // if (!Object.keys(patientDetailsObj).length) {
-    //   Toast.show({
-    //     text: translate('Kindly select Self or Add other patient details'),
-    //     type: 'warning',
-    //     duration: 3000,
-    //   });
-    //   return false;
-    // }
     if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
       Toast.show({
         text: translate('Please enter valid Reason'),
@@ -339,39 +325,46 @@ export default class PaymentReview extends Component {
     }
     this.setState({isLoading: true, spinnerText: translate('Please Wait')});
     const bookingSlotData = bookSlotDetails;
-    let validationResult;
-    // if (this.state.fromNavigation === 'HOSPITAL') {
-    //   validationResult = {
-    //     success: true,
-    //   };
-    // } else {
+    let validationResult,patientData;
+    if(selectedPatientTypes=='self'){
+      patientData= {
+        patientName: arrangeFullName(patientDetailsObj.first_name,patientDetailsObj.middle_name,patientDetailsObj.last_name),
+        patientAge: dateDiff(patientDetailsObj.dob, new Date(), 'years'),
+        policyNumber: patientDetailsObj.policyNumber,
+        gender: patientDetailsObj.gender,
+       mobileNo: patientDetailsObj.mobileNo?patientDetailsObj.mobileNo:null,
+        emailId: patientDetailsObj.email,
+       dob: patientDetailsObj.dob,
+        patientImage: patientDetailsObj.profileImage
+      }
+    }else{
+      patientData= {
+        patientName: arrangeFullName(patientDetailsObj.familyMemberName,patientDetailsObj.familyMemberLastName),
+        patientAge: patientDetailsObj.familyMemberAge,
+        policyNumber: patientDetailsObj.policyNo,
+        gender: patientDetailsObj.familyMemberGender,
+       mobileNo: null,
+        emailId:null,
+       dob: patientDetailsObj.familyMemberDob,
+        patientImage: null
+      }
+    }
+    
       const reqData = {
         startTime: bookingSlotData.slotStartDateAndTime,
         endTime: bookingSlotData.slotEndDateAndTime,
-        "patientData": {
-          "patientName": selfData[0].first_name,
-          "patientAge": dateDiff(selfData[0].dob, new Date(), 'years'),
-          "policyNumber": selfData[0].policyNumber,
-          "gender": selfData[0].gender,
-          "mobileNo": selfData&&selfData.mobileNo?selfData[0].mobileNo:null,
-          "emailId": selfData[0].email,
-          "dob": selfData[0].dob,
-          "patientImage": selfData[0].profileImage
-        },
-       
+        patientData,
         fee: bookingSlotData.fee||0,
         hospitalId: doctorDetails.hospitalId,
         doctorId: doctorDetails.doctorId,
         status:'PENDING',
-        paymentId: "cash_1574318269541",
-        bookedFor: "DOCTOR",
-        // "categoryId": "string",
-        // "bookedFrom": "string",
         statusUpdateReason: "NEW_BOOKING",
         description: bookSlotDetails.diseaseDescription?bookSlotDetails.diseaseDescription:'',
-        // "tokenNo": "string",
-        // "appointmentCode": "string",
         appointmentTakenDate:new Date()
+        // paymentId: "cash_1574318269541",
+        // bookedFor: "DOCTOR",
+        // "categoryId": "string",
+        // "bookedFrom": "string",
       };
       validationResult = await createAppointment(reqData);
     // }
@@ -416,87 +409,87 @@ export default class PaymentReview extends Component {
     //   });
     // }
   }
-  async processToPayLater(paymentMethod) {
-    const {
-      bookSlotDetails,
-      patientDetailsObj,
-      fromNavigation,
-      isCorporateUser,
-    } = this.state;
-    let {diseaseDescription} = bookSlotDetails;
+  // async processToPayLater(paymentMethod) {
+  //   const {
+  //     bookSlotDetails,
+  //     patientDetailsObj,
+  //     fromNavigation,
+  //     isCorporateUser,
+  //   } = this.state;
+  //   let {diseaseDescription} = bookSlotDetails;
 
-    if (
-      !patientDetailsObj ||
-      (patientDetailsObj && !Object.keys(patientDetailsObj).length)
-    ) {
-      Toast.show({
-        text: translate('Kindly select Self or Add other patient details'),
-        type: 'warning',
-        duration: 3000,
-      });
-      return false;
-    }
-    if (!diseaseDescription || String(diseaseDescription).trim() === '') {
-      Toast.show({
-        text: translate('Please enter valid Reason'),
-        duration: 3000,
-        type: 'warning',
-      });
-      return;
-    }
+  //   if (
+  //     !patientDetailsObj ||
+  //     (patientDetailsObj && !Object.keys(patientDetailsObj).length)
+  //   ) {
+  //     Toast.show({
+  //       text: translate('Kindly select Self or Add other patient details'),
+  //       type: 'warning',
+  //       duration: 3000,
+  //     });
+  //     return false;
+  //   }
+  //   if (!diseaseDescription || String(diseaseDescription).trim() === '') {
+  //     Toast.show({
+  //       text: translate('Please enter valid Reason'),
+  //       duration: 3000,
+  //       type: 'warning',
+  //     });
+  //     return;
+  //   }
 
-    this.setState({
-      isLoading: true,
-      spinnerText: translate('We are Booking your Appointment'),
-    });
+  //   this.setState({
+  //     isLoading: true,
+  //     spinnerText: translate('We are Booking your Appointment'),
+  //   });
 
-    const patientDataObj = {
-      patient_name: patientDetailsObj.full_name,
-      patient_age: patientDetailsObj.age,
-      gender: patientDetailsObj.gender,
-    };
-    if (patientDetailsObj.policy_no) {
-      patientDataObj.policy_number = patientDetailsObj.policy_no;
-    }
+  //   const patientDataObj = {
+  //     patient_name: patientDetailsObj.full_name,
+  //     patient_age: patientDetailsObj.age,
+  //     gender: patientDetailsObj.gender,
+  //   };
+  //   if (patientDetailsObj.policy_no) {
+  //     patientDataObj.policy_number = patientDetailsObj.policy_no;
+  //   }
 
-    bookSlotDetails.patient_data = patientDataObj;
+  //   bookSlotDetails.patient_data = patientDataObj;
 
-    const userId = await AsyncStorage.getItem('userId');
-    this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+  //   const userId = await AsyncStorage.getItem('userId');
+  //   this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
 
-    let modesOfPayment = 'cash';
+  //   let modesOfPayment = 'cash';
 
-    if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
-      modesOfPayment = 'corporate';
-    } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
-      modesOfPayment = 'insurance';
-    }
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(
-      true,
-      {},
-      modesOfPayment,
-      bookSlotDetails,
-      SERVICE_TYPES.APPOINTMENT,
-      userId,
-      modesOfPayment,
-    );
+  //   if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
+  //     modesOfPayment = 'corporate';
+  //   } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
+  //     modesOfPayment = 'insurance';
+  //   }
+  //   let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(
+  //     true,
+  //     {},
+  //     modesOfPayment,
+  //     bookSlotDetails,
+  //     SERVICE_TYPES.APPOINTMENT,
+  //     userId,
+  //     modesOfPayment,
+  //   );
 
-    if (response.success) {
-      this.props.navigation.navigate('paymentsuccess', {
-        successBookSlotDetails: bookSlotDetails,
-        paymentMethod: paymentMethod,
-        tokenNo: response.tokenNo,
-        fromNavigation: fromNavigation,
-      });
-    } else {
-      Toast.show({
-        text: response.message,
-        type: 'warning',
-        duration: 3000,
-      });
-    }
-    this.setState({isLoading: false, spinnerText: ' '});
-  }
+  //   if (response.success) {
+  //     this.props.navigation.navigate('paymentsuccess', {
+  //       successBookSlotDetails: bookSlotDetails,
+  //       paymentMethod: paymentMethod,
+  //       tokenNo: response.tokenNo,
+  //       fromNavigation: fromNavigation,
+  //     });
+  //   } else {
+  //     Toast.show({
+  //       text: response.message,
+  //       type: 'warning',
+  //       duration: 3000,
+  //     });
+  //   }
+  //   this.setState({isLoading: false, spinnerText: ' '});
+  // }
 
 
 
@@ -563,7 +556,7 @@ export default class PaymentReview extends Component {
 
   render() {
     const {
-      // bookSlotDetails,
+      bookSlotDetails,
       isCorporateUser,
       patientDetailsObj,
       addPatientDataPoPupEnable,
@@ -577,7 +570,7 @@ export default class PaymentReview extends Component {
       fromNavigation,
       familyMembers,
       selfData,
-      // doctorDetails
+      doctorDetails
     } = this.state;
     return (
       <Container>
@@ -728,11 +721,11 @@ export default class PaymentReview extends Component {
               selfData={selfData}
               familyMembers={familyMembers&&familyMembers?familyMembers:null}
               onSelectionChange={(patientType) => {
-                  this.setState({selectedPatientTypes: patientType});
+                                  this.setState({selectedPatientTypes: patientType});
 
               }}
               onSelectionPatientDetails={(patientDetails) => {
-                this.setState({patientDetails});
+                this.setState({patientDetailsObj:patientDetails});
 
             }}
               selectedPatientTypes={this.state.selectedPatientTypes}

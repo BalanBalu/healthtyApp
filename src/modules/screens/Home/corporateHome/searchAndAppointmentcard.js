@@ -52,7 +52,7 @@ export const SearchAndAppointmentCard = props => {
     if (permissionResult === 'authorized') {
       createCalendar();
       const { navigation } = props;
-      navigation("Payment Review")
+      navigation("Categories")
     }
     else {
       let status = await RNCalendarEvents.checkPermissions((readOnly = false));

@@ -38,6 +38,7 @@ class TestDetails extends PureComponent {
             patientDetailsObj: {},
             gender: 'M',
             currentIndex: null,
+            currentFamilyMemberData: null,
             full_name: '',
             age: '',
             refreshCount: 0,
@@ -374,7 +375,8 @@ class TestDetails extends PureComponent {
                                 renderItem={({ item, index }) =>
                                 <TouchableOpacity
                                 onPress={() => this.setState({ 
-                                    currentIndex: index
+                                    currentIndex: index,
+                                    currentFamilyMemberData: item
                                 })}
                                 style={[this.state.currentIndex === index ? {
                                     borderColor: '#48b4a5',
