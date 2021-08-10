@@ -625,7 +625,7 @@ class DoctorList extends Component {
   }
 
 
-  onPressBookBtn = async (doctorItemData) => {  // need to implement  SHOBANA work on this method
+  onPressBookBtn = async (doctorItemData) => { 
     try {
       this.props.navigation.setParams({ conditionFromFilterPage: false });
       doctorItemData.doctorId = doctorItemData.doctorId;
@@ -644,7 +644,7 @@ class DoctorList extends Component {
       // }
       this.props.navigation.navigate(
         'DoctorConsultation',
-        reqData4BookAppPage,
+        {reqData4BookAppPage},
       );
     } catch (Ex) {
       console.log(

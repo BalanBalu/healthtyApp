@@ -48,8 +48,10 @@ class DoctorConsultation extends Component {
   }
 
   async componentDidMount() {
-    let reqData4BookAppPage= this.props.navigation.getParam('reqData4BookAppPage')
-    await this.setState({doctorData:reqData4BookAppPage.singleDoctorItemData,doctorId:reqData4BookAppPage.doctorId,hospitalId:reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id,isLoading: false,})
+    let reqData4BookAppPage= this.props.navigation.getParam('reqData4BookAppPage');
+   if(reqData4BookAppPage){
+    await this.setState({doctorData:reqData4BookAppPage.singleDoctorItemData,doctorId:reqData4BookAppPage.doctorId,hospitalId:reqData4BookAppPage.singleDoctorItemData&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id?reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id:null,isLoading: false,})
+   } 
     await this.getAvailabilitySlots(this.state.selectedDate);
 
   }
@@ -142,7 +144,7 @@ class DoctorConsultation extends Component {
                 GlobalStyles.fontSize5,
                 {color: '#128283', fontWeight: 'bold'},
               ]}>
-              {(doctorData&&doctorData.firstName?doctorData.firstName+' ':''+doctorData&&doctorData.lastName?doctorData.lastName+' ':'')}
+              {`${doctorData&&doctorData.firstName?doctorData.firstName+' ':''} ${doctorData&&doctorData.lastName?doctorData.lastName+' ':''}`}
             </Text>
           </View>
           <View
