@@ -382,7 +382,7 @@ class TestDetails extends PureComponent {
                                     borderColor: '#48b4a5',
                                     borderWidth: 1,
                                     padding: 10,
-                                    backgroundColor: '#e5e5e5',
+                                    backgroundColor: 'rgba(229,229,229,0.5)',
                                     borderRadius: 5,
                                     marginTop: 10,
                                 } : {
