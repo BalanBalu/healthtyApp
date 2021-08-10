@@ -236,11 +236,10 @@ export default class PaymentReview extends Component {
       patientDetailsObj: {},
       addPatientDataPoPupEnable: false,
       isCorporateUser: false,
-      selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
       familyMembersSelections: [],
       fromNavigation: null,
       familyMembersSelections: [],
-      selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
+      selectedPatientTypes:'self',
       familyDetailsData: [],
       bookAppointment: [],
       doctorDetails: {},
@@ -252,16 +251,16 @@ export default class PaymentReview extends Component {
   async componentDidMount() {
     const {navigation} = this.props;
     const isLoggedIn = await hasLoggedIn(this.props);
-
-    const isCorporateUser =
-      (await AsyncStorage.getItem('is_corporate_user')) === 'true';
-
-    if (!isLoggedIn) {
+     if (!isLoggedIn) {
       this.setState({isLoading: false});
       navigation.navigate('login');
       return;
     }
-    
+    const isCorporateUser =
+    (await AsyncStorage.getItem('is_corporate_user')) === 'true';
+    await this.getSelfDatails();
+    await this.getFamilyInfo();
+    this.setState({isLoading: false});
     // let bookAppointment=navigation.getParam('bookAppointment')
     // if(bookAppointment){
     // await this.setState({
@@ -273,8 +272,6 @@ export default class PaymentReview extends Component {
 
     //   console.log("doctorDetails",this.state.doctorDetails)
     // }
-    this.getSelfDatails();
-    this.getFamilyInfo();
   }
   getSelfDatails = async () => {
     try {
@@ -291,7 +288,7 @@ export default class PaymentReview extends Component {
       //     age: parseInt(dateDiff(basicData.dob, new Date(), 'years')),
       //     phone_no: basicData.mobile_no?basicData.mobile_no:'N/A'
       // } 
-        this.setState({selfData:basicData}) 
+      await this.setState({selfData:basicData,isLoading: false}) 
      }
     } catch (e) {
       console.log(e);
@@ -299,6 +296,25 @@ export default class PaymentReview extends Component {
       this.setState({isLoading: false});
     }
   };
+
+  getFamilyInfo = async () => {
+    try {
+      this.setState({isLoading: true});
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let employeeCode = await AsyncStorage.getItem('employeeCode');
+      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
+      if (result) {
+        // result.shift()
+        // console.log('result', result);
+        this.setState({familyMembers: result, isLoading: false});
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+
   async confirmProceedPayment() {
 
     const {patientDetailsObj,selfData} = this.state;
@@ -484,33 +500,7 @@ export default class PaymentReview extends Component {
     this.setState({isLoading: false, spinnerText: ' '});
   }
 
-  getFamilyInfo = async () => {
-    try {
-      this.setState({isLoading: true});
-      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
-      let employeeCode = await AsyncStorage.getItem('employeeCode');
-      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-      if (result) {
-        result.shift()
-        console.log('result', result);
-        this.setState({familyMembers: result, isLoading: false});
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      this.setState({isLoading: false});
-    }
-  };
 
-  addPatientList = async (patientData) => {
-    this.setState({errMsg: ''});
-    const othersDetailsObj = patientData[0];
-    await this.setState({
-      patientDetailsObj: othersDetailsObj,
-      updateButton: false,
-      addPatientDataPoPupEnable: false,
-    });
-  };
 
   renderPatientDetails(data, index, enableSelectionBox, patientSelectionType) {
     // const {isCorporateUser, payBy} = this.props;
@@ -527,11 +517,11 @@ export default class PaymentReview extends Component {
         <Row>
           <Col size={5}>
             <Text style={styles.subText}>
-              {(data.first_name ? data.first_name + ' ' : '') + (data.last_name ? data.last_name + ' ' : '')}
+              {(data&&data.first_name ? data.first_name + ' ' : '') + (data&&data.last_name ? data.last_name + ' ' : '')}
             </Text>
           </Col>
           <Col size={5}>
-            <Text style={styles.subText}>{formatDate(data.dob,'DD/MM/YY')}</Text>
+            <Text style={styles.subText}>{data&&data.dob?(formatDate(data.dob,'DD/MM/YY')):''}</Text>
           </Col>
         </Row>
         <Row style={{marginTop: 10}}>
@@ -545,7 +535,7 @@ export default class PaymentReview extends Component {
               </Col>
               <Col size={5}>
                 <Text style={[styles.subText, {color: '#909498'}]}>
-                  {data.gender? data.gender:'N/A'}
+                  {data&&data.gender? data.gender:'N/A'}
                 </Text>
               </Col>
             </Row>
@@ -562,7 +552,7 @@ export default class PaymentReview extends Component {
               </Col>
               <Col size={5}>
                 <Text style={[styles.subText, {color: '#909498'}]}>
-                  {data.relationship? data.relationship:'N/A'}
+                  {data&&data.relationship? data.relationship:'N/A'}
                 </Text>
               </Col>
             </Row>
@@ -590,7 +580,6 @@ export default class PaymentReview extends Component {
       selfData,
       // doctorDetails
     } = this.state;
-    // console.log("bookSlotDetails",bookSlotDetails)
     return (
       <Container>
         <Content style={{padding: 15, backgroundColor: '#F5F5F5'}}>
@@ -719,25 +708,7 @@ export default class PaymentReview extends Component {
               </Row>
             </View>
 
-            {/* <View style={{paddingBottom: 50}}>
-      <View style={{backgroundColor: '#fff', padding: 10}}>
-              <Text style={{fontSize: 16, fontFamily: 'opensans-bold'}}>
-                {translate('Patient Details')}
-              </Text>
-              <FlatList
-                data={selfData}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item, index}) =>
-                  this.renderPatientDetails(
-                    item,
-                    index,
-                    true,
-                    POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY,
-                  )
-                }
-              />
-            </View>
-            </View> */}
+           
             {/* <PayBySelection
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
@@ -756,32 +727,17 @@ export default class PaymentReview extends Component {
               navigation={this.props.navigation}
               singlePatientSelect={true}
               selfData={selfData}
+              familyMembers={familyMembers&&familyMembers?familyMembers:null}
               onSelectionChange={(patientType) => {
-                if (patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
-                  this.setState({
-                    patientDetailsObj: this.defaultPatDetails,
-                    selectedPatientTypes: [patientType],
-                    familyMembersSelections: [],
-                  });
-                } else {
-                  this.setState({
-                    patientDetailsObj: {},
-                    selectedPatientTypes: [patientType],
-                  });
-                }
+                  this.setState({selectedPatientTypes: patientType});
+
               }}
-              familyDetailsData={this.state.familyDetailsData}
-              setFamilyDetailsData={(familyDetailsData) =>
-                this.setState({familyDetailsData: familyDetailsData})
-              }
+              onSelectionPatientDetails={(patientDetails) => {
+                this.setState({patientDetails});
+
+            }}
               selectedPatientTypes={this.state.selectedPatientTypes}
-              payBy={this.state.selectedPayBy}
-              addPatientDetails={(data, setDefaultPatentData) => {
-                if (setDefaultPatentData === true) {
-                  this.defaultPatDetails = data[0];
-                }
-                this.addPatientList(data);
-              }}
+            
             />
             <View style={{backgroundColor: '#fff', padding: 10, marginTop: 10}}>
               <Row>

@@ -23,7 +23,7 @@ import {
   } from '../../providers/corporate/corporate.actions';
   
 import { POSSIBLE_PAY_METHODS } from './PayBySelection';
-import { getRandomInt, arrangeFullName } from '../../common';
+import { getRandomInt, arrangeFullName,familyMemAgeCal } from '../../common';
 const POSSIBLE_FAMILY_MEMBERS = {
     SELF: 'SELF',
     FAMILY_WITH_PAY: 'FAMILY_WITH_PAY',
@@ -36,211 +36,61 @@ class TestDetails extends PureComponent {
         this.state = {
             benefeciaryDeails: false,
             patientDetailsObj: {},
-            data: {
-                familyDataByInsurance: [],
-                familyDataByCorporate: [],
-            },
+           
             gender: 'M',
             full_name: '',
             age: '',
             refreshCount: 0,
-            familyDetailsData: [],
-            onlyFamilyWithPayDetailsData: [],
         };
 
         this.defaultPatDetails = {};
     }
 
     async componentDidMount() {
-        await this.getPatientInfo();
     }
 
-    getPatientInfo = async () => {
-        try {
-            this.setState({isLoading: true});
-            let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
-            let employeeCode = await AsyncStorage.getItem('employeeCode');
-            let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-            console.log('result', result);
-            if (result) {
-              this.setState({familyMembers: result, isLoading: false});
-            }
-          }catch (Ex) {
-            console.log(
-                'Ex is getting Get Patient Info in Payment preview page',
-                Ex.message,
-            );
-        }
-    };
 
-    addPatientList = async () => {
-        const { name, age, gender } = this.state;
+    // addPatientList = async () => {
+    //     const { name, age, gender } = this.state;
 
-        if (!name || !age || !gender) {
-            this.setState({ errMsg: '* Kindly fill all the fields' });
-        } else {
-            const othersDetailsObj = {
-                type: 'others',
-                full_name: name,
-                age: parseInt(age),
-                gender,
-                uniqueId: 'others-' + getRandomInt(1000),
-            };
-            const onlyFamilyWithPayDetailsData = this.state
-                .onlyFamilyWithPayDetailsData;
-            debugger;
-            if (this.props.singlePatientSelect === true) {
-                let familyData = [];
-                familyData.push(othersDetailsObj);
-                this.setState({ onlyFamilyWithPayDetailsData: familyData });
-                this.props.addPatientDetails(familyData);
-            } else {
-                let familyData = this.props.familyDetailsData;
-                familyData.push(othersDetailsObj);
-                onlyFamilyWithPayDetailsData.push(othersDetailsObj);
-                this.setState({
-                    onlyFamilyWithPayDetailsData: onlyFamilyWithPayDetailsData,
-                });
-                this.props.addPatientDetails(familyData);
-            }
-        }
-    };
-    onSelfPatientClicked(hasCheckedForMultiSelect) {
-        this.setState({ patientDetailsObj: this.defaultPatDetails });
-        if (this.props.singlePatientSelect === true) {
-            this.props.addPatientDetails([this.defaultPatDetails]);
-        } else {
-            const familyDetailsData = this.props.familyDetailsData;
-            const index = familyDetailsData.findIndex((ele) => ele.type === 'self');
-            if (hasCheckedForMultiSelect === false) {
-                familyDetailsData.push(this.defaultPatDetails);
-            } else {
-                familyDetailsData.splice(index, 1);
-            }
+    //     if (!name || !age || !gender) {
+    //         this.setState({ errMsg: '* Kindly fill all the fields' });
+    //     } else {
+    //         let familyData=[];
+    //         const othersDetailsObj = {
+    //             type: 'others',
+    //             fullName: name,
+    //             age: parseInt(age),
+    //             gender,
+    //             uniqueId: 'others-' + getRandomInt(1000),
+    //         };
+    //         familyData.push(othersDetailsObj);
+    //        await this.setState({ othersDetails: familyData });
+    //         // if (this.props.singlePatientSelect === true) {
+    //         //     let familyData = [];
+    //         //     familyData.push(othersDetailsObj);
+    //         //     this.setState({ onlyFamilyWithPayDetailsData: familyData });
+    //         //     this.props.addPatientDetails(familyData);
+    //         // } else {
+    //         //     let familyData = this.props.familyDetailsData;
+    //         //     familyData.push(othersDetailsObj);
+    //         //     onlyFamilyWithPayDetailsData.push(othersDetailsObj);
+    //         //     this.setState({
+    //         //         onlyFamilyWithPayDetailsData: onlyFamilyWithPayDetailsData,
+    //         //     });
+    //         //     this.props.addPatientDetails(familyData);
+    //         // }
+    //         this.renderOthersDetails(this.state.othersDetails)
+    //     }
+    // };
+    
+   
 
-            this.setPatientType(POSSIBLE_FAMILY_MEMBERS.SELF);
-            this.props.addPatientDetails(familyDetailsData);
-        }
-    }
-    setPatientType(changedPatientType) {
-        const selectedPatientTypes = this.props.selectedPatientTypes;
-        if (selectedPatientTypes.includes(changedPatientType)) {
-            selectedPatientTypes.splice(
-                selectedPatientTypes.indexOf(changedPatientType),
-                1,
-            );
-            this.props.onSelectionChange(selectedPatientTypes);
-        } else {
-            selectedPatientTypes.push(changedPatientType);
-            this.props.onSelectionChange(selectedPatientTypes);
-        }
-    }
+   
 
-    onRemovePatientClicked(indexNo) {
-        let uniqueId = null;
-        const filteredData = this.state.onlyFamilyWithPayDetailsData.filter(
-            function (item, index) {
-                if (index === indexNo) {
-                    uniqueId = item.uniqueId;
-                }
-                return index !== indexNo;
-            },
-        );
 
-        const arr = this.props.familyDetailsData.filter(function (item, index) {
-            return item.uniqueId !== uniqueId;
-        });
-
-        this.props.addPatientDetails(arr);
-        this.setState({ onlyFamilyWithPayDetailsData: filteredData });
-    }
-    removeAllWithoutPayFamilyDetails() {
-        const arr = this.props.familyDetailsData.filter(function (item, index) {
-            return item.type !== 'others';
-        });
-        this.props.addPatientDetails(arr);
-    }
-    addAllWithoutPayFamilyMembersToPatientDetails() {
-        const existingPatDetails = this.props.familyDetailsData || [];
-        this.props.addPatientDetails(
-            existingPatDetails.concat(this.state.onlyFamilyWithPayDetailsData),
-        );
-    }
-
-    async addFamilyMembersForBooking(data, index, payBy) {
-        const payByFamilyIndex = payBy + '-' + index;
-        let familyMembersSelections = this.props.familyMembersSelections;
-
-        const beneficiaryDetailsObj = {
-            type: 'familymembers',
-            full_name: data.full_name,
-            age: parseInt(data.age),
-            gender: data.gender,
-            uniqueIndex: payByFamilyIndex,
-        };
-
-        if (
-            payBy === POSSIBLE_PAY_METHODS.CORPORATE ||
-            payBy === POSSIBLE_PAY_METHODS.INSURANCE
-        ) {
-            beneficiaryDetailsObj.policy_no = data.benefeciaryUserDeails.policyNumber;
-            beneficiaryDetailsObj.benefeciaryUserDeails = data.benefeciaryUserDeails;
-        }
-        if (this.props.singlePatientSelect === true) {
-            if (this.props.familyMembersSelections.includes(payByFamilyIndex)) {
-                familyMembersSelections.splice(
-                    familyMembersSelections.indexOf(payByFamilyIndex),
-                    1,
-                );
-                let familyData = this.props.familyDetailsData;
-                const finalFamilyData = familyData.filter(
-                    (ele) => ele.uniqueIndex !== payByFamilyIndex,
-                );
-                this.props.addPatientDetails(finalFamilyData);
-            } else {
-                let familyData = [];
-                familyMembersSelections = [payByFamilyIndex];
-                familyData.push(beneficiaryDetailsObj);
-                this.props.addPatientDetails(familyData);
-            }
-        } else {
-            let familyFindIndex = this.props.familyDetailsData.findIndex(
-                (ele) => ele.uniqueIndex === payByFamilyIndex,
-            );
-            if (
-        /*familyFindIndex === -1*/ this.props.familyMembersSelections.includes(
-                payByFamilyIndex,
-            ) === false
-            ) {
-                let familyData = [
-                    ...this.props.familyDetailsData,
-                    beneficiaryDetailsObj,
-                ];
-                familyMembersSelections.push(payByFamilyIndex);
-                this.props.addPatientDetails(familyData);
-            } else {
-                let familyData = this.props.familyDetailsData;
-                familyData.splice(familyFindIndex, 1);
-                familyMembersSelections.splice(
-                    familyMembersSelections.indexOf(payByFamilyIndex),
-                    1,
-                );
-                this.props.addPatientDetails(familyData);
-            }
-        }
-
-        await this.props.changeFamilyMembersSelections(familyMembersSelections);
-    }
-    removeAllPatientFromCorporateEmployeeDetails() {
-        const updatedFamilyDetails = this.props.familyDetailsData.filter(
-            (ele) => ele.type !== 'familymembers',
-        );
-        this.props.addPatientDetails(updatedFamilyDetails);
-        this.props.changeFamilyMembersSelections([]);
-    }
-
-    renderSelfDetails(data, index, enableSelectionBox, patientSelectionType) {
-        console.log("data",data)
+    renderSelfDetails(data) {
+        // console.log("data",data)
         const { isCorporateUser, payBy } = this.props;
         return (
             <View
@@ -268,11 +118,11 @@ class TestDetails extends PureComponent {
                 <Row>
                     <Col size={5}>
                         <Text style={styles.NameText}>
-                            {arrangeFullName(data.first_name,data.last_name)}
+                            {data&&data.first_name?(arrangeFullName(data.first_name,data.last_name)):''}
                         </Text>
                     </Col>
                     <Col size={5}>
-                        <Text style={styles.ageText}>{parseInt(dateDiff(data.dob, new Date(), 'years'))}</Text>
+                        <Text style={styles.ageText}>{data&&data.dob?(parseInt(dateDiff(data.dob, new Date(), 'years')))+' Years':''}</Text>
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 10 }}>
@@ -286,13 +136,13 @@ class TestDetails extends PureComponent {
                             </Col>
                             <Col size={5}>
                                 <Text style={[styles.commonText, { color: '#909498' }]}>
-                                    {data.gender ?data.gender : 'N/A'}
+                                    {data&&data.gender ?data.gender : 'N/A'}
                                 </Text>
                             </Col>
                         </Row>
                     </Col>
                     <Col size={4}>
-                        {data.mobileNo != undefined ? (
+                        {data&&data.mobileNo != undefined ? (
                             <Row>
                                 <Col size={3}>
                                     <Text style={styles.commonText}>Mobile</Text>
@@ -302,82 +152,7 @@ class TestDetails extends PureComponent {
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end' }}>
                                     <Text style={[styles.commonText, { color: '#909498' }]}>
-                                        {data.mobileNo}
-                                    </Text>
-                                </Col>
-                            </Row>
-                        ) : null}
-                    </Col>
-                   
-                </Row>
-              
-            </View>
-        );
-    }
-    renderFamilyDetails(data, index, enableSelectionBox, patientSelectionType) {
-        console.log("data",data)
-        const { isCorporateUser, payBy } = this.props;
-        return (
-            <View
-                style={{
-                    borderColor: 'gray',
-                    borderWidth: 0.3,
-                    padding: 10,
-                    borderRadius: 5,
-                    marginTop: 10,
-                }}>
-                {/* <Row>
-                    {data.type === 'others' ? (
-                        <Right style={{ marginTop: -10 }}>
-                            <TouchableOpacity
-                                onPress={() => this.onRemovePatientClicked(index)}>
-                                <Icon
-                                    active
-                                    name="ios-close"
-                                    style={{ color: '#d00729', fontSize: 25 }}
-                                />
-                            </TouchableOpacity>
-                        </Right>
-                    ) : null}
-                </Row> */}
-                <Row>
-                    <Col size={5}>
-                        <Text style={styles.NameText}>
-                        {arrangeFullName(data.familyMemberName,data.familyMemberLastName)}
-                        </Text>
-                    </Col>
-                    <Col size={5}>
-                        <Text style={styles.ageText}>{data.familyMemberAge} years</Text>
-                    </Col>
-                </Row>
-                <Row style={{ marginTop: 10 }}>
-                    <Col size={4}>
-                        <Row>
-                            <Col size={3}>
-                                <Text style={styles.commonText}>Gender</Text>
-                            </Col>
-                            <Col size={2}>
-                                <Text style={styles.commonText}>-</Text>
-                            </Col>
-                            <Col size={5}>
-                                <Text style={[styles.commonText, { color: '#909498' }]}>
-                                    {data.familyMemberGender ?data.familyMemberGender : 'N/A'}
-                                </Text>
-                            </Col>
-                        </Row>
-                    </Col>
-                    <Col size={4}>
-                        {data.relationship != undefined ? (
-                            <Row>
-                                <Col size={3}>
-                                    <Text style={styles.commonText}>Relationship</Text>
-                                </Col>
-                                <Col size={2}>
-                                    <Text style={styles.commonText}>-</Text>
-                                </Col>
-                                <Col size={5} style={{ alignItems: 'flex-end' }}>
-                                    <Text style={[styles.commonText, { color: '#909498' }]}>
-                                        {data.relationship}
+                                        {data&&data.mobileNo?data.mobileNo:'N/A'}
                                     </Text>
                                 </Col>
                             </Row>
@@ -390,34 +165,110 @@ class TestDetails extends PureComponent {
         );
     }
 
+//     renderOthersDetails(data) {
+//         console.log("data",data)
+//         return (
+           
+//                     <View>
+//                             {data.length !== 0 ? (
+//                                 <Text
+//                                     style={{ fontSize: 12, fontFamily: 'Roboto', marginTop: 10 }}>
+//                                     {translate('Patient Details')}
+//                                 </Text>
+//                             ) : null}
+//                      <FlatList
+//                                 data={data}
+//                                 keyExtractor={(item, index) => index.toString()}
+//                                 renderItem={({ item, index }) =>
+//                                     <View
+//                 style={{
+//                     borderColor: 'gray',
+//                     borderWidth: 0.3,
+//                     padding: 10,
+//                     borderRadius: 5,
+//                     marginTop: 10,
+//                 }}>
+//                 {/* <Row>
+//                     {data.type === 'others' ? (
+//                         <Right style={{ marginTop: -10 }}>
+//                             <TouchableOpacity
+//                                 onPress={() => this.onRemovePatientClicked(index)}>
+//                                 <Icon
+//                                     active
+//                                     name="ios-close"
+//                                     style={{ color: '#d00729', fontSize: 25 }}
+//                                 />
+//                             </TouchableOpacity>
+//                         </Right>
+//                     ) : null}
+//                 </Row> */}
+                
+//                 <Row>
+//                     <Col size={5}>
+//                         <Text style={styles.NameText}>
+//                             {data&&data.fullName?data.fullName:''}
+//                         </Text>
+//                     </Col>
+//                     <Col size={5}>
+//                         <Text style={styles.ageText}>{data&&data.age?data.age:''}</Text>
+//                     </Col>
+//                 </Row>
+//                 <Row style={{ marginTop: 10 }}>
+//                     <Col size={4}>
+//                         <Row>
+//                             <Col size={3}>
+//                                 <Text style={styles.commonText}>Gender</Text>
+//                             </Col>
+//                             <Col size={2}>
+//                                 <Text style={styles.commonText}>-</Text>
+//                             </Col>
+//                             <Col size={5}>
+//                                 <Text style={[styles.commonText, { color: '#909498' }]}>
+//                                     {data&&data.gender ?data.gender : 'N/A'}
+//                                 </Text>
+//                             </Col>
+//                         </Row>
+//                     </Col>
+//                     {/* <Col size={4}>
+//                         {data&&data.uniqueId != undefined ? (
+//                             <Row>
+//                                 <Col size={3}>
+//                                     <Text style={styles.commonText}>UniqueId</Text>
+//                                 </Col>
+//                                 <Col size={2}>
+//                                     <Text style={styles.commonText}>-</Text>
+//                                 </Col>
+//                                 <Col size={5} style={{ alignItems: 'flex-end' }}>
+//                                     <Text style={[styles.commonText, { color: '#909498' }]}>
+//                                         {data&&data.uniqueId?data.uniqueId:'N/A'}
+//                                     </Text>
+//                                 </Col>
+//                             </Row>
+//                         ) : null}
+//                     </Col> */}
+                   
+//                 </Row>
+//                 </View>
+//                                 }
+// />
 
-    getPossiblePaymentMethods(payBy) {
-        if (payBy === POSSIBLE_PAY_METHODS.SELF) {
-            return ['SELF', 'FAMILY_WITH_PAY'];
-        }
-        if (payBy === POSSIBLE_PAY_METHODS.INSURANCE) {
-            return ['SELF', 'FAMILY_WITHOUT_PAY'];
-        }
-        if (payBy === POSSIBLE_PAY_METHODS.CORPORATE) {
-            return ['SELF', 'FAMILY_WITHOUT_PAY'];
-        }
-    }
+//             </View>
+//         );
+//     }
+
 
     render() {
        
         const {
-            isCorporateUser,
-            payBy,
             onSelectionChange,
+            onSelectionPatientDetails,
             selectedPatientTypes,
-            familyDetailsData,
             singlePatientSelect,
             selfData,
+            familyMembers
         } = this.props;
-        console.log("selfData,",selfData)
         const { name, age, gender, onlyFamilyWithPayDetailsData, data } = this.state;
-        // const familyData = payBy === POSSIBLE_PAY_METHODS.INSURANCE ? data.familyDataByInsurance : data.familyDataByCorporate
-
+// console.log("selectedPatientTypes",selectedPatientTypes)
         return (
             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                 <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: primaryColor }}>
@@ -429,13 +280,12 @@ class TestDetails extends PureComponent {
                             color={primaryColor}
                             standardStyle={true}
                             selected={
-                                selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF)
+                                selectedPatientTypes.includes('self')
                                     ? true
                                     : false
                             }
                             onPress={() => {
-                                this.props.onSelectionChange(POSSIBLE_FAMILY_MEMBERS.SELF);
-                                this.onSelfPatientClicked();
+                                this.props.onSelectionChange('self');
                             }}
                         />
 
@@ -454,14 +304,12 @@ class TestDetails extends PureComponent {
                             color={primaryColor}
                             standardStyle={true}
                             selected={
-                                selectedPatientTypes.includes(
-                                    POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY,
-                                )
+                                selectedPatientTypes.includes('family')
                                     ? true
                                     : false
                             }
                             onPress={() =>
-                                onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY)
+                                onSelectionChange('family')
                             }
                         />
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>
@@ -469,7 +317,7 @@ class TestDetails extends PureComponent {
                         </Text>
                     </View>
 
-                    <View
+                    {/* <View
                         style={{
                             flexDirection: 'row',
                             marginLeft: 40,
@@ -480,13 +328,13 @@ class TestDetails extends PureComponent {
                             standardStyle={true}
                             selected={
                                 selectedPatientTypes.includes(
-                                    POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY,
+                                    POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY,
                                 )
                                     ? true
                                     : false
                             }
                             onPress={() => {
-                                onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY);
+                                onSelectionChange(POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY);
                                 this.setState({ patientDetailsObj: {} });
                             }}
                         />
@@ -494,59 +342,100 @@ class TestDetails extends PureComponent {
                         <Text style={[styles.commonText, { marginLeft: 5 }]}>
                             {translate('Others')}{' '}
                         </Text>
-                    </View>
+                    </View> */}
                 </View>
 
                 <View style={{ marginTop: 10 }}>
-                    {selectedPatientTypes.includes(POSSIBLE_FAMILY_MEMBERS.SELF) ? (
+                    {selectedPatientTypes.includes('self') ? (
                         <View>
                             <Text style={{ fontSize: 12, fontFamily: 'Roboto', marginTop: 10 }}>
                                 {translate('Patient Details')}
                             </Text>
                             <View>
-                                {this.renderSelfDetails(
-                                    selfData,
-                                    0,
-                                    false,
-                                    POSSIBLE_FAMILY_MEMBERS.SELF,
-                                )}
+                                {this.renderSelfDetails(selfData)}
                             </View>
                         </View>
                     ) : null}
                 </View>
+
                 <View style={{ marginTop: 10 }}>
-                    {selectedPatientTypes.includes(
-                        POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY,
-                    ) ? (
+                    {selectedPatientTypes.includes('family') ? (
                         <View>
-                            {onlyFamilyWithPayDetailsData.length !== 0 ? (
+                            {familyMembers.length !== 0 ? (
                                 <Text
                                     style={{ fontSize: 12, fontFamily: 'Roboto', marginTop: 10 }}>
                                     {translate('Patient Details')}
                                 </Text>
                             ) : null}
                             <FlatList
-                                data={onlyFamilyWithPayDetailsData}
+                                data={familyMembers}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
-                                    this.renderFamilyDetails(
-                                        item,
-                                        index,
-                                        false,
-                                        POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY,
-                                    )
+                                <View
+                                style={{
+                                    borderColor: 'gray',
+                                    borderWidth: 0.3,
+                                    padding: 10,
+                                    borderRadius: 5,
+                                    marginTop: 10,
+                                }}>
+                               
+                                <Row>
+                                    <Col size={5}>
+                                        <Text style={styles.NameText}>
+                                        {item.familyMemberName?(arrangeFullName(item.familyMemberName,item.familyMemberLastName)):'N/A'}
+                                        </Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.ageText}>{item.familyMemberAge?familyMemAgeCal(item):'N/A'}</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={4}>
+                                        <Row>
+                                            <Col size={3}>
+                                                <Text style={styles.commonText}>Gender</Text>
+                                            </Col>
+                                            <Col size={2}>
+                                                <Text style={styles.commonText}>-</Text>
+                                            </Col>
+                                            <Col size={5}>
+                                                <Text style={[styles.commonText, { color: '#909498' }]}>
+                                                    {item.familyMemberGender ?item.familyMemberGender : 'N/A'}
+                                                </Text>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                    <Col size={5}>
+                                            <Row>
+                                                <Col size={4.5}>
+                                                    <Text style={styles.commonText}>Relationship</Text>
+                                                </Col>
+                                                <Col size={1}>
+                                                    <Text style={styles.commonText}>-</Text>
+                                                </Col>
+                                                <Col size={4.5} style={{ alignItems: 'flex-end' }}>
+                                                    <Text style={[styles.commonText, { color: '#909498' }]}>
+                                                        {item.relationship?item.relationship:'N/A'}
+                                                    </Text>
+                                                </Col>
+                                            </Row>
+                                    </Col>
+                                   
+                                </Row>
+                              
+                            </View>
                                 }
                             />
-                            {(selectedPatientTypes.includes(
-                                POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY,
-                            ) &&
-                                this.props.singlePatientSelect === false) ||
-                                (selectedPatientTypes.includes(
-                                    POSSIBLE_FAMILY_MEMBERS.FAMILY_WITH_PAY,
-                                ) &&
-                                    this.props.singlePatientSelect === true &&
-                                    familyDetailsData.filter((ele) => ele.type === 'others')
-                                        .length === 0) ? (
+                        </View>
+                    ) : null}
+                </View>
+
+
+                {/* <View style={{ marginTop: 10 }}>
+                    {selectedPatientTypes.includes(
+                        POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY,
+                    ) ? (
                                 <View style={{ marginTop: 8 }}>
                                     {familyDetailsData.length !== 0 ? (
                                         <Text
@@ -679,8 +568,8 @@ class TestDetails extends PureComponent {
                                         </TouchableOpacity>
                                     </Row>
                                 </View>
-                            ) : null}
-                        </View>
+                          
+                      
                     ) : null}
 
                     <View style={{ marginTop: 10 }}>
@@ -710,7 +599,7 @@ class TestDetails extends PureComponent {
                             </View>
                         ) : null}
                     </View>
-                </View>
+                </View> */}
             </View>
         );
     }
