@@ -257,6 +257,13 @@ class TestDetails extends PureComponent {
 //         );
 //     }
 
+onClickFamilyMember(index, item) {    
+    this.setState({ 
+        currentIndex: index,
+    })
+    this.props.onSelectionPatientDetails(item)
+}
+
 
     render() {
        
@@ -374,10 +381,7 @@ class TestDetails extends PureComponent {
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
                                 <TouchableOpacity
-                                onPress={() => this.setState({ 
-                                    currentIndex: index,
-                                    currentFamilyMemberData: item
-                                })}
+                                onPress={() => this.onClickFamilyMember(index, item)}
                                 style={[this.state.currentIndex === index ? {
                                     borderColor: '#48b4a5',
                                     borderWidth: 1,
