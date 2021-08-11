@@ -65,7 +65,7 @@ class Forgotpassword extends Component {
                     return false
                 }
                 if (!userEntry) {
-                    this.setState({ errorMessage: 'Enter your Email' });
+                    this.setState({ errorMessage: 'Enter your Mobile number Email' });
                     return false;
                 }
                 if (validateEmailAddress(userEntry) === false) {
