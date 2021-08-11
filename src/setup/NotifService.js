@@ -2,29 +2,32 @@ import PushNotification from 'react-native-push-notification';
 import { FIREBASE_SENDER_ID, IS_IOS, CURRENT_APP_NAME } from './config'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
+import { updateMemberDetails } from '../modules/providers/auth/auth.actions';
 import messaging from '@react-native-firebase/messaging';
 import rootNavigation from './rootNavigation';
 import backgroundpush from './backgroundpush';
 let tokenData;
+let id;
 let navigationProps;
 class NotifService {
 
   constructor() {
 
   }
-  initNotification(props) {
+  async initNotification(props,_id) {
     navigationProps = props;
+    id=_id;
     this.configure();
 
-    messaging().requestPermission().then((result) => {
-      this.messageListener = messaging().onMessage((message) => backgroundpush(message));
-      messaging().getToken().then(fcmToken => {
-        if (fcmToken) {
-          tokenData = { token: fcmToken };
-        }
-      });
-    })
+    // messaging().requestPermission().then(async(result) => {
+    //   this.messageListener = messaging().onMessage((message) => backgroundpush(message));
+    //  const fcmToken=await messaging().getToken()
+    //     console.log("fcmToken",fcmToken)
+    //     if (fcmToken) {
+    //       tokenData = { token: fcmToken }; 
+    //     }
+    //   });
+    // })
     this.lastId = 0;
   }
 
@@ -41,7 +44,7 @@ class NotifService {
   configure(gcm = FIREBASE_SENDER_ID) {
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
-      // onRegister:(token) => this.onRegister(token), //this._onRegister.bind(this),
+      onRegister:(token) => this.onRegister(token), //this._onRegister.bind(this),
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: (notif) => this.onNotification(notif), //this._onNotification,
@@ -174,29 +177,37 @@ class NotifService {
 
   onRegister = async (token) => {
     tokenData = token;
+    this.updateDeviceToken(id)
+
   }
 
-  updateDeviceToken = async (userId) => {
+  updateDeviceToken = async (id) => {
     if (tokenData) {
       const updatedDeviceToken = await AsyncStorage.getItem('updatedDeviceToken');
       let deviceToken = tokenData.token;
-      let mergedTokenWithUserId = String(userId) + '_' + String(deviceToken).substr(0, 15);
+      let mergedTokenWithId = String(id) + '_' + String(deviceToken).substr(0, 15);
       if (!updatedDeviceToken) {
-        this.callApiToDeviceToken(userId, deviceToken, mergedTokenWithUserId);
+        this.callApiToDeviceToken(id, deviceToken, mergedTokenWithId);
       }
-      else if (mergedTokenWithUserId !== updatedDeviceToken) {
-        this.callApiToDeviceToken(userId, deviceToken, mergedTokenWithUserId);
+      else if (mergedTokenWithId !== updatedDeviceToken) {
+        this.callApiToDeviceToken(id, deviceToken, mergedTokenWithId);
       }
     }
   }
-  callApiToDeviceToken = async (userId, deviceToken, mergedTokenWithUserId) => {
+  callApiToDeviceToken = async (id, deviceToken, mergedTokenWithId) => {
     try {
+      let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
+      let relationship = (await AsyncStorage.getItem('relationship')) || null;
       let requestData = {
-        device_token: deviceToken,
+        deviceToken: deviceToken,
+        _id:id,
+        emailId:memberEmailId,
+        relationship:relationship
       }
-      let updateResponse = await userFiledsUpdate(userId, requestData);
-      if (updateResponse.success == true) {
-        AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithUserId);
+      let updateResponse = await updateMemberDetails(requestData);
+
+      if (updateResponse) {
+        AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithId);
       }
     } catch (e) {
       console.log(e);

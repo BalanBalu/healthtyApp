@@ -19,6 +19,7 @@ import {
 } from 'native-base';
 import {hasLoggedIn} from '../../providers/auth/auth.actions';
 import {Col, Row, Grid} from 'react-native-easy-grid';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   StyleSheet,
   Image,
@@ -27,21 +28,28 @@ import {
   TouchableOpacity,
   FlatList,
   Platform,
+  Pressable
 } from 'react-native';
 import {validateBooking} from '../../providers/bookappointment/bookappointment.action';
 import {formatDate, isOnlyLetter, toTitleCase} from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
+import {GlobalStyles} from '../../../Constants/GlobalStyles';
 import {
   renderDoctorImage,
   getDoctorEducation,
   getAllSpecialist,
   getUserGenderAndAge,
   toastMeassage,
+  familyMemAgeCal
 } from '../../common';
 import {SERVICE_TYPES} from '../../../setup/config';
 import {primaryColor} from '../../../setup/config';
 import {translate} from '../../../setup/translator.helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  widthPercentageToDP,
+  heightPercentageToDP,
+} from '../../../Constants/GlobalStyles';
 
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import {fetchUserProfile} from '../../providers/profile/profile.action';
@@ -49,13 +57,176 @@ import {dateDiff} from '../../../setup/helpers';
 import {TestDetails, POSSIBLE_FAMILY_MEMBERS} from './testDeatils';
 import {PayBySelection, POSSIBLE_PAY_METHODS} from './PayBySelection';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {getHospitalById,createAppointment} from '../../providers/BookAppointmentFlow/action';
+import {
+  getMemberDetailsByEmail,
+  getFamilyMemDetails,
+  deleteFamilyMembersDetails,
+} from '../../providers/corporate/corporate.actions';
+
+// const bookSlotDetails = {
+//   slotDate: '2021-08-27',
+//   slotStartDateAndTime: '2021-08-27T01:10:01Z',
+//   slotEndDateAndTime: '2021-08-27T01:20:01Z',
+//   slotTimeUnit: 'minutes',
+//   slotDuration: 10,
+//   fee: 9,
+//   offerPercent: 10,
+//   feeWithoutOffer: 10,
+//   isSlotBooked: false,
+//   location: null,
+// };
+
+// const doctorDetails = {
+//   doctorId: '60deb4d937d7495cccd4aa18',
+//   hospitalId: '60deb53137d7495cccd4aa20',
+//   prefix: 'Dr',
+//   status: null,
+//   education: [
+//     {
+//       degree: 'B.D.S',
+//       institute: 'Christian Medical College',
+//       location: '122',
+//     },
+//     {
+//       degree: 'M.Surg',
+//       institute: 'Christian Medical College',
+//       location: 'we',
+//     },
+//     {
+//       degree: 'DPhil',
+//       institute: 'Christian Medical College',
+//       location: 'we',
+//     },
+//     {
+//       degree: 'M.B.B.S',
+//       institute: 'Christian Medical College',
+//       location: 'dsf',
+//     },
+//   ],
+//   specialist: [
+//     {
+//       "_id": "5dab9c65f680781894d6efa2",
+//       "category": "Primary Care Doctor",
+//       "categoryId": 1,
+//       "service": "Illness",
+//       "serviceId": 1
+//     }
+//   ],
+//   doctorIdHostpitalId: '60deb4d937d7495cccd4aa18-60deb53137d7495cccd4aa20',
+//   doctorName: 'pradeep pradeep',
+//   email: 'spradeepmp007@gmail.com',
+//   dob: '1995-10-01T18:30:00.000Z',
+//   profileImage: {
+//     image_id: '60e46b585acaff2ac0e9cb55',
+//     original_file_name: 'photo.jpg',
+//     type: 'image/jpeg',
+//     file_name: 'profileImage_1625582423857_photo.jpg',
+//     original_imageURL:
+//       'http://192.168.1.5:3000/smarthealth/profileImage/profileImage_1625582423857_photo.jpg',
+//     imageURL:
+//       'http://192.168.1.5:3000/images/profileImage_1625582423857_photo.jpg',
+//     updated_date: '2021-07-06T14:40:23.810Z',
+//     active: true,
+//   },
+//   yearOfExp: {year: 6, month: 6, isPrivate: null},
+//   slotData: {
+//     '2021-07-27': [
+//       {
+//         slotDate: '2021-07-27',
+//         slotStartDateAndTime: '2021-07-27T01:00:01Z',
+//         slotEndDateAndTime: '2021-07-27T01:10:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-07-27',
+//         slotStartDateAndTime: '2021-07-27T01:10:01Z',
+//         slotEndDateAndTime: '2021-07-27T01:20:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-07-27',
+//         slotStartDateAndTime: '2021-07-27T01:20:01Z',
+//         slotEndDateAndTime: '2021-07-27T01:30:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-07-27',
+//         slotStartDateAndTime: '2021-07-27T01:30:01Z',
+//         slotEndDateAndTime: '2021-07-27T01:40:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//     ],
+//     '2021-08-01': [
+//       {
+//         slotDate: '2021-08-01',
+//         slotStartDateAndTime: '2021-07-31T18:30:01Z',
+//         slotEndDateAndTime: '2021-07-31T18:40:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-08-01',
+//         slotStartDateAndTime: '2021-07-31T18:40:01Z',
+//         slotEndDateAndTime: '2021-07-31T18:50:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//       {
+//         slotDate: '2021-08-01',
+//         slotStartDateAndTime: '2021-07-31T18:50:01Z',
+//         slotEndDateAndTime: '2021-07-31T19:00:01Z',
+//         slotTimeUnit: 'minutes',
+//         slotDuration: 10,
+//         fee: 9,
+//         offerPercent: 10,
+//         feeWithoutOffer: 10,
+//         isSlotBooked: false,
+//         location: null,
+//       },
+//     ],
+//   },
+// };
+
 export default class PaymentReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      bookSlotDetails: {
-        diseaseDescription: '',
-      },
+      bookSlotDetails: {},
       isLoading: true,
       gender: 'M',
       full_name: '',
@@ -71,6 +242,9 @@ export default class PaymentReview extends Component {
       familyMembersSelections: [],
       selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
       familyDetailsData: [],
+      bookAppointment: [],
+      doctorDetails: {},
+      familyMembers: [],
     };
     this.defaultPatDetails = {};
   }
@@ -87,29 +261,34 @@ export default class PaymentReview extends Component {
       navigation.navigate('login');
       return;
     }
-    const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
-    const fromNavigation = navigation.getParam('fromNavigation') || null;
-
-    this.setState({
-      bookSlotDetails: bookSlotDetails,
-      isCorporateUser,
-      fromNavigation,
-      isLoading: false,
-    });
-    this.getPatientInfo();
+    let basicProfileData = await AsyncStorage.getItem('basicProfileData');
+    let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+    let basicData = JSON.parse(basicProfileData);
+    basicData.policyNumber=memberPolicyNo;
+    this.setState({selfData:[basicData]})
+    let bookAppointment=navigation.getParam('bookAppointment')
+    if(bookAppointment){
+    await this.setState({
+        doctorDetails:bookAppointment.doctorDetails,
+        bookSlotDetails:bookAppointment.selectedSlot,
+        isLoading: false,
+      })
+    }
+    // this.getPatientInfo();
   }
   async confirmProceedPayment() {
-    const {bookSlotDetails, patientDetailsObj} = this.state;
+
+    const {bookSlotDetails,patientDetailsObj,selfData,doctorDetails} = this.state;
     let {diseaseDescription} = bookSlotDetails;
-    if (!Object.keys(patientDetailsObj).length) {
-      Toast.show({
-        text: translate('Kindly select Self or Add other patient details'),
-        type: 'warning',
-        duration: 3000,
-      });
-      return false;
-    }
-    if (!diseaseDescription || String(diseaseDescription).trim() === '') {
+    // if (!Object.keys(patientDetailsObj).length) {
+    //   Toast.show({
+    //     text: translate('Kindly select Self or Add other patient details'),
+    //     type: 'warning',
+    //     duration: 3000,
+    //   });
+    //   return false;
+    // }
+    if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
       Toast.show({
         text: translate('Please enter valid Reason'),
         duration: 3000,
@@ -120,45 +299,81 @@ export default class PaymentReview extends Component {
     this.setState({isLoading: true, spinnerText: translate('Please Wait')});
     const bookingSlotData = bookSlotDetails;
     let validationResult;
-    if (this.state.fromNavigation === 'HOSPITAL') {
-      validationResult = {
-        success: true,
-      };
-    } else {
+    // if (this.state.fromNavigation === 'HOSPITAL') {
+    //   validationResult = {
+    //     success: true,
+    //   };
+    // } else {
       const reqData = {
-        doctorId: bookingSlotData.doctorId,
-        startTime: bookingSlotData.slotData.slotStartDateAndTime,
-        endTime: bookingSlotData.slotData.slotEndDateAndTime,
+        startTime: bookingSlotData.slotStartDateAndTime,
+        endTime: bookingSlotData.slotEndDateAndTime,
+        "patientData": {
+          "patientName": selfData[0].first_name,
+          "patientAge": dateDiff(selfData[0].dob, new Date(), 'years'),
+          "policyNumber": selfData[0].policyNumber,
+          "gender": selfData[0].gender,
+          "mobileNo": selfData&&selfData.mobileNo?selfData[0].mobileNo:null,
+          "emailId": selfData[0].email,
+          "dob": selfData[0].dob,
+          "patientImage": selfData[0].profileImage
+        },
+       
+        fee: bookingSlotData.fee||0,
+        hospitalId: doctorDetails.hospitalId,
+        doctorId: doctorDetails.doctorId,
+        status:'PENDING',
+        paymentId: "cash_1574318269541",
+        bookedFor: "DOCTOR",
+        // "categoryId": "string",
+        // "bookedFrom": "string",
+        statusUpdateReason: "NEW_BOOKING",
+        description: bookSlotDetails.diseaseDescription?bookSlotDetails.diseaseDescription:'',
+        // "tokenNo": "string",
+        // "appointmentCode": "string",
+        appointmentTakenDate:new Date()
       };
-      validationResult = await validateBooking(reqData);
-    }
+      validationResult = await createAppointment(reqData);
+    // }
     this.setState({isLoading: false, spinnerText: ' '});
-
-    if (validationResult.success) {
-      const patientDataObj = {
-        patient_name: patientDetailsObj.full_name,
-        patient_age: patientDetailsObj.age,
-        gender: patientDetailsObj.gender,
-      };
-      if (patientDetailsObj.policy_no) {
-        patientDataObj.policy_number = patientDetailsObj.policy_no;
+      if (validationResult) {
+        Toast.show({
+              text: "Your Appointment Booked Sucessfully",
+              type: 'success',
+              duration: 3000,
+            });
+            this.props.navigation.navigate('CorporateHome');
+      }else{
+        Toast.show({
+              text: validationResult.message,
+              type: 'warning',
+              duration: 3000,
+            });
       }
-      bookSlotDetails.patient_data = patientDataObj;
+    // if (validationResult.success) {
+    //   const patientDataObj = {
+    //     patient_name: patientDetailsObj.full_name,
+    //     patient_age: patientDetailsObj.age,
+    //     gender: patientDetailsObj.gender,
+    //   };
+    //   if (patientDetailsObj.policy_no) {
+    //     patientDataObj.policy_number = patientDetailsObj.policy_no;
+    //   }
+    //   bookSlotDetails.patient_data = patientDataObj;
 
-      const amount = this.state.bookSlotDetails.slotData.fee;
-      this.props.navigation.navigate('paymentPage', {
-        service_type: SERVICE_TYPES.APPOINTMENT,
-        bookSlotDetails: this.state.bookSlotDetails,
-        amount: amount,
-        fromNavigation: this.state.fromNavigation,
-      });
-    } else {
-      Toast.show({
-        text: validationResult.message,
-        type: 'warning',
-        duration: 3000,
-      });
-    }
+    //   const amount = this.state.bookSlotDetails.slotData.fee;
+    //   this.props.navigation.navigate('paymentPage', {
+    //     service_type: SERVICE_TYPES.APPOINTMENT,
+    //     bookSlotDetails: this.state.bookSlotDetails,
+    //     amount: amount,
+    //     fromNavigation: this.state.fromNavigation,
+    //   });
+    // } else {
+    //   Toast.show({
+    //     text: validationResult.message,
+    //     type: 'warning',
+    //     duration: 3000,
+    //   });
+    // }
   }
   async processToPayLater(paymentMethod) {
     const {
@@ -244,21 +459,17 @@ export default class PaymentReview extends Component {
 
   getPatientInfo = async () => {
     try {
-      // const fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
-      // const userId = await AsyncStorage.getItem('userId');
-      // const patInfoResp = await fetchUserProfile(userId, fields);
-      // this.defaultPatDetails = {
-      //   type: 'self',
-      //   full_name: patInfoResp.first_name + ' ' + patInfoResp.last_name,
-      //   gender: patInfoResp.gender,
-      //   age: parseInt(dateDiff(patInfoResp.dob, new Date(), 'years'))
-      // }
-      // this.setState({ patientDetailsObj: this.defaultPatDetails });
-    } catch (Ex) {
-      console.log(
-        'Ex is getting Get Patient Info in Payment preview page',
-        Ex.message,
-      );
+      this.setState({isLoading: true});
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let employeeCode = await AsyncStorage.getItem('employeeCode');
+      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
+      if (result) {
+        this.setState({familyMembers: result, isLoading: false});
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.setState({isLoading: false});
     }
   };
 
@@ -271,6 +482,67 @@ export default class PaymentReview extends Component {
       addPatientDataPoPupEnable: false,
     });
   };
+
+  renderPatientDetails(data, index, enableSelectionBox, patientSelectionType) {
+    // const {isCorporateUser, payBy} = this.props;
+    return (
+      <View
+        style={{
+          borderColor: 'gray',
+          borderWidth: 0.3,
+          padding: 10,
+          borderRadius: 5,
+          marginTop: 10,
+        }}>
+       
+        <Row>
+          <Col size={5}>
+            <Text style={styles.subText}>
+              {(data&&data.first_name ? data.first_name + ' ' : '') + (data&&data.last_name ? data.last_name + ' ' : '')}
+            </Text>
+          </Col>
+          <Col size={5}>
+            <Text style={styles.subText}>{formatDate(data.dob,'DD/MM/YY')}</Text>
+          </Col>
+        </Row>
+        <Row style={{marginTop: 10}}>
+          <Col size={4}>
+            <Row>
+              <Col size={3}>
+                <Text style={styles.subText}>Gender</Text>
+              </Col>
+              <Col size={2}>
+                <Text style={styles.subText}>-</Text>
+              </Col>
+              <Col size={5}>
+                <Text style={[styles.subText, {color: '#909498'}]}>
+                  {data&&data.gender? data.gender:'N/A'}
+                </Text>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+
+        <Row style={{marginTop: 10}}>
+          <Col size={4}>
+            <Row>
+              <Col size={3}>
+                <Text style={styles.subText}>RelationShip</Text>
+              </Col>
+              <Col size={2}>
+                <Text style={styles.subText}>-</Text>
+              </Col>
+              <Col size={5}>
+                <Text style={[styles.subText, {color: '#909498'}]}>
+                  {data&&data.relationship? data.relationship:'N/A'}
+                </Text>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </View>
+    );
+  }
 
   render() {
     const {
@@ -286,240 +558,13 @@ export default class PaymentReview extends Component {
       age,
       gender,
       fromNavigation,
+      familyMembers,
+      selfData,
+      doctorDetails
     } = this.state;
-
     return (
       <Container>
         <Content style={{padding: 15, backgroundColor: '#F5F5F5'}}>
-          {/*
-          <View style={{ marginBottom: 20 }}>
-            <Card transparent >
-              <CardItem header style={styles.cardItem}>
-                <Grid>
-                
-                  <Row>
-                    <Col style={{ width: '25%', justifyContent: 'center' }}>
-                      <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
-                        <Thumbnail source={renderDoctorImage(bookSlotDetails)} style={{ height: 70, width: 70, borderRadius: 70 / 2 }} />
-                      </TouchableOpacity>
-                    </Col>
-                    <Col style={{ width: '80%', marginTop: 10 }}>
-                      <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
-                      <Text style={styles.cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
-                    </Col>
-                  </Row>
-                </Grid>
-              </CardItem>
-            </Card>
-            <Card style={styles.innerCard}>
-              <Grid>
-              
-                {bookSlotDetails.slotData ?
-                  <View style={{ marginTop: 10, marginLeft: 10 }} >
-                    <Row>
-                      <Icon name="ios-pin" style={{ fontSize: 20 }} />
-                      <Col>
-                        <Text style={styles.hospitalText}>{bookSlotDetails.slotData.location.name}</Text>
-                        <Text note style={styles.hosAddressText}>
-                        {bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
-                          {bookSlotDetails.slotData.location.location.address.city + ', '}
-                          {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
-                      </Col>
-                    </Row>
-                  </View> : null}
-                <Row style={{ borderTopColor: 'gray', borderTopWidth: 1, marginTop: 10 }}>
-                  <Col style={{ borderRightColor: 'gray', borderRightWidth: 1, marginTop: 5, alignItems: 'center' }}>
-                    <Icon name='md-calendar' style={{ color: '#0055A5', fontSize: 30 }} />
-                    <Text style={{ color: '#0055A5', fontFamily: 'Roboto', fontSize: 14 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
-                  </Col>
-                  <Col style={{ alignItems: 'center', marginTop: 5 }}>
-                    <Icon name="md-clock" style={{ color: 'green', fontSize: 30 }} />
-                    <Text style={{ color: 'green', fontFamily: 'Roboto', fontSize: 14 }}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
-                  </Col>
-                </Row>
-              </Grid>
-              <CardItem footer style={styles.cardItem2}>
-                <Text style={styles.cardItemText3} >Total Fees - {'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
-              </CardItem>
-            </Card>
-            <View>
-              <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
-                <Text style={styles.subHead}>For Whom do you need to take up the Checkup?</Text>
-                <Row style={{ marginTop: 5 }}>
-                  <Col size={10}>
-                    <Row>
-                      <Col size={3}>
-                        <Row style={{ alignItems: 'center' }}>
-                          <Radio
-                            standardStyle={true}
-                            selected={isSelected === 'self'}
-                            onPress={() => this.setState({ isSelected: 'self', patientDetailsObj: this.defaultPatDetails })}
-                          />
-                          <Text style={styles.firstCheckBox}>Self</Text>
-                        </Row>
-                      </Col>
-                      <Col size={3}>
-                        <Row style={{ alignItems: 'center' }}>
-                          <Radio
-                            standardStyle={true}
-                            selected={isSelected === 'others'}
-                            onPress={() => this.setState({ isSelected: 'others', addPatientDataPoPupEnable: true, patientDetailsObj: {} })}
-                          />
-                          <Text style={styles.firstCheckBox}>Others</Text>
-                        </Row>
-                      </Col>
-                      <Col size={4}>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </View>
-              {isSelected === 'others' && addPatientDataPoPupEnable ?
-                <View style={{ marginTop: 10, marginLeft: 8 }}>
-                  <Text style={styles.subHead}>Add other patient's details</Text>
-                  <Row style={{ marginTop: 10 }}>
-                    <Col size={6}>
-                      <Row>
-                        <Col size={2}>
-                          <Text style={styles.nameAndAge}>Name</Text>
-                        </Col>
-                        <Col size={8} >
-                          <Input placeholder="Enter patient's name" style={styles.inputText}
-                            returnKeyType={'next'}
-                            keyboardType={"default"}
-                            value={name}
-                            onChangeText={(name) => this.setState({ name })}
-                            blurOnSubmit={false}
-                          />
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col size={4} style={{ marginLeft: 5 }}>
-                      <Row>
-                        <Col size={2}>
-                          <Text style={styles.nameAndAge}>Age</Text>
-                        </Col>
-                        <Col size={7}>
-                          <Input placeholder="Enter patient's age" style={styles.inputText}
-                            returnKeyType={'done'}
-                            keyboardType="numeric"
-                            value={age}
-                            onChangeText={(age) => this.setState({ age })}
-                            blurOnSubmit={false}
-                          />
-                        </Col>
-                        <Col size={1}>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                  <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
-                    <Text style={{
-                      fontFamily: 'Roboto', fontSize: 14, marginTop: 3
-                    }}>Gender</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
-                      <Radio
-                        standardStyle={true}
-                        selected={gender === "M" ? true : false}
-                        onPress={() => this.setState({ gender: "M" })} />
-                      <Text style={styles.genderText}>Male</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
-                      <Radio
-                        standardStyle={true}
-                        selected={gender === "F" ? true : false}
-                        onPress={() => this.setState({ gender: "F" })} />
-                      <Text style={styles.genderText}>Female</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
-                      <Radio
-                        standardStyle={true}
-                        selected={gender === "O" ? true : false}
-                        onPress={() => this.setState({ gender: "O" })} />
-                      <Text style={styles.genderText}>Others</Text>
-                    </View>
-                  </View>
-                </View> : null}
-              {errMsg ? <Text style={{ paddingLeft: 10, fontSize: 14, fontFamily: 'Roboto', color: 'red' }}>{errMsg}</Text> : null}
-              {isSelected === 'others' && addPatientDataPoPupEnable ?
-                <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
-                  <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientList()}>
-                    <Text style={styles.touchText}>Add patient</Text>
-                  </TouchableOpacity>
-                </Row> : null}
-              {Object.keys(patientDetailsObj).length ?
-                <View style={{ backgroundColor: '#fff', marginTop: 10, marginLeft: 8 }}>
-                  <Text style={styles.subHead}>Patient Details</Text>
-                  <View>
-                    <Row style={{ marginTop: 10, }}>
-                      <Col size={8}>
-                        <Row>
-                          <Col size={2}>
-                            <Text style={styles.commonText}>Name</Text>
-                          </Col>
-                          <Col size={.5}>
-                            <Text style={styles.commonText}>-</Text>
-                          </Col>
-                          <Col size={7}>
-                            <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#000' }}>{patientDetailsObj.full_name}</Text>
-
-                          </Col>
-                        </Row>
-                      </Col>
-                      {isSelected === 'others' ?
-                        <Col size={0.5}>
-                          <TouchableOpacity onPress={() => this.setState({ patientDetailsObj: {}, addPatientDataPoPupEnable: true })}>
-                            <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 20 }} />
-                          </TouchableOpacity>
-                        </Col>
-                        : null
-                      }
-                    </Row>
-                    <Row>
-                      <Col size={10}>
-                        <Row>
-                          <Col size={2}>
-                            <Text style={styles.commonText}>Age</Text>
-                          </Col>
-                          <Col size={.5}>
-                            <Text style={styles.commonText}>-</Text>
-                          </Col>
-                          <Col size={7.5}>
-                            <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#000' }}>{(patientDetailsObj.age) + ' - ' + getUserGenderAndAge(patientDetailsObj)}</Text>
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </View>
-                </View>
-                : null}
-              <Row>
-                <Icon name="create" style={{ fontSize: 20, marginLeft: 10, marginTop: 20, color: primaryColor }} />
-                <Text style={styles.subText}> Your Reason For Checkup</Text>
-              </Row>
-              <Form style={{ marginRight: 1, marginLeft: -13 }}>
-                <Item style={{ borderBottomWidth: 0 }}>
-                  <TextInput
-                    onChangeText={(diseaseDescription) => {
-                      var bookSlotDetails = { ...this.state.bookSlotDetails }
-                      bookSlotDetails.diseaseDescription = diseaseDescription;
-                      this.setState({ bookSlotDetails })
-                    }}
-                    multiline={true} placeholder="Write Reason...."
-                    style={styles.textInput} />
-                </Item>
-              </Form>
-            </View>
-            <Row style={{ justifyContent: 'center', }}>
-              <Button style={styles.payButton1} onPress={() => this.processToPayLater()}>
-                <Text style={styles.payButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
-              </Button>
-              <Button style={styles.payButton}
-                onPress={() => this.confirmProceedPayment()} >
-                <Text style={styles.payButtonText}>Pay Online</Text>
-              </Button>
-            </Row>
-          </View> */}
           <Spinner visible={isLoading} textContent={spinnerText} />
           <View style={{paddingBottom: 50}}>
             <View style={{backgroundColor: '#fff', padding: 10}}>
@@ -529,18 +574,20 @@ export default class PaymentReview extends Component {
                     <TouchableOpacity
                       onPress={() =>
                         this.props.navigation.navigate('ImageView', {
-                          passImage: renderDoctorImage(bookSlotDetails),
+                          passImage: renderDoctorImage(doctorDetails),
                           title: 'Profile photo',
                         })
                       }>
                       <Image
-                        source={renderDoctorImage(bookSlotDetails)}
+                        source={renderDoctorImage(doctorDetails)}
                         style={{height: 50, width: 50}}
                       />
                     </TouchableOpacity>
                   </Col>
                   <Col size={8.4}>
-                    <Text style={styles.docName}>{bookSlotDetails.name}</Text>
+                    <Text style={styles.docName}>
+                      {doctorDetails.doctorName ? doctorDetails.doctorName : ''}
+                    </Text>
                     <Text style={styles.hosAddress}>
                       {bookSlotDetails.slotData.location.location.address
                         .no_and_street + ', '}
@@ -562,24 +609,24 @@ export default class PaymentReview extends Component {
                     <TouchableOpacity
                       onPress={() =>
                         this.props.navigation.navigate('ImageView', {
-                          passImage: renderDoctorImage(bookSlotDetails),
+                          passImage: renderDoctorImage(doctorDetails),
                           title: 'Profile photo',
                         })
                       }>
                       <Image
-                        source={renderDoctorImage(bookSlotDetails)}
+                        source={renderDoctorImage(doctorDetails)}
                         style={{height: 50, width: 50, borderRadius: 50 / 2}}
                       />
                     </TouchableOpacity>
                   </Col>
                   <Col size={8.4}>
                     <Text style={styles.docName}>
-                      {bookSlotDetails.prefix || ''}{' '}
-                      {bookSlotDetails.doctorName}{' '}
-                      {getDoctorEducation(bookSlotDetails.education)}
+                      {doctorDetails.prefix ? doctorDetails.prefix : '' || ''}{' '}
+                      {doctorDetails.doctorName ? doctorDetails.doctorName : ''}{' '}
+                      {getDoctorEducation(doctorDetails.education)}
                     </Text>
                     <Text style={styles.specialist}>
-                      {getAllSpecialist(bookSlotDetails.specialist)}
+                      {doctorDetails.specialist?getAllSpecialist(doctorDetails.specialist):''}
                     </Text>
                   </Col>
                 </Row>
@@ -617,9 +664,9 @@ export default class PaymentReview extends Component {
                     style={{fontSize: 20, color: '#0054A5'}}
                   />
                   <Text style={styles.calDate}>
-                    {bookSlotDetails.slotData &&
+                    {bookSlotDetails &&
                       formatDate(
-                        bookSlotDetails.slotData.slotStartDateAndTime,
+                        bookSlotDetails.slotStartDateAndTime,
                         'Do MMMM, YYYY',
                       )}
                   </Text>
@@ -630,23 +677,39 @@ export default class PaymentReview extends Component {
                     style={{fontSize: 18, color: '#8EC63F'}}
                   />
                   <Text style={styles.clockTime}>
-                    {bookSlotDetails.slotData &&
+                    {bookSlotDetails &&
                       formatDate(
-                        bookSlotDetails.slotData.slotStartDateAndTime,
+                        bookSlotDetails.slotStartDateAndTime,
                         'hh:mm A',
                       )}{' '}
                     -{' '}
-                    {bookSlotDetails.slotData &&
-                      formatDate(
-                        bookSlotDetails.slotData.slotEndDateAndTime,
-                        'hh:mm A',
-                      )}
+                    {bookSlotDetails &&
+                      formatDate(bookSlotDetails.slotEndDateAndTime, 'hh:mm A')}
                   </Text>
                 </Col>
               </Row>
             </View>
 
-            <PayBySelection
+            <View style={{paddingBottom: 50}}>
+      <View style={{backgroundColor: '#fff', padding: 10}}>
+              <Text style={{fontSize: 16, fontFamily: 'opensans-bold'}}>
+                {translate('Patient Details')}
+              </Text>
+              <FlatList
+                data={selfData}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) =>
+                  this.renderPatientDetails(
+                    item,
+                    index,
+                    true,
+                    POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY,
+                  )
+                }
+              />
+            </View>
+            </View>
+            {/* <PayBySelection
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
               onSelectionChange={(mode) => {
@@ -657,9 +720,9 @@ export default class PaymentReview extends Component {
                   familyMembersSelections: [],
                 });
               }}
-            />
+            /> */}
 
-            <TestDetails
+            {/* <TestDetails
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
@@ -693,7 +756,7 @@ export default class PaymentReview extends Component {
                 }
                 this.addPatientList(data);
               }}
-            />
+            /> */}
             <View style={{backgroundColor: '#fff', padding: 10, marginTop: 10}}>
               <Row>
                 <Icon name="create" style={{fontSize: 15, color: '#000'}} />
@@ -710,7 +773,7 @@ export default class PaymentReview extends Component {
                       this.setState({bookSlotDetails});
                     }}
                     multiline={true}
-                    placeholder={translate("Write Reason")}
+                    placeholder={translate('Write Reason')}
                     placeholderTextColor={'#909498'}
                     style={styles.textInput}
                   />
@@ -741,11 +804,11 @@ export default class PaymentReview extends Component {
                 <Col>
                   <Text style={styles.rupeesText}>
                     {'\u20B9'}
-                    {bookSlotDetails.slotData && bookSlotDetails.slotData.fee}
+                    {bookSlotDetails && bookSlotDetails.fee}
                   </Text>
                 </Col>
               </Row>
-              <Row style={{marginTop: 10}}>
+              {/* <Row style={{marginTop: 10}}>
                 <Col>
                   <Text
                     style={{
@@ -759,7 +822,7 @@ export default class PaymentReview extends Component {
                 <Col>
                   <Text style={styles.redRupesText}>{'\u20B9'} 0.00</Text>
                 </Col>
-              </Row>
+              </Row> */}
               <Row style={{marginTop: 10}}>
                 <Col>
                   <Text style={{fontSize: 14, fontFamily: 'Roboto'}}>
@@ -769,18 +832,30 @@ export default class PaymentReview extends Component {
                 <Col>
                   <Text style={styles.rupeesText}>
                     {'\u20B9'}{' '}
-                    {((bookSlotDetails.slotData &&
-                      bookSlotDetails.slotData.fee) ||
-                      0) + 0}
+                    {((bookSlotDetails && bookSlotDetails.fee) || 0) + 0}
                   </Text>
                 </Col>
               </Row>
             </View>
           </View>
         </Content>
+        
         <Footer style={Platform.OS === 'ios' ? {height: 30} : {height: 45}}>
           <FooterTab>
-            <Row>
+          <Row style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#0054A5',
+                    }}>
+           
+                  <TouchableOpacity
+                      onPress={() => this.confirmProceedPayment()}
+                      style={styles.buttonTouch1}>
+                      <Text style={styles.footerButtonText}>Book Appointment</Text>
+                    </TouchableOpacity>
+            
+          </Row>
+            {/* <Row>
               {this.state.selectedPayBy === POSSIBLE_PAY_METHODS.SELF ? (
                 <>
                   <Col
@@ -833,7 +908,7 @@ export default class PaymentReview extends Component {
                   </TouchableOpacity>
                 </Col>
               )}
-            </Row>
+            </Row> */}
           </FooterTab>
         </Footer>
       </Container>
@@ -890,6 +965,24 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     padding: 5,
   },
+  callNowButton: {
+    height: heightPercentageToDP('8%'),
+    borderRadius: widthPercentageToDP('4.5%'),
+    minWidth: widthPercentageToDP('80%'),
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom:  heightPercentageToDP('5%'),
+  },
+  callNowButtonText: {
+    color: "#128283",
+   textAlign: 'center',
+   paddingTop: heightPercentageToDP('5%'),
+   paddingBottom: heightPercentageToDP('5%'),
+   fontSize: widthPercentageToDP('4%'),
+   fontFamily: 'opensans-bold',
+  },
+
   diseaseText: {
     fontFamily: 'Roboto',
     fontSize: 14,

@@ -54,26 +54,25 @@ class CancelAppointment extends Component {
       if (onlySpaceNotAllowed(this.state.statusUpdateReason) == true) {
         this.setState({ isLoading: true });
         let requestData = {
-          doctorId: data.doctor_id||null,
+          doctorId: data.doctorId||null,
           userId: userId,
-          startTime: data.appointment_starttime,
-          endTime: data.appointment_endtime,
+          startTime: data.startTime,
+          endTime: data.endTime,
           status: updatedStatus,
           statusUpdateReason: this.state.statusUpdateReason,
-          status_by: 'USER',
-          booked_for:data.booked_for||'DOCTOR'
+          statusBy: 'USER',
+          bookedFor:data.bookedFor||'DOCTOR'
         };
-        if(data.booked_for==='HOSPITAL'){
+        if(data.bookedFor==='HOSPITAL'){
           delete requestData.doctorId
-
-          requestData.hospitalAdminId=data.location[0].hospital_admin_id
+          requestData.hospitalAdminId=data.hospitalInfo.hospitalAdminId
         }
 
    
-        let result = await appointmentStatusUpdate( this.state.appointmentId, requestData);
+        let result = await appointmentStatusUpdate( this.state.data._id, requestData);
         
         if (result.success) {
-        await reomveEvent(data.user_appointment_event_id)
+        await reomveEvent(data.userAppointmentEventId)
       
           Toast.show({
             text: 'Your appointment has been canceled',
@@ -81,8 +80,8 @@ class CancelAppointment extends Component {
             type: 'success'
           })
           let temp = this.state.data;
-          temp.appointment_status = result.appointmentData.appointment_status;
-          temp.status_update_reason = result.appointmentData.status_update_reason;
+          temp.status = result.data.status;
+          temp.statusUpdateReason = result.data.statusUpdateReason;
           
           this.setState({ data: temp });
           this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
@@ -136,8 +135,8 @@ class CancelAppointment extends Component {
                   <Body>
                     <Text style={{ marginTop: 2,fontFamily:'Roboto',fontSize:15 }}>
                       <Text style={{fontFamily:'opensans-bold',fontSize:15}}>
-                        {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
-                          formatDate(data.appointment_starttime, 'hh:mm A')}
+                        {formatDate(data.startTime, 'MMMM-DD-YYYY') + "   " +
+                          formatDate(data.starTtime, 'hh:mm A')}
                      
                       </Text> with {data.booked_for==='HOSPITAL'?getHospitalHeadeName(data.location[0]):(data && data.prefix || '') + " " + getName(data.doctorInfo)}</Text>
                     <Text style={{ marginTop: 20,fontFamily:'Roboto',fontSize:15 }}>What is the reason for Cancellation?</Text>

@@ -121,6 +121,7 @@ import { smartHealthStack } from './smartHealtStack'
 import ContactUs from '../../modules/screens/contactUs'
 import PolicyStatus from '../../modules/screens/policyStatus'
 import SmartHealthLogin from '../../modules/screens/auth/corporateLogin'
+import DoctorConsultation from '../../modules/screens/DoctorConsultation';
 
 const AuthRoutes = {
   login: {
@@ -1018,6 +1019,10 @@ const drawerNavigatorRoutes = {
   "Categories": {
     screen: Categories,
     routeName: "Categories"
+  },
+  "DoctorConsultation": {
+    screen: DoctorConsultation,
+    routeName: "DoctorConsultation"
   },
   'Lab Test': {
     screen: LabCategory,
