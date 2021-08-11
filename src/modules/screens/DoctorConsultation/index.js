@@ -130,7 +130,7 @@ class DoctorConsultation extends Component {
             <ImageBackground
               style={[styles.picCircle]}
               borderRadius={80}
-              source={doctorData&&doctorData.profileImage?doctorData.profileImage.imageURL:null}></ImageBackground>
+              source={doctorData&&doctorData.profileImage?renderDoctorImage(doctorData):null}></ImageBackground>
           </View>
           <View
             style={[
