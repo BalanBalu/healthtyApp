@@ -85,9 +85,12 @@ class AppointmentDetails extends Component {
       //   this.getUserReviews(),
       //   this.getUserReport(),
       // ])
-      if (appointmentData.status == 'COMPLETED') {
-        await this.setState({ modalVisible: true })
-      }
+
+// Need To Discuss For REview
+
+      // if (appointmentData.status == 'COMPLETED') {
+      //   await this.setState({ modalVisible: true })
+      // }
       let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
       if (appointmentData.status == 'PROPOSED_NEW_TIME' && checkProposedNewTime != 'SKIP') {
         await this.setState({ proposedVisible: true })
@@ -220,7 +223,7 @@ class AppointmentDetails extends Component {
         endTime: data.endTime,
         status: updatedStatus,
         statusUpdateReason: data.statusUpdateReason,
-        // statusBy: 'USER'
+        statusBy: 'USER'
       };
       // if (data.bookedFor === 'HOSPITAL') {
       //   requestData.hospitalAdminId = data.hospitalInfo.hospitalAdminId
@@ -231,7 +234,7 @@ class AppointmentDetails extends Component {
       let result = await appointmentStatusUpdate(requestData);
       this.setState({ isLoading: false })
 
-      if (result.success) {
+      if (result._id) {
         let temp = this.state.data
         let startTime = getMoment(data.startTime).toISOString();
         let endTime = getMoment(data.endTime).toISOString();
@@ -239,14 +242,20 @@ class AppointmentDetails extends Component {
         // if (temp.location[0]) {
         //   address = temp.location[0].location.address.city || temp.location[0].location.address.state
         // }
-        let doctorName=temp.doctorInfo!==undefined? temp.doctorInfo.prefix+' '+temp.doctorInfo.firstName+' '+temp.doctorInfo.lastName: '';
-let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.bookedFor==='DOCTOR'?doctorName:'';
-        await updateEvent(temp.userAppointmentEventId, "Appointment booked with " + tittle,startTime, endTime, address, temp.description)
 
-        temp.status = result.data.status
+        //Event Update Need To Discuss
+
+        // let doctorName=temp.doctorInfo!==undefined? temp.doctorInfo.prefix+' '+temp.doctorInfo.firstName+' '+temp.doctorInfo.lastName: '';
+        // let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.bookedFor==='DOCTOR'?doctorName:'';
+        // await updateEvent(temp.userAppointmentEventId, "Appointment booked with " + tittle,startTime, endTime, address, temp.description)
+
+        temp.status = result.status;
+        temp.statusBy=result.statusBy;
+        temp.statusUpdateReason=result.statusUpdateReason;
         Toast.show({
-          text: result.message,
-          duration: 3000
+            text: 'Your appointment has been updated',
+            duration: 3000,
+            type: 'success'
         })
         if (this.state.proposedVisible == true) {
           this.setState({ proposedVisible: false });
@@ -254,10 +263,21 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
 
         this.setState({ data: temp });
         this.props.navigation.setParams({ 'refreshPage': true });
+      }else{
+        Toast.show({
+          text: 'Somthing went worng please try again..',
+          type: "danger",
+          duration: 3000
+        })
       }
     }
     catch (e) {
       console.log(e);
+      Toast.show({
+        text: 'Somthing went worng please try again..',
+        type: "danger",
+        duration: 3000
+      })
     }
   }
 

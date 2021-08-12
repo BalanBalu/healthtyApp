@@ -238,8 +238,8 @@ export async function getUserNotification() {
 export function getName(data) {
     let name = 'unKnown'
     if (data) {
-        if (data.first_name != undefined || data.last_name != undefined) {
-            name = `${data.first_name || ''} ${data.last_name || ''}`
+        if (data.firstName != undefined || data.lastName != undefined) {
+            name = `${data.firstName || ''} ${data.lastName || ''}`
 
         }
     }

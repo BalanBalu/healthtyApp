@@ -109,7 +109,6 @@ class MyAppoinmentList extends Component {
 
 			};
 			let upCommingAppointmentResult = await getAppointmentByMemberId(memberId, filters);
-			console.log('{{{{{{{{{{{{{{{{{{||',upCommingAppointmentResult,'|||||||||||}]]]]}}}}')
 			if (upCommingAppointmentResult) {
 			tempData=upCommingAppointmentResult
 			}
