@@ -181,9 +181,9 @@ export function renderDoctorImage(data) {
     let source = null;
     if (data.profileImage) {
         source = { uri: data.profileImage.imageURL }
-    } else if (data.gender == 'M') {
+    } else if (data.gender == 'M'||data.gender == 'Male') {
         source = require('../../assets/images/profile_male.png')
-    } else if (data.gender == 'F') {
+    } else if (data.gender == 'F'||data.gender == 'Female') {
         source = require('../../assets/images/profile_female.png')
     } else {
         source = require('../../assets/images/profile_common.png')
