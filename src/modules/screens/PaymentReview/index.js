@@ -299,6 +299,8 @@ export default class PaymentReview extends Component {
     this.setState({isLoading: true, spinnerText: translate('Please Wait')});
     const bookingSlotData = bookSlotDetails;
     let validationResult;
+    let memberUserId = await AsyncStorage.getItem('UserId') || null;
+
     // if (this.state.fromNavigation === 'HOSPITAL') {
     //   validationResult = {
     //     success: true,
@@ -324,6 +326,8 @@ export default class PaymentReview extends Component {
         status:'PENDING',
         paymentId: "cash_1574318269541",
         bookedFor: "DOCTOR",
+        active:1,
+        userId:memberUserId,
         // "categoryId": "string",
         // "bookedFrom": "string",
         statusUpdateReason: "NEW_BOOKING",
