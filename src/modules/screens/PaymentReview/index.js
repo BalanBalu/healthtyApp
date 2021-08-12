@@ -349,7 +349,8 @@ export default class PaymentReview extends Component {
         patientImage: null
       }
     }
-    
+    let memberUserId = await AsyncStorage.getItem('UserId') || null;
+
       const reqData = {
         startTime: bookingSlotData.slotStartDateAndTime,
         endTime: bookingSlotData.slotEndDateAndTime,
@@ -360,7 +361,9 @@ export default class PaymentReview extends Component {
         status:'PENDING',
         statusUpdateReason: "NEW_BOOKING",
         description: bookSlotDetails.diseaseDescription?bookSlotDetails.diseaseDescription:'',
-        appointmentTakenDate:new Date()
+        appointmentTakenDate:new Date(),
+        active:1,
+        userId:memberUserId,
         // paymentId: "cash_1574318269541",
         // bookedFor: "DOCTOR",
         // "categoryId": "string",
