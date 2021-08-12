@@ -445,7 +445,7 @@ export function getHospitalHeadeName(data) {
 export function getHospitalName(data) {
     if (!data) return ''
     if (data)
-        return `${data.address.noAndStreet}, ${data.address.city}, ${data.address.state}, ${data.address.pinCode}`;
+        return `${data.address}, ${data.city}, ${data.state}, ${data.pinCode}`;
     else
         return ''
 }

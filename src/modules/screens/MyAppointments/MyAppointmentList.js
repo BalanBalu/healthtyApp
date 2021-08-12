@@ -102,15 +102,16 @@ class MyAppoinmentList extends Component {
 			let filters = {
 				startDate: new Date().toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
-				skip: this.state.skip,
-				limit: this.state.limit,
-				sort: 1
+				// skip: this.state.skip,
+				// limit: this.state.limit,
+				// sort: 1
 
 
 			};
 			let upCommingAppointmentResult = await getAppointmentByMemberId(memberId, filters);
-			if (upCommingAppointmentResult.success) {
-			tempData=upCommingAppointmentResult.data
+			console.log('{{{{{{{{{{{{{{{{{{||',upCommingAppointmentResult,'|||||||||||}]]]]}}}}')
+			if (upCommingAppointmentResult) {
+			tempData=upCommingAppointmentResult
 			}
 
 			// if (upCommingAppointmentResult.success) {
@@ -187,16 +188,15 @@ class MyAppoinmentList extends Component {
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
-				skip: this.state.skip,
-				limit: this.state.limit,
-				sort: -1,
-				reviewInfo: true
+				// skip: this.state.skip,
+				// limit: this.state.limit,
+				// sort: -1,
+				// reviewInfo: true
 			};
 
 			let pastAppointmentResult = await getAppointmentByMemberId(memberId, filters);
 
-			if (pastAppointmentResult.success) {
-				pastAppointmentResult = pastAppointmentResult.data;
+			if (pastAppointmentResult) {
 
 				// let doctorInfo = new Map();
 
@@ -448,10 +448,10 @@ class MyAppoinmentList extends Component {
 							) : (
 									<FlatList
 										data={data}
-										extraData={data}
-										onEndReached={() => this.handleLoadMore()}
-										onEndReachedThreshold={0.5}
-										onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+										// extraData={data}
+										// onEndReached={() => this.handleLoadMore()}
+										// onEndReachedThreshold={0.5}
+										// onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
 										ListFooterComponent={this.renderFooter.bind(this)}
 										renderItem={({ item, index }) => (
 											<Card transparent style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
@@ -500,7 +500,7 @@ class MyAppoinmentList extends Component {
 																{/* {selectedIndex == 1 &&
 																	item.appointmentResult.reviewInfo != undefined && item.appointmentResult.reviewInfo.overall_rating !== undefined && ( */}
                                 									{/* StarRating Demo Count Shwoing */}
-																		<StarRating
+																		{/* <StarRating
 																			fullStarColor="#FF9500"
 																			starSize={15}
 																			containerStyle={{
@@ -511,7 +511,7 @@ class MyAppoinmentList extends Component {
 																			maxStars={5}
 																			rating={4}
 
-																		/>
+																		/> */}
 																	{/* )} */}
 															</Row>
 

@@ -212,23 +212,23 @@ class AppointmentDetails extends Component {
   updateAppointmentStatus = async (data, updatedStatus) => {
     try {
       this.setState({ isLoading: true });
-      let userId = await AsyncStorage.getItem('userId');
+      let memberId = await AsyncStorage.getItem("memberId");
       let requestData = {
-
-        userId: userId,
+        _id:data._id,
+        userId: memberId,
         startTime: data.startTime,
         endTime: data.endTime,
         status: updatedStatus,
         statusUpdateReason: data.statusUpdateReason,
-        statusBy: 'USER'
+        // statusBy: 'USER'
       };
-      if (data.bookedFor === 'HOSPITAL') {
-        requestData.hospitalAdminId = data.hospitalInfo.hospitalAdminId
-      } else {
-        requestData.doctorId = data.doctorInfo.doctorId
-      }
+      // if (data.bookedFor === 'HOSPITAL') {
+      //   requestData.hospitalAdminId = data.hospitalInfo.hospitalAdminId
+      // } else {
+      //   requestData.doctorId = data.doctorInfo.doctorId
+      // }
 
-      let result = await appointmentStatusUpdate(this.state.appointmentId, requestData);
+      let result = await appointmentStatusUpdate(requestData);
       this.setState({ isLoading: false })
 
       if (result.success) {
@@ -676,7 +676,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
               </Col>
             </Row>*/}
 
-                  {doctorInfo.language != undefined && doctorInfo.language.length != 0 ?
+                  {doctorInfo&&doctorInfo.language != undefined && doctorInfo.language.length != 0 ?
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
                         <Icon name="ios-book" style={{ fontSize: 20, }} />
