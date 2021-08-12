@@ -40,7 +40,8 @@ import {
   getAllSpecialist,
   getUserGenderAndAge,
   toastMeassage,
-  familyMemAgeCal
+  familyMemAgeCal,
+  arrangeFullName
 } from '../../common';
 import {SERVICE_TYPES} from '../../../setup/config';
 import {primaryColor} from '../../../setup/config';
@@ -235,12 +236,10 @@ export default class PaymentReview extends Component {
       patientDetailsObj: {},
       addPatientDataPoPupEnable: false,
       isCorporateUser: false,
-      selectedPayBy: POSSIBLE_PAY_METHODS.SELF,
-      whomToTest: POSSIBLE_FAMILY_MEMBERS.SELF,
       familyMembersSelections: [],
       fromNavigation: null,
       familyMembersSelections: [],
-      selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
+      selectedPatientTypes:'self',
       familyDetailsData: [],
       bookAppointment: [],
       doctorDetails: {},
@@ -252,20 +251,16 @@ export default class PaymentReview extends Component {
   async componentDidMount() {
     const {navigation} = this.props;
     const isLoggedIn = await hasLoggedIn(this.props);
-
-    const isCorporateUser =
-      (await AsyncStorage.getItem('is_corporate_user')) === 'true';
-
-    if (!isLoggedIn) {
+     if (!isLoggedIn) {
       this.setState({isLoading: false});
       navigation.navigate('login');
       return;
     }
-    let basicProfileData = await AsyncStorage.getItem('basicProfileData');
-    let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
-    let basicData = JSON.parse(basicProfileData);
-    basicData.policyNumber=memberPolicyNo;
-    this.setState({selfData:[basicData]})
+    const isCorporateUser =
+    (await AsyncStorage.getItem('is_corporate_user')) === 'true';
+    await this.getSelfDatails();
+    await this.getFamilyInfo();
+    this.setState({isLoading: false});
     let bookAppointment=navigation.getParam('bookAppointment')
     if(bookAppointment){
     await this.setState({
@@ -274,20 +269,52 @@ export default class PaymentReview extends Component {
         isLoading: false,
       })
     }
-    // this.getPatientInfo();
   }
+  getSelfDatails = async () => {
+    try {
+      this.setState({isLoading: true});
+      let basicProfileData = await AsyncStorage.getItem('basicProfileData');
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let basicData = JSON.parse(basicProfileData);
+      if (basicData) {
+        basicData.policyNumber=memberPolicyNo;
+      //   this.defaultPatDetails = {
+      //     type: 'self',
+      //     full_name:arrangeFullName(basicData&&basicData.first_name,basicData&&basicData.last_name) ,
+      //     gender: basicData.gender?basicData.gender:'N/A',
+      //     age: parseInt(dateDiff(basicData.dob, new Date(), 'years')),
+      //     phone_no: basicData.mobile_no?basicData.mobile_no:'N/A'
+      // } 
+      await this.setState({selfData:basicData,patientDetailsObj:basicData,isLoading: false}) 
+     }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+
+  getFamilyInfo = async () => {
+    try {
+      this.setState({isLoading: true});
+      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
+      let employeeCode = await AsyncStorage.getItem('employeeCode');
+      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
+      if (result) {
+          this.setState({familyMembers: result, isLoading: false});
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+
   async confirmProceedPayment() {
 
-    const {bookSlotDetails,patientDetailsObj,selfData,doctorDetails} = this.state;
+    const {bookSlotDetails,patientDetailsObj,doctorDetails,selectedPatientTypes} = this.state;
+
     let {diseaseDescription} = bookSlotDetails;
-    // if (!Object.keys(patientDetailsObj).length) {
-    //   Toast.show({
-    //     text: translate('Kindly select Self or Add other patient details'),
-    //     type: 'warning',
-    //     duration: 3000,
-    //   });
-    //   return false;
-    // }
     if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
       Toast.show({
         text: translate('Please enter valid Reason'),
@@ -298,39 +325,46 @@ export default class PaymentReview extends Component {
     }
     this.setState({isLoading: true, spinnerText: translate('Please Wait')});
     const bookingSlotData = bookSlotDetails;
-    let validationResult;
-    // if (this.state.fromNavigation === 'HOSPITAL') {
-    //   validationResult = {
-    //     success: true,
-    //   };
-    // } else {
+    let validationResult,patientData;
+    if(selectedPatientTypes=='self'){
+      patientData= {
+        patientName: arrangeFullName(patientDetailsObj.first_name,patientDetailsObj.middle_name,patientDetailsObj.last_name),
+        patientAge: dateDiff(patientDetailsObj.dob, new Date(), 'years'),
+        policyNumber: patientDetailsObj.policyNumber,
+        gender: patientDetailsObj.gender,
+       mobileNo: patientDetailsObj.mobileNo?patientDetailsObj.mobileNo:null,
+        emailId: patientDetailsObj.email,
+       dob: patientDetailsObj.dob,
+        patientImage: patientDetailsObj.profileImage
+      }
+    }else{
+      patientData= {
+        patientName: arrangeFullName(patientDetailsObj.familyMemberName,patientDetailsObj.familyMemberLastName),
+        patientAge: patientDetailsObj.familyMemberAge,
+        policyNumber: patientDetailsObj.policyNo,
+        gender: patientDetailsObj.familyMemberGender,
+       mobileNo: null,
+        emailId:null,
+       dob: patientDetailsObj.familyMemberDob,
+        patientImage: null
+      }
+    }
+    
       const reqData = {
         startTime: bookingSlotData.slotStartDateAndTime,
         endTime: bookingSlotData.slotEndDateAndTime,
-        "patientData": {
-          "patientName": selfData[0].first_name,
-          "patientAge": dateDiff(selfData[0].dob, new Date(), 'years'),
-          "policyNumber": selfData[0].policyNumber,
-          "gender": selfData[0].gender,
-          "mobileNo": selfData&&selfData.mobileNo?selfData[0].mobileNo:null,
-          "emailId": selfData[0].email,
-          "dob": selfData[0].dob,
-          "patientImage": selfData[0].profileImage
-        },
-       
+        patientData,
         fee: bookingSlotData.fee||0,
         hospitalId: doctorDetails.hospitalId,
         doctorId: doctorDetails.doctorId,
         status:'PENDING',
-        paymentId: "cash_1574318269541",
-        bookedFor: "DOCTOR",
-        // "categoryId": "string",
-        // "bookedFrom": "string",
         statusUpdateReason: "NEW_BOOKING",
         description: bookSlotDetails.diseaseDescription?bookSlotDetails.diseaseDescription:'',
-        // "tokenNo": "string",
-        // "appointmentCode": "string",
         appointmentTakenDate:new Date()
+        // paymentId: "cash_1574318269541",
+        // bookedFor: "DOCTOR",
+        // "categoryId": "string",
+        // "bookedFrom": "string",
       };
       validationResult = await createAppointment(reqData);
     // }
@@ -375,113 +409,89 @@ export default class PaymentReview extends Component {
     //   });
     // }
   }
-  async processToPayLater(paymentMethod) {
-    const {
-      bookSlotDetails,
-      patientDetailsObj,
-      fromNavigation,
-      isCorporateUser,
-    } = this.state;
-    let {diseaseDescription} = bookSlotDetails;
+  // async processToPayLater(paymentMethod) {
+  //   const {
+  //     bookSlotDetails,
+  //     patientDetailsObj,
+  //     fromNavigation,
+  //     isCorporateUser,
+  //   } = this.state;
+  //   let {diseaseDescription} = bookSlotDetails;
 
-    if (
-      !patientDetailsObj ||
-      (patientDetailsObj && !Object.keys(patientDetailsObj).length)
-    ) {
-      Toast.show({
-        text: translate('Kindly select Self or Add other patient details'),
-        type: 'warning',
-        duration: 3000,
-      });
-      return false;
-    }
-    if (!diseaseDescription || String(diseaseDescription).trim() === '') {
-      Toast.show({
-        text: translate('Please enter valid Reason'),
-        duration: 3000,
-        type: 'warning',
-      });
-      return;
-    }
+  //   if (
+  //     !patientDetailsObj ||
+  //     (patientDetailsObj && !Object.keys(patientDetailsObj).length)
+  //   ) {
+  //     Toast.show({
+  //       text: translate('Kindly select Self or Add other patient details'),
+  //       type: 'warning',
+  //       duration: 3000,
+  //     });
+  //     return false;
+  //   }
+  //   if (!diseaseDescription || String(diseaseDescription).trim() === '') {
+  //     Toast.show({
+  //       text: translate('Please enter valid Reason'),
+  //       duration: 3000,
+  //       type: 'warning',
+  //     });
+  //     return;
+  //   }
 
-    this.setState({
-      isLoading: true,
-      spinnerText: translate('We are Booking your Appointment'),
-    });
+  //   this.setState({
+  //     isLoading: true,
+  //     spinnerText: translate('We are Booking your Appointment'),
+  //   });
 
-    const patientDataObj = {
-      patient_name: patientDetailsObj.full_name,
-      patient_age: patientDetailsObj.age,
-      gender: patientDetailsObj.gender,
-    };
-    if (patientDetailsObj.policy_no) {
-      patientDataObj.policy_number = patientDetailsObj.policy_no;
-    }
+  //   const patientDataObj = {
+  //     patient_name: patientDetailsObj.full_name,
+  //     patient_age: patientDetailsObj.age,
+  //     gender: patientDetailsObj.gender,
+  //   };
+  //   if (patientDetailsObj.policy_no) {
+  //     patientDataObj.policy_number = patientDetailsObj.policy_no;
+  //   }
 
-    bookSlotDetails.patient_data = patientDataObj;
+  //   bookSlotDetails.patient_data = patientDataObj;
 
-    const userId = await AsyncStorage.getItem('userId');
-    this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+  //   const userId = await AsyncStorage.getItem('userId');
+  //   this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
 
-    let modesOfPayment = 'cash';
+  //   let modesOfPayment = 'cash';
 
-    if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
-      modesOfPayment = 'corporate';
-    } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
-      modesOfPayment = 'insurance';
-    }
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(
-      true,
-      {},
-      modesOfPayment,
-      bookSlotDetails,
-      SERVICE_TYPES.APPOINTMENT,
-      userId,
-      modesOfPayment,
-    );
+  //   if (paymentMethod === POSSIBLE_PAY_METHODS.CORPORATE) {
+  //     modesOfPayment = 'corporate';
+  //   } else if (paymentMethod === POSSIBLE_PAY_METHODS.INSURANCE) {
+  //     modesOfPayment = 'insurance';
+  //   }
+  //   let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(
+  //     true,
+  //     {},
+  //     modesOfPayment,
+  //     bookSlotDetails,
+  //     SERVICE_TYPES.APPOINTMENT,
+  //     userId,
+  //     modesOfPayment,
+  //   );
 
-    if (response.success) {
-      this.props.navigation.navigate('paymentsuccess', {
-        successBookSlotDetails: bookSlotDetails,
-        paymentMethod: paymentMethod,
-        tokenNo: response.tokenNo,
-        fromNavigation: fromNavigation,
-      });
-    } else {
-      Toast.show({
-        text: response.message,
-        type: 'warning',
-        duration: 3000,
-      });
-    }
-    this.setState({isLoading: false, spinnerText: ' '});
-  }
+  //   if (response.success) {
+  //     this.props.navigation.navigate('paymentsuccess', {
+  //       successBookSlotDetails: bookSlotDetails,
+  //       paymentMethod: paymentMethod,
+  //       tokenNo: response.tokenNo,
+  //       fromNavigation: fromNavigation,
+  //     });
+  //   } else {
+  //     Toast.show({
+  //       text: response.message,
+  //       type: 'warning',
+  //       duration: 3000,
+  //     });
+  //   }
+  //   this.setState({isLoading: false, spinnerText: ' '});
+  // }
 
-  getPatientInfo = async () => {
-    try {
-      this.setState({isLoading: true});
-      let memberPolicyNo = await AsyncStorage.getItem('memberPolicyNo');
-      let employeeCode = await AsyncStorage.getItem('employeeCode');
-      let result = await getFamilyMemDetails(memberPolicyNo, employeeCode);
-      if (result) {
-        this.setState({familyMembers: result, isLoading: false});
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      this.setState({isLoading: false});
-    }
-  };
 
-  addPatientList = async (patientData) => {
-    this.setState({errMsg: ''});
-    const othersDetailsObj = patientData[0];
-    await this.setState({
-      patientDetailsObj: othersDetailsObj,
-      updateButton: false,
-      addPatientDataPoPupEnable: false,
-    });
-  };
 
   renderPatientDetails(data, index, enableSelectionBox, patientSelectionType) {
     // const {isCorporateUser, payBy} = this.props;
@@ -502,7 +512,7 @@ export default class PaymentReview extends Component {
             </Text>
           </Col>
           <Col size={5}>
-            <Text style={styles.subText}>{formatDate(data.dob,'DD/MM/YY')}</Text>
+            <Text style={styles.subText}>{data&&data.dob?(formatDate(data.dob,'DD/MM/YY')):''}</Text>
           </Col>
         </Row>
         <Row style={{marginTop: 10}}>
@@ -690,25 +700,7 @@ export default class PaymentReview extends Component {
               </Row>
             </View>
 
-            <View style={{paddingBottom: 50}}>
-      <View style={{backgroundColor: '#fff', padding: 10}}>
-              <Text style={{fontSize: 16, fontFamily: 'opensans-bold'}}>
-                {translate('Patient Details')}
-              </Text>
-              <FlatList
-                data={selfData}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item, index}) =>
-                  this.renderPatientDetails(
-                    item,
-                    index,
-                    true,
-                    POSSIBLE_FAMILY_MEMBERS.FAMILY_WITHOUT_PAY,
-                  )
-                }
-              />
-            </View>
-            </View>
+           
             {/* <PayBySelection
               isCorporateUser={isCorporateUser}
               selectedPayBy={this.state.selectedPayBy}
@@ -716,47 +708,29 @@ export default class PaymentReview extends Component {
                 this.setState({
                   selectedPayBy: mode,
                   selectedPatientTypes: [POSSIBLE_FAMILY_MEMBERS.SELF],
-                  patientDetailsObj: this.defaultPatDetails,
+                  patientDetailsObj: selfData,
                   familyMembersSelections: [],
                 });
               }}
             /> */}
 
-            {/* <TestDetails
+            <TestDetails
               isCorporateUser={isCorporateUser}
               navigation={this.props.navigation}
               singlePatientSelect={true}
-              familyMembersSelections={this.state.familyMembersSelections}
-              changeFamilyMembersSelections={(familyMemberSelections) =>
-                this.setState({familyMembersSelections: familyMemberSelections})
-              }
+              selfData={selfData}
+              familyMembers={familyMembers&&familyMembers?familyMembers:null}
               onSelectionChange={(patientType) => {
-                if (patientType === POSSIBLE_FAMILY_MEMBERS.SELF) {
-                  this.setState({
-                    patientDetailsObj: this.defaultPatDetails,
-                    selectedPatientTypes: [patientType],
-                    familyMembersSelections: [],
-                  });
-                } else {
-                  this.setState({
-                    patientDetailsObj: {},
-                    selectedPatientTypes: [patientType],
-                  });
-                }
+                                  this.setState({selectedPatientTypes: patientType});
+
               }}
-              familyDetailsData={this.state.familyDetailsData}
-              setFamilyDetailsData={(familyDetailsData) =>
-                this.setState({familyDetailsData: familyDetailsData})
-              }
+              onSelectionPatientDetails={(patientDetails) => {
+                this.setState({patientDetailsObj:patientDetails});
+
+            }}
               selectedPatientTypes={this.state.selectedPatientTypes}
-              payBy={this.state.selectedPayBy}
-              addPatientDetails={(data, setDefaultPatentData) => {
-                if (setDefaultPatentData === true) {
-                  this.defaultPatDetails = data[0];
-                }
-                this.addPatientList(data);
-              }}
-            /> */}
+            
+            />
             <View style={{backgroundColor: '#fff', padding: 10, marginTop: 10}}>
               <Row>
                 <Icon name="create" style={{fontSize: 15, color: '#000'}} />
