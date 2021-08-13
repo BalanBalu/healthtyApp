@@ -153,11 +153,9 @@ class Notification extends PureComponent {
     try {
       let memberUserId = await AsyncStorage.getItem('memberId') || null;
       let result = await fetchUserNotification(memberUserId, this.state.page, this.state.limit);
-      console.log('memberId===========',result.docs)
 
         if (result && result.docs != 0) {
-          let fullData = JSON.stringify(data)
-          console.log('fullData.docs===========',fullData.docs)
+         
           let temp = this.state.data.concat(result);
 
           if (temp.length) {
