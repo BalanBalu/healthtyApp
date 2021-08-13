@@ -52,6 +52,11 @@ class DoctorConsultation extends Component {
    if(reqData4BookAppPage){
     await this.setState({doctorData:reqData4BookAppPage.singleDoctorItemData,doctorId:reqData4BookAppPage.doctorId,hospitalId:reqData4BookAppPage.singleDoctorItemData&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id?reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id:null,isLoading: false,})
    } 
+   let fromHistoryPage= this.props.navigation.getParam('fromHistoryPage')||false;
+   if(fromHistoryPage){
+    let reqData4HistoryPage= this.props.navigation.getParam('reqData4HistoryPage');
+    await this.setState({doctorData:reqData4HistoryPage.doctorInfo,doctorId:reqData4HistoryPage.doctorId,hospitalId:reqData4HistoryPage.hospitalInfo&&reqData4HistoryPage.hospitalInfo._id?reqData4HistoryPage.hospitalInfo._id:null,isLoading: false,})
+   }
     await this.getAvailabilitySlots(this.state.selectedDate);
 
   }

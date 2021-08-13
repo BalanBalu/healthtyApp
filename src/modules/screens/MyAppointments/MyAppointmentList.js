@@ -15,7 +15,6 @@ import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
 import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getDoctorEducation, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import moment from "moment";
-// import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
 import { translate } from "../../../setup/translator.helper"
 import {primaryColor, secondaryColor} from '../../../setup/config'
@@ -319,11 +318,16 @@ class MyAppoinmentList extends Component {
 
 	navigateToBookAppointmentPage(item) {
 
-		let doctorId = item.doctorId;
-		this.props.navigation.navigate('Doctor Details Preview', {
-			doctorId: doctorId,
-			fetchAvailabiltySlots: true
-		})
+		// let doctorId = item.doctorId;
+		// this.props.navigation.navigate('Doctor Details Preview', {
+		// 	doctorId: doctorId,
+		// 	fetchAvailabiltySlots: true
+		// })
+
+		this.props.navigation.navigate('DoctorConsultation', {
+			reqData4HistoryPage: item,
+			fromHistoryPage: true
+		  })
 	}
 	handleLoadMore = async () => {
 		if (!this.onEndReachedCalledDuringMomentum) {
@@ -493,7 +497,7 @@ class MyAppoinmentList extends Component {
 																<Text
 																	style={{ fontFamily: "Roboto", fontSize: 14, width: '60%' }}
 																>
-																	{item.specialist ? item.specialist : item.bookedFor === 'HOSPITAL' ? getHospitalName(item.hospitalInfo) : null}
+																	{item.doctorInfo&&item.doctorInfo.specialist ? getAllSpecialist(item.doctorInfo.specialist) : item.bookedFor === 'HOSPITAL' ? getHospitalName(item.hospitalInfo) : ''}
 																</Text>
 
 																{/* {selectedIndex == 1 &&

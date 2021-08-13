@@ -102,38 +102,39 @@ class AppointmentDetails extends Component {
   }
 
   /* Get Doctor Details */
-  getDoctorDetails = async () => {
-    try {
+  // getDoctorDetails = async () => {
+  //   try {
 
-      let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
-      if (this.state.doctorId !== null) {
-        let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
+  //     let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
+  //     if (this.state.doctorId !== null) {
+  //       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
-        if (resultDetails.success) {
-          let educationDetails = '';
-          if (resultDetails.data.education != undefined) {
-            educationDetails = getAllEducation(resultDetails.data.education)
-          }
-          let specialistDetails = '';
-          if (resultDetails.data.specialist != undefined) {
-            specialistDetails = getAllSpecialist(resultDetails.data.specialist)
-          }
+  //       if (resultDetails.success) {
+  //         let educationDetails = '';
+  //         if (resultDetails.data.education != undefined) {
+  //           educationDetails = getAllEducation(resultDetails.data.education)
+  //         }
+  //         let specialistDetails = '';
+  //         if (resultDetails.data.specialist != undefined) {
+  //           specialistDetails = getAllSpecialist(resultDetails.data.specialist)
+  //         }
 
 
-          this.setState({
-            education: educationDetails,
-            doctorData: resultDetails.data,
-            specialist: specialistDetails.toString(),
-          })
-        }
-      }
+  //         this.setState({
+  //           education: educationDetails,
+  //           doctorData: resultDetails.data,
+  //           specialist: specialistDetails.toString(),
+  //         })
+  //       }
+  //     }
 
-    }
-    catch (e) {
-      console.log(e);
-    }
-  }
+  //   }
+  //   catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 
+  
   /* get User reviews */
   getUserReviews = async () => {
     try {
@@ -167,29 +168,31 @@ class AppointmentDetails extends Component {
 
   }
 
-  appointmentDetailsGetById = async () => {
-    try {
-      let result = await appointmentDetails(this.state.appointmentId);
-      if (result.success) {
-        this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
-          await new Promise.all([
-            this.getDoctorDetails(),
-            this.getPaymentInfo(result.data[0].payment_id)])
+  // appointmentDetailsGetById = async () => {
+  //   try {
+  //     let result = await appointmentDetails(this.state.appointmentId);
+  //     if (result.success) {
+  //       this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
+  //         await new Promise.all([
+  //           this.getDoctorDetails(),
+  //           this.getPaymentInfo(result.data[0].payment_id)])
 
 
-        if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
-          await this.setState({ modalVisible: true })
-        }
-        let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
-        if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
-          await this.setState({ proposedVisible: true })
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  //       if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
+  //         await this.setState({ modalVisible: true })
+  //       }
+  //       let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
+  //       if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
+  //         await this.setState({ proposedVisible: true })
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
 
-  }
+  // }
+
+
   getPaymentInfo = async (paymentId) => {
     try {
       let result = await getPaymentInfomation(paymentId);
@@ -339,10 +342,10 @@ class AppointmentDetails extends Component {
 
   navigateToBookAppointmentPage() {
     const { data } = this.state
-    let doctorId = data.doctorId;
-    this.props.navigation.navigate('Book Appointment', {
-      doctorId: doctorId,
-      fetchAvailabiltySlots: true
+    // let doctorId = data.doctorId;
+    this.props.navigation.navigate('DoctorConsultation', {
+      reqData4HistoryPage: data,
+      fromHistoryPage: true
     })
   }
 
@@ -388,7 +391,7 @@ class AppointmentDetails extends Component {
                         <Col size={9}>
                           <Text style={styles.Textname} >{getDoctorNameOrHospitalName(data)}</Text>
                           <Text note style={{ fontSize: 13, fontFamily: 'Roboto', color: '#4c4c4c' }}>{getDoctorEducation(data.doctorInfo.education)}</Text>
-                          <Text style={styles.specialistTextStyle} >{specialist} </Text>
+                          <Text style={styles.specialistTextStyle} >{getAllSpecialist(data.doctorInfo.specialist)} </Text>
                         </Col>
                         <Col size={1}>
                         </Col>
