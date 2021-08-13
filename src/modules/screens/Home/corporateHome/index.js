@@ -114,7 +114,7 @@ class CorporateHome extends PureComponent {
   initialFunction = async () => {
     try {
       CurrentLocation.getCurrentPosition();
-      const userId = await AsyncStorage.getItem('UserId');
+      const userId = await AsyncStorage.getItem('memberId') || null;
       if (userId) {
         const {
           notification: { notificationCount },
@@ -243,7 +243,7 @@ class CorporateHome extends PureComponent {
   };
   backNavigation = async (navigationData) => {
     try {
-      let userId = await AsyncStorage.getItem('UserId');
+      let userId = await AsyncStorage.getItem('memberId') || null;
       if (userId) {
         this.getMarkedAsReadedNotification(userId);
       }

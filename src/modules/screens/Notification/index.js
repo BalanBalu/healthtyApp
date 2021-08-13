@@ -70,6 +70,7 @@ class Notification extends PureComponent {
       notificationId: this.props.notification.notificationIds,
     });
 
+
     await new Promise.all([
       this.getUserNotification(),
       this.upDateNotification(this.state.notificationId),
@@ -150,11 +151,13 @@ class Notification extends PureComponent {
 
   getUserNotification = async () => {
     try {
-      let memberUserId = await AsyncStorage.getItem('UserId') || null;
+      let memberUserId = await AsyncStorage.getItem('memberId') || null;
       let result = await fetchUserNotification(memberUserId, this.state.page, this.state.limit);
-      if (result.length != 0) {
+      console.log('memberId===========',result.docs)
 
-        if (result.docs != 0) {
+        if (result && result.docs != 0) {
+          let fullData = JSON.stringify(data)
+          console.log('fullData.docs===========',fullData.docs)
           let temp = this.state.data.concat(result);
 
           if (temp.length) {
@@ -165,8 +168,6 @@ class Notification extends PureComponent {
           this.setState({ footerLoading: false });
           this.onEndReachedCalledDuringMomentum = false;
         }
-
-      }
     } catch (e) {
       console.log(e);
     }
@@ -192,6 +193,8 @@ class Notification extends PureComponent {
 
   render() {
     const { data, isLoading } = this.state;
+  
+
     return (
       <Container style={styles.container}>
         {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}
@@ -227,7 +230,12 @@ class Notification extends PureComponent {
               data={data}
               extraData={this.state}
               renderItem={({ item, index }) => (
-                <Card
+                <View>
+                   <FlatList
+                    data={item.docs}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item, index }) =>(
+    <Card
                   style={{
                     borderRadius: 5,
                     width: 'auto',
@@ -284,6 +292,11 @@ class Notification extends PureComponent {
                     </View>
                   </TouchableOpacity>
                 </Card>
+                    )
+
+                    }/>
+                  </View>              
+             
               )}
               onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
               onEndReached={this.handleLoadMore()}
