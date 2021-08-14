@@ -391,7 +391,7 @@ class AppointmentDetails extends Component {
                         <Col size={9}>
                           <Text style={styles.Textname} >{getDoctorNameOrHospitalName(data)}</Text>
                           <Text note style={{ fontSize: 13, fontFamily: 'Roboto', color: '#4c4c4c' }}>{getDoctorEducation(data.doctorInfo.education)}</Text>
-                          <Text style={styles.specialistTextStyle} >{getAllSpecialist(data.doctorInfo.specialist)} </Text>
+                          <Text style={styles.specialistTextStyle} >{getAllSpecialist(data.specialist)} </Text>
                         </Col>
                         <Col size={1}>
                         </Col>

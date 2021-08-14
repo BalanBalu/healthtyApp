@@ -497,7 +497,7 @@ class MyAppoinmentList extends Component {
 																<Text
 																	style={{ fontFamily: "Roboto", fontSize: 14, width: '60%' }}
 																>
-																	{item.doctorInfo&&item.doctorInfo.specialist ? getAllSpecialist(item.doctorInfo.specialist) : item.bookedFor === 'HOSPITAL' ? getHospitalName(item.hospitalInfo) : ''}
+																	{item.specialist ? getAllSpecialist(item.specialist) : item.bookedFor === 'HOSPITAL' ? getHospitalName(item.hospitalInfo) : ''}
 																</Text>
 
 																{/* {selectedIndex == 1 &&
