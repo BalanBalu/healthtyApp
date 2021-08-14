@@ -114,8 +114,8 @@ class CorporateHome extends PureComponent {
   initialFunction = async () => {
     try {
       CurrentLocation.getCurrentPosition();
-      const userId = await AsyncStorage.getItem('memberId') || null;
-      if (userId) {
+      const memberId = await AsyncStorage.getItem('memberId') || null;
+      if (memberId) {
         const {
           notification: { notificationCount },
           navigation,
@@ -125,7 +125,7 @@ class CorporateHome extends PureComponent {
           notificationBadgeCount: notificationCount,
         });
 
-        this.getMarkedAsReadedNotification(userId);
+        this.getMarkedAsReadedNotification(memberId);
       }
     } catch (ex) {
       console.log(ex);
@@ -227,9 +227,9 @@ class CorporateHome extends PureComponent {
   };
 
 
-  getMarkedAsReadedNotification = async (userId) => {
+  getMarkedAsReadedNotification = async (memberId) => {
     try {
-      await fetchUserMarkedAsReadedNotification(userId);
+      await fetchUserMarkedAsReadedNotification(memberId);
       const {
         notification: { notificationCount },
         navigation,
@@ -243,9 +243,9 @@ class CorporateHome extends PureComponent {
   };
   backNavigation = async (navigationData) => {
     try {
-      let userId = await AsyncStorage.getItem('memberId') || null;
-      if (userId) {
-        this.getMarkedAsReadedNotification(userId);
+      let memberId = await AsyncStorage.getItem('memberId') || null;
+      if (memberId) {
+        this.getMarkedAsReadedNotification(memberId);
       }
     } catch (e) {
       console.log(e);
