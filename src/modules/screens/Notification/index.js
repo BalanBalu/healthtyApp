@@ -73,7 +73,7 @@ class Notification extends PureComponent {
 
     await new Promise.all([
       this.getUserNotification(),
-      this.upDateNotification(this.state.notificationId),
+      // this.upDateNotification(this.state.notificationId),
     ]);
     await this.setState({ isLoading: true, footerLoading: false });
   }
@@ -97,6 +97,7 @@ class Notification extends PureComponent {
     }
   };
   updateNavigation = async (item, index) => {
+    
     await this.setState({ notificationId: item._id });
     if (item.notificationType === 'APPOINTMENT') {
       if (!item.mark_as_viewed) {
@@ -152,11 +153,10 @@ class Notification extends PureComponent {
   getUserNotification = async () => {
     try {
       let memberId = await AsyncStorage.getItem('memberId') || null;
-      console.log(memberId);
 
       let result = await fetchUserNotification(memberId, this.state.page, this.state.limit);
-         console.log(result);
-        if (result && result.docs && result.docs.length != 0) {
+
+        if (result.length != 0) {
          
           let temp = this.state.data.concat(result);
 
@@ -193,7 +193,6 @@ class Notification extends PureComponent {
 
   render() {
     const { data, isLoading } = this.state;
-  
 
     return (
       <Container style={styles.container}>
@@ -235,7 +234,7 @@ class Notification extends PureComponent {
                     data={item.docs}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) =>(
-    <Card
+                  <Card
                   style={{
                     borderRadius: 5,
                     width: 'auto',

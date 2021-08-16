@@ -62,7 +62,7 @@ class CorporateHome extends PureComponent {
     this.setState({ corporateData: this.props?.profile?.corporateData, TPAData: this.props?.profile?.memberTpaInfo })
     await this.getMemberDetailsByPolicyNo();
     await this.getMemberDetailsByEmail();
-    this.initialFunction();
+    await this.initialFunction();
     this.getCorporatePhoneNumber();
 
   }
