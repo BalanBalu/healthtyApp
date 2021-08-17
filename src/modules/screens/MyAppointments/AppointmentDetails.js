@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
-import {primaryColor} from '../../../setup/config'
+import { primaryColor } from '../../../setup/config'
 
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation, getAppointmentCode } from '../../providers/bookappointment/bookappointment.action';
@@ -17,7 +17,7 @@ import { formatDate, dateDiff, statusValue, getMoment, isTimeAfter } from '../..
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress,getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress, getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import { translate } from "../../../setup/translator.helper";
 import { updateEvent } from "../../../setup/calendarEvent";
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -59,10 +59,11 @@ class AppointmentDetails extends Component {
     const appointmentData = navigation.getParam('data');
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
+      console.log(appointmentId)
       // this.props.navigation.setParams({ reportedId: appointmentId });
       await this.setState({ appointmentId: appointmentId });
       // await new Promise.all([
-      //   this.appointmentDetailsGetById(),
+      this.appointmentDetailsGetById()
       //   this.getUserReviews(),
       //   this.getUserReport(),
       // ]);
@@ -301,13 +302,13 @@ class AppointmentDetails extends Component {
 
 
   async onPressToGetAppointmentCode() {
-      if (data&&data.appointmentCode) {
-        toastMeassage('Your Appoinment Code:'+data.appointmentCode, 'success', 3000)
-      }
-      else{
-        toastMeassage('Failed To Get Appoinment Code!!', 'danger', 3000)
+    if (data && data.appointmentCode) {
+      toastMeassage('Your Appoinment Code:' + data.appointmentCode, 'success', 3000)
+    }
+    else {
+      toastMeassage('Failed To Get Appoinment Code!!', 'danger', 3000)
 
-      }
+    }
   }
   async backNavigation() {
     const { navigation } = this.props;
@@ -349,6 +350,22 @@ class AppointmentDetails extends Component {
     })
   }
 
+  doctorLanguage(data) {
+
+    return (
+      data ?
+        <Row style={styles.rowSubText}>
+          <Col style={{ width: '8%', paddingTop: 5 }}>
+            <Icon name="ios-book" style={{ fontSize: 20, }} />
+          </Col>
+          <Col style={{ width: '92%', paddingTop: 5 }}>
+            <Text style={styles.innerSubText}>{translate("Doctor spoken language")}</Text>
+            <Text note style={styles.subTextInner1}>{data && data.language && data.language.toString()}</Text>
+          </Col>
+        </Row> : null
+    )
+
+  }
 
 
 
@@ -356,7 +373,7 @@ class AppointmentDetails extends Component {
 
   render() {
     const { data, reviewData, reportData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
-    const patientData = data.patientData,doctorInfo=data.doctorInfo;
+    const patientData = data.patientData, doctorInfo = data.doctorInfo;
 
     return (
       <Container style={styles.container}>
@@ -411,7 +428,7 @@ class AppointmentDetails extends Component {
                       <Row style={{ marginTop: 10, marginLeft: 5 }} >
                         <Text style={styles.subText1}>{translate("Experience")}</Text>
                         <Text style={styles.subText2}>-</Text>
-                        <Text note style={styles.subText2}>{getDoctorExperience(data.doctorInfo.experience)}</Text>
+                        <Text note style={styles.subText2}>{getDoctorExperience(data.doctorInfo)}</Text>
                       </Row>
                       <Row style={{ marginTop: 10, marginLeft: 5 }}>
                         <Text style={styles.subText1}>{translate("Payment Method")}</Text>
@@ -419,7 +436,7 @@ class AppointmentDetails extends Component {
                         <Text note style={styles.subText2}>{paymentDetails.payment_method || 0}</Text>
                       </Row>
                     </Col>
-                    {data.status == 'APPROVED'?
+                    {data.status == 'APPROVED' ?
                       <Col size={3}>
                         <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>{translate("ONGOING")}</Text>
                       </Col>
@@ -440,7 +457,7 @@ class AppointmentDetails extends Component {
                     }
                   </Row>
 
-                  {selectedTab == 0 ? (data.status == 'APPROVED'|| data.status == 'PENDING') ?
+                  {selectedTab == 0 ? (data.status == 'APPROVED' || data.status == 'PENDING') ?
                     <Row>
                       <Col size={7}>
                         <Row style={{ marginTop: 10 }}>
@@ -481,20 +498,20 @@ class AppointmentDetails extends Component {
                           </Row>
                         </Col></Row> : null : data.status == 'APPROVED' && isTimeAfter(new Date().toISOString(), data.startTime) ?
 
-                      <Row>
-                        <Col size={5}>
-                          <Row style={{ marginTop: 10 }}>
-                            <Text note style={styles.subText3}>{translate("Do you need to get code ?")}</Text>
-                          </Row>
-                        </Col>
-                        <Col size={5}>
-                          <Row style={{ marginTop: 10 }}>
-                            <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode(data)}>
-                              <Text style={styles.ButtonText}>{translate("Get appointment Code")}</Text>
-                            </Button>
-                          </Row>
-                        </Col>
-                      </Row> : null}
+                    <Row>
+                      <Col size={5}>
+                        <Row style={{ marginTop: 10 }}>
+                          <Text note style={styles.subText3}>{translate("Do you need to get code ?")}</Text>
+                        </Row>
+                      </Col>
+                      <Col size={5}>
+                        <Row style={{ marginTop: 10 }}>
+                          <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode(data)}>
+                            <Text style={styles.ButtonText}>{translate("Get appointment Code")}</Text>
+                          </Button>
+                        </Row>
+                      </Col>
+                    </Row> : null}
                 </Grid>
                 <CardItem footer style={styles.cardItem2}>
                   <Grid>
@@ -551,7 +568,7 @@ class AppointmentDetails extends Component {
                 </Row>
 
                 <View style={{ marginTop: 10 }}>
-                  {data.status === 'CANCELED' || data.status === 'PROPOSED_NEW_TIME' ? data.statusUpdateReason!= undefined &&
+                  {data.status === 'CANCELED' || data.status === 'PROPOSED_NEW_TIME' ? data.statusUpdateReason != undefined &&
                     <View style={styles.rowSubText1}>
                       <Row style={styles.rowSubText}>
                         <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -717,17 +734,7 @@ class AppointmentDetails extends Component {
 
 
 
-
-
-
-
-
-
-
-
-
-
-{/* Need EMR Data */}
+                  {/* Need EMR Data */}
 
                   {/* {data.is_emr_recorded !== undefined ?
                     <Row style={styles.rowSubText}>
@@ -755,7 +762,7 @@ class AppointmentDetails extends Component {
                       </Col>
                     </Row> : null} */}
 
-{/* PAYMENT REPORT */}
+                  {/* PAYMENT REPORT */}
 
                   {/* <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -799,7 +806,7 @@ class AppointmentDetails extends Component {
                     </Col>
                   </Row> */}
 
-{/* Review Card  */}
+                  {/* Review Card  */}
 
                   {/* {(data.status == 'COMPLETED' && reviewData.length !== 0) || reviewData.length !== 0 ?
                     <Row style={styles.rowSubText}>
@@ -836,7 +843,7 @@ class AppointmentDetails extends Component {
                       </Row> : null
                   } */}
 
-{/* PAYMENT INFO */}
+                  {/* PAYMENT INFO */}
 
                   {/* <Row style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -1083,11 +1090,11 @@ const styles = StyleSheet.create({
   ButtonText: {
     color: '#fff',
     fontSize: 10,
-    fontFamily:'opensans-bold'
+    fontFamily: 'opensans-bold'
   },
   textApproved: {
     fontSize: 12,
-    fontFamily:'opensans-bold'
+    fontFamily: 'opensans-bold'
   },
   postponeButton: {
     // backgroundColor:'#4765FF',
@@ -1099,8 +1106,8 @@ const styles = StyleSheet.create({
     fontFamily: 'opensans-bold',
     fontSize: 13,
     color: '#FFF',
-    marginLeft:10
-   
+    marginLeft: 10
+
   },
   iconStyle: {
     fontSize: 20,
