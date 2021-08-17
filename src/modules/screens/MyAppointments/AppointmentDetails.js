@@ -85,9 +85,12 @@ class AppointmentDetails extends Component {
       //   this.getUserReviews(),
       //   this.getUserReport(),
       // ])
-      if (appointmentData.status == 'COMPLETED') {
-        await this.setState({ modalVisible: true })
-      }
+
+// Need To Discuss For REview
+
+      // if (appointmentData.status == 'COMPLETED') {
+      //   await this.setState({ modalVisible: true })
+      // }
       let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
       if (appointmentData.status == 'PROPOSED_NEW_TIME' && checkProposedNewTime != 'SKIP') {
         await this.setState({ proposedVisible: true })
@@ -99,38 +102,39 @@ class AppointmentDetails extends Component {
   }
 
   /* Get Doctor Details */
-  getDoctorDetails = async () => {
-    try {
+  // getDoctorDetails = async () => {
+  //   try {
 
-      let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
-      if (this.state.doctorId !== null) {
-        let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
+  //     let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
+  //     if (this.state.doctorId !== null) {
+  //       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
-        if (resultDetails.success) {
-          let educationDetails = '';
-          if (resultDetails.data.education != undefined) {
-            educationDetails = getAllEducation(resultDetails.data.education)
-          }
-          let specialistDetails = '';
-          if (resultDetails.data.specialist != undefined) {
-            specialistDetails = getAllSpecialist(resultDetails.data.specialist)
-          }
+  //       if (resultDetails.success) {
+  //         let educationDetails = '';
+  //         if (resultDetails.data.education != undefined) {
+  //           educationDetails = getAllEducation(resultDetails.data.education)
+  //         }
+  //         let specialistDetails = '';
+  //         if (resultDetails.data.specialist != undefined) {
+  //           specialistDetails = getAllSpecialist(resultDetails.data.specialist)
+  //         }
 
 
-          this.setState({
-            education: educationDetails,
-            doctorData: resultDetails.data,
-            specialist: specialistDetails.toString(),
-          })
-        }
-      }
+  //         this.setState({
+  //           education: educationDetails,
+  //           doctorData: resultDetails.data,
+  //           specialist: specialistDetails.toString(),
+  //         })
+  //       }
+  //     }
 
-    }
-    catch (e) {
-      console.log(e);
-    }
-  }
+  //   }
+  //   catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 
+  
   /* get User reviews */
   getUserReviews = async () => {
     try {
@@ -164,29 +168,31 @@ class AppointmentDetails extends Component {
 
   }
 
-  appointmentDetailsGetById = async () => {
-    try {
-      let result = await appointmentDetails(this.state.appointmentId);
-      if (result.success) {
-        this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
-          await new Promise.all([
-            this.getDoctorDetails(),
-            this.getPaymentInfo(result.data[0].payment_id)])
+  // appointmentDetailsGetById = async () => {
+  //   try {
+  //     let result = await appointmentDetails(this.state.appointmentId);
+  //     if (result.success) {
+  //       this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
+  //         await new Promise.all([
+  //           this.getDoctorDetails(),
+  //           this.getPaymentInfo(result.data[0].payment_id)])
 
 
-        if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
-          await this.setState({ modalVisible: true })
-        }
-        let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
-        if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
-          await this.setState({ proposedVisible: true })
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  //       if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
+  //         await this.setState({ modalVisible: true })
+  //       }
+  //       let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
+  //       if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
+  //         await this.setState({ proposedVisible: true })
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
 
-  }
+  // }
+
+
   getPaymentInfo = async (paymentId) => {
     try {
       let result = await getPaymentInfomation(paymentId);
@@ -212,26 +218,26 @@ class AppointmentDetails extends Component {
   updateAppointmentStatus = async (data, updatedStatus) => {
     try {
       this.setState({ isLoading: true });
-      let userId = await AsyncStorage.getItem('userId');
+      let memberId = await AsyncStorage.getItem("memberId");
       let requestData = {
-
-        userId: userId,
+        _id:data._id,
+        userId: memberId,
         startTime: data.startTime,
         endTime: data.endTime,
         status: updatedStatus,
         statusUpdateReason: data.statusUpdateReason,
         statusBy: 'USER'
       };
-      if (data.bookedFor === 'HOSPITAL') {
-        requestData.hospitalAdminId = data.hospitalInfo.hospitalAdminId
-      } else {
-        requestData.doctorId = data.doctorInfo.doctorId
-      }
+      // if (data.bookedFor === 'HOSPITAL') {
+      //   requestData.hospitalAdminId = data.hospitalInfo.hospitalAdminId
+      // } else {
+      //   requestData.doctorId = data.doctorInfo.doctorId
+      // }
 
-      let result = await appointmentStatusUpdate(this.state.appointmentId, requestData);
+      let result = await appointmentStatusUpdate(requestData);
       this.setState({ isLoading: false })
 
-      if (result.success) {
+      if (result._id) {
         let temp = this.state.data
         let startTime = getMoment(data.startTime).toISOString();
         let endTime = getMoment(data.endTime).toISOString();
@@ -239,14 +245,20 @@ class AppointmentDetails extends Component {
         // if (temp.location[0]) {
         //   address = temp.location[0].location.address.city || temp.location[0].location.address.state
         // }
-        let doctorName=temp.doctorInfo!==undefined? temp.doctorInfo.prefix+' '+temp.doctorInfo.firstName+' '+temp.doctorInfo.lastName: '';
-let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.bookedFor==='DOCTOR'?doctorName:'';
-        await updateEvent(temp.userAppointmentEventId, "Appointment booked with " + tittle,startTime, endTime, address, temp.description)
 
-        temp.status = result.data.status
+        //Event Update Need To Discuss
+
+        // let doctorName=temp.doctorInfo!==undefined? temp.doctorInfo.prefix+' '+temp.doctorInfo.firstName+' '+temp.doctorInfo.lastName: '';
+        // let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.bookedFor==='DOCTOR'?doctorName:'';
+        // await updateEvent(temp.userAppointmentEventId, "Appointment booked with " + tittle,startTime, endTime, address, temp.description)
+
+        temp.status = result.status;
+        temp.statusBy=result.statusBy;
+        temp.statusUpdateReason=result.statusUpdateReason;
         Toast.show({
-          text: result.message,
-          duration: 3000
+            text: 'Your appointment has been updated',
+            duration: 3000,
+            type: 'success'
         })
         if (this.state.proposedVisible == true) {
           this.setState({ proposedVisible: false });
@@ -254,10 +266,21 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
 
         this.setState({ data: temp });
         this.props.navigation.setParams({ 'refreshPage': true });
+      }else{
+        Toast.show({
+          text: 'Somthing went worng please try again..',
+          type: "danger",
+          duration: 3000
+        })
       }
     }
     catch (e) {
       console.log(e);
+      Toast.show({
+        text: 'Somthing went worng please try again..',
+        type: "danger",
+        duration: 3000
+      })
     }
   }
 
@@ -319,10 +342,10 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
 
   navigateToBookAppointmentPage() {
     const { data } = this.state
-    let doctorId = data.doctorId;
-    this.props.navigation.navigate('Book Appointment', {
-      doctorId: doctorId,
-      fetchAvailabiltySlots: true
+    // let doctorId = data.doctorId;
+    this.props.navigation.navigate('DoctorConsultation', {
+      reqData4HistoryPage: data,
+      fromHistoryPage: true
     })
   }
 
@@ -368,7 +391,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                         <Col size={9}>
                           <Text style={styles.Textname} >{getDoctorNameOrHospitalName(data)}</Text>
                           <Text note style={{ fontSize: 13, fontFamily: 'Roboto', color: '#4c4c4c' }}>{getDoctorEducation(data.doctorInfo.education)}</Text>
-                          <Text style={styles.specialistTextStyle} >{specialist} </Text>
+                          <Text style={styles.specialistTextStyle} >{getAllSpecialist(data.specialist)} </Text>
                         </Col>
                         <Col size={1}>
                         </Col>
@@ -676,7 +699,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
               </Col>
             </Row>*/}
 
-                  {doctorInfo.language != undefined && doctorInfo.language.length != 0 ?
+                  {doctorInfo&&doctorInfo.language != undefined && doctorInfo.language.length != 0 ?
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
                         <Icon name="ios-book" style={{ fontSize: 20, }} />

@@ -40,7 +40,7 @@ class CancelAppointment extends Component {
     const { navigation } = this.props;
     const cancelData = navigation.getParam('appointmentDetail');
   
-    let doctorId = cancelData.doctor_id;
+    let doctorId = cancelData.doctorId;
     let appointmentId = cancelData._id;
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, data: cancelData });
 
@@ -49,13 +49,14 @@ class CancelAppointment extends Component {
   /* Cancel Appoiontment Status */
   cancelAppointment = async (data, updatedStatus) => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
+      let memberId = await AsyncStorage.getItem('memberId');
  
       if (onlySpaceNotAllowed(this.state.statusUpdateReason) == true) {
         this.setState({ isLoading: true });
         let requestData = {
+          _id:data._id,
           doctorId: data.doctorId||null,
-          userId: userId,
+          userId: memberId,
           startTime: data.startTime,
           endTime: data.endTime,
           status: updatedStatus,
@@ -63,16 +64,17 @@ class CancelAppointment extends Component {
           statusBy: 'USER',
           bookedFor:data.bookedFor||'DOCTOR'
         };
-        if(data.bookedFor==='HOSPITAL'){
-          delete requestData.doctorId
-          requestData.hospitalAdminId=data.hospitalInfo.hospitalAdminId
-        }
+        // if(data.bookedFor==='HOSPITAL'){
+        //   delete requestData.doctorId
+        //   requestData.hospitalAdminId=data.hospitalInfo.hospitalAdminId
+        // }
 
    
-        let result = await appointmentStatusUpdate( this.state.data._id, requestData);
+        let result = await appointmentStatusUpdate( requestData);
         
-        if (result.success) {
-        await reomveEvent(data.userAppointmentEventId)
+        if (result&&result._id) {
+          //Need To Discuss
+        // await reomveEvent(data.userAppointmentEventId)
       
           Toast.show({
             text: 'Your appointment has been canceled',
@@ -80,16 +82,17 @@ class CancelAppointment extends Component {
             type: 'success'
           })
           let temp = this.state.data;
-          temp.status = result.data.status;
-          temp.statusUpdateReason = result.data.statusUpdateReason;
+          temp.status = result.status;
+          temp.statusUpdateReason = result.statusUpdateReason;
+          temp.statusBy=result.statusBy;
           
-          this.setState({ data: temp });
+         await this.setState({ data: temp });
           this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
         }
         else {
           
           Toast.show({
-            text: result.message,
+            text: 'Somthing went worng please try again..',
             type: "danger",
             duration: 3000
           })
@@ -138,7 +141,7 @@ class CancelAppointment extends Component {
                         {formatDate(data.startTime, 'MMMM-DD-YYYY') + "   " +
                           formatDate(data.starTtime, 'hh:mm A')}
                      
-                      </Text> with {data.booked_for==='HOSPITAL'?getHospitalHeadeName(data.location[0]):(data && data.prefix || '') + " " + getName(data.doctorInfo)}</Text>
+                      </Text> with {data.bookedFor==='HOSPITAL'?getHospitalHeadeName(data.hospitalInfo):(data &&data.doctorInfo&& data.doctorInfo.prefix || '') + " " + getName(data.doctorInfo)}</Text>
                     <Text style={{ marginTop: 20,fontFamily:'Roboto',fontSize:15 }}>What is the reason for Cancellation?</Text>
 
 
