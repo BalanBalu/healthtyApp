@@ -373,12 +373,12 @@ export default class PaymentReview extends Component {
     // }
     this.setState({isLoading: false, spinnerText: ' '});
       if (validationResult) {
-        Toast.show({
-              text: "Your Appointment Booked Sucessfully",
-              type: 'success',
-              duration: 3000,
-            });
-            this.props.navigation.navigate('CorporateHome');
+        // Toast.show({
+        //       text: "Your Appointment Booked Sucessfully",
+        //       type: 'success',
+        //       duration: 3000,
+        //     });
+            this.props.navigation.navigate('paymentsuccess',{isAppoinment:true,appointmentID:validationResult._id});
       }else{
         Toast.show({
               text: validationResult.message,
