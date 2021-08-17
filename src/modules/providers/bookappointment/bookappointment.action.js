@@ -306,8 +306,8 @@ export const getMultipleDoctorDetailsV2 = async (doctorIds, fields, isLoading = 
 
 export async function appointmentDetails(appointmentId, isLoading = true) {
   try {
-    let endPoint = 'appointment/' + appointmentId
-    let response = await getService(endPoint);
+    let endPoint = 'appointment/by-id?id=' + appointmentId
+    let response = await smartHealthGetService(endPoint);
     let respData = response.data;
     return respData;
   } catch (e) {
