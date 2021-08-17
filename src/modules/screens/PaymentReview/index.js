@@ -313,7 +313,6 @@ export default class PaymentReview extends Component {
   async confirmProceedPayment() {
 
     const {bookSlotDetails,patientDetailsObj,doctorDetails,selectedPatientTypes} = this.state;
-
     let {diseaseDescription} = bookSlotDetails;
     if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
       Toast.show({
@@ -365,7 +364,8 @@ export default class PaymentReview extends Component {
         active:1,
         userId:memberUserId,
         // paymentId: "cash_1574318269541",
-        // bookedFor: "DOCTOR",
+        bookedFor: "DOCTOR",
+        statusBy:"USER",
         // "categoryId": "string",
         // "bookedFrom": "string",
       };
@@ -378,7 +378,9 @@ export default class PaymentReview extends Component {
         //       type: 'success',
         //       duration: 3000,
         //     });
-            this.props.navigation.navigate('paymentsuccess',{isAppoinment:true,appointmentID:validationResult._id});
+        let data=validationResult
+        data.doctorInfo=doctorDetails
+            this.props.navigation.navigate('paymentsuccess',{isAppoinment:true,appointmentDetails:data});
       }else{
         Toast.show({
               text: validationResult.message,

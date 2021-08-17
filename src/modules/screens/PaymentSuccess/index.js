@@ -28,9 +28,6 @@ class PaymentSuccess extends Component {
             fromNavigation: null,
             CorporateUser: false,
             data:{},
-            isLoading:true
-
-
         }
         this.isFromHomeHealthCareConfirmation = false;
     }
@@ -48,15 +45,6 @@ class PaymentSuccess extends Component {
         this.getAppointmentDetails();
     }
     getAppointmentDetails =async ()=>{
-        const { navigation } = this.props;
-        const isAppoinment = navigation.getParam('isAppoinment')||false;
-        const appointmentID = navigation.getParam('appointmentID');
-        if(isAppoinment){ 
-           let data= await getAppointmentDetailsById(appointmentID);
-           if(data&&data._id){
-           await this.setState({data:data,isLoading:false});
-           }
-        }
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressed);
@@ -107,15 +95,10 @@ class PaymentSuccess extends Component {
     }
     render() {
         const { navigation } = this.props;
-        const { successBookSlotDetails, paymentMethod, tokenNo, fromNavigation,data,isLoading } = this.state;
+        const data = navigation.getParam('appointmentDetails');
+        const { successBookSlotDetails, paymentMethod, tokenNo, fromNavigation,isLoading } = this.state;
         return (
             <Container style={styles.container}>
-        {isLoading?
-        <View style={{ alignItems: 'center',marginTop:300}}>
-            <ActivityIndicator size="large" color="#128283" />
-        </View>
-        :
-
                 <ScrollView>
                     <Content style={styles.bodyContent}>
                         <Card style={styles.mainCard}>
@@ -142,12 +125,12 @@ class PaymentSuccess extends Component {
                                             </Right>
                                         </Row> :
                                         <Row>
-                                            <Text style={styles.docHeading}>{data.doctorInfo.prefix ? data.doctorInfo.prefix : ''} {data.doctorInfo.firstName}{data.doctorInfo.lastName}{' '}
+                                            <Text style={styles.docHeading}>{data.doctorInfo.prefix ? data.doctorInfo.prefix : ''}.{data.doctorInfo.doctorName}{' '}
                                                 <Text style={styles.Degree}>{getDoctorEducation(data.doctorInfo.education)}</Text> </Text>
                                         </Row>
                                     }
                                     <Row>
-                                        <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getAllSpecialist(data.specialist)}</Text>
+                                        <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getAllSpecialist(data.doctorInfo.specialist)}</Text>
 
                                     </Row>
                                 </Col>
@@ -158,7 +141,7 @@ class PaymentSuccess extends Component {
                                     <Text style={styles.subText2 }> {data.tokenNo} </Text>
                                 </Right>
                             </Row>
-                            {data && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(data.hospitalInfo) : null()}
+                            {/* {data && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(data.hospitalInfo) : null()} */}
 
 
                             <Row style={styles.rowDetail}>
@@ -203,7 +186,6 @@ class PaymentSuccess extends Component {
 
                     </Content>
                 </ScrollView>
-    }
             </Container>
 
         )
