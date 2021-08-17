@@ -244,6 +244,7 @@ export default class PaymentReview extends Component {
       bookAppointment: [],
       doctorDetails: {},
       familyMembers: [],
+      hospitalInfo:{},
     };
     this.defaultPatDetails = {};
   }
@@ -266,6 +267,7 @@ export default class PaymentReview extends Component {
     await this.setState({
         doctorDetails:bookAppointment.doctorDetails,
         bookSlotDetails:bookAppointment.selectedSlot,
+        hospitalInfo:bookAppointment.hospitalInfo,
         isLoading: false,
       })
     }
@@ -378,8 +380,9 @@ export default class PaymentReview extends Component {
         //       duration: 3000,
         //     });
         let data=validationResult
-        data.doctorInfo=doctorDetails
-            this.props.navigation.navigate('paymentsuccess',{isAppoinment:true,appointmentDetails:data});
+        data.doctorInfo=doctorDetails;
+        data.hospitalInfo=this.state.hospitalInfo
+            this.props.navigation.navigate('paymentsuccess',{appointmentDetails:data});
       }else{
         Toast.show({
               text: validationResult.message,

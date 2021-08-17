@@ -53,7 +53,6 @@ class PaymentSuccess extends Component {
         return true;
     }
     renderHospitalLocation(hospitalInfo) {
-
         return (
             <Row style={styles.rowDetail1}>
                 <Text style={styles.mainText}>Address</Text>
@@ -66,8 +65,9 @@ class PaymentSuccess extends Component {
         )
     }
     renderPatientLocation() {
-        const { successBookSlotDetails } = this.state;
-        const patientAddress = successBookSlotDetails && successBookSlotDetails.patient_location && successBookSlotDetails.patient_location.address;
+        const { data } = this.state;
+        co
+        const p = successBookSlotDetails && successBookSlotDetails.patient_location && successBookSlotDetails.patient_location.address;
         if (patientAddress && Object.keys(patientAddress).length) {
             return (
                 <Row style={styles.rowDetail1}>
@@ -141,9 +141,7 @@ class PaymentSuccess extends Component {
                                     <Text style={styles.subText2 }> {data.tokenNo} </Text>
                                 </Right>
                             </Row>
-                            {/* {data && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(data.hospitalInfo) : null()} */}
-
-
+                            {data && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(data.hospitalInfo) : this.renderPatientLocation()}
                             <Row style={styles.rowDetail}>
                                 <Text style={styles.mainText}>Date</Text>
                                 <Right>
@@ -168,7 +166,11 @@ class PaymentSuccess extends Component {
                                 </Right>
 
                             </Row>
-                            <Row style={{ marginTop: 15, marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
+
+                            {/* Need To Discuss For Payment Details */}
+
+
+                            {/* <Row style={{ marginTop: 15, marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
 
                                 <Text style={styles.mainText}>Payment Method </Text>
 
@@ -177,7 +179,7 @@ class PaymentSuccess extends Component {
 
                                 </Right>
 
-                            </Row>
+                            </Row> */}
                         </Card>
                         <Button onPress={() => this.homePageRedirect()}
                             block style={{ marginTop: 5, borderRadius: 10, marginBottom: 10, backgroundColor: '#5bb85d' }}>
