@@ -126,7 +126,7 @@ class PaymentSuccess extends Component {
                                         </Row> :
                                         <Row>
                                             <Text style={styles.docHeading}>{data.doctorInfo.prefix ? data.doctorInfo.prefix : ''}.{data.doctorInfo.doctorName}{' '}
-                                                <Text style={styles.Degree}>{getDoctorEducation(data.doctorInfo.education)}</Text> </Text>
+                                                <Text style={styles.Degree}>{getDoctorEducation(data.doctorInfo)}</Text> </Text>
                                         </Row>
                                     }
                                     <Row>
