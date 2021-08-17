@@ -110,9 +110,9 @@ export default class App extends Component {
   }
   getMarkedAsReadedNotification = async () => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
+      let memberId = await AsyncStorage.getItem('memberId') || null;
 
-      fetchUserMarkedAsReadedNotification(userId);
+      fetchUserMarkedAsReadedNotification(memberId);
     }
     catch (e) {
       console.log(e)

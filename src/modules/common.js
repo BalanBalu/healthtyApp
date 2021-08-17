@@ -179,11 +179,11 @@ export function renderProfileImage(data) {
 }
 export function renderDoctorImage(data) {
     let source = null;
-    if (data.profileImage) {
+    if (data&&data.profileImage) {
         source = { uri: data.profileImage.imageURL }
-    } else if (data.gender == 'M'||data.gender == 'Male') {
+    } else if (data&&data.gender == 'M'|| data&&data.gender == 'Male') {
         source = require('../../assets/images/profile_male.png')
-    } else if (data.gender == 'F'||data.gender == 'Female') {
+    } else if (data&&data.gender == 'F'||data&&data.gender == 'Female') {
         source = require('../../assets/images/profile_female.png')
     } else {
         source = require('../../assets/images/profile_common.png')
@@ -199,8 +199,8 @@ export function getDoctorSpecialist(specialistData) {
 }
 export function getDoctorEducation(educationData) {
     let degree = '';
-    if (educationData) {
-        educationData.forEach(eduData => {
+    if (educationData && educationData.education) {
+        educationData.education.forEach(eduData => {
             degree += eduData.degree + ','
         });
         return degree.slice(0, -1);
@@ -208,22 +208,25 @@ export function getDoctorEducation(educationData) {
     return '';
 }
 export function getDoctorExperience(calulatedExperience) {
-    if (!calulatedExperience) {
+    if (calulatedExperience && calulatedExperience.experience){
+        let experienceData = calulatedExperience.experience
+    if (!experienceData) {
         return 'N/A'
     }
-    if (calulatedExperience.isPrivate === true) {
+    if (experienceData.isPrivate === true) {
         return 'N/A'
     }
-    if (calulatedExperience.year == 0) {
-        let month = calulatedExperience.month;
+    if (experienceData.year == 0) {
+        let month = experienceData.month;
         if (month == 0) {
             return 'N/A'
         }
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-        let year = calulatedExperience.year;
+        let year = experienceData.year;
         return `${year} Year` + (year <= 1 ? '' : 's')
     }
+}
 }
 
 export async function getUserNotification() {

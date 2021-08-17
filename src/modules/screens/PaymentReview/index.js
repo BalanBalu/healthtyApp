@@ -349,8 +349,7 @@ export default class PaymentReview extends Component {
         patientImage: null
       }
     }
-    let memberUserId = await AsyncStorage.getItem('UserId') || null;
-
+    let memberId = await AsyncStorage.getItem('memberId') || null;
       const reqData = {
         startTime: bookingSlotData.slotStartDateAndTime,
         endTime: bookingSlotData.slotEndDateAndTime,
@@ -363,7 +362,7 @@ export default class PaymentReview extends Component {
         description: bookSlotDetails.diseaseDescription?bookSlotDetails.diseaseDescription:'',
         appointmentTakenDate:new Date(),
         active:1,
-        userId:memberUserId,
+        userId:memberId,
         // paymentId: "cash_1574318269541",
         // bookedFor: "DOCTOR",
         // "categoryId": "string",
