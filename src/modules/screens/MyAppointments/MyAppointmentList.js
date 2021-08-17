@@ -15,7 +15,6 @@ import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
 import { renderDoctorImage, getAllEducation, getAllSpecialist, getName, getDoctorEducation, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import moment from "moment";
-// import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
 import { translate } from "../../../setup/translator.helper"
 import {primaryColor, secondaryColor} from '../../../setup/config'
@@ -102,15 +101,15 @@ class MyAppoinmentList extends Component {
 			let filters = {
 				startDate: new Date().toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
-				skip: this.state.skip,
-				limit: this.state.limit,
-				sort: 1
+				// skip: this.state.skip,
+				// limit: this.state.limit,
+				// sort: 1
 
 
 			};
 			let upCommingAppointmentResult = await getAppointmentByMemberId(memberId, filters);
-			if (upCommingAppointmentResult.success) {
-			tempData=upCommingAppointmentResult.data
+			if (upCommingAppointmentResult) {
+			tempData=upCommingAppointmentResult
 			}
 
 			// if (upCommingAppointmentResult.success) {
@@ -187,16 +186,15 @@ class MyAppoinmentList extends Component {
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
-				skip: this.state.skip,
-				limit: this.state.limit,
-				sort: -1,
-				reviewInfo: true
+				// skip: this.state.skip,
+				// limit: this.state.limit,
+				// sort: -1,
+				// reviewInfo: true
 			};
 
 			let pastAppointmentResult = await getAppointmentByMemberId(memberId, filters);
 
-			if (pastAppointmentResult.success) {
-				pastAppointmentResult = pastAppointmentResult.data;
+			if (pastAppointmentResult) {
 
 				// let doctorInfo = new Map();
 
@@ -320,11 +318,16 @@ class MyAppoinmentList extends Component {
 
 	navigateToBookAppointmentPage(item) {
 
-		let doctorId = item.doctorId;
-		this.props.navigation.navigate('Doctor Details Preview', {
-			doctorId: doctorId,
-			fetchAvailabiltySlots: true
-		})
+		// let doctorId = item.doctorId;
+		// this.props.navigation.navigate('Doctor Details Preview', {
+		// 	doctorId: doctorId,
+		// 	fetchAvailabiltySlots: true
+		// })
+
+		this.props.navigation.navigate('DoctorConsultation', {
+			reqData4HistoryPage: item,
+			fromHistoryPage: true
+		  })
 	}
 	handleLoadMore = async () => {
 		if (!this.onEndReachedCalledDuringMomentum) {
@@ -448,10 +451,10 @@ class MyAppoinmentList extends Component {
 							) : (
 									<FlatList
 										data={data}
-										extraData={data}
-										onEndReached={() => this.handleLoadMore()}
-										onEndReachedThreshold={0.5}
-										onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+										// extraData={data}
+										// onEndReached={() => this.handleLoadMore()}
+										// onEndReachedThreshold={0.5}
+										// onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
 										ListFooterComponent={this.renderFooter.bind(this)}
 										renderItem={({ item, index }) => (
 											<Card transparent style={{ borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
@@ -494,13 +497,13 @@ class MyAppoinmentList extends Component {
 																<Text
 																	style={{ fontFamily: "Roboto", fontSize: 14, width: '60%' }}
 																>
-																	{item.specialist ? item.specialist : item.bookedFor === 'HOSPITAL' ? getHospitalName(item.hospitalInfo) : null}
+																	{item.specialist ? getAllSpecialist(item.specialist) : item.bookedFor === 'HOSPITAL' ? getHospitalName(item.hospitalInfo) : ''}
 																</Text>
 
 																{/* {selectedIndex == 1 &&
 																	item.appointmentResult.reviewInfo != undefined && item.appointmentResult.reviewInfo.overall_rating !== undefined && ( */}
                                 									{/* StarRating Demo Count Shwoing */}
-																		<StarRating
+																		{/* <StarRating
 																			fullStarColor="#FF9500"
 																			starSize={15}
 																			containerStyle={{
@@ -511,7 +514,7 @@ class MyAppoinmentList extends Component {
 																			maxStars={5}
 																			rating={4}
 
-																		/>
+																		/> */}
 																	{/* )} */}
 															</Row>
 

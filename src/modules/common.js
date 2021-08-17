@@ -241,8 +241,8 @@ export async function getUserNotification() {
 export function getName(data) {
     let name = 'unKnown'
     if (data) {
-        if (data.first_name != undefined || data.last_name != undefined) {
-            name = `${data.first_name || ''} ${data.last_name || ''}`
+        if (data.firstName != undefined || data.lastName != undefined) {
+            name = `${data.firstName || ''} ${data.lastName || ''}`
 
         }
     }
@@ -448,7 +448,7 @@ export function getHospitalHeadeName(data) {
 export function getHospitalName(data) {
     if (!data) return ''
     if (data)
-        return `${data.address.noAndStreet}, ${data.address.city}, ${data.address.state}, ${data.address.pinCode}`;
+        return `${data.address}, ${data.city}, ${data.state}, ${data.pinCode}`;
     else
         return ''
 }
