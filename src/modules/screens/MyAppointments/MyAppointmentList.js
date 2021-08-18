@@ -488,7 +488,7 @@ class MyAppoinmentList extends Component {
 																			fontSize: 13,
 																			marginTop: "1%"
 																		}}
-																	>{getDoctorEducation(item.doctorInfo.education)}</Text>
+																	>{getDoctorEducation(item.doctorInfo)}</Text>
 																</Col>
 																<Col size={1}>
 																</Col>
