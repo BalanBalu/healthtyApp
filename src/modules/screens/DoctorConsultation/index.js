@@ -31,7 +31,8 @@ class DoctorConsultation extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.state = { 
+      selectedSlot: null,
       starCount: '',
       isVisibleDatePicker: false,
       buttonSelected: 0,
@@ -119,7 +120,7 @@ class DoctorConsultation extends Component {
   }
 
   render() {
-    const {isVisibleDatePicker, selectedDate,doctorData, data,isLoading,availableSlots,selectedIndex,errorMsg,isModalVisible} = this.state;
+    const {isVisibleDatePicker,selectedSlot, selectedDate,doctorData, data,isLoading,availableSlots,selectedIndex,errorMsg,isModalVisible} = this.state;
     return (
       <View style={[styles.outerContainer]}>
         <View style={[styles.topCurve]}></View>
@@ -264,12 +265,15 @@ class DoctorConsultation extends Component {
               <View
                 style={[
                   styles.callNowButton,
+                  {backgroundColor : selectedSlot? '#415a5c' : '#43b4a5' },
+                  
+
                   GlobalStyles.flexRowAlignCenter,
                   GlobalStyles.mt3,
                 ]}>
                 <MaterialIcons
                   name={'attach-money'}
-                  style={{fontSize: 25, color: '#128283'}}
+                  style={{fontSize: 25, color: 'black'}}
                 />
                 <Text style={[styles.callNowButtonText]}>
                   <View></View>Pay and Consult
