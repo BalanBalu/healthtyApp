@@ -244,6 +244,7 @@ export default class PaymentReview extends Component {
       bookAppointment: [],
       doctorDetails: {},
       familyMembers: [],
+      hospitalInfo:{},
     };
     this.defaultPatDetails = {};
   }
@@ -266,6 +267,7 @@ export default class PaymentReview extends Component {
     await this.setState({
         doctorDetails:bookAppointment.doctorDetails,
         bookSlotDetails:bookAppointment.selectedSlot,
+        hospitalInfo:bookAppointment.hospitalInfo,
         isLoading: false,
       })
     }
@@ -313,7 +315,6 @@ export default class PaymentReview extends Component {
   async confirmProceedPayment() {
 
     const {bookSlotDetails,patientDetailsObj,doctorDetails,selectedPatientTypes} = this.state;
-
     let {diseaseDescription} = bookSlotDetails;
     if (diseaseDescription==undefined || String(diseaseDescription).trim() === '') {
       Toast.show({
@@ -364,7 +365,8 @@ export default class PaymentReview extends Component {
         active:1,
         userId:memberId,
         // paymentId: "cash_1574318269541",
-        // bookedFor: "DOCTOR",
+        bookedFor: "DOCTOR",
+        statusBy:"USER",
         // "categoryId": "string",
         // "bookedFrom": "string",
       };
@@ -372,12 +374,15 @@ export default class PaymentReview extends Component {
     // }
     this.setState({isLoading: false, spinnerText: ' '});
       if (validationResult) {
-        Toast.show({
-              text: "Your Appointment Booked Sucessfully",
-              type: 'success',
-              duration: 3000,
-            });
-            this.props.navigation.navigate('CorporateHome');
+        // Toast.show({
+        //       text: "Your Appointment Booked Sucessfully",
+        //       type: 'success',
+        //       duration: 3000,
+        //     });
+        let data=validationResult
+        data.doctorInfo=doctorDetails;
+        data.hospitalInfo=this.state.hospitalInfo
+            this.props.navigation.navigate('paymentsuccess',{appointmentDetails:data});
       }else{
         Toast.show({
               text: validationResult.message,

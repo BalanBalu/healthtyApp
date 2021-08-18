@@ -320,7 +320,7 @@ export async function appointmentDetails(appointmentId, isLoading = true) {
 export async function getAppointmentDetailsById(id){
   try{
     let endPoint='appointment/by-id?id='+id
-    let response=smartHealthGetService(endPoint);
+    let response=await smartHealthGetService(endPoint);
 return response.data;
   }
   catch(e){

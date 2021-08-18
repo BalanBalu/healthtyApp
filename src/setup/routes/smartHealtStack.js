@@ -774,16 +774,6 @@ export const smartHealthStack=createStackNavigator({
 
     })
   },
-  paymentsuccess: {
-    screen: PaymentSuccess,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: null,
-      title: translate('Success'),
-      headerTitleStyle: { fontFamily: "Roboto", }
-
-    })
-  },
-
   labConfirmation: {
     screen: labConfirmation,
     navigationOptions: ({ navigation }) => ({

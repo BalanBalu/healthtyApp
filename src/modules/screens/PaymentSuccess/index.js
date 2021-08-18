@@ -7,9 +7,12 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, BackHandler } from 'react-native';
 import { formatDate } from '../../../setup/helpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {getAppointmentDetailsById} from '../../providers/bookappointment/bookappointment.action';
 import { ScrollView } from 'react-native-gesture-handler';
-import { RenderHospitalAddress, renderDoctorImage, getDoctorSpecialist, getDoctorEducation } from '../../common'
+import { RenderHospitalAddress, renderDoctorImage, getAllSpecialist, getDoctorEducation } from '../../common';
+import { ActivityIndicator} from "react-native";
+import {primaryColor, secondaryColor} from '../../../setup/config'
+
 
 
 class PaymentSuccess extends Component {
@@ -23,25 +26,25 @@ class PaymentSuccess extends Component {
             paymentMethod: null,
             tokenNo: null,
             fromNavigation: null,
-            CorporateUser: false
-
-
+            CorporateUser: false,
+            data:{},
         }
         this.isFromHomeHealthCareConfirmation = false;
     }
 
     async componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressed);
-        const { navigation } = this.props;
-        const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
+        // const { navigation } = this.props;
+        // const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
        
-        const paymentMethod = navigation.getParam('paymentMethod');
-        const fromNavigation = navigation.getParam('fromNavigation') || null
-        const tokenNo = navigation.getParam('tokenNo');
-        this.isFromHomeHealthCareConfirmation = navigation.getParam('isFromHomeHealthCareConfirmation') || false;
-        await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo, fromNavigation });
-       
-
+        // const paymentMethod = navigation.getParam('paymentMethod');
+        // const fromNavigation = navigation.getParam('fromNavigation') || null
+        // const tokenNo = navigation.getParam('tokenNo');
+        // this.isFromHomeHealthCareConfirmation = navigation.getParam('isFromHomeHealthCareConfirmation') || false;
+        // await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo, fromNavigation });
+        this.getAppointmentDetails();
+    }
+    getAppointmentDetails =async ()=>{
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressed);
@@ -49,29 +52,29 @@ class PaymentSuccess extends Component {
     onBackButtonPressed() {
         return true;
     }
-    renderHospitalLocation(hospitalAddress) {
-
+    renderHospitalLocation(hospitalInfo) {
         return (
             <Row style={styles.rowDetail1}>
-                <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 16 }}>Address</Text>
+                <Text style={styles.mainText}>Address</Text>
                 <Right>
-                    <Text style={styles.subText}>{hospitalAddress.name}</Text>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{hospitalAddress.location.address.no_and_street}, {hospitalAddress.location.address.city}</Text>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{hospitalAddress.location.address.state}, {hospitalAddress.location.address.pin_code}</Text>
+                    <Text style={styles.subText}>{hospitalInfo.hospitalName}</Text>
+                    <Text style={styles.address}>{hospitalInfo.address,',',hospitalInfo.address1}, {hospitalInfo.city}</Text>
+                    <Text style={styles.address}>{hospitalInfo.state}, {hospitalInfo.pinCode}</Text>
                 </Right>
             </Row>
         )
     }
     renderPatientLocation() {
-        const { successBookSlotDetails } = this.state;
-        const patientAddress = successBookSlotDetails && successBookSlotDetails.patient_location && successBookSlotDetails.patient_location.address;
+        const { data } = this.state;
+        co
+        const p = successBookSlotDetails && successBookSlotDetails.patient_location && successBookSlotDetails.patient_location.address;
         if (patientAddress && Object.keys(patientAddress).length) {
             return (
                 <Row style={styles.rowDetail1}>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 16 }}>Address</Text>
+                    <Text style={styles.mainText}>Address</Text>
                     <Right>
-                        <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.no_and_street ? patientAddress.no_and_street + ' ,' : ''} {patientAddress.city}</Text>
-                        <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{patientAddress.state}, {patientAddress.pin_code}</Text>
+                        <Text style={styles.address}>{patientAddress.no_and_street ? patientAddress.no_and_street + ' ,' : ''} {patientAddress.city}</Text>
+                        <Text style={styles.address}>{patientAddress.state}, {patientAddress.pin_code}</Text>
                     </Right>
                 </Row>
             )
@@ -92,7 +95,8 @@ class PaymentSuccess extends Component {
     }
     render() {
         const { navigation } = this.props;
-        const { successBookSlotDetails, paymentMethod, tokenNo, fromNavigation } = this.state;
+        const data = navigation.getParam('appointmentDetails');
+        const { successBookSlotDetails, paymentMethod, tokenNo, fromNavigation,isLoading } = this.state;
         return (
             <Container style={styles.container}>
                 <ScrollView>
@@ -106,27 +110,27 @@ class PaymentSuccess extends Component {
 
                             <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.5, marginTop: 10, marginLeft: 10, padding: 15, marginRight: 10 }}>
                                 <Col style={{ width: '25%', }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(successBookSlotDetails), title: 'Profile photo' })}>
-                                        <Thumbnail source={renderDoctorImage(successBookSlotDetails)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(data.doctorInfo), title: 'Profile photo' })}>
+                                        <Thumbnail source={renderDoctorImage(data.doctorInfo)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
                                     </TouchableOpacity>
                                 </Col>
                                 <Col style={{ width: '75%', marginTop: 10 }}>
-                                    {fromNavigation === 'HOSPITAL' ?
+                                    {data&&data.bookedFor === 'HOSPITAL' ?
                                         <Row style={styles.rowDetail1}>
 
                                             <Right>
-                                                <Text style={styles.subText}>{successBookSlotDetails.name || ' '}</Text>
-                                                <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.no_and_street}, {successBookSlotDetails.slotData.location.location.address.city}</Text>
-                                                <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{successBookSlotDetails.slotData.location.location.address.state}, {successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
+                                                <Text style={styles.subText}>{data.hospitalInfo.hospitalName || ' '}</Text>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{data.hospitalInfo.address,',',data.hospitalInfo.address1}, {data.hospitalInfo.city}</Text>
+                                                <Text style={{ textAlign: 'center', fontFamily: 'Roboto', fontSize: 14, color: '#7B7B7B', fontStyle: 'italic' }}>{data.hospitalInfo.state}, {data.hospitalInfo.pinCode}</Text>
                                             </Right>
                                         </Row> :
                                         <Row>
-                                            <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} {' '}
-                                                <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text> </Text>
+                                            <Text style={styles.docHeading}>{data.doctorInfo.prefix ? data.doctorInfo.prefix : ''}.{data.doctorInfo.doctorName}{' '}
+                                                <Text style={styles.Degree}>{getDoctorEducation(data.doctorInfo)}</Text> </Text>
                                         </Row>
                                     }
                                     <Row>
-                                        <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
+                                        <Text style={{ fontFamily: 'Roboto', fontSize: 14, color: '#535353', fontStyle: 'italic' }}>{getAllSpecialist(data.doctorInfo.specialist)}</Text>
 
                                     </Row>
                                 </Col>
@@ -134,46 +138,48 @@ class PaymentSuccess extends Component {
                             <Row style={styles.rowDetail}>
                                 <Text style={styles.mainText}>Token Number</Text>
                                 <Right>
-                                    <Text style={styles.subText2 }> {tokenNo} </Text>
+                                    <Text style={styles.subText2 }> {data.tokenNo} </Text>
                                 </Right>
                             </Row>
-                            {successBookSlotDetails.slotData && fromNavigation === null && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : this.renderPatientLocation()}
-
-
+                            {data && this.isFromHomeHealthCareConfirmation === false ? this.renderHospitalLocation(data.hospitalInfo) : this.renderPatientLocation()}
                             <Row style={styles.rowDetail}>
                                 <Text style={styles.mainText}>Date</Text>
                                 <Right>
                                     <Text style={styles.subText}> {
                                         this.isFromHomeHealthCareConfirmation === false ?
-                                            successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY') : successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotDate, 'Do MMMM, YYYY')} </Text>
+                                            formatDate(data.startTime, 'Do MMMM, YYYY') : data.startTime && formatDate(data.startTime, 'Do MMMM, YYYY')} </Text>
                                 </Right>
                             </Row>
                             {this.isFromHomeHealthCareConfirmation === false ?
                                 <Row style={styles.rowDetail}>
                                     <Text style={styles.mainText}>Time</Text>
                                     <Right>
-                                        <Text style={styles.subText}> {successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} </Text>
+                                        <Text style={styles.subText}> {data && formatDate(data.startTime, 'hh:mm A')} </Text>
                                     </Right>
                                 </Row>
                                 : null}
                             <Row style={styles.rowDetail}>
                                 <Text style={styles.mainText}>Doctor Fee</Text>
                                 <Right>
-                                    <Text style={styles.subText}>{'\u20B9'}{successBookSlotDetails.slotData && successBookSlotDetails.slotData.fee} </Text>
+                                    <Text style={styles.subText}>{'\u20B9'}{data && data.fee} </Text>
 
                                 </Right>
 
                             </Row>
-                            <Row style={{ marginTop: 15, marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
+
+                            {/* Need To Discuss For Payment Details */}
+
+
+                            {/* <Row style={{ marginTop: 15, marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
 
                                 <Text style={styles.mainText}>Payment Method </Text>
 
                                 <Right>
-                                    <Text style={styles.subText}>{paymentMethod}</Text>
+                                    <Text style={styles.subText}>{paymentMethod||'Unknown'}</Text>
 
                                 </Right>
 
-                            </Row>
+                            </Row> */}
                         </Card>
                         <Button onPress={() => this.homePageRedirect()}
                             block style={{ marginTop: 5, borderRadius: 10, marginBottom: 10, backgroundColor: '#5bb85d' }}>
@@ -244,10 +250,20 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'Roboto',
         fontSize: 14,
-        marginTop: 5,
+        marginTop: 0,
         color: '#535353',
         marginLeft: 20,
         marginRight: 20
+    },
+    address:{   
+        marginTop: -5,
+        marginLeft: 20,
+        marginRight: 20,
+        textAlign: 'center', 
+        fontFamily: 'Roboto', 
+        fontSize: 14, 
+        color: '#7B7B7B', 
+        fontStyle: 'italic' 
     },
     docHeading: {
         fontFamily: 'opensans-bold',
@@ -271,14 +287,14 @@ const styles = StyleSheet.create({
     },
     mainText: {
         textAlign: 'center',
-        fontFamily: 'Roboto',
+        fontFamily: 'sans-serif-condensed',
         fontSize: 16,
     },
     subText2: {
         textAlign: 'center',
         fontFamily: 'opensans-bold',
         fontSize: 14,
-        marginTop: 5,
+        marginTop: 0,
         color: '#535353',
         marginLeft: 20,
         marginRight: 20
