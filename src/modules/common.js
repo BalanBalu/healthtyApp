@@ -179,11 +179,11 @@ export function renderProfileImage(data) {
 }
 export function renderDoctorImage(data) {
     let source = null;
-    if (data&&data.profileImage) {
+    if (data.profileImage) {
         source = { uri: data.profileImage.imageURL }
-    } else if (data&&data.gender == 'M'|| data&&data.gender == 'Male') {
+    } else if (data.gender == 'M'||data.gender == 'Male') {
         source = require('../../assets/images/profile_male.png')
-    } else if (data&&data.gender == 'F'||data&&data.gender == 'Female') {
+    } else if (data.gender == 'F'||data.gender == 'Female') {
         source = require('../../assets/images/profile_female.png')
     } else {
         source = require('../../assets/images/profile_common.png')
@@ -208,25 +208,22 @@ export function getDoctorEducation(educationData) {
     return '';
 }
 export function getDoctorExperience(calulatedExperience) {
-    if (calulatedExperience && calulatedExperience.experience){
-        let experienceData = calulatedExperience.experience
-    if (!experienceData) {
+    if (!calulatedExperience) {
         return 'N/A'
     }
-    if (experienceData.isPrivate === true) {
+    if (calulatedExperience.isPrivate === true) {
         return 'N/A'
     }
-    if (experienceData.year == 0) {
-        let month = experienceData.month;
+    if (calulatedExperience.year == 0) {
+        let month = calulatedExperience.month;
         if (month == 0) {
             return 'N/A'
         }
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-        let year = experienceData.year;
+        let year = calulatedExperience.year;
         return `${year} Year` + (year <= 1 ? '' : 's')
     }
-}
 }
 
 export async function getUserNotification() {
@@ -241,8 +238,8 @@ export async function getUserNotification() {
 export function getName(data) {
     let name = 'unKnown'
     if (data) {
-        if (data.firstName != undefined || data.lastName != undefined) {
-            name = `${data.firstName || ''} ${data.lastName || ''}`
+        if (data.first_name != undefined || data.last_name != undefined) {
+            name = `${data.first_name || ''} ${data.last_name || ''}`
 
         }
     }
@@ -448,7 +445,7 @@ export function getHospitalHeadeName(data) {
 export function getHospitalName(data) {
     if (!data) return ''
     if (data)
-        return `${data.address}, ${data.city}, ${data.state}, ${data.pinCode}`;
+        return `${data.address.noAndStreet}, ${data.address.city}, ${data.address.state}, ${data.address.pinCode}`;
     else
         return ''
 }
