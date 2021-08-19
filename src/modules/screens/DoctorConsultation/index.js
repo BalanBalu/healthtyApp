@@ -193,7 +193,8 @@ class DoctorConsultation extends Component {
                 }
                 testID="chooseDateOfConsulting">
                 <Icon name="md-calendar" />
-                <Text>
+                <Text
+                style={{marginTop: 2}}>
                   {selectedDate
                     ? formatDate(selectedDate, 'DD/MM/YYYY')
                     : 'Date of Consulting'}
@@ -265,7 +266,7 @@ class DoctorConsultation extends Component {
               <View
                 style={[
                   styles.callNowButton,
-                  {backgroundColor : selectedSlot? '#415a5c' : '#43b4a5' },
+                  {backgroundColor : selectedSlot? '#43b4a5' : '#e8e8e8' },
                   
 
                   GlobalStyles.flexRowAlignCenter,
@@ -273,9 +274,9 @@ class DoctorConsultation extends Component {
                 ]}>
                 <MaterialIcons
                   name={'attach-money'}
-                  style={{fontSize: 25, color: 'black'}}
+                  style={{fontSize: 25, color: !selectedSlot? '#43b4a5' : '#e8e8e8'}}
                 />
-                <Text style={[styles.callNowButtonText]}>
+                <Text style={[styles.callNowButtonText,{color:!selectedSlot? '#43b4a5' : '#e8e8e8'}]}>
                   <View></View>Pay and Consult
                 </Text>
               </View>

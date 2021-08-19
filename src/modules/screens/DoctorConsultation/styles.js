@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     marginBottom:  heightPercentageToDP('5%'),
   },
   callNowButtonText: {
-    color: 'black',
+    
    textAlign: 'center',
    paddingTop: heightPercentageToDP('5%'),
    paddingBottom: heightPercentageToDP('5%'),
