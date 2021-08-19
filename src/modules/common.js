@@ -449,6 +449,13 @@ export function getHospitalName(data) {
     else
         return ''
 }
+export function getHospitalAddress(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.address},${data.address1}, ${data.city}, ${data.state}, ${data.pinCode}`;
+    else
+        return ''
+}
 export function getAddress(location) {
     if (!location) return ''
     if (location)
@@ -822,7 +829,7 @@ export function getDoctorNameOrHospitalName(data) {
     if (data) {
         if (data.doctorInfo) {
             if (data.doctorInfo.firstName != undefined || data.doctorInfo.lastName != undefined) {
-                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
+                name = `${(data &&data.doctorInfo&& data.doctorInfo.prefix != undefined ? data.doctorInfo.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
 
             }
         } else {
