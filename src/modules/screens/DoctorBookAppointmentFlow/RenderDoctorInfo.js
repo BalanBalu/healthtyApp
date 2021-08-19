@@ -63,7 +63,7 @@ export default class RenderDoctorInfo extends Component {
                 <Row>
                     <Col style={{ width: "25%", marginTop: 20 }}>
                         <Text note style={{ fontFamily: 'Roboto', fontSize: 12, }}> {translate("Experience")}</Text>
-                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{getDoctorExperience(item)||'N/A'}</Text>
+                        <Text style={{ fontFamily: 'opensans-bold', fontSize: 12, }}>{getDoctorExperience(item.experience)}</Text>
                     </Col>
                     <Col style={{ width: "25%", marginTop: 20 }}>
                         <RenderStarRatingCount
