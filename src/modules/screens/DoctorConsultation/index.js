@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {FlatList, ImageBackground, Pressable} from 'react-native';
 import {View, Text, Item, Icon,Spinner,Button} from 'native-base';
+import { ScrollView } from 'react-native';
 import {styles} from './styles';
 import {GlobalStyles} from '../../../Constants/GlobalStyles';
 import {Col, Row} from 'react-native-easy-grid';
@@ -137,6 +138,7 @@ class DoctorConsultation extends Component {
   render() {
     const {isVisibleDatePicker,selectedSlot, selectedDate,doctorData, data,isLoading,availableSlots,selectedIndex,errorMsg,isModalVisible} = this.state;
     return (
+      <ScrollView>
       <View style={[styles.outerContainer]}>
         <View style={[styles.topCurve]}></View>
         {isLoading ? <Loader style='list' /> :  
@@ -231,6 +233,7 @@ class DoctorConsultation extends Component {
           </View>
           {availableSlots&&availableSlots.length!=0?
           <View
+        
             style={[GlobalStyles.flexRowJustifySpaceEvenly, {marginLeft: 40}]}>
             <FlatList
               numColumns={3}
@@ -248,6 +251,7 @@ class DoctorConsultation extends Component {
                       : [styles.bookingOpen]
                   }>
                   <Text>{formatDate(item.slotStartDateAndTime, 'hh:mm A')}</Text>
+                
                 </View>
               </Pressable>
             }
@@ -320,6 +324,7 @@ class DoctorConsultation extends Component {
             />
           </View>
       </View>
+      </ScrollView>
     );
   }
 }
