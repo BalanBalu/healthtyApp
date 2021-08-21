@@ -30,7 +30,7 @@ const getNoOfColumns = (length) => {
 class DoctorConsultation extends Component {
   constructor(props) {
     super(props);
-
+  
     this.state = { 
       selectedSlot: null,
       starCount: '',
