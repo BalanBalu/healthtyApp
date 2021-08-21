@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
-import {primaryColor} from '../../../setup/config'
+import { primaryColor } from '../../../setup/config'
 
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation, getAppointmentCode } from '../../providers/bookappointment/bookappointment.action';
@@ -17,7 +17,7 @@ import { formatDate, dateDiff, statusValue, getMoment, isTimeAfter } from '../..
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress,getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress, getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalAddress, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import { translate } from "../../../setup/translator.helper";
 import { updateEvent } from "../../../setup/calendarEvent";
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -59,10 +59,11 @@ class AppointmentDetails extends Component {
     const appointmentData = navigation.getParam('data');
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
+      console.log(appointmentId)
       // this.props.navigation.setParams({ reportedId: appointmentId });
       await this.setState({ appointmentId: appointmentId });
       // await new Promise.all([
-      //   this.appointmentDetailsGetById(),
+      this.appointmentDetailsGetById()
       //   this.getUserReviews(),
       //   this.getUserReport(),
       // ]);
@@ -85,9 +86,12 @@ class AppointmentDetails extends Component {
       //   this.getUserReviews(),
       //   this.getUserReport(),
       // ])
-      if (appointmentData.status == 'COMPLETED') {
-        await this.setState({ modalVisible: true })
-      }
+
+// Need To Discuss For REview
+
+      // if (appointmentData.status == 'COMPLETED') {
+      //   await this.setState({ modalVisible: true })
+      // }
       let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
       if (appointmentData.status == 'PROPOSED_NEW_TIME' && checkProposedNewTime != 'SKIP') {
         await this.setState({ proposedVisible: true })
@@ -99,38 +103,39 @@ class AppointmentDetails extends Component {
   }
 
   /* Get Doctor Details */
-  getDoctorDetails = async () => {
-    try {
+  // getDoctorDetails = async () => {
+  //   try {
 
-      let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
-      if (this.state.doctorId !== null) {
-        let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
+  //     let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
+  //     if (this.state.doctorId !== null) {
+  //       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
-        if (resultDetails.success) {
-          let educationDetails = '';
-          if (resultDetails.data.education != undefined) {
-            educationDetails = getAllEducation(resultDetails.data.education)
-          }
-          let specialistDetails = '';
-          if (resultDetails.data.specialist != undefined) {
-            specialistDetails = getAllSpecialist(resultDetails.data.specialist)
-          }
+  //       if (resultDetails.success) {
+  //         let educationDetails = '';
+  //         if (resultDetails.data.education != undefined) {
+  //           educationDetails = getAllEducation(resultDetails.data.education)
+  //         }
+  //         let specialistDetails = '';
+  //         if (resultDetails.data.specialist != undefined) {
+  //           specialistDetails = getAllSpecialist(resultDetails.data.specialist)
+  //         }
 
 
-          this.setState({
-            education: educationDetails,
-            doctorData: resultDetails.data,
-            specialist: specialistDetails.toString(),
-          })
-        }
-      }
+  //         this.setState({
+  //           education: educationDetails,
+  //           doctorData: resultDetails.data,
+  //           specialist: specialistDetails.toString(),
+  //         })
+  //       }
+  //     }
 
-    }
-    catch (e) {
-      console.log(e);
-    }
-  }
+  //   }
+  //   catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 
+  
   /* get User reviews */
   getUserReviews = async () => {
     try {
@@ -164,29 +169,31 @@ class AppointmentDetails extends Component {
 
   }
 
-  appointmentDetailsGetById = async () => {
-    try {
-      let result = await appointmentDetails(this.state.appointmentId);
-      if (result.success) {
-        this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
-          await new Promise.all([
-            this.getDoctorDetails(),
-            this.getPaymentInfo(result.data[0].payment_id)])
+  // appointmentDetailsGetById = async () => {
+  //   try {
+  //     let result = await appointmentDetails(this.state.appointmentId);
+  //     if (result.success) {
+  //       this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
+  //         await new Promise.all([
+  //           this.getDoctorDetails(),
+  //           this.getPaymentInfo(result.data[0].payment_id)])
 
 
-        if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
-          await this.setState({ modalVisible: true })
-        }
-        let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
-        if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
-          await this.setState({ proposedVisible: true })
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  //       if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
+  //         await this.setState({ modalVisible: true })
+  //       }
+  //       let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
+  //       if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
+  //         await this.setState({ proposedVisible: true })
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
 
-  }
+  // }
+
+
   getPaymentInfo = async (paymentId) => {
     try {
       let result = await getPaymentInfomation(paymentId);
@@ -212,26 +219,26 @@ class AppointmentDetails extends Component {
   updateAppointmentStatus = async (data, updatedStatus) => {
     try {
       this.setState({ isLoading: true });
-      let userId = await AsyncStorage.getItem('userId');
+      let memberId = await AsyncStorage.getItem("memberId");
       let requestData = {
-
-        userId: userId,
+        _id:data._id,
+        userId: memberId,
         startTime: data.startTime,
         endTime: data.endTime,
         status: updatedStatus,
         statusUpdateReason: data.statusUpdateReason,
         statusBy: 'USER'
       };
-      if (data.bookedFor === 'HOSPITAL') {
-        requestData.hospitalAdminId = data.hospitalInfo.hospitalAdminId
-      } else {
-        requestData.doctorId = data.doctorInfo.doctorId
-      }
+      // if (data.bookedFor === 'HOSPITAL') {
+      //   requestData.hospitalAdminId = data.hospitalInfo.hospitalAdminId
+      // } else {
+      //   requestData.doctorId = data.doctorInfo.doctorId
+      // }
 
-      let result = await appointmentStatusUpdate(this.state.appointmentId, requestData);
+      let result = await appointmentStatusUpdate(requestData);
       this.setState({ isLoading: false })
 
-      if (result.success) {
+      if (result._id) {
         let temp = this.state.data
         let startTime = getMoment(data.startTime).toISOString();
         let endTime = getMoment(data.endTime).toISOString();
@@ -239,14 +246,20 @@ class AppointmentDetails extends Component {
         // if (temp.location[0]) {
         //   address = temp.location[0].location.address.city || temp.location[0].location.address.state
         // }
-        let doctorName=temp.doctorInfo!==undefined? temp.doctorInfo.prefix+' '+temp.doctorInfo.firstName+' '+temp.doctorInfo.lastName: '';
-let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.bookedFor==='DOCTOR'?doctorName:'';
-        await updateEvent(temp.userAppointmentEventId, "Appointment booked with " + tittle,startTime, endTime, address, temp.description)
 
-        temp.status = result.data.status
+        //Event Update Need To Discuss
+
+        // let doctorName=temp.doctorInfo!==undefined? temp.doctorInfo.prefix+' '+temp.doctorInfo.firstName+' '+temp.doctorInfo.lastName: '';
+        // let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.bookedFor==='DOCTOR'?doctorName:'';
+        // await updateEvent(temp.userAppointmentEventId, "Appointment booked with " + tittle,startTime, endTime, address, temp.description)
+
+        temp.status = result.status;
+        temp.statusBy=result.statusBy;
+        temp.statusUpdateReason=result.statusUpdateReason;
         Toast.show({
-          text: result.message,
-          duration: 3000
+            text: 'Your appointment has been updated',
+            duration: 3000,
+            type: 'success'
         })
         if (this.state.proposedVisible == true) {
           this.setState({ proposedVisible: false });
@@ -254,10 +267,21 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
 
         this.setState({ data: temp });
         this.props.navigation.setParams({ 'refreshPage': true });
+      }else{
+        Toast.show({
+          text: 'Somthing went worng please try again..',
+          type: "danger",
+          duration: 3000
+        })
       }
     }
     catch (e) {
       console.log(e);
+      Toast.show({
+        text: 'Somthing went worng please try again..',
+        type: "danger",
+        duration: 3000
+      })
     }
   }
 
@@ -278,13 +302,13 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
 
 
   async onPressToGetAppointmentCode() {
-      if (data&&data.appointmentCode) {
-        toastMeassage('Your Appoinment Code:'+data.appointmentCode, 'success', 3000)
-      }
-      else{
-        toastMeassage('Failed To Get Appoinment Code!!', 'danger', 3000)
+    if (data && data.appointmentCode) {
+      toastMeassage('Your Appoinment Code:' + data.appointmentCode, 'success', 3000)
+    }
+    else {
+      toastMeassage('Failed To Get Appoinment Code!!', 'danger', 3000)
 
-      }
+    }
   }
   async backNavigation() {
     const { navigation } = this.props;
@@ -319,13 +343,29 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
 
   navigateToBookAppointmentPage() {
     const { data } = this.state
-    let doctorId = data.doctorId;
-    this.props.navigation.navigate('Book Appointment', {
-      doctorId: doctorId,
-      fetchAvailabiltySlots: true
+    // let doctorId = data.doctorId;
+    this.props.navigation.navigate('DoctorConsultation', {
+      reqData4HistoryPage: data,
+      fromHistoryPage: true
     })
   }
 
+  doctorLanguage(data) {
+
+    return (
+      data ?
+        <Row style={styles.rowSubText}>
+          <Col style={{ width: '8%', paddingTop: 5 }}>
+            <Icon name="ios-book" style={{ fontSize: 20, }} />
+          </Col>
+          <Col style={{ width: '92%', paddingTop: 5 }}>
+            <Text style={styles.innerSubText}>{translate("Doctor spoken language")}</Text>
+            <Text note style={styles.subTextInner1}>{data && data.language && data.language.toString()}</Text>
+          </Col>
+        </Row> : null
+    )
+
+  }
 
 
 
@@ -333,7 +373,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
 
   render() {
     const { data, reviewData, reportData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
-    const patientData = data.patientData,doctorInfo=data.doctorInfo;
+    const patientData = data.patientData, doctorInfo = data.doctorInfo;
 
     return (
       <Container style={styles.container}>
@@ -367,8 +407,8 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                       <Row>
                         <Col size={9}>
                           <Text style={styles.Textname} >{getDoctorNameOrHospitalName(data)}</Text>
-                          <Text note style={{ fontSize: 13, fontFamily: 'Roboto', color: '#4c4c4c' }}>{getDoctorEducation(data.doctorInfo.education)}</Text>
-                          <Text style={styles.specialistTextStyle} >{specialist} </Text>
+                          <Text note style={{ fontSize: 13, fontFamily: 'Roboto', color: '#4c4c4c' }}>{getDoctorEducation(data.doctorInfo)}</Text>
+                          <Text style={styles.specialistTextStyle} >{getAllSpecialist(data.specialist)} </Text>
                         </Col>
                         <Col size={1}>
                         </Col>
@@ -396,7 +436,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                         <Text note style={styles.subText2}>{paymentDetails.payment_method || 0}</Text>
                       </Row>
                     </Col>
-                    {data.status == 'APPROVED'?
+                    {data.status == 'APPROVED' ?
                       <Col size={3}>
                         <Text style={{ marginLeft: 16, fontSize: 15, fontFamily: 'opensans-bold', color: 'green' }}>{translate("ONGOING")}</Text>
                       </Col>
@@ -417,7 +457,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                     }
                   </Row>
 
-                  {selectedTab == 0 ? (data.status == 'APPROVED'|| data.status == 'PENDING') ?
+                  {selectedTab == 0 ? (data.status == 'APPROVED' || data.status == 'PENDING') ?
                     <Row>
                       <Col size={7}>
                         <Row style={{ marginTop: 10 }}>
@@ -458,20 +498,20 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                           </Row>
                         </Col></Row> : null : data.status == 'APPROVED' && isTimeAfter(new Date().toISOString(), data.startTime) ?
 
-                      <Row>
-                        <Col size={5}>
-                          <Row style={{ marginTop: 10 }}>
-                            <Text note style={styles.subText3}>{translate("Do you need to get code ?")}</Text>
-                          </Row>
-                        </Col>
-                        <Col size={5}>
-                          <Row style={{ marginTop: 10 }}>
-                            <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode(data)}>
-                              <Text style={styles.ButtonText}>{translate("Get appointment Code")}</Text>
-                            </Button>
-                          </Row>
-                        </Col>
-                      </Row> : null}
+                    <Row>
+                      <Col size={5}>
+                        <Row style={{ marginTop: 10 }}>
+                          <Text note style={styles.subText3}>{translate("Do you need to get code ?")}</Text>
+                        </Row>
+                      </Col>
+                      <Col size={5}>
+                        <Row style={{ marginTop: 10 }}>
+                          <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.onPressToGetAppointmentCode(data)}>
+                            <Text style={styles.ButtonText}>{translate("Get appointment Code")}</Text>
+                          </Button>
+                        </Row>
+                      </Col>
+                    </Row> : null}
                 </Grid>
                 <CardItem footer style={styles.cardItem2}>
                   <Grid>
@@ -528,7 +568,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                 </Row>
 
                 <View style={{ marginTop: 10 }}>
-                  {data.status === 'CANCELED' || data.status === 'PROPOSED_NEW_TIME' ? data.statusUpdateReason!= undefined &&
+                  {data.status === 'CANCELED' || data.status === 'PROPOSED_NEW_TIME' ? data.statusUpdateReason != undefined &&
                     <View style={styles.rowSubText1}>
                       <Row style={styles.rowSubText}>
                         <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -640,7 +680,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                       <Col style={{ width: '92%', paddingTop: 5 }}>
                         <Text style={styles.innerSubText}>{translate("Hospital")}</Text>
                         <Text style={styles.subTextInner1}>{getHospitalHeadeName(data.hospitalInfo)}</Text>
-                        <Text note style={styles.subTextInner1}>{getHospitalName(data.hospitalInfo)}</Text>
+                        <Text note style={styles.subTextInner1}>{getHospitalAddress(data.hospitalInfo)}</Text>
                       </Col>
                     </Row>}
                   {/* <Row style={styles.rowSubText}>
@@ -676,7 +716,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
               </Col>
             </Row>*/}
 
-                  {doctorInfo.language != undefined && doctorInfo.language.length != 0 ?
+                  {doctorInfo&&doctorInfo.language != undefined && doctorInfo.language.length != 0 ?
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
                         <Icon name="ios-book" style={{ fontSize: 20, }} />
@@ -694,17 +734,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
 
 
 
-
-
-
-
-
-
-
-
-
-
-{/* Need EMR Data */}
+                  {/* Need EMR Data */}
 
                   {/* {data.is_emr_recorded !== undefined ?
                     <Row style={styles.rowSubText}>
@@ -732,7 +762,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                       </Col>
                     </Row> : null} */}
 
-{/* PAYMENT REPORT */}
+                  {/* PAYMENT REPORT */}
 
                   {/* <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -776,7 +806,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                     </Col>
                   </Row> */}
 
-{/* Review Card  */}
+                  {/* Review Card  */}
 
                   {/* {(data.status == 'COMPLETED' && reviewData.length !== 0) || reviewData.length !== 0 ?
                     <Row style={styles.rowSubText}>
@@ -813,7 +843,7 @@ let tittle=temp.bookedFor==='HOSPITAL'?temp.hospitalInfo.hospitalName:temp.booke
                       </Row> : null
                   } */}
 
-{/* PAYMENT INFO */}
+                  {/* PAYMENT INFO */}
 
                   {/* <Row style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -1060,11 +1090,11 @@ const styles = StyleSheet.create({
   ButtonText: {
     color: '#fff',
     fontSize: 10,
-    fontFamily:'opensans-bold'
+    fontFamily: 'opensans-bold'
   },
   textApproved: {
     fontSize: 12,
-    fontFamily:'opensans-bold'
+    fontFamily: 'opensans-bold'
   },
   postponeButton: {
     // backgroundColor:'#4765FF',
@@ -1076,8 +1106,8 @@ const styles = StyleSheet.create({
     fontFamily: 'opensans-bold',
     fontSize: 13,
     color: '#FFF',
-    marginLeft:10
-   
+    marginLeft: 10
+
   },
   iconStyle: {
     fontSize: 20,

@@ -736,13 +736,6 @@ const HomeStack = createStackNavigator({
       title: 'Promo  codes'
     }
   },
-  paymentsuccess: {
-    screen: PaymentSuccess,
-    navigationOptions: {
-      headerLeft: null,
-      title: 'Success'
-    }
-  },
 
   labConfirmation: {
     screen: labConfirmation,

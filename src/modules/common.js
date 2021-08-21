@@ -181,9 +181,9 @@ export function renderDoctorImage(data) {
     let source = null;
     if (data.profileImage) {
         source = { uri: data.profileImage.imageURL }
-    } else if (data.gender == 'M') {
+    } else if (data.gender == 'M'||data.gender == 'Male') {
         source = require('../../assets/images/profile_male.png')
-    } else if (data.gender == 'F') {
+    } else if (data.gender == 'F'||data.gender == 'Female') {
         source = require('../../assets/images/profile_female.png')
     } else {
         source = require('../../assets/images/profile_common.png')
@@ -199,8 +199,8 @@ export function getDoctorSpecialist(specialistData) {
 }
 export function getDoctorEducation(educationData) {
     let degree = '';
-    if (educationData) {
-        educationData.forEach(eduData => {
+    if (educationData && educationData.education) {
+        educationData.education.forEach(eduData => {
             degree += eduData.degree + ','
         });
         return degree.slice(0, -1);
@@ -446,6 +446,13 @@ export function getHospitalName(data) {
     if (!data) return ''
     if (data)
         return `${data.address.noAndStreet}, ${data.address.city}, ${data.address.state}, ${data.address.pinCode}`;
+    else
+        return ''
+}
+export function getHospitalAddress(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.address?data.address:''},${data.address1?data.address1:''}, ${data.city?data.city:''}, ${data.state?data.state:''}, ${data.pinCode?data.pinCode:''}`;
     else
         return ''
 }
@@ -822,7 +829,7 @@ export function getDoctorNameOrHospitalName(data) {
     if (data) {
         if (data.doctorInfo) {
             if (data.doctorInfo.firstName != undefined || data.doctorInfo.lastName != undefined) {
-                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
+                name = `${(data &&data.doctorInfo&& data.doctorInfo.prefix != undefined ? data.doctorInfo.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
 
             }
         } else {

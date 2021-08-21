@@ -43,6 +43,7 @@ class DoctorConsultation extends Component {
       refreshCount: 1,
       selectedIndex: -1,
       errorMsg: '',
+      hospitalInfo:{},
 
 
     };
@@ -51,8 +52,21 @@ class DoctorConsultation extends Component {
   async componentDidMount() {
     let reqData4BookAppPage= this.props.navigation.getParam('reqData4BookAppPage');
    if(reqData4BookAppPage){
-    await this.setState({doctorData:reqData4BookAppPage.singleDoctorItemData,doctorId:reqData4BookAppPage.doctorId,hospitalId:reqData4BookAppPage.singleDoctorItemData&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id?reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id:null,isLoading: false,})
+    await this.setState({hospitalInfo:reqData4BookAppPage.singleDoctorItemData.hospitalInfo,
+      doctorData:reqData4BookAppPage.singleDoctorItemData,doctorId:reqData4BookAppPage.doctorId,
+      hospitalId:reqData4BookAppPage.singleDoctorItemData&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo&&reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id?reqData4BookAppPage.singleDoctorItemData.hospitalInfo._id:null,
+      isLoading: false,})
    } 
+   let fromHistoryPage= this.props.navigation.getParam('fromHistoryPage')||false;
+   if(fromHistoryPage){
+    let reqData4HistoryPage= this.props.navigation.getParam('reqData4HistoryPage');
+    await this.setState({
+      hospitalInfo:reqData4HistoryPage.hospitalInfo,
+      doctorData:reqData4HistoryPage.doctorInfo,
+      doctorId:reqData4HistoryPage.doctorId,
+      hospitalId:reqData4HistoryPage.hospitalInfo&&reqData4HistoryPage.hospitalInfo._id?reqData4HistoryPage.hospitalInfo._id:null,
+      isLoading: false,})
+   }
     await this.getAvailabilitySlots(this.state.selectedDate);
 
   }
@@ -99,7 +113,8 @@ class DoctorConsultation extends Component {
     }
     let obj={
       selectedSlot:this.state.selectedSlot,
-      doctorDetails:this.state.data
+      doctorDetails:this.state.data,
+      hospitalInfo:this.state.hospitalInfo
     }
     this.props.navigation.navigate('Payment Review',{bookAppointment:obj});
     
@@ -131,7 +146,7 @@ class DoctorConsultation extends Component {
             <ImageBackground
               style={[styles.picCircle]}
               borderRadius={80}
-              source={doctorData&&doctorData.profileImage?doctorData.profileImage.imageURL:null}></ImageBackground>
+              source={doctorData&&doctorData.profileImage?renderDoctorImage(doctorData):null}></ImageBackground>
           </View>
           <View
             style={[
