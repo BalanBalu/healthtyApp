@@ -17,7 +17,7 @@ import { formatDate, dateDiff, statusValue, getMoment, isTimeAfter } from '../..
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress, getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress, getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalAddress, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
 import { translate } from "../../../setup/translator.helper";
 import { updateEvent } from "../../../setup/calendarEvent";
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -428,7 +428,7 @@ class AppointmentDetails extends Component {
                       <Row style={{ marginTop: 10, marginLeft: 5 }} >
                         <Text style={styles.subText1}>{translate("Experience")}</Text>
                         <Text style={styles.subText2}>-</Text>
-                        <Text note style={styles.subText2}>{getDoctorExperience(data.doctorInfo)}</Text>
+                        <Text note style={styles.subText2}>{getDoctorExperience(data.doctorInfo.experience)}</Text>
                       </Row>
                       <Row style={{ marginTop: 10, marginLeft: 5 }}>
                         <Text style={styles.subText1}>{translate("Payment Method")}</Text>
@@ -680,7 +680,7 @@ class AppointmentDetails extends Component {
                       <Col style={{ width: '92%', paddingTop: 5 }}>
                         <Text style={styles.innerSubText}>{translate("Hospital")}</Text>
                         <Text style={styles.subTextInner1}>{getHospitalHeadeName(data.hospitalInfo)}</Text>
-                        <Text note style={styles.subTextInner1}>{getHospitalName(data.hospitalInfo)}</Text>
+                        <Text note style={styles.subTextInner1}>{getHospitalAddress(data.hospitalInfo)}</Text>
                       </Col>
                     </Row>}
                   {/* <Row style={styles.rowSubText}>
