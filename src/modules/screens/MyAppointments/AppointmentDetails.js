@@ -568,7 +568,7 @@ class AppointmentDetails extends Component {
                 </Row>
 
                 <View style={{ marginTop: 10 }}>
-                  {data.status === 'CANCELED' || data.status === 'PROPOSED_NEW_TIME' ? data.statusUpdateReason != undefined &&
+                  {data.status === 'CANCELED' || data.status === 'PROPOSED_NEW_TIME' ?
                     <View style={styles.rowSubText1}>
                       <Row style={styles.rowSubText}>
                         <Col style={{ width: '8%', paddingTop: 5 }}>
@@ -585,7 +585,7 @@ class AppointmentDetails extends Component {
                               {data.statusBy.toLowerCase() === 'user' ? translate('Canceled by You') : translate(' Canceled by doctor')}</Text>
                             : null}
                           {/* <Text style={styles.innerSubText1}>{data.appointment_status=='PROPOSED_NEW_TIME'?'Reschedule by '+data.status_updated_by.toLowerCase():'Canceled by '+data.status_updated_by.toLowerCase()}</Text> */}
-                          <Text note style={styles.subTextInner1}>{data.statusUpdateReason}</Text>
+                          <Text note style={styles.subTextInner1}>{data&&data.statusUpdateReason}</Text>
                         </Col>
                       </Row>
 
