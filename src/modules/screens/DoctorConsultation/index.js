@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {FlatList, ImageBackground, Pressable} from 'react-native';
 import {View, Text, Item, Icon,Spinner,Button} from 'native-base';
-import { ScrollView } from 'react-native';
+import { ScrollView }  from 'react-native-gesture-handler';
 import {styles} from './styles';
 import {GlobalStyles} from '../../../Constants/GlobalStyles';
 import {Col, Row} from 'react-native-easy-grid';
