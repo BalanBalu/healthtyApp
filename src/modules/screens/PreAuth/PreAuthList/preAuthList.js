@@ -114,11 +114,12 @@ export default class preAuthList extends Component {
       this.setState({ isLoadingMoreHospitalList: false })
     }
   }
-  ListFooterComponent(){
+  ListFooterComponent(props){
     return(
-        <View>
-          <ActivityIndicator
-            animating={isLoadingMoreHospitalList}
+      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <ActivityIndicator
+        style={{ marginBottom: 25 }}
+            animating={props}
             size="large"
             color='blue'/>
         </View>
@@ -130,7 +131,6 @@ export default class preAuthList extends Component {
     const { preAuthInfoList, isLoading, isLoadingMoreHospitalList } = this.state
     return (
       <Container>
-        <View>
           <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 15, marginRight: '3%' }}>
           <TouchableOpacity style={{ flexDirection: 'row', borderColor: primaryColor, borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('FamilyInfoList', { navigationPage: 'PreAuthSubmission' })}>
             <MaterialIcons name="add" style={{ color: primaryColor, fontSize: 20 }} />
@@ -150,7 +150,7 @@ export default class preAuthList extends Component {
                     this.loadMoreData();
                   }
                 }}
-                ListFooterComponent={() => this.ListFooterComponent()}
+                ListFooterComponent={() => this.ListFooterComponent(isLoadingMoreHospitalList)}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => this.renderPreAuthInformationCard(item, index)
                 } />
@@ -167,8 +167,6 @@ export default class preAuthList extends Component {
               }} >{translate("No Pre Auth list found!")}</Text>
             </View>
         }
-        
-          </View>
       </Container>
 
     )
