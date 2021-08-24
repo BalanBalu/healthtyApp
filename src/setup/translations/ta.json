@@ -700,5 +700,6 @@
   "Your Chat Consultation Request Success, We will notify Doctor": "உங்கள் சேட் ஆலோசனை கோரிக்கை வெற்றி. நாங்கள் மருத்துவருக்கு அறிவிப்போம்",
   "We could not Process Your Video Consultation Request at this time, Please Try again later": "இந்த நேரத்தில் உங்கள் வீடியோ ஆலோசனை கோரிக்கையை செயல்படுத்த முடியவில்லை. தயவுசெய்து பின்னர் முயற்சிக்கவும்",
   "Your Video Consultation Request Success, We will notify the Doctor": "உங்கள் வீடியோ ஆலோசனை கோரிக்கை வெற்றி. டாக்டரை நாங்கள் அறிவிப்போம்",
-  "Kindly fill  the fields": "தயவுசெய்து இடத்தை நிரப்பவும்"
+  "Kindly fill  the fields": "தயவுசெய்து இடத்தை நிரப்பவும்",
+  "Kindly Choose hospital name":"தயவுசெய்து மருத்துவமனையின் பெயரைத் தேர்ந்தெடுக்கவும்"
 }
