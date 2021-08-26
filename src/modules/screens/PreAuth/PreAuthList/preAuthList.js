@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Toast, Text, Item } from 'native-base';
+import { Container, Toast, Text, Item,Content } from 'native-base';
 import { TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -114,13 +114,24 @@ export default class preAuthList extends Component {
       this.setState({ isLoadingMoreHospitalList: false })
     }
   }
+  ListFooterComponent(props){
+    return(
+      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <ActivityIndicator
+        style={{ marginBottom: 25 }}
+            animating={props}
+            size="large"
+            color='blue'/>
+        </View>
+    )
+  }
 
 
   render() {
     const { preAuthInfoList, isLoading, isLoadingMoreHospitalList } = this.state
     return (
       <Container>
-        <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 15, marginRight: '3%' }}>
+          <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 15, marginRight: '3%' }}>
           <TouchableOpacity style={{ flexDirection: 'row', borderColor: primaryColor, borderWidth: 1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2 }} onPress={() => this.props.navigation.navigate('FamilyInfoList', { navigationPage: 'PreAuthSubmission' })}>
             <MaterialIcons name="add" style={{ color: primaryColor, fontSize: 20 }} />
             <Text style={{ fontFamily: 'Roboto', fontSize: 15, color: primaryColor }}>{translate("Add Pre Auth")}</Text>
@@ -139,6 +150,7 @@ export default class preAuthList extends Component {
                     this.loadMoreData();
                   }
                 }}
+                ListFooterComponent={() => this.ListFooterComponent(isLoadingMoreHospitalList)}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => this.renderPreAuthInformationCard(item, index)
                 } />
@@ -155,16 +167,6 @@ export default class preAuthList extends Component {
               }} >{translate("No Pre Auth list found!")}</Text>
             </View>
         }
-        {isLoadingMoreHospitalList ?
-          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-            <ActivityIndicator
-              style={{ marginBottom: 17 }}
-              animating={isLoadingMoreHospitalList}
-              size="large"
-              color='blue'
-            />
-          </View>
-          : null}
       </Container>
 
     )

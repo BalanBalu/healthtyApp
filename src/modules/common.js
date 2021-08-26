@@ -225,25 +225,6 @@ export function getDoctorExperience(calulatedExperience) {
         return `${year} Year` + (year <= 1 ? '' : 's')
     }
 }
-export function getDoctorExperienceFromNotification(calulatedExperience) {
-    let doctorExperienceMonths = calulatedExperience.experience
-    if (!doctorExperienceMonths) {
-        return 'N/A'
-    }
-    if (doctorExperienceMonths.isPrivate === true) {
-        return 'N/A'
-    }
-    if (doctorExperienceMonths.year == 0) {
-        let month = calulatedExperience.month;
-        if (month == 0) {
-            return 'N/A'
-        }
-        return `${month} Month` + (month <= 1 ? '' : 's')
-    } else {
-        let year = doctorExperienceMonths.year;
-        return `${year} Year` + (year <= 1 ? '' : 's')
-    }
-}
 
 export async function getUserNotification() {
     try {
@@ -468,10 +449,10 @@ export function getHospitalName(data) {
     else
         return ''
 }
-export function getHospitalInfo(data) {
+export function getHospitalAddress(data) {
     if (!data) return ''
     if (data)
-        return `${data.address}, ${data.city}, ${data.state}, ${data.pinCode}`;
+        return `${data.address?data.address:''},${data.address1?data.address1:''}, ${data.city?data.city:''}, ${data.state?data.state:''}, ${data.pinCode?data.pinCode:''}`;
     else
         return ''
 }
@@ -848,7 +829,7 @@ export function getDoctorNameOrHospitalName(data) {
     if (data) {
         if (data.doctorInfo) {
             if (data.doctorInfo.firstName != undefined || data.doctorInfo.lastName != undefined) {
-                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
+                name = `${(data &&data.doctorInfo&& data.doctorInfo.prefix != undefined ? data.doctorInfo.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
 
             }
         } else {

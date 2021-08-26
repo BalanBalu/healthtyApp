@@ -28,13 +28,12 @@ const styles = StyleSheet.create({
     height: heightPercentageToDP('8%'),
     borderRadius: widthPercentageToDP('4.5%'),
     minWidth: widthPercentageToDP('80%'),
-    backgroundColor: 'rgba(0,0,0,0.05)',
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom:  heightPercentageToDP('5%'),
   },
   callNowButtonText: {
-    color: "#128283",
+    
    textAlign: 'center',
    paddingTop: heightPercentageToDP('5%'),
    paddingBottom: heightPercentageToDP('5%'),

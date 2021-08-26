@@ -493,21 +493,24 @@ class AddInsurance extends PureComponent {
                         <MaterialIcons
                           name="keyboard-arrow-down"
                           style={
+                          
                             Platform.OS === 'ios'
                               ? {
-                                fontSize: 20,
-                                marginHorizontal: 6,
-                                color: '#909090',
-                                textAlign: 'center',
-                                marginTop: 5,
-                              }
+                                  fontSize: 20,
+                                  marginHorizontal: 6,
+                                  color: '#909090',
+                                  textAlign: 'center',
+                                  marginTop: 5,
+                                  button: insuranceCompany ? {backgroundColor : primaryColor} : { backgroundColor: "#5A5a5a"}
+                                }
                               : {
-                                fontSize: 25,
-                                marginHorizontal: 6,
-                                color: '#909090',
-                                textAlign: 'center',
-                                marginTop: 10,
-                              }
+                                  fontSize: 25,
+                                  marginHorizontal: 6,
+                                  color: '#909090',
+                                  textAlign: 'center',
+                                  marginTop: 10,
+                                  button: insuranceCompany ? {backgroundColor : primaryColor} : { backgroundColor: "#5A5a5a"}
+                                }
                           }
                         />
                       }
