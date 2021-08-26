@@ -17,7 +17,7 @@ import { formatDate, dateDiff, statusValue, getMoment, isTimeAfter } from '../..
 import { getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress, getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress, getDoctorEducation, getAllEducation, getAllSpecialist, getName, getDoctorExperience, getHospitalHeadeName, getHospitalName, getDoctorNameOrHospitalName, toastMeassage ,getDoctorExperienceFromNotification,getHospitalInfo} from '../../common'
 import { translate } from "../../../setup/translator.helper";
 import { updateEvent } from "../../../setup/calendarEvent";
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -47,6 +47,7 @@ class AppointmentDetails extends Component {
       paymentDetails: {},
       modalVisible: false,
       proposedVisible: false,
+      fromNotification:false
 
 
     }
@@ -57,13 +58,17 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
+    const fromNotification = navigation.getParam('fromNotification');
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
-      console.log(appointmentId)
       // this.props.navigation.setParams({ reportedId: appointmentId });
       await this.setState({ appointmentId: appointmentId });
       // await new Promise.all([
-      this.appointmentDetailsGetById()
+        if(fromNotification){
+          this.setState({ fromNotification :fromNotification});
+          await  this.appointmentDetailsGetById()
+
+        }
       //   this.getUserReviews(),
       //   this.getUserReport(),
       // ]);
@@ -98,8 +103,10 @@ class AppointmentDetails extends Component {
       }
 
     }
+    if(fromNotification != true){
+      this.setState({ isLoading: false })
+    }
 
-    await this.setState({ isLoading: false })
   }
 
   /* Get Doctor Details */
@@ -169,29 +176,33 @@ class AppointmentDetails extends Component {
 
   }
 
-  // appointmentDetailsGetById = async () => {
-  //   try {
-  //     let result = await appointmentDetails(this.state.appointmentId);
-  //     if (result.success) {
-  //       this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
-  //         await new Promise.all([
-  //           this.getDoctorDetails(),
-  //           this.getPaymentInfo(result.data[0].payment_id)])
+  appointmentDetailsGetById = async () => {
+    try {
+      this.setState({ isLoading: true });
+      let result = await appointmentDetails(this.state.appointmentId);
+      console.log('appointment',result);
+      if (result && result._id) {
+        this.setState({ data: result })
+          // await new Promise.all([
+          //   this.getDoctorDetails(),
+          //   this.getPaymentInfo(result.data[0].payment_id)])
 
+        // if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
+        //   await this.setState({ modalVisible: true })
+        // }
+        // let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
+        // if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
+        //   await this.setState({ proposedVisible: true })
+        // }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    finally {
+      this.setState({ isLoading: false })
+    }
 
-  //       if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
-  //         await this.setState({ modalVisible: true })
-  //       }
-  //       let checkProposedNewTime = await AsyncStorage.getItem(this.state.appointmentId)
-  //       if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME' && checkProposedNewTime !== 'SKIP') {
-  //         await this.setState({ proposedVisible: true })
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-
-  // }
+  }
 
 
   getPaymentInfo = async (paymentId) => {
@@ -372,7 +383,7 @@ class AppointmentDetails extends Component {
 
 
   render() {
-    const { data, reviewData, reportData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId } = this.state;
+    const { data, reviewData, reportData, education, specialist, isLoading, selectedTab, paymentDetails, appointmentId,fromNotification } = this.state;
     const patientData = data.patientData, doctorInfo = data.doctorInfo;
 
     return (
@@ -428,7 +439,7 @@ class AppointmentDetails extends Component {
                       <Row style={{ marginTop: 10, marginLeft: 5 }} >
                         <Text style={styles.subText1}>{translate("Experience")}</Text>
                         <Text style={styles.subText2}>-</Text>
-                        <Text note style={styles.subText2}>{getDoctorExperience(data.doctorInfo)}</Text>
+                         <Text note style={styles.subText2}>{getDoctorExperienceFromNotification(data.doctorInfo)}</Text>
                       </Row>
                       <Row style={{ marginTop: 10, marginLeft: 5 }}>
                         <Text style={styles.subText1}>{translate("Payment Method")}</Text>
@@ -680,7 +691,7 @@ class AppointmentDetails extends Component {
                       <Col style={{ width: '92%', paddingTop: 5 }}>
                         <Text style={styles.innerSubText}>{translate("Hospital")}</Text>
                         <Text style={styles.subTextInner1}>{getHospitalHeadeName(data.hospitalInfo)}</Text>
-                        <Text note style={styles.subTextInner1}>{getHospitalName(data.hospitalInfo)}</Text>
+                        <Text note style={styles.subTextInner1}>{getHospitalInfo(data.hospitalInfo)}</Text>
                       </Col>
                     </Row>}
                   {/* <Row style={styles.rowSubText}>
