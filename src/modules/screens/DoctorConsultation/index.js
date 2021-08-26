@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {FlatList, ImageBackground, Pressable} from 'react-native';
 import {View, Text, Item, Icon,Spinner,Button} from 'native-base';
+import { ScrollView }  from 'react-native-gesture-handler';
 import {styles} from './styles';
 import {GlobalStyles} from '../../../Constants/GlobalStyles';
 import {Col, Row} from 'react-native-easy-grid';
@@ -30,7 +31,7 @@ const getNoOfColumns = (length) => {
 class DoctorConsultation extends Component {
   constructor(props) {
     super(props);
-
+  
     this.state = { 
       selectedSlot: null,
       starCount: '',
@@ -137,6 +138,7 @@ class DoctorConsultation extends Component {
   render() {
     const {isVisibleDatePicker,selectedSlot, selectedDate,doctorData, data,isLoading,availableSlots,selectedIndex,errorMsg,isModalVisible} = this.state;
     return (
+      <ScrollView>
       <View style={[styles.outerContainer]}>
         <View style={[styles.topCurve]}></View>
         {isLoading ? <Loader style='list' /> :  
@@ -208,7 +210,8 @@ class DoctorConsultation extends Component {
                 }
                 testID="chooseDateOfConsulting">
                 <Icon name="md-calendar" />
-                <Text>
+                <Text
+                style={{marginTop: 2}}>
                   {selectedDate
                     ? formatDate(selectedDate, 'DD/MM/YYYY')
                     : 'Date of Consulting'}
@@ -230,6 +233,7 @@ class DoctorConsultation extends Component {
           </View>
           {availableSlots&&availableSlots.length!=0?
           <View
+        
             style={[GlobalStyles.flexRowJustifySpaceEvenly, {marginLeft: 40}]}>
             <FlatList
               numColumns={3}
@@ -247,6 +251,7 @@ class DoctorConsultation extends Component {
                       : [styles.bookingOpen]
                   }>
                   <Text>{formatDate(item.slotStartDateAndTime, 'hh:mm A')}</Text>
+                
                 </View>
               </Pressable>
             }
@@ -280,7 +285,7 @@ class DoctorConsultation extends Component {
               <View
                 style={[
                   styles.callNowButton,
-                  {backgroundColor : selectedSlot? '#415a5c' : '#43b4a5' },
+                  {backgroundColor : selectedSlot? '#43b4a5' : '#e8e8e8' },
                   
 
                   GlobalStyles.flexRowAlignCenter,
@@ -288,9 +293,9 @@ class DoctorConsultation extends Component {
                 ]}>
                 <MaterialIcons
                   name={'attach-money'}
-                  style={{fontSize: 25, color: 'black'}}
+                  style={{fontSize: 25, color: !selectedSlot? '#43b4a5' : '#e8e8e8'}}
                 />
-                <Text style={[styles.callNowButtonText]}>
+                <Text style={[styles.callNowButtonText,{color:!selectedSlot? '#43b4a5' : '#e8e8e8'}]}>
                   <View></View>Pay and Consult
                 </Text>
               </View>
@@ -319,6 +324,7 @@ class DoctorConsultation extends Component {
             />
           </View>
       </View>
+      </ScrollView>
     );
   }
 }

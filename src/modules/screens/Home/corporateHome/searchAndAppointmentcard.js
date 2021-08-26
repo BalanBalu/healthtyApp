@@ -145,7 +145,7 @@ export const SearchAndAppointmentCard = props => {
                 marginTop: 10,
               }}>
               {/* <HomeTestDrawing /> */}
-              <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{ height: 63, width: 45, marginTop: -3 }} />
+              <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{ height: 63, width: 47, marginTop: -3 }} />
               {(count === 'ta') || (count === 'ma') ?
                 <Text style={[styles.boxTextSmall, { marginTop: -1 }]}>{translate("Home Care")}</Text> :
                 <Text style={{
