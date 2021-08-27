@@ -7,6 +7,8 @@ export const IS_IOS = Platform.OS === 'ios';
 export const API_URL = 'https://medflic-qa-api.aopks.com/api/';
 export const SMART_HEALTH_API_URL = 'https://sh-qa-api.aopks.com/';
 
+
+
 export const INVENTORY_API_URL = 'https://med-inv-qa-api.aopks.com/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category_smart_health/';
 export const CHAT_API_URL = 'https://chat-qa-api.aopks.com';
@@ -15,7 +17,7 @@ export const MAP_BOX_TOKEN = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjand4NWV2djQ
 export const MAP_BOX_PUBLIC_TOKEN = 'pk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjBrZHMwdW16NGVtamFhNnE4aDIwIn0.s629-J2w7AeQITCLhdl0pw'
 export const RAZOR_KEY = 'rzp_test_HoaTilDmiHfZnE';
 export const AuthId = "d0dACJfZnUu9Vri17b6UaCpOdZM2NxCIp7bIX9ELP28=";
-export const FIREBASE_SENDER_ID = "704713269856";
+export const FIREBASE_SENDER_ID = "572952961642";
 export const CONNECTY_CUBE = [{
   appId: 2051,
   authKey: 'hmpBVUDtnMBEry-',

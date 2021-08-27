@@ -88,7 +88,8 @@ class CorporateHome extends PureComponent {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result && result.length) {
-        NotifService.initNotification(this.props.navigation,result[0]._id);
+        let oldDeviceToken=result[0].deviceToken||[];
+        NotifService.initNotification(this.props.navigation,result[0]._id,oldDeviceToken);
         let policyData = await getPolicyByPolicyNo(result&&result[0].policyNo);
         await this.setState({
           memberDetails: result[0],
