@@ -8,15 +8,18 @@ import rootNavigation from './rootNavigation';
 import backgroundpush from './backgroundpush';
 let tokenData;
 let id;
+let oldDeviceToken;
 let navigationProps;
 class NotifService {
 
   constructor() {
 
   }
-  async initNotification(props,_id) {
+  async initNotification(props,_id,token) {
+
     navigationProps = props;
     id=_id;
+    oldDeviceToken=token;
     this.configure();
 
     // messaging().requestPermission().then(async(result) => {
@@ -198,16 +201,22 @@ class NotifService {
     try {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let relationship = (await AsyncStorage.getItem('relationship')) || null;
+     
       let requestData = {
         deviceToken: deviceToken,
         _id:id,
         emailId:memberEmailId,
         relationship:relationship
       }
+       if(oldDeviceToken&&oldDeviceToken.length!=0){
+        let temp=[...oldDeviceToken,deviceToken]
+        requestData.deviceToken=temp
+       }
       let updateResponse = await updateMemberDetails(requestData);
 
       if (updateResponse) {
         AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithId);
+
       }
     } catch (e) {
       console.log(e);

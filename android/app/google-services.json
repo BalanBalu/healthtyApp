@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "704713269856",
-    "project_id": "mysmarthealth-37725",
-    "storage_bucket": "mysmarthealth-37725.appspot.com"
+    "project_number": "572952961642",
+    "project_id": "my-smart-health",
+    "storage_bucket": "my-smart-health.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:704713269856:android:10e768ecfac146c2889905",
+        "mobilesdk_app_id": "1:572952961642:android:fdcea5fc19c2701930e013",
         "android_client_info": {
           "package_name": "com.ads.mysmarthealth"
         }
       },
       "oauth_client": [
         {
-          "client_id": "704713269856-m14sr7vdsg1ve1smo027rcbmcnp80bio.apps.googleusercontent.com",
+          "client_id": "572952961642-diuht0jdaqtt7j304n3m00l7qpaer6ua.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDdhEFd83HKndHszo0aQDRKAA2kkBWQ8aY"
+          "current_key": "AIzaSyDCpP-6pzGAdZOffcbJ8WlxNEjCf7xHZYs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "704713269856-m14sr7vdsg1ve1smo027rcbmcnp80bio.apps.googleusercontent.com",
+              "client_id": "572952961642-diuht0jdaqtt7j304n3m00l7qpaer6ua.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
