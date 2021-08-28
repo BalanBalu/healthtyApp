@@ -119,14 +119,24 @@ export default class InsuranceHistory extends Component {
       this.setState({ isLoadingMoreData: false });
     }
   };
+  ListFooterComponent(){
+    return(
+      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <ActivityIndicator
+        style={{ marginBottom: 40 }}
+            animating={this.state.isLoadingMoreData}
+            size="large"
+            color='blue'/>
+        </View>
+    )
+  }
 
 
   render() {
     const { selectedIndex, data, buyInsuranceData, isLoading, isLoadingBuyInsurance } = this.state;
     return (
       <Container>
-        <Content>
-          <View>
+        {/* <Content> */}
             <Card transparent>
               <SegmentedControlTab
                 tabsContainerStyle={{
@@ -161,14 +171,15 @@ export default class InsuranceHistory extends Component {
                         this.loadMoreData();
                       }
                     }}
+                    ListFooterComponent={() => this.ListFooterComponent()}
                     renderItem={({ item, index }) => (
                       <Card style={styles.cardStyle}>
                         <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
-                        <View>
+                        <View style={{maxWidth: '49%'}}>
                         <Text
                               style={{
                                 fontFamily: 'opensans-bold',
-                                fontSize: 14,
+                                fontSize: 13.5,
                                 color: '#B6B3D4',
                                 marginLeft: 5,
                                 textTransform: 'uppercase'
@@ -177,11 +188,11 @@ export default class InsuranceHistory extends Component {
                             </Text>
                             <Text style={{ marginLeft: 5, color: '#128283',fontFamily: 'opensans-semibold', marginTop: 5 }}>{item.policyType}</Text>
                         </View>
-                        <View>
+                        <View style={{maxWidth: '49%'}}>
                         <Text
                               style={{
                                 fontFamily: 'opensans-bold',
-                                fontSize: 14,
+                                fontSize: 13.5,
                                 color: '#B6B3D4',
                                 marginLeft: 5,
                                 textTransform: 'uppercase'
@@ -194,17 +205,17 @@ export default class InsuranceHistory extends Component {
                         
                         </View>
 
-                        <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
+                        <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row', marginTop: 8}}>
                         <View>
                        
                             <Text style={{ fontFamily: 'opensans-bold',
-                                fontSize: 14,
+                                fontSize: 13.5,
                                 fontFamily: 'opensans-semibold', marginTop: 3, 
                                 color: 'rgba(0,0,0,0.5)',
                                 marginLeft: 5,  }}> <Text
                               style={{
                                 fontFamily: 'opensans-semibold',
-                                fontSize: 14,
+                                fontSize: 13.5,
                                 color: 'rgba(0,0,0,0.8)',
                                 
                                 marginLeft: 5,
@@ -247,14 +258,15 @@ export default class InsuranceHistory extends Component {
                       this.loadMoreBuyInsuranceData();
                     }
                   }}
+                  ListFooterComponent={() => this.ListFooterComponent()}
                   renderItem={({ item, index }) => (
                     <Card style={styles.cardStyle}>
                         <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
-                        <View>
+                        <View style={{maxWidth: '49%'}}>
                         <Text
                               style={{
                                 fontFamily: 'opensans-bold',
-                                fontSize: 14,
+                                fontSize: 13.5,
                                 color: '#B6B3D4',
                                 marginLeft: 5,
                                 textTransform: 'uppercase'
@@ -263,11 +275,11 @@ export default class InsuranceHistory extends Component {
                             </Text>
                             <Text style={{ marginLeft: 5, color: '#128283',fontFamily: 'opensans-semibold', marginTop: 5 }}>{item.policyType}</Text>
                         </View>
-                        <View>
+                        <View style={{maxWidth: '49%'}}>
                         <Text
                               style={{
                                 fontFamily: 'opensans-bold',
-                                fontSize: 14,
+                                fontSize: 13.5,
                                 color: '#B6B3D4',
                                 marginLeft: 5,
                                 textTransform: 'uppercase'
@@ -280,17 +292,17 @@ export default class InsuranceHistory extends Component {
                         
                         </View>
 
-                        <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row'}}>
+                        <View style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row', marginTop: 8}}>
                         <View>
                        
                             <Text style={{ fontFamily: 'opensans-bold',
-                                fontSize: 14,
+                                fontSize: 13.5,
                                 fontFamily: 'opensans-semibold', marginTop: 3, 
                                 color: 'rgba(0,0,0,0.5)',
                                 marginLeft: 5,  }}> <Text
                               style={{
                                 fontFamily: 'opensans-semibold',
-                                fontSize: 14,
+                                fontSize: 13.5,
                                 color: 'rgba(0,0,0,0.8)',
                                 
                                 marginLeft: 5,
@@ -320,16 +332,15 @@ export default class InsuranceHistory extends Component {
                     textAlign: 'center',
                   }} >No insurance policy list found!</Text>
                 </View>)) : null}
-            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            {/* <View style={{ flex: 1, justifyContent: 'flex-end' }}>
               {this.state.isLoadingMoreData ? <ActivityIndicator
                 style={{ marginBottom: 17 }}
                 animating={this.state.isLoadingMoreData}
                 size="large"
                 color='blue'
               /> : null}
-            </View>
-          </View>
-        </Content>
+            </View> */}
+        {/* </Content> */}
       </Container>
     );
   }

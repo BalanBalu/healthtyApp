@@ -179,11 +179,11 @@ export function renderProfileImage(data) {
 }
 export function renderDoctorImage(data) {
     let source = null;
-    if (data.profile_image) {
-        source = { uri: data.profile_image.imageURL }
-    } else if (data.gender == 'M') {
+    if (data.profileImage) {
+        source = { uri: data.profileImage.imageURL }
+    } else if (data.gender == 'M'||data.gender == 'Male') {
         source = require('../../assets/images/profile_male.png')
-    } else if (data.gender == 'F') {
+    } else if (data.gender == 'F'||data.gender == 'Female') {
         source = require('../../assets/images/profile_female.png')
     } else {
         source = require('../../assets/images/profile_common.png')
@@ -199,8 +199,8 @@ export function getDoctorSpecialist(specialistData) {
 }
 export function getDoctorEducation(educationData) {
     let degree = '';
-    if (educationData) {
-        educationData.forEach(eduData => {
+    if (educationData && educationData.education) {
+        educationData.education.forEach(eduData => {
             degree += eduData.degree + ','
         });
         return degree.slice(0, -1);
@@ -435,17 +435,24 @@ export function validatePassword(value) {
     else return true;
 }
 
-export function getHospitalHeadeName(location) {
-    if (!location) return ''
-    if (location)
-        return `${location.name}`;
+export function getHospitalHeadeName(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.hospitalName}`;
     else
         return ''
 }
-export function getHospitalName(location) {
-    if (!location) return ''
-    if (location)
-        return `${location.location.address.no_and_street}, ${location.location.address.city}, ${location.location.address.state}, ${location.location.address.pin_code}`;
+export function getHospitalName(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.address.noAndStreet}, ${data.address.city}, ${data.address.state}, ${data.address.pinCode}`;
+    else
+        return ''
+}
+export function getHospitalAddress(data) {
+    if (!data) return ''
+    if (data)
+        return `${data.address?data.address:''},${data.address1?data.address1:''}, ${data.city?data.city:''}, ${data.state?data.state:''}, ${data.pinCode?data.pinCode:''}`;
     else
         return ''
 }
@@ -821,13 +828,13 @@ export function getDoctorNameOrHospitalName(data) {
     let name = 'unKnown'
     if (data) {
         if (data.doctorInfo) {
-            if (data.doctorInfo.first_name != undefined || data.doctorInfo.last_name != undefined) {
-                name = `${(data && data.prefix != undefined ? data.prefix + ' ' : '')}${data.doctorInfo.first_name || ''} ${data.doctorInfo.last_name || ''}`
+            if (data.doctorInfo.firstName != undefined || data.doctorInfo.lastName != undefined) {
+                name = `${(data &&data.doctorInfo&& data.doctorInfo.prefix != undefined ? data.doctorInfo.prefix + ' ' : '')}${data.doctorInfo.firstName || ''} ${data.doctorInfo.lastName || ''}`
 
             }
         } else {
-            if (data.booked_for === 'HOSPITAL') {
-                name = getHospitalHeadeName(data.location[0])
+            if (data.bookedFor === 'HOSPITAL') {
+                name = data.hospitalInfo&&data.hospitalInfo.hospitalName != undefined ?data.hospitalInfo.hospitalName:''
             }
         }
     }
@@ -850,3 +857,16 @@ export function RenderDocumentUpload(data) {
     return (source)
 }
 
+export function familyMemAgeCal(value){
+    try {
+      if (value.familyMemberAge == 0 && value.familyMemberMonth <= 1)
+        return value.familyMemberMonth + ' Month';
+      else if (value.familyMemberAge == 0 &&value.familyMemberMonth > 1)
+        return value.familyMemberMonth + ' Months';
+      else if (value.familyMemberAge > 1)
+        return value.familyMemberAge + ` Years `;
+      else return value.familyMemberAge + ` Year`;
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);
+    }
+  };

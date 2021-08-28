@@ -1,4 +1,4 @@
-import { postService, getService, putService } from '../../../setup/services/httpservices';
+import { postService, getService, putService,smartHealthGetService,smartHealthPutService } from '../../../setup/services/httpservices';
 
 export const SET_BOOK_APP_SLOT_DATA = 'BOOK_APP/SLOTDATA';
 export const SET_BOOK_APP_DOCTOR_DATA = 'BOOK_APP/DOCTORDATA';
@@ -209,6 +209,18 @@ export const appointment = async (userId, filters, isLoading = true) => {
     }
   }
 }
+export const getAppointmentByMemberId=async (userId,filters)=>{
+try{
+let endPoint = 'appointment/by-user-id?user-id=' + userId + '&start-date=' + filters.startDate + '&end-date=' + filters.endDate;
+let response=await smartHealthGetService(endPoint);
+return response.data
+}catch(e){
+  return{
+    message: 'exception' + e,
+    success: false
+  }
+}
+}
 
 export const getUserAppointments = async (userId, filters) => {
   try {
@@ -294,8 +306,8 @@ export const getMultipleDoctorDetailsV2 = async (doctorIds, fields, isLoading = 
 
 export async function appointmentDetails(appointmentId, isLoading = true) {
   try {
-    let endPoint = 'appointment/' + appointmentId
-    let response = await getService(endPoint);
+    let endPoint = 'appointment/by-id?id=' + appointmentId
+    let response = await smartHealthGetService(endPoint);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -305,13 +317,23 @@ export async function appointmentDetails(appointmentId, isLoading = true) {
     }
   }
 }
+export async function getAppointmentDetailsById(id){
+  try{
+    let endPoint='appointment/by-id?id='+id
+    let response=await smartHealthGetService(endPoint);
+return response.data;
+  }
+  catch(e){
+
+  }
+}
 
 /* Update Appoiontment Status */
 
-export async function appointmentStatusUpdate( appointmentId, requestData, isLoading = true) {
+export async function appointmentStatusUpdate( requestData) {
   try {
-    let endPoint = 'appointment/' + appointmentId
-    let response = await putService(endPoint, requestData);
+    let endPoint = 'appointment'
+    let response = await smartHealthPutService(endPoint, requestData);
     let respData = response.data;
 
     return respData;

@@ -65,7 +65,7 @@ class Forgotpassword extends Component {
                     return false
                 }
                 if (!userEntry) {
-                    this.setState({ errorMessage: 'Enter your Email' });
+                    this.setState({ errorMessage: 'Enter your Mobile number Email' });
                     return false;
                 }
                 if (validateEmailAddress(userEntry) === false) {
@@ -266,7 +266,7 @@ class Forgotpassword extends Component {
                         <Input
                             onBlur={() => this.setState({ backgroundColor1: '#dddddd' })}
                             onFocus={() => this.setState({ backgroundColor1: '#48b4a5' })}
-                            placeholderTextColor={'#A1A1A1'} placeholder="Email" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
+                            placeholderTextColor={'#A1A1A1'} placeholder="Email / Mobile Number" style={{ fontSize: 15, fontFamily: 'Roboto', paddingLeft: 1, }}
                             value={userEntry}
                             autoCapitalize={false}
                             returnKeyType={'done'}

@@ -1,4 +1,4 @@
-import React, {Component, PureComponent} from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
   StyleSheet,
 
@@ -10,7 +10,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import { ScrollView } from 'react-native-gesture-handler';
-import {NavigationEvents} from 'react-navigation';
+import { NavigationEvents } from 'react-navigation';
 import {
   Container,
   Header,
@@ -28,23 +28,23 @@ import {
   List,
   Grid,
 } from 'native-base';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import {
   fetchUserNotification,
   UpDateUserNotification,
 } from '../../providers/notification/notification.actions';
-import {hasLoggedIn} from '../../providers/auth/auth.actions';
+import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import {
   formatDate,
   dateDiff,
   notificationNavigation,
 } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import {store} from '../../../setup/store';
-import {primaryColor, secondaryColor} from '../../../setup/config';
+import { store } from '../../../setup/store';
+import { primaryColor, secondaryColor } from '../../../setup/config';
 
-import {RenderFooterLoader} from '../../common';
+import { RenderFooterLoader } from '../../common';
 YellowBox.ignoreWarnings(['Async']);
 class Notification extends PureComponent {
   constructor(props) {
@@ -53,10 +53,10 @@ class Notification extends PureComponent {
       data: [],
       notificationId: null,
       isLoading: false,
+      page: 0,
+      limit: 10
     };
-    this.skip = 0;
-    this.limit = 10;
-    this.onEndReachedCalledDuringMomentum = true;
+    this.onEndReachedCalledDuringMomentum = false;
     this.isAllNotificationLoaded = false;
   }
 
@@ -70,72 +70,79 @@ class Notification extends PureComponent {
       notificationId: this.props.notification.notificationIds,
     });
 
+
     await new Promise.all([
       this.getUserNotification(),
-      this.upDateNotification('mark_as_readed'),
+      // this.upDateNotification(this.state.notificationId),
     ]);
-    await this.setState({isLoading: true});
+    await this.setState({ isLoading: true, footerLoading: false });
   }
 
   backNavigation = async navigationData => {
     try {
-      await this.setState({isLoading: false});
+      await this.setState({ isLoading: false });
       if (navigationData.action) {
         if (
           navigationData.action.type === 'Navigation/BACK' ||
           navigationData.action.type === 'Navigation/POP'
         ) {
-          // this.skip = 0;
+          // this.page = 0;
           // await this.setState({ data: [] })
           // await this.getUserNotification();
         }
       }
-      await this.setState({isLoading: true});
+      await this.setState({ isLoading: true });
     } catch (e) {
       console.log(e);
     }
   };
   updateNavigation = async (item, index) => {
-    await this.setState({notificationId: item._id});
-    if (item.notification_type === 'APPOINTMENT') {
+    
+    await this.setState({ notificationId: item._id });
+    if (item.notificationType === 'APPOINTMENT') {
       if (!item.mark_as_viewed) {
-        this.upDateNotification('mark_as_viewed', index);
+        this.upDateNotification(item._id, index);
+        
         this.props.navigation.push('AppointmentInfo', {
-          appointmentId: item.appointment_id,
+          appointmentId: item.appointmentId,
           fromNotification: true,
         });
       } else {
         this.props.navigation.push('AppointmentInfo', {
-          appointmentId: item.appointment_id,
+          appointmentId: item.appointmentId,
           fromNotification: true,
         });
       }
-    } else if (item.notification_type !== 'VIDEO_CONSULTATION') {
+    } else if (item.notificationType !== 'VIDEO_CONSULTATION') {
       if (!item.mark_as_viewed) {
-        this.upDateNotification('mark_as_viewed', index);
+        this.upDateNotification(item._id, index);
         this.props.navigation.push(
-          notificationNavigation[item.notification_type].navigationOption,
-          {serviceId: item.service_id, fromNotification: true},
+          notificationNavigation[item.notificationType].navigationOption,
+          { serviceId: item.service_id, fromNotification: true },
         );
       } else {
         this.props.navigation.push(
-          notificationNavigation[item.notification_type].navigationOption,
-          {serviceId: item.service_id, fromNotification: true},
+          notificationNavigation[item.notificationType].navigationOption,
+          { serviceId: item.service_id, fromNotification: true },
         );
       }
     }
   };
-  upDateNotification = async (node, index) => {
+  upDateNotification = async (id, index) => {
     try {
       if (this.state.notificationId) {
-        UpDateUserNotification(node, this.state.notificationId);
-        if (node === 'mark_as_viewed') {
+        let data = {
+          ids: [id],
+          mark_as_viewed: true
+        }
+        UpDateUserNotification(data);
+        if (id) {
           if (index !== undefined || index !== null) {
             let data = this.state.data;
             let temp = this.state.data[index];
             temp.mark_as_viewed = true;
             data.splice(index, 1, temp);
-            await this.setState({data});
+            await this.setState({ data });
           }
         }
       }
@@ -146,35 +153,60 @@ class Notification extends PureComponent {
 
   getUserNotification = async () => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
-      let result = await fetchUserNotification(userId, this.skip, this.limit);
-      if (result.success) {
-        let temp = this.state.data.concat(result.data);
+      let memberId = await AsyncStorage.getItem('memberId') || null;
 
-        if (temp.length === result.totalCount) {
-          this.isAllNotificationLoaded = true;
+      let result = await fetchUserNotification(memberId, this.state.page, this.state.limit);
+
+        if (result.length != 0) {
+          let responseData = typeof result.docs !== "undefined" ? result.docs : result;
+
+          let temp = this.state.data.concat(responseData);
+
+          if (temp.length) {
+            this.isAllNotificationLoaded = true;
+          }
+          this.setState({ data: temp, footerLoading: false });
+        } else {
+          this.setState({ footerLoading: false });
+          this.onEndReachedCalledDuringMomentum = false;
         }
-        this.setState({data: temp, footerLoading: false});
-      }
     } catch (e) {
       console.log(e);
     }
   };
 
-  renderFooter() {
-    return <RenderFooterLoader footerLoading={this.state.footerLoading} />;
-  }
-  handleLoadMore = async () => {
-    if (this.isAllNotificationLoaded === false) {
-      this.onEndReachedCalledDuringMomentum = true;
-      this.skip = this.skip + this.limit;
-      this.setState({footerLoading: true});
-      await this.getUserNotification();
-    }
-  };
 
+
+  renderFooter = () => {
+    return (
+      this.state.footerLoading ?
+        <RenderFooterLoader footerLoading={this.state.footerLoading} /> : null
+
+    )
+  }
+
+  handleLoadMore = () => {
+    if (!this.onEndReachedCalledDuringMomentum) {
+      this.onEndReachedCalledDuringMomentum = true;
+      this.setState({ footerLoading: true, page: this.state.page + 1 },
+        this.getUserNotification)
+    }
+  }
+  timeformat(data) {
+
+    if (dateDiff(new Date(data), new Date(), 'days') > 30) {
+
+
+      return formatDate(new Date(data), "DD-MM-YYYY")
+    }
+    else {
+      return moment(new Date(data), "YYYYMMDD").fromNow()
+    }
+
+  }
   render() {
-    const {data, isLoading} = this.state;
+    const { data, isLoading } = this.state;
+
     return (
       <Container style={styles.container}>
         {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}
@@ -195,11 +227,11 @@ class Notification extends PureComponent {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Icon style={{fontSize: 25}} name="ios-notifications-off" />
+            <Icon style={{ fontSize: 25 }} name="ios-notifications-off" />
             <Text>No Notification Found</Text>
           </View>
         ) : (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <NavigationEvents
               onWillFocus={payload => {
                 this.backNavigation(payload);
@@ -207,18 +239,12 @@ class Notification extends PureComponent {
             />
 
             <FlatList
-              // horizontal={true}
               data={data}
               extraData={this.state}
-              onEndReached={() => this.handleLoadMore()}
-              onEndReachedThreshold={0.5}
-              // onMomentumScrollBegin={() => {
-
-              //     this.onEndReachedCalledDuringMomentum = false;
-              // }}
-              ListFooterComponent={this.renderFooter.bind(this)}
-              renderItem={({item, index}) => (
-                <Card
+              renderItem={({ item, index }) => (
+                <View>
+                
+                  <Card
                   style={{
                     borderRadius: 5,
                     width: 'auto',
@@ -230,37 +256,16 @@ class Notification extends PureComponent {
                     onPress={() => this.updateNavigation(item, index)}
                     testID="notificationView">
                     <View>
-                      {dateDiff(
-                        new Date(item.created_date),
-                        new Date(),
-                        'days',
-                      ) > 30 ? (
-                        <Text
+                    
+                      <Text
                           style={{
                             fontSize: 12,
                             fontFamily: 'Roboto',
                             textAlign: 'right',
                             marginTop: 5,
                           }}>
-                          {formatDate(
-                            new Date(item.created_date),
-                            'DD-MM-YYYY',
-                          )}
-                        </Text>
-                      ) : (
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            marginTop: 5,
-                            textAlign: 'right',
-                          }}>
-                          {moment(
-                            new Date(item.created_date),
-                            'YYYYMMDD',
-                          ).fromNow()}
-                        </Text>
-                      )}
+                         {this.timeformat(item.createdDate)}
+                      </Text>
                       <Text
                         style={{
                           fontSize: 14,
@@ -275,7 +280,14 @@ class Notification extends PureComponent {
                     </View>
                   </TouchableOpacity>
                 </Card>
+                 
+                  </View>              
+             
               )}
+              onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+              onEndReached={this.handleLoadMore()}
+              onEndReachedThreshold={0}
+              ListFooterComponent={this.renderFooter()}
               keyExtractor={(item, index) => index.toString()}
             />
           </View>

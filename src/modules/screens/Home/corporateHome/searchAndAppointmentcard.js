@@ -80,6 +80,11 @@ export const SearchAndAppointmentCard = props => {
     }
 
   }
+
+  const navigateToConsultation = async () => {
+    const { navigation } = props;
+    navigation("DoctorConsultation")
+  }
   return (
     <View
       style={{
@@ -140,7 +145,7 @@ export const SearchAndAppointmentCard = props => {
                 marginTop: 10,
               }}>
               {/* <HomeTestDrawing /> */}
-              <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{ height: 63, width: 45, marginTop: -3 }} />
+              <Image source={require('../../../../../assets/images/corporateHomePageIcons/HomeTestDesign.png')} style={{ height: 63, width: 47, marginTop: -3 }} />
               {(count === 'ta') || (count === 'ma') ?
                 <Text style={[styles.boxTextSmall, { marginTop: -1 }]}>{translate("Home Care")}</Text> :
                 <Text style={{
@@ -184,7 +189,7 @@ export const SearchAndAppointmentCard = props => {
           </View>
         </TouchableHighlight> */}
         <TouchableHighlight
-          style={[styles.rectBox, {marginLeft: 8}]}
+          style={[styles.rectBox]}
           activeOpacity={0.6}
           underlayColor={secondaryColorTouch}
           // onPress={() => navigation('Video and Chat Service')}>
@@ -201,6 +206,24 @@ export const SearchAndAppointmentCard = props => {
             </View>
           </View>
         </TouchableHighlight>
+        {/* <TouchableHighlight
+          style={[styles.rectBox, {marginLeft: 25}]}
+          activeOpacity={0.6}
+          underlayColor={secondaryColorTouch}
+          // onPress={() => navigation('Video and Chat Service')}>
+          onPress={() => navigateToConsultation()}>
+
+          <View>
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <VideoConsultDrawing />
+              {(count === 'ta') || (count === 'ma') ? <Text style={styles.boxTextSmall}>{translate("Video Consult")}</Text> : <Text style={styles.boxText}>{translate("Video Consult")}</Text>}
+            </View>
+          </View>
+        </TouchableHighlight> */}
         <View style={[styles.rectBoxNone]} />
       </View>
     </View>

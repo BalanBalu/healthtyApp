@@ -38,6 +38,7 @@ import { ContactUsCard } from './contactUsCard';
 import PolicyCoverageCard from './policyCoverageCard';
 import { getMemberDetailsByEmail } from '../../../providers/corporate/corporate.actions';
 import { translate } from '../../../../setup/translator.helper';
+import NotifService from '../../../../setup/NotifService';
 
 class CorporateHome extends PureComponent {
   locationUpdatedCount = 0;
@@ -60,8 +61,8 @@ class CorporateHome extends PureComponent {
     await this.getCorporateDatails();
     this.setState({ corporateData: this.props?.profile?.corporateData, TPAData: this.props?.profile?.memberTpaInfo })
     await this.getMemberDetailsByPolicyNo();
-    this.getMemberDetailsByEmail();
-    this.initialFunction();
+    await this.getMemberDetailsByEmail();
+    await this.initialFunction();
     this.getCorporatePhoneNumber();
 
   }
@@ -87,7 +88,9 @@ class CorporateHome extends PureComponent {
       let memberEmailId = (await AsyncStorage.getItem('memberEmailId')) || null;
       let result = await getMemberDetailsByEmail(memberEmailId);
       if (result && result.length) {
-        let policyData = await getPolicyByPolicyNo(result && result[0].policyNo);
+        let oldDeviceToken=result[0].deviceToken||[];
+        NotifService.initNotification(this.props.navigation,result[0]._id,oldDeviceToken);
+        let policyData = await getPolicyByPolicyNo(result&&result[0].policyNo);
         await this.setState({
           memberDetails: result[0],
           policyDetails: policyData,
@@ -112,19 +115,19 @@ class CorporateHome extends PureComponent {
   initialFunction = async () => {
     try {
       CurrentLocation.getCurrentPosition();
-      // const userId = await AsyncStorage.getItem('userId');
-      // if (userId) {
-      //   const {
-      //     notification: { notificationCount },
-      //     navigation,
-      //   } = this.props;
+      const memberId = await AsyncStorage.getItem('memberId') || null;
+      if (memberId) {
+        const {
+          notification: { notificationCount },
+          navigation,
+        } = this.props;
 
-      //   navigation.setParams({
-      //     notificationBadgeCount: notificationCount,
-      //   });
+        navigation.setParams({
+          notificationBadgeCount: notificationCount,
+        });
 
-      //   this.getMarkedAsReadedNotification(userId);
-      // }
+        this.getMarkedAsReadedNotification(memberId);
+      }
     } catch (ex) {
       console.log(ex);
     }
@@ -225,9 +228,9 @@ class CorporateHome extends PureComponent {
   };
 
 
-  getMarkedAsReadedNotification = async (userId) => {
+  getMarkedAsReadedNotification = async (memberId) => {
     try {
-      await fetchUserMarkedAsReadedNotification(userId);
+      await fetchUserMarkedAsReadedNotification(memberId);
       const {
         notification: { notificationCount },
         navigation,
@@ -241,9 +244,9 @@ class CorporateHome extends PureComponent {
   };
   backNavigation = async (navigationData) => {
     try {
-      let userId = await AsyncStorage.getItem('userId');
-      if (userId) {
-        this.getMarkedAsReadedNotification(userId);
+      let memberId = await AsyncStorage.getItem('memberId') || null;
+      if (memberId) {
+        this.getMarkedAsReadedNotification(memberId);
       }
     } catch (e) {
       console.log(e);
@@ -307,6 +310,7 @@ function CorporateHomeState(state) {
   return {
     profile: state.profile,
     bookappointment: state.bookappointment,
+    notification: state.notification
   };
 }
 export default connect(CorporateHomeState)(CorporateHome);

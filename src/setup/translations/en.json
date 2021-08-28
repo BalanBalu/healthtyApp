@@ -165,6 +165,7 @@
   "Search & Book Appointment": "Search & Book Appointment",
   "Home Care": "Home Care",
   "Tele Consult": "Tele Consult",
+  "Video Consult": "Video Consult",
   "Help line": "Help line",
   "Members details": "Members details",
   "Member Name": "Member Name",
@@ -701,5 +702,6 @@
   "Your Chat Consultation Request Success, We will notify Doctor":"Your Chat Consultation Request Success. We will notify Doctor",
   "We could not Process Your Video Consultation Request at this time, Please Try again later":"We could not Process Your Video Consultation Request at this time. Please Try again later",
   "Your Video Consultation Request Success, We will notify the Doctor":"Your Video Consultation Request Success. We will notify the Doctor",
-  "Kindly fill  the fields":"Kindly fill  the fields"
+  "Kindly fill  the fields":"Kindly fill  the fields",
+  "Kindly Choose hospital name":"Kindly Choose hospital name"
 }

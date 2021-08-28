@@ -225,7 +225,7 @@ class PreAuth extends React.PureComponent {
     let errorMsg = !onlySpaceNotAllowed(hospitalInfo.hospitalName) ? 'Kindly fill hospital name' : !onlySpaceNotAllowed(hospitalInfo.hospitalLocation) ? 'Kindly fill hospital location' : null
 
     if (!onlySpaceNotAllowed(hospitalInfo.hospitalName)) {
-      this.setState({ hospitalNameTextErrorMsg: translate('Kindly fill hospital name') });
+      this.setState({ hospitalNameTextErrorMsg: translate('Kindly Choose hospital name') });
       this.scrollViewRef.scrollTo({
         y: this.hospitalNameText.y,
         animated: true

@@ -684,7 +684,7 @@ class Profile extends Component {
                               item.relationship != 'SELF' ? (
                               <Col size={10}>
                                 <Row>
-                                  <Col size={4}>
+                                  <Col size={3.6}>
                                     <Text note style={styles.customText1}>
                                       {translate("Name")}
                                     </Text>
@@ -723,7 +723,7 @@ class Profile extends Component {
                             )}
 
 
-                            {item.relationship != 'EMPLOYEE' &&
+                            {/* {item.relationship != 'EMPLOYEE' &&
                               item.relationship != 'SELF' ? (
                               <Col size={-15}>
                                 <TouchableOpacity
@@ -748,7 +748,7 @@ class Profile extends Component {
                                   />
                                 </TouchableOpacity>
                               </Col>
-                            ) : null}
+                            ) : null} */}
                             {item.relationship != 'EMPLOYEE' &&
                               item.relationship != 'SELF' ? (
                               <Col>
@@ -983,19 +983,19 @@ class Profile extends Component {
                         <Text note style={styles.customText1}>
                           {data?.address1 + ','}
                           <Text note style={styles.customText1}>
-                            {data?.address2 ? data?.address2 : ' '}
+                            {data?.address2 ? data?.address2 +',': ''}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data?.address3 ? data?.address3 + ',' : ' '}
+                          {data?.address3 ? data?.address3 + ',' : ''}
                           <Text note style={styles.customText1}>
-                            {data?.city ? data?.city : ' '}
+                            {data?.city ? data?.city : ''}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>
-                          {data?.state ? data?.state + ',' : ' '}
+                          {data?.state ? data?.state + ',' : ''}
                           <Text note style={styles.customText1}>
-                            {data?.country ? data?.country : ' '}
+                            {data?.country ? data?.country : ''}
                           </Text>
                         </Text>
                         <Text note style={styles.customText1}>

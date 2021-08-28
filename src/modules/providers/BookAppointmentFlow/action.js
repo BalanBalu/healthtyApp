@@ -1,4 +1,4 @@
-import { postService, getService, putService } from '../../../setup/services/httpservices';
+import { postService, putService, getService, smartHealthGetService, smartHealthPostService, smartHealthPutService, postServiceExternal, smartHealthDeleteService } from '../../../setup/services/httpservices';
 
 export const SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA = 'BOOK_APP/DOCTOR_INFO_LIST_AND_SLOTS_DATA';
 export const BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER = 'BOOK_APP/BA_CUP_DOCTOR_INFO_LIST_AND_SLOTS_DATA_4_FILTER';
@@ -11,6 +11,53 @@ export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 export const SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER = 'BOOK/SET_PREVIOUS_DOC_LIST_WHEN_CLEAR_FILTER';
 import { store } from '../../../setup/store';
 
+
+
+export async function fetchAvailabilitySlots(doctorId,hospitalId, startDate) {
+    try {
+      let endPoint = 'availability/doctors/availabilitySlots?doctorId='+doctorId +'&hospitalId='+hospitalId +'&startDate='+ startDate;
+ console.log("endPoint",endPoint)
+      let response = await smartHealthGetService(endPoint);
+      let respData = response.data;
+      return respData;
+    } catch (e) {
+      return {
+        message: 'exception' + e,
+        success: false
+      }
+    }
+  }
+  
+  
+  export async function getHospitalById(hospitalId) {
+    try {
+      let endPoint = 'hospital-branch/by-id?id='+hospitalId;
+ console.log("endPoint",endPoint)
+      let response = await smartHealthGetService(endPoint);
+      let respData = response.data;
+      return respData;
+    } catch (e) {
+      return {
+        message: 'exception' + e,
+        success: false
+      }
+    }
+  }
+  
+  export async function createAppointment(data) {
+    try {
+      let endPoint = 'appointment';
+ console.log("data",data)
+      let response = await smartHealthPostService(endPoint,data);
+      let respData = response.data;
+      return respData;
+    } catch (e) {
+      return {
+        message: 'exception' + e,
+        success: false
+      }
+    }
+  }
 
 export const searchByHomeHealthcareDocDetailsService = async (type, reqData, skipCount, limit) => {
     try {
@@ -83,11 +130,12 @@ export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorId
 }
 
 
-export const searchByDocDetailsService = async (type, activeSponsor, reqData, skipCount, limit) => {
+export const searchByDocDetailsService = async (type,  reqData, skipCount, limit) => {
     try {
-        const endPoint = `V2/doctor/search/${type}?active_sponsor=${activeSponsor}&skip=${skipCount}&limit=${limit}`;
-        const response = await postService(endPoint, reqData);
+        const endPoint = `sm-doctor/search/${type}?p=${skipCount}&l=${limit}`;
+        const response = await smartHealthPostService(endPoint, reqData);
         const respData = response.data;
+        // console.log(JSON.stringify(respData));
         return respData;
     } catch (ex) {
         return {
