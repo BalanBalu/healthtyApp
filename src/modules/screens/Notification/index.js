@@ -102,6 +102,7 @@ class Notification extends PureComponent {
     if (item.notificationType === 'APPOINTMENT') {
       if (!item.mark_as_viewed) {
         this.upDateNotification(item._id, index);
+        
         this.props.navigation.push('AppointmentInfo', {
           appointmentId: item.appointmentId,
           fromNotification: true,
@@ -157,8 +158,9 @@ class Notification extends PureComponent {
       let result = await fetchUserNotification(memberId, this.state.page, this.state.limit);
 
         if (result.length != 0) {
-         
-          let temp = this.state.data.concat(result);
+          let responseData = typeof result.docs !== "undefined" ? result.docs : result;
+
+          let temp = this.state.data.concat(responseData);
 
           if (temp.length) {
             this.isAllNotificationLoaded = true;
@@ -190,7 +192,18 @@ class Notification extends PureComponent {
         this.getUserNotification)
     }
   }
+  timeformat(data) {
 
+    if (dateDiff(new Date(data), new Date(), 'days') > 30) {
+
+
+      return formatDate(new Date(data), "DD-MM-YYYY")
+    }
+    else {
+      return moment(new Date(data), "YYYYMMDD").fromNow()
+    }
+
+  }
   render() {
     const { data, isLoading } = this.state;
 
@@ -230,10 +243,7 @@ class Notification extends PureComponent {
               extraData={this.state}
               renderItem={({ item, index }) => (
                 <View>
-                   <FlatList
-                    data={item.docs}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) =>(
+                
                   <Card
                   style={{
                     borderRadius: 5,
@@ -246,37 +256,16 @@ class Notification extends PureComponent {
                     onPress={() => this.updateNavigation(item, index)}
                     testID="notificationView">
                     <View>
-                      {dateDiff(
-                        new Date(item.createdDate),
-                        new Date(),
-                        'days',
-                      ) > 30 ? (
-                        <Text
+                    
+                      <Text
                           style={{
                             fontSize: 12,
                             fontFamily: 'Roboto',
                             textAlign: 'right',
                             marginTop: 5,
                           }}>
-                          {formatDate(
-                            new Date(item.createdDate),
-                            'DD-MM-YYYY',
-                          )}
-                        </Text>
-                      ) : (
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            marginTop: 5,
-                            textAlign: 'right',
-                          }}>
-                          {moment(
-                            new Date(item.createdDate),
-                            'YYYYMMDD',
-                          ).fromNow()}
-                        </Text>
-                      )}
+                         {this.timeformat(item.createdDate)}
+                      </Text>
                       <Text
                         style={{
                           fontSize: 14,
@@ -291,9 +280,7 @@ class Notification extends PureComponent {
                     </View>
                   </TouchableOpacity>
                 </Card>
-                    )
-
-                    }/>
+                 
                   </View>              
              
               )}
