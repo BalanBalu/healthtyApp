@@ -96,7 +96,7 @@ class TestDetails extends PureComponent {
             <View
                 style={{
                     borderColor: 'gray',
-                    borderWidth: 0.3,
+                    borderWidth: 0.5,
                     padding: 10,
                     borderRadius: 5,
                     marginTop: 10,
@@ -388,12 +388,14 @@ onClickFamilyMember(index, item) {
                                     backgroundColor: 'rgba(229,229,229,0.5)',
                                     borderRadius: 5,
                                     marginTop: 10,
+                                    marginBottom: 5
                                 } : {
                                     borderColor: 'gray',
-                                    borderWidth: 0.3,
+                                    borderWidth: 0.5,
                                     padding: 10,
                                     borderRadius: 5,
                                     marginTop: 10,
+                                    marginBottom: 5
                                 }]}>
                                
                                 <Row>
