@@ -683,7 +683,7 @@ export default class PaymentReview extends Component {
                   <Text style={styles.calDate}>
                     {bookSlotDetails &&
                       formatDate(
-                        bookSlotDetails.slotStartDateAndTime,
+                        bookSlotDetails.slotDate,
                         'Do MMMM, YYYY',
                       )}
                   </Text>

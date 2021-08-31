@@ -218,7 +218,7 @@ class DoctorConsultation extends Component {
                 </Text>
                 <DateTimePicker
                   mode={'date'}
-                  minimumDate={addTimeUnit(new Date(),1,'day')}
+                  minimumDate={new Date()}
                   maximumDate={addTimeUnit(new Date(), 1, 'month')}
                   value={selectedDate}
                   isVisible={isVisibleDatePicker}
