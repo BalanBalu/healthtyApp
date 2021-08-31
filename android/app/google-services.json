@@ -33,6 +33,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440724505709:android:900583fb7c759b6197ab64",
+        "android_client_info": {
+          "package_name": "com.drsmarthealth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440724505709-5jhp6db8chi49f201u4b5i4qqq0fsk6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAANxe1Vg_p5CI8RwMiORYf-jU_HG5snrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440724505709-5jhp6db8chi49f201u4b5i4qqq0fsk6p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
